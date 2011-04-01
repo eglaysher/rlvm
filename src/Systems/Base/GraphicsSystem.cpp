@@ -222,7 +222,8 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     graphics_object_impl_(new GraphicsObjectImpl(
         graphics_object_settings_->objects_in_a_layer)),
     use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
-    show_curosr_(true),
+    show_cursor_from_bytecode_(true),
+    hide_cursor_by_pausing_(false),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
     system_(system) {}
 
@@ -491,7 +492,7 @@ void GraphicsSystem::reset() {
   clearAllDCs();
 
   // Reset the cursor
-  show_curosr_ = true;
+  show_cursor_from_bytecode_ = true;
   cursor_ = system().gameexe()("MOUSE_CURSOR").to_int(0);
   mouse_cursor_.reset();
 
@@ -663,7 +664,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
-  if (!use_custom_mouse_cursor_ || !show_curosr_)
+  if (!use_custom_mouse_cursor_ || !show_cursor_from_bytecode_)
     return boost::shared_ptr<MouseCursor>();
 
   if (use_custom_mouse_cursor_ && !mouse_cursor_) {
@@ -691,7 +692,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::mouseMotion(const Point& new_location) {
-  if (use_custom_mouse_cursor_ && show_curosr_)
+  if (use_custom_mouse_cursor_ && show_cursor_from_bytecode_)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 
   cursor_pos_ = new_location;

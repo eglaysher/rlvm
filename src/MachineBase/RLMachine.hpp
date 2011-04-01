@@ -266,6 +266,14 @@ class RLMachine {
   // instruction was called explicitly in the code.
   bool halted() const { return halted_; }
 
+  // Pauses execution and notifies the System. Every call to
+  // executeNextInstruction() will return immediately and the System's internal
+  // timer will stop ticking.
+  void pauseExecution();
+
+  // Resume execution.
+  void unpauseExecution();
+
   // ---------------------------------------------------------------------
 
   // Whether we report to stderr when we hit an undefined opcode.
@@ -337,6 +345,10 @@ class RLMachine {
   typedef boost::ptr_map<unsigned int, RLModule> ModuleMap;
   // Mapping between the module_type:module pair and the module implementation
   ModuleMap modules_;
+
+  // When true, we should ignore all execution request return immediately. This
+  // is used by native dialog stuff.
+  int interpreter_paused_;
 
   // States whether the RLMachine is in the halted state (and thus won't
   // execute more instructions)

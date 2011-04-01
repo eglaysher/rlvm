@@ -51,7 +51,6 @@ class TestEventSystem : public EventSystem {
 
   // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
-  virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
   virtual bool shiftPressed() const;
   virtual bool ctrlPressed() const;
@@ -64,6 +63,8 @@ class TestEventSystem : public EventSystem {
   virtual void injectMouseUp(RLMachine& machine) {}
 
  private:
+  virtual unsigned int getTicksImpl() const;
+
   // Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };

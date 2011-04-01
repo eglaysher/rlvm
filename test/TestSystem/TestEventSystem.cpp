@@ -51,7 +51,7 @@ bool TestEventSystem::ctrlPressed() const {
   return event_system_mock_->ctrlPressed();
 }
 
-unsigned int TestEventSystem::getTicks() const {
+unsigned int TestEventSystem::getTicksImpl() const {
   return event_system_mock_->getTicks();
 }
 

@@ -347,9 +347,9 @@ SysModule::SysModule()
   addUnsupportedOpcode(324, 0, "CallStackTrunc");
 
   addOpcode(204, 0, "ShowCursor",
-            callFunctionWith(&GraphicsSystem::setShowCursor, 1));
+            callFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 1));
   addOpcode(205, 0, "HideCursor",
-            callFunctionWith(&GraphicsSystem::setShowCursor, 0));
+            callFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 0));
   addOpcode(206, 0, "GetMouseCursor", returnIntValue(&GraphicsSystem::cursor));
   addOpcode(207, 0, "MouseCursor", callFunction(&GraphicsSystem::setCursor));
 

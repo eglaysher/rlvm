@@ -34,6 +34,7 @@
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -41,6 +42,7 @@ using boost::bind;
 
 SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
     : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
+      prevent_orphan_mouse_up_after_focus_(false),
       mouse_inside_window_(true),
       mouse_pos_(),
       m_button1State(0),
@@ -109,10 +111,6 @@ void SDLEventSystem::flushMouseClicks() {
 
 unsigned int SDLEventSystem::timeOfLastMouseMove() {
   return last_mouse_move_time_;
-}
-
-unsigned int SDLEventSystem::getTicks() const {
-  return SDL_GetTicks();
 }
 
 void SDLEventSystem::wait(unsigned int milliseconds) const {
@@ -223,6 +221,10 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
     mouse_pos_ = Point(event.motion.x, event.motion.y);
     last_mouse_move_time_ = getTicks();
 
+    // If we're receiving mouse motion events, it's because there's no longer a
+    // native dialog.
+    system_.graphics().setHideCursorByPausing(false);
+
     // Handle this somehow.
     broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
   }
@@ -233,6 +235,17 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
   if (mouse_inside_window_) {
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
+
+    bool previous = prevent_orphan_mouse_up_after_focus_;
+    if (previous) {
+      if (press_code == 1) {
+        // We end up here since someone clicked on our window to activate it.
+        return;
+      } else if (press_code == 2) {
+        prevent_orphan_mouse_up_after_focus_ = false;
+        return;
+      }
+    }
 
     if (event.button.button == SDL_BUTTON_LEFT)
       m_button1State = press_code;
@@ -267,7 +280,15 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
-    mouse_inside_window_ = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
+    if (ignore_next_activation_event()) {
+      set_ignore_next_activation_event(false);
+    } else {
+      // Assume the mouse is inside the window. Actually checking the mouse
+      // state doesn't work in the case where we mouse click on another window
+      // that's partially covered by rlvm's window and then alt-tab back.
+      mouse_inside_window_ = true;
+      prevent_orphan_mouse_up_after_focus_ = event.active.gain == 1;
+    }
 
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   } else if (event.active.state & SDL_APPMOUSEFOCUS) {
@@ -276,4 +297,8 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
     // Force a mouse refresh:
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   }
+}
+
+unsigned int SDLEventSystem::getTicksImpl() const {
+  return SDL_GetTicks();
 }

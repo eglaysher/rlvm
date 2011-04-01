@@ -79,6 +79,23 @@ class EventSystem : public boost::noncopyable {
 
   RLTimer& getTimer(int layer, int counter) { return timers_[layer][counter]; }
 
+  // Sets whether we are paused. While paused, getTicks() will continue to
+  // return the same value. When unpaused, getTicks() will not count the total
+  // time paused in its tick count.
+  void setSystemPaused(bool paused);
+
+  // Some EventSystem subclasses need to explicitly ignore the next window
+  // activation event during some corner cases while paused. For example, the
+  // user cancels a menu by clicking outside the menu. There, the normal
+  // SDLEventSystem behaviour is correct except in the edge case of the user
+  // actually clicking on a menu item.
+  bool ignore_next_activation_event() const {
+    return ignore_next_activation_event_;
+  }
+  void set_ignore_next_activation_event(bool next) {
+    ignore_next_activation_event_ = next;
+  }
+
   // Frame Counters
   //
   // "Frame counters are designed to make it simple to ensure events happen at a
@@ -123,9 +140,9 @@ class EventSystem : public boost::noncopyable {
   // Run once per cycle through the game loop to process events.
   virtual void executeEventSystem(RLMachine& machine) = 0;
 
-  // Returns the number of milliseconds since the program
-  // started. Used for timing things.
-  virtual unsigned int getTicks() const = 0;
+  // Returns the number of milliseconds since the program started. Used for
+  // timing things.
+  unsigned int getTicks() const;
 
   // Idles the program for a certain amount of time in milliseconds.
   virtual void wait(unsigned int milliseconds) const = 0;
@@ -186,9 +203,14 @@ class EventSystem : public boost::noncopyable {
   void broadcastEvent(RLMachine& machine,
                       const boost::function<void(EventListener&)>& event);
 
+  bool paused() const { return paused_; }
+
  private:
   // Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
+
+  // Raw access to the number of ms the program has been running.
+  virtual unsigned int getTicksImpl() const = 0;
 
   boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
   RLTimer timers_[255][2];
@@ -196,6 +218,19 @@ class EventSystem : public boost::noncopyable {
   EventListeners event_listeners_;
 
   EventSystemGlobals globals_;
+
+  bool paused_;
+
+  // While |paused_| is true, the time when |paused_| was set to true.
+  int time_of_pause_start_;
+
+  // The number of ticks we need to subtract from GetTicksImpl() because the
+  // machine was paused.
+  int tick_offset_;
+
+  // Some native systems require us to ignore the next activation event after a
+  // native dialog is dismissed.
+  bool ignore_next_activation_event_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_

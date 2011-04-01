@@ -149,6 +149,11 @@ class System {
   void takeSelectionSnapshot(RLMachine& machine);
   void restoreSelectionSnapshot(RLMachine& machine);
 
+  // Whether certain normal machine operations need to be suspeded due to a
+  // native interface being brought up.
+  void setSystemPaused(bool paused);
+  bool system_paused() const { return system_paused_; }
+
   // Syscom related functions
   //
   // RealLive provides a context menu system to handle most actions
@@ -307,6 +312,10 @@ class System {
   // Forces a 10ms sleep at the end of the System::run function. Used to lower
   // CPU usage during manual redrawing.
   bool force_wait_;
+
+  // Whether certain normal operations in the system are paused due do native
+  // dialogs.
+  bool system_paused_;
 
   // Cached view of the filesystem, mapping a lowercase filename to an
   // extension and the local file path for that file.

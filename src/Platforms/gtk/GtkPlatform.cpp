@@ -28,12 +28,31 @@
 
 #include <gtk/gtk.h>
 
+#include "MachineBase/RLMachine.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
 
 namespace {
 
 void remove_widget(GtkWidget* widget, gpointer container) {
   gtk_container_remove(GTK_CONTAINER(container), widget);
+}
+
+void unpause_execution(GtkWidget* widget) {
+  gpointer raw_machine = g_object_get_data(G_OBJECT(widget), "rlmachine");
+  if (raw_machine)
+    static_cast<RLMachine*>(raw_machine)->unpauseExecution();
+}
+
+// When a menu item is activated (compare: the menu is dismissed because we
+// clicked outside the menu area), the SDL window is activated immediately and
+// we don't want to do the normal ignoring the next full click behaviour that
+// we usually do.
+void ignore_window_activation_event(GtkWidget* widget) {
+  gpointer raw_machine = g_object_get_data(G_OBJECT(widget), "rlmachine");
+  if (RLMachine* machine = static_cast<RLMachine*>(raw_machine)) {
+    machine->system().event().set_ignore_next_activation_event(true);
+  }
 }
 
 }
@@ -43,6 +62,7 @@ GtkPlatform::GtkPlatform(System& system)
       system_(system),
       menu_(gtk_menu_new()) {
   g_object_ref_sink(menu_);
+  g_signal_connect(menu_, "hide", G_CALLBACK(unpause_execution), NULL);
 }
 
 GtkPlatform::~GtkPlatform() {
@@ -55,8 +75,13 @@ void GtkPlatform::showNativeSyscomMenu(RLMachine& machine) {
 
   GtkWidget* item = gtk_menu_item_new_with_label("one");
   gtk_widget_show(item);
+  g_object_set_data(G_OBJECT(item), "rlmachine", &machine);
+  g_signal_connect(item, "activate",
+                   G_CALLBACK(ignore_window_activation_event), NULL);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu_), item);
 
+  machine.pauseExecution();
+  g_object_set_data(G_OBJECT(menu_), "rlmachine", &machine);
   gtk_menu_popup(GTK_MENU(menu_),
                  NULL,
                  NULL,

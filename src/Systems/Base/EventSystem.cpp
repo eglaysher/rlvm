@@ -35,7 +35,8 @@
 #include "Systems/Base/FrameCounter.hpp"
 #include "Utilities/Exception.hpp"
 #include "libReallive/gameexe.h"
-
+#include <iostream>
+using namespace std;
 using namespace boost;
 
 // -----------------------------------------------------------------------
@@ -52,10 +53,25 @@ EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
 // EventSystem
 // -----------------------------------------------------------------------
 EventSystem::EventSystem(Gameexe& gexe)
-  : globals_(gexe) {
+    : globals_(gexe),
+      paused_(false),
+      time_of_pause_start_(0),
+      tick_offset_(0) {
 }
 
 EventSystem::~EventSystem() {}
+
+void EventSystem::setSystemPaused(bool paused) {
+  if (paused != paused_) {
+    if (paused) {
+      time_of_pause_start_ = getTicksImpl();
+    } else {
+      tick_offset_ += (getTicksImpl() - time_of_pause_start_);
+    }
+
+    paused_ = paused;
+  }
+}
 
 void EventSystem::setFrameCounter(int layer, int frame_counter,
                                   FrameCounter* counter) {
@@ -85,6 +101,11 @@ void EventSystem::addMouseListener(EventListener* listener) {
 
 void EventSystem::removeMouseListener(EventListener* listener) {
   event_listeners_.erase(listener);
+}
+
+unsigned int EventSystem::getTicks() const {
+  unsigned int base_ticks = paused_ ? time_of_pause_start_ : getTicksImpl();
+  return base_ticks - tick_offset_;
 }
 
 void EventSystem::dispatchEvent(RLMachine& machine,
@@ -128,4 +149,3 @@ void EventSystem::checkLayerAndCounter(int layer, int frame_counter) {
   if (frame_counter < 0 || frame_counter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
 }
-

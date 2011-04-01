@@ -45,7 +45,6 @@ class SDLEventSystem : public EventSystem {
 
   // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
-  virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
   virtual bool shiftPressed() const { return shift_pressed_; }
   virtual bool ctrlPressed() const;
@@ -69,7 +68,12 @@ class SDLEventSystem : public EventSystem {
   void handleMouseButtonEvent(RLMachine& machine, SDL_Event& event);
   void handleActiveEvent(RLMachine& machine, SDL_Event& event);
 
+  virtual unsigned int getTicksImpl() const;
+
   bool shift_pressed_, ctrl_pressed_;
+
+  // Prevent a mouseup with no matching mousedown when the window is focused.
+  bool prevent_orphan_mouse_up_after_focus_;
 
   // Whether the mouse cursor is currently inside the window bounds.
   bool mouse_inside_window_;

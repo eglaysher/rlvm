@@ -138,6 +138,7 @@ System::System()
     : in_menu_(false),
       force_fast_forward_(false),
       force_wait_(false),
+      system_paused_(false),
       platform_(NULL) {
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
@@ -164,6 +165,14 @@ void System::restoreSelectionSnapshot(RLMachine& machine) {
     // subtle timing issues.
     new LoadingGameFromStream(machine, s);
   }
+}
+
+void System::setSystemPaused(bool paused) {
+  system_paused_ = paused;
+  event().setSystemPaused(paused);
+
+  if (paused)
+    graphics().setHideCursorByPausing(true);
 }
 
 int System::isSyscomEnabled(int syscom) {
