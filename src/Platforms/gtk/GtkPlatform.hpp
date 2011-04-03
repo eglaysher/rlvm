@@ -47,6 +47,10 @@ class GtkPlatform : public Platform {
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
 
  private:
+  void RecursivelyBuildMenu(RLMachine& machine,
+                            const std::vector<MenuSpec>& menu,
+                            GtkWidget* out_menu);
+
   System& system_;
 
   // Our toplevel menu. We clear this at the beginning of every

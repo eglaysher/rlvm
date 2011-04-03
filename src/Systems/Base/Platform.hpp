@@ -30,6 +30,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class Gameexe;
 class RLMachine;
@@ -43,9 +44,6 @@ class Platform {
   explicit Platform(Gameexe& gameexe);
   virtual ~Platform();
 
-  // Returns a game specific string from the Gameexe.ini file.
-  std::string syscomString(const std::string& key) const;
-
   // Called on a right click where the game doesn't have its own syscom
   // handler.
   virtual void showNativeSyscomMenu(RLMachine& machine) = 0;
@@ -55,6 +53,33 @@ class Platform {
 
   // Displays the current interpreter info.
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
+
+ protected:
+  // Specifies a single entry in the menu.
+  struct MenuSpec {
+    MenuSpec(int id);
+    MenuSpec(int id, const char* label);
+    MenuSpec(int id, const char* label, const std::vector<MenuSpec>& submenu);
+
+    // Syscom id >= 0, or a MENU* thing.
+    int syscom_id;
+
+    // User interface string key. If NULL, converts |syscom_id| to a string.
+    const char* label;
+
+    // Specification of the child menu.
+    std::vector<MenuSpec> submenu;
+  };
+
+  static const int MENU_SEPARATOR = -1;
+  static const int MENU = -2;
+
+  // Returns a game specific string from the Gameexe.ini file.
+  std::string syscomString(const std::string& key) const;
+
+  // Returns a cross platform description of the syscom menu.
+  void GetMenuSpecification(RLMachine& machine,
+                            std::vector<MenuSpec>& out_menu);
 
  private:
   // Strips quotes off of value and adds it to our internal strings database.
