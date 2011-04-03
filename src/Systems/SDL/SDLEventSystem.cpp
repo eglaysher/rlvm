@@ -34,9 +34,6 @@
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
-#include <iostream>
-
-using namespace std;
 
 using boost::bind;
 
@@ -236,16 +233,12 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
 
-    bool previous = prevent_orphan_mouse_up_after_focus_;
-    if (previous) {
-      if (press_code == 1) {
-        // We end up here since someone clicked on our window to activate it.
-        return;
-      } else if (press_code == 2) {
-        prevent_orphan_mouse_up_after_focus_ = false;
-        return;
-      }
+    // We may be dealing with an errant mouse-up event after
+    if (press_code == 2 && ignore_next_mouseup_event()) {
+      set_ignore_next_mouseup_event(false);
+      return;
     }
+    set_ignore_next_mouseup_event(false);
 
     if (event.button.button == SDL_BUTTON_LEFT)
       m_button1State = press_code;
@@ -280,15 +273,10 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
-    if (ignore_next_activation_event()) {
-      set_ignore_next_activation_event(false);
-    } else {
-      // Assume the mouse is inside the window. Actually checking the mouse
-      // state doesn't work in the case where we mouse click on another window
-      // that's partially covered by rlvm's window and then alt-tab back.
-      mouse_inside_window_ = true;
-      prevent_orphan_mouse_up_after_focus_ = event.active.gain == 1;
-    }
+    // Assume the mouse is inside the window. Actually checking the mouse
+    // state doesn't work in the case where we mouse click on another window
+    // that's partially covered by rlvm's window and then alt-tab back.
+    mouse_inside_window_ = true;
 
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   } else if (event.active.state & SDL_APPMOUSEFOCUS) {

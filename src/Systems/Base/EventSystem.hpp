@@ -85,15 +85,15 @@ class EventSystem : public boost::noncopyable {
   void setSystemPaused(bool paused);
 
   // Some EventSystem subclasses need to explicitly ignore the next window
-  // activation event during some corner cases while paused. For example, the
+  // mouseup event during some corner cases while paused. For example, the
   // user cancels a menu by clicking outside the menu. There, the normal
   // SDLEventSystem behaviour is correct except in the edge case of the user
   // actually clicking on a menu item.
-  bool ignore_next_activation_event() const {
-    return ignore_next_activation_event_;
+  bool ignore_next_mouseup_event() const {
+    return ignore_next_mouseup_event_;
   }
-  void set_ignore_next_activation_event(bool next) {
-    ignore_next_activation_event_ = next;
+  void set_ignore_next_mouseup_event(bool next) {
+    ignore_next_mouseup_event_ = next;
   }
 
   // Frame Counters
@@ -228,9 +228,9 @@ class EventSystem : public boost::noncopyable {
   // machine was paused.
   int tick_offset_;
 
-  // Some native systems require us to ignore the next activation event after a
+  // Some native systems require us to ignore the next mouseup event after a
   // native dialog is dismissed.
-  bool ignore_next_activation_event_;
+  bool ignore_next_mouseup_event_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_

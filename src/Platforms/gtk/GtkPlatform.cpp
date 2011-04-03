@@ -46,8 +46,14 @@ void remove_widget(GtkWidget* widget, gpointer container) {
 
 void unpause_execution(GtkWidget* widget) {
   gpointer raw_machine = g_object_get_data(G_OBJECT(widget), "rlmachine");
-  if (raw_machine) {
-    static_cast<RLMachine*>(raw_machine)->unpauseExecution();
+  if (RLMachine* machine = static_cast<RLMachine*>(raw_machine)) {
+    machine->unpauseExecution();
+
+    // When a menu item is activated (compare: the menu is dismissed because we
+    // clicked outside the menu area), the SDL window is activated immediately
+    // and we don't want to do the normal ignoring the next full click
+    // behaviour that we usually do.
+    machine->system().event().set_ignore_next_mouseup_event(true);
   }
 }
 
@@ -56,12 +62,6 @@ void on_menu_item_activated(GtkWidget* widget) {
   gpointer raw_machine = g_object_get_data(G_OBJECT(widget), "rlmachine");
   if (RLMachine* machine = static_cast<RLMachine*>(raw_machine)) {
     machine->system().invokeSyscom(*machine, id);
-
-    // When a menu item is activated (compare: the menu is dismissed because we
-    // clicked outside the menu area), the SDL window is activated immediately
-    // and we don't want to do the normal ignoring the next full click
-    // behaviour that we usually do.
-    machine->system().event().set_ignore_next_activation_event(true);
   }
 }
 
