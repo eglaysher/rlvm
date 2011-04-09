@@ -45,6 +45,22 @@ using namespace std;
 
 namespace fs = boost::filesystem;
 
+// AVG32 file checks. We can't run AVG32 games.
+const char* avg32_exes[] = {
+  "avg3216m.exe",
+  "avg3217m.exe",
+  NULL
+};
+
+// Siglus engine filenames. We can't run VisualArts' newer engine.
+const char* siglus_exes[] = {
+  "siglus.exe",
+  "siglusengine-ch.exe",
+  "siglusengine.exe",
+  "siglusenginechs.exe",
+  NULL
+};
+
 RLVMInstance::RLVMInstance()
     : seen_start_(-1),
       memory_(false),
@@ -72,6 +88,10 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
           << ". Please make sure it exists.";
       throw rlvm::UserPresentableError("Could not load game", oss.str());
     }
+
+    // Check for VisualArt's older and newer engines, which we can't emulate:
+    CheckBadEngine(gamerootPath, avg32_exes, "Can't run AVG32 games");
+    CheckBadEngine(gamerootPath, siglus_exes, "Can't run Siglus games");
 
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.file_string();
@@ -155,4 +175,16 @@ void RLVMInstance::ReportFatalError(const std::string& message_text,
 
 Platform* RLVMInstance::BuildNativePlatform(System& system) {
   return NULL;
+}
+
+void RLVMInstance::CheckBadEngine(
+    const boost::filesystem::path& gamerootPath,
+    const char** filenames,
+    const std::string& message_text) {
+  for (const char** cur_file = filenames; *cur_file; cur_file++) {
+    if (fs::exists(correctPathCase(gamerootPath / *cur_file))) {
+      throw rlvm::UserPresentableError(message_text,
+                                       "rlvm can only play RealLive games.");
+    }
+  }
 }

@@ -65,6 +65,11 @@ class RLVMInstance {
   virtual Platform* BuildNativePlatform(System& system);
 
  private:
+  // Checks for AVG32/Siglus engine games, which people may be confused about.
+  void CheckBadEngine(const boost::filesystem::path& gamerootPath,
+                      const char** filenames,
+                      const std::string& message_text);
+
   // Which SEEN# we should start execution from (-1 if we shouldn't set this).
   int seen_start_;
 
