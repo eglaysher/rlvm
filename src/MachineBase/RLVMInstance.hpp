@@ -65,6 +65,11 @@ class RLVMInstance {
   virtual Platform* BuildNativePlatform(System& system);
 
  private:
+  // Finds a game file, causing an error if not found.
+  boost::filesystem::path FindGameFile(
+      const boost::filesystem::path& gamerootPath,
+      const std::string& filename);
+
   // Checks for AVG32/Siglus engine games, which people may be confused about.
   void CheckBadEngine(const boost::filesystem::path& gamerootPath,
                       const char** filenames,

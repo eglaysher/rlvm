@@ -73,21 +73,8 @@ RLVMInstance::~RLVMInstance() {}
 
 void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
   try {
-    fs::path gameexePath = correctPathCase(gamerootPath / "Gameexe.ini");
-    if (gameexePath.empty()) {
-      ostringstream oss;
-      oss << "Could not open " << gameexePath
-          << ". Please make sure it exists.";
-      throw rlvm::UserPresentableError("Could not load game", oss.str());
-    }
-
-    fs::path seenPath = correctPathCase(gamerootPath / "Seen.txt");
-    if (seenPath.empty()) {
-      ostringstream oss;
-      oss << "Could not open " << seenPath
-          << ". Please make sure it exists.";
-      throw rlvm::UserPresentableError("Could not load game", oss.str());
-    }
+    fs::path gameexePath = FindGameFile(gamerootPath, "Gameexe.ini");
+    fs::path seenPath = FindGameFile(gamerootPath, "Seen.txt");
 
     // Check for VisualArt's older and newer engines, which we can't emulate:
     CheckBadEngine(gamerootPath, avg32_exes, "Can't run AVG32 games");
@@ -175,6 +162,21 @@ void RLVMInstance::ReportFatalError(const std::string& message_text,
 
 Platform* RLVMInstance::BuildNativePlatform(System& system) {
   return NULL;
+}
+
+boost::filesystem::path RLVMInstance::FindGameFile(
+      const boost::filesystem::path& gamerootPath,
+      const std::string& filename) {
+  fs::path search_for = gamerootPath / filename;
+  fs::path corrected_path = correctPathCase(search_for);
+  if (corrected_path.empty()) {
+    ostringstream oss;
+    oss << "Could not open " << search_for
+        << ". Please make sure it exists.";
+    throw rlvm::UserPresentableError("Could not load game", oss.str());
+  }
+
+  return corrected_path;
 }
 
 void RLVMInstance::CheckBadEngine(
