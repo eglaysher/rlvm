@@ -1,0 +1,22 @@
+Import('env')
+
+root_env = env.Clone()
+root_env.Append(LIBS=["GL", "GLU"])
+root_env.ParseConfig("sdl-config --cflags --libs")
+root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
+
+gtkrlvm_files = [
+  # Technically cross platform, but put here for SDL dependency.
+  "src/MachineBase/RLVMInstance.cpp",
+
+  "src/Platforms/gtk/rlvm.cpp",
+  "src/Platforms/gtk/gtk_callbacks.cpp",
+  "src/Platforms/gtk/GtkRLVMInstance.cpp",
+  "src/Platforms/gtk/GtkPlatform.cpp"
+]
+
+root_env.RlvmProgram('rlvm', gtkrlvm_files,
+                     use_lib_set = ["SDL"],
+                     rlvm_libs = ["system_sdl", "rlvm"])
+root_env.Install('$OUTPUT_DIR', 'rlvm')
+root_env.Install('$OUTPUT_DIR', 'src/Platforms/gtk/rlvm-dialogs.ui')

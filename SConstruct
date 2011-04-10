@@ -234,8 +234,6 @@ config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 
 env = config.Finish()
 
-env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
-
 ### HACK! Until I make my own version of CheckLibWithHeader, just assume that
 ### we have the right libraries. This needs to be done after config.Finish() is
 ### called or else we get a really confusing error.
@@ -306,10 +304,24 @@ else:
     ]
   )
 
+# Cross platform core of rlvm. Produces librlvm.a and libsystem_sdl.a
 env.SConscript("SConscript",
                variant_dir="$BUILD_DIR/",
                duplicate=0,
                exports='env')
+
+# Run the correct port script. If we're on darwin, we'll run the cocoa version,
+# everywhere else we assume GTK+.
+if env['PLATFORM'] == 'darwin':
+  env.SConscript("SConscript.cocoa",
+                 variant_dir="$BUILD_DIR/",
+                 duplicate=0,
+                 exports='env')
+else:
+  env.SConscript("SConscript.gtk",
+                 variant_dir="$BUILD_DIR/",
+                 duplicate=0,
+                 exports='env')
 
 # Copy the platform independent SEEN.TXT files to output (we no longer depend
 # on rldev because I can no longer reliably compile it).
@@ -328,12 +340,6 @@ env.SConscript("SConscript.luarlvm",
                variant_dir="$BUILD_DIR/",
                duplicate=0,
                exports='env')
-
-if GetOption("fullstatic") and env['PLATFORM'] == 'darwin':
-  env.SConscript("SConscript.cocoa",
-                 variant_dir="$BUILD_DIR/",
-                 duplicate=0,
-                 exports='env')
 
 if GetOption("coverage"):
   env.SConscript("SConscript.coverage",
