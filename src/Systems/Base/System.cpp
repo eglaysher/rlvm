@@ -303,11 +303,13 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
   case SYSCOM_SHOW_BACKGROUND:
     graphics().toggleInterfaceHidden();
     break;
+  case SYSCOM_HIDE_MENU:
+    // Do nothing. The menu will be hidden on its own.
+    break;
   case SYSCOM_GENERIC_1:
   case SYSCOM_GENERIC_2:
   case SYSCOM_SCREEN_MODE:
   case SYSCOM_WINDOW_DECORATION_STYLE:
-  case SYSCOM_HIDE_MENU:
     cerr << "No idea what to do!" << endl;
     break;
   };
