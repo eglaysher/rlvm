@@ -29,6 +29,7 @@
 
 #include "Systems/Base/Platform.hpp"
 
+typedef struct _GtkBuilder GtkBuilder;
 typedef struct _GtkWidget GtkWidget;
 
 class RLMachine;
@@ -47,9 +48,14 @@ class GtkPlatform : public Platform {
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
 
  private:
+  // Builds the GtkMenu representation of the cross platform MenuSpec
+  // represenation.
   void RecursivelyBuildMenu(RLMachine& machine,
                             const std::vector<MenuSpec>& menu,
                             GtkWidget* out_menu);
+
+  // Initializes |builder_|.
+  void InitializeBuilder(RLMachine& machine);
 
   System& system_;
 
@@ -57,6 +63,9 @@ class GtkPlatform : public Platform {
   // showNativeSyscomMenu() call, but we keep the same object around since
   // gtk_menu_popup() doesn't take ownership.
   GtkWidget* menu_;
+
+  // Builds our dialogs from an XML file.
+  GtkBuilder* builder_;
 };
 
 #endif  // SRC_PLATFORMS_GTK_GTKPLATFORM_HPP_
