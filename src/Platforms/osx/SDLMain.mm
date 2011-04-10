@@ -20,9 +20,6 @@
 - (void)setAppleMenu:(NSMenu *)menu;
 @end
 
-/* Use this flag to determine whether we use SDLMain.nib or not */
-#define		SDL_USE_NIB_FILE	0
-
 static int    gArgc;
 static char  **gArgv;
 static BOOL   gFinderLaunch;
@@ -44,12 +41,6 @@ static NSString *getApplicationName(void)
     return appName;
 }
 
-#if SDL_USE_NIB_FILE
-/* A helper category for NSString */
-@interface NSString (ReplaceSubString)
-- (NSString *)stringByReplacingRange:(NSRange)aRange with:(NSString *)aString;
-@end
-#endif
 
 @interface SDLApplication : NSApplication
 @end
@@ -107,33 +98,6 @@ static NSString *getApplicationName(void)
 	}
 
 }
-
-#if SDL_USE_NIB_FILE
-
-/* Fix menu to contain the real app name instead of "SDL App" */
-- (void)fixMenu:(NSMenu *)aMenu withAppName:(NSString *)appName
-{
-    NSRange aRange;
-    NSEnumerator *enumerator;
-    NSMenuItem *menuItem;
-
-    aRange = [[aMenu title] rangeOfString:@"SDL App"];
-    if (aRange.length != 0)
-        [aMenu setTitle: [[aMenu title] stringByReplacingRange:aRange with:appName]];
-
-    enumerator = [[aMenu itemArray] objectEnumerator];
-    while ((menuItem = [enumerator nextObject]))
-    {
-        aRange = [[menuItem title] rangeOfString:@"SDL App"];
-        if (aRange.length != 0)
-            [menuItem setTitle: [[menuItem title] stringByReplacingRange:aRange with:appName]];
-        if ([menuItem hasSubmenu])
-            [self fixMenu:[menuItem submenu] withAppName:appName];
-    }
-    [ aMenu sizeToFit ];
-}
-
-#else
 
 static void setApplicationMenu(void)
 {
@@ -281,9 +245,6 @@ static void CustomApplicationMain (int argc, char **argv)
     [pool release];
 }
 
-#endif
-
-
 BOOL pushArg(const char* newArg)
 {
   size_t arglen;
@@ -347,11 +308,6 @@ BOOL setIncomingFilename(NSString* filename)
 
     /* Set the working directory to the .app's parent directory */
     [self setupWorkingDirectory:gFinderLaunch];
-
-#if SDL_USE_NIB_FILE
-    /* Set the main menu to contain the real app name instead of "SDL App" */
-    [self fixMenu:[NSApp mainMenu] withAppName:getApplicationName()];
-#endif
 
     /* If we were called from the Finder and we weren't given a file, 
        pop up a native modal dialog to select the file */
@@ -460,12 +416,7 @@ int main (int argc, char **argv)
         gFinderLaunch = NO;
     }
 
-#if SDL_USE_NIB_FILE
-    [SDLApplication poseAsClass:[NSApplication class]];
-    NSApplicationMain (argc, argv);
-#else
     CustomApplicationMain (argc, argv);
-#endif
     return 0;
 }
 
