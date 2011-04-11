@@ -26,6 +26,7 @@
 
 #include "Platforms/osx/CocoaRLVMInstance.h"
 
+#include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 
 #include "Platforms/osx/CocoaPlatform.h"
@@ -57,6 +58,17 @@ void CocoaRLVMInstance::ReportFatalError(const std::string& message_text,
                                          const std::string& informative_text) {
   RLVMInstance::ReportFatalError(message_text, informative_text);
 
+  NSString* message =
+      [[NSString alloc] initWithUTF8String:message_text.c_str()];
+  NSString* information =
+      [[NSString alloc] initWithUTF8String:informative_text.c_str()];
+
+  NSAlert* alert = [NSAlert alertWithMessageText:message
+                                   defaultButton:nil
+                                 alternateButton:nil
+                                     otherButton:nil
+                       informativeTextWithFormat:information];
+  [alert runModal];
 }
 
 void CocoaRLVMInstance::DoNativeWork() {}
