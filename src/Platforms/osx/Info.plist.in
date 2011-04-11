@@ -8,6 +8,8 @@
 	<string>rlvm</string>
     <key>CFBundleIdentifier</key>
     <string>org.elliotglaysher.rlvm</string>
+	<key>CFBundleIconFile</key>
+	<string>rlvm.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

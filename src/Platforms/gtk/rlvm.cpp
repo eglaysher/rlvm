@@ -81,11 +81,6 @@ void printUsage(const string& name, po::options_description& opts) {
 }
 
 int main(int argc, char* argv[]) {
-  srand(time(NULL));
-
-  // Set global state: allow spaces in game paths
-  fs::path::default_name_check(fs::native);
-
   GtkRLVMInstance instance(&argc, &argv);
 
   // -----------------------------------------------------------------------

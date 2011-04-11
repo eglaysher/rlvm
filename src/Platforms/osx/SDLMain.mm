@@ -13,6 +13,11 @@
 
 #import <AppKit/NSPanel.h>
 
+#include "Platforms/osx/CocoaRLVMInstance.h"
+
+#include <boost/filesystem/operations.hpp>
+namespace fs = boost::filesystem;
+
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
  it ourselves here. */
@@ -309,43 +314,20 @@ BOOL setIncomingFilename(NSString* filename)
     /* Set the working directory to the .app's parent directory */
     [self setupWorkingDirectory:gFinderLaunch];
 
-    /* If we were called from the Finder and we weren't given a file, 
-       pop up a native modal dialog to select the file */
-    if(gArgc == 1)
-    {
-      NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-      [oPanel setAllowsMultipleSelection:NO];
-      [oPanel setCanChooseFiles:NO];
-      [oPanel setCanChooseDirectories:YES];
-      [oPanel setTitle:@"Select game folder..."];
-      [oPanel setPrompt:@"Play"];
-
-      int status = [oPanel runModal];
-      if(status == NSCancelButton)
-        exit(-1);
-
-      NSArray* filenames = [oPanel filenames];
-      NSString* filename = [filenames objectAtIndex:0];
-      if(filename == NULL)
-        exit(-2);
-
-      /* Check for font issues */
-      const char* fontName = NULL;
-      if(findFontName(&fontName, [filename fileSystemRepresentation]))
-      {
-        pushArg("--font");
-        pushArg(fontName);
-      }
-
-      setIncomingFilename(filename);
-    }
+    CocoaRLVMInstance instance;
 
     /* Hand off to main application code */
     gCalledAppMainline = TRUE;
-    status = SDL_main (gArgc, gArgv);
+
+    // TODO(erg): Share parameter parsing code and make this go away.
+    fs::path gamerootPath = instance.SelectGameDirectory();
+    if (gamerootPath.empty())
+      exit(-1);
+
+    instance.Run(gamerootPath);
 
     /* We're done, thank you for playing */
-    exit(status);
+    exit(0);
 }
 @end
 
