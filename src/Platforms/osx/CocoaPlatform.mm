@@ -26,18 +26,113 @@
 
 #include "Platforms/osx/CocoaPlatform.h"
 
+// Must be included before AppKit due to macro collision with boost.
+#include "MachineBase/RLMachine.hpp"
+
+#include <AppKit/AppKit.h>
+
+#include "Platforms/osx/CocoaRLVMInstance.h"
+#include "Platforms/osx/SDLMain.h"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
 
-CocoaPlatform::CocoaPlatform(System& system) : Platform(system.gameexe()) {}
+// As a private interface detail, CocoaPlatform creates and owns an objective c
+// object which exists to redirect calls back to the CocoaPlatform.
+@interface MenuRedirector : NSObject {
+  CocoaPlatform* platform;
+}
+@end
+
+@implementation MenuRedirector
+-(id)initWithPlatform:(CocoaPlatform*)p
+{
+  if (self = [super init]) {
+    platform = p;
+  }
+  return self;
+}
+
+-(void)activate:(NSMenuItem*)item
+{
+  platform->MenuItemActivated([item tag]);
+}
+
+@end
+
+
+CocoaPlatform::CocoaPlatform(System& system)
+    : Platform(system.gameexe()),
+      machine_(NULL),
+      menu_(NULL),
+      redirector_([[MenuRedirector alloc] initWithPlatform:this]) {
+}
 
 CocoaPlatform::~CocoaPlatform() {}
 
+void CocoaPlatform::MenuItemActivated(int syscom_id) {
+  if (machine_) {
+    machine_->system().invokeSyscom(*machine_, syscom_id);
+  }
+}
+
 void CocoaPlatform::showNativeSyscomMenu(RLMachine& machine) {
+  machine_ = &machine;
+
+  [menu_ release];
+  menu_ = [[NSMenu alloc] init];
+  [menu_ setAutoenablesItems:NO];
+
+  std::vector<MenuSpec> menu;
+  GetMenuSpecification(machine, menu);
+  RecursivelyBuildMenu(machine, menu, menu_);
+
+  NSView* contentView = [[NSApp mainWindow] contentView];
+  NSEvent* e = GetLastRightClickEvent();
+  [NSMenu popUpContextMenu:menu_
+                 withEvent:e
+                   forView:contentView];
 }
 
 void CocoaPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
 }
 
 void CocoaPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
+}
+
+void CocoaPlatform::RecursivelyBuildMenu(RLMachine& machine,
+                                         const std::vector<MenuSpec>& menu,
+                                         NSMenu* out_menu) {
+  System& sys = machine.system();
+  for (std::vector<MenuSpec>::const_iterator it = menu.begin();
+       it != menu.end(); ++it) {
+    NSMenuItem* item = NULL;
+    if (it->syscom_id == MENU_SEPARATOR) {
+      item = [NSMenuItem separatorItem];
+    } else if (it->syscom_id == MENU) {
+      NSMenu* submenu = [[NSMenu alloc] init];
+      [submenu setAutoenablesItems:NO];
+      RecursivelyBuildMenu(machine, it->submenu, submenu);
+
+      NSString* label = UTF8ToNSString(GetMenuLabel(*it));
+      item = [[NSMenuItem alloc] initWithTitle:label
+                                        action:nil
+                                 keyEquivalent:@""];
+      [item setSubmenu:submenu];
+    } else {
+      NSString* label = UTF8ToNSString(GetMenuLabel(*it));
+      item = [[NSMenuItem alloc] initWithTitle:label
+                                        action:@selector(activate:)
+                                 keyEquivalent:@""];
+      [item setTarget:redirector_];
+      [item setTag:it->syscom_id];
+
+      int visibility = sys.isSyscomEnabled(it->syscom_id);
+      if (visibility == 0)
+        [item setHidden:YES];
+      else
+        [item setEnabled:(visibility == 1 ? YES : NO)];
+    }
+
+    [out_menu addItem:item];
+  }
 }

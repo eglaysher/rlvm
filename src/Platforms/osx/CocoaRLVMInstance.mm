@@ -58,10 +58,8 @@ void CocoaRLVMInstance::ReportFatalError(const std::string& message_text,
                                          const std::string& informative_text) {
   RLVMInstance::ReportFatalError(message_text, informative_text);
 
-  NSString* message =
-      [[NSString alloc] initWithUTF8String:message_text.c_str()];
-  NSString* information =
-      [[NSString alloc] initWithUTF8String:informative_text.c_str()];
+  NSString* message = UTF8ToNSString(message_text);
+  NSString* information = UTF8ToNSString(informative_text);
 
   NSAlert* alert = [NSAlert alertWithMessageText:message
                                    defaultButton:nil
@@ -75,4 +73,8 @@ void CocoaRLVMInstance::DoNativeWork() {}
 
 Platform* CocoaRLVMInstance::BuildNativePlatform(System& system) {
   return new CocoaPlatform(system);
+}
+
+NSString* UTF8ToNSString(const std::string& in) {
+  return [[NSString alloc] initWithUTF8String:in.c_str()];
 }

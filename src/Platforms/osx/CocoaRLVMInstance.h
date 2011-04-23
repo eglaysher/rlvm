@@ -1,4 +1,3 @@
-
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi:tw=80:et:ts=2:sts=2
 //
@@ -28,6 +27,9 @@
 #ifndef SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_
 #define SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_
 
+#include <string>
+#include <Foundation/Foundation.h>
+
 #include "MachineBase/RLVMInstance.hpp"
 
 // A Cocoa subclass of RLVMInstance that displays Cocoa dialogs.
@@ -44,5 +46,8 @@ class CocoaRLVMInstance : public RLVMInstance {
   virtual void DoNativeWork();
   virtual Platform* BuildNativePlatform(System& system);
 };
+
+// A helper method for converting between string representations.
+NSString* UTF8ToNSString(const std::string& in);
 
 #endif  // SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_

@@ -26,7 +26,9 @@
 
 #include "Systems/Base/Platform.hpp"
 
+#include <iomanip>
 #include <map>
+#include <sstream>
 #include <string>
 
 #include "libReallive/gameexe.h"
@@ -104,6 +106,19 @@ std::string Platform::syscomString(const std::string& key) const {
     return it->second;
   else
     return "";
+}
+
+std::string Platform::GetMenuLabel(const MenuSpec& item) const {
+  std::string label;
+  if (item.label == NULL) {
+    std::ostringstream labelss;
+    labelss << std::setw(3) << std::setfill('0') << item.syscom_id;
+    label = syscomString(labelss.str());
+  } else {
+    label = syscomString(item.label);
+  }
+
+  return label;
 }
 
 void Platform::GetMenuSpecification(RLMachine& machine,

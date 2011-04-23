@@ -287,16 +287,7 @@ void GtkPlatform::RecursivelyBuildMenu(RLMachine& machine,
       gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);
       gtk_widget_show(item);
     } else {
-      std::string label;
-      if (it->label == NULL) {
-        std::ostringstream labelss;
-        labelss << std::setw(3) << std::setfill('0') << it->syscom_id;
-        label = syscomString(labelss.str());
-      } else {
-        label = syscomString(it->label);
-      }
-
-      item = gtk_menu_item_new_with_label(label.c_str());
+      item = gtk_menu_item_new_with_label(GetMenuLabel(*it).c_str());
 
       int visibility = sys.isSyscomEnabled(it->syscom_id);
       // If 0, we just don't show it.

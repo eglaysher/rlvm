@@ -9,3 +9,8 @@
 
 @interface SDLMain : NSObject
 @end
+
+// To implement right click menus on OSX correctly, we need to keep the right
+// click event around (with all its gory platform specific details) until we
+// can pass it back to NSMenu.
+NSEvent* GetLastRightClickEvent();

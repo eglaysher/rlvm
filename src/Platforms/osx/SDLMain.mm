@@ -50,6 +50,12 @@ static NSString *getApplicationName(void)
 @interface SDLApplication : NSApplication
 @end
 
+static NSEvent* lastEvent = nil;
+
+NSEvent* GetLastRightClickEvent() {
+  return lastEvent;
+}
+
 @implementation SDLApplication
 /* Invoked from the Quit menu item */
 - (void)terminate:(id)sender
@@ -60,6 +66,19 @@ static NSString *getApplicationName(void)
     SDL_PushEvent(&event);
 }
 
+-(void)sendEvent:(NSEvent*)event
+{
+  // In the specific case of right click mouse events, we grab the event before
+  // we pass it on so that when we get through the cross platform menu dispatch
+  // code, we can pass the event that caused the menu to popup back to Cocoa.
+  if ([event type] == NSRightMouseDown ||
+      [event type] == NSRightMouseUp) {
+    [lastEvent release];
+    lastEvent = [event retain];
+  }
+
+  [super sendEvent:event];
+}
 
 -(void)showREADME:(id)sender
 {

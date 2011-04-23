@@ -77,6 +77,9 @@ class Platform {
   // Returns a game specific string from the Gameexe.ini file.
   std::string syscomString(const std::string& key) const;
 
+  // Returns the display label for |item|.
+  std::string GetMenuLabel(const MenuSpec& item) const;
+
   // Returns a cross platform description of the syscom menu.
   void GetMenuSpecification(RLMachine& machine,
                             std::vector<MenuSpec>& out_menu);

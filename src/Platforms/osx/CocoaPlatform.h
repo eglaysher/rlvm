@@ -31,17 +31,36 @@
 
 class RLMachine;
 class System;
+@class MenuRedirector;
+@class NSMenu;
 
 class CocoaPlatform : public Platform {
  public:
   CocoaPlatform(System& system);
   virtual ~CocoaPlatform();
 
- private:
+  // Called by our private delegate when a menu item is selected.
+  void MenuItemActivated(int syscom_id);
+
   // Platform:
   virtual void showNativeSyscomMenu(RLMachine& machine);
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom);
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
+
+ private:
+  // Recursively build the NSMenu from the cross platform representation.
+  void RecursivelyBuildMenu(RLMachine& machine,
+                            const std::vector<MenuSpec>& menu,
+                            NSMenu* out_menu);
+
+  // The last RLMachine* we saw. Weak ref.
+  RLMachine* machine_;
+
+  // The last menu constructed. Regenerated each time we show the menu.
+  NSMenu* menu_;
+
+  // An Objective-C object that forwards method calls back to CocoaPlatform.
+  MenuRedirector* redirector_;
 };
 
 #endif  // SRC_PLATFORMS_OSX_COCOAPLATFORM_HPP_
