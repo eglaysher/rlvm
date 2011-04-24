@@ -33,6 +33,7 @@
 
 #include "Platforms/osx/CocoaRLVMInstance.h"
 #include "Platforms/osx/SDLMain.h"
+#include "Platforms/osx/mac_utils.h"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
 
@@ -57,8 +58,12 @@
   platform->MenuItemActivated([item tag]);
 }
 
-@end
+- (void)menuDidClose:(NSMenu *)menu
+{
+  platform->MenuDidClose();
+}
 
+@end
 
 CocoaPlatform::CocoaPlatform(System& system)
     : Platform(system.gameexe()),
@@ -68,6 +73,16 @@ CocoaPlatform::CocoaPlatform(System& system)
 }
 
 CocoaPlatform::~CocoaPlatform() {}
+
+void CocoaPlatform::MenuDidClose() {
+  if (machine_) {
+    machine_->unpauseExecution();
+
+    // Cocoa is about to break our cursor after this delegate method has been
+    // called. Schedule a one off LongOperation to fix that.
+    mac_utils::ResetCursor(machine_);
+  }
+}
 
 void CocoaPlatform::MenuItemActivated(int syscom_id) {
   if (machine_) {
@@ -81,10 +96,13 @@ void CocoaPlatform::showNativeSyscomMenu(RLMachine& machine) {
   [menu_ release];
   menu_ = [[NSMenu alloc] init];
   [menu_ setAutoenablesItems:NO];
+  [menu_ setDelegate:redirector_];
 
   std::vector<MenuSpec> menu;
   GetMenuSpecification(machine, menu);
   RecursivelyBuildMenu(machine, menu, menu_);
+
+  mac_utils::PauseExecution(machine);
 
   NSView* contentView = [[NSApp mainWindow] contentView];
   NSEvent* e = GetLastRightClickEvent();
@@ -111,6 +129,7 @@ void CocoaPlatform::RecursivelyBuildMenu(RLMachine& machine,
     } else if (it->syscom_id == MENU) {
       NSMenu* submenu = [[NSMenu alloc] init];
       [submenu setAutoenablesItems:NO];
+      [submenu setDelegate:redirector_];
       RecursivelyBuildMenu(machine, it->submenu, submenu);
 
       NSString* label = UTF8ToNSString(GetMenuLabel(*it));

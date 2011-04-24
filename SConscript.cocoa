@@ -26,7 +26,8 @@ cocoarlvm_files = [
   "src/Platforms/osx/CocoaRLVMInstance.mm",
   "src/Platforms/osx/CocoaPlatform.mm",
   "src/Platforms/osx/FindFont.mm",
-  "src/Platforms/osx/SDLMain.mm"
+  "src/Platforms/osx/SDLMain.mm",
+  "src/Platforms/osx/mac_utils.cc"
 ]
 
 # Builds a fullstatic version of rlvm and then builds a bundle

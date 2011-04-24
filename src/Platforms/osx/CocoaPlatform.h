@@ -39,7 +39,8 @@ class CocoaPlatform : public Platform {
   CocoaPlatform(System& system);
   virtual ~CocoaPlatform();
 
-  // Called by our private delegate when a menu item is selected.
+  // Called by our private delegate when various menu events occur.
+  void MenuDidClose();
   void MenuItemActivated(int syscom_id);
 
   // Platform:
