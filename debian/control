@@ -10,6 +10,7 @@ Build-Depends: debhelper (>= 7.0.50~), libsdl1.2-dev, libfreetype6-dev,
                libboost-signals-dev, libboost-thread-dev,
                zlib1g-dev, libsdl-ttf2.0-dev,
 Standards-Version: 3.9.1
+Homepage: http://www.elliotglaysher.org/rlvm
 
 Package: rlvm
 Architecture: any

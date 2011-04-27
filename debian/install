@@ -1,1 +1,9 @@
 build/release/rlvm usr/games
+src/Platforms/gtk/rlvm-dialogs.ui usr/share/rlvm
+src/Platforms/gtk/rlvm.desktop usr/share/applications
+resources/16/rlvm.png usr/share/icons/hicolor/16x16/apps
+resources/24/rlvm.png usr/share/icons/hicolor/24x24/apps
+resources/32/rlvm.png usr/share/icons/hicolor/32x32/apps
+resources/48/rlvm.png usr/share/icons/hicolor/48x48/apps
+resources/128/rlvm.png usr/share/icons/hicolor/128x128/apps
+resources/256/rlvm.png usr/share/icons/hicolor/256x256/apps

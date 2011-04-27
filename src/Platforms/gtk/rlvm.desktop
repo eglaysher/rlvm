@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Name=rlvm
+# KDE 4 uses GenericName.
+GenericName=RealLive Emulator
+GenericName[ja]=RealLive互換環境
+# GNOME and KDE 3 uses Comment.
+Comment=RealLive Emulator
+Comment[ja]=RealLive互換環境
+Exec=rlvm
+StartupNotify=false
+Terminal=false
+Icon=rlvm
+Type=Application
+Categories=Game;Emulator;

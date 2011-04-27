@@ -193,6 +193,8 @@ GtkPlatform::GtkPlatform(System& system)
   g_signal_connect(menu_, "key-press-event",
                    G_CALLBACK(on_menu_key_press), NULL);
   g_signal_connect(menu_, "hide", G_CALLBACK(unpause_execution), NULL);
+
+  gtk_window_set_default_icon_name("rlvm");
 }
 
 GtkPlatform::~GtkPlatform() {
