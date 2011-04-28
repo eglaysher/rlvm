@@ -80,6 +80,9 @@ boost::filesystem::path GtkRLVMInstance::SelectGameDirectory() {
   gtk_widget_hide(dialog);
   gtk_widget_destroy(dialog);
 
+  // Actually execute the destruction signals.
+  DoNativeWork();
+
   return out_path;
 }
 
