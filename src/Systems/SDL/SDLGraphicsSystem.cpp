@@ -237,6 +237,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 void SDLGraphicsSystem::setupVideo() {
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
+  SDL_WM_SetCaption("rlvm", "rlvm");
 
   if ( !info ) {
     ostringstream ss;
