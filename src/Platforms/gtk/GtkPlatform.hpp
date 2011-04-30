@@ -32,6 +32,7 @@
 typedef struct _GtkBuilder GtkBuilder;
 typedef struct _GtkWidget GtkWidget;
 
+class Rect;
 class RLMachine;
 class RlvmInfo;
 class System;
@@ -45,17 +46,35 @@ class GtkPlatform : public Platform {
   // Platform:
   virtual void showNativeSyscomMenu(RLMachine& machine);
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom);
+  virtual void raiseSyscomUI(RLMachine& machine);
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
 
  private:
   // Builds the GtkMenu representation of the cross platform MenuSpec
-  // represenation.
+  // representation.
   void RecursivelyBuildMenu(RLMachine& machine,
                             const std::vector<MenuSpec>& menu,
                             GtkWidget* out_menu);
 
   // Initializes |builder_|.
   void InitializeBuilder(RLMachine& machine);
+
+  // Fetches and initializes the state of the save/load window based on
+  // |syscom|.
+  GtkWidget* SetupSaveLoadWindow(RLMachine& machine, int syscom);
+
+  // Centers |window| over the main SDL window.
+  void CenterGtkWindowOverSDLWindow(GtkWidget* window);
+
+  // Returns a rect with the SDL window location. Can return an empty rect on
+  // error.
+  Rect GetSDLWindowPosition();
+
+  // While most "hidden" signals are connected in the ui file and specified in
+  // the callbacks file, every dialog is connected through code to this
+  // platform object to manage the transient state.
+  static void RemoveDialogFromTransitentList(GtkWidget* widget,
+                                             GtkPlatform* platform);
 
   System& system_;
 
@@ -66,6 +85,10 @@ class GtkPlatform : public Platform {
 
   // Builds our dialogs from an XML file.
   GtkBuilder* builder_;
+
+  // Stack of currently invoked windows. Implementation detail of making gtk
+  // windows "transient-for" the SDL window.
+  std::vector<GtkWidget*> windows_;
 };
 
 #endif  // SRC_PLATFORMS_GTK_GTKPLATFORM_HPP_

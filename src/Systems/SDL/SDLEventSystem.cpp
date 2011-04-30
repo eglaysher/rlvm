@@ -229,6 +229,13 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
 
 void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
                                             SDL_Event& event) {
+  // If we are paused, we want to redirect the event to the Platform to raise
+  // the window.
+  if (system_.system_paused()) {
+    system_.raiseSyscomUI(machine);
+    return;
+  }
+
   if (mouse_inside_window_) {
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
@@ -273,6 +280,13 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
+    // If we are paused, we want to redirect the event to the Platform to raise
+    // the window.
+    if (system_.system_paused()) {
+      system_.raiseSyscomUI(machine);
+      return;
+    }
+
     // Assume the mouse is inside the window. Actually checking the mouse
     // state doesn't work in the case where we mouse click on another window
     // that's partially covered by rlvm's window and then alt-tab back.

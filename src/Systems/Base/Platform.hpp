@@ -51,6 +51,10 @@ class Platform {
   // Invokes a standard dialog.
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
 
+  // Raises currently open syscom UI. Called when the main window is clicked
+  // and we want to raise windows which are "transient-for" the main window.
+  virtual void raiseSyscomUI(RLMachine& machine) = 0;
+
   // Displays the current interpreter info.
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
 

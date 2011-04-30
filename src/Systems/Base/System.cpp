@@ -315,6 +315,11 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
   };
 }
 
+void System::raiseSyscomUI(RLMachine& machine) {
+  if (platform_)
+    platform_->raiseSyscomUI(machine);
+}
+
 void System::showSystemInfo(RLMachine& machine) {
   if (platform_) {
     RlvmInfo info;

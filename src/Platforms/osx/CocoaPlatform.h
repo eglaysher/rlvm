@@ -46,6 +46,7 @@ class CocoaPlatform : public Platform {
   // Platform:
   virtual void showNativeSyscomMenu(RLMachine& machine);
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom);
+  virtual void raiseSyscomUI(RLMachine& machine) {}
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
 
  private:

@@ -204,6 +204,10 @@ class System {
   // SetScreenMode(val)).
   void invokeSyscom(RLMachine& machine, int syscom);
 
+  // If a standard dialog box is being displayed right now, raise it above
+  // the main game window.
+  void raiseSyscomUI(RLMachine& machine);
+
   // Shows a screen with certain information about the current state of the
   // interpreter.
   void showSystemInfo(RLMachine& machine);

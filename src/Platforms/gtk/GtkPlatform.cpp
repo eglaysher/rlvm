@@ -30,6 +30,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <SDL/SDL.h>
 #include <iomanip>
 #include <ostream>
 
@@ -40,6 +41,10 @@
 #include "Systems/Base/System.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
+
+// Declared last due to C namespace clash.
+#include <X11/Xlib.h>
+#include <SDL/SDL_syswm.h>
 
 namespace fs = boost::filesystem;
 
@@ -224,46 +229,37 @@ void GtkPlatform::showNativeSyscomMenu(RLMachine& machine) {
                  gtk_get_current_event_time());
 }
 
+void GtkPlatform::raiseSyscomUI(RLMachine& machine) {
+  if (!windows_.empty()) {
+    gtk_window_present(GTK_WINDOW(windows_.back()));
+  }
+}
+
 void GtkPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
   if (!builder_)
     InitializeBuilder(machine);
 
   GtkWidget* window = NULL;
   if (syscom == SYSCOM_SAVE || syscom == SYSCOM_LOAD) {
-    // Save/Load share a single dialog; we just act slightly differently
-    // depending on whether we're saving or loading.
-    window = GTK_WIDGET(gtk_builder_get_object(builder_, "saveload_dialog"));
+    window = SetupSaveLoadWindow(machine, syscom);
+  }
+  // TODO(erg): Every other syscom UI window.
 
-    GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(
-        builder_, "saveload_store"));
-    BuildSaveStoreBasedOnFilesystem(machine, store);
-
-    // Set the window title depending on which dialog we are.
-    std::string title;
-    if (syscom == SYSCOM_SAVE) {
-      title = machine.system().gameexe()("DLGSAVEMESSAGE_TITLE_STR").
-              to_string("SAVE");
-    } else {
-      title = machine.system().gameexe()("DLGLOADMESSAGE_TITLE_STR").
-              to_string("LOAD");
+  if (window) {
+    // Hook up the transient removal methods only once.
+    if (g_signal_handler_find(
+            window, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
+            reinterpret_cast<gpointer>(RemoveDialogFromTransitentList),
+            NULL) == 0) {
+      g_signal_connect(window, "hide",
+                       G_CALLBACK(RemoveDialogFromTransitentList), this);
     }
-    gtk_window_set_title(GTK_WINDOW(window),
-                         cp932toUTF8(title, machine.getTextEncoding()).c_str());
 
-    // Only show the correct action for this dialog.
-    gtk_widget_set_visible(
-        GTK_WIDGET(gtk_builder_get_object(builder_, "save_button")),
-        syscom == SYSCOM_SAVE);
-    gtk_widget_set_visible(
-        GTK_WIDGET(gtk_builder_get_object(builder_, "load_button")),
-        syscom == SYSCOM_LOAD);
+    CenterGtkWindowOverSDLWindow(window);
 
+    windows_.push_back(window);
     gtk_widget_show_all(window);
   }
-
-  // TODO(erg): Make the new dialog behave as if it was marked transient-for
-  // the SDL window. We can't actually do this with GTK+ since the SDL window
-  // isn't a GTK+ window.
 }
 
 void GtkPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
@@ -344,4 +340,95 @@ void GtkPlatform::InitializeBuilder(RLMachine& machine) {
   // While we're at it, mark the tree selection on the save/load dialog.
   g_object_set_data(gtk_builder_get_object(builder_, "saveload_dialog"),
                     "tree-selection", selection);
+}
+
+GtkWidget* GtkPlatform::SetupSaveLoadWindow(RLMachine& machine, int syscom) {
+  // Save/Load share a single dialog; we just act slightly differently
+  // depending on whether we're saving or loading.
+  GtkWidget* window = GTK_WIDGET(gtk_builder_get_object(builder_,
+                                                        "saveload_dialog"));
+
+  GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(
+      builder_, "saveload_store"));
+  BuildSaveStoreBasedOnFilesystem(machine, store);
+
+  // Set the window title depending on which dialog we are.
+  std::string title;
+  if (syscom == SYSCOM_SAVE) {
+    title = machine.system().gameexe()("DLGSAVEMESSAGE_TITLE_STR").
+            to_string("SAVE");
+  } else {
+    title = machine.system().gameexe()("DLGLOADMESSAGE_TITLE_STR").
+            to_string("LOAD");
+  }
+  gtk_window_set_title(GTK_WINDOW(window),
+                       cp932toUTF8(title, machine.getTextEncoding()).c_str());
+
+  // Only show the correct action for this dialog.
+  gtk_widget_set_visible(
+      GTK_WIDGET(gtk_builder_get_object(builder_, "save_button")),
+      syscom == SYSCOM_SAVE);
+  gtk_widget_set_visible(
+      GTK_WIDGET(gtk_builder_get_object(builder_, "load_button")),
+      syscom == SYSCOM_LOAD);
+
+  return window;
+}
+
+void GtkPlatform::CenterGtkWindowOverSDLWindow(GtkWidget* window) {
+  // It'd be so much easier to just use gtk_window_set_type_hint() to center
+  // the window, but that requires gtk collaboration between the two windows.
+  Rect r = GetSDLWindowPosition();
+
+  if (!r.isEmpty()) {
+    // Get the size of the gtk window.
+    gint width, height;
+    gtk_window_get_size(GTK_WINDOW(window), &width, &height);
+    Size s(width, height);
+
+    Rect centered = s.centeredIn(r);
+    gtk_window_move(GTK_WINDOW(window), centered.x(), centered.y());
+  }
+}
+
+Rect GtkPlatform::GetSDLWindowPosition() {
+  SDL_SysWMinfo info;
+  SDL_VERSION(&info.version);
+  if (SDL_GetWMInfo(&info)) {
+    info.info.x11.lock_func();
+
+    // Retrieve the location of the SDL window.
+    Window root;
+    int x, y;
+    unsigned int width, height;
+    unsigned int border_width, depth;
+    if (!XGetGeometry(info.info.x11.display, info.info.x11.window, &root,
+                      &x, &y, &width, &height, &border_width, &depth)) {
+      info.info.x11.unlock_func();
+      return Rect();
+    }
+
+    Window child;
+    if (!XTranslateCoordinates(info.info.x11.display, info.info.x11.window,
+                               root, 0, 0, &x, &y, &child)) {
+      info.info.x11.unlock_func();
+      return Rect();
+    }
+
+    info.info.x11.unlock_func();
+
+    return Rect(Point(x, y), Size(width, height));
+  }
+
+  return Rect();
+}
+
+// static
+void GtkPlatform::RemoveDialogFromTransitentList(GtkWidget* widget,
+                                                 GtkPlatform* platform) {
+  std::vector<GtkWidget*>::iterator it = find(platform->windows_.begin(),
+                                              platform->windows_.end(),
+                                              widget);
+  if (it != platform->windows_.end())
+    platform->windows_.erase(it);
 }
