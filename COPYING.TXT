@@ -12,14 +12,16 @@ boost.org license.
 -------------------------------------------------------------------------
 
 Table of Contents:
-I) Code incorporated directly into rlvm
+I) rlvm's license
+
+II) Code incorporated directly into rlvm
  a) libReallive
  b) xclannad file loading code
  c) xkanon animation loading code
  d) mman (part of libReallive)
  e) nwatowav
 
-II) Libraries included unmodified in the rlvm distribution:
+III) Libraries included unmodified in the rlvm distribution:
  a) SDL_ttf
  a) TUT
  b) GLEW
@@ -29,13 +31,33 @@ II) Libraries included unmodified in the rlvm distribution:
  f) luabind
  g) SDL_mixer
 
-III) Libraries linked against by rlvm (but not included in the distribution)
+IV) Libraries linked against by rlvm (but not included in the distribution)
  a) boost.org license
  b) SDL
  c) freetype
 
 ------------------------------------------------------------------------
-Part I: Code incorporated directly into rlvm
+Part I: rlvm's license
+-------------------------------------------------------------------------
+
+Copyright (C) 2006-2011 Elliot Glaysher
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+
+------------------------------------------------------------------------
+Part II: Code incorporated directly into rlvm
 -------------------------------------------------------------------------
 ----------------------------------------------------------[ libReallive ]
 
@@ -77,7 +99,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
 ----------------------------------------[ xkanon animation loading code ]
 
@@ -95,7 +117,7 @@ GNU General Public License for more details.
  
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
 -------------------------------------------[ mman (part of libReallive) ]
 
@@ -145,7 +167,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 
 -------------------------------------------------------------------------
-Part II: Libraries included unmodified in the rlvm distribution
+Part III: Libraries included unmodified in the rlvm distribution
 -------------------------------------------------------------------------
 --------------------------------------------------------------[ SDL_ttf ]
 
@@ -168,7 +190,7 @@ Library General Public License for more details.
 
 You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
 ------------------------------------------------------------------[ TUT ]
 The TUT C++ unit testing framework is licensed under the following
@@ -278,7 +300,7 @@ Library General Public License for more details.
 
 You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
 -------------------------------------------------------------[ dirent.h ]
 
@@ -344,10 +366,10 @@ Library General Public License for more details.
 
 You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
 -------------------------------------------------------------------------
-Part III) Libraries linked against by rlvm
+Part IV: Libraries linked against by rlvm
 -------------------------------------------------------------------------
 ----------------------------------------------------[ boost.org license ]
 
