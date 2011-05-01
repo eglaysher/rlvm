@@ -30,21 +30,17 @@
 #include <boost/filesystem/operations.hpp>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <SDL/SDL.h>
 #include <iomanip>
 #include <ostream>
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Platforms/gtk/gtk_callbacks.hpp"
+#include "Platforms/gtk/x11_sdl_util.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
-
-// Declared last due to C namespace clash.
-#include <X11/Xlib.h>
-#include <SDL/SDL_syswm.h>
 
 namespace fs = boost::filesystem;
 
@@ -389,38 +385,6 @@ void GtkPlatform::CenterGtkWindowOverSDLWindow(GtkWidget* window) {
     Rect centered = s.centeredIn(r);
     gtk_window_move(GTK_WINDOW(window), centered.x(), centered.y());
   }
-}
-
-Rect GtkPlatform::GetSDLWindowPosition() {
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-  if (SDL_GetWMInfo(&info)) {
-    info.info.x11.lock_func();
-
-    // Retrieve the location of the SDL window.
-    Window root;
-    int x, y;
-    unsigned int width, height;
-    unsigned int border_width, depth;
-    if (!XGetGeometry(info.info.x11.display, info.info.x11.window, &root,
-                      &x, &y, &width, &height, &border_width, &depth)) {
-      info.info.x11.unlock_func();
-      return Rect();
-    }
-
-    Window child;
-    if (!XTranslateCoordinates(info.info.x11.display, info.info.x11.window,
-                               root, 0, 0, &x, &y, &child)) {
-      info.info.x11.unlock_func();
-      return Rect();
-    }
-
-    info.info.x11.unlock_func();
-
-    return Rect(Point(x, y), Size(width, height));
-  }
-
-  return Rect();
 }
 
 // static

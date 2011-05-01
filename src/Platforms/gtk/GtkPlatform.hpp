@@ -66,10 +66,6 @@ class GtkPlatform : public Platform {
   // Centers |window| over the main SDL window.
   void CenterGtkWindowOverSDLWindow(GtkWidget* window);
 
-  // Returns a rect with the SDL window location. Can return an empty rect on
-  // error.
-  Rect GetSDLWindowPosition();
-
   // While most "hidden" signals are connected in the ui file and specified in
   // the callbacks file, every dialog is connected through code to this
   // platform object to manage the transient state.

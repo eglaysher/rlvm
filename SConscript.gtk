@@ -12,7 +12,8 @@ gtkrlvm_files = [
   "src/Platforms/gtk/rlvm.cpp",
   "src/Platforms/gtk/gtk_callbacks.cpp",
   "src/Platforms/gtk/GtkRLVMInstance.cpp",
-  "src/Platforms/gtk/GtkPlatform.cpp"
+  "src/Platforms/gtk/GtkPlatform.cpp",
+  "src/Platforms/gtk/x11_sdl_util.cc"
 ]
 
 root_env.RlvmProgram('rlvm', gtkrlvm_files,
