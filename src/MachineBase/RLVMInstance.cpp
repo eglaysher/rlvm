@@ -106,13 +106,10 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     // TODO(erg): Remove this when we switch to native font selection dialogs.
     fs::path fontFile = findFontFile(sdlSystem);
     if (fontFile.empty() || !fs::exists(fontFile)) {
-      cerr << "Could not open font file. Please either: " << endl
-           << endl
-           << "1) Place a copy of msgothic.ttc in your home directory." << endl
-           << "2) Place a copy of msgothic.ttc in \""
-           << gamerootPath.file_string() << "\"" << endl
-           << "3) Specify an alternate font with the --font option." << endl;
-      return;
+      throw rlvm::UserPresentableError(
+          "Could not find msgothic.ttc or a suitable fallback font.",
+          "Please place a copy of msgothic.ttc in either your home directory "
+          "or in the game path.");
     }
 
     if (undefined_opcodes_)

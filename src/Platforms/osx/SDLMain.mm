@@ -7,7 +7,6 @@
 
 #import "SDL.h"
 #import "SDLMain.h"
-#import "FindFont.h"
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 

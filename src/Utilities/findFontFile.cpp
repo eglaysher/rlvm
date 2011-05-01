@@ -36,10 +36,39 @@
 
 namespace fs = boost::filesystem;
 
+const char* platform_fonts[] = {
+#if defined(__APPLE__)
+  // Leopard
+  "/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
+  // Tiger
+  "/System/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
+#else
+  // `ttf-japanese-gothic` is a symbolic link on Debian/Ubuntu systems.
+  "/usr/share/fonts/truetype/ttf-japanese-gothic.ttf",
+  // Throw in Sazanami and Kochi just in case the above is broken.
+  "/usr/share/fonts/truetype/sazanami/sazanami-gothic.ttf",
+  "/usr/share/fonts/truetype/kochi/kochi-gothic-subst.ttf",
+  "/usr/share/fonts/truetype/kochi/kochi-gothic.ttf",
+#endif
+  NULL
+};
+
 // -----------------------------------------------------------------------
 
 fs::path findFontFile(System& system) {
-  return findFontFile(system.gameexe(), "msgothic.ttc");
+  fs::path font_path = findFontFile(system.gameexe(), "msgothic.ttc");
+
+  if (!fs::exists(font_path)) {
+    // Look up platform specific alternatives.
+    for (const char** file = platform_fonts; *file; ++file) {
+      if (fs::exists(*file)) {
+        font_path = *file;
+        break;
+      }
+    }
+  }
+
+  return font_path;
 }
 
 // -----------------------------------------------------------------------
