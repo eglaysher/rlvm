@@ -221,13 +221,17 @@ local_sdl_libraries = [
     'include'  : 'SDL/SDL_mixer.h',
     'library'  : 'SDL_mixer',
     'function' : ''
-  },
-  {
-    'include'  : 'SDL/SDL_image.h',
-    'library'  : 'SDL_image',
-    'function' : ''
   }
 ]
+
+# We depend on SDL_image on Linux so that we can set the rlvm icon.
+if env['PLATFORM'] == 'posix':
+  local_sdl_libraries.append({
+      'include'  : 'SDL/SDL_image.h',
+      'library'  : 'SDL_image',
+      'function' : ''
+  })
+
 for library_dict in local_sdl_libraries:
   CheckForSystemLibrary(config, library_dict, subcomponents)
 

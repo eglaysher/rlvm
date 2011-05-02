@@ -30,7 +30,6 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -42,6 +41,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#if defined(__linux__)
+#include <SDL/SDL_image.h>
+#endif
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/CGMTable.hpp"
@@ -226,6 +229,17 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   display_contexts_[1]->allocate(screenSize());
 
   setWindowTitle();
+
+#if defined(__linux__)
+  // We only set the icon on linux because OSX will use the icns file
+  // automatically and this doesn't look too awesome.
+  SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
+  if (icon) {
+    SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 0, 0, 0) );
+    SDL_WM_SetIcon(icon, NULL);
+    SDL_FreeSurface(icon);
+  }
+#endif
 
   // When debug is set, display trace data in the titlebar
   if (gameexe("MEMORY").exists()) {
