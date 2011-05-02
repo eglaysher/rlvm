@@ -222,6 +222,11 @@ local_sdl_libraries = [
     'library'  : 'SDL_mixer',
     'function' : ''
   },
+  {
+    'include'  : 'SDL/SDL_image.h',
+    'library'  : 'SDL_image',
+    'function' : ''
+  }
 ]
 for library_dict in local_sdl_libraries:
   CheckForSystemLibrary(config, library_dict, subcomponents)
