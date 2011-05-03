@@ -146,6 +146,26 @@ def CheckBoost(context, version):
   context.Result(ret)
   return ret
 
+def CheckGuichan(context):
+  # We specifically check for 0.8 because the authors have said they'll do
+  # sweeping, API breaking changed between major releases. gcnGuichanVersion()
+  # doesn't change during minor releases.
+  context.Message('Checking for guichan 0.8 with OpenGL and SDL support...')
+  lastLIBS = context.env['LIBS']
+  context.env.Append(LIBS = ['guichan', 'guichan_opengl', 'guichan_sdl'])
+  ret = context.TryRun("""
+#include <guichan.hpp>
+#include <cstring>
+
+int main(int argc, char **argv) {
+  return std::strcmp(gcnGuichanVersion(), "0.8") != 0;
+}
+""", ".cc")[0]
+  if not ret:
+    context.env.Replace(LIBS = lastLIBS)
+  context.Result( ret )
+  return ret
+
 def VerifyLibrary(config, library, header):
   if not config.CheckLibWithHeader(library, header, "c"):
     if config.CheckLib(library):
@@ -183,7 +203,8 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
 subcomponents = [ ]
 static_sdl_libs = [ ]
 
-config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost},
+config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost,
+                                       'CheckGuichan' : CheckGuichan},
                        config_h="build/config.h")
 if not config.CheckBoost('1.40'):
   print "Boost version >= 1.40 needed to compile rlvm!"
@@ -221,19 +242,20 @@ local_sdl_libraries = [
     'include'  : 'SDL/SDL_mixer.h',
     'library'  : 'SDL_mixer',
     'function' : ''
-  }
-]
-
-# We depend on SDL_image on Linux so that we can set the rlvm icon.
-if env['PLATFORM'] == 'posix':
-  local_sdl_libraries.append({
+  },
+  {
       'include'  : 'SDL/SDL_image.h',
       'library'  : 'SDL_image',
       'function' : ''
-  })
+  }
+]
 
 for library_dict in local_sdl_libraries:
   CheckForSystemLibrary(config, library_dict, subcomponents)
+
+if not config.CheckGuichan():
+  print "(Using included copy of guichan)"
+  subcomponents.append("guichan")
 
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.

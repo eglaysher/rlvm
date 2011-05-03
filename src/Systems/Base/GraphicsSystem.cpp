@@ -223,7 +223,6 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
         graphics_object_settings_->objects_in_a_layer)),
     use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
     show_cursor_from_bytecode_(true),
-    hide_cursor_by_pausing_(false),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
     system_(system) {}
 

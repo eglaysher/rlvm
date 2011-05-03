@@ -346,10 +346,6 @@ class RLMachine {
   // Mapping between the module_type:module pair and the module implementation
   ModuleMap modules_;
 
-  // When true, we should ignore all execution request return immediately. This
-  // is used by native dialog stuff.
-  int interpreter_paused_;
-
   // States whether the RLMachine is in the halted state (and thus won't
   // execute more instructions)
   bool halted_;

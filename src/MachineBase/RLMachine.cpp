@@ -102,7 +102,6 @@ static const std::string SeenEnd(seen_end, 14);
 
 RLMachine::RLMachine(System& in_system, Archive& in_archive)
     : memory_(new Memory(*this, in_system.gameexe())),
-      interpreter_paused_(false),
       halted_(false),
       print_undefined_opcodes_(false),
       halt_on_exception_(true),
@@ -246,7 +245,7 @@ bool RLMachine::shouldSetSeentopSavepoint() const {
 
 void RLMachine::executeNextInstruction() {
   // Do not execute any more instructions if the machine is halted.
-  if (halted() == true || interpreter_paused_) {
+  if (halted() == true) {
     return;
   } else {
     try {
@@ -330,16 +329,6 @@ void RLMachine::advanceInstructionPointer() {
         halted_ = true;
     }
   }
-}
-
-void RLMachine::pauseExecution() {
-  interpreter_paused_ = true;
-  system_.setSystemPaused(true);
-}
-
-void RLMachine::unpauseExecution() {
-  interpreter_paused_ = false;
-  system_.setSystemPaused(false);
 }
 
 void RLMachine::executeCommand(const CommandElement& f) {

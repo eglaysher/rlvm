@@ -15,5 +15,5 @@ gtkrlvm_files = [
 
 root_env.RlvmProgram('rlvm', gtkrlvm_files,
                      use_lib_set = ["SDL"],
-                     rlvm_libs = ["system_sdl", "rlvm"])
+                     rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
 root_env.Install('$OUTPUT_DIR', 'rlvm')

@@ -33,6 +33,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/Platform.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSoundSystem.hpp"
@@ -70,6 +71,11 @@ SDLSystem::~SDLSystem() {
   event_system_->removeMouseListener(text_system_.get());
   event_system_->removeMouseListener(graphics_system_.get());
 
+  // Some combinations of SDL and FT on the Mac require us to destroy the
+  // Platform first. This will crash on Tiger if this isn't here, but it won't
+  // crash under Linux...
+  platform_.reset();
+
   // Force the deletion of the various systems before we shut down
   // SDL.
   sound_system_.reset();
@@ -88,6 +94,9 @@ void SDLSystem::run(RLMachine& machine) {
   text_system_->executeTextSystem();
   sound_system_->executeSoundSystem();
   graphics_system_->executeGraphicsSystem(machine);
+
+  if (platform())
+    platform()->run(machine);
 
   boost::shared_ptr<LongOperation> longop = machine.currentLongOperation();
 

@@ -39,7 +39,6 @@ using boost::bind;
 
 SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
     : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),
-      prevent_orphan_mouse_up_after_focus_(false),
       mouse_inside_window_(true),
       mouse_pos_(),
       m_button1State(0),
@@ -122,6 +121,10 @@ void SDLEventSystem::flushMouseClicks() {
 
 unsigned int SDLEventSystem::timeOfLastMouseMove() {
   return last_mouse_move_time_;
+}
+
+unsigned int SDLEventSystem::getTicks() const {
+  return SDL_GetTicks();
 }
 
 void SDLEventSystem::wait(unsigned int milliseconds) const {
@@ -232,10 +235,6 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
     mouse_pos_ = Point(event.motion.x, event.motion.y);
     last_mouse_move_time_ = getTicks();
 
-    // If we're receiving mouse motion events, it's because there's no longer a
-    // native dialog.
-    system_.graphics().setHideCursorByPausing(false);
-
     // Handle this somehow.
     broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
   }
@@ -243,23 +242,9 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
 
 void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
                                             SDL_Event& event) {
-  // If we are paused, we want to redirect the event to the Platform to raise
-  // the window.
-  if (system_.system_paused()) {
-    system_.raiseSyscomUI(machine);
-    return;
-  }
-
   if (mouse_inside_window_) {
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
-
-    // We may be dealing with an errant mouse-up event after
-    if (press_code == 2 && ignore_next_mouseup_event()) {
-      set_ignore_next_mouseup_event(false);
-      return;
-    }
-    set_ignore_next_mouseup_event(false);
 
     if (event.button.button == SDL_BUTTON_LEFT)
       m_button1State = press_code;
@@ -294,13 +279,6 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
 void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
-    // If we are paused, we want to redirect the event to the Platform to raise
-    // the window.
-    if (system_.system_paused()) {
-      system_.raiseSyscomUI(machine);
-      return;
-    }
-
     // Assume the mouse is inside the window. Actually checking the mouse
     // state doesn't work in the case where we mouse click on another window
     // that's partially covered by rlvm's window and then alt-tab back.
@@ -313,8 +291,4 @@ void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
     // Force a mouse refresh:
     machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
   }
-}
-
-unsigned int SDLEventSystem::getTicksImpl() const {
-  return SDL_GetTicks();
 }

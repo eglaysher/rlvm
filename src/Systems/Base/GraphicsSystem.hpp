@@ -186,15 +186,6 @@ class GraphicsSystem : public EventListener {
     show_cursor_from_bytecode_ = in;
   }
 
-  // Whether we should hide the cursor because its state may be invalid due to
-  // interaction with native components. This gets set to true when pause
-  // begins, and gets set to false on every successful mouse motion event
-  // (which will only fire when we are unpaused).
-  void setHideCursorByPausing(const int in) {
-    hide_cursor_by_pausing_ = in;
-  }
-  bool hide_cursor_by_pausing() const { return hide_cursor_by_pausing_; }
-
   // Graphics stack implementation
   //
   // The RealLive virtual machine keeps track of recent graphics commands so
@@ -471,10 +462,6 @@ class GraphicsSystem : public EventListener {
 
   // Whether we should render any cursor. Controller by the bytecode.
   bool show_cursor_from_bytecode_;
-
-  // Whether we hide custom cursors because we were just showing a native
-  // dialog.
-  bool hide_cursor_by_pausing_;
 
   // Current cursor id. Initially set to \#MOUSE_CURSOR if the key exists.
   int cursor_;

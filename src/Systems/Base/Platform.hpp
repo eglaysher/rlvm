@@ -21,7 +21,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
 
@@ -30,7 +30,6 @@
 
 #include <map>
 #include <string>
-#include <vector>
 
 class Gameexe;
 class RLMachine;
@@ -44,6 +43,12 @@ class Platform {
   explicit Platform(Gameexe& gameexe);
   virtual ~Platform();
 
+  // Returns a game specific string from the Gameexe.ini file.
+  std::string syscomString(const std::string& key) const;
+
+  // Called every cycle.
+  virtual void run(RLMachine& machine) = 0;
+
   // Called on a right click where the game doesn't have its own syscom
   // handler.
   virtual void showNativeSyscomMenu(RLMachine& machine) = 0;
@@ -51,42 +56,8 @@ class Platform {
   // Invokes a standard dialog.
   virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
 
-  // Raises currently open syscom UI. Called when the main window is clicked
-  // and we want to raise windows which are "transient-for" the main window.
-  virtual void raiseSyscomUI(RLMachine& machine) = 0;
-
   // Displays the current interpreter info.
   virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
-
- protected:
-  // Specifies a single entry in the menu.
-  struct MenuSpec {
-    MenuSpec(int id);
-    MenuSpec(int id, const char* label);
-    MenuSpec(int id, const char* label, const std::vector<MenuSpec>& submenu);
-
-    // Syscom id >= 0, or a MENU* thing.
-    int syscom_id;
-
-    // User interface string key. If NULL, converts |syscom_id| to a string.
-    const char* label;
-
-    // Specification of the child menu.
-    std::vector<MenuSpec> submenu;
-  };
-
-  static const int MENU_SEPARATOR = -1;
-  static const int MENU = -2;
-
-  // Returns a game specific string from the Gameexe.ini file.
-  std::string syscomString(const std::string& key) const;
-
-  // Returns the display label for |item|.
-  std::string GetMenuLabel(const MenuSpec& item) const;
-
-  // Returns a cross platform description of the syscom menu.
-  void GetMenuSpecification(RLMachine& machine,
-                            std::vector<MenuSpec>& out_menu);
 
  private:
   // Strips quotes off of value and adds it to our internal strings database.

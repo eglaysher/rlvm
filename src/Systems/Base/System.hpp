@@ -32,7 +32,6 @@
 #include <vector>
 #include <sstream>
 #include <string>
-#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/filesystem/path.hpp>
@@ -140,19 +139,16 @@ class System {
   System();
   virtual ~System();
 
-  void setPlatform(Platform* platform);
-  Platform* platform() { return platform_.get(); }
+  void setPlatform(const boost::shared_ptr<Platform>& platform) {
+    platform_ = platform;
+  }
+  boost::shared_ptr<Platform> platform() { return platform_; }
 
   // Takes and restores the previous selection snapshot; a special emphemeral
   // save game slot that autosaves on selections and is restored through a
   // special kepago method/syscom call.
   void takeSelectionSnapshot(RLMachine& machine);
   void restoreSelectionSnapshot(RLMachine& machine);
-
-  // Whether certain normal machine operations need to be suspeded due to a
-  // native interface being brought up.
-  void setSystemPaused(bool paused);
-  bool system_paused() const { return system_paused_; }
 
   // Syscom related functions
   //
@@ -203,10 +199,6 @@ class System {
   // relevant (for example, InvokeSyscom(5, val) is exactly equivalent to
   // SetScreenMode(val)).
   void invokeSyscom(RLMachine& machine, int syscom);
-
-  // If a standard dialog box is being displayed right now, raise it above
-  // the main game window.
-  void raiseSyscomUI(RLMachine& machine);
 
   // Shows a screen with certain information about the current state of the
   // interpreter.
@@ -278,6 +270,11 @@ class System {
   virtual TextSystem& text() = 0;
   virtual SoundSystem& sound() = 0;
 
+ protected:
+  // Native widget drawer. Can be NULL. This field is protected instead of
+  // private because we need to be destroy the Platform before we destroy SDL.
+  boost::shared_ptr<Platform> platform_;
+
  private:
   typedef std::multimap<
    std::string,
@@ -317,10 +314,6 @@ class System {
   // CPU usage during manual redrawing.
   bool force_wait_;
 
-  // Whether certain normal operations in the system are paused due do native
-  // dialogs.
-  bool system_paused_;
-
   // Cached view of the filesystem, mapping a lowercase filename to an
   // extension and the local file path for that file.
   FileSystemCache filesystem_cache_;
@@ -330,9 +323,6 @@ class System {
   // A stream with the save game data at the time of the last selection. Used
   // for the Return to Previous Selection feature.
   boost::shared_ptr<std::stringstream> previous_selection_;
-
-  // Native widget drawer. Can be NULL.
-  boost::scoped_ptr<Platform> platform_;
 
   // Implementation detail which resets in_menu_;
   friend class MenuReseter;

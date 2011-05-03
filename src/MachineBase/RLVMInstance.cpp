@@ -33,6 +33,8 @@
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
 #include "Modules/Module_Sys_Save.hpp"
+#include "Platforms/gcn/GCNPlatform.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 #include "Utilities/Exception.hpp"
@@ -95,8 +97,6 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       gameexe("MEMORY") = 1;
 
     SDLSystem sdlSystem(gameexe);
-    sdlSystem.setPlatform(NULL);
-
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
@@ -111,6 +111,12 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
           "Please place a copy of msgothic.ttc in either your home directory "
           "or in the game path.");
     }
+
+    // Initialize our platform dialogs (we have to do this after
+    // looking for a font because we use that font internally).
+    boost::shared_ptr<Platform> platform(
+        new GCNPlatform(sdlSystem, sdlSystem.graphics().screenRect()));
+    sdlSystem.setPlatform(platform);
 
     if (undefined_opcodes_)
       rlmachine.setPrintUndefinedOpcodes(true);

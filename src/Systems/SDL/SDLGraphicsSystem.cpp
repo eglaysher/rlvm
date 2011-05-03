@@ -180,8 +180,7 @@ void SDLGraphicsSystem::redrawLastFrame() {
 }
 
 void SDLGraphicsSystem::drawCursor() {
-  if (useCustomCursor() && !system().system_paused() &&
-      !hide_cursor_by_pausing()) {
+  if (useCustomCursor()) {
     boost::shared_ptr<MouseCursor> cursor;
     if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
       cursor = currentCursor();

@@ -21,18 +21,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
 #include "Systems/Base/Platform.hpp"
 
-#include <iomanip>
 #include <map>
-#include <sstream>
 #include <string>
 
 #include "libReallive/gameexe.h"
-#include "Systems/Base/System.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 using std::string;
@@ -57,19 +54,6 @@ const char* ADDTIONAL_STRINGS_TO_LOAD[] = {
   "GAME_END_MESS_STR",
   NULL
 };
-
-Platform::MenuSpec::MenuSpec(int id) : syscom_id(id), label(NULL) {}
-
-Platform::MenuSpec::MenuSpec(int id, const char* l)
-    : syscom_id(id),
-      label(l) {}
-
-Platform::MenuSpec::MenuSpec(int id,
-                             const char* l,
-                             const std::vector<MenuSpec>& s)
-    : syscom_id(id),
-      label(l),
-      submenu(s) {}
 
 // -----------------------------------------------------------------------
 // Platform
@@ -97,7 +81,7 @@ Platform::Platform(Gameexe& gameexe) {
   }
 }
 
-Platform::~Platform() {}
+Platform::~Platform() { }
 
 std::string Platform::syscomString(const std::string& key) const {
   std::map<std::string, std::string>::const_iterator it =
@@ -106,41 +90,6 @@ std::string Platform::syscomString(const std::string& key) const {
     return it->second;
   else
     return "";
-}
-
-std::string Platform::GetMenuLabel(const MenuSpec& item) const {
-  std::string label;
-  if (item.label == NULL) {
-    std::ostringstream labelss;
-    labelss << std::setw(3) << std::setfill('0') << item.syscom_id;
-    label = syscomString(labelss.str());
-  } else {
-    label = syscomString(item.label);
-  }
-
-  return label;
-}
-
-void Platform::GetMenuSpecification(RLMachine& machine,
-                                    std::vector<MenuSpec>& out_menu) {
-  out_menu.push_back(MenuSpec(SYSCOM_SET_SKIP_MODE));
-  out_menu.push_back(MenuSpec(SYSCOM_AUTO_MODE));
-  out_menu.push_back(MenuSpec(SYSCOM_SHOW_BACKGROUND));
-  out_menu.push_back(MenuSpec(MENU_SEPARATOR));
-  out_menu.push_back(MenuSpec(SYSCOM_SAVE));
-  out_menu.push_back(MenuSpec(SYSCOM_LOAD));
-  out_menu.push_back(MenuSpec(SYSCOM_RETURN_TO_PREVIOUS_SELECTION));
-  out_menu.push_back(MenuSpec(MENU_SEPARATOR));
-
-  std::vector<MenuSpec> return_to_menu;
-  return_to_menu.push_back(MenuSpec(SYSCOM_HIDE_MENU, "028.000"));
-  return_to_menu.push_back(MenuSpec(SYSCOM_MENU_RETURN, "028.001"));
-  out_menu.push_back(MenuSpec(MENU, "028", return_to_menu));
-
-  std::vector<MenuSpec> exit_game_menu;
-  exit_game_menu.push_back(MenuSpec(SYSCOM_HIDE_MENU, "029.000"));
-  exit_game_menu.push_back(MenuSpec(SYSCOM_EXIT_GAME, "029.001"));
-  out_menu.push_back(MenuSpec(MENU, "029", exit_game_menu));
 }
 
 void Platform::addSyscomStringFor(const std::string& key,

@@ -21,7 +21,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //
 // -----------------------------------------------------------------------
 
@@ -51,6 +51,7 @@ class TestEventSystem : public EventSystem {
 
   // Implementation of EventSystem:
   virtual void executeEventSystem(RLMachine& machine);
+  virtual unsigned int getTicks() const;
   virtual void wait(unsigned int milliseconds) const;
   virtual bool shiftPressed() const;
   virtual bool ctrlPressed() const;
@@ -63,8 +64,6 @@ class TestEventSystem : public EventSystem {
   virtual void injectMouseUp(RLMachine& machine) {}
 
  private:
-  virtual unsigned int getTicksImpl() const;
-
   // Defines test specific behaviour for the TestEventSystem
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };

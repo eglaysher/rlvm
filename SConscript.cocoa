@@ -24,16 +24,14 @@ cocoarlvm_files = [
   "src/MachineBase/RLVMInstance.cpp",
 
   "src/Platforms/osx/CocoaRLVMInstance.mm",
-  "src/Platforms/osx/CocoaPlatform.mm",
-  "src/Platforms/osx/SDLMain.mm",
-  "src/Platforms/osx/mac_utils.cc"
+  "src/Platforms/osx/SDLMain.mm"
 ]
 
 # Builds a fullstatic version of rlvm and then builds a bundle
 static_env.RlvmProgram('rlvm-static', cocoarlvm_files,
                        use_lib_set = ["SDL"],
                        full_static_build = True,
-                       rlvm_libs = ["system_sdl", "rlvm"])
+                       rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
 
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/Info.plist',
                      source='src/Platforms/osx/Info.plist.in')
