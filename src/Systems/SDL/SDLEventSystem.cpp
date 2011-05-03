@@ -46,7 +46,8 @@ SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
       m_button2State(0),
       last_get_currsor_time_(0),
       last_mouse_move_time_(0),
-      system_(sys) {
+      system_(sys),
+      raw_handler_(NULL) {
 }
 
 void SDLEventSystem::executeEventSystem(RLMachine& machine) {
@@ -54,26 +55,39 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_KEYDOWN: {
-        handleKeyDown(machine, event);
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleKeyDown(machine, event);
         break;
       }
       case SDL_KEYUP: {
-        handleKeyUp(machine, event);
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleKeyUp(machine, event);
         break;
       }
       case SDL_MOUSEMOTION: {
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
         handleMouseMotion(machine, event);
         break;
       }
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEBUTTONUP: {
-        handleMouseButtonEvent(machine, event);
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        else
+          handleMouseButtonEvent(machine, event);
         break;
       }
       case SDL_QUIT:
         machine.halt();
         break;
       case SDL_ACTIVEEVENT:
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
         handleActiveEvent(machine, event);
         break;
       case SDL_VIDEOEXPOSE: {
