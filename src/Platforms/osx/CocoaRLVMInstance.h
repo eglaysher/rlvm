@@ -43,8 +43,6 @@ class CocoaRLVMInstance : public RLVMInstance {
  protected:
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
-  virtual void DoNativeWork();
-  virtual Platform* BuildNativePlatform(System& system);
 };
 
 // A helper method for converting between string representations.

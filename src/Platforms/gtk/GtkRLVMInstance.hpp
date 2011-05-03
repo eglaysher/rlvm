@@ -38,10 +38,10 @@ class GtkRLVMInstance : public RLVMInstance {
   virtual boost::filesystem::path SelectGameDirectory();
 
  protected:
+  void DoNativeWork();
+
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
-  virtual void DoNativeWork();
-  virtual Platform* BuildNativePlatform(System& system);
 };
 
 #endif  // SRC_PLATFORMS_GTK_GTKRLVMINSTANCE_HPP_

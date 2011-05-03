@@ -58,12 +58,6 @@ class RLVMInstance {
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
 
-  // Gives the native subclass a chance to do work during the main loop.
-  virtual void DoNativeWork() {}
-
-  // Returns a Platform object that displays native UI.
-  virtual Platform* BuildNativePlatform(System& system);
-
  private:
   // Finds a game file, causing an error if not found.
   boost::filesystem::path FindGameFile(

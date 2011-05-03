@@ -29,8 +29,6 @@
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 
-#include "Platforms/osx/CocoaPlatform.h"
-
 CocoaRLVMInstance::CocoaRLVMInstance() : RLVMInstance() {}
 
 CocoaRLVMInstance::~CocoaRLVMInstance() {}
@@ -67,12 +65,6 @@ void CocoaRLVMInstance::ReportFatalError(const std::string& message_text,
                                      otherButton:nil
                        informativeTextWithFormat:information];
   [alert runModal];
-}
-
-void CocoaRLVMInstance::DoNativeWork() {}
-
-Platform* CocoaRLVMInstance::BuildNativePlatform(System& system) {
-  return new CocoaPlatform(system);
 }
 
 NSString* UTF8ToNSString(const std::string& in) {

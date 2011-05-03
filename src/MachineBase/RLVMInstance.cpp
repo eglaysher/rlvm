@@ -95,7 +95,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       gameexe("MEMORY") = 1;
 
     SDLSystem sdlSystem(gameexe);
-    sdlSystem.setPlatform(BuildNativePlatform(sdlSystem));
+    sdlSystem.setPlatform(NULL);
 
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
@@ -131,9 +131,6 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
       // Run the rlmachine through another instruction
       rlmachine.executeNextInstruction();
-
-      // Maybe process native events that we don't otherwise care about.
-      DoNativeWork();
     }
 
     Serialization::saveGlobalMemory(rlmachine);
@@ -159,10 +156,6 @@ boost::filesystem::path RLVMInstance::SelectGameDirectory() {
 void RLVMInstance::ReportFatalError(const std::string& message_text,
                                     const std::string& informative_text) {
   cerr << message_text << ": " << informative_text << endl;
-}
-
-Platform* RLVMInstance::BuildNativePlatform(System& system) {
-  return NULL;
 }
 
 boost::filesystem::path RLVMInstance::FindGameFile(

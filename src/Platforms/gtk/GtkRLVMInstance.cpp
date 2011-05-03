@@ -28,7 +28,6 @@
 
 #include <gtk/gtk.h>
 
-#include "Platforms/gtk/GtkPlatform.hpp"
 #include "Utilities/File.hpp"
 
 namespace fs = boost::filesystem;
@@ -86,6 +85,11 @@ boost::filesystem::path GtkRLVMInstance::SelectGameDirectory() {
   return out_path;
 }
 
+void GtkRLVMInstance::DoNativeWork() {
+  while (gtk_events_pending())
+	  gtk_main_iteration();
+}
+
 void GtkRLVMInstance::ReportFatalError(const std::string& message_text,
                                        const std::string& informative_text) {
   RLVMInstance::ReportFatalError(message_text, informative_text);
@@ -102,13 +106,6 @@ void GtkRLVMInstance::ReportFatalError(const std::string& message_text,
 
   gtk_dialog_run(GTK_DIALOG(message));
   gtk_widget_destroy(message);
-}
 
-void GtkRLVMInstance::DoNativeWork() {
-  while (gtk_events_pending())
-	  gtk_main_iteration();
-}
-
-Platform* GtkRLVMInstance::BuildNativePlatform(System& system) {
-  return new GtkPlatform(system);
+  DoNativeWork();
 }
