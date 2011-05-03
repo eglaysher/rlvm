@@ -96,6 +96,17 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     if (memory_)
       gameexe("MEMORY") = 1;
 
+    if (!custom_font_.empty()) {
+      if (!fs::exists(custom_font_)) {
+        throw rlvm::UserPresentableError(
+            "Could not open font file.",
+            "Please make sure the font file specified with --font exists and "
+            "is a TrueType font.");
+      }
+
+      gameexe("__GAMEFONT") = custom_font_;
+    }
+
     SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);

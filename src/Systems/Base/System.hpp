@@ -260,6 +260,13 @@ class System {
   bool forceWait() { return force_wait_; }
   void setForceWait(bool in) { force_wait_ = in; }
 
+  // We record what the text encoding response was during the first scene, and
+  // then during every scene change, if it was western, we flip this bit to
+  // true. We do this as a big hack because we only have System access while
+  // we're loading fonts.
+  bool useWesternFont() { return use_western_font_; }
+  void setUseWesternFont() { use_western_font_ = true; }
+
   // Called once per gameloop.
   virtual void run(RLMachine& machine) = 0;
 
@@ -313,6 +320,9 @@ class System {
   // Forces a 10ms sleep at the end of the System::run function. Used to lower
   // CPU usage during manual redrawing.
   bool force_wait_;
+
+  // Whether we should be trying to find a western font.
+  bool use_western_font_;
 
   // Cached view of the filesystem, mapping a lowercase filename to an
   // extension and the local file path for that file.

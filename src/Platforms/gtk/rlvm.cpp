@@ -91,7 +91,8 @@ int main(int argc, char* argv[]) {
   opts.add_options()
       ("help", "Produce help message")
       ("help-debug", "Print help message for people working on rlvm")
-      ("version", "Display version and license information");
+      ("version", "Display version and license information")
+      ("font", po::value<string>(), "Specifies TrueType font to use.");
 
   po::options_description debugOpts("Debugging Options");
   debugOpts.add_options()
@@ -205,6 +206,9 @@ int main(int argc, char* argv[]) {
 
   if (vm.count("load-save"))
     instance.set_load_save(vm["load-save"].as<int>());
+
+  if (vm.count("font"))
+    instance.set_custom_font(vm["font"].as<string>());
 
   instance.Run(gamerootPath);
 

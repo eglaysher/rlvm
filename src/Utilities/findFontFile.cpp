@@ -34,9 +34,22 @@
 
 #include "boost/filesystem/operations.hpp"
 
+#include <iostream>
+using namespace std;
+
 namespace fs = boost::filesystem;
 
-const char* platform_fonts[] = {
+const char* western_platform_fonts[] = {
+#if defined(__APPLE__)
+  // I would prefer Helvetica except that it is stored as a dfont. :(
+  "/Library/Fonts/Arial.ttf",
+#else
+  "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf",
+#endif
+  NULL
+};
+
+const char* ja_platform_fonts[] = {
 #if defined(__APPLE__)
   // Leopard
   "/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
@@ -55,33 +68,7 @@ const char* platform_fonts[] = {
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(System& system) {
-  fs::path font_path = findFontFile(system.gameexe(), "msgothic.ttc");
-
-  if (!fs::exists(font_path)) {
-    // Look up platform specific alternatives.
-    for (const char** file = platform_fonts; *file; ++file) {
-      if (fs::exists(*file)) {
-        font_path = *file;
-        break;
-      }
-    }
-  }
-
-  return font_path;
-}
-
-// -----------------------------------------------------------------------
-
-fs::path findFontFile(Gameexe& gexe, const std::string& fileName) {
-  // HACK: If the user has overridden the __GAMEFONT, use it instead.
-  if (gexe.exists("__GAMEFONT")) {
-    std::string gamefontstr = gexe("__GAMEFONT");
-    fs::path gameFont = fs::path(gamefontstr);
-    if (fs::exists(gameFont))
-      return gameFont;
-  }
-
+fs::path findFontFileFinal(Gameexe& gexe, const std::string& fileName) {
   // HACK: Look for the font in the game
   if (gexe.exists("__GAMEPATH")) {
     std::string gamepath = gexe("__GAMEPATH");
@@ -109,3 +96,30 @@ fs::path findFontFile(Gameexe& gexe, const std::string& fileName) {
 }
 
 // -----------------------------------------------------------------------
+
+fs::path findFontFile(System& system) {
+  Gameexe& gexe = system.gameexe();
+  // HACK: If the user has overridden the __GAMEFONT, use it instead.
+  if (gexe.exists("__GAMEFONT")) {
+    std::string gamefontstr = gexe("__GAMEFONT");
+    fs::path gameFont = fs::path(gamefontstr);
+    if (fs::exists(gameFont))
+      return gameFont;
+  }
+
+  if (system.useWesternFont()) {
+    // Try to look up a western alternative font.
+    for (const char** file = western_platform_fonts; *file; ++file) {
+      if (fs::exists(*file))
+        return fs::path(*file);
+    }
+  }
+
+  // Look up platform specific Japanese alternatives.
+  for (const char** file = ja_platform_fonts; *file; ++file) {
+    if (fs::exists(*file))
+      return fs::path(*file);
+  }
+
+  return findFontFileFinal(system.gameexe(), "msgothic.ttc");
+}

@@ -14,6 +14,7 @@ Homepage: http://www.elliotglaysher.org/rlvm
 Package: rlvm
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-japanese-gothic
+Suggests: ttf-dejavu-core
 Description: RealLive virtual machine clone
  rlvm is a Free Software reimplementation of VisualArt's KK's
  RealLive interpreter, used in the games Kanon, Air, CLANNAD, Planetarian,

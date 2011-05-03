@@ -452,6 +452,10 @@ void RLMachine::pushStackFrame(const StackFrame& frame) {
   }
 
   call_stack_.push_back(frame);
+
+  // Font hack. Try using a western font if we haven't already loaded a font.
+  if (getTextEncoding() == 2)
+    system().setUseWesternFont();
 }
 
 void RLMachine::popStackFrame() {

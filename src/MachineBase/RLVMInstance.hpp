@@ -47,6 +47,7 @@ class RLVMInstance {
   void set_undefined_opcodes() { undefined_opcodes_ = true; }
   void set_count_undefined() { count_undefined_copcodes_ = true; }
   void set_load_save(int in) { load_save_ = in; }
+  void set_custom_font(const std::string& font) { custom_font_ = font; }
 
   // Optionally brings up a file selection dialog to get the game directory. In
   // case this isn't implemented or the user clicks cancel, returns an empty
@@ -68,6 +69,9 @@ class RLVMInstance {
   void CheckBadEngine(const boost::filesystem::path& gamerootPath,
                       const char** filenames,
                       const std::string& message_text);
+
+  // Whether we should set a custom font.
+  std::string custom_font_;
 
   // Which SEEN# we should start execution from (-1 if we shouldn't set this).
   int seen_start_;
