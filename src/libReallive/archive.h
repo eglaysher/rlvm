@@ -58,14 +58,16 @@ class Archive {
   string name;
   Mapping info;
 
-  /// Mappings to unarchived SEEN\d{4}.TXT files on disk.
+  // Mappings to unarchived SEEN\d{4}.TXT files on disk.
   boost::ptr_vector<Mapping> maps_to_delete_;
 
-  /**
-   * Now that VisualArts is using per game xor keys, this is equivalent to the
-   * game's second level xor key.
-   */
+  // Now that VisualArts is using per game xor keys, this is equivalent to the
+  // game's second level xor key.
   const Compression::XorKey* second_level_xor_key_;
+
+  // The #REGNAME key from the Gameexe.ini file. Passed down to Scenario for
+  // prettier error messages.
+  std::string regname_;
 
   void readTOC();
 

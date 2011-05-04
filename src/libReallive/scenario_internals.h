@@ -76,7 +76,8 @@ private:
   bool strip;
 
   Script(const Header& hdr, const char* data, const size_t length,
-         const Compression::XorKey* second_level_xor_key);
+         const std::string& regname,
+         bool use_xor_2, const Compression::XorKey* second_level_xor_key);
 
   void recalculate(const bool force = false);
 

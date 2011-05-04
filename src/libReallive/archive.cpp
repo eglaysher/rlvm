@@ -54,7 +54,10 @@ Archive::Archive(const string& filename)
 }
 
 Archive::Archive(const string& filename, const std::string& regname)
-  : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
+    : name(filename),
+      info(filename, Read),
+      second_level_xor_key_(NULL),
+      regname_(regname) {
   readTOC();
   readOverrides();
 
@@ -123,7 +126,7 @@ Archive::scenario(int index) {
 	scenarios_t::const_iterator st = scenarios.find(index);
 	if (st != scenarios.end())
     return accessed[index] =
-      new Scenario(st->second, index, second_level_xor_key_);
+        new Scenario(st->second, index, regname_, second_level_xor_key_);
 	return NULL;
 }
 

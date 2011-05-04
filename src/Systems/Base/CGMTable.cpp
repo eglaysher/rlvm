@@ -43,6 +43,8 @@
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
 
+#include <iostream>
+
 using namespace std;
 using boost::scoped_array;
 
@@ -116,6 +118,14 @@ CGMTable::CGMTable(Gameexe& gameexe) {
     ostringstream oss;
     oss << "File '" << filename << "' is not a CGM file!";
     throw rlvm::Exception(oss.str());
+  }
+
+  if (data[7] == '2') {
+    // Kud Wafter has some sort of new CGM file that makes Extract2k corrupt
+    // memory. The first entry prints correctly if we put a printf in the for
+    // loop below, but then glib kills us due to memory corruption detected.
+    cerr << "CAN NOT READ CGM FILE. PROGRESS WILL NOT BE RECORDED." << endl;
+    return;
   }
 
   int cgm_size = read_little_endian_int(data.get() + 0x10);

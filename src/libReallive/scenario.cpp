@@ -38,6 +38,9 @@
 #include <algorithm>
 #include <sstream>
 
+#include "Utilities/Exception.hpp"
+#include "Utilities/StringUtilities.hpp"
+
 using namespace std;
 
 namespace libReallive {
@@ -105,7 +108,8 @@ Header::Header(const char* data, const size_t length) {
 }
 
 Script::Script(const Header& hdr, const char* data, const size_t length,
-               const Compression::XorKey* second_level_xor_key)
+               const std::string& regname,
+               bool use_xor_2, const Compression::XorKey* second_level_xor_key)
   : uptodate(true), strip(false) {
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);
@@ -117,13 +121,30 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
   // Decompress data
   const size_t dlen = read_i32(data + 0x24);
 
+  const Compression::XorKey* key = NULL;
+  if (use_xor_2) {
+    if (second_level_xor_key) {
+      key = second_level_xor_key;
+    } else {
+      ostringstream oss;
+      // Probably safe to assume that any game we don't know about has a
+      // Japanese encoding.
+      oss << "Can not read game script for " << cp932toUTF8(regname, 0);
+      throw rlvm::UserPresentableError(
+          oss.str(),
+          "Some games require individual reverse engineering. This game can "
+          "not be played until someone has figured out how the game script is "
+          "encoded.");
+    }
+  }
+
   /// @todo Removed auto_ptr because of new[] / delete mismatch
   char* uncompressed = new char[dlen];
   Compression::decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
                           uncompressed,
                           dlen,
-                          second_level_xor_key);
+                          key);
   // Read bytecode
   const char* stream = uncompressed;
   const char* end = uncompressed + dlen;

@@ -51,8 +51,10 @@ class Scenario {
   int scenarioNum;
 public:
   Scenario(const char* data, const size_t length, int scenarioNum,
+           const std::string& regname,
            const Compression::XorKey* second_level_xor_key);
   Scenario(const FilePos& fp, int scenarioNum,
+           const std::string& regname,
            const Compression::XorKey* second_level_xor_key);
 
   // Get the scenario number
@@ -100,20 +102,22 @@ public:
 
 inline
 Scenario::Scenario(const char* data, const size_t length, int sn,
+                   const std::string& regname,
                    const Compression::XorKey* second_level_xor_key)
   : header(data, length),
-    script(header, data, length,
-           header.use_xor_2 ? second_level_xor_key : NULL),
+    script(header, data, length, regname,
+           header.use_xor_2, second_level_xor_key),
     scenarioNum(sn)
 {
 }
 
 inline
 Scenario::Scenario(const FilePos& fp, int sn,
+                   const std::string& regname,
                    const Compression::XorKey* second_level_xor_key)
   : header(fp.data, fp.length),
-    script(header, fp.data, fp.length,
-           header.use_xor_2 ? second_level_xor_key : NULL),
+    script(header, fp.data, fp.length, regname,
+           header.use_xor_2, second_level_xor_key),
     scenarioNum(sn)
 {
 }
