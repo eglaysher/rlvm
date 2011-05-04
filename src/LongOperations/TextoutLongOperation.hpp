@@ -68,10 +68,10 @@ class TextoutLongOperation : public LongOperation {
   bool no_wait_;
 
   // How long it's been since the last time we've added time to |total_time_|.
-  unsigned int time_at_last_pass_;
+  static unsigned int time_at_last_pass_;
 
   // A countdown in milliseconds until we display the next character.
-  int next_character_countdown_;
+  static int next_character_countdown_;
 };
 
 #endif  // SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_

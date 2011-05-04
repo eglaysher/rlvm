@@ -41,6 +41,12 @@
 #include "Utilities/Exception.hpp"
 #include "utf8cpp/utf8.h"
 
+// Timing information must stay the same between individual
+// TextoutLongOperations. rlBabel compiled games will always display one
+// character per TextoutLongOperation.
+unsigned int TextoutLongOperation::time_at_last_pass_ = 0;
+int TextoutLongOperation::next_character_countdown_  = 0;
+
 // -----------------------------------------------------------------------
 // TextoutLongOperation
 // -----------------------------------------------------------------------
@@ -50,8 +56,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     : m_utf8string(utf8string),
       current_codepoint_(0),
       current_position_(m_utf8string.begin()),
-      no_wait_(false),
-      next_character_countdown_(0) {
+      no_wait_(false) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
   if (tmp == m_utf8string.end()) {
@@ -61,8 +66,6 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     current_char_ = string(current_position_, tmp);
     current_position_ = tmp;
   }
-
-  time_at_last_pass_ = machine.system().event().getTicks();
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!

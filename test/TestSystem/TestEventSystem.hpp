@@ -35,11 +35,15 @@
 // Provides behaviour for the TestEventSystem.
 class EventSystemMockHandler {
  public:
+  EventSystemMockHandler() : counter_(0) {}
   virtual ~EventSystemMockHandler() {}
 
   virtual bool shiftPressed() const { return false; }
   virtual bool ctrlPressed() const { return false; }
-  virtual unsigned int getTicks() const { return 0; }
+  virtual unsigned int getTicks() const { return counter_++; }
+
+ private:
+  mutable int counter_;
 };
 
 // Mock enabled event system. Returned values are controlled by
