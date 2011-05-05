@@ -62,6 +62,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
+#include "Utilities/gettext.h"
 #include "libReallive/archive.h"
 #include "libReallive/intmemref.h"
 
@@ -83,9 +84,8 @@ namespace {
 template<typename TYPE>
 void checkInFileOpened(TYPE& file, const fs::path& home) {
   if (!file) {
-    ostringstream oss;
-    oss << "Could not open save game file " << home.string();
-    throw rlvm::Exception(oss.str());
+    throw rlvm::Exception(
+        str(format("Could not open save game file %1%") % home));
   }
 }
 

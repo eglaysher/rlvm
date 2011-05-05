@@ -51,6 +51,7 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
+#include "Utilities/gettext.h"
 #include "libReallive/intmemref.h"
 
 using namespace std;
@@ -75,9 +76,7 @@ void saveGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
   fs::ofstream file(home, ios::binary);
   if (!file) {
-    ostringstream oss;
-    oss << "Could not open global memory file.";
-    throw rlvm::Exception(oss.str());
+    throw rlvm::Exception(_("Could not open global memory file."));
   }
 
   saveGlobalMemoryTo(file, machine);

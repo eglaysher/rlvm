@@ -27,8 +27,13 @@
 #include "Platforms/gtk/GtkRLVMInstance.hpp"
 
 #include <gtk/gtk.h>
+#include <libintl.h>
 
 #include "Utilities/File.hpp"
+#include "Utilities/gettext.h"
+
+#include <iostream>
+using namespace std;
 
 namespace fs = boost::filesystem;
 
@@ -49,14 +54,23 @@ void on_selection_changed(GtkFileChooser *chooser) {
 }  // namespace
 
 GtkRLVMInstance::GtkRLVMInstance(int* argc, char** argv[]) : RLVMInstance() {
+#if defined ENABLE_NLS
+  gtk_set_locale();
+#endif
   gtk_init(argc, argv);
+
+#if defined ENABLE_NLS
+  setlocale(LC_ALL, "");
+  bindtextdomain("rlvm", "/usr/share/locale");
+  textdomain("rlvm");
+#endif
 }
 
 GtkRLVMInstance::~GtkRLVMInstance() {}
 
 boost::filesystem::path GtkRLVMInstance::SelectGameDirectory() {
   GtkWidget* dialog = gtk_file_chooser_dialog_new(
-      "Select Game Directory",
+      _("Select Game Directory"),
       NULL,
       GTK_FILE_CHOOSER_ACTION_OPEN,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

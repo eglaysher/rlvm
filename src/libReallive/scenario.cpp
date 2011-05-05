@@ -40,6 +40,7 @@
 
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
+#include "Utilities/gettext.h"
 
 using namespace std;
 
@@ -126,15 +127,14 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     if (second_level_xor_key) {
       key = second_level_xor_key;
     } else {
-      ostringstream oss;
       // Probably safe to assume that any game we don't know about has a
       // Japanese encoding.
-      oss << "Can not read game script for " << cp932toUTF8(regname, 0);
       throw rlvm::UserPresentableError(
-          oss.str(),
-          "Some games require individual reverse engineering. This game can "
-          "not be played until someone has figured out how the game script is "
-          "encoded.");
+          str(format("Can not read game script for %1%") %
+              cp932toUTF8(regname, 0)),
+          _("Some games require individual reverse engineering. This game can "
+            "not be played until someone has figured out how the game script "
+            "is encoded."));
     }
   }
 

@@ -8,7 +8,7 @@
 	dh $@
 
 override_dh_auto_build:
-	scons --release build/rlvm
+	scons --release build/rlvm build/locale
 
 override_dh_auto_clean:
 	dh_auto_clean

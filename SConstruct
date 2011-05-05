@@ -50,6 +50,9 @@ env = Environment(
     # library. Specify version 2 explicitly.
     ["BOOST_FILESYSTEM_VERSION", 2],
 
+    # We use gettext for translations.
+    "ENABLE_NLS",
+
     # This prevents conflicts between SDL and GLEW. I shouldn't have to do
     # this, but the SDL_opengl.h and glew.h differ in const correctness...
     "NO_SDL_GLEXT"
@@ -377,3 +380,9 @@ if GetOption("coverage"):
                  variant_dir="$BUILD_DIR/",
                  duplicate=0,
                  exports='env')
+
+# In addition to all that, we also want to build the translation files.
+env.Command("build/locale/ja/LC_MESSAGES/rlvm.mo",
+            "po/ja.po",
+            ["mkdir -p build/locale/ja/LC_MESSAGES/",
+             "msgfmt -o build/locale/ja/LC_MESSAGES/rlvm.mo po/ja.po"])

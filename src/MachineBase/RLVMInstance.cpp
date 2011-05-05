@@ -40,6 +40,7 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "Utilities/findFontFile.h"
+#include "Utilities/gettext.h"
 #include "libReallive/gameexe.h"
 #include "libReallive/reallive.h"
 
@@ -83,8 +84,8 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     fs::path seenPath = FindGameFile(gamerootPath, "Seen.txt");
 
     // Check for VisualArt's older and newer engines, which we can't emulate:
-    CheckBadEngine(gamerootPath, avg32_exes, "Can't run AVG32 games");
-    CheckBadEngine(gamerootPath, siglus_exes, "Can't run Siglus games");
+    CheckBadEngine(gamerootPath, avg32_exes, _("Can't run AVG32 games"));
+    CheckBadEngine(gamerootPath, siglus_exes, _("Can't run Siglus games"));
 
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.file_string();
@@ -99,9 +100,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     if (!custom_font_.empty()) {
       if (!fs::exists(custom_font_)) {
         throw rlvm::UserPresentableError(
-            "Could not open font file.",
-            "Please make sure the font file specified with --font exists and "
-            "is a TrueType font.");
+            _("Could not open font file."),
+            _("Please make sure the font file specified with --font exists and "
+              "is a TrueType font."));
       }
 
       gameexe("__GAMEFONT") = custom_font_;
@@ -118,9 +119,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     fs::path fontFile = findFontFile(sdlSystem);
     if (fontFile.empty() || !fs::exists(fontFile)) {
       throw rlvm::UserPresentableError(
-          "Could not find msgothic.ttc or a suitable fallback font.",
-          "Please place a copy of msgothic.ttc in either your home directory "
-          "or in the game path.");
+          _("Could not find msgothic.ttc or a suitable fallback font."),
+          _("Please place a copy of msgothic.ttc in either your home directory "
+            "or in the game path."));
     }
 
     // Initialize our platform dialogs (we have to do this after
@@ -154,15 +155,15 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
   } catch (rlvm::UserPresentableError& e) {
     ReportFatalError(e.message_text(), e.informative_text());
   } catch (rlvm::Exception& e) {
-    ReportFatalError("Fatal RLVM error", e.what());
+    ReportFatalError(_("Fatal RLVM error"), e.what());
   } catch (libReallive::Error& e) {
-    ReportFatalError("Fatal libReallive error", e.what());
+    ReportFatalError(_("Fatal libReallive error"), e.what());
   } catch (SystemError& e) {
-    ReportFatalError("Fatal local system error", e.what());
+    ReportFatalError(_("Fatal local system error"), e.what());
   } catch (std::exception& e) {
-    ReportFatalError("Uncaught exception", e.what());
+    ReportFatalError(_("Uncaught exception"), e.what());
   } catch (const char* e) {
-    ReportFatalError("Uncaught exception", e);
+    ReportFatalError(_("Uncaught exception"), e);
   }
 }
 
@@ -181,10 +182,10 @@ boost::filesystem::path RLVMInstance::FindGameFile(
   fs::path search_for = gamerootPath / filename;
   fs::path corrected_path = correctPathCase(search_for);
   if (corrected_path.empty()) {
-    ostringstream oss;
-    oss << "Could not open " << search_for
-        << ". Please make sure it exists.";
-    throw rlvm::UserPresentableError("Could not load game", oss.str());
+    throw rlvm::UserPresentableError(
+        _("Could not load game"),
+        str( format("Could not open %1%. Please make sure it exists.") %
+             search_for));
   }
 
   return corrected_path;
@@ -197,7 +198,7 @@ void RLVMInstance::CheckBadEngine(
   for (const char** cur_file = filenames; *cur_file; cur_file++) {
     if (fs::exists(correctPathCase(gamerootPath / *cur_file))) {
       throw rlvm::UserPresentableError(message_text,
-                                       "rlvm can only play RealLive games.");
+                                       _("rlvm can only play RealLive games."));
     }
   }
 }

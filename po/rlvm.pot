@@ -1,0 +1,101 @@
+# rlvm gettext strings.
+# Copyright (C) 2011 Elliot Glaysher
+# This file is distributed under the same license as the rlvm package.
+# Elliot Glaysher <glaysher@umich.edu>, 2011.
+#
+# Generated with: # xgettext --c++ --keyword=_ --boost -d rlvm -o rlvm.pot -i `
+#
+#, fuzzy
+msgid   ""
+msgstr  "Project-Id-Version: 0.12\n"
+        "Report-Msgid-Bugs-To: glaysher@umich.edu\n"
+        "POT-Creation-Date: 2011-05-04 18:18-0700\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "Language: EN\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=CHARSET\n"
+        "Content-Transfer-Encoding: 8bit\n"
+
+#: src/Platforms/gtk/GtkRLVMInstance.cpp:65
+#: src/Platforms/gtk/GtkRLVMInstance.cpp:73
+msgid   "Select Game Directory"
+msgstr  ""
+
+#: src/MachineBase/SerializationGlobal.cpp:79
+#: src/MachineBase/SerializationGlobal.cpp:79
+msgid   "Could not open global memory file."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:87
+msgid   "Can't run AVG32 games"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:88
+msgid   "Can't run Siglus games"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:158
+msgid   "Fatal RLVM error"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:160
+msgid   "Fatal libReallive error"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:162
+msgid   "Fatal local system error"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:164
+#: src/MachineBase/RLVMInstance.cpp:164
+msgid   "Uncaught exception"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:186
+msgid   "Could not load game"
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:187
+#, boost-format
+msgid   "Could not open %1%. Please make sure it exists."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:201
+msgid   "rlvm can only play RealLive games."
+msgstr  ""
+
+#: src/MachineBase/SerializationLocal.cpp:88
+#, boost-format
+msgid   "Could not open save game file %1%"
+msgstr  ""
+
+#: src/libReallive/scenario.cpp:133
+#, boost-format
+msgid   "Can not read game script for %1%"
+msgstr  ""
+
+#: src/libReallive/scenario.cpp:135
+msgid   "Some games require individual reverse engineering. This game can not "
+        "be played until someone has figured out how the game script is "
+        "encoded."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:103
+msgid   "Could not open font file."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:104
+msgid   "Please make sure the font file specified with --font exists and is a "
+        "TrueType font."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:122
+msgid   "Could not find msgothic.ttc or a suitable fallback font."
+msgstr  ""
+
+#: src/MachineBase/RLVMInstance.cpp:123
+msgid   "Please place a copy of msgothic.ttc in either your home directory or "
+        "in the game path."
+msgstr  ""

@@ -1,4 +1,5 @@
 build/release/rlvm usr/games
+build/locale /usr/share
 src/Platforms/gtk/rlvm.desktop usr/share/applications
 resources/16/rlvm.png usr/share/icons/hicolor/16x16/apps
 resources/24/rlvm.png usr/share/icons/hicolor/24x24/apps
