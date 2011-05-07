@@ -32,6 +32,8 @@
 
 #include "MachineBase/RLVMInstance.hpp"
 
+@class FileValidator;
+
 // A Cocoa subclass of RLVMInstance that displays Cocoa dialogs.
 class CocoaRLVMInstance : public RLVMInstance {
  public:
@@ -43,6 +45,8 @@ class CocoaRLVMInstance : public RLVMInstance {
  protected:
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
+
+  FileValidator* validator_;
 };
 
 // A helper method for converting between string representations.

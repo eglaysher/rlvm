@@ -28,12 +28,43 @@
 
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
+#include <boost/filesystem.hpp>
 
+#include "Utilities/File.hpp"
 #include "Utilities/gettext.h"
 
-CocoaRLVMInstance::CocoaRLVMInstance() : RLVMInstance() {}
+namespace fs = boost::filesystem;
 
-CocoaRLVMInstance::~CocoaRLVMInstance() {}
+@interface FileValidator : NSObject
+- (BOOL)panel:(id)sender isValidFilename:(NSString *)filename;
+@end
+
+@implementation FileValidator
+- (BOOL)panel:(id)sender isValidFilename:(NSString *)filename {
+  if (!fs::exists(correctPathCase(
+          fs::path([filename fileSystemRepresentation]) / "Seen.txt"))) {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:[NSString stringWithUTF8String:
+      _("This directory is not a RealLive game. Games have a Seen.txt file.")]];
+    [alert beginSheetModalForWindow:sender
+                      modalDelegate:nil
+                     didEndSelector:NULL
+                        contextInfo:NULL];
+    return NO;
+  }
+
+  return YES;
+}
+@end
+
+CocoaRLVMInstance::CocoaRLVMInstance()
+    : RLVMInstance(),
+      validator_([[FileValidator alloc] init]) {
+}
+
+CocoaRLVMInstance::~CocoaRLVMInstance() {
+  [validator_ release];
+}
 
 boost::filesystem::path CocoaRLVMInstance::SelectGameDirectory() {
   NSOpenPanel *oPanel = [NSOpenPanel openPanel];
@@ -41,6 +72,7 @@ boost::filesystem::path CocoaRLVMInstance::SelectGameDirectory() {
   [oPanel setCanChooseFiles:NO];
   [oPanel setCanChooseDirectories:YES];
   [oPanel setTitle:[NSString stringWithUTF8String:_("Select Game Directory")]];;
+  [oPanel setDelegate:validator_];
 
   int status = [oPanel runModal];
   boost::filesystem::path out_path;

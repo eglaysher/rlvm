@@ -146,3 +146,7 @@ msgstr  ""
 #: src/Platforms/osx/SDLMain.mm:161
 msgid   "Show All"
 msgstr  ""
+
+#: src/Platforms/osx/CocoaRLVMInstance.mm:48
+msgid   "This directory is not a RealLive game. Games have a Seen.txt file."
+msgstr  ""

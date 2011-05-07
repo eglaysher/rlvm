@@ -149,3 +149,7 @@ msgstr "ほかを隠す"
 #: src/Platforms/osx/SDLMain.mm:161
 msgid "Show All"
 msgstr "すべてを表示"
+
+#: src/Platforms/osx/CocoaRLVMInstance.mm:48
+msgid "This directory is not a RealLive game. Games have a Seen.txt file."
+msgstr "このディレクトリはゲームじゃない。Seen.Txt ファイルを見つけることができませんでした."
