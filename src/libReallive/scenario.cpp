@@ -130,7 +130,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
       // Probably safe to assume that any game we don't know about has a
       // Japanese encoding.
       throw rlvm::UserPresentableError(
-          str(format("Can not read game script for %1%") %
+          str(format(_("Can not read game script for %1%")) %
               cp932toUTF8(regname, 0)),
           _("Some games require individual reverse engineering. This game can "
             "not be played until someone has figured out how the game script "

@@ -85,7 +85,7 @@ template<typename TYPE>
 void checkInFileOpened(TYPE& file, const fs::path& home) {
   if (!file) {
     throw rlvm::Exception(
-        str(format("Could not open save game file %1%") % home));
+        str(format(_("Could not open save game file %1%")) % home));
   }
 }
 

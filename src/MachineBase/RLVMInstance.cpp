@@ -184,7 +184,7 @@ boost::filesystem::path RLVMInstance::FindGameFile(
   if (corrected_path.empty()) {
     throw rlvm::UserPresentableError(
         _("Could not load game"),
-        str( format("Could not open %1%. Please make sure it exists.") %
+        str( format(_("Could not open %1%. Please make sure it exists.")) %
              search_for));
   }
 
