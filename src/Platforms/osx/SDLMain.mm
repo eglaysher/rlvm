@@ -12,10 +12,20 @@
 
 #import <AppKit/NSPanel.h>
 
+#include "Utilities/gettext.h"
 #include "Platforms/osx/CocoaRLVMInstance.h"
 
 #include <boost/filesystem/operations.hpp>
 namespace fs = boost::filesystem;
+
+NSString* utf8str(const char* str) {
+  return [NSString stringWithUTF8String:str];
+}
+
+NSString* b_format(const char* format_str, NSString* data) {
+  std::string s = str( format(format_str) % [data UTF8String]);
+  return [NSString stringWithUTF8String:s.c_str()];
+}
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
@@ -134,27 +144,35 @@ static void setApplicationMenu(void)
     appleMenu = [[NSMenu alloc] initWithTitle:@""];
     
     /* Add menu items */
-    title = [@"About " stringByAppendingString:appName];
+    title = b_format(_("About %1%"), appName);
     [appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
 
     [appleMenu addItem:[NSMenuItem separatorItem]];
 
-    title = [@"Hide " stringByAppendingString:appName];
+    title = b_format(_("Hide %1%"), appName);
     [appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@"h"];
 
-    menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
+    menuItem = (NSMenuItem *)[appleMenu
+                               addItemWithTitle:utf8str(_("Hide Others"))
+                                         action:@selector(hideOtherApplications:)
+                                  keyEquivalent:@"h"];
     [menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
 
-    [appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+    [appleMenu addItemWithTitle:utf8str(_("Show All"))
+                         action:@selector(unhideAllApplications:)
+                  keyEquivalent:@""];
 
     [appleMenu addItem:[NSMenuItem separatorItem]];
 
-    title = [@"Quit " stringByAppendingString:appName];
-    [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
+    title = b_format(_("Quit %1%"), appName);
+    [appleMenu addItemWithTitle:title
+                         action:@selector(terminate:)
+                  keyEquivalent:@"q"];
 
-    
     /* Put menu into the menubar */
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
+    menuItem = [[NSMenuItem alloc] initWithTitle:@""
+                                          action:nil
+                                   keyEquivalent:@""];
     [menuItem setSubmenu:appleMenu];
     [[NSApp mainMenu] addItem:menuItem];
 
@@ -173,15 +191,19 @@ static void setupWindowMenu(void)
     NSMenuItem  *windowMenuItem;
     NSMenuItem  *menuItem;
 
-    windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
+    windowMenu = [[NSMenu alloc] initWithTitle:utf8str(_("Window"))];
     
     /* "Minimize" item */
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
+    menuItem = [[NSMenuItem alloc] initWithTitle:utf8str(_("Minimize"))
+                                          action:@selector(performMiniaturize:)
+                                   keyEquivalent:@"m"];
     [windowMenu addItem:menuItem];
     [menuItem release];
     
     /* Put menu into the menubar */
-    windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
+    windowMenuItem = [[NSMenuItem alloc] initWithTitle:utf8str(_("Window"))
+                                                action:nil
+                                         keyEquivalent:@""];
     [windowMenuItem setSubmenu:windowMenu];
     [[NSApp mainMenu] addItem:windowMenuItem];
     
@@ -200,10 +222,10 @@ static void setupHelpMenu()
     NSMenuItem  *helpMenuItem;
     NSMenuItem  *menuItem;
 
-    helpMenu = [[NSMenu alloc] initWithTitle:@"Help"];
+    helpMenu = [[NSMenu alloc] initWithTitle:utf8str(_("Help"))];
 
     /* "rlvm Readme" */
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"Readme" 
+    menuItem = [[NSMenuItem alloc] initWithTitle:utf8str(_("Readme"))
                                    action:@selector(showREADME:)
                                    keyEquivalent:@""];
     [menuItem setTarget:NSApp];
@@ -216,7 +238,7 @@ static void setupHelpMenu()
     [menuItem release];
 
     /* COPYING */
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"Copying" 
+    menuItem = [[NSMenuItem alloc] initWithTitle:utf8str(_("Copying"))
                                    action:@selector(showCopying:)
                                    keyEquivalent:@""];
     [menuItem setTarget:NSApp];
@@ -224,15 +246,18 @@ static void setupHelpMenu()
     [menuItem release];
 
     /* GNU General Public License v3 */
-    menuItem = [[NSMenuItem alloc] initWithTitle:@"GNU General Public License v3" 
-                                   action:@selector(showGPL:)
-                                   keyEquivalent:@""];
+    menuItem = [[NSMenuItem alloc]
+                 initWithTitle:utf8str(_("GNU General Public License v3"))
+                        action:@selector(showGPL:)
+                 keyEquivalent:@""];
     [menuItem setTarget:NSApp];
     [helpMenu addItem:menuItem];
     [menuItem release];
 
     /* Put the helpMenu into the menubar */
-    helpMenuItem = [[NSMenuItem alloc] initWithTitle:@"Help" action:nil keyEquivalent:@""];
+    helpMenuItem = [[NSMenuItem alloc] initWithTitle:utf8str(_("Help"))
+                                              action:nil
+                                       keyEquivalent:@""];
     [helpMenuItem setSubmenu:helpMenu];
     [[NSApp mainMenu] addItem:helpMenuItem];
 
@@ -389,7 +414,46 @@ BOOL setIncomingFilename(NSString* filename)
 
 @end
 
+static void rlvm_set_locale() {
+#ifdef ENABLE_NLS
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+    // A little bit of code stolen from MacVim. We need to also steal the Tiger
+    // version.
+    NSArray *languages = nil;
+    if ([NSLocale respondsToSelector:@selector(preferredLanguages)] == YES) {
+      // 10.5
+      languages = [NSLocale preferredLanguages];
+    } else {
+      // 10.4
+      NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+      languages = [defs objectForKey:@"AppleLanguages"];
+    }
+
+    if (languages && [languages count] > 0) {
+      int i, count = [languages count];
+      for (i = 0; i < count; ++i) {
+        if ([[languages objectAtIndex:i]
+                isEqualToString:@"en"]) {
+          count = i+1;
+          break;
+        }
+      }
+      NSRange r = { 0, count };
+      NSString *s = [[languages subarrayWithRange:r]
+                      componentsJoinedByString:@":"];
+      setenv("LANGUAGE", [s UTF8String], 0);
+    }
+
+    NSString* locale_path = [[[NSBundle mainBundle] resourcePath]
+                              stringByAppendingPathComponent:@"locale"];
+    setlocale(LC_ALL, "");
+    bindtextdomain("rlvm", [locale_path fileSystemRepresentation]);
+    textdomain("rlvm");
+
+    [pool release];
+#endif
+}
 
 #ifdef main
 #  undef main
@@ -415,6 +479,8 @@ int main (int argc, char **argv)
             gArgv[i] = argv[i];
         gFinderLaunch = NO;
     }
+
+    rlvm_set_locale();
 
     CustomApplicationMain (argc, argv);
     return 0;

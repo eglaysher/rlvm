@@ -1,0 +1,5 @@
+/* Marker to make OSX localize its dialogs. Most strings are translated through
+ * gettext, but we still need to have {English,Japanese}.lproj/ directories.
+ */
+
+CFBundleName = "rlvm"

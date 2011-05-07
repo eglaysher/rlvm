@@ -29,6 +29,8 @@
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 
+#include "Utilities/gettext.h"
+
 CocoaRLVMInstance::CocoaRLVMInstance() : RLVMInstance() {}
 
 CocoaRLVMInstance::~CocoaRLVMInstance() {}
@@ -38,8 +40,7 @@ boost::filesystem::path CocoaRLVMInstance::SelectGameDirectory() {
   [oPanel setAllowsMultipleSelection:NO];
   [oPanel setCanChooseFiles:NO];
   [oPanel setCanChooseDirectories:YES];
-  [oPanel setTitle:@"Select game folder..."];
-  [oPanel setPrompt:@"Play"];
+  [oPanel setTitle:[NSString stringWithUTF8String:_("Select Game Directory")]];;
 
   int status = [oPanel runModal];
   boost::filesystem::path out_path;

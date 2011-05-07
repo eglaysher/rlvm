@@ -272,7 +272,7 @@ env = config.Finish()
 ### we have the right libraries. This needs to be done after config.Finish() is
 ### called or else we get a really confusing error.
 if env['PLATFORM'] == 'darwin':
-  env.Append(LIBS=["SDL"])
+  env.Append(LIBS=["SDL", "intl", "iconv"])
 
 # Get the configuration from sdl and freetype
 env.ParseConfig("sdl-config --cflags")

@@ -3,27 +3,26 @@
 # This file is distributed under the same license as the rlvm package.
 # Elliot Glaysher <glaysher@umich.edu>, 2011.
 #
-# Generated with: # xgettext --c++ --keyword=_ --boost -d rlvm -o rlvm.pot -i `
+# Generated with: # xgettext --c++ --keyword=_ --boost -j --output-dir=po/ -o rlvm.pot -i `find src -name "*cpp"` `find src -name "*.mm"`
 #
 #, fuzzy
 msgid   ""
 msgstr  "Project-Id-Version: 0.12\n"
         "Report-Msgid-Bugs-To: glaysher@umich.edu\n"
-        "POT-Creation-Date: 2011-05-04 18:18-0700\n"
+        "POT-Creation-Date: 2011-05-06 13:13-0700\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
-        "Language: EN\n"
+        "Language: \n"
         "MIME-Version: 1.0\n"
         "Content-Type: text/plain; charset=CHARSET\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Platforms/gtk/GtkRLVMInstance.cpp:65
 #: src/Platforms/gtk/GtkRLVMInstance.cpp:73
+#: src/Platforms/osx/CocoaRLVMInstance.mm:43
 msgid   "Select Game Directory"
 msgstr  ""
 
-#: src/MachineBase/SerializationGlobal.cpp:79
 #: src/MachineBase/SerializationGlobal.cpp:79
 msgid   "Could not open global memory file."
 msgstr  ""
@@ -48,8 +47,7 @@ msgstr  ""
 msgid   "Fatal local system error"
 msgstr  ""
 
-#: src/MachineBase/RLVMInstance.cpp:164
-#: src/MachineBase/RLVMInstance.cpp:164
+#: src/MachineBase/RLVMInstance.cpp:164 src/MachineBase/RLVMInstance.cpp:166
 msgid   "Uncaught exception"
 msgstr  ""
 
@@ -98,4 +96,53 @@ msgstr  ""
 #: src/MachineBase/RLVMInstance.cpp:123
 msgid   "Please place a copy of msgothic.ttc in either your home directory or "
         "in the game path."
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:184 src/Platforms/osx/SDLMain.mm:194
+#: src/Platforms/osx/SDLMain.mm:204
+msgid   "Window"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:187 src/Platforms/osx/SDLMain.mm:197
+msgid   "Minimize"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:215 src/Platforms/osx/SDLMain.mm:248
+#: src/Platforms/osx/SDLMain.mm:225 src/Platforms/osx/SDLMain.mm:258
+msgid   "Help"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:218 src/Platforms/osx/SDLMain.mm:228
+msgid   "Readme"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:231 src/Platforms/osx/SDLMain.mm:241
+msgid   "Copying"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:240 src/Platforms/osx/SDLMain.mm:250
+msgid   "GNU General Public License v3"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:148 src/Platforms/osx/SDLMain.mm:147
+#, boost-format
+msgid   "About %1%"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:153 src/Platforms/osx/SDLMain.mm:152
+#, boost-format
+msgid   "Hide %1%"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:168 src/Platforms/osx/SDLMain.mm:167
+#, boost-format
+msgid   "Quit %1%"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:156
+msgid   "Hide Others"
+msgstr  ""
+
+#: src/Platforms/osx/SDLMain.mm:161
+msgid   "Show All"
 msgstr  ""
