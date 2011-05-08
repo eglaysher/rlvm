@@ -1,6 +1,7 @@
 # Builds the rlvm.app with all binaries and files.
 
 import re
+import string
 
 Import('env')
 
@@ -48,3 +49,25 @@ static_env.InstallAs(
   source='src/Platforms/osx/StubInfoPlist.strings')
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/MacOS/rlvm',
                      source='rlvm-static')
+
+AddOption('--dmgname', action='store',
+          help='Builds a release package with the attached name. '
+               '(Example: "rlvm 0.12" -> "rlvm_0.12.dmg"')
+
+if GetOption('dmgname'):
+  dmgname = GetOption('dmgname')
+  filename = string.replace(dmgname, ' ', '_') + ".dmg"
+  if not GetOption('fullstatic'):
+    print "**** WARNING: RELEASE BUILDS MUST HAVE --fullstatic ****"
+    exit
+
+  static_env.Command('$OUTPUT_DIR/' + filename,
+                     '$OUTPUT_DIR/rlvm.app/',
+                     "scripts/pkg-dmg "
+                     "  --tempdir build/"
+                     "  --source build/rlvm.app"
+                     "  --target build/" + filename +
+                     "  --sourcefile"
+                     "  --volname \"" + dmgname + "\""
+                     "  --copy src/Platforms/osx/dmg-ds-store:/.DS_Store"
+                     "  --format UDBZ")

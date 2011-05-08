@@ -132,13 +132,9 @@ which will build rlvm.app in the build directory. The resulting OSX
 application will ask you for the location of the game with a native
 dialog.
 
-You can also build rlvm as a command line program, as in Linux:
+To build a dmg file for distribution, type:
 
- $ scons --release
-
-The result is run like this:
-
- $ ./build/rlvm /path/to/PlanetarianCopy
+ $ scons --release --fullstatic --dmgname="rlvm <version>"
 
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
