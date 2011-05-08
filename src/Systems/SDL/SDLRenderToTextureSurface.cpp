@@ -31,6 +31,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "base/notification_source.h"
+#include "base/notification_type.h"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
@@ -47,30 +49,12 @@ SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
                                                      const Size& size)
     : texture_(new Texture(render_to_texture(), size.width(), size.height())),
       graphics_system_(system) {
-  registerWithGraphicsSystem();
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 Source<GraphicsSystem>(system));
 }
 
 SDLRenderToTextureSurface::~SDLRenderToTextureSurface() {
-  unregisterFromGraphicsSystem();
-}
-
-void SDLRenderToTextureSurface::invalidate() {
-  // We regretfully can't restore the state here. Oh well. Since
-  // SDLRenderToTextureSurface are only used during Effects, we will soon be in
-  // the right state.
-  texture_.reset();
-}
-
-void SDLRenderToTextureSurface::unregisterFromGraphicsSystem() {
-  if (graphics_system_) {
-    graphics_system_->unregisterSurface(this);
-    graphics_system_ = NULL;
-  }
-}
-
-void SDLRenderToTextureSurface::registerWithGraphicsSystem() {
-  if (graphics_system_)
-    graphics_system_->registerSurface(this);
 }
 
 void SDLRenderToTextureSurface::dump() {
@@ -145,4 +129,13 @@ Size SDLRenderToTextureSurface::size() const {
 Surface* SDLRenderToTextureSurface::clone() const {
   throw SystemError("Unsupported operation clone on "
                     "SDLRenderToTextureSurface!");
+}
+
+void SDLRenderToTextureSurface::Observe(NotificationType type,
+                                        const NotificationSource& source,
+                                        const NotificationDetails& details) {
+  // We regretfully can't restore the state here. Oh well. Since
+  // SDLRenderToTextureSurface are only used during Effects, we will soon be in
+  // the right state.
+  texture_.reset();
 }

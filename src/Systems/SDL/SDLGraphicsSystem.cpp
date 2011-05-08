@@ -349,19 +349,6 @@ void SDLGraphicsSystem::setupVideo() {
 }
 
 SDLGraphicsSystem::~SDLGraphicsSystem() {
-  // Force all surfaces to unregister from us now, because otherwise they'll
-  // access our unresolved memory.
-  while (!alive_surfaces_.empty()) {
-    (*alive_surfaces_.begin())->unregisterFromGraphicsSystem();
-  }
-}
-
-void SDLGraphicsSystem::registerSurface(SurfaceInvalidatable* surface) {
-  alive_surfaces_.insert(surface);
-}
-
-void SDLGraphicsSystem::unregisterSurface(SurfaceInvalidatable* surface) {
-  alive_surfaces_.erase(surface);
 }
 
 void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
@@ -423,11 +410,6 @@ void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 }
 
 void SDLGraphicsSystem::setScreenMode(const int in) {
-  for (std::set<SurfaceInvalidatable*>::iterator it = alive_surfaces_.begin();
-       it != alive_surfaces_.end(); ++it) {
-    (*it)->invalidate();
-  }
-
   GraphicsSystem::setScreenMode(in);
 
   setupVideo();

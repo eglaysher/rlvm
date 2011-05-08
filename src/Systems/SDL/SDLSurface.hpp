@@ -33,11 +33,13 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/SDL/SurfaceInvalidatable.hpp"
 
 struct SDL_Surface;
 class Texture;
+class GraphicsSystem;
 class SDLGraphicsSystem;
 class GraphicsObject;
 
@@ -55,8 +57,8 @@ SDL_Surface* buildNewSurface(const Size& size);
  * example, anything returned from loadSurfaceFromFile(), while others
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
-class SDLSurface : public SurfaceInvalidatable,
-                   public Surface {
+class SDLSurface : public Surface,
+                   public NotificationObserver {
  private:
   /**
    * Keeps track of a texture and the information about which region
@@ -126,6 +128,8 @@ class SDLSurface : public SurfaceInvalidatable,
 
   bool is_mask_;
 
+  NotificationRegistrar registrar_;
+
   static std::vector<int> segmentPicture(int size_remainging);
 
  public:
@@ -143,22 +147,14 @@ class SDLSurface : public SurfaceInvalidatable,
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
+  void registerForNotification(GraphicsSystem* system);
+
   // Whether we have an underlying allocated surface.
   bool allocated() { return surface_; }
-
-  /// Overridden from SurfaceInvalidatable:
-
-  /// Clears |texture|. Called before a switch between windowed and
-  /// fullscreen mode, so that we aren't holding stale references.
-  virtual void invalidate();
-
-  /// Unregisters this object from the GraphicsSystem.
-  virtual void unregisterFromGraphicsSystem();
 
   virtual void setIsMask(const bool is) { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
-  void registerWithGraphicsSystem();
 
   void dump();
 
@@ -229,6 +225,12 @@ class SDLSurface : public SurfaceInvalidatable,
   // Called after each change to surface_. Marks the texture as
   // invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo(const Rect& written_rect);
+
+
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
 };
 
 

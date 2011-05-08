@@ -33,6 +33,7 @@
 #include <sstream>
 #include <vector>
 
+#include "base/notification_source.h"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
@@ -242,7 +243,6 @@ void SDLSurface::TextureRecord::forceUnload() {
 SDLSurface::SDLSurface(SDLGraphicsSystem* system)
     : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
       graphics_system_(system), is_mask_(false) {
-  registerWithGraphicsSystem();
 }
 
 // -----------------------------------------------------------------------
@@ -250,8 +250,8 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system)
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
   : surface_(surf), texture_is_valid_(false), is_dc0_(false),
     graphics_system_(system), is_mask_(false) {
-  registerWithGraphicsSystem();
   buildRegionTable(Size(surf->w, surf->h));
+  registerForNotification(system);
 }
 
 // -----------------------------------------------------------------------
@@ -262,7 +262,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
   : surface_(surf), region_table_(region_table),
     texture_is_valid_(false), is_dc0_(false), graphics_system_(system),
     is_mask_(false) {
-  registerWithGraphicsSystem();
+  registerForNotification(system);
 }
 
 // -----------------------------------------------------------------------
@@ -270,9 +270,15 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
   : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
     graphics_system_(system), is_mask_(false) {
-  registerWithGraphicsSystem();
   allocate(size);
   buildRegionTable(size);
+  registerForNotification(system);
+}
+
+void SDLSurface::registerForNotification(GraphicsSystem* system) {
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 Source<GraphicsSystem>(system));
 }
 
 // -----------------------------------------------------------------------
@@ -292,39 +298,8 @@ void SDLSurface::buildRegionTable(const Size& size) {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::registerWithGraphicsSystem() {
-  if (graphics_system_)
-    graphics_system_->registerSurface(this);
-}
-
-// -----------------------------------------------------------------------
-
-void SDLSurface::unregisterFromGraphicsSystem() {
-  if (graphics_system_) {
-    graphics_system_->unregisterSurface(this);
-    graphics_system_ = NULL;
-  }
-}
-
-// -----------------------------------------------------------------------
-
 SDLSurface::~SDLSurface() {
-  unregisterFromGraphicsSystem();
   deallocate();
-}
-
-void SDLSurface::invalidate() {
-  if (surface_) {
-    // Force unloading of all OpenGL resources
-    for (std::vector<TextureRecord>::iterator it = textures_.begin();
-         it != textures_.end(); ++it) {
-      it->forceUnload();
-    }
-
-    dirty_rectangle_ = rect();
-  }
-
-  texture_is_valid_ = false;
 }
 
 // -----------------------------------------------------------------------
@@ -782,5 +757,21 @@ void SDLSurface::markWrittenTo(const Rect& written_rect) {
 
   // Mark that the texture needs reuploading
   dirty_rectangle_ = dirty_rectangle_.rectUnion(written_rect);
+  texture_is_valid_ = false;
+}
+
+void SDLSurface::Observe(NotificationType type,
+                         const NotificationSource& source,
+                         const NotificationDetails& details) {
+  if (surface_) {
+    // Force unloading of all OpenGL resources
+    for (std::vector<TextureRecord>::iterator it = textures_.begin();
+         it != textures_.end(); ++it) {
+      it->forceUnload();
+    }
+
+    dirty_rectangle_ = rect();
+  }
+
   texture_is_valid_ = false;
 }

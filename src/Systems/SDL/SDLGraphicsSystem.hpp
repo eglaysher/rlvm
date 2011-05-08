@@ -44,7 +44,6 @@ class Gameexe;
 class GraphicsObject;
 class SDLGraphicsSystem;
 class SDLSurface;
-class SurfaceInvalidatable;
 class System;
 class Texture;
 
@@ -60,10 +59,6 @@ class SDLGraphicsSystem : public GraphicsSystem {
   // SDL should be initialized before you create an SDLGraphicsSystem.
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
-
-  void registerSurface(SurfaceInvalidatable* surface);
-  void unregisterSurface(SurfaceInvalidatable* surface);
-
 
 //  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
 
@@ -187,10 +182,6 @@ class SDLGraphicsSystem : public GraphicsSystem {
   /// OpenGL v1.x drivers.
   int screen_tex_width_;
   int screen_tex_height_;
-
-  /// Keep a list of all surfaces that are currently alive. We do this so that
-  /// when we
-  std::set<SurfaceInvalidatable*> alive_surfaces_;
 
   /**
    * LRU cache filled with the last fifteen accessed images.

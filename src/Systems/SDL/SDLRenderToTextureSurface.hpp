@@ -30,30 +30,20 @@
 
 #include <boost/scoped_ptr.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "Systems/Base/Surface.hpp"
-#include "Systems/SDL/SurfaceInvalidatable.hpp"
 
 class SDLGraphicsSystem;
 class Texture;
 
 // Fake SDLSurface that holds on to an OpenGL screenshot. Used for composing
 // the screenstate with another.
-class SDLRenderToTextureSurface : public SurfaceInvalidatable,
-                                  public Surface {
+class SDLRenderToTextureSurface : public Surface,
+                                  public NotificationObserver {
  public:
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();
-
-  // Overridden from SurfaceInvalidatable:
-
-  // Clears |texture|. Called before a switch between windowed and
-  // fullscreen mode, so that we aren't holding stale references.
-  virtual void invalidate();
-
-  // Unregisters this object from the GraphicsSystem.
-  virtual void unregisterFromGraphicsSystem();
-
-  void registerWithGraphicsSystem();
 
   virtual void dump();
 
@@ -88,12 +78,19 @@ class SDLRenderToTextureSurface : public SurfaceInvalidatable,
 
   virtual Surface* clone() const;
 
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
  private:
   // The SDLTexture which wraps one or more OpenGL textures
   boost::scoped_ptr<Texture> texture_;
 
   // A pointer to the graphics_system.
   SDLGraphicsSystem* graphics_system_;
+
+  NotificationRegistrar registrar_;
 };
 
 

@@ -42,6 +42,9 @@
 #include <string>
 #include <vector>
 
+#include "base/notification_service.h"
+#include "base/notification_source.h"
+#include "base/notification_details.h"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "MachineBase/StackFrame.hpp"
@@ -402,7 +405,16 @@ void GraphicsSystem::setShowWeather(const int in) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::setScreenMode(const int in) {
+  bool changed = globals_.screen_mode != in;
+
   globals_.screen_mode = in;
+
+  if (changed) {
+    NotificationService::current()->Notify(
+        NotificationType::FULLSCREEN_STATE_CHANGED,
+        Source<GraphicsSystem>(this),
+        Details<const int>(&in));
+  }
 }
 
 // -----------------------------------------------------------------------
