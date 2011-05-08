@@ -61,6 +61,10 @@ root_env.Append(
 #########################################################################
 
 librlvm_files = [
+  "src/base/notification_details.cc",
+  "src/base/notification_registrar.cc",
+  "src/base/notification_service.cc",
+  "src/base/notification_source.cc",
   "src/Effects/BlindEffect.cpp",
   "src/Effects/Effect.cpp",
   "src/Effects/EffectFactory.cpp",

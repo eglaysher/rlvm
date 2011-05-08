@@ -28,6 +28,7 @@ test_env.BuildSubcomponent("gmock")
 test_case_files = [
   "test/TestSystem/TestMachine.cpp",
 
+  "test/notification_service_unittest.cc",
   "test/testUtils.cpp",
   "test/gameexe_test.cpp",
   "test/rlmachine_test.cpp",
