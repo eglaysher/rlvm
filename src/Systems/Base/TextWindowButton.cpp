@@ -30,6 +30,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include "base/notification_details.h"
+#include "base/notification_service.h"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
@@ -204,9 +206,13 @@ void ActionTextWindowButton::buttonReleased(RLMachine& machine) {
 
 ActivationTextWindowButton::ActivationTextWindowButton(
     System& system, bool use, GameexeInterpretObject location_box,
-    CallbackFunction start, CallbackFunction end)
-    : TextWindowButton(system, use, location_box), on_start_(start),
-      on_end_(end), on_(false), enabled_(true) {
+    CallbackFunction setter)
+    : TextWindowButton(system, use, location_box),
+      on_set_(setter),
+      on_(false),
+      enabled_(true),
+      enabled_listener_(static_cast<NotificationType::Type>(-1)),
+      change_listener_(static_cast<NotificationType::Type>(-1)) {
 }
 
 ActivationTextWindowButton::~ActivationTextWindowButton() {
@@ -215,9 +221,9 @@ ActivationTextWindowButton::~ActivationTextWindowButton() {
 void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
   if (enabled_) {
     if (on_)
-      on_end_();
+      on_set_(false);
     else
-      on_start_();
+      on_set_(true);
   }
 }
 
@@ -226,9 +232,20 @@ void ActivationTextWindowButton::setEnabled(bool enabled) {
   setState();
 }
 
-void ActivationTextWindowButton::setActivated(bool on) {
-  on_ = on;
-  setState();
+void ActivationTextWindowButton::setEnabledNotification(
+    NotificationType enabled_listener) {
+  enabled_listener_ = enabled_listener;
+  registrar_.Add(this,
+                 enabled_listener_,
+                 NotificationService::AllSources());
+}
+
+void ActivationTextWindowButton::setChangeNotification(
+    NotificationType change_listener) {
+  change_listener_ = change_listener;
+  registrar_.Add(this,
+                 change_listener_,
+                 NotificationService::AllSources());
 }
 
 void ActivationTextWindowButton::setState() {
@@ -236,6 +253,20 @@ void ActivationTextWindowButton::setState() {
     state_ = on_ ? BUTTONSTATE_ACTIVATED : BUTTONSTATE_NORMAL;
   else
     state_ = BUTTONSTATE_DISABLED;
+}
+
+void ActivationTextWindowButton::Observe(NotificationType type,
+                                         const NotificationSource& source,
+                                         const NotificationDetails& details) {
+  if (type == enabled_listener_) {
+    Details<int> i(details);
+    enabled_ = *i.ptr();
+  } else if (type == change_listener_) {
+    Details<int> i(details);
+    on_ = *i.ptr();
+  }
+
+  setState();
 }
 
 // -----------------------------------------------------------------------

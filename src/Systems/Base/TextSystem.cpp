@@ -38,6 +38,9 @@
 #include <string>
 #include <vector>
 
+#include "base/notification_service.h"
+#include "base/notification_source.h"
+#include "base/notification_details.h"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
@@ -367,7 +370,11 @@ void TextSystem::stopReadingBacklog() {
 
 void TextSystem::setAutoMode(int i) {
   auto_mode_ = (bool)i;
-  auto_mode_signal_(auto_mode_);
+
+  NotificationService::current()->Notify(
+      NotificationType::AUTO_MODE_STATE_CHANGED,
+      Source<TextSystem>(this),
+      Details<const int>(&i));
 }
 
 int TextSystem::getAutoTime(int num_chars) {
@@ -656,7 +663,10 @@ void TextSystem::setKidokuRead(const int in) {
   bool value_changed = kidoku_read_ != in;
 
   kidoku_read_ = in;
-  skip_mode_enabled_signal_(in);
+  NotificationService::current()->Notify(
+      NotificationType::SKIP_MODE_ENABLED_CHANGED,
+      Source<TextSystem>(this),
+      Details<const int>(&in));
 
   if (value_changed && !kidoku_read_ && skip_mode_) {
     // Auto leave skip mode when we stop reading previously read text.
@@ -664,12 +674,16 @@ void TextSystem::setKidokuRead(const int in) {
   }
 }
 
-void TextSystem::setSkipMode(const int in) {
+void TextSystem::setSkipMode(int in) {
   bool value_changed = skip_mode_ != in;
   skip_mode_ = in;
 
-  if (value_changed)
-    skip_mode_signal_(in);
+  if (value_changed) {
+    NotificationService::current()->Notify(
+        NotificationType::SKIP_MODE_STATE_CHANGED,
+        Source<TextSystem>(this),
+        Details<int>(&in));
+  }
 }
 
 template<class Archive>

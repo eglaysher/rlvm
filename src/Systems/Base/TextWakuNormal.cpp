@@ -233,13 +233,17 @@ void TextWakuNormal::loadWindowWaku() {
         new ActivationTextWindowButton(
             system_,
             ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-            bind(&TextSystem::setSkipMode, ref(ts), true),
-            bind(&TextSystem::setSkipMode, ref(ts), false));
+            bind(&TextSystem::setSkipMode, ref(ts), _1));
+    readjump_box->setEnabledNotification(
+        NotificationType::SKIP_MODE_ENABLED_CHANGED);
+    readjump_box->setChangeNotification(
+        NotificationType::SKIP_MODE_STATE_CHANGED);
+
+    // Set the initial enabled state. If true, we'll get a signal enabling it
+    // immediately.
+    readjump_box->setEnabled(ts.kidokuRead());
+
     button_map_[10].reset(readjump_box);
-    ts.skipModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                     readjump_box, _1));
-    ts.skipModeEnabledSignal().connect(
-        bind(&ActivationTextWindowButton::setEnabled, readjump_box, _1));
   }
 
   if (waku("AUTOMODE_BOX").exists()) {
@@ -247,11 +251,11 @@ void TextWakuNormal::loadWindowWaku() {
         new ActivationTextWindowButton(
             system_,
             ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-            bind(&TextSystem::setAutoMode, ref(ts), true),
-            bind(&TextSystem::setAutoMode, ref(ts), false));
+            bind(&TextSystem::setAutoMode, ref(ts), _1));
+    automode_button->setChangeNotification(
+        NotificationType::AUTO_MODE_STATE_CHANGED);
+
     button_map_[11].reset(automode_button);
-    ts.autoModeSignal().connect(bind(&ActivationTextWindowButton::setActivated,
-                                     automode_button, _1));
   }
 
   /*

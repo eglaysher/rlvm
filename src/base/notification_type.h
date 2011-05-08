@@ -29,6 +29,18 @@ class NotificationType {
     // the new value.
     FULLSCREEN_STATE_CHANGED,
 
+    // Sent whenever we change whether we're skipping text. The TextSystem is
+    // the source, the details are an int of the new state.
+    SKIP_MODE_STATE_CHANGED,
+
+    // Whether the user can turn on skip mode. The TextSystem is the source,
+    // the details are an int of the new state.
+    SKIP_MODE_ENABLED_CHANGED,
+
+    // Sent whenever automode is turned on/off. The TextSystem is the source,
+    // the details are an int of the new state.
+    AUTO_MODE_STATE_CHANGED,
+
     // Count (must be last) ----------------------------------------------------
     // Used to determine the number of notification types.  Not valid as
     // a type parameter when registering for or posting notifications.

@@ -32,8 +32,10 @@
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/signals/trackable.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
+#include "base/notification_type.h"
 #include "libReallive/gameexe.h"
 
 class Point;
@@ -105,29 +107,39 @@ class ActionTextWindowButton : public TextWindowButton {
 // -----------------------------------------------------------------------
 
 class ActivationTextWindowButton : public TextWindowButton,
-                                   public boost::signals::trackable {
+                                   public NotificationObserver {
  public:
-  typedef boost::function<void(void)> CallbackFunction;
+  typedef boost::function<void(int)> CallbackFunction;
 
  public:
   ActivationTextWindowButton(System& system, bool use,
                              GameexeInterpretObject location_box,
-                             CallbackFunction start,
-                             CallbackFunction end);
+                             CallbackFunction setter);
   virtual ~ActivationTextWindowButton();
 
   virtual void buttonReleased(RLMachine& machine);
 
-  void setEnabled(bool on);
-  void setActivated(bool on);
+  void setEnabled(bool enabled);
+
+  void setEnabledNotification(NotificationType enabled_listener);
+  void setChangeNotification(NotificationType change_listener);
 
  private:
   void setState();
 
-  CallbackFunction on_start_;
-  CallbackFunction on_end_;
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
+  CallbackFunction on_set_;
   bool on_;
   bool enabled_;
+
+  // The type that we listen for to change our activated state.
+  NotificationType enabled_listener_;
+  NotificationType change_listener_;
+  NotificationRegistrar registrar_;
 };
 
 // -----------------------------------------------------------------------

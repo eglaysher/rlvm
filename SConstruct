@@ -25,7 +25,6 @@ env = Environment(
     "boost_iostreams-mt",
     "boost_filesystem-mt",
     "boost_date_time-mt",
-    "boost_signals-mt",
     "boost_thread-mt",
     "boost_system-mt",
     "z"
