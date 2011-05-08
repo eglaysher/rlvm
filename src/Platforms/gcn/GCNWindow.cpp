@@ -29,20 +29,15 @@
 #include "Platforms/gcn/gcnUtils.hpp"
 #include "Systems/Base/Rect.hpp"
 
-ImageRect GCNWindow::s_border;
+static int xpos[] = {0, 4, 7, 11};
+static int ypos[] = {0, 4, 15, 19};
+ImageRect GCNWindow::s_border(IMG_VSCROLL_GREY, xpos, ypos);
 
 // -----------------------------------------------------------------------
 // GCNWindow
 // -----------------------------------------------------------------------
 GCNWindow::GCNWindow(GCNPlatform* platform)
   : platform_(platform) {
-  if (s_border.image == NULL) {
-    s_border.image.reset(getThemeImage(IMG_VSCROLL_GREY));
-
-    static int xpos[] = {0, 4, 7, 11};
-    static int ypos[] = {0, 4, 15, 19};
-    s_border.setCoordinates(xpos, ypos);
-  }
 }
 
 // -----------------------------------------------------------------------

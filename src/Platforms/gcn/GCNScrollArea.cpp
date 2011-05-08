@@ -26,11 +26,17 @@
 
 #include "Platforms/gcn/GCNScrollArea.hpp"
 
+#include "base/notification_service.h"
 #include "Platforms/gcn/gcnUtils.hpp"
 
-ImageRect GCNScrollArea::s_background;
-ImageRect GCNScrollArea::s_vMarker;
-boost::scoped_ptr<gcn::Image> GCNScrollArea::s_buttonImages[4][2];
+static int bggridx[] = {0, 3, 28, 31};
+static int bggridy[] = {0, 3, 28, 31};
+ImageRect GCNScrollArea::s_background(IMG_DEEPBOX, bggridx, bggridy);
+
+// TODO: +1 these values? Different +1 status then other set.
+int vsgridx[] = {0, 4, 7, 11};
+int vsgridy[] = {0, 4, 15, 19};
+ImageRect GCNScrollArea::s_vMarker(IMG_VSCROLL_GREY, vsgridx, vsgridy);
 
 // BUGS:
 //
@@ -42,7 +48,9 @@ boost::scoped_ptr<gcn::Image> GCNScrollArea::s_buttonImages[4][2];
 
 GCNScrollArea::GCNScrollArea(gcn::Widget *widget)
   : gcn::ScrollArea(widget) {
-  init();
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 NotificationService::AllSources());
 }
 
 // -----------------------------------------------------------------------
@@ -75,6 +83,8 @@ void GCNScrollArea::logic() {
 // -----------------------------------------------------------------------
 
 void GCNScrollArea::draw(gcn::Graphics *graphics) {
+  init();
+
   if (mVBarVisible) {
     drawUpButton(graphics);
     drawDownButton(graphics);
@@ -114,27 +124,15 @@ void GCNScrollArea::drawFrame(gcn::Graphics *graphics) {
 // -----------------------------------------------------------------------
 
 void GCNScrollArea::init() {
-  if (s_background.image == NULL) {
-    s_background.image.reset(getThemeImage(IMG_DEEPBOX));
-    // TODO: +1 these values??
-    int bggridx[] = {0, 3, 28, 31};
-    int bggridy[] = {0, 3, 28, 31};
-    s_background.setCoordinates(bggridx, bggridy);
-
-    s_vMarker.image.reset(getThemeImage(IMG_VSCROLL_GREY));
-    // TODO: +1 these values? Different +1 status then other set.
-    int vsgridx[] = {0, 4, 7, 11};
-    int vsgridy[] = {0, 4, 15, 19};
-    s_vMarker.setCoordinates(vsgridx, vsgridy);
-
-    s_buttonImages[UP][0].reset(getThemeImage(IMG_VSCROLL_UP_DEFAULT));
-    s_buttonImages[DOWN][0].reset(getThemeImage(IMG_VSCROLL_DOWN_DEFAULT));
-    s_buttonImages[LEFT][0].reset(getThemeImage(IMG_HSCROLL_LEFT_DEFAULT));
-    s_buttonImages[RIGHT][0].reset(getThemeImage(IMG_HSCROLL_RIGHT_DEFAULT));
-    s_buttonImages[UP][1].reset(getThemeImage(IMG_VSCROLL_UP_PRESSED));
-    s_buttonImages[DOWN][1].reset(getThemeImage(IMG_VSCROLL_DOWN_PRESSED));
-    s_buttonImages[LEFT][1].reset(getThemeImage(IMG_HSCROLL_LEFT_PRESSED));
-    s_buttonImages[RIGHT][1].reset(getThemeImage(IMG_HSCROLL_RIGHT_PRESSED));
+  if (buttonImages_[UP][0] == NULL) {
+    buttonImages_[UP][0].reset(getThemeImage(IMG_VSCROLL_UP_DEFAULT));
+    buttonImages_[DOWN][0].reset(getThemeImage(IMG_VSCROLL_DOWN_DEFAULT));
+    buttonImages_[LEFT][0].reset(getThemeImage(IMG_HSCROLL_LEFT_DEFAULT));
+    buttonImages_[RIGHT][0].reset(getThemeImage(IMG_HSCROLL_RIGHT_DEFAULT));
+    buttonImages_[UP][1].reset(getThemeImage(IMG_VSCROLL_UP_PRESSED));
+    buttonImages_[DOWN][1].reset(getThemeImage(IMG_VSCROLL_DOWN_PRESSED));
+    buttonImages_[LEFT][1].reset(getThemeImage(IMG_HSCROLL_LEFT_PRESSED));
+    buttonImages_[RIGHT][1].reset(getThemeImage(IMG_HSCROLL_RIGHT_PRESSED));
   }
 }
 
@@ -163,7 +161,7 @@ void GCNScrollArea::drawButton(gcn::Graphics *graphics, BUTTON_DIR dir) {
       break;
   }
 
-  graphics->drawImage(s_buttonImages[dir][state].get(), dim.x, dim.y);
+  graphics->drawImage(buttonImages_[dir][state].get(), dim.x, dim.y);
 }
 
 // -----------------------------------------------------------------------
@@ -224,4 +222,14 @@ void GCNScrollArea::drawHMarker(gcn::Graphics *graphics) {
 
   static_cast<GCNGraphics*>(graphics)->
     drawImageRect(dim.x, dim.y, dim.width, dim.height, s_vMarker);
+}
+
+void GCNScrollArea::Observe(NotificationType type,
+                            const NotificationSource& source,
+                            const NotificationDetails& details) {
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 2; ++j) {
+      buttonImages_[i][j].reset();
+    }
+  }
 }

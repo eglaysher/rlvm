@@ -243,6 +243,7 @@ void SDLSurface::TextureRecord::forceUnload() {
 SDLSurface::SDLSurface(SDLGraphicsSystem* system)
     : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
       graphics_system_(system), is_mask_(false) {
+  registerForNotification(system);
 }
 
 // -----------------------------------------------------------------------
@@ -274,6 +275,8 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
   buildRegionTable(size);
   registerForNotification(system);
 }
+
+// -----------------------------------------------------------------------
 
 void SDLSurface::registerForNotification(GraphicsSystem* system) {
   registrar_.Add(this,

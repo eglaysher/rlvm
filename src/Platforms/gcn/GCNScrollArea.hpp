@@ -27,16 +27,18 @@
 #ifndef SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
 #define SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
 
+#include <boost/scoped_ptr.hpp>
 #include <guichan/widgets/scrollarea.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "Platforms/gcn/GCNGraphics.hpp"
-
-#include <boost/scoped_ptr.hpp>
 
 /**
  * Copy of TMW's ScrollArea class, adapted to my system.
  */
-class GCNScrollArea : public gcn::ScrollArea {
+class GCNScrollArea : public gcn::ScrollArea,
+                      public NotificationObserver {
  public:
   explicit GCNScrollArea(gcn::Widget *widget);
   ~GCNScrollArea();
@@ -78,9 +80,17 @@ class GCNScrollArea : public gcn::ScrollArea {
   void drawVMarker(gcn::Graphics *graphics);
   void drawHMarker(gcn::Graphics *graphics);
 
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
+  // Button images.
+  boost::scoped_ptr<gcn::Image> buttonImages_[4][2];
+
+  NotificationRegistrar registrar_;
+
   static ImageRect s_background;
   static ImageRect s_vMarker;
-  static boost::scoped_ptr<gcn::Image> s_buttonImages[4][2];
 };  // end of class GCNScrollArea
 
 #endif  // SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_

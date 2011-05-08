@@ -30,19 +30,40 @@
 #include <guichan/image.hpp>
 #include <guichan/opengl/openglimage.hpp>
 
+#include "base/notification_service.h"
+#include "Platforms/gcn/gcnUtils.hpp"
+
 // -----------------------------------------------------------------------
 // ImageRect
 // -----------------------------------------------------------------------
-void ImageRect::setCoordinates(const int xpos[], const int ypos[]) {
+ImageRect::ImageRect(ThemeImage resource_id, const int xpos[], const int ypos[])
+    : resource_id_(resource_id) {
   int id = 0;
   for (int y = 0; y < 3; ++y) {
     for (int x = 0; x < 3; ++x) {
-      rect[id] = Rect::REC(xpos[x], ypos[y],
-                           xpos[x + 1] - xpos[x],
-                           ypos[y + 1] - ypos[y]);
+      rect_[id] = Rect::REC(xpos[x], ypos[y],
+                            xpos[x + 1] - xpos[x],
+                            ypos[y + 1] - ypos[y]);
       id++;
     }
   }
+
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 NotificationService::AllSources());
+}
+
+gcn::Image* ImageRect::image() {
+  if (!image_)
+    image_.reset(getThemeImage(resource_id_));
+
+  return image_.get();
+}
+
+void ImageRect::Observe(NotificationType type,
+                        const NotificationSource& source,
+                        const NotificationDetails& details) {
+  image_.reset();
 }
 
 // -----------------------------------------------------------------------
@@ -57,11 +78,10 @@ GCNGraphics::~GCNGraphics() { }
 
 // -----------------------------------------------------------------------
 
-void GCNGraphics::drawImageRect(int x, int y, int w, int h,
-                                const ImageRect &i) {
+void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
   pushClipArea(gcn::Rectangle(x, y, w, h));
 
-  gcn::Image* image = i.image.get();
+  gcn::Image* image = i.image();
 
   // Draw the center area
   drawImageStretched(image,

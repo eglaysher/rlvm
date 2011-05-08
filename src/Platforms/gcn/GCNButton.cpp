@@ -32,10 +32,13 @@
 
 #include "Platforms/gcn/gcnUtils.hpp"
 
-ImageRect GCNButton::s_button;
-ImageRect GCNButton::s_buttonhi;
-ImageRect GCNButton::s_buttonpress;
-ImageRect GCNButton::s_button_disabled;
+static int xpos[] = {0, 9, 16, 26};
+static int ypos[] = {0, 4, 19, 24};
+
+ImageRect GCNButton::s_button(IMG_BUTTON, xpos, ypos);
+ImageRect GCNButton::s_buttonhi(IMG_BUTTONHI, xpos, ypos);
+ImageRect GCNButton::s_buttonpress(IMG_BUTTONPRESS, xpos, ypos);
+ImageRect GCNButton::s_button_disabled(IMG_BUTTON_DISABLED, xpos, ypos);
 
 // -----------------------------------------------------------------------
 // GCNButton
@@ -92,20 +95,6 @@ void GCNButton::draw(gcn::Graphics* graphics) {
 
 void GCNButton::init() {
   setFrameSize(0);
-
-  if (s_button.image == NULL) {
-    s_button.image.reset(getThemeImage(IMG_BUTTON));
-    s_buttonhi.image.reset(getThemeImage(IMG_BUTTONHI));
-    s_buttonpress.image.reset(getThemeImage(IMG_BUTTONPRESS));
-    s_button_disabled.image.reset(getThemeImage(IMG_BUTTON_DISABLED));
-
-    static int xpos[] = {0, 9, 16, 26};
-    static int ypos[] = {0, 4, 19, 24};
-    s_button.setCoordinates(xpos, ypos);
-    s_buttonhi.setCoordinates(xpos, ypos);
-    s_buttonpress.setCoordinates(xpos, ypos);
-    s_button_disabled.setCoordinates(xpos, ypos);
-  }
 }
 
 // -----------------------------------------------------------------------

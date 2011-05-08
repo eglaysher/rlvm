@@ -33,6 +33,8 @@
 #include <SDL/SDL_ttf.h>
 #include <boost/shared_ptr.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "guichan/color.hpp"
 #include "guichan/font.hpp"
 #include "guichan/platform.hpp"
@@ -62,7 +64,8 @@ class OpenGLImage;
  * @author Walluce Pinkham
  * @author Olof Naessén
  */
-class SDLTrueTypeFont : public gcn::Font {
+class SDLTrueTypeFont : public gcn::Font,
+                        public NotificationObserver {
  public:
   SDLTrueTypeFont(const std::string& filename, int size);
   virtual ~SDLTrueTypeFont();
@@ -93,6 +96,11 @@ class SDLTrueTypeFont : public gcn::Font {
   virtual void drawString(gcn::Graphics* graphics, const std::string& text,
                           int x, int y);
 
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
  private:
   TTF_Font *font_;
 
@@ -104,6 +112,8 @@ class SDLTrueTypeFont : public gcn::Font {
 
   LRUCache<std::pair<std::string, std::string>,
            boost::shared_ptr<gcn::OpenGLImage> > image_cache_;
+
+  NotificationRegistrar registrar_;
 };
 
 #endif  // SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_

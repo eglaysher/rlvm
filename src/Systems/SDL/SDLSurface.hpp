@@ -226,7 +226,6 @@ class SDLSurface : public Surface,
   // invalid and notifies SDLGraphicsSystem when appropriate.
   void markWrittenTo(const Rect& written_rect);
 
-
   // NotificationObserver:
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,

@@ -31,7 +31,10 @@
 #include <guichan/opengl/openglgraphics.hpp>
 #include <guichan/image.hpp>
 
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "Systems/Base/Rect.hpp"
+#include "Platforms/gcn/gcnUtils.hpp"
 
 /**
  * 9 rectangles in an image. 4 corners, 4 sides and a middle area. The
@@ -53,27 +56,34 @@
  * Originally from The Mana World; modified to use Guichan's standard image
  * class, and to only keep one image and store regions into it.
  */
-struct ImageRect {
-  boost::shared_ptr<gcn::Image> image;
+struct ImageRect : public NotificationObserver {
+  ImageRect(ThemeImage resource, const int xpos[], const int ypos[]);
 
-  /**
-   * Initializes all of the Rect classes based on two four-tuples representing
-   * the corner coordinates.
-   */
-  void setCoordinates(const int xpos[], const int ypos[]);
+  gcn::Image* image();
 
-  Rect rect[9];
+  // Symbolic access to the various parts.
+  const Rect& topLeft() const { return rect_[0]; }
+  const Rect& top() const { return rect_[1]; }
+  const Rect& topRight() const { return rect_[2]; }
+  const Rect& left() const { return rect_[3]; }
+  const Rect& center() const { return rect_[4]; }
+  const Rect& right() const { return rect_[5]; }
+  const Rect& bottomLeft() const { return rect_[6]; }
+  const Rect& bottom() const { return rect_[7]; }
+  const Rect& bottomRight() const { return rect_[8]; }
 
-  /// Symbolic access to the various parts.
-  const Rect& topLeft() const { return rect[0]; }
-  const Rect& top() const { return rect[1]; }
-  const Rect& topRight() const { return rect[2]; }
-  const Rect& left() const { return rect[3]; }
-  const Rect& center() const { return rect[4]; }
-  const Rect& right() const { return rect[5]; }
-  const Rect& bottomLeft() const { return rect[6]; }
-  const Rect& bottom() const { return rect[7]; }
-  const Rect& bottomRight() const { return rect[8]; }
+ private:
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
+  ThemeImage resource_id_;
+  Rect rect_[9];
+
+  boost::shared_ptr<gcn::Image> image_;
+
+  NotificationRegistrar registrar_;
 };
 
 /**
@@ -96,7 +106,7 @@ class GCNGraphics : public gcn::OpenGLGraphics {
    * Draws a rectangle using images. 4 corner images, 4 side images and 1
    * image for the inside.
    */
-  void drawImageRect(int x, int y, int w, int h, const ImageRect &imgRect);
+  void drawImageRect(int x, int y, int w, int h, ImageRect &imgRect);
 
  private:
   /// Hack around OpenGLGraphics::drawImage to render the image (stretched)

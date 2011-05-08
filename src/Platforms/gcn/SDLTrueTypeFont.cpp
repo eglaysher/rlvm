@@ -33,6 +33,7 @@
 #include <guichan/opengl/openglimage.hpp>
 #include <string>
 
+#include "base/notification_service.h"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 
@@ -53,6 +54,10 @@ SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
     throw GCN_EXCEPTION("SDLTrueTypeFont::SDLTrueTypeFont. " +
                         std::string(TTF_GetError()));
   }
+
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 NotificationService::AllSources());
 }
 
 SDLTrueTypeFont::~SDLTrueTypeFont() {
@@ -139,4 +144,10 @@ void SDLTrueTypeFont::setAntiAlias(bool anti_alias) {
 
 bool SDLTrueTypeFont::isAntiAlias() {
   return anti_alias_;
+}
+
+void SDLTrueTypeFont::Observe(NotificationType type,
+                              const NotificationSource& source,
+                              const NotificationDetails& details) {
+  image_cache_.clear();
 }
