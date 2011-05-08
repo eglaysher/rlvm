@@ -502,6 +502,9 @@ void GraphicsSystem::reset() {
   clearAllObjects();
   clearAllDCs();
 
+  hik_script_.reset();
+  background_type_ = BACKGROUND_DC0;
+
   // Reset the cursor
   show_cursor_from_bytecode_ = true;
   cursor_ = system().gameexe()("MOUSE_CURSOR").to_int(0);
