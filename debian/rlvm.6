@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH RLVM 6 "November 07, 2009"
+.TH RLVM 6 "May 2011" "rlvm"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -19,13 +19,16 @@
 rlvm \- RealLive interpreter clone
 .SH SYNOPSIS
 .B rlvm
-.RI " <path to directory containing a Gameexe.ini file>"
-.br
+[\fIOPTION\fR]... <path to directory containing a Gameexe.ini file>
 .SH DESCRIPTION
+.PP
 rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users
 with a compatible, portable interpreter to play VisualArts games,
-specifically those released by Key. 
+specifically those released by Key.
+.TP 
+\fB\-\-font\fR
+Specifies the path to a TrueType font to use instead of trying to autodetect the font
 .SH SUPPORTED GAMES
 .sp 1
 Currently, rlvm can run the following games:

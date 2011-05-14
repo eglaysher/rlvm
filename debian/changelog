@@ -1,3 +1,14 @@
+rlvm (0.12) natty; urgency=low
+
+  * New GTK+ interface with desktop integration and UI refinements
+  * Partial Japanese localizations
+  * Fix graphics corruption in in-game dialogs when a dialog is brought
+    up, and then fullscreen mode activated
+  * Smooth the output of text in rlBabel using games
+  * Don't play voice samples while fast forwarding
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 14 May 2011 12:59:28 -0700
+
 rlvm (0.11) maverick; urgency=low
 
   * Fix graphical defects in Clannad

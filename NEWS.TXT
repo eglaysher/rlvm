@@ -1,6 +1,25 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.12:                                                [2011-05-14]
+
+- User interface polish:
+  - Display fatal error messages in a native dialog to user instead of
+    just printing to the terminal.
+  - Improvements to directory selector; complains if a directory isn't a
+    game on Mac, shows a GTK+ selector on Linux.
+  - Commissioned icon and better desktop integration on Linux.
+  - Japanese localizations (and localization support for other languages).
+  - Add nice messages instead of crashing on some error conditions
+    (trying to play a game we don't know the encoding for, trying to
+    play an AVG32 or Siglus game, etc).
+- Fix graphics corruption in in-game dialogs when a dialog is brought
+  up, and then fullscreen mode activated.
+- Smooth the output of text in rlBabel using games.
+- Don't play voice samples while fast forwarding.
+
+-------------------------------------------------------------------------
+
 Version 0.11:                                                [2011-03-06]
 
 - Fix graphical defects in Clannad

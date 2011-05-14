@@ -28,6 +28,7 @@ decoding their file formats, and to Haeleth for creating rldev along
 with answering all my dumb questions about the internal workings of the
 RealLive system.
 
+
 2) STATUS
 -------------------------------------------------------------------------
 
@@ -70,6 +71,34 @@ Command+{F,Enter} on Mac.
 
 Please report bugs and discrepancies to <glaysher at umich dot edu>.
 
+
+3) USING RLVM
+-------------------------------------------------------------------------
+
+By default, rlvm is a GUI program. Start it by double clicking on the
+icon [OSX] or selecting it from your Applications menu [Linux]. You will
+then want to select the folder that contains the SEEN.TXT of the game
+you want to play.
+
+If you are using Ubuntu or OSX, rlvm makes an effort to find a system
+Japanese Gothic font. If rlvm is complaining that it can't find a font,
+it will also look for the file "msgothic.ttc" in either the game
+directory nor your home directory. If you are using Linux, you can
+manually specify a font with the --font option.
+
+On Linux, you can also manually start rlvm from the command line,
+optionally passing in the directory containing the SEEN.TXT file:
+
+ $ rlvm [/path/to/GameDirectory/]
+
+The rlvm binary should be self contained and movable anywhere, though
+the build system does not have an install target.
+
+If you don't have the file "msgothic.ttc" in either the game directory
+nor your home directory, please specify a Japanese font on the command
+line with --font.
+
+
 3) COMPILING RLVM
 -------------------------------------------------------------------------
 You will need the following libraries/utilities:
@@ -84,6 +113,7 @@ You will need the following libraries/utilities:
   included in the source distribution if you don't already have them
   installed.)
 - freetype
+- GNU gettext
 
 3a) Compiling under Linux
 -------------------------------------------------------------------------
@@ -102,27 +132,23 @@ be built and can be run by typing:
 
 They should all pass.
 
-You should copy the contents of the Planetarian CD to a directory on
-your hard drive for speed reasons. Playing directly from the CD is
-discouraged. Once done, you should be able to run:
+There is no convenient install feature (I am not sure how to do that in
+scons). rlvm will work (without icons or localization) in place. If you
+wish to use rlvm in place, the binary is in:
 
- $ ./build/rlvm [--font=/path/to/JapaneseTTF] /path/to/PlanetarianCopy
+ $ ./build/rlvm
 
-The rlvm binary should be self contained and movable anywhere, though
-the build system does not have an install target.
-
-If you don't have the file "msgothic.ttc" in either the game directory
-nor your home directory, please specify a Japanese font on the command
-line with --font.
+For packagers, the debian/install file contains a mapping of where files
+should be copied to. I agree that there should be a better long term
+solution, though it currently escapes me.
 
 3b) Compiling under OSX
 -------------------------------------------------------------------------
 In addition to freetype-config and sdl-config needing to be in your
 $PATH, (like when compiling under Linux), the Sconscripts assume you use
-fink to manage your unix programs and that fink is installed at /sw/. If
-you are using Darwin Ports or are just compiling libraries manually and
-installing them into /usr/local/, you may need to edit the SConscript
-files.
+fink to manage your unix programs and that fink is installed at /sw/,
+though they also try to check for Darwin Ports. You may need to edit the
+SConscript files if using something else.
 
 To build an OSX application, type:
 
@@ -136,6 +162,7 @@ To build a dmg file for distribution, type:
 
  $ scons --release --fullstatic --dmgname="rlvm <version>"
 
+
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
 The interpreter currently lacks the following features:
@@ -147,6 +174,7 @@ The interpreter currently lacks the following features:
 Using rlvm with insani's English translation of Planetarian is currently
 not recommended as the indentation behaviour *will* break in the middle
 of words.
+
 
 5) GETTING INVOLVED
 -------------------------------------------------------------------------
