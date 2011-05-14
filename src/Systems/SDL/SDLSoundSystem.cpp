@@ -147,7 +147,9 @@ SDLSoundSystem::SDLSoundSystem(System& system)
   /* This is where we open up our audio device.  Mix_OpenAudio takes
      as its parameters the audio format we'd /like/ to have. */
   if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
-    throw SystemError("Couldn't initialize audio");
+    ostringstream oss;
+    oss << "Couldn't initialize audio: " << Mix_GetError();
+    throw SystemError(oss.str());
   }
 
   // Jagarl's sound system wants information on the audio settings.
