@@ -160,10 +160,10 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   int select_frame_;
 
   // Surface loaded from #SELBTN.xxx.NAME.
-  boost::shared_ptr<Surface> name_surface_;
+  boost::shared_ptr<const Surface> name_surface_;
 
   // Surface loaded from #SELBTN.xxx.BACK.
-  boost::shared_ptr<Surface> back_surface_;
+  boost::shared_ptr<const Surface> back_surface_;
 
   std::vector<ButtonOption> buttons_;
 };

@@ -52,7 +52,7 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   virtual void execute() { }
 
  protected:
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
  private:
@@ -66,7 +66,7 @@ class DigitsGraphicsObject : public GraphicsObjectData {
 
   // The source font.
   std::string font_name_;
-  boost::shared_ptr<Surface> font_;
+  boost::shared_ptr<const Surface> font_;
 
   // The current composited surface.
   boost::shared_ptr<Surface> surface_;

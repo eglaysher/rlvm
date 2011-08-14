@@ -66,7 +66,7 @@ class TextWindowButton : public boost::noncopyable {
 
   //
   void render(TextWindow& window,
-              const boost::shared_ptr<Surface>& buttons,
+              const boost::shared_ptr<const Surface>& buttons,
               int base_pattern);
 
   // Called when the button is pressed

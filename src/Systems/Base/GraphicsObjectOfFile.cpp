@@ -150,7 +150,7 @@ void GraphicsObjectOfFile::loopAnimation() {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> GraphicsObjectOfFile::currentSurface(
+boost::shared_ptr<const Surface> GraphicsObjectOfFile::currentSurface(
   const GraphicsObject& rp) {
   return surface_;
 }

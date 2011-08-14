@@ -72,7 +72,8 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   /// Resets to the first frame.
   virtual void loopAnimation();
 
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Point dstOrigin(const GraphicsObject& go);
   virtual int getRenderingAlpha(const GraphicsObject& go);
@@ -112,7 +113,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   int time_at_last_frame_change_;
 
   /// The image the above coordinates map into.
-  boost::shared_ptr<Surface> image;
+  boost::shared_ptr<const Surface> image_;
 
   friend class boost::serialization::access;
 

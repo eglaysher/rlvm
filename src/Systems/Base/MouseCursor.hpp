@@ -37,7 +37,7 @@ class RLMachine;
 // Represents a mouse cursor on screen.
 class MouseCursor {
  public:
-  explicit MouseCursor(const boost::shared_ptr<Surface>& cursor_surface);
+  explicit MouseCursor(const boost::shared_ptr<const Surface>& cursor_surface);
   ~MouseCursor();
 
   // Renders the cursor to the screen, taking the hotspot offset into account.
@@ -52,7 +52,7 @@ class MouseCursor {
   void findHotspot();
 
   // The raw image read from the PDT.
-  boost::shared_ptr<Surface> cursor_surface_;
+  boost::shared_ptr<const Surface> cursor_surface_;
 
   // The hotspot location.
   Size hotspot_offset_;

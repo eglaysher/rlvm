@@ -100,16 +100,16 @@ class SDLSurface : public Surface,
   std::vector<GrpRect> region_table_;
 
   /// The SDLTexture which wraps one or more OpenGL textures
-  std::vector<TextureRecord> textures_;
+  mutable std::vector<TextureRecord> textures_;
 
   /// Whether texture_ represents the contents of surface_. Blits
   /// from surfaces to surfaces invalidate the target surfaces's
   /// texture.
-  bool texture_is_valid_;
+  mutable bool texture_is_valid_;
 
   /// When a chunk of the surface is invalidated, we only want to upload the
   /// smallest possible area, but for simplicity, we only keep one dirty area.
-  Rect dirty_rectangle_;
+  mutable Rect dirty_rectangle_;
 
   /// Whether this surface is DC0 and needs special treatment.
   bool is_dc0_;
@@ -124,7 +124,7 @@ class SDLSurface : public Surface,
    * updated. This method should be called before doing anything with
    * texture_.
    */
-  void uploadTextureIfNeeded();
+  void uploadTextureIfNeeded() const;
 
   bool is_mask_;
 
@@ -173,28 +173,28 @@ class SDLSurface : public Surface,
   SDL_Surface* rawSurface() { return surface_; }
 
   /// Blits to another surface
-  virtual void blitToSurface(Surface& surface,
+  virtual void blitToSurface(Surface& dest_surface,
                              const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true);
+                             int alpha = 255, bool use_src_alpha = true) const;
 
   void blitFROMSurface(SDL_Surface* src_surface,
                        const Rect& src, const Rect& dst,
                        int alpha = 255, bool use_src_alpha = true);
 
   virtual void renderToScreen(
-    const Rect& src, const Rect& dst, int alpha = 255);
+    const Rect& src, const Rect& dst, int alpha = 255) const;
 
   virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const;
 
   virtual void renderToScreen(
-    const Rect& src, const Rect& dst, const int opacity[4]);
+    const Rect& src, const Rect& dst, const int opacity[4]) const;
 
   // Used internally; not exposed to the general graphics system
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
-                                      int alpha);
+                                      int alpha) const;
 
   virtual int numPatterns() const;
 
@@ -214,9 +214,9 @@ class SDLSurface : public Surface,
   SDL_Surface* surface() { return surface_; }
 
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const;
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clip_rect, int r, int g, int b);
+    const Rect& clip_rect, int r, int g, int b) const;
 
   virtual Surface* clone() const;
 

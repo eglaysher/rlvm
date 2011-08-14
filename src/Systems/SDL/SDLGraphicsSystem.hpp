@@ -85,7 +85,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual void setMinimumSizeForDC(int dc, Size size);
   virtual void freeDC(int dc);
 
-  virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename);
 
   virtual boost::shared_ptr<Surface> getHaikei();
@@ -187,11 +187,8 @@ class SDLGraphicsSystem : public GraphicsSystem {
    * LRU cache filled with the last fifteen accessed images.
    *
    * This cache's contents are assumed to be immutable.
-   *
-   * @todo Think about enforcing the immutability by adding 'const' to
-   *       half the program.
    */
-  LRUCache<std::string, boost::shared_ptr<Surface> > image_cache_;
+  LRUCache<std::string, boost::shared_ptr<const Surface> > image_cache_;
 };
 
 

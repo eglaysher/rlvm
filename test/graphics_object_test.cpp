@@ -218,7 +218,7 @@ class MockGraphicsObjectData : public GraphicsObjectData {
   MOCK_METHOD0(isAnimation, bool());
   MOCK_METHOD1(playSet, void(int));
   MOCK_METHOD1(currentSurface,
-               boost::shared_ptr<Surface>(const GraphicsObject&));
+               boost::shared_ptr<const Surface>(const GraphicsObject&));
   MOCK_METHOD1(objectInfo, void(std::ostream&));
 };
 

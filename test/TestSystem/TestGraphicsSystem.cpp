@@ -102,17 +102,17 @@ void TestGraphicsSystem::injectSurface(
   named_surfaces_[short_filename] = surface;
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
+boost::shared_ptr<const Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename) {
   // If we have an injected surface, return it instead of a fresh surface.
-  std::map<std::string, boost::shared_ptr<Surface> >::iterator it =
+  std::map<std::string, boost::shared_ptr<const Surface> >::iterator it =
       named_surfaces_.find(short_filename);
   if (it != named_surfaces_.end()) {
     return it->second;
   }
 
   // We don't have an injected surface so make a surface.
-  return boost::shared_ptr<Surface>(
+  return boost::shared_ptr<const Surface>(
       MockSurface::Create(short_filename, Size(50, 50)));
 }
 

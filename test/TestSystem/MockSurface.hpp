@@ -49,14 +49,16 @@ class MockSurface : public Surface {
   void deallocate();
   virtual Size size() const;
 
-  MOCK_METHOD5(blitToSurface, void(Surface&, const Rect&, const Rect&,
-                                   int alpha, bool use_src_alpha));
-  MOCK_METHOD3(renderToScreen, void(const Rect&, const Rect&, int alpha));
-  MOCK_METHOD4(renderToScreenAsColorMask, void(const Rect&, const Rect&,
-                                               const RGBAColour&, int));
-  MOCK_METHOD3(renderToScreen, void(const Rect&, const Rect&, const int[4]));
-  MOCK_METHOD4(renderToScreenAsObject, void(const GraphicsObject&,
-                                            const Rect&, const Rect&, int));
+  MOCK_CONST_METHOD5(blitToSurface, void(Surface&, const Rect&, const Rect&,
+                                         int alpha, bool use_src_alpha));
+  MOCK_CONST_METHOD3(renderToScreen, void(const Rect&, const Rect&, int alpha));
+  MOCK_CONST_METHOD4(renderToScreenAsColorMask, void(const Rect&, const Rect&,
+                                                     const RGBAColour&, int));
+  MOCK_CONST_METHOD3(renderToScreen, void(const Rect&, const Rect&,
+                                          const int[4]));
+  MOCK_CONST_METHOD4(renderToScreenAsObject,
+                     void(const GraphicsObject&,
+                          const Rect&, const Rect&, int));
   MOCK_CONST_METHOD0(numPatterns, int());
   MOCK_CONST_METHOD1(getPattern, const GrpRect&(int patt_no));
   MOCK_METHOD1(fill, void(const RGBAColour&));
@@ -65,7 +67,7 @@ class MockSurface : public Surface {
   MOCK_METHOD1(mono, void(const Rect&));
   MOCK_METHOD2(applyColour, void(const RGBColour&, const Rect&));
 
-  MOCK_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
+  MOCK_CONST_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
 
   // Concrete implementations of the cloning methods.
   virtual boost::shared_ptr<Surface> clipAsColorMask(

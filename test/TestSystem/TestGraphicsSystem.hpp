@@ -63,7 +63,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual GraphicsObject& getObject(int layer, int obj_number);
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename);
   virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
@@ -90,7 +90,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   boost::shared_ptr<MockSurface> display_contexts_[16];
 
   // A list of user injected surfaces to hand back for named files.
-  std::map<std::string, boost::shared_ptr<Surface> > named_surfaces_;
+  std::map<std::string, boost::shared_ptr<const Surface> > named_surfaces_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_

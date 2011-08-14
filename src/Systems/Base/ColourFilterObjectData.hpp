@@ -58,7 +58,8 @@ class ColourFilterObjectData : public GraphicsObjectData {
   virtual void playSet(int set);
 
  protected:
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& rp);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& rp);
   virtual void objectInfo(std::ostream& tree);
 
  private:

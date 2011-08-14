@@ -41,8 +41,8 @@ using namespace std;
 // -----------------------------------------------------------------------
 // MouseCursor (public)
 // -----------------------------------------------------------------------
-MouseCursor::MouseCursor(const boost::shared_ptr<Surface>& cursor_surface)
-  : cursor_surface_(cursor_surface) {
+MouseCursor::MouseCursor(const boost::shared_ptr<const Surface>& cursor_surface)
+    : cursor_surface_(cursor_surface) {
   findHotspot();
 
   int alphaR, alphaG, alphaB;

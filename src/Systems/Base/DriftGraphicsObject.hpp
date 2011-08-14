@@ -65,7 +65,8 @@ class DriftGraphicsObject : public GraphicsObjectData {
   virtual void execute();
 
  protected:
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
  private:
@@ -95,7 +96,7 @@ class DriftGraphicsObject : public GraphicsObjectData {
   std::string filename_;
 
   // The encapsulated surface to render
-  boost::shared_ptr<Surface> surface_;
+  boost::shared_ptr<const Surface> surface_;
 
   // The individual particles that make up this drift object.
   std::vector<Particle> particles_;

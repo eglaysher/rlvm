@@ -63,7 +63,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   virtual void playSet(int set);
 
  protected:
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Rect dstRect(const GraphicsObject& go);
 
@@ -100,7 +100,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   std::vector< std::vector<int> > animation_set;
 
   // The image the above coordinates map into.
-  boost::shared_ptr<Surface> image;
+  boost::shared_ptr<const Surface> image_;
 
   bool currently_playing_;
 

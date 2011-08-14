@@ -50,21 +50,21 @@ class SDLRenderToTextureSurface : public Surface,
   // Blits to another surface
   virtual void blitToSurface(Surface& surface,
                              const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true);
+                             int alpha = 255, bool use_src_alpha = true) const;
 
   virtual void renderToScreen(const Rect& src, const Rect& dst,
-                              int alpha = 255);
+                              int alpha = 255) const;
 
   virtual void renderToScreen(const Rect& src, const Rect& dst,
-                              const int opacity[4]);
+                              const int opacity[4]) const;
 
   virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
+    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
-                                      int alpha);
+                                      int alpha) const;
 
   virtual void fill(const RGBAColour& colour);
   virtual void fill(const RGBAColour& colour, const Rect& rect);
@@ -72,7 +72,7 @@ class SDLRenderToTextureSurface : public Surface,
   virtual void mono(const Rect& area);
   virtual void applyColour(const RGBColour& colour, const Rect& area);
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b);
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const;
 
   virtual Size size() const;
 

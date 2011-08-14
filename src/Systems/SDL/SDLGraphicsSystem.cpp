@@ -556,10 +556,10 @@ static SDLSurface::GrpRect xclannadRegionToGrpRect(
 // @note The surface returned by this function will never be
 // modified; it will either be put in an object, which is immutable,
 // or it will be copied into the DC.
-boost::shared_ptr<Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
+boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
     const std::string& short_filename) {
   // First check to see if this surface is already in our internal cache
-  shared_ptr<Surface> cached_surface = image_cache_.fetch(short_filename);
+  shared_ptr<const Surface> cached_surface = image_cache_.fetch(short_filename);
   if (cached_surface)
     return cached_surface;
 

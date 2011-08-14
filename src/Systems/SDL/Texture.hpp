@@ -70,7 +70,7 @@ class Texture {
 
   void renderToScreenAsObject(
     const GraphicsObject& go,
-    SDLSurface& surface,
+    const SDLSurface& surface,
     const Rect& srcRect, const Rect& dstRect,
     int alpha);
 

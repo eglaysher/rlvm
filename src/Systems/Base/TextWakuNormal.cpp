@@ -281,7 +281,8 @@ void TextWakuNormal::setWakuMain(const std::string& name) {
 
 void TextWakuNormal::setWakuBacking(const std::string& name) {
   if (name != "") {
-    waku_backing_ = system_.graphics().loadNonCGSurfaceFromFile(name);
+    waku_backing_.reset(system_.graphics().loadNonCGSurfaceFromFile(name)->
+                        clone());
     waku_backing_->setIsMask(true);
   } else {
     waku_backing_.reset();

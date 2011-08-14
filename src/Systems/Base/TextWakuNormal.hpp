@@ -102,9 +102,9 @@ class TextWakuNormal : public TextWaku {
 
   int setno_, no_;
 
-  boost::shared_ptr<Surface> waku_main_;
+  boost::shared_ptr<const Surface> waku_main_;
   boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<Surface> waku_button_;
+  boost::shared_ptr<const Surface> waku_button_;
 
   /**
    * @name Buttons in this text box

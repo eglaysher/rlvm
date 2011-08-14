@@ -88,7 +88,7 @@ GanGraphicsObjectData::GanGraphicsObjectData(
 GanGraphicsObjectData::~GanGraphicsObjectData() {}
 
 void GanGraphicsObjectData::load() {
-  image = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
+  image_ = system_.graphics().loadNonCGSurfaceFromFile(img_filename_);
 
   fs::path gan_file_path = system_.findFile(gan_filename_, GAN_FILETYPES);
   if (gan_file_path.empty()) {
@@ -219,7 +219,7 @@ int GanGraphicsObjectData::pixelWidth(
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image->getPattern(frame.pattern);
+      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
       return rect.rect.width();
     }
   }
@@ -232,7 +232,7 @@ int GanGraphicsObjectData::pixelHeight(
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image->getPattern(frame.pattern);
+      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
       return rect.rect.height();
     }
   }
@@ -271,7 +271,7 @@ void GanGraphicsObjectData::loopAnimation() {
   current_frame_ = 0;
 }
 
-boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
+boost::shared_ptr<const Surface> GanGraphicsObjectData::currentSurface(
   const GraphicsObject& go) {
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
@@ -279,17 +279,17 @@ boost::shared_ptr<Surface> GanGraphicsObjectData::currentSurface(
     if (frame.pattern != -1) {
       // We are currently rendering an animation AND the current frame says to
       // render something to the screen.
-      return image;
+      return image_;
     }
   }
 
-  return boost::shared_ptr<Surface>();
+  return boost::shared_ptr<const Surface>();
 }
 
 Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
-    return image->getPattern(frame.pattern).rect;
+    return image_->getPattern(frame.pattern).rect;
   }
 
   return Rect();

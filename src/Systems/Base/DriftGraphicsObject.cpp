@@ -85,7 +85,7 @@ DriftGraphicsObject::~DriftGraphicsObject() {
 }
 
 void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
-  boost::shared_ptr<Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = currentSurface(go);
   if (surface) {
     int current_time = system_.event().getTicks();
     last_rendered_time_ = current_time;
@@ -200,7 +200,7 @@ void DriftGraphicsObject::execute() {
   }
 }
 
-boost::shared_ptr<Surface> DriftGraphicsObject::currentSurface(
+boost::shared_ptr<const Surface> DriftGraphicsObject::currentSurface(
   const GraphicsObject& rp) {
   return surface_;
 }

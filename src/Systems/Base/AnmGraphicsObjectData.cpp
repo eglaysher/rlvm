@@ -132,7 +132,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
 
   // Read the corresponding image file we read from, and load the image.
   string raw_file_name = data + 0x1c;
-  image = system_.graphics().loadNonCGSurfaceFromFile(raw_file_name);
+  image_ = system_.graphics().loadNonCGSurfaceFromFile(raw_file_name);
 
   // Read the frame list
   const char* buf = data + 0xb8;
@@ -235,13 +235,13 @@ void AnmGraphicsObjectData::advanceFrame() {
 // I am not entirely sure these methods even make sense given the
 // context...
 int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int width = rect.rect.width();
   return int((rp.width() / 100.0f) * width);
 }
 
 int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = image->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int height = rect.rect.height();
   return int((rp.height() / 100.0f) * height);
 }
@@ -263,9 +263,9 @@ void AnmGraphicsObjectData::playSet(int set) {
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
-boost::shared_ptr<Surface> AnmGraphicsObjectData::currentSurface(
+boost::shared_ptr<const Surface> AnmGraphicsObjectData::currentSurface(
   const GraphicsObject& rp) {
-  return image;
+  return image_;
 }
 
 Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {

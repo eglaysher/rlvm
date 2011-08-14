@@ -317,12 +317,12 @@ class GraphicsSystem : public EventListener {
 
   // Loads an image, optionally marking that this image has been loaded (if it
   // is in the game's CGM table).
-  boost::shared_ptr<Surface> loadSurfaceFromFile(
+  boost::shared_ptr<const Surface> loadSurfaceFromFile(
       RLMachine& machine, const std::string& short_filename);
 
   // Just loads an image. This shouldn't be used for images that are destined
   // for one of the DCs, since those can be CGs.
-  virtual boost::shared_ptr<Surface> loadNonCGSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
       const std::string& short_filename) = 0;
 
   virtual boost::shared_ptr<Surface> getHaikei() = 0;

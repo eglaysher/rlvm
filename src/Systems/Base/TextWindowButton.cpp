@@ -170,7 +170,7 @@ bool TextWindowButton::handleMouseClick(
 }
 
 void TextWindowButton::render(TextWindow& window,
-                              const boost::shared_ptr<Surface>& buttons,
+                              const boost::shared_ptr<const Surface>& buttons,
                               int base_pattern) {
   if (isValid()) {
     Surface::GrpRect rect = buttons->getPattern(base_pattern + state_);

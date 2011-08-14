@@ -356,7 +356,7 @@ void SDLSurface::deallocate() {
  */
 void SDLSurface::blitToSurface(Surface& dest_surface,
                                const Rect& src, const Rect& dst,
-                               int alpha, bool use_src_alpha) {
+                               int alpha, bool use_src_alpha) const {
   SDLSurface& sdl_dest_surface = dynamic_cast<SDLSurface&>(dest_surface);
 
   SDL_Rect src_rect, dest_rect;
@@ -483,7 +483,7 @@ static void determineProperties(
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::uploadTextureIfNeeded() {
+void SDLSurface::uploadTextureIfNeeded() const {
   if (!texture_is_valid_) {
     if (textures_.size() == 0) {
       GLenum bytes_per_pixel;
@@ -527,7 +527,7 @@ void SDLSurface::uploadTextureIfNeeded() {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha) {
+void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
@@ -539,7 +539,7 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha) {
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) {
+  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
@@ -551,7 +551,7 @@ void SDLSurface::renderToScreenAsColorMask(
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
-                                const int opacity[4]) {
+                                const int opacity[4]) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
@@ -563,7 +563,7 @@ void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
 // -----------------------------------------------------------------------
 
 void SDLSurface::renderToScreenAsObject(
-  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) {
+  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
@@ -690,7 +690,7 @@ vector<int> SDLSurface::segmentPicture(int size_remainging) {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
+void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) const {
   SDL_Color colour;
   Uint32 col = 0;
 
@@ -717,7 +717,7 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) {
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
-  const Rect& clip_rect, int r, int g, int b) {
+    const Rect& clip_rect, int r, int g, int b) const {
   const char* function_name = "SDLGraphicsSystem::clipAsColorMask()";
 
   // TODO: This needs to be made exception safe and so does the rest

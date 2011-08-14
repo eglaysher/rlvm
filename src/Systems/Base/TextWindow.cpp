@@ -79,7 +79,7 @@ struct TextWindow::FaceSlot {
   int unknown;
 
   // The current face loaded. NULL whenever no face is loaded.
-  boost::shared_ptr<Surface> face_surface;
+  boost::shared_ptr<const Surface> face_surface;
 };
 
 
@@ -467,7 +467,8 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
     if (face_slot_[i] &&
         face_slot_[i]->face_surface &&
         face_slot_[i]->behind == behind) {
-      const boost::shared_ptr<Surface>& surface = face_slot_[i]->face_surface;
+      const boost::shared_ptr<const Surface>& surface =
+          face_slot_[i]->face_surface;
 
       Rect dest(windowRect().x() + face_slot_[i]->x,
                 windowRect().y() + face_slot_[i]->y,

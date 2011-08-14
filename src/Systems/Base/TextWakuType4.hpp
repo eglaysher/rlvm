@@ -79,7 +79,7 @@ class TextWakuType4 : public TextWaku {
   int area_top_, area_bottom_, area_left_, area_right_;
 
   // The surface that we pick pieces of our textbox against.
-  boost::shared_ptr<Surface> waku_main_;
+  boost::shared_ptr<const Surface> waku_main_;
 
   // A cached backing regenerated whenever the namebox size changes
   boost::shared_ptr<Surface> cached_backing_;

@@ -62,7 +62,7 @@ class HIKScript {
   struct Frame {
     int opacity;
     std::string image;
-    boost::shared_ptr<Surface> surface;
+    boost::shared_ptr<const Surface> surface;
 
     int grp_pattern;
     int frame_length_ms;

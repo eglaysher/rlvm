@@ -101,6 +101,11 @@ void ParentGraphicsObjectData::playSet(int set) {
   // Deliberately empty.
 }
 
+boost::shared_ptr<const Surface> ParentGraphicsObjectData::currentSurface(
+    const GraphicsObject& rp) {
+  return boost::shared_ptr<const Surface>();
+}
+
 void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "ParentGraphicsObjectData::objectInfo is a TODO";
 }

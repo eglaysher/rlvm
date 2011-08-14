@@ -91,7 +91,7 @@ class GraphicsObjectData {
 
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.
-  virtual boost::shared_ptr<Surface> currentSurface(
+  virtual boost::shared_ptr<const Surface> currentSurface(
     const GraphicsObject& rp) = 0;
 
   // Returns the rectangle in currentSurface() to draw to the screen. Override

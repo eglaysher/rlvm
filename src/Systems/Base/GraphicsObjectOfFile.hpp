@@ -72,7 +72,8 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
 
  protected:
   virtual void loopAnimation();
-  virtual boost::shared_ptr<Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
@@ -90,7 +91,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   std::string filename_;
 
   /// The encapsulated surface to render
-  boost::shared_ptr<Surface> surface_;
+  boost::shared_ptr<const Surface> surface_;
 
   /// Number of miliseconds to spend on a single frame in the
   /// animation

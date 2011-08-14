@@ -72,7 +72,7 @@ class TextKeyCursor {
   int cursor_number_;
 
   // The surface containing the cursor
-  boost::shared_ptr<Surface> cursor_image_;
+  boost::shared_ptr<const Surface> cursor_image_;
 
   // The cursor image file
   std::string cursor_image_file_;

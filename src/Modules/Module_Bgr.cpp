@@ -103,7 +103,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
       graphics.setHikScript(new HIKScript(system, path));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
-      boost::shared_ptr<Surface> source(
+      boost::shared_ptr<const Surface> source(
           graphics.loadSurfaceFromFile(machine, filename));
       boost::shared_ptr<Surface> haikei = graphics.getHaikei();
       source->blitToSurface(*haikei,
@@ -179,7 +179,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
       filename = graphics.defaultBgrName();
 
     // Load "filename" as the background.
-    shared_ptr<Surface> surface(
+    shared_ptr<const Surface> surface(
         graphics.loadSurfaceFromFile(machine, filename));
     surface->blitToSurface(*graphics.getHaikei(),
                            surface->rect(), surface->rect(),

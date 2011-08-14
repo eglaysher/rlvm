@@ -80,33 +80,35 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   virtual void dump();
 
   /// Blits to another surface
-  virtual void blitToSurface(Surface& surface,
-                             const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true) = 0;
+  virtual void blitToSurface(
+      Surface& dest_surface,
+      const Rect& src, const Rect& dst,
+      int alpha = 255, bool use_src_alpha = true) const = 0;
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst,
-    int alpha = 255) = 0;
+    int alpha = 255) const = 0;
 
   virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& colour, int filter) = 0;
+    const Rect& src, const Rect& dst, const RGBAColour& colour,
+    int filter) const = 0;
 
   virtual void renderToScreen(
     const Rect& src, const Rect& dst,
-    const int opacity[4]) = 0;
+    const int opacity[4]) const = 0;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
-                                      int alpha) = 0;
+                                      int alpha) const = 0;
 
   virtual int numPatterns() const;
   virtual const GrpRect& getPattern(int patt_no) const;
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) = 0;
+  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
 
   virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clip_rect, int r, int g, int b);
+    const Rect& clip_rect, int r, int g, int b) const;
 
   virtual Surface* clone() const = 0;
 };

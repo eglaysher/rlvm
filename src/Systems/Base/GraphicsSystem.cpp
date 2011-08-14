@@ -520,7 +520,7 @@ void GraphicsSystem::reset() {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> GraphicsSystem::loadSurfaceFromFile(
+boost::shared_ptr<const Surface> GraphicsSystem::loadSurfaceFromFile(
   RLMachine& machine, const std::string& short_filename) {
   // Record that we viewed this CG.
   cgTable().setViewed(machine, short_filename);
@@ -686,7 +686,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
     if (it != cursor_cache_.end()) {
       mouse_cursor_ = it->second;
     } else {
-      boost::shared_ptr<Surface> cursor_surface;
+      boost::shared_ptr<const Surface> cursor_surface;
       GameexeInterpretObject cursor_key =
         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
 

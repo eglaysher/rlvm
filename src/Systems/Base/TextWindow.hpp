@@ -413,7 +413,7 @@ class TextWindow {
 
   // We lazily parse and load data about displaying the koe icon on demand.
   struct KoeReplayInfo {
-    boost::shared_ptr<Surface> icon;
+    boost::shared_ptr<const Surface> icon;
     Size repos;
   };
   boost::scoped_ptr<KoeReplayInfo> koe_replay_info_;
