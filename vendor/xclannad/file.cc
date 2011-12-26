@@ -266,20 +266,6 @@ char* DIRFILE::SearchFile(const char* fname) {
 	return 0;
 }
 
-void ARCFILE::ListFiles(FILE* out) {
-	Init();
-	if (arc_atom.empty()) return;
-	// list file name...
-	fprintf(out,"%16s %10s %10s %10s\n", "Filename", 
-		"pointer","arcsize", "filesize");
-	vector<ARCFILE_ATOM>::iterator it;
-	for (it=arc_atom.begin(); it!=arc_atom.end(); it++) {
-		fprintf(out,"%16s %10jd %10d %10d\n",
-			it->filename,it->offset,it->arcsize,it->filesize);
-	}
-	return;
-}
-
 void ARCFILE::InitList(void) {
 	Init();
 	list_point = 0;
