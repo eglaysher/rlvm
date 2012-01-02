@@ -71,6 +71,7 @@ std::string consume_string(const char*& curpointer) {
 HIKScript::HIKScript(System& system, const fs::path& file)
     : system_(system),
       creation_time_(0),
+      explicit_frame_(0),
       x_offset_(0),
       y_offset_(0) {
   loadHikFile(file);
@@ -217,11 +218,11 @@ void HIKScript::loadHikFile(const fs::path& file) {
         break;
       }
       case 30101: {
-        consume_i32(curpointer);
+        currentAnimation().i_30101 = consume_i32(curpointer);
         break;
       }
       case 30102: {
-        consume_i32(curpointer);
+        currentAnimation().i_30102 = consume_i32(curpointer);
         break;
       }
       case 40000: {
@@ -298,7 +299,7 @@ void HIKScript::render(std::ostream* tree) {
     *tree << "  HIK Script:" << endl;
   }
 
-  for (std::vector<Layer>::const_iterator it = layers_.begin();
+  for (std::vector<Layer>::iterator it = layers_.begin();
        it != layers_.end(); ++it) {
     // Calculate the source rectangle
 
@@ -323,7 +324,7 @@ void HIKScript::render(std::ostream* tree) {
       dest_point += Point(x_difference, y_difference);
     }
 
-    for (std::vector<Animation>::const_iterator jt = it->animations.begin();
+    for (std::vector<Animation>::iterator jt = it->animations.begin();
          jt != it->animations.end(); ++jt) {
       size_t frame_to_use = 0;
       if (jt->use_multiframe_animation) {
@@ -361,10 +362,21 @@ void HIKScript::render(std::ostream* tree) {
       frame.surface->renderToScreen(src_rect, dest_rect, frame.opacity);
 
       if (tree) {
-        *tree << "  [" << frame.image << "]" << endl;
+        *tree << "    [L:" << (std::distance(layers_.begin(), it) + 1) << "/"
+              << layers_.size() << ", A:"
+              << (std::distance(it->animations.begin(), jt) + 1) << "/"
+              << it->animations.size()
+              << ", F:" << (frame_to_use+1) << "/" << jt->frames.size()
+              << ", P:" << pattern_to_use
+              << ", O:" << frame.opacity << ", Image: " << frame.image
+              << "]" << endl;
       }
     }
   }
+}
+
+void HIKScript::NextAnimationFrame() {
+  explicit_frame_++;
 }
 
 HIKScript::Layer& HIKScript::currentLayer() {

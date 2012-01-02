@@ -27,6 +27,7 @@
 
 #include "Systems/Base/GraphicsSystem.hpp"
 
+#include <iostream>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -474,7 +475,7 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
     }
     case BACKGROUND_HIK: {
       if (hik_script_) {
-        hik_script_->render(tree);
+        hik_script_->render(&std::cerr);
       } else {
         getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
         if (tree) {

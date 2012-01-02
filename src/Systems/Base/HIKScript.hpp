@@ -57,6 +57,9 @@ class HIKScript {
   void set_x_offset(int offset) { x_offset_ = offset; }
   void set_y_offset(int offset) { y_offset_ = offset; }
 
+  // Advances to the next layer.
+  void NextAnimationFrame();
+
  private:
   // The contents of the 40000 keys which define an individual frame.
   struct Frame {
@@ -80,6 +83,10 @@ class HIKScript {
 
     // All frames to display.
     std::vector<Frame> frames;
+
+    // Unknown
+    int i_30101;
+    int i_30102;
 
     // The sum of all |frame_length_ms| in frames.
     int total_time;
@@ -123,6 +130,9 @@ class HIKScript {
   // Time when this HIK script was loaded (in ms since startup). Used for
   // animation.
   int creation_time_;
+
+  // When |use_multiframe_animation| is false, use this frame instead.
+  int explicit_frame_;
 
   // Bytecode controllable offset.
   int x_offset_;
