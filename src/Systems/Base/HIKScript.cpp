@@ -71,7 +71,7 @@ std::string consume_string(const char*& curpointer) {
 HIKScript::HIKScript(System& system, const fs::path& file)
     : system_(system),
       creation_time_(0),
-      explicit_frame_(0),
+      current_animation_(0),
       x_offset_(0),
       y_offset_(0) {
   loadHikFile(file);
@@ -324,29 +324,30 @@ void HIKScript::render(std::ostream* tree) {
       dest_point += Point(x_difference, y_difference);
     }
 
-    for (std::vector<Animation>::iterator jt = it->animations.begin();
-         jt != it->animations.end(); ++jt) {
-      size_t frame_to_use = 0;
-      if (jt->use_multiframe_animation) {
-        int ticks_since_sequence_start = time_since_creation % jt->total_time;
 
-        // Separate out the remainder here. Need to check since
-        // |ticks_since_sequence_start| may already be 0.
-        while (ticks_since_sequence_start > 0) {
-          ticks_since_sequence_start -=
-              jt->frames.at(frame_to_use).frame_length_ms;
+    Animation& animation = it->animations.at(current_animation_);
 
-          if (ticks_since_sequence_start > 0) {
-            frame_to_use++;
-            if (frame_to_use > jt->frames.size()) {
-              frame_to_use = 0;
-              cerr << "Maybe an impossible situation?";
-            }
+    size_t frame_to_use = 0;
+    if (animation.use_multiframe_animation) {
+      int ticks_since_sequence_start =
+          time_since_creation % animation.total_time;
+
+      // Separate out the remainder here. Need to check since
+      // |ticks_since_sequence_start| may already be 0.
+      while (ticks_since_sequence_start > 0) {
+        ticks_since_sequence_start -=
+            animation.frames.at(frame_to_use).frame_length_ms;
+
+        if (ticks_since_sequence_start > 0) {
+          frame_to_use++;
+          if (frame_to_use > animation.frames.size()) {
+            frame_to_use = 0;
+            cerr << "Maybe an impossible situation?";
           }
         }
       }
 
-      const Frame& frame = jt->frames.at(frame_to_use);
+      const Frame& frame = animation.frames.at(frame_to_use);
 
       int pattern_to_use = 0;
       if (frame.grp_pattern != -1)
@@ -364,10 +365,12 @@ void HIKScript::render(std::ostream* tree) {
       if (tree) {
         *tree << "    [L:" << (std::distance(layers_.begin(), it) + 1) << "/"
               << layers_.size() << ", A:"
-              << (std::distance(it->animations.begin(), jt) + 1) << "/"
+              << (current_animation_ + 1) << "/"
               << it->animations.size()
-              << ", F:" << (frame_to_use+1) << "/" << jt->frames.size()
+              << ", F:" << (frame_to_use+1) << "/" << animation.frames.size()
               << ", P:" << pattern_to_use
+              << ", ??: " << animation.use_multiframe_animation << "/"
+              << animation.i_30101 << "/" << animation.i_30102
               << ", O:" << frame.opacity << ", Image: " << frame.image
               << "]" << endl;
       }
@@ -376,7 +379,7 @@ void HIKScript::render(std::ostream* tree) {
 }
 
 void HIKScript::NextAnimationFrame() {
-  explicit_frame_++;
+  current_animation_++;
 }
 
 HIKScript::Layer& HIKScript::currentLayer() {

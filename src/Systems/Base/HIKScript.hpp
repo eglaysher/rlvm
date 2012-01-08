@@ -84,8 +84,10 @@ class HIKScript {
     // All frames to display.
     std::vector<Frame> frames;
 
-    // Unknown
+    // IDEA: This is the animation number in the layer to move to next when
+    // all frames in this animation are played out.
     int i_30101;
+    // Unknown
     int i_30102;
 
     // The sum of all |frame_length_ms| in frames.
@@ -132,7 +134,7 @@ class HIKScript {
   int creation_time_;
 
   // When |use_multiframe_animation| is false, use this frame instead.
-  int explicit_frame_;
+  int current_animation_;
 
   // Bytecode controllable offset.
   int x_offset_;
