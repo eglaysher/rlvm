@@ -279,6 +279,20 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
   std::reverse(layers_.begin(), layers_.end());
 }
 
+void HIKScript::EnsureUploaded() {
+  // Force every frame to be uploaded.
+  for (std::vector<Layer>::iterator it = layers_.begin();
+       it != layers_.end(); ++it) {
+    for (std::vector<Animation>::iterator jt = it->animations.begin();
+         jt != it->animations.end(); ++jt) {
+      for (std::vector<Frame>::const_iterator kt = jt->frames.begin();
+           kt != jt->frames.end(); ++kt) {
+        kt->surface->EnsureUploaded();
+      }
+    }
+  }
+}
+
 HIKScript::Layer& HIKScript::currentLayer() {
   if (layers_.size() == 0) {
     throw rlvm::Exception("Invalid layer reference");

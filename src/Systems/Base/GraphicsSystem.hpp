@@ -44,11 +44,14 @@
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/Rect.hpp"
 
+#include "Utilities/LazyArray.hpp"
+
 class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
 class HIKRenderer;
+class HIKScript;
 class MouseCursor;
 class Renderable;
 class RGBAColour;
@@ -380,12 +383,24 @@ class GraphicsSystem : public EventListener {
   // Implementation of MouseMotionListener:
   virtual void mouseMotion(const Point& new_location);
 
-
   // Reset the system. Should clear all state for when a user loads a game.
   virtual void reset();
 
   // Access to the cgtable for the cg* functions.
   CGMTable& cgTable() { return globals_.cg_table; }
+
+  // We have a cache of HIK scripts. This is done so we can load HIKScripts
+  // outside of loops.
+  void PreloadHIKScript(System& system,
+                        int slot,
+                        const std::string& name,
+                        const boost::filesystem::path& file);
+  void ClearPreloadedHIKScript(int slot);
+  void ClearAllPreloadedHIKScripts();
+  boost::shared_ptr<HIKScript> GetHIKScript(
+      System& system,
+      const std::string& name,
+      const boost::filesystem::path& file);
 
  protected:
   typedef std::set<Renderable*> FinalRenderers;
@@ -482,6 +497,11 @@ class GraphicsSystem : public EventListener {
 
   // Our parent system object.
   System& system_;
+
+  // Preloaded HIKScripts.
+  typedef std::pair<std::string, boost::shared_ptr<HIKScript> > HIKArrayItem;
+  typedef LazyArray<HIKArrayItem> HIKScriptList;
+  HIKScriptList preloaded_hik_scripts_;
 
   // Possible background script which drives graphics to the screen.
   boost::scoped_ptr<HIKRenderer> hik_renderer_;

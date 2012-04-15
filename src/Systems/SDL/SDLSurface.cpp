@@ -278,6 +278,13 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
 
 // -----------------------------------------------------------------------
 
+void SDLSurface::EnsureUploaded() const {
+  // TODO(erg): Style fix this entire file and make this implementation:
+  uploadTextureIfNeeded();
+}
+
+// -----------------------------------------------------------------------
+
 void SDLSurface::registerForNotification(GraphicsSystem* system) {
   registrar_.Add(this,
                  NotificationType::FULLSCREEN_STATE_CHANGED,

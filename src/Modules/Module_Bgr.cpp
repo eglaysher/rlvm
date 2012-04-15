@@ -33,6 +33,7 @@
 
 #include "Effects/Effect.hpp"
 #include "Effects/EffectFactory.hpp"
+#include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/Argc_T.hpp"
@@ -103,7 +104,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
       graphics.setHikRenderer(new HIKRenderer(
           system,
-          boost::shared_ptr<HIKScript>(new HIKScript(system, path))));
+          graphics.GetHIKScript(system, filename, path)));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
       boost::shared_ptr<const Surface> source(
@@ -260,6 +261,16 @@ struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
+struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+  void operator()(RLMachine& machine, int slot, string name) {
+    System& system = machine.system();
+    fs::path path = system.findFile(name, HIK_FILETYPES);
+    if (iends_with(path.string(), "hik")) {
+      system.graphics().PreloadHIKScript(system, slot, name, path);
+    }
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -278,4 +289,8 @@ BgrModule::BgrModule()
 
   addOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
   addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
+
+  addOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
+  addOpcode(2001, 0, "bgrClearPreloadedScript",
+            callFunction(&GraphicsSystem::ClearPreloadedHIKScript));
 }

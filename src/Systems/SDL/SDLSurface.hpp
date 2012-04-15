@@ -147,6 +147,8 @@ class SDLSurface : public Surface,
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
+  virtual void EnsureUploaded() const;
+
   void registerForNotification(GraphicsSystem* system);
 
   // Whether we have an underlying allocated surface.

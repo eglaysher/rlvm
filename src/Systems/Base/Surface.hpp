@@ -54,6 +54,10 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   Surface();
   virtual ~Surface();
 
+  // Optional method which makes sure the data is on the graphics card for
+  // uploading.
+  virtual void EnsureUploaded() const {}
+
   // ------------------------------------------------- [ Drawing functions ]
 
   // Fills the surface with |colour|.

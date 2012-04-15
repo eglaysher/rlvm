@@ -57,6 +57,7 @@
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/HIKRenderer.hpp"
+#include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -70,6 +71,7 @@
 
 using boost::iends_with;
 using boost::lexical_cast;
+using std::cerr;
 using std::cout;
 using std::endl;
 using std::fill;
@@ -228,7 +230,8 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
     show_cursor_from_bytecode_(true),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
-    system_(system) {}
+    system_(system),
+    preloaded_hik_scripts_(32) {}
 
 // -----------------------------------------------------------------------
 
@@ -503,6 +506,7 @@ void GraphicsSystem::reset() {
   clearAllObjects();
   clearAllDCs();
 
+  preloaded_hik_scripts_.clear();
   hik_renderer_.reset();
   background_type_ = BACKGROUND_DC0;
 
@@ -517,6 +521,43 @@ void GraphicsSystem::reset() {
   background_type_ = BACKGROUND_DC0;
   subtitle_ = "";
   hide_interface_ = false;
+}
+
+void GraphicsSystem::PreloadHIKScript(
+    System& system,
+    int slot,
+    const std::string& name,
+    const boost::filesystem::path& file_path) {
+  HIKScript* script = new HIKScript(system, file_path);
+  script->EnsureUploaded();
+
+  preloaded_hik_scripts_[slot] = std::make_pair(
+      name, boost::shared_ptr<HIKScript>(script));
+}
+
+void GraphicsSystem::ClearPreloadedHIKScript(int slot) {
+  preloaded_hik_scripts_[slot] =
+      std::make_pair("", boost::shared_ptr<HIKScript>());
+}
+
+void GraphicsSystem::ClearAllPreloadedHIKScripts() {
+  preloaded_hik_scripts_.clear();
+}
+
+boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
+    System& system,
+    const std::string& name,
+    const boost::filesystem::path& file_path) {
+  AllocatedLazyArrayIterator<HIKArrayItem> it =
+      preloaded_hik_scripts_.allocated_begin();
+  AllocatedLazyArrayIterator<HIKArrayItem> end =
+      preloaded_hik_scripts_.allocated_end();
+  for (; it != end; ++it) {
+    if (it->first == name)
+      return it->second;
+  }
+
+  return boost::shared_ptr<HIKScript>(new HIKScript(system, file_path));
 }
 
 // -----------------------------------------------------------------------
