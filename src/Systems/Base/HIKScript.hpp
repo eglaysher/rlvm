@@ -1,3 +1,4 @@
+
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi:tw=80:et:ts=2:sts=2
 //
@@ -35,7 +36,6 @@
 
 #include "Systems/Base/Rect.hpp"
 
-class RLMachine;
 class System;
 class Surface;
 
@@ -45,22 +45,10 @@ class HIKScript {
   HIKScript(System& system, const boost::filesystem::path& file);
   ~HIKScript();
 
-  void loadHikFile(const boost::filesystem::path& file);
+  // Loads our data from a HIK file.
+  void loadHikFile(System& system, const boost::filesystem::path& file);
 
-  // Run once per tick.
-  void execute(RLMachine& machine);
 
-  void render(std::ostream* os);
-
-  // RL bytecode controlled offsets from the top left corner of the source
-  // image.
-  void set_x_offset(int offset) { x_offset_ = offset; }
-  void set_y_offset(int offset) { y_offset_ = offset; }
-
-  // Advances to the next layer.
-  void NextAnimationFrame();
-
- private:
   // The contents of the 40000 keys which define an individual frame.
   struct Frame {
     int opacity;
@@ -113,12 +101,17 @@ class HIKScript {
     std::vector<Animation> animations;
   };
 
-  // Returns the current structure being operated on, throwing on logic errors.
+
+  // Returns the HIK layer data.
+  const std::vector<Layer>& layers() const { return layers_; }
+  const Size& size() const { return size_of_hik_; }
+
+ private:
+  // Returns the current structure being operated on, throwing on logic
+  // errors. Only to be used during parsing of the file.
   Animation& currentAnimation();
   Layer& currentLayer();
   Frame& currentFrame();
-
-  System& system_;
 
   // Each graphics component in the HIK script.
   std::vector<Layer> layers_;
@@ -128,17 +121,6 @@ class HIKScript {
 
   // Size of the hik graphic as reported by the hik.
   Size size_of_hik_;
-
-  // Time when this HIK script was loaded (in ms since startup). Used for
-  // animation.
-  int creation_time_;
-
-  // When |use_multiframe_animation| is false, use this frame instead.
-  int current_animation_;
-
-  // Bytecode controllable offset.
-  int x_offset_;
-  int y_offset_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_HIKSCRIPT_HPP_

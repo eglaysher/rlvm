@@ -48,7 +48,7 @@ class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
 class GraphicsStackFrame;
-class HIKScript;
+class HIKRenderer;
 class MouseCursor;
 class Renderable;
 class RGBAColour;
@@ -212,8 +212,8 @@ class GraphicsSystem : public EventListener {
 
   // Sets the current hik script. GraphicsSystem takes ownership, freeing the
   // current HIKScript if applicable. |script| can be NULL.
-  void setHikScript(HIKScript* script);
-  HIKScript* getHikScript() const { return hik_script_.get(); }
+  void setHikRenderer(HIKRenderer* script);
+  HIKRenderer* getHikRenderer() const { return hik_renderer_.get(); }
 
   // -----------------------------------------------------------------------
 
@@ -484,7 +484,7 @@ class GraphicsSystem : public EventListener {
   System& system_;
 
   // Possible background script which drives graphics to the screen.
-  boost::scoped_ptr<HIKScript> hik_script_;
+  boost::scoped_ptr<HIKRenderer> hik_renderer_;
 
   // boost::serialization support
   friend class boost::serialization::access;

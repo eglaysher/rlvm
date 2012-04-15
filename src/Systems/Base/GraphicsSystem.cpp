@@ -56,7 +56,7 @@
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/GraphicsStackFrame.hpp"
-#include "Systems/Base/HIKScript.hpp"
+#include "Systems/Base/HIKRenderer.hpp"
 #include "Systems/Base/MouseCursor.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/Surface.hpp"
@@ -356,8 +356,8 @@ void GraphicsSystem::replayGraphicsStack(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::setHikScript(HIKScript* script) {
-  hik_script_.reset(script);
+void GraphicsSystem::setHikRenderer(HIKRenderer* renderer) {
+  hik_renderer_.reset(renderer);
 }
 
 // -----------------------------------------------------------------------
@@ -474,8 +474,8 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
       break;
     }
     case BACKGROUND_HIK: {
-      if (hik_script_) {
-        hik_script_->render(&std::cerr);
+      if (hik_renderer_) {
+        hik_renderer_->render(tree);
       } else {
         getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
         if (tree) {
@@ -493,8 +493,8 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
 }
 
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
-  if (hik_script_ && background_type_ == BACKGROUND_HIK)
-    hik_script_->execute(machine);
+  if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
+    hik_renderer_->execute(machine);
 }
 
 // -----------------------------------------------------------------------
@@ -503,7 +503,7 @@ void GraphicsSystem::reset() {
   clearAllObjects();
   clearAllDCs();
 
-  hik_script_.reset();
+  hik_renderer_.reset();
   background_type_ = BACKGROUND_DC0;
 
   // Reset the cursor

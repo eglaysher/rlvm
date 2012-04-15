@@ -41,6 +41,7 @@
 #include "Modules/Module_Grp.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/HIKRenderer.hpp"
 #include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
@@ -64,7 +65,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int sel) {
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.setDefaultBgrName("");
-    graphics.setHikScript(NULL);
+    graphics.setHikRenderer(NULL);
     graphics.setGraphicsBackground(BACKGROUND_HIK);
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -100,7 +101,9 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
       if (!machine.replaying_graphics_stack())
         graphics.clearAndPromoteObjects();
 
-      graphics.setHikScript(new HIKScript(system, path));
+      graphics.setHikRenderer(new HIKRenderer(
+          system,
+          boost::shared_ptr<HIKScript>(new HIKScript(system, path))));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
       boost::shared_ptr<const Surface> source(
@@ -232,28 +235,27 @@ struct bgrMulti_1 : public RLOp_Void_3<
 
 struct bgrNext : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    HIKScript* script = machine.system().graphics().getHikScript();
-    if (script) {
-      cerr << "MOVING TO NEXT FRAME" << endl;
-      script->NextAnimationFrame();
+    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    if (renderer) {
+      renderer->NextAnimationFrame();
     }
   }
 };
 
 struct bgrSetXOffset : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int offset) {
-    HIKScript* script = machine.system().graphics().getHikScript();
-    if (script) {
-      script->set_x_offset(offset);
+    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    if (renderer) {
+      renderer->set_x_offset(offset);
     }
   }
 };
 
 struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int offset) {
-    HIKScript* script = machine.system().graphics().getHikScript();
-    if (script) {
-      script->set_y_offset(offset);
+    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    if (renderer) {
+      renderer->set_y_offset(offset);
     }
   }
 };

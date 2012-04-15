@@ -151,6 +151,7 @@ librlvm_files = [
   "src/Systems/Base/GraphicsStackFrame.cpp",
   "src/Systems/Base/GraphicsSystem.cpp",
   "src/Systems/Base/GraphicsTextObject.cpp",
+  "src/Systems/Base/HIKRenderer.cpp",
   "src/Systems/Base/HIKScript.cpp",
   "src/Systems/Base/KOEPACVoiceArchive.cpp",
   "src/Systems/Base/LittleBustersEF00DLL.cpp",

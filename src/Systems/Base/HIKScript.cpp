@@ -28,13 +28,11 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/scoped_array.hpp>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
@@ -68,19 +66,14 @@ std::string consume_string(const char*& curpointer) {
 }  // namespace
 
 
-HIKScript::HIKScript(System& system, const fs::path& file)
-    : system_(system),
-      creation_time_(0),
-      current_animation_(0),
-      x_offset_(0),
-      y_offset_(0) {
-  loadHikFile(file);
+HIKScript::HIKScript(System& system, const fs::path& file) {
+  loadHikFile(system, file);
 }
 
 HIKScript::~HIKScript() {
 }
 
-void HIKScript::loadHikFile(const fs::path& file) {
+void HIKScript::loadHikFile(System& system, const fs::path& file) {
   // This is dumb. This all needs to rewritten as either FILE or stream.
   int file_size = 0;
   scoped_array<char> hik_data;
@@ -249,7 +242,7 @@ void HIKScript::loadHikFile(const fs::path& file) {
       case 40100: {
         Frame& frame = currentFrame();
         frame.image = consume_string(curpointer);
-        frame.surface = system_.graphics().loadNonCGSurfaceFromFile(
+        frame.surface = system.graphics().loadNonCGSurfaceFromFile(
             frame.image);
         if (!frame.surface) {
           ostringstream oss;
@@ -284,102 +277,6 @@ void HIKScript::loadHikFile(const fs::path& file) {
 
   // Records are in reverse order of what they should be.
   std::reverse(layers_.begin(), layers_.end());
-
-  creation_time_ = system_.event().getTicks();
-}
-
-void HIKScript::execute(RLMachine& machine) {
-  machine.system().graphics().markScreenAsDirty(GUT_DRAW_HIK);
-}
-
-void HIKScript::render(std::ostream* tree) {
-  int time_since_creation = system_.event().getTicks() - creation_time_;
-
-  if (tree) {
-    *tree << "  HIK Script:" << endl;
-  }
-
-  for (std::vector<Layer>::iterator it = layers_.begin();
-       it != layers_.end(); ++it) {
-    // Calculate the source rectangle
-
-    Point dest_point = it->top_offset;
-    if (it->use_scrolling) {
-      dest_point += it->start_point;
-
-      Size difference = it->end_point - it->start_point;
-      int x_difference = 0;
-      int y_difference = 0;
-      if (it->x_scroll_time_ms) {
-        double x_percent = (time_since_creation % it->x_scroll_time_ms) /
-                           static_cast<float>(it->x_scroll_time_ms);
-        x_difference = difference.width() * x_percent;
-      }
-      if (it->y_scroll_time_ms) {
-        double y_percent = (time_since_creation % it->y_scroll_time_ms) /
-                           static_cast<float>(it->y_scroll_time_ms);
-        y_difference = difference.height() * y_percent;
-      }
-
-      dest_point += Point(x_difference, y_difference);
-    }
-
-
-    Animation& animation = it->animations.at(current_animation_);
-
-    size_t frame_to_use = 0;
-    if (animation.use_multiframe_animation) {
-      int ticks_since_sequence_start =
-          time_since_creation % animation.total_time;
-
-      // Separate out the remainder here. Need to check since
-      // |ticks_since_sequence_start| may already be 0.
-      while (ticks_since_sequence_start > 0) {
-        ticks_since_sequence_start -=
-            animation.frames.at(frame_to_use).frame_length_ms;
-
-        if (ticks_since_sequence_start > 0) {
-          frame_to_use++;
-          if (frame_to_use > animation.frames.size()) {
-            frame_to_use = 0;
-            cerr << "Maybe an impossible situation?";
-          }
-        }
-      }
-
-      const Frame& frame = animation.frames.at(frame_to_use);
-
-      int pattern_to_use = 0;
-      if (frame.grp_pattern != -1)
-        pattern_to_use = frame.grp_pattern;
-
-      Rect src_rect = frame.surface->getPattern(pattern_to_use).rect;
-      src_rect = Rect(src_rect.origin() + Size(x_offset_, y_offset_),
-                      src_rect.size());
-      Rect dest_rect(dest_point, src_rect.size());
-      if (it->use_clip_area)
-        ClipDestination(it->clip_area, src_rect, dest_rect);
-
-      frame.surface->renderToScreen(src_rect, dest_rect, frame.opacity);
-
-      if (tree) {
-        *tree << "    [L:" << (std::distance(layers_.begin(), it) + 1) << "/"
-              << layers_.size() << ", A:"
-              << (current_animation_ + 1) << "/"
-              << it->animations.size()
-              << ", F:" << (frame_to_use+1) << "/" << animation.frames.size()
-              << ", P:" << pattern_to_use
-              << ", ??: " << animation.use_multiframe_animation << "/"
-              << animation.i_30101 << "/" << animation.i_30102
-              << ", O:" << frame.opacity << ", Image: " << frame.image
-              << "]" << endl;
-      }
-    }
-  }
-}
-
-void HIKScript::NextAnimationFrame() {
-  current_animation_++;
 }
 
 HIKScript::Layer& HIKScript::currentLayer() {
