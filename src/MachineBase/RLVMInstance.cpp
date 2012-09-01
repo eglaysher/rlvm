@@ -71,9 +71,6 @@ RLVMInstance::RLVMInstance()
       count_undefined_copcodes_(false),
       load_save_(-1) {
   srand(time(NULL));
-
-  // Set global state: allow spaces in game paths
-  //fs::path::default_name_check(fs::native);
 }
 
 RLVMInstance::~RLVMInstance() {}
