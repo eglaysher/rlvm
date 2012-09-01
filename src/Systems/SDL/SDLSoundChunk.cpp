@@ -51,11 +51,11 @@ SDLSoundChunk::~SDLSoundChunk() {
 }
 
 Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
-  if (boost::iequals(path.extension(), ".nwa")) {
+  if (boost::iequals(path.extension().string(), ".nwa")) {
     // Hack to load NWA sounds into a MixChunk. I was resisted doing this
     // because I assumed there was a better way, but this is essentially what
     // jagarl does in xclannad too :(
-    FILE* f = fopen(path.external_file_string().c_str(), "r");
+    FILE* f = fopen(path.native().c_str(), "r");
     if (!f)
       return NULL;
     int size = 0;
@@ -67,7 +67,7 @@ Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
 
     return chunk;
   } else {
-    return Mix_LoadWAV(path.external_file_string().c_str());
+    return Mix_LoadWAV(path.native().c_str());
   }
 }
 

@@ -72,7 +72,7 @@ fs::path correctPathCase(fs::path Path) {
   // which may have incorrect case.
   stack<string> pathElts;
   while (!Path.empty() && !exists(Path)) {
-    pathElts.push(Path.leaf());
+    pathElts.push(Path.filename().string());
     Path = Path.branch_path();
   }
   // Now proceed forwards through the possibly-incorrect elements.
@@ -96,10 +96,10 @@ fs::path correctPathCase(fs::path Path) {
       directory_iterator end;
       bool found = false;
       for (directory_iterator dir(Path); dir != end; ++dir) {
-        string uleaf = dir->leaf();
+        string uleaf = dir->path().filename().string();
         to_upper(uleaf);
         if (uleaf == elt && (!needDir || is_directory(*dir))) {
-          Path /= dir->leaf();
+          Path /= dir->path().filename();
           found = true;
           break;
         }

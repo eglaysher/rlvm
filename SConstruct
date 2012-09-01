@@ -45,10 +45,6 @@ env = Environment(
   CPPDEFINES = [
     "HAVE_CONFIG_H",
 
-    # boost made a large non-backwards compatible change to their filesystem
-    # library. Specify version 2 explicitly.
-    ["BOOST_FILESYSTEM_VERSION", 2],
-
     # We use gettext for translations.
     "ENABLE_NLS",
 

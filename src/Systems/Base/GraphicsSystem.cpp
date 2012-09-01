@@ -766,7 +766,7 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(
     throw rlvm::Exception(oss.str());
   }
 
-  string file_str = full_path.file_string();
+  string file_str = full_path.string();
   if (iends_with(file_str, "g00") || iends_with(file_str, "pdt")) {
     return new GraphicsObjectOfFile(system(), filename);
   } else if (iends_with(file_str, "anm")) {

@@ -205,7 +205,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     throw rlvm::Exception(oss.str());
   }
 
-  const string& raw_path = file_path.external_file_string();
+  const string& raw_path = file_path.native();
   for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it) {
     if (iends_with(raw_path, it->first)) {
       FILE* f = fopen(raw_path.c_str(), "r");

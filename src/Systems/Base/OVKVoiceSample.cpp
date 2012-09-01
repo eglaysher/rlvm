@@ -113,7 +113,7 @@ std::string oggErrorCodeToString(int code) {
 }  // namespace
 
 OVKVoiceSample::OVKVoiceSample(fs::path file)
-    : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
+    : stream_(std::fopen(file.native().c_str(), "rb")),
       offset_(0), length_(0) {
   std::fseek(stream_, 0, SEEK_END);
   length_ = ftell(stream_);
@@ -121,7 +121,7 @@ OVKVoiceSample::OVKVoiceSample(fs::path file)
 }
 
 OVKVoiceSample::OVKVoiceSample(fs::path file, int offset, int length)
-    : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
+    : stream_(std::fopen(file.native().c_str(), "rb")),
       offset_(offset), length_(length) {
 }
 
