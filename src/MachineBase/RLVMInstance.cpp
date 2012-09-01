@@ -73,7 +73,7 @@ RLVMInstance::RLVMInstance()
   srand(time(NULL));
 
   // Set global state: allow spaces in game paths
-  fs::path::default_name_check(fs::native);
+  //fs::path::default_name_check(fs::native);
 }
 
 RLVMInstance::~RLVMInstance() {}
@@ -88,7 +88,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     CheckBadEngine(gamerootPath, siglus_exes, _("Can't run Siglus games"));
 
     Gameexe gameexe(gameexePath);
-    gameexe("__GAMEPATH") = gamerootPath.file_string();
+    gameexe("__GAMEPATH") = gamerootPath.string();
 
     // Possibly force starting at a different seen
     if (seen_start_ != -1)
@@ -109,7 +109,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     }
 
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
+    libReallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
     addGameHacks(rlmachine);

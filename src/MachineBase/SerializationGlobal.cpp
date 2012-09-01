@@ -36,6 +36,7 @@
 #include <boost/serialization/map.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 #include <fstream>
@@ -117,8 +118,8 @@ void loadGlobalMemory(RLMachine& machine) {
       // data is corrupted. Either way, we can't safely do ANYTHING with this
       // game's entire save data so move it out of the way.
       fs::path save_dir = machine.system().gameSaveDirectory();
-      fs::path dest_save_dir = save_dir.branch_path() /
-                               (save_dir.leaf() + ".old_corrupted_data");
+      fs::path dest_save_dir = save_dir.parent_path() /
+                               (save_dir.filename() / ".old_corrupted_data");
 
       if (fs::exists(dest_save_dir))
         fs::remove_all(dest_save_dir);

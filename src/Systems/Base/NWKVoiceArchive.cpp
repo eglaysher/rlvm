@@ -55,7 +55,7 @@ class NWKVoiceSample : public VoiceSample {
 NWKVoiceSample::NWKVoiceSample(boost::filesystem::path file,
                                int offset,
                                int length)
-    : stream_(std::fopen(file.external_file_string().c_str(), "rb")),
+    : stream_(std::fopen(file.native().c_str(), "rb")),
       offset_(offset), length_(length) {
 }
 

@@ -466,7 +466,7 @@ void System::buildFileSystemCache() {
   fs::directory_iterator dir_end;
   for (fs::directory_iterator dir(gamepath); dir != dir_end; ++dir) {
     if (fs::is_directory(dir->status())) {
-      std::string lowername = dir->path().filename();
+      std::string lowername = dir->path().filename().string();
       to_lower(lowername);
       if (find(valid_directories.begin(), valid_directories.end(), lowername) !=
           valid_directories.end()) {
@@ -482,14 +482,14 @@ void System::addDirectoryToCache(const fs::path& directory) {
     if (fs::is_directory(dir->status())) {
       addDirectoryToCache(dir->path());
     } else {
-      std::string extension = dir->path().extension();
+      std::string extension = dir->path().extension().string();
       if (extension.size() > 1 && extension[0] == '.')
         extension = extension.substr(1);
       to_lower(extension);
 
       if (find(ALL_FILETYPES.begin(), ALL_FILETYPES.end(), extension) !=
           ALL_FILETYPES.end()) {
-        std::string stem = dir->path().stem();
+        std::string stem = dir->path().stem().string();
         to_lower(stem);
 
         filesystem_cache_.insert(

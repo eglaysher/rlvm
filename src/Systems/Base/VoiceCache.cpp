@@ -93,7 +93,7 @@ shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
     return shared_ptr<VoiceArchive>();
   }
 
-  string file_str = file.file_string();
+  string file_str = file.string();
   if (iends_with(file_str, "ovk")) {
     return shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
   } else if (iends_with(file_str, "nwk")) {
@@ -116,7 +116,7 @@ shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
 
   fs::path file =
       sound_system_.system().findFile(oss.str(), KOE_LOOSE_FILETYPES);
-  string file_str = file.file_string();
+  string file_str = file.string();
 
   if (iends_with(file_str, "ogg")) {
     return shared_ptr<VoiceSample>(new OVKVoiceSample(file));

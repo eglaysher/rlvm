@@ -100,7 +100,7 @@ void Archive::readOverrides() {
   fs::path seen_dir = fs::path(name).branch_path();
   fs::directory_iterator end;
   for (fs::directory_iterator it(seen_dir); it != end; ++it) {
-    string filename = it->leaf();
+    string filename = it->path().filename().string();
     if (filename.size() == 12 &&
         istarts_with(filename, "seen") &&
         iends_with(filename, ".txt") &&
