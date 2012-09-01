@@ -572,7 +572,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   }
 
   // Glue code to allow my stuff to work with Jagarl's loader
-  FILE* file = fopen(filename.file_string().c_str(), "rb");
+  FILE* file = fopen(filename.string().c_str(), "rb");
   if (!file) {
     ostringstream oss;
     oss << "Could not open file: " << filename;

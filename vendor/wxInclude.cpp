@@ -266,7 +266,7 @@ int main(int argc, char* argv[]) {
 							std::cout << "Process: file '" << file << "'..." << std::endl;
 
 							/* Remove extension */
-                            file = inputpath.leaf();
+                            file = inputpath.filename().string();
 							boost::erase_last( file, fileext );
 
 							if ( !opt.count( "respectcase" ) )
@@ -316,7 +316,7 @@ int main(int argc, char* argv[]) {
 									fs::ifstream input( dir_itr->path(), std::ios::in | std::ios::binary | std::ios::ate );
 									input.rdbuf()->pubsetbuf( inbuffer, BUFFER_SIZE ); 
 
-									std::string file( dir_itr->path().leaf() );
+									std::string file( dir_itr->path().filename().string() );
 
 									if ( input.is_open() ) {
 										/* Show status */

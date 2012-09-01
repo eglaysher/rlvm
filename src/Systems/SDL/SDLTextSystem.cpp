@@ -139,7 +139,7 @@ int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
-    string filename = findFontFile(system()).external_file_string();
+    string filename = findFontFile(system()).native();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if (f == NULL) {
       ostringstream oss;
