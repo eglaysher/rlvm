@@ -158,7 +158,8 @@ GraphicsSystemGlobals::GraphicsSystemGlobals()
   : show_object_1(false), show_object_2(false), show_weather(false),
     skip_animations(0),
     screen_mode(1),
-    cg_table() {
+    cg_table(),
+    tone_curves() {
 }
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
@@ -167,7 +168,8 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
       show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
       skip_animations(0),
       screen_mode(1),
-      cg_table(gameexe) {
+      cg_table(gameexe),
+      tone_curves(gameexe) {
 }
 
 // -----------------------------------------------------------------------

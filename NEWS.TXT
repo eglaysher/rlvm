@@ -1,6 +1,13 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.13:
+
+- TCC tone curve effects have been reverse-engineered and implemented
+  (thanks to lurkmoar)
+
+-------------------------------------------------------------------------
+
 Version 0.12:                                                [2011-05-14]
 
 - User interface polish:
