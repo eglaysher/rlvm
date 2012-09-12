@@ -43,6 +43,7 @@
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/Rect.hpp"
+#include "Systems/Base/ToneCurve.hpp"
 
 #include "Utilities/LazyArray.hpp"
 
@@ -82,6 +83,9 @@ struct GraphicsSystemGlobals {
 
   // CG Table
   CGMTable cg_table;
+  
+  // tone curve table
+  ToneCurve tone_curves;
 
   /// boost::serialization support
   template<class Archive>
@@ -389,6 +393,9 @@ class GraphicsSystem : public EventListener {
   // Access to the cgtable for the cg* functions.
   CGMTable& cgTable() { return globals_.cg_table; }
 
+  // Access to the tone curve effects file
+  ToneCurve& toneCurve() { return globals_.tone_curves; }
+  
   // We have a cache of HIK scripts. This is done so we can load HIKScripts
   // outside of loops.
   void PreloadHIKScript(System& system,

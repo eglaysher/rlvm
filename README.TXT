@@ -165,28 +165,9 @@ To build a dmg file for distribution, type:
 
 4) KNOWN ISSUES:
 -------------------------------------------------------------------------
-The interpreter currently lacks the following features:
-
- - TCC shading data used to give character images a certain tint in some
-   scenes. To my knowledge, the file format has not been reverse
-   engineered.
-
 Using rlvm with insani's English translation of Planetarian is currently
 not recommended as the indentation behaviour *will* break in the middle
 of words.
-
-
-5) GETTING INVOLVED
--------------------------------------------------------------------------
-rlvm needs several file formats reverse engineered:
-
-- The TCC file format hasn't been reverse engineered. TCC files (called
-  "tonecurve" files in the GAMEEXE file) are tint definitions that are
-  applied to graphics objects. Tones are applied to objects by loading
-  "filename?[integer]" where [integer] appears to be an index. Any
-  information about this file format would be appreciated.
-
--------------------------------------------------------------------------
 
 ;; Local Variables: **
 ;; fill-column: 72 **

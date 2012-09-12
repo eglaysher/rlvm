@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <cstdio>
@@ -56,6 +57,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/ToneCurve.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
@@ -632,6 +634,19 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
 
   shared_ptr<Surface> surface_to_ret(new SDLSurface(this, s, region_table));
   image_cache_.insert(short_filename, surface_to_ret);
+  // handle tone curve effect loading
+  if(short_filename.find("?") != short_filename.npos) {
+    string effect_no_str = short_filename.substr(short_filename.find("?") + 1);
+    int effect_no = boost::lexical_cast<int>(effect_no_str);
+    // the effect number is an index that goes from 10 to getEffectCount() * 10, so keep that in mind here
+    if((effect_no / 10) > globals().tone_curves.getEffectCount() || effect_no < 10) {
+      ostringstream oss;
+      oss << "Tone curve index " << effect_no << " is invalid.";
+      throw rlvm::Exception(oss.str());
+    }
+    surface_to_ret.get()->toneCurve(globals().tone_curves.getEffect(effect_no / 10 - 1), Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
+  }
+
   return surface_to_ret;
 }
 

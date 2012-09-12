@@ -103,21 +103,25 @@ void SDLRenderToTextureSurface::fill(const RGBAColour& colour,
 }
 
 void SDLRenderToTextureSurface::invert(const Rect& rect) {
-  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation invert on SDLRenderToTextureSurface!");
 }
 
 void SDLRenderToTextureSurface::mono(const Rect& rect) {
-  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation mono on SDLRenderToTextureSurface!");
+}
+
+void SDLRenderToTextureSurface::toneCurve(const ToneCurveRGBMap effect, const Rect& rect) {
+  throw SystemError("Unsupported operation toneCurve on SDLRenderToTextureSurface!");
 }
 
 void SDLRenderToTextureSurface::applyColour(
     const RGBColour& colour, const Rect& area) {
-  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation applyColour on SDLRenderToTextureSurface!");
 }
 
 void SDLRenderToTextureSurface::getDCPixel(const Point& pos,
                                            int& r, int& g, int& b) const {
-  throw SystemError("Unsupported operation fill on SDLRenderToTextureSurface!");
+  throw SystemError("Unsupported operation getDCPixel on SDLRenderToTextureSurface!");
 }
 
 Size SDLRenderToTextureSurface::size() const {

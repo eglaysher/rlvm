@@ -29,6 +29,7 @@
 #define SRC_SYSTEMS_BASE_SURFACE_HPP_
 
 #include "Systems/Base/Rect.hpp"
+#include "Systems/Base/ToneCurve.hpp"
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
@@ -65,6 +66,9 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   // Fills |area| with |colour|.
   virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
+  
+  // Apply the given tone curve effect to the surface
+  virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& area) = 0;
 
   // Inverts each color of the surface (like a photo negative).
   virtual void invert(const Rect& area) = 0;
