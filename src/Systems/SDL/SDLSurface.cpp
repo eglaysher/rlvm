@@ -58,6 +58,22 @@ class ColourTransformer {
   virtual SDL_Color operator()(const SDL_Color& colour) const = 0;
 };
 
+class ToneCurveColourTransformer : public ColourTransformer{
+ private:
+	ToneCurveRGBMap colormap;
+ public:
+  ToneCurveColourTransformer(const ToneCurveRGBMap m) : colormap(m) {};
+  virtual SDL_Color operator()(const SDL_Color& colour) const {
+    SDL_Color out = {
+        colormap[0][colour.r],
+        colormap[1][colour.g],
+        colormap[2][colour.b],
+        0
+    };
+    return out;
+  }
+};
+
 class InvertColourTransformer : public ColourTransformer {
  public:
   virtual SDL_Color operator()(const SDL_Color& colour) const {
@@ -143,9 +159,10 @@ void TransformSurface(SDLSurface* our_surface, const Rect& area,
 
         // Before someone tries to simplify the following four lines,
         // remember that sizeof(int) != sizeof(Uint8).
-        SDL_GetRGB(col, surface->format, &colour.r, &colour.g, &colour.b);
+        Uint8 alpha;
+        SDL_GetRGBA(col, surface->format, &colour.r, &colour.g, &colour.b, &alpha);
         SDL_Color out = transformer(colour);
-        Uint32 out_colour = SDL_MapRGB(surface->format, out.r, out.g, out.b);
+        Uint32 out_colour = SDL_MapRGBA(surface->format, out.r, out.g, out.b, alpha);
 
         memcpy(p_position, &out_colour, surface->format->BytesPerPixel);
 
@@ -620,6 +637,14 @@ void SDLSurface::invert(const Rect& rect) {
 void SDLSurface::mono(const Rect& rect) {
   MonoColourTransformer mono;
   TransformSurface(this, rect, mono);
+}
+
+
+// -----------------------------------------------------------------------
+
+void SDLSurface::toneCurve(const ToneCurveRGBMap effect, const Rect& area) {
+  ToneCurveColourTransformer tc(effect);
+  TransformSurface(this, area, tc);
 }
 
 
