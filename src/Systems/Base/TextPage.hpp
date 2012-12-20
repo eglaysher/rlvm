@@ -30,6 +30,7 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/function.hpp>
+#include <boost/noncopyable.hpp>
 
 #include <algorithm>
 #include <string>
