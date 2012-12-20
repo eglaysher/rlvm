@@ -42,6 +42,11 @@ class GtkRLVMInstance : public RLVMInstance {
 
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
+
+  virtual bool AskUserPrompt(const std::string& message_text,
+                             const std::string& informative_text,
+                             const std::string& true_button,
+                             const std::string& false_button);
 };
 
 #endif  // SRC_PLATFORMS_GTK_GTKRLVMINSTANCE_HPP_

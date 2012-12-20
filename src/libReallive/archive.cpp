@@ -82,7 +82,8 @@ Archive::Archive(const string& filename, const std::string& regname)
 }
 
 Archive::~Archive() {
-	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
+  for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it)
+    delete it->second;
 }
 
 void Archive::readTOC() {
@@ -115,7 +116,6 @@ void Archive::readOverrides() {
       scenarios[index] = FilePos(mapping->get(), mapping->size());
     }
   }
-
 }
 
 Scenario*
@@ -128,6 +128,18 @@ Archive::scenario(int index) {
     return accessed[index] =
         new Scenario(st->second, index, regname_, second_level_xor_key_);
 	return NULL;
+}
+
+int Archive::getProbableEncodingType() const {
+  // Directly create Header objects instead of Scenarios. We don't want to
+  // parse the entire SEEN file here.
+  for (const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
+    Header header(it->second.data, it->second.length);
+    if (header.rldev_metadata.text_encoding() != 0)
+      return header.rldev_metadata.text_encoding();
+  }
+
+  return 0;
 }
 
 void

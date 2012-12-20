@@ -136,6 +136,10 @@ class RLMachine {
   Memory& memory() { return *memory_; }
   const Memory& memory() const { return *memory_; }
 
+  // Reinitializes all memory to a pristine, default state as specified in the
+  // Gameexe.ini file.
+  void HardResetMemory();
+
   // --------------------------------- [ Call stack manipulation functions ]
 
   // Permanently modifies the current stack frame to point to the new
@@ -211,6 +215,14 @@ class RLMachine {
   //   3 -> CP949 within CP932 codespace
   // Where a scenario was not compiled with RLdev, always returns 0.
   int getTextEncoding() const;
+
+  // Guess the encoding for all text of the game.
+  //
+  // Because of how rlbabel works, each scenario in the SEEN archive can have
+  // its own encoding. This guesses what the text output encoding is,
+  // regardless of the current scenario. (As we're probably running a scenario
+  // that hasn't been patched at the time this method is called.)
+  int getProbableEncodingType() const;
 
   void executeCommand(const libReallive::CommandElement& f);
   void executeExpression(const libReallive::ExpressionElement& e);

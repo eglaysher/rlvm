@@ -64,6 +64,9 @@ string unicodeToUTF8(const std::wstring& widestring) {
 }
 
 string cp932toUTF8(const string& line, int transformation) {
+  if (line.empty())
+    return line;
+
   std::wstring ws = cp932toUnicode(line, transformation);
   return unicodeToUTF8(ws);
 }

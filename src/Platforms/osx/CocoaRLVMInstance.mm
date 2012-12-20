@@ -100,6 +100,25 @@ void CocoaRLVMInstance::ReportFatalError(const std::string& message_text,
   [alert runModal];
 }
 
+bool CocoaRLVMInstance::AskUserPrompt(const std::string& message_text,
+                                      const std::string& informative_text,
+                                      const std::string& true_button,
+                                      const std::string& false_button) {
+  NSString* message = UTF8ToNSString(message_text);
+  NSString* information = UTF8ToNSString(informative_text);
+
+  NSString* d = UTF8ToNSString(true_button);
+  NSString* other = UTF8ToNSString(false_button);
+
+  NSAlert* alert = [NSAlert alertWithMessageText:message
+                                   defaultButton:d
+                                 alternateButton:nil
+                                     otherButton:other
+                       informativeTextWithFormat:information];
+  NSInteger ret = [alert runModal];
+  return ret == NSAlertDefaultReturn;
+}
+
 NSString* UTF8ToNSString(const std::string& in) {
   return [[NSString alloc] initWithUTF8String:in.c_str()];
 }

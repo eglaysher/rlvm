@@ -99,6 +99,10 @@ public:
    */
   Scenario* scenario(int index);
 
+  // Does a quick pass through all scenarios in the archive, looking for any
+  // with non-default encoding. This short circuits when it finds one.
+  int getProbableEncodingType() const;
+
   void reset();
 };
 

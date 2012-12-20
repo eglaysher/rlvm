@@ -123,3 +123,29 @@ void GtkRLVMInstance::ReportFatalError(const std::string& message_text,
 
   DoNativeWork();
 }
+
+bool GtkRLVMInstance::AskUserPrompt(const std::string& message_text,
+                                    const std::string& informative_text,
+                                    const std::string& true_button,
+                                    const std::string& false_button) {
+  GtkWidget* message = gtk_message_dialog_new(NULL,
+                                              GTK_DIALOG_MODAL,
+                                              GTK_MESSAGE_WARNING,
+                                              GTK_BUTTONS_NONE,
+                                              "%s",
+                                              message_text.c_str());
+  gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(message),
+                                           "%s",
+                                           informative_text.c_str());
+
+  gtk_dialog_add_button(GTK_DIALOG(message), false_button.c_str(), 0);
+  gtk_dialog_add_button(GTK_DIALOG(message), true_button.c_str(), 1);
+  gtk_dialog_set_default_response(GTK_DIALOG(message), 1);
+
+  gint result = gtk_dialog_run(GTK_DIALOG(message));
+  gtk_widget_destroy(message);
+
+  DoNativeWork();
+
+  return result;
+}

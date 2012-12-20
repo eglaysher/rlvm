@@ -30,6 +30,7 @@
 #include <boost/filesystem/operations.hpp>
 
 class Platform;
+class RLMachine;
 class System;
 
 // The main, cross platform emulator class. Has template methods for
@@ -59,11 +60,22 @@ class RLVMInstance {
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
 
+  // Ask the user if we should take an action.
+  virtual bool AskUserPrompt(const std::string& message_text,
+                             const std::string& informative_text,
+                             const std::string& true_button,
+                             const std::string& false_button) = 0;
+
  private:
   // Finds a game file, causing an error if not found.
   boost::filesystem::path FindGameFile(
       const boost::filesystem::path& gamerootPath,
       const std::string& filename);
+
+  // Checks to see if the user ran the Japanese version and than installed a
+  // fan patch. In this case, we need to warn and let the user reset global
+  // data.
+  void DoUserNameCheck(RLMachine& machine);
 
   // Checks for AVG32/Siglus engine games, which people may be confused about.
   void CheckBadEngine(const boost::filesystem::path& gamerootPath,

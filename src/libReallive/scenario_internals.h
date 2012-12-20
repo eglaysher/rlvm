@@ -46,9 +46,9 @@ public:
 };
 
 class Header {
-  friend class Scenario;
-  Header(const char* data, const size_t length);
 public:
+  Header(const char* data, const size_t length);
+
   /// Starting around the release of Little Busters!, scenario files has a
   /// second round of xor done to them. When will they learn?
   bool use_xor_2;

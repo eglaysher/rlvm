@@ -29,6 +29,7 @@
 #include <iostream>
 
 #include "MachineBase/GameHacks.hpp"
+#include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Modules.hpp"
@@ -41,8 +42,10 @@
 #include "Utilities/File.hpp"
 #include "Utilities/findFontFile.h"
 #include "Utilities/gettext.h"
+#include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 #include "libReallive/reallive.h"
+#include "utf8cpp/utf8.h"
 
 using namespace std;
 
@@ -134,6 +137,12 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       rlmachine.recordUndefinedOpcodeCounts();
 
     Serialization::loadGlobalMemory(rlmachine);
+
+    // Now to preform a quick integrity check. If the user opened the Japanese
+    // version of CLANNAD (or any other game), and then installed a patch, our
+    // user data is going to be screwed!
+    DoUserNameCheck(rlmachine);
+
     rlmachine.setHaltOnException(false);
 
     if (load_save_ != -1)
@@ -171,6 +180,36 @@ boost::filesystem::path RLVMInstance::SelectGameDirectory() {
 void RLVMInstance::ReportFatalError(const std::string& message_text,
                                     const std::string& informative_text) {
   cerr << message_text << ": " << informative_text << endl;
+}
+
+void RLVMInstance::DoUserNameCheck(RLMachine& machine) {
+  try {
+    int encoding = machine.getProbableEncodingType();
+
+    // Iterate over all the names in both global and local memory banks.
+    GlobalMemory& g = machine.memory().global();
+    for (int i = 0; i < SIZE_OF_NAME_BANK; ++i)
+      cp932toUTF8(g.global_names[i], encoding);
+
+    LocalMemory& l = machine.memory().local();
+    for (int i = 0; i < SIZE_OF_NAME_BANK; ++i)
+      cp932toUTF8(l.local_names[i], encoding);
+  } catch (...) {
+    // We've failed to interpret one of the name strings as a string in the
+    // text encoding of the current native encoding. We're going to fail to
+    // display any line that refers to the player's name.
+    //
+    // That's obviously bad and there's no real way to recover from this so
+    // just reset all of global memory.
+    if (AskUserPrompt(
+            _("Corrupted global memory"),
+            _("You appear to have run this game without a translation patch "
+              "previously. This can cause lines of text to not print."),
+            _("Reset"),
+            _("Continue with broken names"))) {
+      machine.HardResetMemory();
+    }
+  }
 }
 
 boost::filesystem::path RLVMInstance::FindGameFile(

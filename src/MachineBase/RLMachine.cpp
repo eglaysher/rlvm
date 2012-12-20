@@ -193,6 +193,10 @@ void RLMachine::setStringValue(int type, int number, const std::string& value) {
   memory_->setStringValue(type, number, value);
 }
 
+void RLMachine::HardResetMemory() {
+  memory_.reset(new Memory(*this, system().gameexe()));
+}
+
 void RLMachine::markSavepoint() {
   savepoint_call_stack_ = call_stack_;
   memory_->takeSavepointSnapshot();
@@ -544,6 +548,10 @@ void RLMachine::executeExpression(const ExpressionElement& e) {
 
 int RLMachine::getTextEncoding() const {
   return call_stack_.back().scenario->encoding();
+}
+
+int RLMachine::getProbableEncodingType() const {
+  return archive_.getProbableEncodingType();
 }
 
 void RLMachine::performTextout(const TextoutElement& e) {

@@ -43,8 +43,13 @@ class CocoaRLVMInstance : public RLVMInstance {
   virtual boost::filesystem::path SelectGameDirectory();
 
  protected:
+  // Overridden from RLVMInstance:
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
+  virtual bool AskUserPrompt(const std::string& message_text,
+                             const std::string& informative_text,
+                             const std::string& true_button,
+                             const std::string& false_button);
 
   FileValidator* validator_;
 };
