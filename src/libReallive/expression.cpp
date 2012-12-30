@@ -42,6 +42,7 @@
 #include <sstream>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include "defs.h"
 
@@ -405,8 +406,9 @@ ExpressionPiece* get_complex_param(const char*& src) {
     }
 
     return cep.release();
-  } else
+  } else {
     return get_expression(src);
+  }
 }
 
 std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
@@ -542,6 +544,10 @@ std::string StoreRegisterExpressionPiece::serializedValue(
   return IntToBytecode(machine.getStoreRegisterValue());
 }
 
+std::string StoreRegisterExpressionPiece::getDebugString(RLMachine& machine) const {
+  return boost::lexical_cast<std::string>(machine.getStoreRegisterValue());
+}
+
 IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
   return IntReferenceIterator(machine.storeRegisterAddress());
@@ -568,6 +574,10 @@ std::string IntegerConstant::serializedValue(RLMachine& machine) const {
   return IntToBytecode(constant);
 }
 
+std::string IntegerConstant::getDebugString(RLMachine& machine) const {
+  return boost::lexical_cast<std::string>(constant);
+}
+
 ExpressionPiece* IntegerConstant::clone() const {
   return new IntegerConstant(constant);
 }
@@ -588,6 +598,10 @@ const std::string& StringConstant::getStringValue(RLMachine& machine) const {
 
 std::string StringConstant::serializedValue(RLMachine& machine) const {
   return string("\"") + constant + string("\"");
+}
+
+std::string StringConstant::getDebugString(RLMachine& machine) const {
+  return serializedValue(machine);
 }
 
 ExpressionPiece* StringConstant::clone() const {
@@ -639,6 +653,14 @@ std::string MemoryReference::serializedValue(RLMachine& machine) const {
     return string("\"") + getStringValue(machine) + string("\"");
   } else {
     return IntToBytecode(integerValue(machine));
+  }
+}
+
+std::string MemoryReference::getDebugString(RLMachine& machine) const {
+  if (isStringLocation(type)) {
+    return string("\"") + getStringValue(machine) + string("\"");
+  } else {
+    return boost::lexical_cast<std::string>(integerValue(machine));
   }
 }
 
@@ -700,6 +722,10 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
 std::string UniaryExpressionOperator::serializedValue(
     RLMachine& machine) const {
   return IntToBytecode(integerValue(machine));
+}
+
+std::string UniaryExpressionOperator::getDebugString(RLMachine& machine) const {
+  return boost::lexical_cast<std::string>(integerValue(machine));
 }
 
 ExpressionPiece* UniaryExpressionOperator::clone() const {
@@ -776,6 +802,10 @@ std::string BinaryExpressionOperator::serializedValue(
   return IntToBytecode(integerValue(machine));
 }
 
+std::string BinaryExpressionOperator::getDebugString(RLMachine& machine) const {
+  return boost::lexical_cast<std::string>(integerValue(machine));
+}
+
 ExpressionPiece* BinaryExpressionOperator::clone() const {
   return new BinaryExpressionOperator(operation, leftOperand->clone(),
                                       rightOperand->clone());
@@ -805,6 +835,11 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   }
 }
 
+std::string AssignmentExpressionOperator::getDebugString(
+    RLMachine& machine) const {
+  return "<assignment>";
+}
+
 ExpressionPiece* AssignmentExpressionOperator::clone() const {
   return new AssignmentExpressionOperator(operation, leftOperand->clone(),
                                           rightOperand->clone());
@@ -831,6 +866,10 @@ std::string ComplexExpressionPiece::serializedValue(
   }
   s += ")";
   return s;
+}
+
+std::string ComplexExpressionPiece::getDebugString(RLMachine& machine) const {
+  return "<complex value>";
 }
 
 ExpressionPiece* ComplexExpressionPiece::clone() const {
@@ -863,6 +902,10 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
     s.append(")");
 
   return s;
+}
+
+std::string SpecialExpressionPiece::getDebugString(RLMachine& machine) const {
+  return "<special value>";
 }
 
 ExpressionPiece* SpecialExpressionPiece::clone() const {

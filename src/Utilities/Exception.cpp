@@ -30,6 +30,9 @@
 #include <sstream>
 #include <string>
 
+#include "libReallive/bytecode.h"
+#include "libReallive/expression.h"
+
 using std::ostringstream;
 
 namespace rlvm {
@@ -68,28 +71,87 @@ UserPresentableError::~UserPresentableError() throw() {}
 UnimplementedOpcode::UnimplementedOpcode(
     const std::string& funName,
     int modtype, int module, int opcode, int overload)
-    : Exception("") {
+    : Exception(""),
+      has_parameters_(false) {
   std::ostringstream oss;
-  oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
-      << ", " << overload << ">)";
+  oss << funName << " (opcode<" << modtype << ":" << module << ":"
+      << opcode << ", " << overload << ">)";
   name_ = oss.str();
-  setDescription();
+  setSimpleDescription();
 }
 
 UnimplementedOpcode::UnimplementedOpcode(
-    int modtype, int module, int opcode, int overload)
-    : Exception("") {
-  ostringstream oss;
-  oss << "opcode<" << modtype << ":" << module << ":" << opcode
-      << ", " << overload << ">";
+    RLMachine& machine,
+    const std::string& funName,
+    const libReallive::CommandElement& command)
+    : Exception(""),
+      has_parameters_(true),
+      parameters_(command.getUnparsedParameters()) {
+  std::ostringstream oss;
+  oss << funName << " [opcode<" << command.modtype() << ":"
+      << command.module() << ":" << command.opcode()
+      << ", " << command.overload() << ">]";
   name_ = oss.str();
-  setDescription();
+  setFullDescription(machine);
+}
+
+UnimplementedOpcode::UnimplementedOpcode(
+    RLMachine& machine,
+    const libReallive::CommandElement& command)
+    : Exception(""),
+      has_parameters_(true),
+      parameters_(command.getUnparsedParameters()) {
+  ostringstream oss;
+  oss << "opcode<" << command.modtype() << ":" << command.module() << ":"
+      << command.opcode() << ", " << command.overload() << ">";
+  name_ = oss.str();
+  setFullDescription(machine);
 }
 
 UnimplementedOpcode::~UnimplementedOpcode() throw() {
 }
 
-void UnimplementedOpcode::setDescription() {
+void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
+  ostringstream oss;
+  oss << "Undefined: " << name_;
+
+#ifndef NDEBUG
+  if (has_parameters_) {
+    try {
+      // We don't do a perfect job of parsing, so parse everything first so
+      // otherwise we can just not do this in case of throw.
+      std::vector<std::string> out;
+      for (std::vector<std::string>::const_iterator it = parameters_.begin();
+           it != parameters_.end(); ++it) {
+        // Take the binary stuff and try to get usefull, printable values.
+        const char* start = it->c_str();
+        boost::scoped_ptr<libReallive::ExpressionPiece> piece(
+            libReallive::get_complex_param(start));
+        out.push_back(piece->getDebugString(machine));
+      }
+
+      oss << "(";
+      bool first = true;
+      for (std::vector<std::string>::const_iterator it = out.begin();
+           it != out.end(); ++it) {
+        if (!first) {
+          oss << ", ";
+        }
+        first = false;
+        oss << *it;
+      }
+      oss << ")";
+    } catch (libReallive::Error& e) {
+      // Any error throw here is a parse error.
+      oss << "{unparsable}";
+    }
+  }
+#endif
+
+  description = oss.str();
+}
+
+void UnimplementedOpcode::setSimpleDescription() {
   ostringstream oss;
   oss << "Undefined: " << name_;
   description = oss.str();

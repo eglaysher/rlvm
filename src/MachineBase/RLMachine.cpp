@@ -341,8 +341,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
   if (it != modules_.end()) {
     it->second->dispatchFunction(*this, f);
   } else {
-    throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
-                                    f.overload());
+    throw rlvm::UnimplementedOpcode(*this, f);
   }
 }
 

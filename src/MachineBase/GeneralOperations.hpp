@@ -192,8 +192,6 @@ class UndefinedFunction : public RLOp_SpecialCase {
   virtual void operator()(RLMachine&, const libReallive::CommandElement&);
 
  private:
-  void throwError();
-
   std::string name_;
   int modtype_;
   int module_;

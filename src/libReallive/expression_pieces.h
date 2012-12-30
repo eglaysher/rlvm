@@ -52,6 +52,7 @@ public:
   virtual int integerValue(RLMachine& machine) const;
 
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
 
   /// Never seen in any commercial games, but needed for rlBabel support.
   virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
@@ -73,6 +74,7 @@ public:
   /// Returns the constant value
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
   virtual ExpressionPiece* clone() const;
 };
 
@@ -87,6 +89,8 @@ public:
   virtual ExpressionValueType expressionValueType() const;
   virtual const std::string& getStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
+
   virtual ExpressionPiece* clone() const;
 };
 
@@ -125,6 +129,8 @@ public:
   virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
   virtual const std::string& getStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
+
   virtual IntReferenceIterator getIntegerReferenceIterator(RLMachine& machine) const;
   virtual StringReferenceIterator getStringReferenceIterator(RLMachine& machine) const;
 
@@ -159,6 +165,7 @@ public:
   ~UniaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
   virtual ExpressionPiece* clone() const;
 };
 
@@ -193,6 +200,8 @@ public:
   ~BinaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
+
   virtual ExpressionPiece* clone() const;
 };
 
@@ -214,6 +223,8 @@ public:
   virtual int integerValue(RLMachine& machine) const;
   // Deliberately has no serializedValue() implementation; uses
   // BinaryExpressionOperator's.
+  virtual std::string getDebugString(RLMachine& machine) const;
+
   virtual ExpressionPiece* clone() const;
 };
 
@@ -240,6 +251,7 @@ public:
   const boost::ptr_vector<ExpressionPiece>& getContainedPieces() const
     { return containedPieces; }
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
   virtual ExpressionPiece* clone() const;
 };
 
@@ -263,6 +275,7 @@ public:
 
   int getOverloadTag() const { return overloadTag; }
   virtual std::string serializedValue(RLMachine& machine) const;
+  virtual std::string getDebugString(RLMachine& machine) const;
   virtual ExpressionPiece* clone() const;
 };
 

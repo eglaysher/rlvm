@@ -30,8 +30,14 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
+class RLMachine;
 class RLOperation;
+
+namespace libReallive {
+class CommandElement;
+}
 
 namespace rlvm {
 
@@ -71,18 +77,32 @@ class UserPresentableError : public Exception {
 
 class UnimplementedOpcode : public Exception {
  public:
-  UnimplementedOpcode(const std::string& funName,
-                      int modtype, int module, int opcode, int overload);
-  UnimplementedOpcode(int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(
+      const std::string& funName,
+      int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(RLMachine& machine,
+                      const std::string& funName,
+                      const libReallive::CommandElement& command);
+  UnimplementedOpcode(RLMachine& machine,
+                      const libReallive::CommandElement& command);
   ~UnimplementedOpcode() throw();
 
   // Returns the name of the function that wasn't implemented.
   const std::string& opcodeName() const { return name_; }
 
  private:
+  // Parses parameters and makes the string.
+  void setFullDescription(RLMachine& machine);
+
+  // For when we don't have parameters.
+  void setSimpleDescription();
+
   // Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
   // or "opcode<W:X:Y:Z>".
   std::string name_;
+
+  bool has_parameters_;
+  std::vector<std::string> parameters_;
 
   void setDescription();
 };

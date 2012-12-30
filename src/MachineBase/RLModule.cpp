@@ -110,7 +110,7 @@ bool RLModule::getProperty(int property, int& value) const {
 }
 
 RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
-  return find_if (property_list_->begin(), property_list_->end(),
+  return find_if(property_list_->begin(), property_list_->end(),
                  bind(&Property::first, _1) == property);
 }
 
@@ -125,8 +125,7 @@ void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
       throw;
     }
   } else {
-    throw rlvm::UnimplementedOpcode(f.modtype(), f.module(), f.opcode(),
-                                    f.overload());
+    throw rlvm::UnimplementedOpcode(machine, f);
   }
 }
 

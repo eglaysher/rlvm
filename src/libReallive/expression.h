@@ -120,6 +120,10 @@ public:
   // bytecode equal to this ExpressionPiece with all references returned.
   virtual std::string serializedValue(RLMachine& machine) const = 0;
 
+  // A printable representation of the final value of this expression. Used to
+  // dump a value to the console.
+  virtual std::string getDebugString(RLMachine& machine) const = 0;
+
   /// I used to be able to just static cast any ExpressionPiece to a
   /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
   /// rlBabel library instead uses the store register as an argument to a

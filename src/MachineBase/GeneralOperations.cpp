@@ -165,24 +165,20 @@ UndefinedFunction::UndefinedFunction(
 
 void UndefinedFunction::dispatch(RLMachine& machine,
                                  const ExpressionPiecesVector& parameters) {
-  throwError();
+  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::dispatchFunction(RLMachine& machine,
                                          const libReallive::CommandElement& f) {
-  throwError();
+  throw rlvm::UnimplementedOpcode(machine, name_, f);
 }
 
 void UndefinedFunction::parseParameters(const std::vector<std::string>& input,
                                         ExpressionPiecesVector& output) {
-  throwError();
-}
-
-void UndefinedFunction::operator()(RLMachine&,
-                                   const libReallive::CommandElement&) {
-  throwError();
-}
-
-void UndefinedFunction::throwError() {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
+}
+
+void UndefinedFunction::operator()(RLMachine& machine,
+                                   const libReallive::CommandElement& f) {
+  throw rlvm::UnimplementedOpcode(machine, name_, f);
 }
