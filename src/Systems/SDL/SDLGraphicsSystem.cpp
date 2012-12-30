@@ -188,7 +188,6 @@ void SDLGraphicsSystem::drawCursor() {
       cursor = currentCursor();
     if (cursor) {
       Point hotspot = cursorPos();
-      Point render_loc = cursor->getTopLeftForHotspotAt(hotspot);
       cursor->renderHotspotAt(hotspot);
     }
   }

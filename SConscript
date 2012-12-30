@@ -16,7 +16,8 @@ root_env.Append(
   CXXFLAGS = [
     "--ansi",
     "-Wall",
-    "-Wno-sign-compare"
+    "-Wno-sign-compare",
+    "-Wno-narrowing"
   ]
 )
 
