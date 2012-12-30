@@ -35,6 +35,7 @@
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/System.hpp"
 
 // -----------------------------------------------------------------------
@@ -143,6 +144,31 @@ void addObjManagementFunctions(RLModule& m) {
   m.addOpcode(11, 1, "objDelete", new objDelete_1);
 }
 
+struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  int fgbg_;
+  objChildCopy(int fgbg) : fgbg_(fgbg) {}
+
+  void operator()(RLMachine& machine, int sbuf, int dbuf) {
+    GraphicsSystem& sys = machine.system().graphics();
+
+    // By the time we enter this method, our parameters have already been
+    // tampered with by the ChildObjAdaptor. So use P_PARENTOBJ as our toplevel
+    // object.
+    int parentobj;
+    if (getProperty(P_PARENTOBJ, parentobj)) {
+      GraphicsObject& go = sys.getObject(fgbg_, parentobj);
+      ensureIsParentObject(go, sys.objectLayerSize());
+
+      // Pick out the object data.
+      ParentGraphicsObjectData& parent =
+          static_cast<ParentGraphicsObjectData&>(go.objectData());
+
+      GraphicsObject& src_obj = parent.getObject(sbuf);
+      parent.setObject(dbuf, src_obj);
+    }
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -194,6 +220,8 @@ ChildObjFgManagement::ChildObjFgManagement()
   addOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
   addOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
+  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
+
   addObjManagementFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
@@ -204,6 +232,8 @@ ChildObjBgManagement::ChildObjBgManagement()
     : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 62) {
   addOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
   addOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
+
+  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
 
   addObjManagementFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
