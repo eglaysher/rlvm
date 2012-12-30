@@ -58,6 +58,7 @@ const char* ja_platform_fonts[] = {
 #else
   // `ttf-japanese-gothic` is a symbolic link on Debian/Ubuntu systems.
   "/usr/share/fonts/truetype/ttf-japanese-gothic.ttf",
+  "/usr/share/fonts/truetype/mona/mona.ttf",
   // Throw in Sazanami and Kochi just in case the above is broken.
   "/usr/share/fonts/truetype/sazanami/sazanami-gothic.ttf",
   "/usr/share/fonts/truetype/kochi/kochi-gothic-subst.ttf",
