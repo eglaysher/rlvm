@@ -89,7 +89,7 @@ void ScriptWorld::import(const std::string& file_name) {
     throw std::runtime_error(oss.str());
   }
 
-  if (luaL_dofile(L, script_path.file_string().c_str())) {
+  if (luaL_dofile(L, script_path.string().c_str())) {
     ostringstream oss;
     oss << "Error while running script: " << script_path << " ("
         << lua_tostring(L, -1) << ")";

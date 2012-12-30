@@ -99,9 +99,6 @@ void printUsage(const string& name, po::options_description& opts) {
 int main(int argc, char* argv[]) {
   srand(time(NULL));
 
-  // Set global state: allow spaces in game paths
-  fs::path::default_name_check(fs::native);
-
   // -----------------------------------------------------------------------
   // Parse command line options
 
@@ -206,7 +203,7 @@ int main(int argc, char* argv[]) {
     seenPath = correctPathCase(gamerootPath / "Seen.txt");
 
     Gameexe gameexe(gameexePath);
-    gameexe("__GAMEPATH") = gamerootPath.file_string();
+    gameexe("__GAMEPATH") = gamerootPath.string();
     gameexe("MEMORY") = 1;
 
     // Run the incoming lua file and do some basic error checking on what it
@@ -214,13 +211,13 @@ int main(int argc, char* argv[]) {
     ScriptWorld world;
 
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath.file_string(), gameexe("REGNAME"));
+    libReallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
 
     ScriptMachine rlmachine(world, sdlSystem, arc);
     addAllModules(rlmachine);
     addGameHacks(rlmachine);
     world.initializeMachine(rlmachine);
-    world.loadToplevelFile(scriptLocation.file_string());
+    world.loadToplevelFile(scriptLocation.string());
 
     // Make sure we go as fast as possible:
     sdlSystem.setForceFastForward();
