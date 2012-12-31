@@ -305,10 +305,10 @@ int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
     // alpha.
-    return int(((frame.alpha/256.0f) * (go.alpha() / 256.0f)) * 256);
+    return int(((frame.alpha/256.0f) * (go.computedAlpha() / 256.0f)) * 256);
   } else {
     // Should never happen.
-    return go.alpha();
+    return go.computedAlpha();
   }
 }
 

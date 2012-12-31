@@ -174,7 +174,7 @@ SetterVec graphics_object_setters =
          (&GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode)
          (&GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX)
          (&GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY)
-         (&GraphicsObject::setAlpha, &GraphicsObject::alpha)
+         (&GraphicsObject::setAlpha, &GraphicsObject::rawAlpha)
          (&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy);
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,

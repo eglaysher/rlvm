@@ -139,8 +139,11 @@ class GraphicsObject {
   int scrollRateY() const { return impl_->scroll_rate_y_; }
   void setScrollRateY(const int y);
 
-  int alpha() const { return impl_->alpha_; }
+  int computedAlpha() const;
+  int rawAlpha() const { return impl_->alpha_; }
   void setAlpha(const int alpha);
+  int alphaAdjustment(int idx) const { return impl_->adjust_alpha_[idx]; }
+  void setAlphaAdjustment(int idx, int alpha);
 
   bool hasClip() const {
     return impl_->clip_.width() >= 0 || impl_->clip_.height() >= 0;
@@ -280,6 +283,9 @@ class GraphicsObject {
     // The source alpha for this image
     int alpha_;
 
+    // Eight additional alphas that are averaged during rendering.
+    int adjust_alpha_[8];
+
     // The clipping region for this image
     Rect clip_;
 
@@ -400,7 +406,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 2)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 3)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

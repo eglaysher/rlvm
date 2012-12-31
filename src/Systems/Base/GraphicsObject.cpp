@@ -317,9 +317,21 @@ void GraphicsObject::setScrollRateY(const int y) {
   impl_->scroll_rate_y_ = y;
 }
 
+int GraphicsObject::computedAlpha() const {
+  int alpha = impl_->alpha_;
+  for (int i = 0; i < 8; ++i)
+    alpha = (alpha * impl_->adjust_alpha_[i]) / 255;
+  return alpha;
+}
+
 void GraphicsObject::setAlpha(const int alpha) {
   makeImplUnique();
   impl_->alpha_ = alpha;
+}
+
+void GraphicsObject::setAlphaAdjustment(int idx, int alpha) {
+  makeImplUnique();
+  impl_->adjust_alpha_[idx] = alpha;
 }
 
 void GraphicsObject::clearClip() {
@@ -656,6 +668,7 @@ GraphicsObject::Impl::Impl()
   // Regretfully, we can't do this in the initializer list.
   fill(adjust_x_, adjust_x_ + 8, 0);
   fill(adjust_y_, adjust_y_ + 8, 0);
+  fill(adjust_alpha_, adjust_alpha_ + 8, 255);
 }
 
 GraphicsObject::Impl::Impl(const Impl& rhs)
@@ -682,6 +695,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
 
   copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
   copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
+  copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
 }
 
 GraphicsObject::Impl::~Impl() {}
@@ -695,6 +709,7 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
 
     copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
     copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
+    copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
 
     whatever_adjust_vert_operates_on_ = rhs.whatever_adjust_vert_operates_on_;
     origin_x_ = rhs.origin_x_;
@@ -765,6 +780,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 1) {
     ar & digit_properties_;
+  }
+
+  if (version > 2) {
+    ar & adjust_x_ & adjust_y_ & adjust_alpha_;
   }
 }
 

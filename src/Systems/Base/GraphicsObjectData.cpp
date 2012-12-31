@@ -128,7 +128,7 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
 }
 
 int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
-  return go.alpha();
+  return go.computedAlpha();
 }
 
 bool GraphicsObjectData::isAnimation() const {

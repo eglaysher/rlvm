@@ -53,7 +53,7 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
   if (go.mono() == 0) {
     RGBAColour colour = go.colour();
     colour.setAlpha(
-        static_cast<int>(colour.a_float() * go.alpha()));
+        static_cast<int>(colour.a_float() * go.computedAlpha()));
 
     graphics_system_.fillScreenArea(screen_rect_, colour);
 

@@ -206,6 +206,14 @@ struct objNumOpts
   }
 };
 
+struct objAdjustAlpha
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, int idx, int alpha) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setAlphaAdjustment(idx, alpha);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 // Special adapter to make any of obj* and objBg* operation structs
@@ -338,6 +346,7 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1039, 0, "objPattNo",
               new Obj_SetOneIntOnObj(&GraphicsObject::setPattNo));
 
+  m.addOpcode(1040, 0, "objAdjustAlpha", new objAdjustAlpha);
   m.addUnsupportedOpcode(1041, 0, "objAdjustAll");
   m.addUnsupportedOpcode(1042, 0, "objAdjustAllX");
   m.addUnsupportedOpcode(1043, 0, "objAdjustAllY");
