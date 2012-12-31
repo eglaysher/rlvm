@@ -46,6 +46,7 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
+#include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/Graphics.hpp"
@@ -296,6 +297,42 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T, IntConstant_T,
 // reallive.kfn and the rldev docs disagree about whether there's an
 // objOfRect_4. Blank until I see it in the wild.
 
+struct objOfChild_0 : public RLOp_Void_4<IntConstant_T, IntConstant_T,
+                                         StrConstant_T, StrConstant_T> {
+  void operator()(RLMachine& machine, int buf, int count,
+                  string imgFilename, string ganFilename) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setObjectData(new ParentGraphicsObjectData(count));
+    obj.setVisible(true);
+  }
+};
+
+struct objOfChild_1 : public RLOp_Void_5<IntConstant_T, IntConstant_T,
+                                         StrConstant_T, StrConstant_T,
+                                         IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, int count,
+                  string imgFilename, string ganFilename, int visible) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setObjectData(new ParentGraphicsObjectData(count));
+    obj.setVisible(visible);
+  }
+};
+
+struct objOfChild_2 : public RLOp_Void_7<IntConstant_T, IntConstant_T,
+                                         StrConstant_T, StrConstant_T,
+                                         IntConstant_T, IntConstant_T,
+                                         IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, int count,
+                  string imgFilename, string ganFilename, int visible,
+                  int x, int y) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setObjectData(new ParentGraphicsObjectData(count));
+    obj.setVisible(visible);
+    obj.setX(x);
+    obj.setY(y);
+  }
+};
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -339,6 +376,10 @@ void addObjectCreationFunctions(RLModule& m) {
   m.addOpcode(1400, 1, "objOfDigits", new objGeneric_1(objOfDigitsLoader));
   m.addOpcode(1400, 2, "objOfDigits", new objGeneric_2(objOfDigitsLoader));
   m.addOpcode(1400, 3, "objOfDigits", new objGeneric_3(objOfDigitsLoader));
+
+  m.addOpcode(1500, 0, "objOfChild", new objOfChild_0);
+  m.addOpcode(1500, 1, "objOfChild", new objOfChild_1);
+  m.addOpcode(1500, 2, "objOfChild", new objOfChild_2);
 }
 
 // -----------------------------------------------------------------------
