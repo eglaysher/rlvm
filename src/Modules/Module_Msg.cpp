@@ -229,6 +229,9 @@ MsgModule::MsgModule()
 
   addUnsupportedOpcode(107, 0, "FontSizeAll");
 
+  addOpcode(111, 0, "activeWindow",
+            returnIntValue(&TextSystem::activeWindow));
+
   addOpcode(120, 0, "__doruby_on", new doruby_display);
   addOpcode(120, 1, "__doruby_off", callFunction(&TextPage::markRubyBegin));
 
