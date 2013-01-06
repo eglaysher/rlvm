@@ -54,6 +54,7 @@ class GraphicsStackFrame;
 class HIKRenderer;
 class HIKScript;
 class MouseCursor;
+class ObjectMutator;
 class Renderable;
 class RGBAColour;
 class RLMachine;
@@ -362,6 +363,10 @@ class GraphicsSystem : public EventListener {
   // Resets the object properties for all graphics objects.
   void resetAllObjectsProperties();
 
+  // Adds a mutator to the list of active mutators. GraphicsSystem takes
+  // ownership of the passed in object.
+  void AddObjectMutator(ObjectMutator* mutator);
+
   // The number of objects in a layer for this game. Defaults to 256 and can be
   // overridden with #OBJECT_MAX.
   int objectLayerSize();
@@ -468,6 +473,13 @@ class GraphicsSystem : public EventListener {
 
   // Rectangle of the screen.
   Rect screen_rect_;
+
+  // Tasks that run every tick. Used to mutate object parameters over time (and
+  // how we check from a blocking LongOperation if the mutation is ongoing).
+  //
+  // I think R23 mentioned that these were called "Parameter Events" in the
+  // RLMAX SDK.
+  std::vector<ObjectMutator*> object_mutators_;
 
   // Immutable
   struct GraphicsObjectSettings;

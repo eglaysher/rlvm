@@ -76,6 +76,7 @@ class GraphicsObject {
   int yAdjustment(int idx) const { return impl_->adjust_y_[idx]; }
   int yAdjustmentSum() const;
   void setYAdjustment(int idx, int y);
+  void setXYAdjustments(int idx, int x, int y);
 
   int vert() const { return impl_->whatever_adjust_vert_operates_on_; }
   void setVert(const int vert);

@@ -59,6 +59,7 @@
 #include "Systems/Base/HIKRenderer.hpp"
 #include "Systems/Base/HIKScript.hpp"
 #include "Systems/Base/MouseCursor.hpp"
+#include "Systems/Base/ObjectMutator.hpp"
 #include "Systems/Base/ObjectSettings.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
@@ -237,7 +238,13 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
 
 // -----------------------------------------------------------------------
 
-GraphicsSystem::~GraphicsSystem() {}
+GraphicsSystem::~GraphicsSystem() {
+  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+       it != object_mutators_.end(); ++it) {
+    delete *it;
+  }
+  object_mutators_.clear();
+}
 
 // -----------------------------------------------------------------------
 
@@ -497,9 +504,22 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
     system().text().render(tree);
 }
 
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
     hik_renderer_->execute(machine);
+
+  // Run each mutator. If it returns true, remove it.
+  std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+  while (it != object_mutators_.end()) {
+    if ((**it)(machine)) {
+      delete *it;
+      it = object_mutators_.erase(it);
+    } else {
+      ++it;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -640,6 +660,13 @@ void GraphicsSystem::resetAllObjectsProperties() {
   end = graphics_object_impl_->background_objects.allocated_end();
   for (; it != end; ++it)
     it->resetProperties();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::AddObjectMutator(ObjectMutator* mutator) {
+  // TODO(erg): If we have an equivalent mutator, remove it first.
+  object_mutators_.push_back(mutator);
 }
 
 // -----------------------------------------------------------------------

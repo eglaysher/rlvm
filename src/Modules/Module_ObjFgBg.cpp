@@ -36,13 +36,17 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/Rect_T.hpp"
+#include "MachineBase/ObjectMutatorOperations.hpp"
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Systems/Base/ColourFilterObjectData.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
+#include "Systems/Base/ObjectMutator.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
@@ -270,6 +274,59 @@ struct ObjRangeAdapter : RLOp_SpecialCase {
   }
 };
 
+class objEveAdjust
+    : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
+                         IntConstant_T, IntConstant_T, IntConstant_T,
+                         IntConstant_T> {
+ public:
+  virtual void operator()(RLMachine& machine,
+                          int obj, int rep, int x,
+                          int y, int duration_time, int delay, int type) {
+    int fgbg, parentobject, childobject;
+    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
+
+    unsigned int creation_time = machine.system().event().getTicks();
+    machine.system().graphics().AddObjectMutator(
+        new AdjustMutator(machine,
+                          fgbg, parentobject, childobject,
+                          creation_time, delay, duration_time,
+                          type, rep, x, y));
+  }
+
+ private:
+  // We need a custom mutator here. One of the parameters isn't varying.
+  class AdjustMutator : public ObjectMutator {
+   public:
+    AdjustMutator(RLMachine& machine,
+                  int layer, int object, int child,
+                  int creation_time, int duration_time, int delay,
+                  int type, int rep, int target_x, int target_y)
+        : ObjectMutator(layer, object, child, "objEveAdjust",
+                        creation_time, delay, duration_time, type),
+          rep_(rep),
+          start_x_(GetObject(machine).xAdjustment(rep)),
+          end_x_(target_x),
+          start_y_(GetObject(machine).yAdjustment(rep)),
+          end_y_(target_y) {
+    }
+
+   private:
+    virtual void PerformSetting(RLMachine& machine) {
+      int x = GetValueForTime(machine, start_x_, end_x_);
+      GetObject(machine).setXAdjustment(rep_, x);
+
+      int y = GetValueForTime(machine, start_y_, end_y_);
+      GetObject(machine).setYAdjustment(rep_, y);
+    }
+
+    int rep_;
+    int start_x_;
+    int end_x_;
+    int start_y_;
+    int end_y_;
+  };
+};
+
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
@@ -375,6 +432,18 @@ void addObjectFunctions(RLModule& m) {
   m.addUnsupportedOpcode(1056, 0, "objFadeOpts");
 }
 
+void addEveObjectFunctions(RLModule& m) {
+  m.addOpcode(2003, 0, "objEveAlpha",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setAlpha));
+  m.addOpcode(2003, 1, "objEveAlpha",
+              new Op_ObjectMutatorInt(&GraphicsObject::rawAlpha,
+                                      &GraphicsObject::setAlpha,
+                                      "alpha"));
+
+  m.addOpcode(2006, 0, "objEveAdjust", new adjust);
+  m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
+}
+
 }  // namespace
 
 // -----------------------------------------------------------------------
@@ -384,6 +453,7 @@ void addObjectFunctions(RLModule& m) {
 ObjFgModule::ObjFgModule()
   : RLModule("ObjFg", 1, 81) {
   addObjectFunctions(*this);
+  addEveObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
 
@@ -392,6 +462,7 @@ ObjFgModule::ObjFgModule()
 ObjBgModule::ObjBgModule()
   : RLModule("ObjBg", 1, 82) {
   addObjectFunctions(*this);
+  addEveObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
 
@@ -400,6 +471,7 @@ ObjBgModule::ObjBgModule()
 ChildObjFgModule::ChildObjFgModule()
     : MappedRLModule(childObjMappingFun, "ChildObjFg", 2, 81) {
   addObjectFunctions(*this);
+  addEveObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
 
@@ -408,6 +480,7 @@ ChildObjFgModule::ChildObjFgModule()
 ChildObjBgModule::ChildObjBgModule()
     : MappedRLModule(childObjMappingFun, "ChildObjBg", 2, 82) {
   addObjectFunctions(*this);
+  addEveObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
 
