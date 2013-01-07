@@ -433,12 +433,36 @@ void addObjectFunctions(RLModule& m) {
 }
 
 void addEveObjectFunctions(RLModule& m) {
+  m.addOpcode(2000, 0, "objEveMove", new Obj_SetTwoIntOnObj(
+      &GraphicsObject::setX,
+      &GraphicsObject::setY));
+  m.addOpcode(2000, 1, "objEveMove",
+              new Op_ObjectMutatorIntInt(&GraphicsObject::x,
+                                         &GraphicsObject::setX,
+                                         &GraphicsObject::y,
+                                         &GraphicsObject::setY,
+                                         "objEveMove"));
+
+  m.addOpcode(2001, 0, "objEveLeft",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setX));
+  m.addOpcode(2001, 1, "objEveLeft",
+              new Op_ObjectMutatorInt(&GraphicsObject::x,
+                                      &GraphicsObject::setX,
+                                      "objEveLeft"));
+
+  m.addOpcode(2002, 0, "objEveTop",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setY));
+  m.addOpcode(2002, 1, "objEveTop",
+              new Op_ObjectMutatorInt(&GraphicsObject::y,
+                                      &GraphicsObject::setY,
+                                      "objEveTop"));
+
   m.addOpcode(2003, 0, "objEveAlpha",
               new Obj_SetOneIntOnObj(&GraphicsObject::setAlpha));
   m.addOpcode(2003, 1, "objEveAlpha",
               new Op_ObjectMutatorInt(&GraphicsObject::rawAlpha,
                                       &GraphicsObject::setAlpha,
-                                      "alpha"));
+                                      "objEveAlpha"));
 
   m.addOpcode(2006, 0, "objEveAdjust", new adjust);
   m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);

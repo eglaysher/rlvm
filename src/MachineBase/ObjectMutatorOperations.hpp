@@ -59,4 +59,32 @@ class Op_ObjectMutatorInt
   const char* name_;
 };
 
+class Op_ObjectMutatorIntInt
+    : public RLOp_Void_6< IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T > {
+ public:
+  typedef int(GraphicsObject::*Getter)() const;
+  typedef void(GraphicsObject::*Setter)(const int);
+
+  Op_ObjectMutatorIntInt(Getter getter_one, Setter setter_one,
+                         Getter getter_two, Setter setter_two,
+                         const char* name);
+  virtual ~Op_ObjectMutatorIntInt();
+
+  virtual void operator()(RLMachine& machine,
+                          int object,
+                          int endval_one,
+                          int endval_two,
+                          int duration_time,
+                          int delay,
+                          int type);
+ private:
+  Getter getter_one_;
+  Setter setter_one_;
+  Getter getter_two_;
+  Setter setter_two_;
+  const char* name_;
+};
+
+
 #endif  // SRC_MACHINEBASE_OBJECTMUTATOROPERATIONS_HPP_

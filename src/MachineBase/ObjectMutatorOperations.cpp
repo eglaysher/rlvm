@@ -51,6 +51,8 @@ void GetMutatorObjectParams(RLOperation* op,
   }
 }
 
+// -----------------------------------------------------------------------
+
 Op_ObjectMutatorInt::Op_ObjectMutatorInt(Getter getter,
                                          Setter setter,
                                          const char* name)
@@ -76,4 +78,39 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
                               fgbg, parentobject, childobject, name_,
                               creation_time, delay, duration_time,
                               type, endval, getter_, setter_));
+}
+
+// -----------------------------------------------------------------------
+
+
+Op_ObjectMutatorIntInt::Op_ObjectMutatorIntInt(
+    Getter getter_one, Setter setter_one,
+    Getter getter_two, Setter setter_two,
+    const char* name)
+    : getter_one_(getter_one),
+      setter_one_(setter_one),
+      getter_two_(getter_two),
+      setter_two_(setter_two),
+      name_(name) {
+}
+
+Op_ObjectMutatorIntInt::~Op_ObjectMutatorIntInt() {}
+
+void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
+                                        int object,
+                                        int endval_one,
+                                        int endval_two,
+                                        int duration_time,
+                                        int delay,
+                                        int type) {
+  int fgbg, parentobject, childobject;
+  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
+
+  unsigned int creation_time = machine.system().event().getTicks();
+  machine.system().graphics().AddObjectMutator(
+      new TwoIntObjectMutator(machine,
+                              fgbg, parentobject, childobject, name_,
+                              creation_time, delay, duration_time, type,
+                              endval_one, getter_one_, setter_one_,
+                              endval_two, getter_two_, setter_two_));
 }

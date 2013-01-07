@@ -120,3 +120,33 @@ void OneIntObjectMutator::PerformSetting(RLMachine& machine) {
   int value = GetValueForTime(machine, startval_, endval_);
   (GetObject(machine).*setter_)(value);
 }
+
+// -----------------------------------------------------------------------
+
+TwoIntObjectMutator::TwoIntObjectMutator(
+    RLMachine& machine,
+    int layer, int object, int child, const char* name,
+    int creation_time, int duration_time, int delay,
+    int type,
+    int target_one, Getter getter_one, Setter setter_one,
+    int target_two, Getter getter_two, Setter setter_two)
+    : ObjectMutator(layer, object, child, name, creation_time, delay,
+                    duration_time, type),
+      startval_one_((GetObject(machine).*getter_one)()),
+      endval_one_(target_one),
+      setter_one_(setter_one),
+      startval_two_((GetObject(machine).*getter_two)()),
+      endval_two_(target_two),
+      setter_two_(setter_two) {
+}
+
+TwoIntObjectMutator::~TwoIntObjectMutator() {
+}
+
+void TwoIntObjectMutator::PerformSetting(RLMachine& machine) {
+  int value = GetValueForTime(machine, startval_one_, endval_one_);
+  (GetObject(machine).*setter_one_)(value);
+
+  value = GetValueForTime(machine, startval_two_, endval_two_);
+  (GetObject(machine).*setter_two_)(value);
+}

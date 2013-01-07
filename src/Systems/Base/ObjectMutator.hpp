@@ -77,6 +77,8 @@ class ObjectMutator {
   int type_;
 };
 
+// -----------------------------------------------------------------------
+
 // An object mutator that takes a single integer.
 class OneIntObjectMutator : public ObjectMutator {
  public:
@@ -96,6 +98,34 @@ class OneIntObjectMutator : public ObjectMutator {
   int startval_;
   int endval_;
   Setter setter_;
+};
+
+// -----------------------------------------------------------------------
+
+// An object mutator that varies two integers.
+class TwoIntObjectMutator : public ObjectMutator {
+ public:
+  typedef int(GraphicsObject::*Getter)() const;
+  typedef void(GraphicsObject::*Setter)(const int);
+
+  TwoIntObjectMutator(RLMachine& machine,
+                      int layer, int object, int child, const char* name,
+                      int creation_time, int duration_time, int delay,
+                      int type,
+                      int target_one, Getter getter_one, Setter setter_one,
+                      int target_two, Getter getter_two, Setter setter_two);
+  virtual ~TwoIntObjectMutator();
+
+ private:
+  virtual void PerformSetting(RLMachine& machine);
+
+  int startval_one_;
+  int endval_one_;
+  Setter setter_one_;
+
+  int startval_two_;
+  int endval_two_;
+  Setter setter_two_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_OBJECTMUTATOR_HPP_
