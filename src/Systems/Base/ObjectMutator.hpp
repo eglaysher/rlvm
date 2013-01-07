@@ -33,7 +33,8 @@ class RLMachine;
 // An object that changes the value of an object parameter over time.
 class ObjectMutator {
  public:
-  ObjectMutator(int layer, int object, int child, const char* name,
+  ObjectMutator(int layer, int object, int child, int repr,
+                const char* name,
                 int creation_time, int duration_time, int delay,
                 int type);
   virtual ~ObjectMutator();
@@ -42,8 +43,12 @@ class ObjectMutator {
   bool operator()(RLMachine& machine);
 
   // Returns true if this ObjectMutator is operating on parameter |name| on
-  // |layer|/|object|/|child|.
-  bool OperationMatches(int layer, int object, int child, const char* name);
+  // |layer|/|object|/|child|/|repr|.
+  bool OperationMatches(int layer, int object, int child, int repr,
+                        const char* name);
+
+  // Called to end the mutation prematurely.
+  virtual void SetToEnd(RLMachine& machine) = 0;
 
  protected:
   // Returns the specified GraphicsObject.
@@ -60,6 +65,7 @@ class ObjectMutator {
   int layer_;
   int object_;
   int child_;
+  int repr_;
 
   // The name of our operation.
   const char* name_;
@@ -93,6 +99,7 @@ class OneIntObjectMutator : public ObjectMutator {
   virtual ~OneIntObjectMutator();
 
  private:
+  virtual void SetToEnd(RLMachine& machine);
   virtual void PerformSetting(RLMachine& machine);
 
   int startval_;
@@ -117,6 +124,7 @@ class TwoIntObjectMutator : public ObjectMutator {
   virtual ~TwoIntObjectMutator();
 
  private:
+  virtual void SetToEnd(RLMachine& machine);
   virtual void PerformSetting(RLMachine& machine);
 
   int startval_one_;

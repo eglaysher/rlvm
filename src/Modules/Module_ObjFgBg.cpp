@@ -280,7 +280,7 @@ class objEveAdjust
                          IntConstant_T> {
  public:
   virtual void operator()(RLMachine& machine,
-                          int obj, int rep, int x,
+                          int obj, int repno, int x,
                           int y, int duration_time, int delay, int type) {
     int fgbg, parentobject, childobject;
     GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
@@ -290,7 +290,7 @@ class objEveAdjust
         new AdjustMutator(machine,
                           fgbg, parentobject, childobject,
                           creation_time, delay, duration_time,
-                          type, rep, x, y));
+                          type, repno, x, y));
   }
 
  private:
@@ -300,26 +300,31 @@ class objEveAdjust
     AdjustMutator(RLMachine& machine,
                   int layer, int object, int child,
                   int creation_time, int duration_time, int delay,
-                  int type, int rep, int target_x, int target_y)
-        : ObjectMutator(layer, object, child, "objEveAdjust",
+                  int type, int repno, int target_x, int target_y)
+        : ObjectMutator(layer, object, child, repno, "objEveAdjust",
                         creation_time, delay, duration_time, type),
-          rep_(rep),
-          start_x_(GetObject(machine).xAdjustment(rep)),
+          repno_(repno),
+          start_x_(GetObject(machine).xAdjustment(repno)),
           end_x_(target_x),
-          start_y_(GetObject(machine).yAdjustment(rep)),
+          start_y_(GetObject(machine).yAdjustment(repno)),
           end_y_(target_y) {
     }
 
    private:
-    virtual void PerformSetting(RLMachine& machine) {
-      int x = GetValueForTime(machine, start_x_, end_x_);
-      GetObject(machine).setXAdjustment(rep_, x);
-
-      int y = GetValueForTime(machine, start_y_, end_y_);
-      GetObject(machine).setYAdjustment(rep_, y);
+    virtual void SetToEnd(RLMachine& machine) {
+      GetObject(machine).setXAdjustment(repno_, end_x_);
+      GetObject(machine).setYAdjustment(repno_, end_y_);
     }
 
-    int rep_;
+    virtual void PerformSetting(RLMachine& machine) {
+      int x = GetValueForTime(machine, start_x_, end_x_);
+      GetObject(machine).setXAdjustment(repno_, x);
+
+      int y = GetValueForTime(machine, start_y_, end_y_);
+      GetObject(machine).setYAdjustment(repno_, y);
+    }
+
+    int repno_;
     int start_x_;
     int end_x_;
     int start_y_;
@@ -466,6 +471,18 @@ void addEveObjectFunctions(RLModule& m) {
 
   m.addOpcode(2006, 0, "objEveAdjust", new adjust);
   m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
+
+  m.addOpcode(6000, 0, "objEveMoveEnd",
+              new Op_EndObjectMutation_Normal("objEveMove"));
+  m.addOpcode(6001, 0, "objEveLeftEnd",
+              new Op_EndObjectMutation_Normal("objEveLeft"));
+  m.addOpcode(6002, 0, "objEveTopEnd",
+              new Op_EndObjectMutation_Normal("objEveTop"));
+  m.addOpcode(6003, 0, "objEveAlphaEnd",
+              new Op_EndObjectMutation_Normal("objEveAlpha"));
+
+  m.addOpcode(6006, 0, "objEveAdjustEnd",
+              new Op_EndObjectMutation_RepNo("objEveAdjust"));
 }
 
 }  // namespace

@@ -114,3 +114,38 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
                               endval_one, getter_one_, setter_one_,
                               endval_two, getter_two_, setter_two_));
 }
+
+// -----------------------------------------------------------------------
+
+Op_EndObjectMutation_Normal::Op_EndObjectMutation_Normal(const char* name)
+    : name_(name) {}
+
+Op_EndObjectMutation_Normal::~Op_EndObjectMutation_Normal() {}
+
+void Op_EndObjectMutation_Normal::operator()(RLMachine& machine,
+                                             int object,
+                                             int speedup) {
+  int fgbg, parentobject, childobject;
+  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
+
+  machine.system().graphics().EndObjectMutatorMatching(
+      machine, fgbg, parentobject, childobject, -1, name_, speedup);
+}
+
+// -----------------------------------------------------------------------
+
+Op_EndObjectMutation_RepNo::Op_EndObjectMutation_RepNo(const char* name)
+    : name_(name) {}
+
+Op_EndObjectMutation_RepNo::~Op_EndObjectMutation_RepNo() {}
+
+void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
+                                            int object,
+                                            int repno,
+                                            int speedup) {
+  int fgbg, parentobject, childobject;
+  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
+
+  machine.system().graphics().EndObjectMutatorMatching(
+      machine, fgbg, parentobject, childobject, repno, name_, speedup);
+}

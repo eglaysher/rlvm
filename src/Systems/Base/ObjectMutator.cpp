@@ -40,6 +40,7 @@ using namespace std;
 ObjectMutator::ObjectMutator(int layer,
                              int object,
                              int child,
+                             int repr,
                              const char* name,
                              int creation_time,
                              int duration_time,
@@ -48,6 +49,7 @@ ObjectMutator::ObjectMutator(int layer,
     : layer_(layer),
       object_(object),
       child_(child),
+      repr_(repr),
       name_(name),
       creation_time_(creation_time),
       duration_time_(duration_time),
@@ -64,9 +66,9 @@ bool ObjectMutator::operator()(RLMachine& machine) {
 }
 
 bool ObjectMutator::OperationMatches(int layer, int object, int child,
-                                     const char* name) {
+                                     int repr, const char* name) {
   return layer == layer_ && object == object_ && child == child_ &&
-      (strcmp(name, name_) == 0);
+      repr_ == repr && (strcmp(name, name_) == 0);
 }
 
 GraphicsObject& ObjectMutator::GetObject(RLMachine& machine) {
@@ -106,7 +108,7 @@ OneIntObjectMutator::OneIntObjectMutator(
     int creation_time, int duration_time, int delay,
     int type, int target_value, Getter getter,
     Setter setter)
-    : ObjectMutator(layer, object, child, name, creation_time, delay,
+    : ObjectMutator(layer, object, child, -1, name, creation_time, delay,
                     duration_time, type),
       startval_((GetObject(machine).*getter)()),
       endval_(target_value),
@@ -114,6 +116,10 @@ OneIntObjectMutator::OneIntObjectMutator(
 }
 
 OneIntObjectMutator::~OneIntObjectMutator() {
+}
+
+void OneIntObjectMutator::SetToEnd(RLMachine& machine) {
+  (GetObject(machine).*setter_)(endval_);
 }
 
 void OneIntObjectMutator::PerformSetting(RLMachine& machine) {
@@ -130,7 +136,7 @@ TwoIntObjectMutator::TwoIntObjectMutator(
     int type,
     int target_one, Getter getter_one, Setter setter_one,
     int target_two, Getter getter_two, Setter setter_two)
-    : ObjectMutator(layer, object, child, name, creation_time, delay,
+    : ObjectMutator(layer, object, child, -1, name, creation_time, delay,
                     duration_time, type),
       startval_one_((GetObject(machine).*getter_one)()),
       endval_one_(target_one),
@@ -141,6 +147,11 @@ TwoIntObjectMutator::TwoIntObjectMutator(
 }
 
 TwoIntObjectMutator::~TwoIntObjectMutator() {
+}
+
+void TwoIntObjectMutator::SetToEnd(RLMachine& machine) {
+  (GetObject(machine).*setter_one_)(endval_one_);
+  (GetObject(machine).*setter_two_)(endval_two_);
 }
 
 void TwoIntObjectMutator::PerformSetting(RLMachine& machine) {

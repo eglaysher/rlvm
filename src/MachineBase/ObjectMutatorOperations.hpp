@@ -86,5 +86,33 @@ class Op_ObjectMutatorIntInt
   const char* name_;
 };
 
+// -----------------------------------------------------------------------
+
+class Op_EndObjectMutation_Normal
+    : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+ public:
+  Op_EndObjectMutation_Normal(const char* name);
+  virtual ~Op_EndObjectMutation_Normal();
+
+  virtual void operator()(RLMachine& machine, int object, int speedup);
+
+ private:
+  const char* name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_EndObjectMutation_RepNo
+    : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+ public:
+  Op_EndObjectMutation_RepNo(const char* name);
+  virtual ~Op_EndObjectMutation_RepNo();
+
+  virtual void operator()(RLMachine& machine, int object, int repno,
+                          int speedup);
+
+ private:
+  const char* name_;
+};
 
 #endif  // SRC_MACHINEBASE_OBJECTMUTATOROPERATIONS_HPP_

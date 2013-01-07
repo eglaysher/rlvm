@@ -671,6 +671,45 @@ void GraphicsSystem::AddObjectMutator(ObjectMutator* mutator) {
 
 // -----------------------------------------------------------------------
 
+bool GraphicsSystem::IsMutatorRunningMatching(
+    int layer, int object, int child, int repno,
+    const char* name) {
+  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+       it != object_mutators_.end(); ++it) {
+    if ((*it)->OperationMatches(layer, object, child, repno, name))
+      return true;
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::EndObjectMutatorMatching(
+    RLMachine& machine, int layer, int object, int child, int repno,
+    const char* name, int speedup) {
+  if (speedup == 0) {
+    std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+    while (it != object_mutators_.end()) {
+      if ((*it)->OperationMatches(layer, object, child, repno, name)) {
+        (*it)->SetToEnd(machine);
+        delete *it;
+        it = object_mutators_.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  } else if (speedup == 1) {
+    // This is explicitly a noop.
+  } else {
+    cerr << "Warning: We only do immediate endings in "
+         << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
+         << endl;
+  }
+}
+
+// -----------------------------------------------------------------------
+
 int GraphicsSystem::objectLayerSize() {
   return graphics_object_settings_->objects_in_a_layer;
 }

@@ -367,6 +367,16 @@ class GraphicsSystem : public EventListener {
   // ownership of the passed in object.
   void AddObjectMutator(ObjectMutator* mutator);
 
+  // Returns true if a mutator matching the following parameters is currently
+  // running.
+  bool IsMutatorRunningMatching(int layer, int object, int child, int repno,
+                                const char* name);
+
+  // Ends all mutators that match the given parameters.
+  void EndObjectMutatorMatching(RLMachine& machine,
+                                int layer, int object, int child, int repno,
+                                const char* name, int speedup);
+
   // The number of objects in a layer for this game. Defaults to 256 and can be
   // overridden with #OBJECT_MAX.
   int objectLayerSize();
