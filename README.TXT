@@ -14,9 +14,9 @@ Table of Contents:
 rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users with
 a compatible, portable interpreter to play VisualArts games,
-specifically those released by Key. It is licensed to you under version
-3 or later of the GNU General Public License as published by the Free
-Software Foundation.
+specifically those released under the Key label. It is licensed to you
+under version 3 or later of the GNU General Public License as published
+by the Free Software Foundation.
 
 rlvm is meant to be a compatibility utility; it is not an excuse for
 copyright infringement. Please do not acquire games from BitTorrent /
@@ -105,10 +105,7 @@ You will need the following libraries/utilities:
 
 - The scons build system (Note: the scons in MacPorts has been reported
   to not work)
-- boost 1.40 or higher (1.35 has a subtle corruption bug; if you are
-  upgrading from a copy of rlvm 0.7 that was compiled with 1.35, you may
-  need to delete your save files. My Ubuntu packages and Mac applications
-  did not use 1.35 for rlvm 0.7.)
+- boost 1.40 or higher
 - SDL (and optionally, SDL_image, and SDL_mixer, though there are copies
   included in the source distribution if you don't already have them
   installed.)
