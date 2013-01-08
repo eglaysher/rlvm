@@ -33,6 +33,7 @@
 
 #include <string>
 
+#include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/Rect_T.hpp"
@@ -288,9 +289,9 @@ class objEveAdjust
     unsigned int creation_time = machine.system().event().getTicks();
     machine.system().graphics().AddObjectMutator(
         new AdjustMutator(machine,
-                          fgbg, parentobject, childobject,
+                          fgbg, parentobject, childobject, repno,
                           creation_time, delay, duration_time,
-                          type, repno, x, y));
+                          type, x, y));
   }
 
  private:
@@ -298,9 +299,9 @@ class objEveAdjust
   class AdjustMutator : public ObjectMutator {
    public:
     AdjustMutator(RLMachine& machine,
-                  int layer, int object, int child,
+                  int layer, int object, int child, int repno,
                   int creation_time, int duration_time, int delay,
-                  int type, int repno, int target_x, int target_y)
+                  int type, int target_x, int target_y)
         : ObjectMutator(layer, object, child, repno, "objEveAdjust",
                         creation_time, delay, duration_time, type),
           repno_(repno),
@@ -331,6 +332,59 @@ class objEveAdjust
     int end_y_;
   };
 };
+
+struct LongOp_MutatorWait : public LongOperation {
+  LongOp_MutatorWait(int layer, int object, int child, int repno,
+                     const char* name)
+      : layer_(layer),
+        object_(object),
+        child_(child),
+        repno_(repno),
+        name_(name) {
+  }
+
+  bool operator()(RLMachine& machine) {
+    return machine.system().graphics().IsMutatorRunningMatching(
+        layer_, object_, child_, repno_, name_) == false;
+  }
+
+  int layer_, object_, child_, repno_;
+  const char* name_;
+};
+
+class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
+ public:
+  Op_MutatorWaitNormal(const char* name) : name_(name) {}
+
+  virtual void operator()(RLMachine& machine, int obj) {
+    int fgbg, parentobject, childobject;
+    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
+
+    machine.pushLongOperation(new LongOp_MutatorWait(
+        fgbg, parentobject, childobject, -1, name_));
+  }
+
+ private:
+  const char* name_;
+};
+
+class Op_MutatorWaitRepNo
+    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+ public:
+  Op_MutatorWaitRepNo(const char* name) : name_(name) {}
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) {
+    int fgbg, parentobject, childobject;
+    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
+
+    machine.pushLongOperation(new LongOp_MutatorWait(
+        fgbg, parentobject, childobject, repno, name_));
+  }
+
+ private:
+  const char* name_;
+};
+
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
@@ -471,6 +525,17 @@ void addEveObjectFunctions(RLModule& m) {
 
   m.addOpcode(2006, 0, "objEveAdjust", new adjust);
   m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
+
+  m.addOpcode(4000, 0, "objEveMoveWait",
+              new Op_MutatorWaitNormal("objEveMove"));
+  m.addOpcode(4001, 0, "objEveLeftWait",
+              new Op_MutatorWaitNormal("objEveLeft"));
+  m.addOpcode(4002, 0, "objEveTopWait",
+              new Op_MutatorWaitNormal("objEveTop"));
+  m.addOpcode(4003, 0, "objEveAlphaWait",
+              new Op_MutatorWaitNormal("objEveAlpha"));
+  m.addOpcode(4006, 0, "objEveAdjustEnd",
+              new Op_MutatorWaitRepNo("objEveAdjust"));
 
   m.addOpcode(6000, 0, "objEveMoveEnd",
               new Op_EndObjectMutation_Normal("objEveMove"));
