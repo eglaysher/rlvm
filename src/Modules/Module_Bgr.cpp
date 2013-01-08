@@ -293,4 +293,6 @@ BgrModule::BgrModule()
   addOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
   addOpcode(2001, 0, "bgrClearPreloadedScript",
             callFunction(&GraphicsSystem::ClearPreloadedHIKScript));
+  addOpcode(2002, 0, "bgrClearAllPreloadedScripts",
+            callFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
 }
