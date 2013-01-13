@@ -33,6 +33,7 @@
 
 #include <string>
 
+#include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
@@ -385,6 +386,55 @@ class Op_MutatorWaitRepNo
   const char* name_;
 };
 
+bool objectMutatorIsWorking(RLMachine& machine, int fgbg, int parentobj,
+                            int childobj, int repno, const char* name) {
+  return machine.system().graphics().IsMutatorRunningMatching(
+      fgbg, parentobj, childobj, repno, name) == false;
+}
+
+class Op_MutatorWaitCNormal
+    : public RLOp_Void_1<IntConstant_T> {
+ public:
+  Op_MutatorWaitCNormal(const char* name) : name_(name) {}
+
+  virtual void operator()(RLMachine& machine, int obj) {
+    int fgbg, parentobject, childobject;
+    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
+
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnClicks();
+    wait_op->breakOnEvent(
+        boost::bind(objectMutatorIsWorking,
+                    boost::ref(machine),
+                    fgbg, parentobject, childobject, -1, name_));
+    machine.pushLongOperation(wait_op);
+  }
+
+ private:
+  const char* name_;
+};
+
+class Op_MutatorWaitCRepNo
+    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+ public:
+  Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) {
+    int fgbg, parentobject, childobject;
+    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
+
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnClicks();
+    wait_op->breakOnEvent(
+        boost::bind(objectMutatorIsWorking,
+                    boost::ref(machine),
+                    fgbg, parentobject, childobject, repno, name_));
+    machine.pushLongOperation(wait_op);
+  }
+
+ private:
+  const char* name_;
+};
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
@@ -535,6 +585,17 @@ void addEveObjectFunctions(RLModule& m) {
   m.addOpcode(4003, 0, "objEveAlphaWait",
               new Op_MutatorWaitNormal("objEveAlpha"));
   m.addOpcode(4006, 0, "objEveAdjustEnd",
+              new Op_MutatorWaitRepNo("objEveAdjust"));
+
+  m.addOpcode(5000, 0, "objEveMoveWaitC",
+              new Op_MutatorWaitCNormal("objEveMove"));
+  m.addOpcode(5001, 0, "objEveLeftWaitC",
+              new Op_MutatorWaitCNormal("objEveLeft"));
+  m.addOpcode(5002, 0, "objEveTopWaitC",
+              new Op_MutatorWaitCNormal("objEveTop"));
+  m.addOpcode(5003, 0, "objEveAlphaWaitC",
+              new Op_MutatorWaitCNormal("objEveAlpha"));
+  m.addOpcode(5006, 0, "objEveAdjustWaitC",
               new Op_MutatorWaitRepNo("objEveAdjust"));
 
   m.addOpcode(6000, 0, "objEveMoveEnd",
