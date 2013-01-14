@@ -65,66 +65,66 @@ struct objWaitAll : public RLOp_Void_Void {
   }
 };
 
-struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  struct WaitForGanToFinish : public LongOperation {
-    /**
-     * Save the screen update mode and change it to automatic when entering a
-     * blocking animation, restoring when we leave.
-     *
-     * When I actually started paying attention to DrawManual()/DrawAuto(), I
-     * stopped forcing a refresh of the screen on each and instead obeyed the
-     * DCScreenUpdateMode, I broke the OP of Kanon.
-     *
-     * I don't know if this is the correct solution. If this breaks things, the
-     * solution is that things like AnmGraphicsObjectData force screen
-     * refreshes, ignoring whatever the current screen update mode is.
-     */
-    GraphicsSystem& system_;
-    GraphicsSystem::DCScreenUpdateMode mode_;
+struct WaitForGanToFinish : public LongOperation {
+  /**
+   * Save the screen update mode and change it to automatic when entering a
+   * blocking animation, restoring when we leave.
+   *
+   * When I actually started paying attention to DrawManual()/DrawAuto(), I
+   * stopped forcing a refresh of the screen on each and instead obeyed the
+   * DCScreenUpdateMode, I broke the OP of Kanon.
+   *
+   * I don't know if this is the correct solution. If this breaks things, the
+   * solution is that things like AnmGraphicsObjectData force screen
+   * refreshes, ignoring whatever the current screen update mode is.
+   */
+  GraphicsSystem& system_;
+  GraphicsSystem::DCScreenUpdateMode mode_;
 
-    int fgbg_;
-    int parent_;
-    int buf_;
-    WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent,
-                       int inBuf)
+  int fgbg_;
+  int parent_;
+  int buf_;
+  WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent,
+                     int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
         fgbg_(fgbg), parent_(parent), buf_(inBuf) {
-      system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+    system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+  }
+
+  bool operator()(RLMachine& machine) {
+    GraphicsObject& obj = getObject(machine);
+    bool done = true;
+
+    if (obj.hasObjectData()) {
+      const GraphicsObjectData& data = obj.objectData();
+      if (data.isAnimation())
+        done = !data.currentlyPlaying();
     }
 
-    bool operator()(RLMachine& machine) {
-      GraphicsObject& obj = getObject(machine);
-      bool done = true;
-
-      if (obj.hasObjectData()) {
-        const GraphicsObjectData& data = obj.objectData();
-        if (data.isAnimation())
-          done = !data.currentlyPlaying();
-      }
-
-      if (done) {
-        // Restore whatever mode we were in before.
-        system_.setScreenUpdateMode(mode_);
-      }
-
-      return done;
+    if (done) {
+      // Restore whatever mode we were in before.
+      system_.setScreenUpdateMode(mode_);
     }
 
-    GraphicsObject& getObject(RLMachine& machine) {
-      GraphicsSystem& graphics = machine.system().graphics();
+    return done;
+  }
 
-      if (parent_ != -1) {
-        GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
-        ensureIsParentObject(parent, graphics.objectLayerSize());
-        return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
-            getObject(buf_);
-      } else {
-        return graphics.getObject(fgbg_, buf_);
-      }
+  GraphicsObject& getObject(RLMachine& machine) {
+    GraphicsSystem& graphics = machine.system().graphics();
+
+    if (parent_ != -1) {
+      GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
+      ensureIsParentObject(parent, graphics.objectLayerSize());
+      return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
+          getObject(buf_);
+    } else {
+      return graphics.getObject(fgbg_, buf_);
     }
-  };
+  }
+};
 
+struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   bool block_;
   GraphicsObjectData::AfterAnimation after_effect_;
 
@@ -155,6 +155,22 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
         }
       }
     }
+  }
+};
+
+struct ganWait : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int buf) {
+    int fgbg;
+    if (!getProperty(P_FGBG, fgbg))
+      fgbg = OBJ_FG;
+
+    int parent_object;
+    if (!getProperty(P_PARENTOBJ, parent_object))
+      parent_object = -1;
+
+    machine.pushLongOperation(new WaitForGanToFinish(
+        machine.system().graphics(),
+        fgbg, parent_object, buf));
   }
 };
 
@@ -228,6 +244,7 @@ struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
 void addGanOperationsTo(RLModule& m) {
   m.addOpcode(0, 0, "objStop2", new objStop_0);
   m.addOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
+  m.addOpcode(4, 0, "ganWait", new ganWait);
 
   m.addOpcode(1000, 0, "objStop", new objStop_0);
   m.addUnsupportedOpcode(1000, 1, "objStop");
