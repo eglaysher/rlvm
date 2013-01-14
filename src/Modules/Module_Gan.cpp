@@ -200,8 +200,13 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation() && data.animationFinished())
-        return 1;
+      if (data.isAnimation()) {
+        if (data.animationFinished()) {
+          return 0;
+        } else {
+          return 1;
+        }
+      }
     }
 
     return 0;
@@ -242,7 +247,8 @@ void addGanOperationsTo(RLModule& m) {
 
   m.addOpcode(2001, 0, "objLoop",
               new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addUnsupportedOpcode(2003, 0, "objPlay");
+  m.addOpcode(2003, 0, "objPlay",
+              new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 
   m.addOpcode(3001, 0, "ganLoop2",
               new ganPlay(false, GraphicsObjectData::AFTER_LOOP));

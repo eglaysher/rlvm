@@ -158,8 +158,11 @@ boost::shared_ptr<const Surface> GraphicsObjectOfFile::currentSurface(
 // -----------------------------------------------------------------------
 
 Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go) {
-  if (currentlyPlaying())
+  if (time_at_last_frame_change_ != 0) {
+    // If we've ever been treated as an animation, we need to continue acting
+    // as an animation even if we've stopped.
     return surface_->getPattern(current_frame_).rect;
+  }
 
   return GraphicsObjectData::srcRect(go);
 }
