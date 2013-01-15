@@ -577,7 +577,16 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // Run each mutator. If it returns true, remove it.
   std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
   while (it != object_mutators_.end()) {
-    if ((**it)(machine)) {
+    bool done = false;
+    try {
+      done = (**it)(machine);
+    } catch (rlvm::Exception) {
+      // Assume any failure represents an object mutator that wasn't cleaned up
+      // properly.
+      done = true;
+    }
+
+    if (done) {
       delete *it;
       it = object_mutators_.erase(it);
     } else {
