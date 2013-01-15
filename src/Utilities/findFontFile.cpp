@@ -56,6 +56,7 @@ const char* ja_platform_fonts[] = {
   // Tiger
   "/System/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
 #else
+  "/etc/alternatives/fonts-japanese-gothic.ttf",
   // `ttf-japanese-gothic` is a symbolic link on Debian/Ubuntu systems.
   "/usr/share/fonts/truetype/ttf-japanese-gothic.ttf",
   "/usr/share/fonts/truetype/mona/mona.ttf",
