@@ -456,12 +456,6 @@ ObjectSettings GraphicsSystem::getObjectSettings(const int obj_num) {
 
 // -----------------------------------------------------------------------
 
-// Default implementations for some functions (which probably have
-// default implementations because I'm lazy, and these really should
-// be pure virtual)
-void GraphicsSystem::beginFrame() { }
-void GraphicsSystem::endFrame() { }
-
 void GraphicsSystem::refresh(std::ostream* tree) {
   beginFrame();
   drawFrame(tree);

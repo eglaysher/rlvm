@@ -297,8 +297,8 @@ class GraphicsSystem : public EventListener {
   bool screenNeedsRefresh() const { return screen_needs_refresh_; }
   void screenRefreshed() { screen_needs_refresh_ = false; }
 
-  virtual void beginFrame();
-  virtual void endFrame();
+  virtual void beginFrame() = 0;
+  virtual void endFrame() = 0;
   virtual boost::shared_ptr<Surface> endFrameToSurface() = 0;
 
   // Performs a full redraw of the screen.
