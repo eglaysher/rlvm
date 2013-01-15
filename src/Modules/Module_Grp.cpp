@@ -208,6 +208,28 @@ struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
   }
 };
 
+struct shake : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int spec) {
+    machine.system().graphics().QueueShakeSpec(spec);
+    machine.pushLongOperation(new shakeWait(machine));
+  }
+
+  struct shakeWait : public LongOperation {
+    shakeWait(RLMachine& machine) : machine_(machine) {}
+
+    virtual bool operator()(RLMachine& machine) {
+      return machine.system().graphics().IsShaking() == false;
+    }
+
+    virtual int sleepTime() {
+      return machine_.system().graphics().CurrentShakingFrameTime();
+    }
+
+   private:
+    RLMachine& machine_;
+  };
+};
+
 // -----------------------------------------------------------------------
 // {grp,rec}Load Commands
 // -----------------------------------------------------------------------
@@ -998,7 +1020,7 @@ GrpModule::GrpModule()
   // addOpcode(30, 0, new grpTextout);
 
   addOpcode(31, 0, "wipe", new wipe);
-  addUnsupportedOpcode(32, 0, "shake");
+  addOpcode(32, 0, "shake", new shake);
 
   addOpcode(50, 0, "grpLoad", new load_1(false));
   addOpcode(50, 1, "grpLoad", new load_1(false));

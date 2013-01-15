@@ -41,6 +41,7 @@
 #include <list>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "base/notification_service.h"
@@ -52,6 +53,7 @@
 #include "Modules/Module_Grp.hpp"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/CGMTable.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
@@ -227,6 +229,7 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     display_subtitle_(gameexe("SUBTITLE").to_int(0)),
     hide_interface_(false),
     globals_(gameexe),
+    time_at_last_queue_change_(0),
     graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
     graphics_object_impl_(new GraphicsObjectImpl(
         graphics_object_settings_->objects_in_a_layer)),
@@ -291,6 +294,59 @@ void GraphicsSystem::forceRefresh() {
 void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u) {
   screen_update_mode_ = u;
 }
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::QueueShakeSpec(int spec) {
+  Gameexe& gameexe = system().gameexe();
+
+  if (gameexe("SHAKE", spec).exists()) {
+    vector<int> spec_vector = gameexe("SHAKE", spec).to_intVector();
+
+    int x, y, time;
+    vector<int>::const_iterator it = spec_vector.begin();
+    while (it != spec_vector.end()) {
+      x = *it++;
+      if (it != spec_vector.end()) {
+        y = *it++;
+        if (it != spec_vector.end()) {
+          time = *it++;
+          screen_shake_queue_.push(std::make_pair(Point(x, y), time));
+        }
+      }
+    }
+
+    forceRefresh();
+    time_at_last_queue_change_ = system().event().getTicks();
+  }
+}
+
+// -----------------------------------------------------------------------
+
+Point GraphicsSystem::GetScreenOrigin() {
+  if (screen_shake_queue_.empty()) {
+    return Point(0, 0);
+  } else {
+    return screen_shake_queue_.front().first;
+  }
+}
+
+// -----------------------------------------------------------------------
+
+bool GraphicsSystem::IsShaking() const {
+  return !screen_shake_queue_.empty();
+}
+
+// -----------------------------------------------------------------------
+
+int GraphicsSystem::CurrentShakingFrameTime() const {
+  if (screen_shake_queue_.empty()) {
+    return 10;
+  } else {
+    return screen_shake_queue_.front().second;
+  }
+}
+
 
 // -----------------------------------------------------------------------
 
@@ -503,6 +559,20 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
     hik_renderer_->execute(machine);
+
+  // Possibly update the screen shaking state
+  if (!screen_shake_queue_.empty()) {
+    unsigned int now = system().event().getTicks();
+    unsigned int accumulated_ticks = now - time_at_last_queue_change_;
+    while (!screen_shake_queue_.empty() &&
+           accumulated_ticks > screen_shake_queue_.front().second) {
+      int frame_ticks = screen_shake_queue_.front().second;
+      accumulated_ticks -= frame_ticks;
+      time_at_last_queue_change_ += frame_ticks;
+      screen_shake_queue_.pop();
+      forceRefresh();
+    }
+  }
 
   // Run each mutator. If it returns true, remove it.
   std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();

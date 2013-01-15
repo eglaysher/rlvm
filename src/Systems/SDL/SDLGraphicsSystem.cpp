@@ -103,6 +103,10 @@ void SDLGraphicsSystem::beginFrame() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   ShowGLErrors();
+
+  // Full screen shaking moves where the origin is.
+  Point origin = GetScreenOrigin();
+  glTranslatef(origin.x(), origin.y(), 0);
 }
 
 void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {

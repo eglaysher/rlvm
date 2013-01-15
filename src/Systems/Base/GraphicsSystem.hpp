@@ -39,6 +39,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <queue>
 
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -175,6 +176,22 @@ class GraphicsSystem : public EventListener {
   void setGraphicsBackground(GraphicsBackgroundType t) { background_type_ = t; }
 
   System& system() { return system_; }
+
+  // Screen Shaking
+
+  // Reads #SHAKE.spec and loads the offsets into the screen shaking queue.
+  void QueueShakeSpec(int spec);
+
+  // Returns the current screen origin. This is used for simple #SHAKE.* based
+  // screen shaking. While the screen is not shaking, this returns (0,0).
+  Point GetScreenOrigin();
+
+  // Whether we are currently shaking.
+  bool IsShaking() const;
+
+  // How long the current frame in the shaking should last. 10ms if there are
+  // no frames.
+  int CurrentShakingFrameTime() const;
 
   // Mouse Cursor Management
 
@@ -483,6 +500,13 @@ class GraphicsSystem : public EventListener {
 
   // Rectangle of the screen.
   Rect screen_rect_;
+
+  // Queued origin/time pairs. The front of the queue shall be the current
+  // screen offset.
+  std::queue<std::pair<Point, int> > screen_shake_queue_;
+
+  // The last time |screen_shake_queue_| was modified.
+  unsigned int time_at_last_queue_change_;
 
   // Tasks that run every tick. Used to mutate object parameters over time (and
   // how we check from a blocking LongOperation if the mutation is ongoing).
