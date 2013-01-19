@@ -39,6 +39,7 @@
 #include <algorithm>
 
 #include "Systems/Base/GraphicsObjectData.hpp"
+#include "Systems/Base/ObjectMutator.hpp"
 #include "Utilities/Exception.hpp"
 
 using namespace std;
@@ -126,11 +127,16 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs)
   } else {
     object_data_.reset();
   }
+
+  // Note: we don't copy the currently running object mutators.
 }
 
-GraphicsObject::~GraphicsObject() {}
+GraphicsObject::~GraphicsObject() {
+  deleteObjectMutators();
+}
 
 GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
+  deleteObjectMutators();
   impl_ = obj.impl_;
 
   if (obj.object_data_) {
@@ -594,10 +600,56 @@ int GraphicsObject::digitSpace() const {
     return DEFAULT_DIGITS_SPACE;
 }
 
+void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
+  makeImplUnique();
+  // TODO(erg): If we have an equivalent mutator, remove it first.
+  object_mutators_.push_back(mutator);
+}
+
+bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
+  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+       it != object_mutators_.end(); ++it) {
+    if ((*it)->OperationMatches(repno, name))
+      return true;
+  }
+
+  return false;
+}
+
+void GraphicsObject::EndObjectMutatorMatching(
+    RLMachine& machine, int repno, const char* name, int speedup) {
+  if (speedup == 0) {
+    std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+    while (it != object_mutators_.end()) {
+      if ((*it)->OperationMatches(repno, name)) {
+        (*it)->SetToEnd(machine, *this);
+        delete *it;
+        it = object_mutators_.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  } else if (speedup == 1) {
+    // This is explicitly a noop.
+  } else {
+    cerr << "Warning: We only do immediate endings in "
+         << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
+         << endl;
+  }
+}
+
 void GraphicsObject::makeImplUnique() {
   if (!impl_.unique()) {
     impl_.reset(new Impl(*impl_));
   }
+}
+
+void GraphicsObject::deleteObjectMutators() {
+  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+       it != object_mutators_.end(); ++it) {
+    delete *it;
+  }
+  object_mutators_.clear();
 }
 
 void GraphicsObject::render(int objNum, std::ostream* tree) {
@@ -612,20 +664,34 @@ void GraphicsObject::render(int objNum, std::ostream* tree) {
 
 void GraphicsObject::deleteObject() {
   object_data_.reset();
+  deleteObjectMutators();
 }
 
 void GraphicsObject::resetProperties() {
   impl_ = s_empty_impl;
+  deleteObjectMutators();
 }
 
 void GraphicsObject::clearObject() {
   impl_ = s_empty_impl;
+  deleteObjectMutators();
   object_data_.reset();
 }
 
 void GraphicsObject::execute(RLMachine& machine) {
   if (object_data_) {
     object_data_->execute(machine);
+  }
+
+  // Run each mutator. If it returns true, remove it.
+  std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+  while (it != object_mutators_.end()) {
+    if ((**it)(machine, *this)) {
+      delete *it;
+      it = object_mutators_.erase(it);
+    } else {
+      ++it;
+    }
   }
 }
 

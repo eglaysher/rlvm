@@ -24,32 +24,16 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "MachineBase/ObjectMutatorOperations.hpp"
+#include "Modules/ObjectMutatorOperations.hpp"
 
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
+#include "Modules/Module_Obj.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/ObjectMutator.hpp"
 #include "Systems/Base/System.hpp"
-
-void GetMutatorObjectParams(RLOperation* op,
-                            int in_object,
-                            int* out_layer,
-                            int* out_parent,
-                            int* out_child) {
-  // Fetch object  properties that need to be passed to the mutator.
-  if (!op->getProperty(P_FGBG, *out_layer))
-    *out_layer = OBJ_FG;
-
-  if (op->getProperty(P_PARENTOBJ, *out_parent)) {
-    *out_child = in_object;
-  } else {
-    *out_parent = in_object;
-    *out_child = -1;
-  }
-}
 
 // -----------------------------------------------------------------------
 
@@ -69,15 +53,13 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
                                      int duration_time,
                                      int delay,
                                      int type) {
-  int fgbg, parentobject, childobject;
-  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
-
   unsigned int creation_time = machine.system().event().getTicks();
-  machine.system().graphics().AddObjectMutator(
-      new OneIntObjectMutator(machine,
-                              fgbg, parentobject, childobject, name_,
-                              creation_time, delay, duration_time,
-                              type, endval, getter_, setter_));
+  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+
+  int startval = (obj.*getter_)();
+  obj.AddObjectMutator(
+      new OneIntObjectMutator(name_, creation_time, delay, duration_time,
+                              type, startval, endval, setter_));
 }
 
 // -----------------------------------------------------------------------
@@ -103,16 +85,16 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
                                         int duration_time,
                                         int delay,
                                         int type) {
-  int fgbg, parentobject, childobject;
-  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
-
   unsigned int creation_time = machine.system().event().getTicks();
-  machine.system().graphics().AddObjectMutator(
-      new TwoIntObjectMutator(machine,
-                              fgbg, parentobject, childobject, name_,
+  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+  int startval_one = (obj.*getter_one_)();
+  int startval_two = (obj.*getter_two_)();
+
+  obj.AddObjectMutator(
+      new TwoIntObjectMutator(name_,
                               creation_time, delay, duration_time, type,
-                              endval_one, getter_one_, setter_one_,
-                              endval_two, getter_two_, setter_two_));
+                              startval_one, endval_one, setter_one_,
+                              startval_two, endval_two, setter_two_));
 }
 
 // -----------------------------------------------------------------------
@@ -125,11 +107,8 @@ Op_EndObjectMutation_Normal::~Op_EndObjectMutation_Normal() {}
 void Op_EndObjectMutation_Normal::operator()(RLMachine& machine,
                                              int object,
                                              int speedup) {
-  int fgbg, parentobject, childobject;
-  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
-
-  machine.system().graphics().EndObjectMutatorMatching(
-      machine, fgbg, parentobject, childobject, -1, name_, speedup);
+  getGraphicsObject(machine, this, object).EndObjectMutatorMatching(
+      machine, -1, name_, speedup);
 }
 
 // -----------------------------------------------------------------------
@@ -143,9 +122,6 @@ void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
                                             int object,
                                             int repno,
                                             int speedup) {
-  int fgbg, parentobject, childobject;
-  GetMutatorObjectParams(this, object, &fgbg, &parentobject, &childobject);
-
-  machine.system().graphics().EndObjectMutatorMatching(
-      machine, fgbg, parentobject, childobject, repno, name_, speedup);
+  getGraphicsObject(machine, this, object).EndObjectMutatorMatching(
+      machine, repno, name_, speedup);
 }

@@ -31,12 +31,6 @@
 
 class GraphicsObject;
 
-void GetMutatorObjectParams(RLOperation* op,
-                            int in_object,
-                            int* out_layer,
-                            int* out_parent,
-                            int* out_child);
-
 class Op_ObjectMutatorInt
     : public RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
                           IntConstant_T, IntConstant_T > {

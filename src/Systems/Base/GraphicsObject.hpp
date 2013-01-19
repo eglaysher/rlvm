@@ -41,6 +41,7 @@ class RLMachine;
 class GraphicsObject;
 class GraphicsObjectSlot;
 class GraphicsObjectData;
+class ObjectMutator;
 
 // Describes an independent, movable graphical object on the
 // screen. GraphicsObject, internally, references a copy-on-write
@@ -227,6 +228,18 @@ class GraphicsObject {
   int digitPack() const;
   int digitSpace() const;
 
+  // Adds a mutator to the list of active mutators. GraphicsSystem takes
+  // ownership of the passed in object.
+  void AddObjectMutator(ObjectMutator* mutator);
+
+  // Returns true if a mutator matching the following parameters is currently
+  // running.
+  bool IsMutatorRunningMatching(int repno, const char* name);
+
+  // Ends all mutators that match the given parameters.
+  void EndObjectMutatorMatching(RLMachine& machine, int repno,
+                                const char* name, int speedup);
+
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
   int32_t referenceCount() const { return impl_.use_count(); }
@@ -239,6 +252,9 @@ class GraphicsObject {
   // checks to see if our Impl object has only one reference to it. If it
   // doesn't, a local copy is made.
   void makeImplUnique();
+
+  // Immediately delete all mutators; doesn't run their SetToEnd() method.
+  void deleteObjectMutators();
 
   // Implementation data structure. GraphicsObject::Impl is the internal data
   // store for GraphicsObjects' copy-on-write semantics.
@@ -399,6 +415,13 @@ class GraphicsObject {
 
   // The actual data used to render the object
   boost::scoped_ptr<GraphicsObjectData> object_data_;
+
+  // Tasks that run every tick. Used to mutate object parameters over time (and
+  // how we check from a blocking LongOperation if the mutation is ongoing).
+  //
+  // I think R23 mentioned that these were called "Parameter Events" in the
+  // RLMAX SDK.
+  std::vector<ObjectMutator*> object_mutators_;
 
   friend class boost::serialization::access;
 

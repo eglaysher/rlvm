@@ -38,10 +38,10 @@
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/Rect_T.hpp"
-#include "MachineBase/ObjectMutatorOperations.hpp"
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
+#include "Modules/ObjectMutatorOperations.hpp"
 #include "Systems/Base/ColourFilterObjectData.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
@@ -284,46 +284,47 @@ class objEveAdjust
   virtual void operator()(RLMachine& machine,
                           int obj, int repno, int x,
                           int y, int duration_time, int delay, int type) {
-    int fgbg, parentobject, childobject;
-    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
-
     unsigned int creation_time = machine.system().event().getTicks();
-    machine.system().graphics().AddObjectMutator(
-        new AdjustMutator(machine,
-                          fgbg, parentobject, childobject, repno,
+
+    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    int start_x = object.xAdjustment(repno);
+    int start_y = object.yAdjustment(repno);
+
+    object.AddObjectMutator(
+        new AdjustMutator(machine, repno,
                           creation_time, delay, duration_time,
-                          type, x, y));
+                          type, start_x, x, start_y, y));
   }
 
  private:
   // We need a custom mutator here. One of the parameters isn't varying.
   class AdjustMutator : public ObjectMutator {
    public:
-    AdjustMutator(RLMachine& machine,
-                  int layer, int object, int child, int repno,
+    AdjustMutator(RLMachine& machine, int repno,
                   int creation_time, int duration_time, int delay,
-                  int type, int target_x, int target_y)
-        : ObjectMutator(layer, object, child, repno, "objEveAdjust",
+                  int type, int start_x, int target_x, int start_y,
+                  int target_y)
+        : ObjectMutator(repno, "objEveAdjust",
                         creation_time, delay, duration_time, type),
           repno_(repno),
-          start_x_(GetObject(machine).xAdjustment(repno)),
+          start_x_(start_x),
           end_x_(target_x),
-          start_y_(GetObject(machine).yAdjustment(repno)),
+          start_y_(start_y),
           end_y_(target_y) {
     }
 
    private:
-    virtual void SetToEnd(RLMachine& machine) {
-      GetObject(machine).setXAdjustment(repno_, end_x_);
-      GetObject(machine).setYAdjustment(repno_, end_y_);
+    virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+      object.setXAdjustment(repno_, end_x_);
+      object.setYAdjustment(repno_, end_y_);
     }
 
-    virtual void PerformSetting(RLMachine& machine) {
+    virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
       int x = GetValueForTime(machine, start_x_, end_x_);
-      GetObject(machine).setXAdjustment(repno_, x);
+      object.setXAdjustment(repno_, x);
 
       int y = GetValueForTime(machine, start_y_, end_y_);
-      GetObject(machine).setYAdjustment(repno_, y);
+      object.setYAdjustment(repno_, y);
     }
 
     int repno_;
@@ -335,21 +336,20 @@ class objEveAdjust
 };
 
 struct LongOp_MutatorWait : public LongOperation {
-  LongOp_MutatorWait(int layer, int object, int child, int repno,
-                     const char* name)
-      : layer_(layer),
-        object_(object),
-        child_(child),
+  LongOp_MutatorWait(RLOperation* op, int obj, int repno, const char* name)
+      : op_(op),
+        obj_(obj),
         repno_(repno),
         name_(name) {
   }
 
   bool operator()(RLMachine& machine) {
-    return machine.system().graphics().IsMutatorRunningMatching(
-        layer_, object_, child_, repno_, name_) == false;
+    return getGraphicsObject(machine, op_, obj_).IsMutatorRunningMatching(
+        repno_, name_) == false;
   }
 
-  int layer_, object_, child_, repno_;
+  RLOperation* op_;
+    int obj_, repno_;
   const char* name_;
 };
 
@@ -358,11 +358,8 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
   Op_MutatorWaitNormal(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj) {
-    int fgbg, parentobject, childobject;
-    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
-
     machine.pushLongOperation(new LongOp_MutatorWait(
-        fgbg, parentobject, childobject, -1, name_));
+        this, obj, -1, name_));
   }
 
  private:
@@ -375,21 +372,18 @@ class Op_MutatorWaitRepNo
   Op_MutatorWaitRepNo(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
-    int fgbg, parentobject, childobject;
-    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
-
     machine.pushLongOperation(new LongOp_MutatorWait(
-        fgbg, parentobject, childobject, repno, name_));
+        this, obj, repno, name_));
   }
 
  private:
   const char* name_;
 };
 
-bool objectMutatorIsWorking(RLMachine& machine, int fgbg, int parentobj,
-                            int childobj, int repno, const char* name) {
-  return machine.system().graphics().IsMutatorRunningMatching(
-      fgbg, parentobj, childobj, repno, name) == false;
+bool objectMutatorIsWorking(RLMachine& machine, RLOperation* op, int obj,
+                            int repno, const char* name) {
+  return getGraphicsObject(machine, op, obj).IsMutatorRunningMatching(
+      repno, name) == false;
 }
 
 class Op_MutatorWaitCNormal
@@ -398,15 +392,11 @@ class Op_MutatorWaitCNormal
   Op_MutatorWaitCNormal(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj) {
-    int fgbg, parentobject, childobject;
-    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
-
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(
         boost::bind(objectMutatorIsWorking,
-                    boost::ref(machine),
-                    fgbg, parentobject, childobject, -1, name_));
+                    boost::ref(machine), this, obj, -1, name_));
     machine.pushLongOperation(wait_op);
   }
 
@@ -420,15 +410,11 @@ class Op_MutatorWaitCRepNo
   Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
-    int fgbg, parentobject, childobject;
-    GetMutatorObjectParams(this, obj, &fgbg, &parentobject, &childobject);
-
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(
         boost::bind(objectMutatorIsWorking,
-                    boost::ref(machine),
-                    fgbg, parentobject, childobject, repno, name_));
+                    boost::ref(machine), this, obj, repno, name_));
     machine.pushLongOperation(wait_op);
   }
 

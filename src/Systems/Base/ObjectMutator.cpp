@@ -37,19 +37,13 @@ using namespace std;
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/System.hpp"
 
-ObjectMutator::ObjectMutator(int layer,
-                             int object,
-                             int child,
-                             int repr,
+ObjectMutator::ObjectMutator(int repr,
                              const char* name,
                              int creation_time,
                              int duration_time,
                              int delay,
                              int type)
-    : layer_(layer),
-      object_(object),
-      child_(child),
-      repr_(repr),
+    : repr_(repr),
       name_(name),
       creation_time_(creation_time),
       duration_time_(duration_time),
@@ -59,30 +53,14 @@ ObjectMutator::ObjectMutator(int layer,
 
 ObjectMutator::~ObjectMutator() {}
 
-bool ObjectMutator::operator()(RLMachine& machine) {
+bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
   unsigned int ticks = machine.system().event().getTicks();
-  PerformSetting(machine);
+  PerformSetting(machine, object);
   return ticks > (creation_time_ + delay_ + duration_time_);
 }
 
-bool ObjectMutator::OperationMatches(int layer, int object, int child,
-                                     int repr, const char* name) {
-  return layer == layer_ && object == object_ && child == child_ &&
-      repr_ == repr && (strcmp(name, name_) == 0);
-}
-
-GraphicsObject& ObjectMutator::GetObject(RLMachine& machine) {
-  GraphicsSystem& system = machine.system().graphics();
-
-  if (child_ == -1) {
-    // Normal object.
-    return system.getObject(layer_, object_);
-  } else {
-    // Parented object.
-    GraphicsObject& parent = system.getObject(layer_, object_);
-    return dynamic_cast<ParentGraphicsObjectData&>(parent.objectData()).
-        getObject(child_);
-  }
+bool ObjectMutator::OperationMatches(int repr, const char* name) {
+  return repr_ == repr && (strcmp(name, name_) == 0);
 }
 
 int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
@@ -103,14 +81,11 @@ int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
 // -----------------------------------------------------------------------
 
 OneIntObjectMutator::OneIntObjectMutator(
-    RLMachine& machine,
-    int layer, int object, int child, const char* name,
+    const char* name,
     int creation_time, int duration_time, int delay,
-    int type, int target_value, Getter getter,
-    Setter setter)
-    : ObjectMutator(layer, object, child, -1, name, creation_time, delay,
-                    duration_time, type),
-      startval_((GetObject(machine).*getter)()),
+    int type, int start_value, int target_value, Setter setter)
+    : ObjectMutator(-1, name, creation_time, delay, duration_time, type),
+      startval_(start_value),
       endval_(target_value),
       setter_(setter) {
 }
@@ -118,30 +93,30 @@ OneIntObjectMutator::OneIntObjectMutator(
 OneIntObjectMutator::~OneIntObjectMutator() {
 }
 
-void OneIntObjectMutator::SetToEnd(RLMachine& machine) {
-  (GetObject(machine).*setter_)(endval_);
+void OneIntObjectMutator::SetToEnd(RLMachine& machine,
+                                   GraphicsObject& object) {
+  (object.*setter_)(endval_);
 }
 
-void OneIntObjectMutator::PerformSetting(RLMachine& machine) {
+void OneIntObjectMutator::PerformSetting(RLMachine& machine,
+                                         GraphicsObject& object) {
   int value = GetValueForTime(machine, startval_, endval_);
-  (GetObject(machine).*setter_)(value);
+  (object.*setter_)(value);
 }
 
 // -----------------------------------------------------------------------
 
 TwoIntObjectMutator::TwoIntObjectMutator(
-    RLMachine& machine,
-    int layer, int object, int child, const char* name,
-    int creation_time, int duration_time, int delay,
-    int type,
-    int target_one, Getter getter_one, Setter setter_one,
-    int target_two, Getter getter_two, Setter setter_two)
-    : ObjectMutator(layer, object, child, -1, name, creation_time, delay,
+    const char* name,
+    int creation_time, int duration_time, int delay, int type,
+    int start_one, int target_one, Setter setter_one,
+    int start_two, int target_two, Setter setter_two)
+    : ObjectMutator(-1, name, creation_time, delay,
                     duration_time, type),
-      startval_one_((GetObject(machine).*getter_one)()),
+      startval_one_(start_one),
       endval_one_(target_one),
       setter_one_(setter_one),
-      startval_two_((GetObject(machine).*getter_two)()),
+      startval_two_(start_two),
       endval_two_(target_two),
       setter_two_(setter_two) {
 }
@@ -149,15 +124,17 @@ TwoIntObjectMutator::TwoIntObjectMutator(
 TwoIntObjectMutator::~TwoIntObjectMutator() {
 }
 
-void TwoIntObjectMutator::SetToEnd(RLMachine& machine) {
-  (GetObject(machine).*setter_one_)(endval_one_);
-  (GetObject(machine).*setter_two_)(endval_two_);
+void TwoIntObjectMutator::SetToEnd(RLMachine& machine,
+                                   GraphicsObject& object) {
+  (object.*setter_one_)(endval_one_);
+  (object.*setter_two_)(endval_two_);
 }
 
-void TwoIntObjectMutator::PerformSetting(RLMachine& machine) {
+void TwoIntObjectMutator::PerformSetting(RLMachine& machine,
+                                         GraphicsObject& object) {
   int value = GetValueForTime(machine, startval_one_, endval_one_);
-  (GetObject(machine).*setter_one_)(value);
+  (object.*setter_one_)(value);
 
   value = GetValueForTime(machine, startval_two_, endval_two_);
-  (GetObject(machine).*setter_two_)(value);
+  (object.*setter_two_)(value);
 }
