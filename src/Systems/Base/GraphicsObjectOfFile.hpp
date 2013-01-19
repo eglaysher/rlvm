@@ -65,7 +65,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
 
   virtual GraphicsObjectData* clone() const;
 
-  virtual void execute();
+  virtual void execute(RLMachine& machine);
 
   virtual bool isAnimation() const;
   virtual void playSet(int set);

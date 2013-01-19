@@ -116,7 +116,7 @@ GraphicsObjectData* GraphicsObjectOfFile::clone() const {
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::execute() {
+void GraphicsObjectOfFile::execute(RLMachine& machine) {
   if (currentlyPlaying()) {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =

@@ -33,6 +33,7 @@
 
 class GraphicsObject;
 class Point;
+class RLMachine;
 class Rect;
 class Surface;
 
@@ -68,7 +69,7 @@ class GraphicsObjectData {
 
   virtual GraphicsObjectData* clone() const = 0;
 
-  virtual void execute() = 0;
+  virtual void execute(RLMachine& machine) = 0;
 
   virtual bool isAnimation() const;
   virtual void playSet(int set);

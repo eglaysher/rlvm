@@ -53,7 +53,7 @@ class ColourFilterObjectData : public GraphicsObjectData {
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
   virtual GraphicsObjectData* clone() const;
-  virtual void execute();
+  virtual void execute(RLMachine& machine);
   virtual bool isAnimation() const;
   virtual void playSet(int set);
 

@@ -123,6 +123,11 @@ GraphicsObjectData* GraphicsTextObject::clone() const {
 
 // -----------------------------------------------------------------------
 
+void GraphicsTextObject::execute(RLMachine& machine) {
+}
+
+// -----------------------------------------------------------------------
+
 template<class Archive>
 void GraphicsTextObject::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);

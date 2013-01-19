@@ -196,7 +196,7 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
   }
 }
 
-void AnmGraphicsObjectData::execute() {
+void AnmGraphicsObjectData::execute(RLMachine& machine) {
   if (currentlyPlaying())
     advanceFrame();
 }

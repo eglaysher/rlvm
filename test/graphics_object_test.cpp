@@ -214,7 +214,7 @@ class MockGraphicsObjectData : public GraphicsObjectData {
   MOCK_METHOD1(pixelWidth, int(const GraphicsObject&));
   MOCK_METHOD1(pixelHeight, int(const GraphicsObject&));
   MOCK_CONST_METHOD0(clone, GraphicsObjectData*());
-  MOCK_METHOD0(execute, void());
+  MOCK_METHOD1(execute, void(RLMachine&));
   MOCK_METHOD0(isAnimation, bool());
   MOCK_METHOD1(playSet, void(int));
   MOCK_METHOD1(currentSurface,

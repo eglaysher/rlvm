@@ -75,6 +75,9 @@ GraphicsObjectData* DigitsGraphicsObject::clone() const {
   return new DigitsGraphicsObject(*this);
 }
 
+void DigitsGraphicsObject::execute(RLMachine& machine) {
+}
+
 boost::shared_ptr<const Surface> DigitsGraphicsObject::currentSurface(
     const GraphicsObject& go) {
   if (needsUpdate(go))

@@ -57,7 +57,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
-  virtual void execute();
+  virtual void execute(RLMachine& machine);
 
   virtual bool isAnimation() const { return true; }
   virtual void playSet(int set);

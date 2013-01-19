@@ -54,7 +54,7 @@ class GraphicsTextObject : public GraphicsObjectData {
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
 
   virtual GraphicsObjectData* clone() const;
-  virtual void execute() { }
+  virtual void execute(RLMachine& machine);
 
  protected:
   virtual boost::shared_ptr<const Surface> currentSurface(

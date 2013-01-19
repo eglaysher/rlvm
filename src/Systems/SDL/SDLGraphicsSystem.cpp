@@ -368,12 +368,6 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
     redraw_last_frame_ = false;
   }
 
-  // Check to see if any of the graphics objects are reporting that
-  // they want to force a redraw
-  for_each(foregroundObjects().allocated_begin(),
-           foregroundObjects().allocated_end(),
-           bind(&GraphicsObject::execute, _1));
-
   // Update the seen.
   int current_time = machine.system().event().getTicks();
   if ((current_time - time_of_last_titlebar_update_) > 60) {

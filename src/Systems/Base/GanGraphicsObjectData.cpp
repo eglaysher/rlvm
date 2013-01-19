@@ -244,7 +244,7 @@ GraphicsObjectData* GanGraphicsObjectData::clone() const {
   return new GanGraphicsObjectData(*this);
 }
 
-void GanGraphicsObjectData::execute() {
+void GanGraphicsObjectData::execute(RLMachine& machine) {
   if (currentlyPlaying() && current_frame_ >= 0) {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =

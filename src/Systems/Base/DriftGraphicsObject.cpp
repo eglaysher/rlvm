@@ -191,7 +191,7 @@ GraphicsObjectData* DriftGraphicsObject::clone() const {
   return new DriftGraphicsObject(*this);
 }
 
-void DriftGraphicsObject::execute() {
+void DriftGraphicsObject::execute(RLMachine& machine) {
   // We could theoretically redraw every time around the game loop, so
   // throttle to once every 100ms.
   int current_time = system_.event().getTicks();

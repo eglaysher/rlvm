@@ -623,9 +623,9 @@ void GraphicsObject::clearObject() {
   object_data_.reset();
 }
 
-void GraphicsObject::execute() {
+void GraphicsObject::execute(RLMachine& machine) {
   if (object_data_) {
-    object_data_->execute();
+    object_data_->execute(machine);
   }
 }
 

@@ -32,6 +32,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
@@ -72,12 +73,14 @@
 #include "libReallive/gameexe.h"
 #include "libReallive/expression.h"
 
+using boost::bind;
 using boost::iends_with;
 using boost::lexical_cast;
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::fill;
+using std::for_each;
 using std::ostringstream;
 using std::vector;
 
@@ -557,6 +560,12 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
+  // Check to see if any of the graphics objects are reporting that
+  // they want to force a redraw
+  for_each(foregroundObjects().allocated_begin(),
+           foregroundObjects().allocated_end(),
+           bind(&GraphicsObject::execute, _1, boost::ref(machine)));
+
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
     hik_renderer_->execute(machine);
 

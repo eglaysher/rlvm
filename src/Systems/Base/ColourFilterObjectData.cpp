@@ -82,7 +82,7 @@ GraphicsObjectData* ColourFilterObjectData::clone() const {
   return new ColourFilterObjectData(graphics_system_, screen_rect_);
 }
 
-void ColourFilterObjectData::execute() {
+void ColourFilterObjectData::execute(RLMachine& machine) {
   // Nothing to do.
 }
 

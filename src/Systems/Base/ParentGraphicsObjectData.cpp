@@ -84,12 +84,12 @@ GraphicsObjectData* ParentGraphicsObjectData::clone() const {
   return cloned;
 }
 
-void ParentGraphicsObjectData::execute() {
+void ParentGraphicsObjectData::execute(RLMachine& machine) {
   // We pass on execute to all our children
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = objects_.allocated_end();
   for (; it != end; ++it) {
-    it->execute();
+    it->execute(machine);
   }
 }
 
