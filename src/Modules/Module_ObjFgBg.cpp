@@ -292,7 +292,7 @@ class objEveAdjust
 
     object.AddObjectMutator(
         new AdjustMutator(machine, repno,
-                          creation_time, delay, duration_time,
+                          creation_time, duration_time, delay,
                           type, start_x, x, start_y, y));
   }
 
@@ -305,7 +305,7 @@ class objEveAdjust
                   int type, int start_x, int target_x, int start_y,
                   int target_y)
         : ObjectMutator(repno, "objEveAdjust",
-                        creation_time, delay, duration_time, type),
+                        creation_time, duration_time, delay, type),
           repno_(repno),
           start_x_(start_x),
           end_x_(target_x),

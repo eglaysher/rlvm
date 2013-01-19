@@ -84,7 +84,7 @@ OneIntObjectMutator::OneIntObjectMutator(
     const char* name,
     int creation_time, int duration_time, int delay,
     int type, int start_value, int target_value, Setter setter)
-    : ObjectMutator(-1, name, creation_time, delay, duration_time, type),
+    : ObjectMutator(-1, name, creation_time, duration_time, delay, type),
       startval_(start_value),
       endval_(target_value),
       setter_(setter) {
@@ -111,8 +111,7 @@ TwoIntObjectMutator::TwoIntObjectMutator(
     int creation_time, int duration_time, int delay, int type,
     int start_one, int target_one, Setter setter_one,
     int start_two, int target_two, Setter setter_two)
-    : ObjectMutator(-1, name, creation_time, delay,
-                    duration_time, type),
+    : ObjectMutator(-1, name, creation_time, duration_time, delay, type),
       startval_one_(start_one),
       endval_one_(target_one),
       setter_one_(setter_one),
