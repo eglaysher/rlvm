@@ -222,6 +222,24 @@ void GraphicsObject::setHeight(const int in) {
   impl_->height_ = in;
 }
 
+void GraphicsObject::setHqWidth(const int in) {
+  makeImplUnique();
+  impl_->hq_width_ = in;
+}
+
+void GraphicsObject::setHqHeight(const int in) {
+  makeImplUnique();
+  impl_->hq_height_ = in;
+}
+
+float GraphicsObject::getWidthScaleFactor() const {
+  return (impl_->width_ / 100.0f) * (impl_->hq_width_ / 1000.0f);
+}
+
+float GraphicsObject::getHeightScaleFactor() const {
+  return (impl_->height_ / 100.0f) * (impl_->hq_height_ / 1000.0f);
+}
+
 void GraphicsObject::setRotation(const int in) {
   makeImplUnique();
   impl_->rotation_ = in;
@@ -720,6 +738,7 @@ GraphicsObject::Impl::Impl()
 
       // Width and height are percentages
       width_(100), height_(100),
+      hq_width_(1000), hq_height_(1000),
       rotation_(0),
       patt_no_(0), alpha_(255),
       clip_(EMPTY_CLIP),
@@ -743,6 +762,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
       origin_x_(rhs.origin_x_), origin_y_(rhs.origin_y_),
       rep_origin_x_(rhs.rep_origin_x_), rep_origin_y_(rhs.rep_origin_y_),
       width_(rhs.width_), height_(rhs.height_),
+      hq_width_(rhs.hq_width_), hq_height_(rhs.hq_height_),
       rotation_(rhs.rotation_),
       patt_no_(rhs.patt_no_), alpha_(rhs.alpha_),
       clip_(rhs.clip_),
@@ -784,6 +804,8 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     rep_origin_y_ = rhs.rep_origin_y_;
     width_ = rhs.width_;
     height_ = rhs.height_;
+    hq_width_ = rhs.hq_width_;
+    hq_height_ = rhs.hq_height_;
     rotation_ = rhs.rotation_;
 
     patt_no_ = rhs.patt_no_;
@@ -850,6 +872,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 2) {
     ar & adjust_x_ & adjust_y_ & adjust_alpha_;
+  }
+
+  if (version > 3) {
+    ar & hq_width_ & hq_height_;
   }
 }
 

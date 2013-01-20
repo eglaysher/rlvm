@@ -525,6 +525,13 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1055, 0, "objOriginY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setYOrigin));
   m.addUnsupportedOpcode(1056, 0, "objFadeOpts");
+
+  m.addOpcode(1061, 0, "objHqScale", new Obj_SetTwoIntOnObj(
+      &GraphicsObject::setHqWidth, &GraphicsObject::setHqHeight));
+  m.addOpcode(1062, 0, "objHqWidth", new Obj_SetOneIntOnObj(
+      &GraphicsObject::setHqWidth));
+  m.addOpcode(1063, 0, "objHqHeight", new Obj_SetOneIntOnObj(
+      &GraphicsObject::setHqHeight));
 }
 
 void addEveObjectFunctions(RLModule& m) {

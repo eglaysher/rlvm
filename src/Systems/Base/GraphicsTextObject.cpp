@@ -103,7 +103,7 @@ int GraphicsTextObject::pixelWidth(const GraphicsObject& rp) {
   if (needsUpdate(rp))
     updateSurface(rp);
 
-  return int((rp.width() / 100.0f) * surface_->size().width());
+  return int(rp.getWidthScaleFactor() * surface_->size().width());
 }
 
 // -----------------------------------------------------------------------
@@ -112,7 +112,7 @@ int GraphicsTextObject::pixelHeight(const GraphicsObject& rp) {
   if (needsUpdate(rp))
     updateSurface(rp);
 
-  return int((rp.height() / 100.0f) * surface_->size().height());
+  return int(rp.getHeightScaleFactor() * surface_->size().height());
 }
 
 // -----------------------------------------------------------------------

@@ -94,11 +94,20 @@ class GraphicsObject {
   int yRepOrigin() const { return impl_->rep_origin_y_; }
   void setYRepOrigin(const int y);
 
+  // Note: width/height are object scale percentages.
   int width() const { return impl_->width_; }
   void setWidth(const int in);
-
   int height() const { return impl_->height_; }
   void setHeight(const int in);
+
+  // Note: width/height are object scale factors out of 1000.
+  int hqWidth() const { return impl_->hq_width_; }
+  void setHqWidth(const int in);
+  int hqHeight() const { return impl_->hq_height_; }
+  void setHqHeight(const int in);
+
+  float getWidthScaleFactor() const;
+  float getHeightScaleFactor() const;
 
   int rotation() const { return impl_->rotation_; }
   void setRotation(const int in);
@@ -289,6 +298,9 @@ class GraphicsObject {
     // 100]. Used for scaling.
     int width_, height_;
 
+    // A second scaling factor, given between [0, 1000].
+    int hq_width_, hq_height_;
+
     // The rotation degree / 10
     int rotation_;
 
@@ -430,7 +442,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 3)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 4)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

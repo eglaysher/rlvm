@@ -237,13 +237,13 @@ void AnmGraphicsObjectData::advanceFrame() {
 int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int width = rect.rect.width();
-  return int((rp.width() / 100.0f) * width);
+  return int(rp.getWidthScaleFactor() * width);
 }
 
 int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int height = rect.rect.height();
-  return int((rp.height() / 100.0f) * height);
+  return int(rp.getHeightScaleFactor() * height);
 }
 
 GraphicsObjectData* AnmGraphicsObjectData::clone() const {

@@ -220,7 +220,8 @@ int GanGraphicsObjectData::pixelWidth(
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return rect.rect.width();
+      return int(rendering_properties.getWidthScaleFactor() *
+                 rect.rect.width());
     }
   }
 
@@ -233,7 +234,8 @@ int GanGraphicsObjectData::pixelHeight(
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return rect.rect.height();
+      return int(rendering_properties.getHeightScaleFactor() *
+                 rect.rect.height());
     }
   }
 

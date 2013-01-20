@@ -121,8 +121,8 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
 
   int xPos1 = go.x() + go.xAdjustmentSum() - origin.x();
   int yPos1 = go.y() + go.yAdjustmentSum() - origin.y();
-  int xPos2 = int(xPos1 + src.width() * (go.width() / 100.0f));
-  int yPos2 = int(yPos1 + src.height() * (go.height() / 100.0f));
+  int xPos2 = int(xPos1 + src.width() * go.getWidthScaleFactor());
+  int yPos2 = int(yPos1 + src.height() * go.getHeightScaleFactor());
 
   return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
 }
