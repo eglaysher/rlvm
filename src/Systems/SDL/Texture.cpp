@@ -86,7 +86,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   if (w == total_width_ && h == total_height_) {
     SDL_LockSurface(surface);
@@ -691,9 +691,16 @@ void Texture::renderToScreenAsObject(
     // Move the "origin" to the correct position.
     glTranslatef(go.xOrigin(), go.yOrigin(), 0);
 
+    // Translate to where the object starts.
+    glTranslatef(fdx1, fdy1, 0);
+
+    float width = fdx2 - fdx1;
+    float height = fdy2 - fdy1;
+
     // Rotate the texture around the point (origin + position + reporigin)
-    float x_rep = fdx1 + go.xRepOrigin();
-    float y_rep = fdy1 + go.yRepOrigin();
+    float x_rep = (width / 2) + go.xRepOrigin();
+    float y_rep = (height / 2) + go.yRepOrigin();
+
     glTranslatef(x_rep, y_rep, 0);
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
     glTranslatef(-x_rep, -y_rep, 0);
@@ -701,13 +708,13 @@ void Texture::renderToScreenAsObject(
     glBegin(GL_QUADS); {
       glColorRGBA(RGBAColour(go.tint(), alpha));
       glTexCoord2f(thisx1, thisy1);
-      glVertex2f(fdx1, fdy1);
+      glVertex2f(0, 0);
       glTexCoord2f(thisx2, thisy1);
-      glVertex2f(fdx2, fdy1);
+      glVertex2f(width, 0);
       glTexCoord2f(thisx2, thisy2);
-      glVertex2f(fdx2, fdy2);
+      glVertex2f(width, height);
       glTexCoord2f(thisx1, thisy2);
-      glVertex2f(fdx1, fdy2);
+      glVertex2f(0, height);
     }
     glEnd();
 
