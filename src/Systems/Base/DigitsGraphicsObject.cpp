@@ -52,6 +52,7 @@ DigitsGraphicsObject::DigitsGraphicsObject(System& system,
       value_(0),
       font_name_(font),
       font_(system.graphics().loadNonCGSurfaceFromFile(font)) {
+  font_->EnsureUploaded();
 }
 
 DigitsGraphicsObject::~DigitsGraphicsObject() {

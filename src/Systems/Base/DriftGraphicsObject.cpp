@@ -212,6 +212,7 @@ void DriftGraphicsObject::objectInfo(std::ostream& tree) {
 
 void DriftGraphicsObject::loadFile() {
   surface_ = system_.graphics().loadNonCGSurfaceFromFile(filename_);
+  surface_->EnsureUploaded();
 }
 
 template<class Archive>
