@@ -49,6 +49,7 @@ ColourFilterObjectData::ColourFilterObjectData(GraphicsSystem& system,
 ColourFilterObjectData::~ColourFilterObjectData() {}
 
 void ColourFilterObjectData::render(const GraphicsObject& go,
+                                    const GraphicsObject* parent,
                                     std::ostream* tree) {
   if (go.mono() == 0) {
     RGBAColour colour = go.colour();

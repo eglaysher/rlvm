@@ -791,7 +791,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
     else if (settings.space_key && interfaceHidden())
       continue;
 
-    it->render(it.pos(), tree);
+    it->render(it.pos(), NULL, tree);
   }
 }
 

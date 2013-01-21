@@ -62,7 +62,9 @@ class GraphicsObjectData {
   void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
   bool currentlyPlaying() const { return currently_playing_; }
 
-  virtual void render(const GraphicsObject& go, std::ostream* tree);
+  virtual void render(const GraphicsObject& go,
+                      const GraphicsObject* parent,
+                      std::ostream* tree);
 
   virtual int pixelWidth(const GraphicsObject& rendering_properties) = 0;
   virtual int pixelHeight(const GraphicsObject& rendering_properties) = 0;
@@ -106,11 +108,13 @@ class GraphicsObjectData {
   // Returns the destination rectangle on the screen to draw srcRect()
   // to. Override to return custom rectangles in the case of a custom animation
   // format.
-  virtual Rect dstRect(const GraphicsObject& go);
+  virtual Rect dstRect(const GraphicsObject& go,
+                       const GraphicsObject* parent);
 
   // Controls the alpha during rendering. Default implementation just consults
   // the GraphicsObject.
-  virtual int getRenderingAlpha(const GraphicsObject& go);
+  virtual int getRenderingAlpha(const GraphicsObject& go,
+                                const GraphicsObject* parent);
 
   // Prints a description of this object for the RenderTree log.
   virtual void objectInfo(std::ostream& tree) = 0;

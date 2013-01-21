@@ -65,7 +65,8 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
  protected:
   virtual boost::shared_ptr<const Surface> currentSurface(const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
-  virtual Rect dstRect(const GraphicsObject& go);
+  virtual Rect dstRect(const GraphicsObject& go,
+                       const GraphicsObject* parent);
 
   virtual void objectInfo(std::ostream& tree);
 

@@ -49,7 +49,9 @@ class ColourFilterObjectData : public GraphicsObjectData {
   void setRect(const Rect& screen_rect) { screen_rect_ = screen_rect; }
 
   // Overriden from GraphicsObjectData:
-  virtual void render(const GraphicsObject& go, std::ostream* tree);
+  virtual void render(const GraphicsObject& go,
+                      const GraphicsObject* parent,
+                      std::ostream* tree);
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
   virtual GraphicsObjectData* clone() const;

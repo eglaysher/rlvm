@@ -84,7 +84,9 @@ DriftGraphicsObject::DriftGraphicsObject(System& system,
 DriftGraphicsObject::~DriftGraphicsObject() {
 }
 
-void DriftGraphicsObject::render(const GraphicsObject& go, std::ostream* tree) {
+void DriftGraphicsObject::render(const GraphicsObject& go,
+                                 const GraphicsObject* parent,
+                                 std::ostream* tree) {
   boost::shared_ptr<const Surface> surface = currentSurface(go);
   if (surface) {
     int current_time = system_.event().getTicks();

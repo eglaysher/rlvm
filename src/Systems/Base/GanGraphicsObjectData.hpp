@@ -76,7 +76,8 @@ class GanGraphicsObjectData : public GraphicsObjectData {
       const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
   virtual Point dstOrigin(const GraphicsObject& go);
-  virtual int getRenderingAlpha(const GraphicsObject& go);
+  virtual int getRenderingAlpha(const GraphicsObject& go,
+                                const GraphicsObject* parent);
   virtual void objectInfo(std::ostream& tree);
 
  private:

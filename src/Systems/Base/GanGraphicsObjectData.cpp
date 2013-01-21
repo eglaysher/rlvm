@@ -303,12 +303,15 @@ Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   return GraphicsObjectData::dstOrigin(go) - Size(frame.x, frame.y);
 }
 
-int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
+int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
+                                             const GraphicsObject* parent) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
     // alpha.
-    return int(((frame.alpha/256.0f) * (go.computedAlpha() / 256.0f)) * 256);
+    float parent_alpha = parent ? parent->computedAlpha() : 1;
+    return int(((frame.alpha/256.0f) * (go.computedAlpha() / 256.0f) *
+                parent_alpha) * 256);
   } else {
     // Should never happen.
     return go.computedAlpha();

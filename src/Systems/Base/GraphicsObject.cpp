@@ -670,13 +670,15 @@ void GraphicsObject::deleteObjectMutators() {
   object_mutators_.clear();
 }
 
-void GraphicsObject::render(int objNum, std::ostream* tree) {
+void GraphicsObject::render(int objNum,
+                            const GraphicsObject* parent,
+                            std::ostream* tree) {
   if (object_data_ && visible()) {
     if (tree) {
       *tree << "Object #" << objNum << ":" << endl;
     }
 
-    object_data_->render(*this, tree);
+    object_data_->render(*this, parent, tree);
   }
 }
 

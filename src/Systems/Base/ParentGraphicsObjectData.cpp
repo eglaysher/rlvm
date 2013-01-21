@@ -53,11 +53,12 @@ void ParentGraphicsObjectData::setObject(int obj_number,
 }
 
 void ParentGraphicsObjectData::render(const GraphicsObject& go,
+                                      const GraphicsObject* parent,
                                       std::ostream* tree) {
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = objects_.allocated_end();
   for (; it != end; ++it) {
-    it->render(it.pos(), tree);
+    it->render(it.pos(), &go, tree);
   }
 }
 

@@ -58,7 +58,9 @@ class DriftGraphicsObject : public GraphicsObjectData {
   ~DriftGraphicsObject();
 
   // Implementation of GraphicsObjectData:
-  virtual void render(const GraphicsObject& go, std::ostream* tree);
+  virtual void render(const GraphicsObject& go,
+                      const GraphicsObject* parent,
+                      std::ostream* tree);
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
   virtual GraphicsObjectData* clone() const;

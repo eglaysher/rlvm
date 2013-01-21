@@ -53,12 +53,14 @@ GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
 GraphicsObjectData::~GraphicsObjectData() {
 }
 
-void GraphicsObjectData::render(const GraphicsObject& go, std::ostream* tree) {
+void GraphicsObjectData::render(const GraphicsObject& go,
+                                const GraphicsObject* parent,
+                                std::ostream* tree) {
   boost::shared_ptr<const Surface> surface = currentSurface(go);
   if (surface) {
     Rect src = srcRect(go);
-    Rect dst = dstRect(go);
-    int alpha = getRenderingAlpha(go);
+    Rect dst = dstRect(go, parent);
+    int alpha = getRenderingAlpha(go, parent);
 
     // TODO: Anyone attempting moving the clip area calculations here should
     // verify that it doesn't break the final pan scene of Yumemi in
@@ -115,7 +117,8 @@ Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   return Point();
 }
 
-Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
+Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
+                                 const GraphicsObject* parent) {
   Point origin = dstOrigin(go);
   Rect src = srcRect(go);
 
@@ -124,8 +127,20 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
   int center_y = go.y() + go.yAdjustmentSum() - origin.y() +
                  (src.height() / 2.0f);
 
-  int half_real_width = (src.width() * go.getWidthScaleFactor()) / 2.0f;
-  int half_real_height = (src.height() * go.getHeightScaleFactor()) / 2.0f;
+  float second_factor_x = 1.0f;
+  float second_factor_y = 1.0f;
+  if (parent) {
+    center_x += parent->x() + parent->xAdjustmentSum();
+    center_y += parent->y() + parent->yAdjustmentSum();
+
+    second_factor_x = parent->getWidthScaleFactor();
+    second_factor_y = parent->getHeightScaleFactor();
+  }
+
+  int half_real_width = (src.width() * second_factor_x *
+                         go.getWidthScaleFactor()) / 2.0f;
+  int half_real_height = (src.height() * second_factor_y *
+                          go.getHeightScaleFactor()) / 2.0f;
 
   int xPos1 = center_x - half_real_width;
   int yPos1 = center_y - half_real_height;
@@ -135,8 +150,14 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go) {
   return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
 }
 
-int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go) {
-  return go.computedAlpha();
+int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
+                                          const GraphicsObject* parent) {
+  if (!parent) {
+    return go.computedAlpha();
+  } else {
+    return int((parent->computedAlpha() / 256.0f) *
+               (go.computedAlpha() / 256.0f) * 256);
+  }
 }
 
 bool GraphicsObjectData::isAnimation() const {

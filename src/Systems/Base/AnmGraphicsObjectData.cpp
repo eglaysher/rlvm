@@ -278,8 +278,10 @@ Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {
   return Rect();
 }
 
-Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go) {
+Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go,
+                                    const GraphicsObject* parent) {
   if (current_frame_ != -1) {
+    // TODO(erg): Should this account for either |go| or |parent|?
     const Frame& frame = frames.at(current_frame_);
     return Rect::REC(frame.dest_x, frame.dest_y, (frame.src_x2 - frame.src_x1),
                      (frame.src_y2 - frame.src_y1));
