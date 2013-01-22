@@ -37,6 +37,7 @@
 #include "Effects/WipeEffect.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities/Exception.hpp"
@@ -71,6 +72,11 @@ Effect* EffectFactory::build(
     int direction, int interpolation, int xsize, int ysize, int a, int b,
     int c) {
   Size screenSize = machine.system().graphics().screenSize();
+
+  // Ensure that both of our images are on the graphics card so we don't
+  // stutter during the loop.
+  src->EnsureUploaded();
+  dst->EnsureUploaded();
 
   // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so

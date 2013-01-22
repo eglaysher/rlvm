@@ -49,6 +49,8 @@ class GraphicsTextObject : public GraphicsObjectData {
   explicit GraphicsTextObject(System& system);
   ~GraphicsTextObject();
 
+  void updateSurface(const GraphicsObject& rp);
+
   // ------------------------------------ [ GraphicsObjectData interface ]
   virtual int pixelWidth(const GraphicsObject& rendering_properties);
   virtual int pixelHeight(const GraphicsObject& rendering_properties);
@@ -68,11 +70,6 @@ class GraphicsTextObject : public GraphicsObjectData {
   std::string cached_utf8_str_;
 
   boost::shared_ptr<Surface> surface_;
-
-  /**
-   * Redraw surface_.
-   */
-  void updateSurface(const GraphicsObject& rp);
 
   bool needsUpdate(const GraphicsObject& rendering_properties);
 

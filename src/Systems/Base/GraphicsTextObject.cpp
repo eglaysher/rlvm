@@ -73,6 +73,7 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   surface_ = system_.text().renderText(
       cached_utf8_str_, rp.textSize(), rp.textXSpace(),
       rp.textYSpace(), colour, shadow);
+  surface_->EnsureUploaded();
 }
 
 // -----------------------------------------------------------------------

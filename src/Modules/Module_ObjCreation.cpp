@@ -86,7 +86,9 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
   // The text at this point is still cp932. Convert it.
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
-  obj.setObjectData(new GraphicsTextObject(machine.system()));
+  GraphicsTextObject* text_obj = new GraphicsTextObject(machine.system());
+  obj.setObjectData(text_obj);
+  text_obj->updateSurface(obj);
 }
 
 void objOfDriftLoader(RLMachine& machine, GraphicsObject& obj,
