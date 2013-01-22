@@ -220,6 +220,16 @@ struct objAdjustAlpha
   }
 };
 
+struct objButtonOpts
+    : public RLOp_Void_5<IntConstant_T, IntConstant_T, IntConstant_T,
+                         IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int buf, int action, int se,
+                  int group, int button_number) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setButtonOpts(action, se, group, button_number);
+  }
+};
+
 // -----------------------------------------------------------------------
 
 // Special adapter to make any of obj* and objBg* operation structs
@@ -532,6 +542,10 @@ void addObjectFunctions(RLModule& m) {
       &GraphicsObject::setHqWidth));
   m.addOpcode(1063, 0, "objHqHeight", new Obj_SetOneIntOnObj(
       &GraphicsObject::setHqHeight));
+
+  m.addOpcode(1064, 2, "objButtonOpts", new objButtonOpts);
+  m.addOpcode(1066, 0, "objBtnState", new Obj_SetOneIntOnObj(
+      &GraphicsObject::setButtonState));
 }
 
 void addEveObjectFunctions(RLModule& m) {

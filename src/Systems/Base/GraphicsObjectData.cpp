@@ -62,6 +62,17 @@ void GraphicsObjectData::render(const GraphicsObject& go,
     Rect dst = dstRect(go, parent);
     int alpha = getRenderingAlpha(go, parent);
 
+    if (go.buttonUsingOverides()) {
+      // Tacked on side channel that lets a ButtonObjectSelectLongOperation
+      // tweak the x/y coordinates of dst. There isn't really a better place to
+      // put this. It can't go in dstRect() because the LongOperation also
+      // consults the data from dstRect().
+      dst = Rect(dst.origin() + Size(go.buttonXOffsetOverride(),
+                                     go.buttonYOffsetOverride()),
+                 dst.size());
+    }
+
+
     // TODO: Anyone attempting moving the clip area calculations here should
     // verify that it doesn't break the final pan scene of Yumemi in
     // Planetarian.

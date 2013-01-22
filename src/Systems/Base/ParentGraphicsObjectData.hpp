@@ -46,6 +46,8 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   GraphicsObject& getObject(int obj_number);
   void setObject(int obj_number, GraphicsObject& object);
 
+  LazyArray<GraphicsObject>& objects();
+
   virtual void render(const GraphicsObject& go,
                       const GraphicsObject* parent,
                       std::ostream* tree);
@@ -66,7 +68,6 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
  private:
   ParentGraphicsObjectData();
 
-  // 256 child objects.
   LazyArray<GraphicsObject> objects_;
 
   friend class boost::serialization::access;

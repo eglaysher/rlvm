@@ -71,6 +71,17 @@ const int DEFAULT_DIGITS_SIGN = 0;
 const int DEFAULT_DIGITS_PACK = 0;
 const int DEFAULT_DIGITS_SPACE = 0;
 
+const int DEFAULT_BUTTON_IS_BUTTON = 0;
+const int DEFAULT_BUTTON_ACTION = 0;
+const int DEFAULT_BUTTON_SE = -1;
+const int DEFAULT_BUTTON_GROUP = 0;
+const int DEFAULT_BUTTON_NUMBER = 0;
+const int DEFAULT_BUTTON_STATE = 0;
+const bool DEFAULT_BUTTON_USING_OVERRIDES = 0;
+const int DEFAULT_BUTTON_PATTERN_OVERRIDE = 0;
+const int DEFAULT_BUTTON_X_OFFSET = 0;
+const int DEFAULT_BUTTON_Y_OFFSET = 0;
+
 const Rect EMPTY_CLIP = Rect(Point(0, 0), Size(-1, -1));
 
 const boost::shared_ptr<GraphicsObject::Impl> GraphicsObject::s_empty_impl(
@@ -110,6 +121,19 @@ GraphicsObject::Impl::DigitProperties::DigitProperties()
       sign(DEFAULT_DIGITS_SIGN),
       pack(DEFAULT_DIGITS_PACK),
       space(DEFAULT_DIGITS_SPACE) {
+}
+
+GraphicsObject::Impl::ButtonProperties::ButtonProperties()
+    : is_button(DEFAULT_BUTTON_IS_BUTTON),
+      action(DEFAULT_BUTTON_ACTION),
+      se(DEFAULT_BUTTON_SE),
+      group(DEFAULT_BUTTON_GROUP),
+      button_number(DEFAULT_BUTTON_NUMBER),
+      state(DEFAULT_BUTTON_STATE),
+      using_overides(DEFAULT_BUTTON_USING_OVERRIDES),
+      pattern_override(DEFAULT_BUTTON_PATTERN_OVERRIDE),
+      x_offset_override(DEFAULT_BUTTON_X_OFFSET),
+      y_offset_override(DEFAULT_BUTTON_Y_OFFSET) {
 }
 
 // -----------------------------------------------------------------------
@@ -259,6 +283,13 @@ int GraphicsObject::pixelHeight() const {
     return object_data_->pixelHeight(*this);
   else
     return 0;
+}
+
+int GraphicsObject::pattNo() const {
+  if (buttonUsingOverides())
+    return buttonPatternOverride();
+
+  return impl_->patt_no_;
 }
 
 void GraphicsObject::setPattNo(const int in) {
@@ -618,6 +649,110 @@ int GraphicsObject::digitSpace() const {
     return DEFAULT_DIGITS_SPACE;
 }
 
+void GraphicsObject::setButtonOpts(int action, int se, int group,
+                                   int button_number) {
+  makeImplUnique();
+  impl_->makeSureHaveButtonProperties();
+  impl_->button_properties_->is_button = true;
+  impl_->button_properties_->action = action;
+  impl_->button_properties_->se = se;
+  impl_->button_properties_->group = group;
+  impl_->button_properties_->button_number = button_number;
+}
+
+void GraphicsObject::setButtonState(int state) {
+  makeImplUnique();
+  impl_->makeSureHaveButtonProperties();
+  impl_->button_properties_->state = state;
+}
+
+int GraphicsObject::isButton() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->is_button;
+  else
+    return DEFAULT_BUTTON_IS_BUTTON;
+}
+
+int GraphicsObject::buttonAction() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->action;
+  else
+    return DEFAULT_BUTTON_ACTION;
+}
+
+int GraphicsObject::buttonSe() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->se;
+  else
+    return DEFAULT_BUTTON_SE;
+}
+
+int GraphicsObject::buttonGroup() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->group;
+  else
+    return DEFAULT_BUTTON_GROUP;
+}
+
+int GraphicsObject::buttonNumber() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->button_number;
+  else
+    return DEFAULT_BUTTON_NUMBER;
+}
+
+int GraphicsObject::buttonState() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->state;
+  else
+    return DEFAULT_BUTTON_STATE;
+}
+
+void GraphicsObject::setButtonOverrides(int override_pattern,
+                                        int override_x_offset,
+                                        int override_y_offset) {
+  makeImplUnique();
+  impl_->makeSureHaveButtonProperties();
+  impl_->button_properties_->using_overides = true;
+  impl_->button_properties_->pattern_override = override_pattern;
+  impl_->button_properties_->x_offset_override = override_x_offset;
+  impl_->button_properties_->y_offset_override = override_y_offset;
+}
+
+void GraphicsObject::clearButtonOverrides() {
+  makeImplUnique();
+  impl_->makeSureHaveButtonProperties();
+  impl_->button_properties_->using_overides = false;
+}
+
+bool GraphicsObject::buttonUsingOverides() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->using_overides;
+  else
+    return DEFAULT_BUTTON_USING_OVERRIDES;
+}
+
+int GraphicsObject::buttonPatternOverride() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->pattern_override;
+  else
+    return DEFAULT_BUTTON_PATTERN_OVERRIDE;
+}
+
+int GraphicsObject::buttonXOffsetOverride() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->x_offset_override;
+  else
+    return DEFAULT_BUTTON_X_OFFSET;
+}
+
+int GraphicsObject::buttonYOffsetOverride() const {
+  if (impl_->button_properties_)
+    return impl_->button_properties_->y_offset_override;
+  else
+    return DEFAULT_BUTTON_Y_OFFSET;
+}
+
 void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
   makeImplUnique();
   // TODO(erg): If we have an equivalent mutator, remove it first.
@@ -780,6 +915,8 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
     drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
   if (rhs.digit_properties_)
     digit_properties_.reset(new DigitProperties(*rhs.digit_properties_));
+  if (rhs.button_properties_)
+    button_properties_.reset(new ButtonProperties(*rhs.button_properties_));
 
   copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
   copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
@@ -830,6 +967,8 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
       drift_properties_.reset(new DriftProperties(*rhs.drift_properties_));
     if (rhs.digit_properties_)
       digit_properties_.reset(new DigitProperties(*rhs.digit_properties_));
+    if (rhs.button_properties_)
+      button_properties_.reset(new ButtonProperties(*rhs.button_properties_));
 
     wipe_copy_ = rhs.wipe_copy_;
   }
@@ -855,6 +994,12 @@ void GraphicsObject::Impl::makeSureHaveDigitProperties() {
   }
 }
 
+void GraphicsObject::Impl::makeSureHaveButtonProperties() {
+  if (!button_properties_) {
+    button_properties_.reset(new Impl::ButtonProperties());
+  }
+}
+
 // boost::serialization support
 template<class Archive>
 void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
@@ -877,7 +1022,7 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
   }
 
   if (version > 3) {
-    ar & hq_width_ & hq_height_;
+    ar & hq_width_ & hq_height_ & button_properties_;
   }
 }
 
@@ -953,6 +1098,29 @@ template void GraphicsObject::Impl::DigitProperties::serialize
   boost::archive::text_oarchive & ar, unsigned int version);
 
 template void GraphicsObject::Impl::DigitProperties::serialize
+<boost::archive::text_iarchive>(
+  boost::archive::text_iarchive & ar, unsigned int version);
+
+// -----------------------------------------------------------------------
+// GraphicsObject::Impl::ButtonProperties
+// -----------------------------------------------------------------------
+template<class Archive>
+void GraphicsObject::Impl::ButtonProperties::serialize(
+    Archive& ar, unsigned int version) {
+  // The override values are stuck here because I'm not sure about
+  // initialization otherwise.
+  ar & is_button & action & se & group & button_number & state
+      & using_overides & pattern_override & x_offset_override
+      & y_offset_override;
+}
+
+// -----------------------------------------------------------------------
+
+template void GraphicsObject::Impl::ButtonProperties::serialize
+<boost::archive::text_oarchive>(
+  boost::archive::text_oarchive & ar, unsigned int version);
+
+template void GraphicsObject::Impl::ButtonProperties::serialize
 <boost::archive::text_iarchive>(
   boost::archive::text_iarchive & ar, unsigned int version);
 

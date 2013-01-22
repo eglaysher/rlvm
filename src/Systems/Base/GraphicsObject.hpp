@@ -1,3 +1,4 @@
+
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi:tw=80:et:ts=2:sts=2
 //
@@ -116,7 +117,7 @@ class GraphicsObject {
   int pixelHeight() const;
 
   // Object attribute accessors
-  int pattNo() const { return impl_->patt_no_; }
+  int pattNo() const;
   void setPattNo(const int in);
 
   int mono() const { return impl_->mono_; }
@@ -238,6 +239,29 @@ class GraphicsObject {
   int digitSign() const;
   int digitPack() const;
   int digitSpace() const;
+
+  // Button object accessors
+  void setButtonOpts(int action, int se, int group, int button_number);
+  void setButtonState(int state);
+
+  int isButton() const;
+  int buttonAction() const;
+  int buttonSe() const;
+  int buttonGroup() const;
+  int buttonNumber() const;
+  int buttonState() const;
+
+  // Called only from ButtonObjectSelectLongOperation. Sets override
+  // properties.
+  void setButtonOverrides(int override_pattern,
+                          int override_x_offset,
+                          int override_y_offset);
+  void clearButtonOverrides();
+
+  bool buttonUsingOverides() const;
+  int buttonPatternOverride() const;
+  int buttonXOffsetOverride() const;
+  int buttonYOffsetOverride() const;
 
   // Adds a mutator to the list of active mutators. GraphicsSystem takes
   // ownership of the passed in object.
@@ -408,6 +432,32 @@ class GraphicsObject {
 
     void makeSureHaveDigitProperties();
     boost::scoped_ptr<DigitProperties> digit_properties_;
+
+    // Button Object properties
+    struct ButtonProperties {
+      ButtonProperties();
+
+      int is_button;
+
+      int action;
+      int se;
+      int group;
+      int button_number;
+
+      int state;
+
+      bool using_overides;
+      int pattern_override;
+      int x_offset_override;
+      int y_offset_override;
+
+      // boost::serialization support
+      template<class Archive>
+      void serialize(Archive& ar, unsigned int version);
+    };
+
+    void makeSureHaveButtonProperties();
+    boost::scoped_ptr<ButtonProperties> button_properties_;
 
     // The wipe_copy bit
     int wipe_copy_;

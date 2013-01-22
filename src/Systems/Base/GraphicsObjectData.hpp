@@ -83,6 +83,12 @@ class GraphicsObjectData {
   // Whether this object data owns another layer of objects.
   virtual bool isParentLayer() const { return false; }
 
+  // Returns the destination rectangle on the screen to draw srcRect()
+  // to. Override to return custom rectangles in the case of a custom animation
+  // format.
+  virtual Rect dstRect(const GraphicsObject& go,
+                       const GraphicsObject* parent);
+
  protected:
   // Function called after animation ends when this object has been
   // set up to loop. Default implementation does nothing.
@@ -104,12 +110,6 @@ class GraphicsObjectData {
   // Returns the offset to the destination, which is set on a per surface
   // basis. This template method can be ignored if you override dstRect().
   virtual Point dstOrigin(const GraphicsObject& go);
-
-  // Returns the destination rectangle on the screen to draw srcRect()
-  // to. Override to return custom rectangles in the case of a custom animation
-  // format.
-  virtual Rect dstRect(const GraphicsObject& go,
-                       const GraphicsObject* parent);
 
   // Controls the alpha during rendering. Default implementation just consults
   // the GraphicsObject.

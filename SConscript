@@ -78,6 +78,7 @@ librlvm_files = [
   "src/Encodings/cp949.cpp",
   "src/Encodings/han2zen.cpp",
   "src/Encodings/western.cpp",
+  "src/LongOperations/ButtonObjectSelectLongOperation.cpp",
   "src/LongOperations/LoadGameLongOperation.cpp",
   "src/LongOperations/PauseLongOperation.cpp",
   "src/LongOperations/SelectLongOperation.cpp",

@@ -32,6 +32,7 @@
 #include <boost/bind.hpp>
 #include <string>
 
+#include "LongOperations/ButtonObjectSelectLongOperation.hpp"
 #include "LongOperations/SelectLongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
@@ -128,6 +129,21 @@ struct Sel_select_w : public RLOp_SpecialCase {
   }
 };
 
+struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int group) {
+    if (machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
+    machine.pushLongOperation(
+        new ButtonObjectSelectLongOperation(machine, group));
+  }
+};
+
+// Our system doesn't need an explicit initialize.
+struct objbtn_init : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int ignored) {}
+};
+
 }  // namespace
 
 SelModule::SelModule()
@@ -136,4 +152,6 @@ SelModule::SelModule()
   addOpcode(1, 0, "select", new Sel_select);
   addOpcode(2, 0, "select_s2", new Sel_select_s);
   addOpcode(3, 0, "select_s", new Sel_select_s);
+  addOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
+  addOpcode(20, 0, "objbtn_init", new objbtn_init);
 }

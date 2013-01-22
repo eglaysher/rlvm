@@ -52,6 +52,10 @@ void ParentGraphicsObjectData::setObject(int obj_number,
   objects_[obj_number] = object;
 }
 
+LazyArray<GraphicsObject>& ParentGraphicsObjectData::objects() {
+  return objects_;
+}
+
 void ParentGraphicsObjectData::render(const GraphicsObject& go,
                                       const GraphicsObject* parent,
                                       std::ostream* tree) {
