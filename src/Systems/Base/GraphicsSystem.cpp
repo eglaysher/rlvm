@@ -697,6 +697,13 @@ void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj) {
 
 // -----------------------------------------------------------------------
 
+void GraphicsSystem::clearObject(int obj_number) {
+  graphics_object_impl_->foreground_objects.deleteAt(obj_number);
+  graphics_object_impl_->background_objects.deleteAt(obj_number);
+}
+
+// -----------------------------------------------------------------------
+
 void GraphicsSystem::clearAllObjects() {
   graphics_object_impl_->foreground_objects.clear();
   graphics_object_impl_->background_objects.clear();

@@ -175,6 +175,10 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 ObjCopyFgToBg::ObjCopyFgToBg()
   : RLModule("ObjCopyFgToBg", 1, 60) {
+  addOpcode(0, 0, "objFree", callFunction(&GraphicsSystem::clearObject));
+
+  addOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
+
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.
   addOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);

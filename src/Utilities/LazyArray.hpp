@@ -68,6 +68,9 @@ class LazyArray {
 
   bool exists(int index) const { return array_[index] != NULL; }
 
+  // Deletes an object at |index| if it exists.
+  void deleteAt(int index);
+
   // Go through each item in the array, and deletes it. The array's
   // size is maintained.
   void clear();
@@ -277,6 +280,12 @@ const T& LazyArray<T>::operator[](int pos) const {
   }
 
   return *(array_[pos]);
+}
+
+template<typename T>
+void LazyArray<T>::deleteAt(int i) {
+  boost::checked_delete<T>(array_[i]);
+  array_[i] = NULL;
 }
 
 template<typename T>
