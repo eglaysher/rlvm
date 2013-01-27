@@ -12,6 +12,8 @@ AddOption('--release', action='store_true',
 AddOption('--coverage', action='store_true',
           help='Builds the unit tests for running through gcov, runs them, '
           'runs gcov, and then generates an html report with lcov.')
+AddOption('--pprof', action='store_true',
+          help='Build with Google\'s performance tools.')
 AddOption('--fullstatic', action='store_true',
           help='Builds a static binary, linking in all libraries.')
 
@@ -323,6 +325,19 @@ elif GetOption('coverage'):
     ],
 
     LIBS = [ "gcov" ]
+  )
+elif GetOption('pprof'):
+  env["BUILD_DIR"] = "#/build/pprof"
+  env['BUILD_TYPE'] = "Release"
+
+  env.Append(
+    CPPFLAGS = [
+      "-O0",
+      "-g",
+    ],
+
+    LIBS = [ "tcmalloc",
+             "profiler"]
   )
 else:
   # Add debugging flags to all binaries here
