@@ -139,9 +139,39 @@ struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
+struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
+  void operator()(RLMachine& machine, int group) {
+    if (machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
+    ButtonObjectSelectLongOperation* obj =
+        new ButtonObjectSelectLongOperation(machine, group);
+    obj->set_cancelable();
+    machine.pushLongOperation(obj);
+  }
+};
+
+
+struct Sel_select_objbtn_cancel_1
+    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int group, int se) {
+    if (machine.shouldSetSelcomSavepoint())
+      machine.markSavepoint();
+
+    ButtonObjectSelectLongOperation* obj =
+        new ButtonObjectSelectLongOperation(machine, group);
+    obj->set_cancelable();
+    machine.pushLongOperation(obj);
+  }
+};
+
 // Our system doesn't need an explicit initialize.
-struct objbtn_init : public RLOp_Void_1<IntConstant_T> {
+struct objbtn_init_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int ignored) {}
+};
+
+struct objbtn_init_1 : public RLOp_Void_Void {
+  void operator()(RLMachine& machine) {}
 };
 
 }  // namespace
@@ -153,5 +183,9 @@ SelModule::SelModule()
   addOpcode(2, 0, "select_s2", new Sel_select_s);
   addOpcode(3, 0, "select_s", new Sel_select_s);
   addOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
-  addOpcode(20, 0, "objbtn_init", new objbtn_init);
+  addOpcode(14, 0, "select_objbtn_cancel", new Sel_select_objbtn_cancel_0);
+  addOpcode(14, 1, "select_objbtn_cancel", new Sel_select_objbtn_cancel_1);
+
+  addOpcode(20, 0, "objbtn_init", new objbtn_init_0);
+  addOpcode(20, 1, "objbtn_init", new objbtn_init_1);
 }

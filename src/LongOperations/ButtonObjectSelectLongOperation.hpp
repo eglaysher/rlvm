@@ -42,6 +42,8 @@ class ButtonObjectSelectLongOperation : public LongOperation {
   ButtonObjectSelectLongOperation(RLMachine& machine, int group);
   virtual ~ButtonObjectSelectLongOperation();
 
+  void set_cancelable() { cancelable_ = true; }
+
   // Overridden from EventListener:
   virtual void mouseMotion(const Point& point);
   virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
@@ -57,6 +59,9 @@ class ButtonObjectSelectLongOperation : public LongOperation {
   RLMachine& machine_;
 
   int group_;
+
+  // Whether we cancel when the right mouse button is pressed.
+  bool cancelable_;
 
   // Whether the user has accepted an answer.
   bool has_return_value_;

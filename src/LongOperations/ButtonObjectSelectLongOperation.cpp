@@ -37,6 +37,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
     int group)
     : machine_(machine),
       group_(group),
+      cancelable_(false),
       has_return_value_(false),
       return_value_(-1),
       gameexe_(machine.system().gameexe()),
@@ -131,6 +132,9 @@ bool ButtonObjectSelectLongOperation::mouseButtonStateChanged(
     machine_.system().graphics().forceRefresh();
 
     return true;
+  } else if (mouseButton == MOUSE_RIGHT && !pressed && cancelable_) {
+    has_return_value_ = true;
+    return_value_ = -1;
   }
 
   return false;
