@@ -94,11 +94,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
     graphics.clearStack();
 
     fs::path path = system.findFile(filename, HIK_FILETYPES);
-    if (path.empty()) {
-      ostringstream oss;
-      oss << "Could not find background file: " << filename;
-      throw rlvm::Exception(oss.str());
-    } else if (iends_with(path.string(), "hik")) {
+    if (iends_with(path.string(), "hik")) {
       if (!machine.replaying_graphics_stack())
         graphics.clearAndPromoteObjects();
 
@@ -107,13 +103,16 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
           graphics.GetHIKScript(system, filename, path)));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
-      boost::shared_ptr<const Surface> source(
-          graphics.loadSurfaceFromFile(machine, filename));
-      boost::shared_ptr<Surface> haikei = graphics.getHaikei();
-      source->blitToSurface(*haikei,
-                            source->rect(),
-                            source->rect(),
-                            255, true);
+
+      if (!path.empty()) {
+        boost::shared_ptr<const Surface> source(
+            graphics.loadSurfaceFromFile(machine, filename));
+        boost::shared_ptr<Surface> haikei = graphics.getHaikei();
+        source->blitToSurface(*haikei,
+                              source->rect(),
+                              source->rect(),
+                              255, true);
+      }
 
       // Promote the objects if we're in normal mode. If we're restoring the
       // graphics stack, we already have our layers promoted.
