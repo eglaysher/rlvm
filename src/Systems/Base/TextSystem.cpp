@@ -93,6 +93,7 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
       ctrl_key_skip_(true),
       fast_text_mode_(false),
       message_no_wait_(false),
+      script_message_no_wait_(false),
       active_window_(0),
       is_reading_backlog_(false),
       current_pageset_(new PageSet),
@@ -644,6 +645,7 @@ boost::shared_ptr<Surface> TextSystem::renderText(
 
 void TextSystem::reset() {
   is_reading_backlog_ = false;
+  script_message_no_wait_ = false;
 
   current_pageset_ = std::auto_ptr<PageSet>(new PageSet);
   previous_page_sets_.clear();

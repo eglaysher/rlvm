@@ -580,7 +580,7 @@ void RLMachine::performTextout(const std::string& cp932str) {
   // Display UTF-8 characters
   auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
 
-  if (system().fastForward() || ts.messageNoWait())
+  if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
     ptr->setNoWait();
 
   pushLongOperation(ptr.release());

@@ -144,6 +144,10 @@ class TextSystem : public EventListener {
   bool isReadingBacklog() const;
   void stopReadingBacklog();
 
+  // A temporary version of |message_no_wait_| controllable by the script.
+  void setScriptMessageNowait(const int in) { script_message_no_wait_ = in; }
+  int scriptMessageNowait() const { return script_message_no_wait_; }
+
   // It is possible to set the interpreter up to advance text
   // automatically instead of waiting for player input after each
   // screen is displayed; the `auto mode' controls permit this
@@ -271,8 +275,11 @@ class TextSystem : public EventListener {
   // Fast text mode
   bool fast_text_mode_;
 
-  // Internal 'no wait' flag
+  // Internal 'no wait' flag (user customization)
   bool message_no_wait_;
+
+  // 'No wait' flag under script control.
+  bool script_message_no_wait_;
 
   // Sets which window is the current active window.
   int active_window_;
