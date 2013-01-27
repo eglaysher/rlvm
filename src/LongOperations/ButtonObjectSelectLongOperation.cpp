@@ -115,7 +115,8 @@ bool ButtonObjectSelectLongOperation::mouseButtonStateChanged(
   if (mouseButton == MOUSE_LEFT) {
     if (pressed) {
       currently_pressed_button_ = currently_hovering_button_;
-      setButtonOverride(currently_pressed_button_, "PUSH");
+      if (currently_pressed_button_)
+        setButtonOverride(currently_pressed_button_, "PUSH");
     } else {
       if (currently_hovering_button_ &&
           currently_hovering_button_ == currently_pressed_button_) {
