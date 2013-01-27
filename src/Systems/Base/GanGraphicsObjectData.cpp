@@ -309,9 +309,9 @@ int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
     // alpha.
-    float parent_alpha = parent ? parent->computedAlpha() : 1;
-    return int(((frame.alpha/256.0f) * (go.computedAlpha() / 256.0f) *
-                parent_alpha) * 256);
+    float parent_alpha = parent ? (parent->computedAlpha() / 255.0f) : 1;
+    return int(((frame.alpha/255.0f) * (go.computedAlpha() / 255.0f) *
+                parent_alpha) * 255);
   } else {
     // Should never happen.
     return go.computedAlpha();

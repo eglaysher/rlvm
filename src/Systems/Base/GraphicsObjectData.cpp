@@ -72,7 +72,6 @@ void GraphicsObjectData::render(const GraphicsObject& go,
                  dst.size());
     }
 
-
     // TODO: Anyone attempting moving the clip area calculations here should
     // verify that it doesn't break the final pan scene of Yumemi in
     // Planetarian.
@@ -166,8 +165,8 @@ int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
   if (!parent) {
     return go.computedAlpha();
   } else {
-    return int((parent->computedAlpha() / 256.0f) *
-               (go.computedAlpha() / 256.0f) * 256);
+    return int((parent->computedAlpha() / 255.0f) *
+               (go.computedAlpha() / 255.0f) * 255);
   }
 }
 
