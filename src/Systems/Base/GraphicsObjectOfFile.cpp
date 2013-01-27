@@ -200,6 +200,14 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
     & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
 
   loadFile();
+
+  // Saving |time_at_last_frame_change_| as part of the format is obviously a
+  // mistake, but is now baked into the file format. Ask the clock for a more
+  // suitable value.
+  if (time_at_last_frame_change_ != 0) {
+    time_at_last_frame_change_ = system_.event().getTicks();
+    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  }
 }
 
 // -----------------------------------------------------------------------
