@@ -33,6 +33,7 @@
 #include <utility>
 #include <vector>
 
+#include "LongOperations/ButtonObjectSelectLongOperation.hpp"
 #include "LongOperations/SelectLongOperation.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "ScriptMachine/ScriptWorld.hpp"
@@ -63,9 +64,8 @@ void ScriptMachine::setDecisionList(
 
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
-  SelectLongOperation* sel =
-      dynamic_cast<SelectLongOperation*>(long_operation);
-  if (sel) {
+  if (SelectLongOperation* sel =
+      dynamic_cast<SelectLongOperation*>(long_operation)) {
     // Try our optional, script provided matching behaviour.
     std::string choice = world_.makeDecision(sel->options());
     bool optionFound = false;
@@ -131,7 +131,15 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
         current_decision_ += offset + 1;
       }
     }
+  } else if (ButtonObjectSelectLongOperation* sel =
+             dynamic_cast<ButtonObjectSelectLongOperation*>(long_operation)) {
+    // We don't deal with these yet. Return 1 for the first option every time,
+    // which corresponds with selecting "NO" for battle missions.
+    setStoreRegister(1);
+    delete sel;
+    return;
   }
+
 
   RLMachine::pushLongOperation(long_operation);
 }
