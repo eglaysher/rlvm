@@ -49,7 +49,6 @@ using namespace std;
 namespace libReallive {
 
 char BytecodeElement::entrypoint_marker = '@';
-long BytecodeElement::id_src = 0;
 
 // -----------------------------------------------------------------------
 // ConstructionData
@@ -66,22 +65,13 @@ ConstructionData::~ConstructionData() {}
 // BytecodeElement
 // -----------------------------------------------------------------------
 
-BytecodeElement::BytecodeElement(const BytecodeElement& c)
-  : id(id_src++) {}
+BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 
 // -----------------------------------------------------------------------
 
 const ElementType BytecodeElement::type() const {
   return Unspecified;
 }
-
-// -----------------------------------------------------------------------
-
-const size_t BytecodeElement::offset() const { return offset_; }
-
-// -----------------------------------------------------------------------
-
-const string BytecodeElement::data() const { return string(); }
 
 // -----------------------------------------------------------------------
 
@@ -112,8 +102,7 @@ BytecodeElement::~BytecodeElement() {}
 
 // -----------------------------------------------------------------------
 
-BytecodeElement::BytecodeElement()
-  : id(id_src++) {}
+BytecodeElement::BytecodeElement() {}
 
 // -----------------------------------------------------------------------
 
@@ -191,7 +180,6 @@ DataElement::~DataElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType DataElement::type() const { return Data; }
-const string DataElement::data() const { return repr; }
 const size_t DataElement::length() const { return repr.size(); }
 DataElement* DataElement::clone() const { return new DataElement(*this); }
 
@@ -221,15 +209,6 @@ const ElementType MetaElement::type() const {
   return type_ == Line_ ? Line
     : (type_ == Kidoku_ ? Kidoku
        : Entrypoint);
-}
-
-// -----------------------------------------------------------------------
-
-const string MetaElement::data() const {
-  string rv(3, 0);
-  rv[0] = type_ == Entrypoint_ ? entrypoint_marker : type_;
-  insert_i16(rv, 1, value_);
-  return rv;
 }
 
 // -----------------------------------------------------------------------
@@ -319,27 +298,6 @@ TextoutElement::text() const {
 
 // -----------------------------------------------------------------------
 
-void
-TextoutElement::set_text(const char* src) {
-  bool quoted = false;
-  repr.clear();
-  if (src) while (*src) {
-      if (!quoted && (*src == '"' || *src == '#' || *src == '$' ||
-                      *src == '\n' || *src == '@' ||
-                      *src == ',' || *src == entrypoint_marker)) {
-        quoted = true;
-        repr.push_back('"');
-      }
-      if (*src == '"') repr.push_back('\\');
-      if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef))
-        repr.push_back(*src++);
-      repr.push_back(*src++);
-	}
-  if (quoted) repr.push_back('"');
-}
-
-// -----------------------------------------------------------------------
-
 void TextoutElement::runOnMachine(RLMachine& machine) const {
   machine.performTextout(*this);
   machine.advanceInstructionPointer();
@@ -419,28 +377,8 @@ void ExpressionElement::runOnMachine(RLMachine& machine) const {
 // CommandElement
 // -----------------------------------------------------------------------
 
-CommandElement::CommandElement(
-  const int type, const int module, const int opcode, const int argc,
-  const int overload) {
-  repr.resize(8, 0);
-  repr[0] = '#';
-  repr[1] = type;
-  repr[2] = module;
-  insert_i16(repr, 3, opcode);
-  insert_i16(repr, 5, argc);
-  repr[7] = overload;
-}
-
-// -----------------------------------------------------------------------
-
 CommandElement::CommandElement(const char* src) {
   repr.assign(src, 8);
-}
-
-// -----------------------------------------------------------------------
-
-CommandElement::CommandElement(const CommandElement& ce)
-  : parsed_parameters_() {
 }
 
 // -----------------------------------------------------------------------
@@ -612,25 +550,6 @@ SelectElement::text(const int index) const {
 
 // -----------------------------------------------------------------------
 
-const string
-SelectElement::data() const {
-  string rv(repr);
-  rv.push_back('{');
-  rv.push_back('\n');
-  append_i16(rv, firstline);
-  for (params_t::const_iterator it = params.begin(); it != params.end(); ++it) {
-    rv += it->cond_text;
-    rv += it->text;
-    rv.push_back('\n');
-    rv.push_back(it->line & 0xff);
-    rv.push_back((it->line >> 8) & 0xff);
-  }
-  rv.push_back('}');
-  return rv;
-}
-
-// -----------------------------------------------------------------------
-
 const size_t
 SelectElement::length() const {
   size_t rv = repr.size() + 5;
@@ -677,19 +596,6 @@ FunctionElement::FunctionElement(const char* src) : CommandElement(src) {
 // -----------------------------------------------------------------------
 
 const ElementType FunctionElement::type() const { return Function; }
-
-// -----------------------------------------------------------------------
-
-const string
-FunctionElement::data() const {
-  string rv(repr);
-  if (params.size() > 0) {
-    rv.push_back('(');
-    for (std::vector<string>::const_iterator it = params.begin(); it != params.end(); ++it) rv.append(*it);
-    rv.push_back(')');
-  }
-  return rv;
-}
 
 // -----------------------------------------------------------------------
 
@@ -786,15 +692,6 @@ GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 
 // -----------------------------------------------------------------------
 
-const string
-GotoElement::data() const {
-  string rv(repr);
-  append_i32(rv, targets[0]->offset());
-  return rv;
-}
-
-// -----------------------------------------------------------------------
-
 const GotoElement::Case
 GotoElement::taken() const {
   const int op = (module() * 100000) | opcode();
@@ -818,14 +715,6 @@ GotoElement::taken() const {
     return result == (opcode() % 5 == 1) ? Always : Never;
   }
   return Variable;
-}
-
-// -----------------------------------------------------------------------
-
-void
-GotoElement::make_unconditional() {
-  if (opcode() < 5) set_opcode(module() == 1 ? 0 : 1); else set_opcode(5);
-  repr.resize(8);
 }
 
 // -----------------------------------------------------------------------
@@ -871,20 +760,6 @@ GotoCaseElement* GotoCaseElement::clone() const { return new GotoCaseElement(*th
 
 // -----------------------------------------------------------------------
 
-const string
-GotoCaseElement::data() const {
-  string rv(repr);
-  rv += '{';
-  for (unsigned int i = 0; i < cases.size(); ++i) {
-    rv += cases[i];
-    append_i32(rv, targets[i]->offset());
-  }
-  rv += '}';
-  return rv;
-}
-
-// -----------------------------------------------------------------------
-
 const size_t
 GotoCaseElement::length() const {
   size_t rv = repr.size() + 2;
@@ -926,19 +801,6 @@ GotoOnElement* GotoOnElement::clone() const { return new GotoOnElement(*this); }
 
 const size_t GotoOnElement::length() const {
   return repr.size() + argc() * 4 + 2;
-}
-
-// -----------------------------------------------------------------------
-
-const string
-GotoOnElement::data() const {
-  string rv(repr);
-  rv += '{';
-  for (unsigned int i = 0; i < targets.size(); ++i) {
-    append_i32(rv, targets[i]->offset());
-  }
-  rv += '}';
-  return rv;
 }
 
 // -----------------------------------------------------------------------
@@ -988,15 +850,6 @@ const ElementType GosubWithElement::type() const { return Goto; }
 // -----------------------------------------------------------------------
 
 GosubWithElement* GosubWithElement::clone() const { return new GosubWithElement(*this); }
-
-// -----------------------------------------------------------------------
-
-const string
-GosubWithElement::data() const {
-  string rv(repr);
-  append_i32(rv, targets[0]->offset());
-  return rv;
-}
 
 // -----------------------------------------------------------------------
 

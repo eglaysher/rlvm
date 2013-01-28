@@ -57,12 +57,6 @@ public:
        savepoint_selcom, savepoint_seentop;
   std::vector<string> dramatis_personae;
   Metadata rldev_metadata;
-  const size_t dramatis_length() const {
-    size_t rv = 0;
-    for (std::vector<string>::const_iterator it = dramatis_personae.begin();
-         it != dramatis_personae.end(); ++it) rv += it->size() + 5;
-    return rv;
-  }
 };
 
 class Script {
@@ -79,30 +73,11 @@ private:
          const std::string& regname,
          bool use_xor_2, const Compression::XorKey* second_level_xor_key);
 
-  void recalculate(const bool force = false);
-
-  // Recalculate offset data (do this before serialising)
-  void update_offsets();
-
-  // Pointer/label handling.
-  typedef std::vector<pointer_t> pointer_list;
-  typedef std::map<pointer_t, pointer_list> labelmap;
-
-  labelmap labels;
-
   // Entrypoint handeling
   typedef std::map<int, pointer_t> pointernumber;
   pointernumber entrypointAssociations;
 
-  void update_pointers(pointer_t&, pointer_t&);
-  void remove_label(pointer_t&, pointer_t&);
-  void remove_elt(pointer_t&);
 public:
-  // Flag size/offset recalculation as necessary (call when any data
-  // has changed)
-  void invalidate() { uptodate = false; }
-
-  const size_t size() { recalculate(); return lencache; }
 
   const pointer_t getEntrypoint(int entrypoint) const;
 };

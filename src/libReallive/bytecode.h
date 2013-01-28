@@ -79,19 +79,12 @@ public:
 
 class BytecodeElement {
   friend class Script;
-  size_t offset_;
 protected:
   static char entrypoint_marker;
-  static long id_src;
   BytecodeElement(const BytecodeElement& c);
 public:
-  const long id;
-
   virtual const ElementType type() const;
 
-  const size_t offset() const;
-
-  virtual const string data() const;
   virtual const size_t length() const;
 
   // Fat interface: takes a FunctionElement and returns all data serialized for
@@ -130,7 +123,6 @@ protected:
   string repr;
 public:
   virtual const ElementType type() const;
-  virtual const string data() const;
   virtual const size_t length() const;
 
   virtual DataElement* clone() const;
@@ -138,15 +130,6 @@ public:
   DataElement(const char* src, const size_t count);
   ~DataElement();
 };
-
-} namespace std {
-template<> struct less<libReallive::pointer_t> {
-  bool operator() (const libReallive::pointer_t& a,
-                   const libReallive::pointer_t& b) const {
-    return a->id < b->id;
-  }
-};
-} namespace libReallive {
 
 // Metadata elements: source line, kidoku, and entrypoint markers.
 
@@ -157,7 +140,6 @@ class MetaElement : public BytecodeElement {
   int entrypoint_index;
 public:
   virtual const ElementType type() const;
-  virtual const string data() const;
   virtual const size_t length() const;
 
   const int value() const { return value_; }
@@ -179,8 +161,6 @@ class TextoutElement : public DataElement {
 public:
   virtual const ElementType type() const;
   const string text() const;
-  void set_text(const char* src);
-  void set_text(const string& src) { set_text(src.c_str()); }
   TextoutElement(const char* src, const char* file_end);
   TextoutElement();
   TextoutElement* clone() const;
@@ -265,9 +245,7 @@ public:
   virtual const size_t case_count() const { return 0; }
   virtual const string get_case(int i) const { return ""; }
 
-  CommandElement(const int type, const int module, const int opcode, const int argc, const int overload);
   CommandElement(const char* src);
-  CommandElement(const CommandElement& ce);
   ~CommandElement();
 
   virtual void runOnMachine(RLMachine& machine) const;
@@ -311,7 +289,6 @@ public:
   ExpressionElement window() const;
   const string text(const int index) const;
 
-  const string data() const;
   const size_t length() const;
 
   const size_t param_count() const;
@@ -329,7 +306,6 @@ public:
   virtual const ElementType type() const;
   FunctionElement(const char* src);
 
-  virtual const string data() const;
   virtual const size_t length() const;
   virtual string serializableData(RLMachine& machine) const;
 
@@ -347,7 +323,6 @@ public:
   ~PointerElement();
   virtual const ElementType type() const = 0;
   virtual PointerElement* clone() const = 0;
-  virtual const string data() const = 0;
   virtual const size_t length() const = 0;
   virtual void set_pointers(ConstructionData& cdata);
   virtual Pointers* get_pointers();
@@ -361,8 +336,6 @@ public:
   GotoElement(const char* src, ConstructionData& cdata);
   GotoElement* clone() const;
 
-  void make_unconditional();
-
   enum Case { Unconditional, Always, Never, Variable };
   const Case taken() const;
 
@@ -372,7 +345,6 @@ public:
 //	const size_t param_count() const { return params.size(); }
 //	string get_param(int i) const { return params[i]; }
 
-  const string data() const;
   const size_t length() const { return repr.size() + 4; }
 };
 
@@ -380,7 +352,6 @@ class GotoCaseElement : public PointerElement {
   std::vector<string> cases;
 public:
   virtual const ElementType type() const;
-  virtual const string data() const;
   virtual const size_t length() const;
 
   GotoCaseElement(const char* src, ConstructionData& cdata);
@@ -398,7 +369,6 @@ public:
 class GotoOnElement : public PointerElement {
 public:
   virtual const ElementType type() const;
-  virtual const string data() const;
   virtual const size_t length() const;
 
   GotoOnElement(const char* src, ConstructionData& cdata);
@@ -413,13 +383,10 @@ class GosubWithElement : public PointerElement {
   std::vector<string> params;
 public:
   virtual const ElementType type() const;
-  virtual const string data() const;
   virtual const size_t length() const;
 
   GosubWithElement(const char* src, ConstructionData& cdata);
   GosubWithElement* clone() const;
-
-  void make_unconditional();
 
   enum Case { Unconditional, Always, Never, Variable };
   const Case taken() const;
