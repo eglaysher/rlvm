@@ -85,7 +85,7 @@ protected:
 public:
   virtual const ElementType type() const;
 
-  virtual const size_t length() const;
+  virtual const size_t length() const = 0;
 
   // Fat interface: takes a FunctionElement and returns all data serialized for
   // writing to disk so the exact command can be replayed later. Throws in all
@@ -96,7 +96,7 @@ public:
   virtual void set_pointers(ConstructionData& cdata);
 
   // Note that x.clone() != x, since the copy constructor assigns a new id.
-  virtual BytecodeElement* clone() const;
+  virtual BytecodeElement* clone() const = 0;
 
   virtual ~BytecodeElement();
 
@@ -211,25 +211,19 @@ public:
 
 class CommandElement : public BytecodeElement {
  protected:
-  string repr;
+  static const int COMMAND_SIZE = 8;
+  unsigned char command[COMMAND_SIZE];
 
   mutable boost::ptr_vector<libReallive::ExpressionPiece> parsed_parameters_;
 
  public:
   virtual const ElementType type() const;
-  virtual const size_t length() const;
 
-  const int modtype()  const { return repr[1]; }
-  const int module()   const { return repr[2]; }
-  const int opcode()   const { return repr[3] | (repr[4] << 8); }
-  const int argc()     const { return repr[5] | (repr[6] << 8); }
-  const int overload() const { return repr[7]; }
-
-  void set_modtype(unsigned char to)  { repr[1] = to; }
-  void set_module(unsigned char to)   { repr[2] = to; }
-  void set_opcode(int to)             { repr[3] = to & 0xff; repr[4] = (to >> 8) & 0xff; }
-  void set_argc(int to)               { repr[5] = to & 0xff; repr[6] = (to >> 8) & 0xff; }
-  void set_overload(unsigned char to) { repr[7] = to; }
+  const int modtype()  const { return command[1]; }
+  const int module()   const { return command[2]; }
+  const int opcode()   const { return command[3] | (command[4] << 8); }
+  const int argc()     const { return command[5] | (command[6] << 8); }
+  const int overload() const { return command[7]; }
 
   virtual const size_t param_count() const = 0;
   virtual string get_param(int) const = 0;
@@ -259,6 +253,8 @@ class CommandElement : public BytecodeElement {
 
 class SelectElement : public CommandElement {
 public:
+  string repr;
+
   static const int OPTION_COLOUR = 0x30;
   static const int OPTION_TITLE = 0x31;
   static const int OPTION_HIDE = 0x32;
@@ -323,6 +319,8 @@ public:
 
 class PointerElement : public CommandElement {
 protected:
+  string repr;
+
   Pointers targets;
 public:
   PointerElement(const char* src);

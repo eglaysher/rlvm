@@ -75,10 +75,6 @@ const ElementType BytecodeElement::type() const {
 
 // -----------------------------------------------------------------------
 
-const size_t BytecodeElement::length() const { return 0; }
-
-// -----------------------------------------------------------------------
-
 string BytecodeElement::serializableData(RLMachine& machine) const {
   throw Error(
       "Can't call serializableData() on things other than FunctionElements");
@@ -91,10 +87,6 @@ Pointers* BytecodeElement::get_pointers() { return NULL; }
 // -----------------------------------------------------------------------
 
 void BytecodeElement::set_pointers(ConstructionData& cdata) {}
-
-// -----------------------------------------------------------------------
-
-BytecodeElement* BytecodeElement::clone() const {  return new BytecodeElement(*this); }
 
 // -----------------------------------------------------------------------
 
@@ -384,7 +376,7 @@ void ExpressionElement::runOnMachine(RLMachine& machine) const {
 // -----------------------------------------------------------------------
 
 CommandElement::CommandElement(const char* src) {
-  repr.assign(src, 8);
+  memcpy(command, src, 8);
 }
 
 // -----------------------------------------------------------------------
@@ -394,8 +386,6 @@ CommandElement::~CommandElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType CommandElement::type() const { return Command; }
-
-const size_t CommandElement::length() const { return repr.size(); }
 
 // -----------------------------------------------------------------------
 
@@ -429,7 +419,6 @@ void CommandElement::setParsedParameters(
 // -----------------------------------------------------------------------
 
 const boost::ptr_vector<libReallive::ExpressionPiece>&
-
 CommandElement::getParameters() const {
   return parsed_parameters_;
 }
@@ -446,6 +435,8 @@ void CommandElement::runOnMachine(RLMachine& machine) const {
 
 SelectElement::SelectElement(const char* src)
   : CommandElement(src), uselessjunk(0) {
+  repr.assign(src, 8);
+
   src += 8;
   if (*src == '(') {
     const int elen = next_expr(src);
@@ -607,18 +598,20 @@ const ElementType FunctionElement::type() const { return Function; }
 const size_t
 FunctionElement::length() const {
   if (params.size() > 0) {
-    size_t rv(repr.size() + 2);
+    size_t rv(COMMAND_SIZE + 2);
     for (std::vector<string>::const_iterator it = params.begin(); it != params.end(); ++it) rv += it->size();
     return rv;
   } else {
-    return repr.size();
+    return COMMAND_SIZE;
   }
 }
 
 // -----------------------------------------------------------------------
 
 std::string FunctionElement::serializableData(RLMachine& machine) const {
-  string rv(repr);
+  string rv;
+  for (int i = 0; i < COMMAND_SIZE; ++i)
+    rv.push_back(command[i]);
   if (params.size() > 0) {
     rv.push_back('(');
     for (std::vector<string>::const_iterator it = params.begin();
@@ -646,7 +639,10 @@ FunctionElement* FunctionElement::clone() const { return new FunctionElement(*th
 // PointerElement
 // -----------------------------------------------------------------------
 
-PointerElement::PointerElement(const char* src) : CommandElement(src) {}
+PointerElement::PointerElement(const char* src)
+    : CommandElement(src) {
+  repr.assign(src, 8);
+}
 
 // -----------------------------------------------------------------------
 
