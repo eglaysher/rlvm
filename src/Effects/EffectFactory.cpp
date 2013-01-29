@@ -74,9 +74,11 @@ Effect* EffectFactory::build(
   Size screenSize = machine.system().graphics().screenSize();
 
   // Ensure that both of our images are on the graphics card so we don't
-  // stutter during the loop.
-  src->EnsureUploaded();
-  dst->EnsureUploaded();
+  // stutter during the loop. These can be NULL in unit tests.
+  if (src)
+    src->EnsureUploaded();
+  if (dst)
+    dst->EnsureUploaded();
 
   // There is a completely ridiculous number of transitions here! Damn
   // you, VisualArts, for making something so simple sounding so
