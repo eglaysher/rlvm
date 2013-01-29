@@ -389,14 +389,6 @@ struct gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
 
-    if (!gotoElement.areParametersParsed()) {
-      const vector<string>& unparsed = gotoElement.getUnparsedParameters();
-      ptr_vector<ExpressionPiece> output;
-
-      unsigned int position = 0;
-      ParamFormat::parseParameters(position, unparsed, output);
-    }
-
     const ptr_vector<ExpressionPiece>& parameterPieces =
         gotoElement.getParameters();
     unsigned int position = 0;

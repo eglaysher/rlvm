@@ -155,7 +155,7 @@ BytecodeElement::read(const char* stream, const char* end,
   if (c == '!') entrypoint_marker = '!';
   switch (c) {
   case 0:
-  case ',':  return new DataElement(stream, 1);
+  case ',':  return new CommaElement;
   case '\n': return new MetaElement(0, stream);
   case '@':  // fall through
   case '!':  return new MetaElement(&cdata, stream);
@@ -166,22 +166,23 @@ BytecodeElement::read(const char* stream, const char* end,
 }
 
 // -----------------------------------------------------------------------
-// DataElement
+// CommaElement
 // -----------------------------------------------------------------------
 
-DataElement::DataElement() {}
-DataElement::DataElement(const char* src, const size_t count)
-  : repr(src, count) {}
+CommaElement::CommaElement() {}
+CommaElement::~CommaElement() {}
 
-// -----------------------------------------------------------------------
+const ElementType CommaElement::type() const {
+  return Data;
+}
 
-DataElement::~DataElement() {}
+const size_t CommaElement::length() const {
+  return 1;
+}
 
-// -----------------------------------------------------------------------
-
-const ElementType DataElement::type() const { return Data; }
-const size_t DataElement::length() const { return repr.size(); }
-DataElement* DataElement::clone() const { return new DataElement(*this); }
+CommaElement* CommaElement::clone() const {
+  return new CommaElement;
+}
 
 // -----------------------------------------------------------------------
 // MetaElement
@@ -269,6 +270,7 @@ TextoutElement::TextoutElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType TextoutElement::type() const { return Textout; }
+const size_t TextoutElement::length() const { return repr.size(); }
 
 // -----------------------------------------------------------------------
 
@@ -336,10 +338,14 @@ const ElementType ExpressionElement::type() const {
   return Expression;
 }
 
+const size_t ExpressionElement::length() const {
+  return repr.size();
+}
+
 // -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-  : DataElement(rhs), parsed_expression_(NULL) {
+    : parsed_expression_(NULL) {
 }
 
 // -----------------------------------------------------------------------
@@ -389,18 +395,16 @@ CommandElement::~CommandElement() {}
 
 const ElementType CommandElement::type() const { return Command; }
 
+const size_t CommandElement::length() const { return repr.size(); }
+
 // -----------------------------------------------------------------------
 
-const vector<string>& CommandElement::getUnparsedParameters() const {
+vector<string> CommandElement::getUnparsedParameters() const {
+  vector<string> parameters;
   size_t numberOfParameters = param_count();
-  if (numberOfParameters != unparsed_parameters_.size()) {
-    unparsed_parameters_.clear();
-
-    for (size_t i = 0; i < numberOfParameters; ++i)
-      unparsed_parameters_.push_back(get_param(i));
-  }
-
-  return unparsed_parameters_;
+  for (size_t i = 0; i < numberOfParameters; ++i)
+    parameters.push_back(get_param(i));
+  return parameters;
 }
 
 // -----------------------------------------------------------------------
@@ -425,6 +429,7 @@ void CommandElement::setParsedParameters(
 // -----------------------------------------------------------------------
 
 const boost::ptr_vector<libReallive::ExpressionPiece>&
+
 CommandElement::getParameters() const {
   return parsed_parameters_;
 }

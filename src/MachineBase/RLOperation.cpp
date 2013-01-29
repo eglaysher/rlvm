@@ -102,7 +102,7 @@ bool RLOperation::advanceInstructionPointer() {
 void RLOperation::dispatchFunction(RLMachine& machine,
                                    const CommandElement& ff) {
   if (!ff.areParametersParsed()) {
-    const vector<string>& unparsed = ff.getUnparsedParameters();
+    vector<string> unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);
@@ -273,7 +273,7 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
                                         const libReallive::CommandElement& ff) {
   // First try to run the default parse_parameters if we can.
   if (!ff.areParametersParsed()) {
-    const vector<string>& unparsed = ff.getUnparsedParameters();
+    vector<string> unparsed = ff.getUnparsedParameters();
     ptr_vector<ExpressionPiece> output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);

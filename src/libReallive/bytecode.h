@@ -118,17 +118,14 @@ inline BytecodeElement* new_clone(const BytecodeElement& e)
   return e.clone();
 }
 
-class DataElement : public BytecodeElement {
-protected:
-  string repr;
-public:
+class CommaElement : public BytecodeElement {
+ public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
 
-  virtual DataElement* clone() const;
-  DataElement();
-  DataElement(const char* src, const size_t count);
-  ~DataElement();
+  virtual CommaElement* clone() const;
+  CommaElement();
+  ~CommaElement();
 };
 
 // Metadata elements: source line, kidoku, and entrypoint markers.
@@ -157,9 +154,12 @@ public:
 
 // Display-text elements.
 
-class TextoutElement : public DataElement {
-public:
+class TextoutElement : public BytecodeElement {
+ private:
+  string repr;
+ public:
   virtual const ElementType type() const;
+  virtual const size_t length() const;
   const string text() const;
   TextoutElement(const char* src, const char* file_end);
   TextoutElement();
@@ -175,14 +175,17 @@ public:
 /**
  * A BytecodeElement that represents an expression
  */
-class ExpressionElement : public DataElement {
-private:
+class ExpressionElement : public BytecodeElement {
+ private:
+  string repr;
+
   /// Storage for the parsed expression so we only have to calculate
   /// it once (and so we can return it by const reference)
   mutable boost::scoped_ptr<ExpressionPiece> parsed_expression_;
 
 public:
   virtual const ElementType type() const;
+  virtual const size_t length() const;
   ExpressionElement(const long val);
   ExpressionElement(const char* src);
   ExpressionElement(const ExpressionElement& rhs);
@@ -206,13 +209,16 @@ public:
 
 // Command elements.
 
-class CommandElement : public DataElement {
-protected:
-  mutable std::vector<std::string> unparsed_parameters_;
+class CommandElement : public BytecodeElement {
+ protected:
+  string repr;
+
   mutable boost::ptr_vector<libReallive::ExpressionPiece> parsed_parameters_;
 
-public:
+ public:
   virtual const ElementType type() const;
+  virtual const size_t length() const;
+
   const int modtype()  const { return repr[1]; }
   const int module()   const { return repr[2]; }
   const int opcode()   const { return repr[3] | (repr[4] << 8); }
@@ -228,7 +234,7 @@ public:
   virtual const size_t param_count() const = 0;
   virtual string get_param(int) const = 0;
 
-  const std::vector<string>& getUnparsedParameters() const;
+  std::vector<string> getUnparsedParameters() const;
   bool areParametersParsed() const;
 
   void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
