@@ -132,9 +132,10 @@ read_function(const char* stream, ConstructionData& cdata) {
   switch (opcode) {
   case 0x00010000: case 0x00010005:
   case 0x00050001: case 0x00050005:
+    return new GotoElement(stream, cdata);
   case 0x00010001: case 0x00010002: case 0x00010006: case 0x00010007:
   case 0x00050002: case 0x00050006: case 0x00050007:
-    return new GotoElement(stream, cdata);
+    return new GotoIfElement(stream, cdata);
   case 0x00010003: case 0x00010008:
   case 0x00050003: case 0x00050008:
     return new GotoOnElement(stream, cdata);
@@ -763,18 +764,7 @@ const Pointers& PointerElement::get_pointersRef() const { return targets; }
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata)
     : PointerElement(src) {
-  repr.assign(src, 8);
   src += 8;
-  const int op = (module() * 100000) | opcode();
-  if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
-    if (*src++ != '(') throw Error("GotoElement(): expected `('");
-    int expr = next_expr(src);
-    repr.push_back('(');
-    repr.append(src, expr);
-    repr.push_back(')');
-    src += expr;
-    if (*src++ != ')') throw Error("GotoElement(): expected `)'");
-  }
   targets.push_id(read_i32(src));
 }
 
@@ -787,16 +777,57 @@ const ElementType GotoElement::type() const { return Goto; }
 GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 
 const size_t GotoElement::param_count() const {
-  return repr.size() == 8 ? 0 : 1;
+  return 0;
 }
 
 string GotoElement::get_param(int i) const {
-  return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string();
+  return std::string();
 }
 
 const size_t GotoElement::length() const {
+  return 12;
+}
+
+// -----------------------------------------------------------------------
+// GotoIfElement
+// -----------------------------------------------------------------------
+
+GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
+    : PointerElement(src) {
+  repr.assign(src, 8);
+  src += 8;
+
+  if (*src++ != '(') throw Error("GotoIfElement(): expected `('");
+  int expr = next_expr(src);
+  repr.push_back('(');
+  repr.append(src, expr);
+  repr.push_back(')');
+  src += expr;
+  if (*src++ != ')') throw Error("GotoIfElement(): expected `)'");
+
+  targets.push_id(read_i32(src));
+}
+
+// -----------------------------------------------------------------------
+
+const ElementType GotoIfElement::type() const { return Goto; }
+
+// -----------------------------------------------------------------------
+
+GotoIfElement* GotoIfElement::clone() const { return new GotoIfElement(*this); }
+
+const size_t GotoIfElement::param_count() const {
+  return repr.size() == 8 ? 0 : 1;
+}
+
+string GotoIfElement::get_param(int i) const {
+  return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string();
+}
+
+const size_t GotoIfElement::length() const {
   return repr.size() + 4;
 }
+
 
 // -----------------------------------------------------------------------
 // GotoCaseElement

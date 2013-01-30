@@ -370,12 +370,24 @@ public:
 };
 
 class GotoElement : public PointerElement {
+ public:
+  virtual const ElementType type() const;
+  GotoElement(const char* src, ConstructionData& cdata);
+  virtual GotoElement* clone() const;
+
+  // The pointer is not counted as a parameter.
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
+  virtual const size_t length() const;
+};
+
+class GotoIfElement : public PointerElement {
  private:
   string repr;
  public:
   virtual const ElementType type() const;
-  GotoElement(const char* src, ConstructionData& cdata);
-  GotoElement* clone() const;
+  GotoIfElement(const char* src, ConstructionData& cdata);
+  virtual GotoIfElement* clone() const;
 
   // The pointer is not counted as a parameter.
   virtual const size_t param_count() const;
