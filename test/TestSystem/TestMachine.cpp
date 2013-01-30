@@ -26,6 +26,7 @@
 
 #include "TestSystem/TestMachine.hpp"
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <string>
 #include <vector>
@@ -95,11 +96,12 @@ void TestMachine::runOpcode(const std::string& name, unsigned char overload,
   repr[7] = overload;
 
   string full = repr + '(' + argument_string + ')';
-  libReallive::FunctionElement element(full.c_str());
+  boost::scoped_ptr<libReallive::CommandElement> element(
+      libReallive::BuildFunctionElement(full.c_str()));
 
   RLOperation* op = registry_[make_pair(name, overload)];
   if (op) {
-    op->dispatchFunction(*this, element);
+    op->dispatchFunction(*this, *element.get());
   } else {
     throw rlvm::Exception("Illegal opcode TestMachine::runOpcode");
   }

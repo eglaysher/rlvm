@@ -45,6 +45,11 @@ class RLMachine;
 
 namespace libReallive {
 
+class CommandElement;
+
+// Returns a representation of the non-special cased function.
+CommandElement* BuildFunctionElement(const char* stream);
+
 struct ConstructionData {
   std::vector<unsigned long> kidoku_table;
   pointer_t null;
@@ -306,7 +311,7 @@ class FunctionElement : public CommandElement {
   std::vector<string> params;
 public:
   virtual const ElementType type() const;
-  FunctionElement(const char* src);
+  FunctionElement(const char* src, const std::vector<string>& params);
 
   virtual const size_t length() const;
   virtual string serializableData(RLMachine& machine) const;
@@ -315,6 +320,38 @@ public:
   virtual string get_param(int i) const;
 
   virtual FunctionElement* clone() const;
+};
+
+class VoidFunctionElement : public CommandElement {
+public:
+  virtual const ElementType type() const;
+  VoidFunctionElement(const char* src);
+
+  virtual const size_t length() const;
+  virtual string serializableData(RLMachine& machine) const;
+
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
+
+  virtual VoidFunctionElement* clone() const;
+};
+
+class SingleArgFunctionElement : public CommandElement {
+ private:
+  std::string arg_;
+
+ public:
+  virtual const ElementType type() const;
+  SingleArgFunctionElement(const char* src,
+                           const std::string& arg);
+
+  virtual const size_t length() const;
+  virtual string serializableData(RLMachine& machine) const;
+
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
+
+  virtual SingleArgFunctionElement* clone() const;
 };
 
 class PointerElement : public CommandElement {

@@ -36,7 +36,6 @@
 #include <string>
 
 namespace libReallive {
-class FunctionElement;
 class CommandElement;
 };
 
