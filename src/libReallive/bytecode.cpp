@@ -737,7 +737,6 @@ SingleArgFunctionElement* SingleArgFunctionElement::clone() const {
 
 PointerElement::PointerElement(const char* src)
     : CommandElement(src) {
-  repr.assign(src, 8);
 }
 
 // -----------------------------------------------------------------------
@@ -763,7 +762,8 @@ const Pointers& PointerElement::get_pointersRef() const { return targets; }
 // -----------------------------------------------------------------------
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src) {
+    : PointerElement(src) {
+  repr.assign(src, 8);
   src += 8;
   const int op = (module() * 100000) | opcode();
   if (op != 100000 && op != 100005 && op != 500001 && op != 500005)  {
@@ -786,31 +786,16 @@ const ElementType GotoElement::type() const { return Goto; }
 
 GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 
-// -----------------------------------------------------------------------
+const size_t GotoElement::param_count() const {
+  return repr.size() == 8 ? 0 : 1;
+}
 
-const GotoElement::Case
-GotoElement::taken() const {
-  const int op = (module() * 100000) | opcode();
-  if (op == 100000 || op == 500001) return Unconditional;
-  const string arg(get_param(0));
-  // For now, just look for straightforward integer-integer comparisons.
-  if (arg.size() == 14 && arg[0] == '$' && arg[1] == 0xff && arg[6] == '\\' && arg[8] == '$' && arg[9] == 0xff) {
-    const long i1 = read_i32(arg, 2);
-    const long i2 = read_i32(arg, 10);
-    bool result;
-    switch (arg[7]) {
-    case 0x28: result = i1 == i2; break;
-    case 0x29: result = i1 != i2; break;
-    case 0x2a: result = i1 <= i2; break;
-    case 0x2b: result = i1 <  i2; break;
-    case 0x2c: result = i1 >= i2; break;
-    case 0x2d: result = i1 >  i2; break;
-    default:
-      return Variable;
-    }
-    return result == (opcode() % 5 == 1) ? Always : Never;
-  }
-  return Variable;
+string GotoElement::get_param(int i) const {
+  return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string();
+}
+
+const size_t GotoElement::length() const {
+  return repr.size() + 4;
 }
 
 // -----------------------------------------------------------------------
@@ -818,7 +803,8 @@ GotoElement::taken() const {
 // -----------------------------------------------------------------------
 
 GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src) {
+    : PointerElement(src) {
+  repr.assign(src, 8);
   src += 8;
   // Condition
   const int expr = next_expr(src);
@@ -863,12 +849,21 @@ GotoCaseElement::length() const {
   return rv;
 }
 
+const size_t GotoCaseElement::param_count() const {
+  return 1;
+}
+
+string GotoCaseElement::get_param(int i) const {
+  return i == 0 ? repr.substr(8, repr.size() - 8) : string();
+}
+
 // -----------------------------------------------------------------------
 // GotoOnElement
 // -----------------------------------------------------------------------
 
 GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src) {
+    : PointerElement(src) {
+  repr.assign(src, 8);
   src += 8;
   // Condition
   const int expr = next_expr(src);
@@ -899,6 +894,15 @@ const size_t GotoOnElement::length() const {
   return repr.size() + argc() * 4 + 2;
 }
 
+const size_t GotoOnElement::param_count() const {
+  return 1;
+}
+
+string GotoOnElement::get_param(int i) const {
+  return i == 0 ? repr.substr(8, repr.size() - 8) : string();
+}
+
+
 // -----------------------------------------------------------------------
 
 void
@@ -919,7 +923,8 @@ Pointers::set_pointers(ConstructionData& cdata) {
 // -----------------------------------------------------------------------
 
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
-  : PointerElement(src) {
+    : PointerElement(src) {
+  repr.assign(src, 8);
   src += 8;
   if (*src == '(') {
     src++;
@@ -949,6 +954,16 @@ GosubWithElement* GosubWithElement::clone() const { return new GosubWithElement(
 
 // -----------------------------------------------------------------------
 
-const size_t GosubWithElement::length() const { return repr.size() + 4; }
+const size_t GosubWithElement::length() const {
+  return repr.size() + 4;
+}
+
+const size_t GosubWithElement::param_count() const {
+  return params.size();
+}
+
+string GosubWithElement::get_param(int i) const {
+  return params[i];
+}
 
 }

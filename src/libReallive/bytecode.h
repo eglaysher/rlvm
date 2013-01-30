@@ -356,9 +356,8 @@ class SingleArgFunctionElement : public CommandElement {
 
 class PointerElement : public CommandElement {
 protected:
-  string repr;
-
   Pointers targets;
+
 public:
   PointerElement(const char* src);
   ~PointerElement();
@@ -371,36 +370,33 @@ public:
 };
 
 class GotoElement : public PointerElement {
-//	std::vector<string> params;
-public:
+ private:
+  string repr;
+ public:
   virtual const ElementType type() const;
   GotoElement(const char* src, ConstructionData& cdata);
   GotoElement* clone() const;
 
-  enum Case { Unconditional, Always, Never, Variable };
-  const Case taken() const;
-
   // The pointer is not counted as a parameter.
-  const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
-  string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
-//	const size_t param_count() const { return params.size(); }
-//	string get_param(int i) const { return params[i]; }
-
-  const size_t length() const { return repr.size() + 4; }
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
+  virtual const size_t length() const;
 };
 
 class GotoCaseElement : public PointerElement {
+ private:
+  string repr;
   std::vector<string> cases;
-public:
+ public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
 
   GotoCaseElement(const char* src, ConstructionData& cdata);
-  GotoCaseElement* clone() const;
+  virtual GotoCaseElement* clone() const;
 
   // The cases are not counted as parameters.
-  const size_t param_count() const { return 1; }
-  string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
 
   // Accessors for the cases
   const size_t case_count() const { return cases.size(); }
@@ -408,39 +404,36 @@ public:
 };
 
 class GotoOnElement : public PointerElement {
-public:
+ private:
+  string repr;
+ public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
 
   GotoOnElement(const char* src, ConstructionData& cdata);
-  GotoOnElement* clone() const;
+  virtual GotoOnElement* clone() const;
 
   // The pointers are not counted as parameters.
-  const size_t param_count() const { return 1; }
-  string get_param(int i) const { return i == 0 ? repr.substr(8, repr.size() - 8) : string(); }
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
 };
 
 class GosubWithElement : public PointerElement {
+ private:
+  string repr;
   std::vector<string> params;
-public:
+
+ public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
 
   GosubWithElement(const char* src, ConstructionData& cdata);
-  GosubWithElement* clone() const;
-
-  enum Case { Unconditional, Always, Never, Variable };
-  const Case taken() const;
+  virtual GosubWithElement* clone() const;
 
   // The pointer is not counted as a parameter.
-//	const size_t param_count() const { return repr.size() == 8 ? 0 : 1; }
-//	string get_param(int i) const { return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string(); }
-  const size_t param_count() const { return params.size(); }
-  string get_param(int i) const { return params[i]; }
-//  virtual const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
-
+  virtual const size_t param_count() const;
+  virtual string get_param(int i) const;
 };
-
 
 }
 
