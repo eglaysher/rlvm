@@ -110,6 +110,7 @@ int main(int argc, char* argv[]) {
     ("font", po::value<string>(), "Specifies TrueType font to use.")
     ("undefined-opcodes", "Display a message on undefined opcodes")
     ("load-save", po::value<int>(), "Load a saved game on start")
+    ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
     ("count-undefined",
      "On exit, present a summary table about how many times each undefined "
      "opcode was called")
@@ -204,7 +205,9 @@ int main(int argc, char* argv[]) {
 
     Gameexe gameexe(gameexePath);
     gameexe("__GAMEPATH") = gamerootPath.string();
-    gameexe("MEMORY") = 1;
+
+    if (vm.count("memory"))
+      gameexe("MEMORY") = 1;
 
     // Run the incoming lua file and do some basic error checking on what it
     // wants us to do.

@@ -164,6 +164,10 @@ class SDLGraphicsSystem : public GraphicsSystem {
   /// utf8 encoded subtitle
   std::string subtitle_;
 
+  // The value we've set the window title to. We do this to work around a
+  // memory leak in PulseAudio.
+  std::string currently_set_title_;
+
   /// Window icon
   SDL_Surface* icon_;
 

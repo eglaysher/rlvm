@@ -397,7 +397,13 @@ void SDLGraphicsSystem::setWindowTitle() {
         << last_line_number_ << ")";
   }
 
-  SDL_WM_SetCaption(oss.str().c_str(), NULL);
+  // PulseAudio allocates a string each time we set the title. Make sure we
+  // don't do this unnecessarily.
+  string new_caption = oss.str();
+  if (new_caption != currently_set_title_) {
+    SDL_WM_SetCaption(new_caption.c_str(), NULL);
+    currently_set_title_ = new_caption;
+  }
 }
 
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
