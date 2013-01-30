@@ -420,7 +420,7 @@ class GotoOnElement : public PointerElement {
 
 class GosubWithElement : public PointerElement {
  private:
-  string repr;
+  int repr_size;
   std::vector<string> params;
 
  public:

@@ -923,22 +923,22 @@ Pointers::set_pointers(ConstructionData& cdata) {
 // -----------------------------------------------------------------------
 
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
-    : PointerElement(src) {
-  repr.assign(src, 8);
+    : PointerElement(src),
+      repr_size(8) {
   src += 8;
   if (*src == '(') {
     src++;
-    repr.push_back('(');
+    repr_size++;
 
     while (*src != ')') {
       int expr = next_data(src);
-      repr.append(src, expr);
+      repr_size += expr;
       params.push_back(string(src, expr));
       src += expr;
     }
     src++;
 
-    repr.push_back(')');
+    repr_size++;
   }
 
   targets.push_id(read_i32(src));
@@ -955,7 +955,7 @@ GosubWithElement* GosubWithElement::clone() const { return new GosubWithElement(
 // -----------------------------------------------------------------------
 
 const size_t GosubWithElement::length() const {
-  return repr.size() + 4;
+  return repr_size + 4;
 }
 
 const size_t GosubWithElement::param_count() const {
