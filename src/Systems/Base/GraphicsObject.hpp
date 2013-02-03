@@ -163,11 +163,6 @@ class GraphicsObject {
   void clearClip();
   void setClip(const Rect& rec);
   const Rect& clipRect() const { return impl_->clip_; }
-  // POINT TODO(erg): Remove these.
-  int clipX1() const { return impl_->clip_.x(); }
-  int clipY1() const { return impl_->clip_.y(); }
-  int clipX2() const { return impl_->clip_.x2(); }
-  int clipY2() const { return impl_->clip_.y2(); }
 
   bool hasObjectData() const { return object_data_; }
 

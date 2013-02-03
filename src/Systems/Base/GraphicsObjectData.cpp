@@ -30,6 +30,7 @@
 #include <ostream>
 
 #include "Systems/Base/GraphicsObject.hpp"
+#include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/Rect.hpp"
 
@@ -72,17 +73,33 @@ void GraphicsObjectData::render(const GraphicsObject& go,
                  dst.size());
     }
 
-    // TODO: Anyone attempting moving the clip area calculations here should
-    // verify that it doesn't break the final pan scene of Yumemi in
-    // Planetarian.
     if (tree) {
       objectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst;
       if (alpha != 255)
         *tree << " (alpha=" << alpha << ")";
-      if (go.hasClip())
-        *tree << " [Warning: Clip rectangle calculations not applied.]";
       *tree << endl;
+    }
+
+    // Perform the object clipping.
+    if (go.hasClip()) {
+      Rect clipped_dest = dst.intersection(go.clipRect());
+
+      // Do nothing if object falls wholly outside clip area
+      if (clipped_dest.isEmpty())
+        return;
+
+      // Adjust the source rectangle
+      Rect inset = dst.getInsetRectangle(clipped_dest);
+
+      dst = clipped_dest;
+      src = src.applyInset(inset);
+
+
+      if (tree) {
+        *tree << "  Clipping Rect: " << go.clipRect() << endl
+              << "  After clipping: " << src << " to " << dst << endl;
+      }
     }
 
     surface->renderToScreenAsObject(go, src, dst, alpha);

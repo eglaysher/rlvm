@@ -98,6 +98,16 @@ Rect Rect::rectUnion(const Rect& rhs) const {
   }
 }
 
+Rect Rect::getInsetRectangle(const Rect& rhs) const {
+  Size p = rhs.origin() - origin();
+  return Rect(Point(p.width(), p.height()), rhs.size());
+}
+
+Rect Rect::applyInset(const Rect& inset) const {
+  Point p = origin() + inset.origin();
+  return Rect(p, inset.size());
+}
+
 std::ostream& operator<<(std::ostream& os, const Rect& r) {
   os << "Rect(" << r.x() << ", " << r.y() << ", " << r.size() << ")";
   return os;

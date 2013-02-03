@@ -40,7 +40,9 @@ class Point {
   Point(int x, int y) : x_(x), y_(y) {}
 
   int x() const { return x_; }
+  void setX(const int in) { x_ = in; }
   int y() const { return y_; }
+  void setY(const int in) { y_ = in; }
 
   bool isEmpty() const { return x_ == 0 && y_ == 0; }
 
@@ -174,16 +176,21 @@ class Rect {
   }
 
   int x() const { return origin_.x(); }
+  void setX(const int in) { origin_.setX(in); }
   int y() const { return origin_.y(); }
-  const Point& origin() const { return origin_; }
-  const Point lowerRight() const { return origin_ + size_; }
 
+  void setY(const int in) { origin_.setY(in); }
   int x2() const { return origin_.x() + size_.width(); }
+  void setX2(const int in) { size_.setWidth(in - origin_.x()); }
   int y2() const { return origin_.y() + size_.height(); }
+  void setY2(const int in) { size_.setHeight(in - origin_.y()); }
 
   int width() const { return size_.width(); }
   int height() const { return size_.height(); }
+  const Point lowerRight() const { return origin_ + size_; }
+
   const Size& size() const { return size_; }
+  const Point& origin() const { return origin_; }
 
   bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }
 
@@ -198,6 +205,12 @@ class Rect {
 
   // Contains the union of two overlapping rectangles.
   Rect rectUnion(const Rect& rhs) const;
+
+  // Calculate the rectangle |rhs| in terms of this rectangle as the origin.
+  Rect getInsetRectangle(const Rect& rhs) const;
+
+  // Apply the inset rect to our rect.
+  Rect applyInset(const Rect& inset) const;
 
   bool operator==(const Rect& rhs) const {
     return origin_ == rhs.origin_ && size_ == rhs.size_;
