@@ -212,7 +212,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     screen_contents_texture_valid_(false),
     screen_tex_width_(0),
     screen_tex_height_(0),
-    image_cache_(20) {
+    image_cache_(10) {
   haikei_.reset(new SDLSurface(this));
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
