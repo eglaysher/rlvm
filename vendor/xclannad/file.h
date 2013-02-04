@@ -1,11 +1,4 @@
-/*  file.h  : KANON の圧縮ファイル・PDT ファイル（画像ファイル）の展開の
- *            ためのクラス
- *     class ARCINFO : 書庫ファイルの中の１つのファイルを扱うクラス
- *     class PDTCONV : PDT ファイルの展開を行う。
- */
-
 /*
- *
  *  Copyright (C) 2000, 2007-   Kazunori Ueno(JAGARL) <jagarl@creator.club.ne.jp>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -27,12 +20,6 @@
 #ifndef __KANON_FILE_H__
 #define __KANON_FILE_H__
 
-#ifndef DIR_SPLIT
-#define DIR_SPLIT '/'	/* UNIX */
-#endif
-
-// read 'KANON' compressed file
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -42,59 +29,10 @@
 
 #define INT_SIZE 4
 
-
-/*********************************************
-**  FILESEARCH:
-**	書庫ファイル／ディレクトリを含め、
-**	全ファイルの管理を行う。
-**
-**	最初に、設定ファイルからファイルの種類ごとに
-**	実際に入っているディレクトリ、書庫を設定する
-**
-**	以降はFind() メソッドで実際のファイルの内容を得る
-**
-*/
-
-/* ARCFILE と DIRFILE はファイル種類ごとの情報 */
-class ARCFILE;
-class DIRFILE;
-class SCN2kFILE;
-class RaffresiaFILE;
-/* ARCINFO はファイルを読み込むために必要 */
-class ARCINFO;
-struct ARCFILE_ATOM;
-
 class ARCINFO {
-protected:
-	/* ファイルそのものの情報 */
-	ARCFILE_ATOM& info;
-	char* arcfile;
-	/* mmap している場合、その情報 */
-	bool use_mmap;
-	char* mmapped_memory;
-	int fd;
-	/* ファイル内容の入っているバッファ */
-	const char* data;
-
-protected:
-	ARCINFO(const char* arcfile, ARCFILE_ATOM& from); // only from ARCFILE
-	friend class ARCFILE;
-	friend class DIRFILE;
-
-	virtual bool ExecExtract(void);
 public:
 	/* dest は256byte 程度の余裕があること */
-	static void Extract(char*& dest, char*& src, char* destend, char* srcend);
 	static void Extract2k(char*& dest, char*& src, char* destend, char* srcend);
-	virtual ~ARCINFO();
-	/* 必要なら Read 前に呼ぶことで処理を分割できる */
-	int Size(void) const;
-	char* CopyRead(void); /* Read() して内容のコピーを返す */
-	const char* Read(void);
-	/* ファイルが regular file の場合、ファイル名を帰す */
-	/* そうでないなら 0 を帰す */
-	const char* Path(void) const;
-	FILE* OpenFile(int* length=0) const; /* 互換性のため：raw file の場合、ファイルを開く */
 };
 
 class GRPCONV {
@@ -138,11 +76,7 @@ public:
 
 	virtual bool Read(char* image) = 0;
 	static GRPCONV* AssignConverter(const char* inbuf, int inlen, const char* fname);
-	static GRPCONV* AssignConverter(ARCINFO* info) {
-		const char* dat = info->Read();
-		if (dat == 0) return 0;
-		return AssignConverter(dat, info->Size(), "???");
-	}
+
 	void CopyRGBA(char* image, const char* from);
 	void CopyRGB(char* image, const char* from);
 	void CopyRGBA_rev(char* image, const char* from);
