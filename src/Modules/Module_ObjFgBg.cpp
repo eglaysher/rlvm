@@ -78,8 +78,8 @@ struct dispArea_0 : public RLOp_Void_1< IntConstant_T > {
 };
 
 struct dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
-                                     IntConstant_T, IntConstant_T,
-                                     IntConstant_T > {
+                                 IntConstant_T, IntConstant_T,
+                                 IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(x1, y1, x2, y2));
@@ -87,8 +87,8 @@ struct dispArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 };
 
 struct dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
-                                     IntConstant_T, IntConstant_T,
-                                     IntConstant_T > {
+                                 IntConstant_T, IntConstant_T,
+                                 IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::REC(x, y, w, h));
@@ -96,10 +96,35 @@ struct dispRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
 };
 
 struct dispCorner_1 : RLOp_Void_3< IntConstant_T, IntConstant_T,
-                                     IntConstant_T > {
+                                   IntConstant_T > {
   void operator()(RLMachine& machine, int buf, int x, int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(0, 0, x, y));
+  }
+};
+
+struct dispOwnArea_0 : public RLOp_Void_1< IntConstant_T > {
+  void operator()(RLMachine& machine, int buf) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.clearOwnClip();
+  }
+};
+
+struct dispOwnArea_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+                                    IntConstant_T, IntConstant_T,
+                                    IntConstant_T > {
+  void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setOwnClip(Rect::GRP(x1, y1, x2, y2));
+  }
+};
+
+struct dispOwnRect_1 : RLOp_Void_5< IntConstant_T, IntConstant_T,
+                                    IntConstant_T, IntConstant_T,
+                                    IntConstant_T > {
+  void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    obj.setOwnClip(Rect::REC(x, y, w, h));
   }
 };
 
@@ -546,6 +571,11 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1064, 2, "objButtonOpts", new objButtonOpts);
   m.addOpcode(1066, 0, "objBtnState", new Obj_SetOneIntOnObj(
       &GraphicsObject::setButtonState));
+
+  m.addOpcode(1070, 0, "objOwnDispArea", new dispOwnArea_0);
+  m.addOpcode(1070, 1, "objOwnDispArea", new dispOwnArea_1);
+  m.addOpcode(1071, 0, "objOwnDispRect", new dispOwnArea_0);
+  m.addOpcode(1071, 1, "objOwnDispRect", new dispOwnRect_1);
 }
 
 void addEveObjectFunctions(RLModule& m) {

@@ -164,6 +164,13 @@ class GraphicsObject {
   void setClip(const Rect& rec);
   const Rect& clipRect() const { return impl_->clip_; }
 
+  bool hasOwnClip() const {
+    return impl_->own_clip_.width() >= 0 || impl_->own_clip_.height() >= 0;
+  }
+  void clearOwnClip();
+  void setOwnClip(const Rect& rec);
+  const Rect& ownClipRect() const { return impl_->own_clip_; }
+
   bool hasObjectData() const { return object_data_; }
 
   GraphicsObjectData& objectData();
@@ -339,6 +346,9 @@ class GraphicsObject {
     // The clipping region for this image
     Rect clip_;
 
+    // A second clipping region in the object's own space.
+    Rect own_clip_;
+
     // The monochrome transformation
     int mono_;
 
@@ -489,7 +499,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 4)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 5)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

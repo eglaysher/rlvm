@@ -81,6 +81,41 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       *tree << endl;
     }
 
+    if (parent && parent->hasOwnClip()) {
+      // In Little Busters, a parent clip rect is used to clip text scrolling
+      // in the battle system. rlvm has the concept of parent objects badly
+      // hacked in, and that means we can't directly apply the own clip
+      // rect. Instead we have to calculate this in terms of the screen
+      // coordinates and then apply that as a global clip rect.
+      Point parent_start(parent->x() + parent->xAdjustmentSum(),
+                         parent->y() + parent->yAdjustmentSum());
+      Rect full_parent_clip =
+          Rect(parent_start + parent->ownClipRect().origin(),
+               parent->ownClipRect().size());
+
+      Rect clipped_dest = dst.intersection(full_parent_clip);
+      Rect inset = dst.getInsetRectangle(clipped_dest);
+      dst = clipped_dest;
+      src = src.applyInset(inset);
+
+      if (tree) {
+        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect()
+              << endl
+              << "  After clipping: " << src << " to " << dst << endl;
+      }
+    }
+
+    if (go.hasOwnClip()) {
+      dst = dst.applyInset(go.ownClipRect());
+      src = src.applyInset(go.ownClipRect());
+
+      if (tree) {
+        *tree << "  Internal Clipping Rect: " << go.ownClipRect() << endl
+              << "  After internal clipping: " << src << " to " << dst
+              << endl;
+      }
+    }
+
     // Perform the object clipping.
     if (go.hasClip()) {
       Rect clipped_dest = dst.intersection(go.clipRect());
@@ -94,7 +129,6 @@ void GraphicsObjectData::render(const GraphicsObject& go,
 
       dst = clipped_dest;
       src = src.applyInset(inset);
-
 
       if (tree) {
         *tree << "  Clipping Rect: " << go.clipRect() << endl

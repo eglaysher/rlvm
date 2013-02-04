@@ -399,6 +399,16 @@ void GraphicsObject::setClip(const Rect& rect) {
   impl_->clip_ = rect;
 }
 
+void GraphicsObject::clearOwnClip() {
+  makeImplUnique();
+  impl_->own_clip_ = EMPTY_CLIP;
+}
+
+void GraphicsObject::setOwnClip(const Rect& rect) {
+  makeImplUnique();
+  impl_->own_clip_ = rect;
+}
+
 GraphicsObjectData& GraphicsObject::objectData() {
   if (object_data_) {
     return *object_data_;
@@ -879,6 +889,7 @@ GraphicsObject::Impl::Impl()
       rotation_(0),
       patt_no_(0), alpha_(255),
       clip_(EMPTY_CLIP),
+      own_clip_(EMPTY_CLIP),
       mono_(0), invert_(0), light_(0),
       // Do the rest later.
       tint_(RGBColour::White()),
@@ -903,6 +914,7 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
       rotation_(rhs.rotation_),
       patt_no_(rhs.patt_no_), alpha_(rhs.alpha_),
       clip_(rhs.clip_),
+      own_clip_(rhs.own_clip_),
       mono_(rhs.mono_), invert_(rhs.invert_),
       light_(rhs.light_), tint_(rhs.tint_), colour_(rhs.colour_),
       composite_mode_(rhs.composite_mode_),
@@ -950,6 +962,7 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     patt_no_ = rhs.patt_no_;
     alpha_ = rhs.alpha_;
     clip_ = rhs.clip_;
+    own_clip_ = rhs.own_clip_;
     mono_ = rhs.mono_;
     invert_ = rhs.invert_;
     light_ = rhs.light_;
@@ -1023,6 +1036,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 3) {
     ar & hq_width_ & hq_height_ & button_properties_;
+  }
+
+  if (version > 4) {
+    ar & own_clip_;
   }
 }
 
