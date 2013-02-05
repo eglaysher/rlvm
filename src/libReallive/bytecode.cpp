@@ -104,10 +104,6 @@ string BytecodeElement::serializableData(RLMachine& machine) const {
 
 // -----------------------------------------------------------------------
 
-Pointers* BytecodeElement::get_pointers() { return NULL; }
-
-// -----------------------------------------------------------------------
-
 void BytecodeElement::set_pointers(ConstructionData& cdata) {}
 
 // -----------------------------------------------------------------------
@@ -750,22 +746,23 @@ void PointerElement::set_pointers(ConstructionData& cdata) {
   targets.set_pointers(cdata);
 }
 
-// -----------------------------------------------------------------------
+const size_t PointerElement::pointers_count() const {
+  return targets.size();
+}
 
-Pointers* PointerElement::get_pointers() { return &targets; }
-
-// -----------------------------------------------------------------------
-
-const Pointers& PointerElement::get_pointersRef() const { return targets; }
+pointer_t PointerElement::get_pointer(int i) const {
+  return targets[i];
+}
 
 // -----------------------------------------------------------------------
 // GotoElement
 // -----------------------------------------------------------------------
 
 GotoElement::GotoElement(const char* src, ConstructionData& cdata)
-    : PointerElement(src) {
+    : CommandElement(src) {
   src += 8;
-  targets.push_id(read_i32(src));
+
+  id_ = read_i32(src);
 }
 
 // -----------------------------------------------------------------------
@@ -788,12 +785,28 @@ const size_t GotoElement::length() const {
   return 12;
 }
 
+void GotoElement::set_pointers(ConstructionData& cdata) {
+  ConstructionData::offsets_t::const_iterator it =
+      cdata.offsets.find(id_);
+  assert(it != cdata.offsets.end());
+  pointer_ = it->second;
+}
+
+const size_t GotoElement::pointers_count() const {
+  return 1;
+}
+
+pointer_t GotoElement::get_pointer(int i) const {
+  assert(i == 0);
+  return pointer_;
+}
+
 // -----------------------------------------------------------------------
 // GotoIfElement
 // -----------------------------------------------------------------------
 
 GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
-    : PointerElement(src) {
+    : CommandElement(src) {
   repr.assign(src, 8);
   src += 8;
 
@@ -805,7 +818,7 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
   src += expr;
   if (*src++ != ')') throw Error("GotoIfElement(): expected `)'");
 
-  targets.push_id(read_i32(src));
+  id_ = read_i32(src);
 }
 
 // -----------------------------------------------------------------------
@@ -828,6 +841,21 @@ const size_t GotoIfElement::length() const {
   return repr.size() + 4;
 }
 
+void GotoIfElement::set_pointers(ConstructionData& cdata) {
+  ConstructionData::offsets_t::const_iterator it =
+      cdata.offsets.find(id_);
+  assert(it != cdata.offsets.end());
+  pointer_ = it->second;
+}
+
+const size_t GotoIfElement::pointers_count() const {
+  return 1;
+}
+
+pointer_t GotoIfElement::get_pointer(int i) const {
+  assert(i == 0);
+  return pointer_;
+}
 
 // -----------------------------------------------------------------------
 // GotoCaseElement
@@ -954,7 +982,7 @@ Pointers::set_pointers(ConstructionData& cdata) {
 // -----------------------------------------------------------------------
 
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
-    : PointerElement(src),
+    : CommandElement(src),
       repr_size(8) {
   src += 8;
   if (*src == '(') {
@@ -972,7 +1000,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     repr_size++;
   }
 
-  targets.push_id(read_i32(src));
+  id_ = read_i32(src);
 }
 
 // -----------------------------------------------------------------------
@@ -995,6 +1023,22 @@ const size_t GosubWithElement::param_count() const {
 
 string GosubWithElement::get_param(int i) const {
   return params[i];
+}
+
+void GosubWithElement::set_pointers(ConstructionData& cdata) {
+  ConstructionData::offsets_t::const_iterator it =
+      cdata.offsets.find(id_);
+  assert(it != cdata.offsets.end());
+  pointer_ = it->second;
+}
+
+const size_t GosubWithElement::pointers_count() const {
+  return 1;
+}
+
+pointer_t GosubWithElement::get_pointer(int i) const {
+  assert(i == 0);
+  return pointer_;
 }
 
 }

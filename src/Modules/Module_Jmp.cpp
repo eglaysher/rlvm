@@ -144,10 +144,8 @@ void writeWithData(RLMachine& machine,
 // Jumps to the supplied label in the current scenario.
 struct Jmp_goto : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const Pointers& pointers = gotoElement.get_pointersRef();
-
     // Goto the first pointer
-    machine.gotoLocation(pointers[0]);
+    machine.gotoLocation(gotoElement.get_pointer(0));
   }
 };
 
@@ -160,25 +158,20 @@ struct goto_if : public RLOp_SpecialCase {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
     if (conditions.at(0).integerValue(machine)) {
-      const Pointers& pointers = gotoElement.get_pointersRef();
-      machine.gotoLocation(pointers[0]);
+      machine.gotoLocation(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
     }
   }
 };
 
-// Implements op<0:Jmp:00002, 0>, fun goto_if (<'condition').
-//
-// Conditional equivalents of goto; goto_if () jumps to @label if the
-// value of condition is non-zero
+// Implements op<0:Jmp:00002, 0>, fun goto_unless (<'condition').
 struct goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
     if (!conditions.at(0).integerValue(machine)) {
-      const Pointers& pointers = gotoElement.get_pointersRef();
-      machine.gotoLocation(pointers[0]);
+      machine.gotoLocation(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
     }
@@ -201,9 +194,8 @@ struct goto_on : public RLOp_SpecialCase {
     auto_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
 
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    if (value >= 0 && value < int(pointers.size())) {
-      machine.gotoLocation(pointers[value]);
+    if (value >= 0 && value < int(gotoElement.pointers_count())) {
+      machine.gotoLocation(gotoElement.get_pointer(value));
     } else {
       // If the value is not a valid pointer, simply increment.
       machine.advanceInstructionPointer();
@@ -219,8 +211,7 @@ struct goto_on : public RLOp_SpecialCase {
 struct goto_case : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gotoLocation(pointers[i]);
+    machine.gotoLocation(gotoElement.get_pointer(i));
   }
 };
 
@@ -230,8 +221,7 @@ struct goto_case : public RLOp_SpecialCase {
 // label @label in the current scenario.
 struct gosub : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gosub(pointers[0]);
+    machine.gosub(gotoElement.get_pointer(0));
   }
 };
 
@@ -247,8 +237,7 @@ struct gosub_if : public RLOp_SpecialCase {
     auto_ptr<ExpressionPiece> condition(get_expression(location));
 
     if (condition->integerValue(machine)) {
-      const Pointers& pointers = gotoElement.get_pointersRef();
-      machine.gosub(pointers[0]);
+      machine.gosub(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
     }
@@ -264,8 +253,7 @@ struct gosub_unless : public RLOp_SpecialCase {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
 
     if (!conditions.at(0).integerValue(machine)) {
-      const Pointers& pointers = gotoElement.get_pointersRef();
-      machine.gosub(pointers[0]);
+      machine.gosub(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
     }
@@ -283,9 +271,8 @@ struct gosub_on : public RLOp_SpecialCase {
     const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
     int value = conditions.at(0).integerValue(machine);
 
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    if (value >= 0 && value < int(pointers.size()))
-      machine.gosub(pointers[value]);
+    if (value >= 0 && value < int(gotoElement.pointers_count()))
+      machine.gosub(gotoElement.get_pointer(value));
     else
       // If the value is not a valid pointer, simply increment.
       machine.advanceInstructionPointer();
@@ -300,8 +287,7 @@ struct gosub_on : public RLOp_SpecialCase {
 struct gosub_case : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gosub(pointers[i]);
+    machine.gosub(gotoElement.get_pointer(i));
   }
 };
 
@@ -399,8 +385,7 @@ struct gosub_with : public RLOp_SpecialCase {
     std::vector<std::string> strings;
     readWithData(machine, data, integers, strings);
 
-    const Pointers& pointers = gotoElement.get_pointersRef();
-    machine.gosub(pointers[0]);
+    machine.gosub(gotoElement.get_pointer(0));
 
     writeWithData(machine, integers, strings);
   }

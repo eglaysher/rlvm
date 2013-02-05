@@ -97,7 +97,6 @@ public:
   // other cases.
   virtual string serializableData(RLMachine& machine) const;
 
-  virtual Pointers* get_pointers();
   virtual void set_pointers(ConstructionData& cdata);
 
   // Note that x.clone() != x, since the copy constructor assigns a new id.
@@ -239,12 +238,9 @@ class CommandElement : public BytecodeElement {
   void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
   const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
 
-  /// Get pointer reference. I consider the fatter interface the lesser of two
-  /// evils between this and casting CommandElements to their subclasses.
-  virtual const Pointers& get_pointersRef() const {
-    static Pointers falseTargets;
-    return falseTargets;
-  }
+  // Methods that deal with pointers.
+  virtual const size_t pointers_count() const { return 0; }
+  virtual pointer_t get_pointer(int i) const { return pointer_t(); }
 
   // Fat interface stuff for GotoCase. Prevents casting, etc.
   virtual const size_t case_count() const { return 0; }
@@ -361,15 +357,17 @@ protected:
 public:
   PointerElement(const char* src);
   ~PointerElement();
-  virtual const ElementType type() const = 0;
-  virtual PointerElement* clone() const = 0;
-  virtual const size_t length() const = 0;
+
   virtual void set_pointers(ConstructionData& cdata);
-  virtual Pointers* get_pointers();
-  virtual const Pointers& get_pointersRef() const;
+  virtual const size_t pointers_count() const;
+  virtual pointer_t get_pointer(int i) const;
 };
 
-class GotoElement : public PointerElement {
+class GotoElement : public CommandElement {
+ private:
+  unsigned long id_;
+  pointer_t pointer_;
+
  public:
   virtual const ElementType type() const;
   GotoElement(const char* src, ConstructionData& cdata);
@@ -379,11 +377,18 @@ class GotoElement : public PointerElement {
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
   virtual const size_t length() const;
+
+  virtual void set_pointers(ConstructionData& cdata);
+  virtual const size_t pointers_count() const;
+  virtual pointer_t get_pointer(int i) const;
 };
 
-class GotoIfElement : public PointerElement {
+class GotoIfElement : public CommandElement {
  private:
+  unsigned long id_;
+  pointer_t pointer_;
   string repr;
+
  public:
   virtual const ElementType type() const;
   GotoIfElement(const char* src, ConstructionData& cdata);
@@ -393,6 +398,10 @@ class GotoIfElement : public PointerElement {
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
   virtual const size_t length() const;
+
+  virtual void set_pointers(ConstructionData& cdata);
+  virtual const size_t pointers_count() const;
+  virtual pointer_t get_pointer(int i) const;
 };
 
 class GotoCaseElement : public PointerElement {
@@ -430,8 +439,10 @@ class GotoOnElement : public PointerElement {
   virtual string get_param(int i) const;
 };
 
-class GosubWithElement : public PointerElement {
+class GosubWithElement : public CommandElement {
  private:
+  unsigned long id_;
+  pointer_t pointer_;
   int repr_size;
   std::vector<string> params;
 
@@ -445,6 +456,10 @@ class GosubWithElement : public PointerElement {
   // The pointer is not counted as a parameter.
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
+
+  virtual void set_pointers(ConstructionData& cdata);
+  virtual const size_t pointers_count() const;
+  virtual pointer_t get_pointer(int i) const;
 };
 
 }
