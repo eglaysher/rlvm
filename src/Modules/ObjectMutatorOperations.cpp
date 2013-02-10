@@ -58,7 +58,7 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
 
   int startval = (obj.*getter_)();
   obj.AddObjectMutator(
-      new OneIntObjectMutator(name_, creation_time, delay, duration_time,
+      new OneIntObjectMutator(name_, creation_time, duration_time, delay,
                               type, startval, endval, setter_));
 }
 
@@ -92,7 +92,7 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
 
   obj.AddObjectMutator(
       new TwoIntObjectMutator(name_,
-                              creation_time, delay, duration_time, type,
+                              creation_time, duration_time, delay, type,
                               startval_one, endval_one, setter_one_,
                               startval_two, endval_two, setter_two_));
 }
