@@ -151,6 +151,14 @@ class GraphicsObject {
   int scrollRateY() const { return impl_->scroll_rate_y_; }
   void setScrollRateY(const int y);
 
+  // Three level zorder.
+  int zOrder() const { return impl_->z_order_; }
+  void setZOrder(const int in);
+  int zLayer() const { return impl_->z_layer_; }
+  void setZLayer(const int in);
+  int zDepth() const { return impl_->z_depth_; }
+  void setZDepth(const int in);
+
   int computedAlpha() const;
   int rawAlpha() const { return impl_->alpha_; }
   void setAlpha(const int alpha);
@@ -367,6 +375,9 @@ class GraphicsObject {
 
     int scroll_rate_x_, scroll_rate_y_;
 
+    // Three deep zordering.
+    int z_order_, z_layer_, z_depth_;
+
     // Text Object properties
     struct TextProperties {
       TextProperties();
@@ -499,7 +510,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 5)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 6)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

@@ -37,6 +37,8 @@
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include <deque>
 #include <iterator>
 #include <list>
@@ -782,7 +784,13 @@ void GraphicsSystem::clearAllDCs() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::renderObjects(std::ostream* tree) {
-  // Render all visible foreground objects
+  // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
+  // to sort.
+  typedef std::vector<boost::tuple<int, int, int, int, GraphicsObject*> >
+      ToRenderVec;
+  ToRenderVec to_render;
+
+  // Collate all objects that we might want to render.
   AllocatedLazyArrayIterator<GraphicsObject> it =
     graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
@@ -798,7 +806,16 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
     else if (settings.space_key && interfaceHidden())
       continue;
 
-    it->render(it.pos(), NULL, tree);
+    to_render.push_back(boost::make_tuple(
+        it->zOrder(), it->zLayer(), it->zDepth(), it.pos(), &*it));
+  }
+
+  // Sort by all the ordering values.
+  std::sort(to_render.begin(), to_render.end());
+
+  for (ToRenderVec::iterator it = to_render.begin(); it != to_render.end();
+       ++it) {
+    it->get<4>()->render(it->get<3>(), NULL, tree);
   }
 }
 

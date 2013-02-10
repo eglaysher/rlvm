@@ -372,6 +372,21 @@ void GraphicsObject::setScrollRateY(const int y) {
   impl_->scroll_rate_y_ = y;
 }
 
+void GraphicsObject::setZOrder(const int in) {
+  makeImplUnique();
+  impl_->z_order_ = in;
+}
+
+void GraphicsObject::setZLayer(const int in) {
+  makeImplUnique();
+  impl_->z_layer_ = in;
+}
+
+void GraphicsObject::setZDepth(const int in) {
+  makeImplUnique();
+  impl_->z_depth_ = in;
+}
+
 int GraphicsObject::computedAlpha() const {
   int alpha = impl_->alpha_;
   for (int i = 0; i < 8; ++i)
@@ -897,6 +912,9 @@ GraphicsObject::Impl::Impl()
       composite_mode_(0),
       scroll_rate_x_(0),
       scroll_rate_y_(0),
+      z_order_(0),
+      z_layer_(0),
+      z_depth_(0),
       wipe_copy_(0) {
   // Regretfully, we can't do this in the initializer list.
   fill(adjust_x_, adjust_x_ + 8, 0);
@@ -920,6 +938,9 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
       composite_mode_(rhs.composite_mode_),
       scroll_rate_x_(rhs.scroll_rate_x_),
       scroll_rate_y_(rhs.scroll_rate_y_),
+      z_order_(rhs.z_order_),
+      z_layer_(rhs.z_layer_),
+      z_depth_(rhs.z_depth_),
       wipe_copy_(0) {
   if (rhs.text_properties_)
     text_properties_.reset(new TextProperties(*rhs.text_properties_));
@@ -973,6 +994,9 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     composite_mode_ = rhs.composite_mode_;
     scroll_rate_x_ = rhs.scroll_rate_x_;
     scroll_rate_y_ = rhs.scroll_rate_y_;
+    z_order_ = rhs.z_order_;
+    z_layer_ = rhs.z_layer_;
+    z_depth_ = rhs.z_depth_;
 
     if (rhs.text_properties_)
       text_properties_.reset(new TextProperties(*rhs.text_properties_));
@@ -1040,6 +1064,10 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 4) {
     ar & own_clip_;
+  }
+
+  if (version > 5) {
+    ar & z_order_ & z_layer_ & z_depth_;
   }
 }
 

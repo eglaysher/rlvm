@@ -510,15 +510,18 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1024, 1, "objSetText", new objSetText);
   m.addOpcode(1025, 0, "objTextOpts", new objTextOpts);
 
-  m.addUnsupportedOpcode(1026, 0, "objLayer");
-  m.addUnsupportedOpcode(1027, 0, "objDepth");
+  m.addOpcode(1026, 0, "objLayer",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setZLayer));
+  m.addOpcode(1027, 0, "objDepth",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setZDepth));
   m.addUnsupportedOpcode(1028, 0, "objScrollRate");
   m.addOpcode(1029, 0, "objScrollRateX",
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateX));
   m.addOpcode(1030, 0, "objScrollRateY",
               new Obj_SetOneIntOnObj(&GraphicsObject::setScrollRateY));
   m.addOpcode(1031, 0, "objDriftOpts", new objDriftOpts);
-  m.addUnsupportedOpcode(1032, 0, "objOrder");
+  m.addOpcode(1032, 0, "objOrder",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setZOrder));
   m.addUnsupportedOpcode(1033, 0, "objQuarterView");
 
   m.addOpcode(1034, 0, "objDispRect", new dispArea_0);
