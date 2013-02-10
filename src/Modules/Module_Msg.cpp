@@ -87,6 +87,16 @@ struct FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
   }
 };
 
+struct SetFontColour : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+  void operator()(RLMachine& machine, int textColorNum) {
+    Gameexe& gexe = machine.system().gameexe();
+    if (gexe("COLOR_TABLE", textColorNum).exists()) {
+      machine.system().text().currentWindow()->setDefaultTextColor(
+          gexe("COLOR_TABLE", textColorNum));
+    }
+  }
+};
+
 struct doruby_display : public RLOp_Void_1< StrConstant_T > {
   void operator()(RLMachine& machine, std::string cpStr) {
     std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
@@ -206,8 +216,8 @@ MsgModule::MsgModule()
   addOpcode(17, 0, "pause", new Msg_pause);
 
   addUnsupportedOpcode(100, 0, "SetFontColour");
-  addUnsupportedOpcode(100, 1, "SetFontColour");
-  addUnsupportedOpcode(100, 2, "SetFontColour");
+  addOpcode(100, 1, "SetFontColour", new SetFontColour);
+  addOpcode(100, 2, "SetFontColour", new SetFontColour);
   addOpcode(101, 0, "FontSize", callFunction(&TextPage::fontSize));
   addOpcode(101, 1, "FontSize", callFunction(&TextPage::defaultFontSize));
 
