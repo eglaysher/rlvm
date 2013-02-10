@@ -370,6 +370,54 @@ class objEveAdjust
   };
 };
 
+class objEveAdjustAlpha
+    : public RLOp_Void_6<IntConstant_T, IntConstant_T, IntConstant_T,
+                         IntConstant_T, IntConstant_T, IntConstant_T> {
+ public:
+  virtual void operator()(RLMachine& machine,
+                          int obj, int repno, int alpha, int duration_time,
+                          int delay, int type) {
+    unsigned int creation_time = machine.system().event().getTicks();
+
+    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    int start_alpha = object.alphaAdjustment(repno);
+    object.AddObjectMutator(
+        new AdjustMutator(machine, repno,
+                          creation_time, duration_time, delay,
+                          type, start_alpha, alpha));
+  }
+
+ private:
+  // We need a custom mutator here. One of the parameters isn't varying.
+  class AdjustMutator : public ObjectMutator {
+   public:
+    AdjustMutator(RLMachine& machine, int repno,
+                  int creation_time, int duration_time, int delay,
+                  int type, int start_alpha, int target_alpha)
+        : ObjectMutator(repno, "objEveAdjustAlpha",
+                        creation_time, duration_time, delay, type),
+          repno_(repno),
+          start_alpha_(start_alpha),
+          end_alpha_(target_alpha) {
+    }
+
+   private:
+    virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+      object.setAlphaAdjustment(repno_, end_alpha_);
+    }
+
+    virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+      int alpha = GetValueForTime(machine, start_alpha_, end_alpha_);
+      object.setAlphaAdjustment(repno_, alpha);
+    }
+
+    int repno_;
+    int start_alpha_;
+    int end_alpha_;
+  };
+};
+
+
 struct LongOp_MutatorWait : public LongOperation {
   LongOp_MutatorWait(RLOperation* op, int obj, int repno, const char* name)
       : op_(op),
@@ -617,6 +665,9 @@ void addEveObjectFunctions(RLModule& m) {
   m.addOpcode(2006, 0, "objEveAdjust", new adjust);
   m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
 
+  m.addOpcode(2040, 0, "objEveAdjustAlpha", new objAdjustAlpha);
+  m.addOpcode(2040, 1, "objEveAdjustAlpha", new objEveAdjustAlpha);
+
   m.addOpcode(4000, 0, "objEveMoveWait",
               new Op_MutatorWaitNormal("objEveMove"));
   m.addOpcode(4001, 0, "objEveLeftWait",
@@ -627,6 +678,8 @@ void addEveObjectFunctions(RLModule& m) {
               new Op_MutatorWaitNormal("objEveAlpha"));
   m.addOpcode(4006, 0, "objEveAdjustEnd",
               new Op_MutatorWaitRepNo("objEveAdjust"));
+  m.addOpcode(4040, 0, "objEveAdjustAlpha",
+              new Op_MutatorWaitRepNo("objEveAdjustAlpha"));
 
   m.addOpcode(5000, 0, "objEveMoveWaitC",
               new Op_MutatorWaitCNormal("objEveMove"));
@@ -637,7 +690,9 @@ void addEveObjectFunctions(RLModule& m) {
   m.addOpcode(5003, 0, "objEveAlphaWaitC",
               new Op_MutatorWaitCNormal("objEveAlpha"));
   m.addOpcode(5006, 0, "objEveAdjustWaitC",
-              new Op_MutatorWaitRepNo("objEveAdjust"));
+              new Op_MutatorWaitCRepNo("objEveAdjust"));
+  m.addOpcode(5040, 0, "objEveAdjustAlphaWaitC",
+              new Op_MutatorWaitCRepNo("objEveAdjustAlpha"));
 
   m.addOpcode(6000, 0, "objEveMoveEnd",
               new Op_EndObjectMutation_Normal("objEveMove"));
@@ -650,6 +705,8 @@ void addEveObjectFunctions(RLModule& m) {
 
   m.addOpcode(6006, 0, "objEveAdjustEnd",
               new Op_EndObjectMutation_RepNo("objEveAdjust"));
+  m.addOpcode(6040, 0, "objEveAdjustAlphaEnd",
+              new Op_EndObjectMutation_RepNo("objEveAdjustAlpha"));
 }
 
 }  // namespace
