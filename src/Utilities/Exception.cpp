@@ -131,7 +131,7 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       try {
         boost::scoped_ptr<libReallive::ExpressionPiece> piece(
             libReallive::get_complex_param(start));
-        oss << piece->getDebugString(machine);
+        oss << piece->getDebugValue(machine);
       } catch (libReallive::Error& e) {
         // Any error throw here is a parse error.
         oss << "{RAW : " << libReallive::parsableToPrintableString(*it) << "}";

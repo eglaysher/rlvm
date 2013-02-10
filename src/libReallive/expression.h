@@ -90,6 +90,9 @@ public:
   /// ExpressionPieces.
   virtual bool isOperator() const;
 
+  /// Used only to add a '=' in debug strings.
+  virtual bool isAssignment() const;
+
   /// Capability method; returns false by default. Override only in
   /// classes that represent a complex parameter to the type system.
   /// @see Complex2_T
@@ -122,7 +125,11 @@ public:
 
   // A printable representation of the final value of this expression. Used to
   // dump a value to the console.
-  virtual std::string getDebugString(RLMachine& machine) const = 0;
+  virtual std::string getDebugValue(RLMachine& machine) const = 0;
+
+  // A printable representation of the expression itself. Used to dump our
+  // parsing of the bytecode to the console.
+  virtual std::string getDebugString() const = 0;
 
   /// I used to be able to just static cast any ExpressionPiece to a
   /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's

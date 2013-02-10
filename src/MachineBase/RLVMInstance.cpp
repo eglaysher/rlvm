@@ -28,6 +28,7 @@
 
 #include <iostream>
 
+#include "MachineBase/DumpScenario.hpp"
 #include "MachineBase/GameHacks.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -72,7 +73,8 @@ RLVMInstance::RLVMInstance()
       memory_(false),
       undefined_opcodes_(false),
       count_undefined_copcodes_(false),
-      load_save_(-1) {
+      load_save_(-1),
+      dump_seen_(-1) {
   srand(time(NULL));
 }
 
@@ -108,8 +110,14 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       gameexe("__GAMEFONT") = custom_font_;
     }
 
-    SDLSystem sdlSystem(gameexe);
     libReallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
+    if (dump_seen_ != -1) {
+      libReallive::Scenario* scenario = arc.scenario(dump_seen_);
+      DumpScenario(scenario);
+      return;
+    }
+
+    SDLSystem sdlSystem(gameexe);
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
     addGameHacks(rlmachine);

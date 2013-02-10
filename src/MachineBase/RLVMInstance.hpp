@@ -50,6 +50,8 @@ class RLVMInstance {
   void set_load_save(int in) { load_save_ = in; }
   void set_custom_font(const std::string& font) { custom_font_ = font; }
 
+  void set_dump_seen(int in) { dump_seen_ = in; }
+
   // Optionally brings up a file selection dialog to get the game directory. In
   // case this isn't implemented or the user clicks cancel, returns an empty
   // path.
@@ -100,6 +102,9 @@ class RLVMInstance {
 
   // Loads the specified save file as soon as emulation starts if not -1.
   int load_save_;
+
+  // Dumps psuedokepago of the current seen to stdout and exit if not -1.
+  int dump_seen_;
 };
 
 #endif  // SRC_MACHINEBASE_RLVMINSTANCE_hpp_

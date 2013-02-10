@@ -97,6 +97,7 @@ int main(int argc, char* argv[]) {
   po::options_description debugOpts("Debugging Options");
   debugOpts.add_options()
       ("start-seen", po::value<int>(), "Force start at SEEN#")
+      ("dump-seen", po::value<int>(), "Dumps rlvm's internal parsing of SEEN#")
       ("load-save", po::value<int>(), "Load a saved game on start")
       ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
       ("undefined-opcodes", "Display a message on undefined opcodes")
@@ -194,6 +195,9 @@ int main(int argc, char* argv[]) {
 
   if (vm.count("start-seen"))
     instance.set_seen_start(vm["start-seen"].as<int>());
+
+  if (vm.count("dump-seen"))
+    instance.set_dump_seen(vm["dump-seen"].as<int>());
 
   if (vm.count("memory"))
     instance.set_memory();

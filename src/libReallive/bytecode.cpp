@@ -33,6 +33,7 @@
 
 /* Bytecode class structure. */
 
+#include <iomanip>
 #include <exception>
 #include <utility>
 #include <sstream>
@@ -71,6 +72,29 @@ CommandElement* BuildFunctionElement(const char* stream) {
     return new FunctionElement(stream, params);
 }
 
+void PrintParameterString(std::ostream& oss,
+                          const std::vector<std::string>& parameters) {
+  bool first = true;
+  oss << "(";
+  for (std::vector<std::string>::const_iterator it = parameters.begin();
+       it != parameters.end(); ++it) {
+    if (!first) {
+      oss << ", ";
+    }
+    first = false;
+
+    // Take the binary stuff and try to get usefull, printable values.
+    const char* start = it->c_str();
+    try {
+      boost::scoped_ptr<ExpressionPiece> piece(get_data(start));
+      oss << piece->getDebugString();
+    } catch (libReallive::Error& e) {
+      // Any error throw here is a parse error.
+      oss << "{RAW : " << parsableToPrintableString(*it) << "}";
+    }
+  }
+  oss << ")";
+}
 
 // -----------------------------------------------------------------------
 // ConstructionData
@@ -93,6 +117,10 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 
 const ElementType BytecodeElement::type() const {
   return Unspecified;
+}
+
+void BytecodeElement::print(std::ostream& oss) const {
+  oss << "<unspecified bytecode>" << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -187,6 +215,10 @@ const ElementType CommaElement::type() const {
   return Data;
 }
 
+void CommaElement::print(std::ostream& oss) const {
+  oss << "<CommaElement>" << endl;
+}
+
 const size_t CommaElement::length() const {
   return 1;
 }
@@ -221,6 +253,15 @@ const ElementType MetaElement::type() const {
   return type_ == Line_ ? Line
     : (type_ == Kidoku_ ? Kidoku
        : Entrypoint);
+}
+
+void MetaElement::print(std::ostream& oss) const {
+  if (type_ == Line_)
+    oss << "#line " << value_ << endl;
+  else if (type_ == Entrypoint_)
+    oss << "#entrypoint " << value_ << endl;
+  else
+    oss << "{- Kidoku " << value_ << " -}" << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -281,6 +322,11 @@ TextoutElement::TextoutElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType TextoutElement::type() const { return Textout; }
+
+void TextoutElement::print(std::ostream& oss) const {
+  oss << "\"" << text() << "\"" << endl;
+}
+
 const size_t TextoutElement::length() const { return repr.size(); }
 
 // -----------------------------------------------------------------------
@@ -349,6 +395,10 @@ const ElementType ExpressionElement::type() const {
   return Expression;
 }
 
+void ExpressionElement::print(std::ostream& oss) const {
+  oss << parsedExpression().getDebugString() << endl;
+}
+
 const size_t ExpressionElement::length() const {
   return repr.size();
 }
@@ -405,6 +455,17 @@ CommandElement::~CommandElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType CommandElement::type() const { return Command; }
+
+void CommandElement::print(std::ostream& oss) const {
+  oss << "op<" << modtype()
+      << ":" << setw(3) << setfill('0') << module()
+      << ":" << setw(5) << setfill('0') << opcode()
+      << ", " << overload() << ">";
+
+  PrintParameterString(oss, getUnparsedParameters());
+
+  oss << endl;
+}
 
 // -----------------------------------------------------------------------
 

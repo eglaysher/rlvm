@@ -489,6 +489,7 @@ std::string printableToParsableString(const std::string& src) {
 ExpressionPiece::~ExpressionPiece()              {}
 bool ExpressionPiece::isMemoryReference() const  { return false; }
 bool ExpressionPiece::isOperator() const         { return false; }
+bool ExpressionPiece::isAssignment() const       { return false; }
 bool ExpressionPiece::isComplexParameter() const { return false; }
 bool ExpressionPiece::isSpecialParamater() const { return false; }
 
@@ -544,8 +545,12 @@ std::string StoreRegisterExpressionPiece::serializedValue(
   return IntToBytecode(machine.getStoreRegisterValue());
 }
 
-std::string StoreRegisterExpressionPiece::getDebugString(RLMachine& machine) const {
+std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine) const {
   return boost::lexical_cast<std::string>(machine.getStoreRegisterValue());
+}
+
+std::string StoreRegisterExpressionPiece::getDebugString() const {
+  return "<store>";
 }
 
 IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
@@ -574,7 +579,11 @@ std::string IntegerConstant::serializedValue(RLMachine& machine) const {
   return IntToBytecode(constant);
 }
 
-std::string IntegerConstant::getDebugString(RLMachine& machine) const {
+std::string IntegerConstant::getDebugValue(RLMachine& machine) const {
+  return boost::lexical_cast<std::string>(constant);
+}
+
+std::string IntegerConstant::getDebugString() const {
   return boost::lexical_cast<std::string>(constant);
 }
 
@@ -600,8 +609,12 @@ std::string StringConstant::serializedValue(RLMachine& machine) const {
   return string("\"") + constant + string("\"");
 }
 
-std::string StringConstant::getDebugString(RLMachine& machine) const {
+std::string StringConstant::getDebugValue(RLMachine& machine) const {
   return serializedValue(machine);
+}
+
+std::string StringConstant::getDebugString() const {
+  return string("\"") + constant + string("\"");
 }
 
 ExpressionPiece* StringConstant::clone() const {
@@ -656,12 +669,36 @@ std::string MemoryReference::serializedValue(RLMachine& machine) const {
   }
 }
 
-std::string MemoryReference::getDebugString(RLMachine& machine) const {
+std::string MemoryReference::getDebugValue(RLMachine& machine) const {
   if (isStringLocation(type)) {
     return string("\"") + getStringValue(machine) + string("\"");
   } else {
     return boost::lexical_cast<std::string>(integerValue(machine));
   }
+}
+
+std::string MemoryReference::getDebugString() const {
+  ostringstream ret;
+
+  if (type == STRS_LOCATION)
+    ret << "strS[";
+  else if (type == STRK_LOCATION)
+    ret << "strK[";
+  else if (type == STRM_LOCATION)
+    ret << "strM[";
+  else if (type == INTZ_LOCATION_IN_BYTECODE)
+    ret << "intZ[";
+  else if (type == INTL_LOCATION_IN_BYTECODE)
+    ret << "intL[";
+  else {
+    char bank = 'A' + (type % 26);
+    ret << "int" << bank << "[";
+  }
+
+  ret << location->getDebugString();
+
+  ret << "]";
+  return ret.str();
 }
 
 IntReferenceIterator MemoryReference::getIntegerReferenceIterator(
@@ -724,8 +761,18 @@ std::string UniaryExpressionOperator::serializedValue(
   return IntToBytecode(integerValue(machine));
 }
 
-std::string UniaryExpressionOperator::getDebugString(RLMachine& machine) const {
+std::string UniaryExpressionOperator::getDebugValue(RLMachine& machine) const {
   return boost::lexical_cast<std::string>(integerValue(machine));
+}
+
+std::string UniaryExpressionOperator::getDebugString() const {
+  ostringstream str;
+  if (operation == 0x01) {
+    str << "-";
+  }
+  str << operand->getDebugString();
+
+  return str.str();
 }
 
 ExpressionPiece* UniaryExpressionOperator::clone() const {
@@ -802,8 +849,98 @@ std::string BinaryExpressionOperator::serializedValue(
   return IntToBytecode(integerValue(machine));
 }
 
-std::string BinaryExpressionOperator::getDebugString(RLMachine& machine) const {
+std::string BinaryExpressionOperator::getDebugValue(RLMachine& machine) const {
   return boost::lexical_cast<std::string>(integerValue(machine));
+}
+
+std::string BinaryExpressionOperator::getDebugString() const {
+  ostringstream str;
+  str << leftOperand->getDebugString();
+  str << " ";
+
+  switch (operation) {
+  case 0:
+  case 20:
+    str << "+";
+    break;
+  case 1:
+  case 21:
+    str << "-";
+    break;
+  case 2:
+  case 22:
+    str << "*";
+    break;
+  case 3:
+  case 23:
+    str << "/";
+    break;
+  case 4:
+  case 24:
+    str << "%";
+    break;
+  case 5:
+  case 25:
+    str << "&";
+    break;
+  case 6:
+  case 26:
+    str << "|";
+    break;
+  case 7:
+  case 27:
+    str << "^";
+    break;
+  case 8:
+  case 28:
+    str << "<<";
+    break;
+  case 9:
+  case 29:
+    str << ">>";
+    break;
+  case 30:
+    str << "=";
+    break;
+  case 40:
+    str << "==";
+    break;
+  case 41:
+    str << "!=";
+    break;
+  case 42:
+    str << "<=";
+    break;
+  case 43:
+    str << "< ";
+    break;
+  case 44:
+    str << ">=";
+    break;
+  case 45:
+    str << "> ";
+    break;
+  case 60:
+    str << "&&";
+    break;
+  case 61:
+    str << "||";
+    break;
+  default: {
+    ostringstream ss;
+    ss << "Invalid operator " << (int)operation << " in expression!";
+    throw Error(ss.str());
+  }
+  }
+
+  if (isAssignment() && operation != 30) {
+    str << "=";
+  }
+
+  str << " ";
+  str << rightOperand->getDebugString();
+
+  return str.str();
 }
 
 ExpressionPiece* BinaryExpressionOperator::clone() const {
@@ -822,6 +959,10 @@ AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
 AssignmentExpressionOperator::~AssignmentExpressionOperator() {
 }
 
+bool AssignmentExpressionOperator::isAssignment() const {
+  return true;
+}
+
 int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   if (operation == 30) {
     int value = rightOperand->integerValue(machine);
@@ -835,7 +976,7 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   }
 }
 
-std::string AssignmentExpressionOperator::getDebugString(
+std::string AssignmentExpressionOperator::getDebugValue(
     RLMachine& machine) const {
   return "<assignment>";
 }
@@ -868,8 +1009,20 @@ std::string ComplexExpressionPiece::serializedValue(
   return s;
 }
 
-std::string ComplexExpressionPiece::getDebugString(RLMachine& machine) const {
+std::string ComplexExpressionPiece::getDebugValue(RLMachine& machine) const {
   return "<complex value>";
+}
+
+std::string ComplexExpressionPiece::getDebugString() const {
+  string s("(");
+  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
+           containedPieces.begin(); it != containedPieces.end(); ++it) {
+    s += "(";
+    s += it->getDebugString();
+    s += ")";
+  }
+  s += ")";
+  return s;
 }
 
 ExpressionPiece* ComplexExpressionPiece::clone() const {
@@ -904,8 +1057,28 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
   return s;
 }
 
-std::string SpecialExpressionPiece::getDebugString(RLMachine& machine) const {
+std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
   return "<special value>";
+}
+
+std::string SpecialExpressionPiece::getDebugString() const {
+  ostringstream oss;
+
+  oss << int(overloadTag) << ":{";
+
+  bool first = true;
+  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
+           containedPieces.begin(); it != containedPieces.end(); ++it) {
+    if (!first) {
+      oss << ", ";
+      first = false;
+    }
+
+    oss << it->getDebugString();
+  }
+  oss << "}";
+
+  return oss.str();
 }
 
 ExpressionPiece* SpecialExpressionPiece::clone() const {

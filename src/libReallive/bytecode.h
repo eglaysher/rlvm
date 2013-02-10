@@ -50,6 +50,9 @@ class CommandElement;
 // Returns a representation of the non-special cased function.
 CommandElement* BuildFunctionElement(const char* stream);
 
+void PrintParameterString(std::ostream& oss,
+                          const std::vector<std::string>& paramseters);
+
 struct ConstructionData {
   std::vector<unsigned long> kidoku_table;
   pointer_t null;
@@ -89,6 +92,7 @@ protected:
   BytecodeElement(const BytecodeElement& c);
 public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
 
   virtual const size_t length() const = 0;
 
@@ -125,6 +129,7 @@ inline BytecodeElement* new_clone(const BytecodeElement& e)
 class CommaElement : public BytecodeElement {
  public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
 
   virtual CommaElement* clone() const;
@@ -141,6 +146,7 @@ class MetaElement : public BytecodeElement {
   int entrypoint_index;
 public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
 
   const int value() const { return value_; }
@@ -163,6 +169,7 @@ class TextoutElement : public BytecodeElement {
   string repr;
  public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
   const string text() const;
   TextoutElement(const char* src, const char* file_end);
@@ -189,6 +196,7 @@ class ExpressionElement : public BytecodeElement {
 
 public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
   ExpressionElement(const long val);
   ExpressionElement(const char* src);
@@ -222,6 +230,7 @@ class CommandElement : public BytecodeElement {
 
  public:
   virtual const ElementType type() const;
+  virtual void print(std::ostream& oss) const;
 
   const int modtype()  const { return command[1]; }
   const int module()   const { return command[2]; }
