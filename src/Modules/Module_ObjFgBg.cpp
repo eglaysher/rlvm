@@ -527,7 +527,8 @@ void addObjectFunctions(RLModule& m) {
   m.addOpcode(1034, 0, "objDispRect", new dispArea_0);
   m.addOpcode(1034, 1, "objDispRect", new dispRect_1);
   m.addOpcode(1035, 0, "objDispCorner", new dispArea_0);
-  m.addOpcode(1035, 1, "objDispCorner", new dispCorner_1);
+  m.addOpcode(1035, 1, "objDispCorner", new dispArea_1);
+  m.addOpcode(1035, 2, "objDispCorner", new dispCorner_1);
   m.addOpcode(1036, 0, "objAdjustVert",
               new Obj_SetOneIntOnObj(&GraphicsObject::setVert));
   m.addOpcode(1037, 0, "objSetDigits",
