@@ -117,34 +117,27 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
 
 #ifndef NDEBUG
   if (has_parameters_) {
-    try {
-      // We don't do a perfect job of parsing, so parse everything first so
-      // otherwise we can just not do this in case of throw.
-      std::vector<std::string> out;
-      for (std::vector<std::string>::const_iterator it = parameters_.begin();
-           it != parameters_.end(); ++it) {
-        // Take the binary stuff and try to get usefull, printable values.
-        const char* start = it->c_str();
+    bool first = true;
+    oss << "(";
+    for (std::vector<std::string>::const_iterator it = parameters_.begin();
+         it != parameters_.end(); ++it) {
+      if (!first) {
+        oss << ", ";
+      }
+      first = false;
+
+      // Take the binary stuff and try to get usefull, printable values.
+      const char* start = it->c_str();
+      try {
         boost::scoped_ptr<libReallive::ExpressionPiece> piece(
             libReallive::get_complex_param(start));
-        out.push_back(piece->getDebugString(machine));
+        oss << piece->getDebugString(machine);
+      } catch (libReallive::Error& e) {
+        // Any error throw here is a parse error.
+        oss << "{RAW : " << libReallive::parsableToPrintableString(*it) << "}";
       }
-
-      oss << "(";
-      bool first = true;
-      for (std::vector<std::string>::const_iterator it = out.begin();
-           it != out.end(); ++it) {
-        if (!first) {
-          oss << ", ";
-        }
-        first = false;
-        oss << *it;
-      }
-      oss << ")";
-    } catch (libReallive::Error& e) {
-      // Any error throw here is a parse error.
-      oss << "{unparsable}";
     }
+    oss << ")";
   }
 #endif
 
