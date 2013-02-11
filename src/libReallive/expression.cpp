@@ -105,9 +105,14 @@ size_t next_expr(const char* src) {
 size_t next_string(const char* src) {
   bool quoted = false;
   const char* end = src;
+
   while (true) {
     if (quoted) {
       quoted = *end != '"';
+      if (!quoted && *(end - 1) != '\\') {
+        end++;  // consume the final quote
+        break;
+      }
     } else {
       quoted = *end == '"';
       if (strncmp(end, "###PRINT(", 9) == 0) {
@@ -124,6 +129,7 @@ size_t next_string(const char* src) {
     else
       ++end;
   }
+
   return end - src;
 }
 
