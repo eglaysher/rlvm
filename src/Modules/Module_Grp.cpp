@@ -1067,20 +1067,14 @@ GrpModule::GrpModule()
   addUnsupportedOpcode(75, 3, "grpMulti");
   addUnsupportedOpcode(75, 4, "grpMulti");
 
-  addOpcode(77, 0, "grpMulti", new multi_dc_0<GRP>());
-  addOpcode(77, 1, "grpMulti", new multi_dc_1<GRP>());
-  addUnsupportedOpcode(77, 2, "grpMulti");
-  addUnsupportedOpcode(77, 3, "grpMulti");
-  addUnsupportedOpcode(77, 4, "grpMulti");
-
   addOpcode(76, 0, "grpOpen", new open_0(false));
   addOpcode(76, 1, "grpOpen", new open_1(false));
   addOpcode(76, 2, "grpOpen", new open_2<GRP>(false));
   addOpcode(76, 3, "grpOpen", new open_3<GRP>(false));
   addOpcode(76, 4, "grpOpen", new open_4<GRP>(false));
 
-  addUnsupportedOpcode(77, 0, "grpMulti");
-  addUnsupportedOpcode(77, 1, "grpMulti");
+  addOpcode(77, 0, "grpMulti", new multi_dc_0<GRP>());
+  addOpcode(77, 1, "grpMulti", new multi_dc_1<GRP>());
   addUnsupportedOpcode(77, 2, "grpMulti");
   addUnsupportedOpcode(77, 3, "grpMulti");
   addUnsupportedOpcode(77, 4, "grpMulti");

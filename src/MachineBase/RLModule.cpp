@@ -72,6 +72,14 @@ void RLModule::addOpcode(int opcode, unsigned char overload,
   int packed_opcode = packOpcodeNumber(opcode, overload);
   op->setName(name);
   op->module_ = this;
+#ifndef NDEBUG
+  OpcodeMap::iterator it = stored_operations.find(packed_opcode);;
+  if (it != stored_operations.end()) {
+    ostringstream oss;
+    oss << "Duplicate opcode in " << *this << ": opcode " << opcode << ", " << int(overload);
+    throw rlvm::Exception(oss.str());
+  }
+#endif
   stored_operations.insert(packed_opcode, op);
 }
 

@@ -82,5 +82,5 @@ void addWaitAndMouseOpcodes(RLModule& m) {
   m.addOpcode(101, 0, "waitC", new Sys_wait(true));
 
   m.addOpcode(131, 0, "GetClick", new Sys_GetClick);
-  m.addOpcode(131, 0, "WaitClick", new Sys_WaitClick);
+  m.addOpcode(132, 0, "WaitClick", new Sys_WaitClick);
 }

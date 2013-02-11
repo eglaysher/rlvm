@@ -144,7 +144,6 @@ BgmModule::BgmModule()
   addOpcode(4, 0, "bgmPlaying", new bgmPlaying);
   addOpcode(5, 0, "bgmStop", callFunction(&SoundSystem::bgmStop));
   addOpcode(6, 0, "bgmStop2", callFunction(&SoundSystem::bgmStop));
-  addUnsupportedOpcode(6, 0, "bgmStop2");
   addOpcode(7, 0, "bgmStatus", returnIntValue(&SoundSystem::bgmStatus));
   addUnsupportedOpcode(8, 0, "bgmRewind");
   addOpcode(9, 0, "bgmPause", callFunction(&SoundSystem::bgmPause));

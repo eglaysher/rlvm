@@ -427,7 +427,6 @@ SysModule::SysModule()
   addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
   addOpcode(1204, 0, "ReturnPrevSelect", new ReturnPrevSelect);
   addOpcode(1205, 0, "ReturnPrevSelect2", new ReturnPrevSelect);
-  addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
 
   addOpcode(1130, 0, "DefaultGrp",
             returnStringValue(&GraphicsSystem::defaultGrpName));
@@ -625,8 +624,6 @@ SysModule::SysModule()
             callFunction(&GraphicsSystem::setShowWeather));
   addOpcode(2372, 0, "ShowWeather",
             returnIntValue(&GraphicsSystem::showWeather));
-
-  addOpcode(2350, 0, "AutoMode", returnIntValue(&TextSystem::autoMode));
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
