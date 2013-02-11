@@ -25,36 +25,36 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_MODULES_MODULE_OBJPOSDIMS_HPP_
-#define SRC_MODULES_MODULE_OBJPOSDIMS_HPP_
+#ifndef SRC_MODULES_MODULE_OBJGETTERS_HPP_
+#define SRC_MODULES_MODULE_OBJGETTERS_HPP_
 
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/MappedRLModule.hpp"
 
-class ObjFgPosDimsModule : public RLModule {
+class ObjFgGettersModule : public RLModule {
  public:
-  ObjFgPosDimsModule();
+  ObjFgGettersModule();
 };
 
 // -----------------------------------------------------------------------
 
-class ObjBgPosDimsModule : public RLModule {
+class ObjBgGettersModule : public RLModule {
  public:
-  ObjBgPosDimsModule();
+  ObjBgGettersModule();
 };
 
 // -----------------------------------------------------------------------
 
-class ChildObjFgPosDimsModule : public MappedRLModule {
+class ChildObjFgGettersModule : public MappedRLModule {
  public:
-  ChildObjFgPosDimsModule();
+  ChildObjFgGettersModule();
 };
 
 // -----------------------------------------------------------------------
 
-class ChildObjBgPosDimsModule : public MappedRLModule {
+class ChildObjBgGettersModule : public MappedRLModule {
  public:
-  ChildObjBgPosDimsModule();
+  ChildObjBgGettersModule();
 };
 
-#endif  // SRC_MODULES_MODULE_OBJPOSDIMS_HPP_
+#endif  // SRC_MODULES_MODULE_OBJGETTERS_HPP_

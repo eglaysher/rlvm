@@ -43,7 +43,7 @@
 #include "Modules/Module_ObjCreation.hpp"
 #include "Modules/Module_ObjFgBg.hpp"
 #include "Modules/Module_ObjManagement.hpp"
-#include "Modules/Module_ObjPosDims.hpp"
+#include "Modules/Module_ObjGetters.hpp"
 #include "Modules/Module_Os.hpp"
 #include "Modules/Module_Pcm.hpp"
 #include "Modules/Module_Refresh.hpp"
@@ -66,11 +66,11 @@ void addAllModules(RLMachine& rlmachine) {
   rlmachine.attachModule(new ChildObjBgCreationModule);
   rlmachine.attachModule(new ChildObjBgManagement);
   rlmachine.attachModule(new ChildObjBgModule);
-  rlmachine.attachModule(new ChildObjBgPosDimsModule);
+  rlmachine.attachModule(new ChildObjBgGettersModule);
   rlmachine.attachModule(new ChildObjFgCreationModule);
   rlmachine.attachModule(new ChildObjFgManagement);
   rlmachine.attachModule(new ChildObjFgModule);
-  rlmachine.attachModule(new ChildObjFgPosDimsModule);
+  rlmachine.attachModule(new ChildObjFgGettersModule);
   rlmachine.attachModule(new DLLModule);
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new EventLoopModule);
@@ -87,12 +87,12 @@ void addAllModules(RLMachine& rlmachine) {
   rlmachine.attachModule(new ObjBgCreationModule);
   rlmachine.attachModule(new ObjBgManagement);
   rlmachine.attachModule(new ObjBgModule);
-  rlmachine.attachModule(new ObjBgPosDimsModule);
+  rlmachine.attachModule(new ObjBgGettersModule);
   rlmachine.attachModule(new ObjCopyFgToBg);
   rlmachine.attachModule(new ObjFgCreationModule);
   rlmachine.attachModule(new ObjFgManagement);
   rlmachine.attachModule(new ObjFgModule);
-  rlmachine.attachModule(new ObjFgPosDimsModule);
+  rlmachine.attachModule(new ObjFgGettersModule);
   rlmachine.attachModule(new ObjRangeBgModule);
   rlmachine.attachModule(new ObjRangeFgModule);
   rlmachine.attachModule(new OsModule);

@@ -120,7 +120,7 @@ librlvm_files = [
   "src/Modules/Module_ObjCreation.cpp",
   "src/Modules/Module_ObjFgBg.cpp",
   "src/Modules/Module_ObjManagement.cpp",
-  "src/Modules/Module_ObjPosDims.cpp",
+  "src/Modules/Module_ObjGetters.cpp",
   "src/Modules/Module_Os.cpp",
   "src/Modules/Module_Pcm.cpp",
   "src/Modules/Module_Refresh.cpp",
