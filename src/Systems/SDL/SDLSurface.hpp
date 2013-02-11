@@ -55,7 +55,7 @@ SDL_Surface* buildNewSurface(const Size& size);
  * graphics system.
  *
  * Some SDLSurfaces will own their underlying SDL_Surface, for
- * example, anything returned from loadSurfaceFromFile(), while others
+ * example, anything returned from getSurfaceNamedAndMarkViewed(), while others
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
 class SDLSurface : public Surface,

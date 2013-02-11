@@ -378,7 +378,7 @@ Point TextWindow::keycursorPosition(const Size& cursor_size) const {
 void TextWindow::faceOpen(const std::string& filename, int index) {
   if (face_slot_[index]) {
     face_slot_[index]->face_surface =
-        system_.graphics().loadNonCGSurfaceFromFile(filename);
+        system_.graphics().getSurfaceNamed(filename);
 
     if (face_slot_[index]->hide_other_windows) {
       system_.text().hideAllTextWindowsExcept(windowNumber());
@@ -629,7 +629,7 @@ void TextWindow::koeMarker(int id) {
     GameexeInterpretObject replay_icon(gexe("KOEREPLAYICON"));
 
     koe_replay_info_->icon =
-        system_.graphics().loadNonCGSurfaceFromFile(replay_icon("NAME"));
+        system_.graphics().getSurfaceNamed(replay_icon("NAME"));
     std::vector<int> reppos = replay_icon("REPPOS");
     if (reppos.size() == 2)
       koe_replay_info_->repos = Size(reppos[0], reppos[1]);

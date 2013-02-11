@@ -107,7 +107,7 @@ void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
 void TextKeyCursor::setCursorImage(System& system,
                                    const std::string& name) {
   if (name != "") {
-    cursor_image_ = system.graphics().loadNonCGSurfaceFromFile(name);
+    cursor_image_ = system.graphics().getSurfaceNamed(name);
     cursor_image_file_ = name;
   } else {
     cursor_image_.reset();

@@ -211,8 +211,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
     last_seen_number_(0), last_line_number_(0),
     screen_contents_texture_valid_(false),
     screen_tex_width_(0),
-    screen_tex_height_(0),
-    image_cache_(10) {
+    screen_tex_height_(0) {
   haikei_.reset(new SDLSurface(this));
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
@@ -549,25 +548,8 @@ static SDLSurface::GrpRect xclannadRegionToGrpRect(
   return rect;
 }
 
-// @author Jagarl
-// @author Elliot Glaysher
-//
-// Loads a file from disk into a Surface object. The file loaded
-// should be a type 0 or type 1 g00 bitmap.
-//
-// Jagarl's original implementation used an inline, intrusive caching
-// system. I've substituted this with an LRU cache class.
-//
-// @note The surface returned by this function will never be
-// modified; it will either be put in an object, which is immutable,
-// or it will be copied into the DC.
-boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
+boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
     const std::string& short_filename) {
-  // First check to see if this surface is already in our internal cache
-  shared_ptr<const Surface> cached_surface = image_cache_.fetch(short_filename);
-  if (cached_surface)
-    return cached_surface;
-
   boost::filesystem::path filename =
       system().findFile(short_filename, IMAGE_FILETYPES);
   if (filename.empty()) {
@@ -591,9 +573,6 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   fread(d.get(), size, 1, file);
   fclose(file);
 
-  // For the time being, and against my better judgement, we simply
-  // call the image loading methods stolen from xclannad. The
-  // following code is stolen verbatim from picture.cc in xclannad.
   scoped_ptr<GRPCONV> conv(GRPCONV::AssignConverter(d.get(), size, "???"));
   if (conv == 0) {
     throw SystemError("Failure in GRPCONV.");
@@ -636,7 +615,6 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadNonCGSurfaceFromFile(
   }
 
   shared_ptr<Surface> surface_to_ret(new SDLSurface(this, s, region_table));
-  image_cache_.insert(short_filename, surface_to_ret);
   // handle tone curve effect loading
   if(short_filename.find("?") != short_filename.npos) {
     string effect_no_str = short_filename.substr(short_filename.find("?") + 1);

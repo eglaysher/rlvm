@@ -51,7 +51,7 @@ DigitsGraphicsObject::DigitsGraphicsObject(System& system,
     : system_(system),
       value_(0),
       font_name_(font),
-      font_(system.graphics().loadNonCGSurfaceFromFile(font)) {
+      font_(system.graphics().getSurfaceNamed(font)) {
 }
 
 DigitsGraphicsObject::~DigitsGraphicsObject() {
@@ -161,7 +161,7 @@ void DigitsGraphicsObject::load(Archive& ar, unsigned int version) {
 
   value_ = 0;
   surface_.reset();
-  font_ = system_.graphics().loadNonCGSurfaceFromFile(font_name_);
+  font_ = system_.graphics().getSurfaceNamed(font_name_);
 }
 
 template<class Archive>

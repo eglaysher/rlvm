@@ -274,14 +274,14 @@ void TextWakuNormal::loadWindowWaku() {
 
 void TextWakuNormal::setWakuMain(const std::string& name) {
   if (name != "")
-    waku_main_ = system_.graphics().loadNonCGSurfaceFromFile(name);
+    waku_main_ = system_.graphics().getSurfaceNamed(name);
   else
     waku_main_.reset();
 }
 
 void TextWakuNormal::setWakuBacking(const std::string& name) {
   if (name != "") {
-    waku_backing_.reset(system_.graphics().loadNonCGSurfaceFromFile(name)->
+    waku_backing_.reset(system_.graphics().getSurfaceNamed(name)->
                         clone());
     waku_backing_->setIsMask(true);
   } else {
@@ -291,7 +291,7 @@ void TextWakuNormal::setWakuBacking(const std::string& name) {
 
 void TextWakuNormal::setWakuButton(const std::string& name) {
   if (name != "")
-    waku_button_ = system_.graphics().loadNonCGSurfaceFromFile(name);
+    waku_button_ = system_.graphics().getSurfaceNamed(name);
   else
     waku_button_.reset();
 }

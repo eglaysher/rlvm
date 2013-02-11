@@ -108,6 +108,7 @@ librlvm_files = [
   "src/Modules/Module_DLL.cpp",
   "src/Modules/Module_Debug.cpp",
   "src/Modules/Module_EventLoop.cpp",
+  "src/Modules/Module_G00.cpp",
   "src/Modules/Module_Gan.cpp",
   "src/Modules/Module_Grp.cpp",
   "src/Modules/Module_Jmp.cpp",

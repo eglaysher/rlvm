@@ -106,7 +106,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
       if (!path.empty()) {
         boost::shared_ptr<const Surface> source(
-            graphics.loadSurfaceFromFile(machine, filename));
+            graphics.getSurfaceNamedAndMarkViewed(machine, filename));
         boost::shared_ptr<Surface> haikei = graphics.getHaikei();
         source->blitToSurface(*haikei,
                               source->rect(),
@@ -183,7 +183,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
 
     // Load "filename" as the background.
     shared_ptr<const Surface> surface(
-        graphics.loadSurfaceFromFile(machine, filename));
+        graphics.getSurfaceNamedAndMarkViewed(machine, filename));
     surface->blitToSurface(*graphics.getHaikei(),
                            surface->rect(), surface->rect(),
                            255, true);
@@ -194,7 +194,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
       switch (it->type) {
         case 0: {
           // 0:copy(strC 'filename')
-          surface = graphics.loadSurfaceFromFile(machine, it->first);
+          surface = graphics.getSurfaceNamedAndMarkViewed(machine, it->first);
           surface->blitToSurface(*graphics.getHaikei(),
                                  surface->rect(), surface->rect(),
                                  255, true);
@@ -206,7 +206,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
           Point dest;
           getSELPointAndRect(machine, it->third.get<1>(), srcRect, dest);
 
-          surface = graphics.loadSurfaceFromFile(machine, it->third.get<0>());
+          surface = graphics.getSurfaceNamedAndMarkViewed(machine, it->third.get<0>());
           Rect destRect = Rect(dest, srcRect.size());
           surface->blitToSurface(*graphics.getHaikei(), srcRect, destRect,
                                  255, true);

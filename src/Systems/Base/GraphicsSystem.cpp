@@ -242,7 +242,9 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
     show_cursor_from_bytecode_(true),
     cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
     system_(system),
-    preloaded_hik_scripts_(32) {}
+    preloaded_hik_scripts_(32),
+    preloaded_g00_(256),
+    image_cache_(10) {}
 
 // -----------------------------------------------------------------------
 
@@ -587,6 +589,7 @@ void GraphicsSystem::reset() {
   clearAllDCs();
 
   preloaded_hik_scripts_.clear();
+  preloaded_g00_.clear();
   hik_renderer_.reset();
   background_type_ = BACKGROUND_DC0;
 
@@ -640,14 +643,70 @@ boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
   return boost::shared_ptr<HIKScript>(new HIKScript(system, file_path));
 }
 
+void GraphicsSystem::PreloadG00(int slot, const std::string& name) {
+  // We first check our implicit cache just in case so we don't load it twice.
+  boost::shared_ptr<const Surface> surface = image_cache_.fetch(name);
+  if (!surface)
+    surface = loadSurfaceFromFile(name);
+
+  if (surface)
+    surface->EnsureUploaded();
+
+  preloaded_g00_[slot] = std::make_pair(name, surface);
+}
+
+void GraphicsSystem::ClearPreloadedG00(int slot) {
+  preloaded_g00_[slot] =
+      std::make_pair("", boost::shared_ptr<const Surface>());
+}
+
+void GraphicsSystem::ClearAllPreloadedG00() {
+  preloaded_g00_.clear();
+}
+
+boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
+    const std::string& name) {
+  AllocatedLazyArrayIterator<G00ArrayItem> it =
+      preloaded_g00_.allocated_begin();
+  AllocatedLazyArrayIterator<G00ArrayItem> end =
+      preloaded_g00_.allocated_end();
+  for (; it != end; ++it) {
+    if (it->first == name)
+      return it->second;
+  }
+
+  return boost::shared_ptr<const Surface>();
+}
+
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsSystem::loadSurfaceFromFile(
+boost::shared_ptr<const Surface> GraphicsSystem::getSurfaceNamedAndMarkViewed(
   RLMachine& machine, const std::string& short_filename) {
   // Record that we viewed this CG.
   cgTable().setViewed(machine, short_filename);
 
-  return loadNonCGSurfaceFromFile(short_filename);
+  return getSurfaceNamed(short_filename);
+}
+
+// -----------------------------------------------------------------------
+
+boost::shared_ptr<const Surface> GraphicsSystem::getSurfaceNamed(
+    const std::string& short_filename) {
+  // Check if this is in the script controlled cache.
+  boost::shared_ptr<const Surface> cached_surface =
+      GetPreloadedG00(short_filename);
+  if (cached_surface)
+    return cached_surface;
+
+  // First check to see if this surface is already in our internal cache
+  cached_surface = image_cache_.fetch(short_filename);
+  if (cached_surface)
+    return cached_surface;
+
+  boost::shared_ptr<const Surface> surface_to_ret =
+      loadSurfaceFromFile(short_filename);
+  image_cache_.insert(short_filename, surface_to_ret);
+  return surface_to_ret;
 }
 
 // -----------------------------------------------------------------------
@@ -835,7 +894,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
 
       if (cursor_key.exists()) {
-        cursor_surface = loadNonCGSurfaceFromFile(cursor_key);
+        cursor_surface = getSurfaceNamed(cursor_key);
         mouse_cursor_.reset(new MouseCursor(cursor_surface));
         cursor_cache_[cursor_] = mouse_cursor_;
       } else {

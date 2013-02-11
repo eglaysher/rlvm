@@ -34,8 +34,6 @@
 #include <boost/shared_ptr.hpp>
 #include "Systems/Base/GraphicsSystem.hpp"
 
-#include "lru_cache.hpp"
-
 #include <SDL/SDL_opengl.h>
 
 struct SDL_Surface;
@@ -85,7 +83,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual void setMinimumSizeForDC(int dc, Size size);
   virtual void freeDC(int dc);
 
-  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
       const std::string& short_filename);
 
   virtual boost::shared_ptr<Surface> getHaikei();
@@ -186,13 +184,6 @@ class SDLGraphicsSystem : public GraphicsSystem {
   /// OpenGL v1.x drivers.
   int screen_tex_width_;
   int screen_tex_height_;
-
-  /**
-   * LRU cache filled with the last fifteen accessed images.
-   *
-   * This cache's contents are assumed to be immutable.
-   */
-  LRUCache<std::string, boost::shared_ptr<const Surface> > image_cache_;
 };
 
 

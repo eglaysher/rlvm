@@ -242,7 +242,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
       case 40100: {
         Frame& frame = currentFrame();
         frame.image = consume_string(curpointer);
-        frame.surface = system.graphics().loadNonCGSurfaceFromFile(
+        frame.surface = system.graphics().getSurfaceNamed(
             frame.image);
         if (!frame.surface) {
           ostringstream oss;

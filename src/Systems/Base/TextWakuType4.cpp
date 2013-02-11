@@ -209,7 +209,7 @@ bool TextWakuType4::handleMouseClick(RLMachine& machine, const Point& pos,
 
 void TextWakuType4::setWakuMain(const std::string& name) {
   if (name != "") {
-    waku_main_ = system_.graphics().loadNonCGSurfaceFromFile(name);
+    waku_main_ = system_.graphics().getSurfaceNamed(name);
 
     top_left = waku_main_->getPattern(TOP_LEFT_CORNER);
     top_center = waku_main_->getPattern(TOP_CENTER);

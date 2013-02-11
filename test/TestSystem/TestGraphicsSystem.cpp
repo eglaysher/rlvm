@@ -102,7 +102,7 @@ void TestGraphicsSystem::injectSurface(
   named_surfaces_[short_filename] = surface;
 }
 
-boost::shared_ptr<const Surface> TestGraphicsSystem::loadNonCGSurfaceFromFile(
+boost::shared_ptr<const Surface> TestGraphicsSystem::loadSurfaceFromFile(
     const std::string& short_filename) {
   // If we have an injected surface, return it instead of a fresh surface.
   std::map<std::string, boost::shared_ptr<const Surface> >::iterator it =

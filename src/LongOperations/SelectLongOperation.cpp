@@ -243,9 +243,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   GraphicsSystem& gs = machine.system().graphics();
   if (selbtn("NAME").exists() && selbtn("NAME").to_string() != "")
-    name_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("NAME"));
+    name_surface_ = gs.getSurfaceNamed(selbtn("NAME"));
   if (selbtn("BACK").exists() && selbtn("BACK").to_string() != "")
-    back_surface_ = gs.loadNonCGSurfaceFromFile(selbtn("BACK"));
+    back_surface_ = gs.getSurfaceNamed(selbtn("BACK"));
 
   std::vector<int> tmp;
   if (selbtn("NORMAL").exists()) {

@@ -47,6 +47,7 @@
 #include "Systems/Base/ToneCurve.hpp"
 
 #include "Utilities/LazyArray.hpp"
+#include "lru_cache.hpp"
 
 class Gameexe;
 class GraphicsObject;
@@ -341,13 +342,13 @@ class GraphicsSystem : public EventListener {
 
   // Loads an image, optionally marking that this image has been loaded (if it
   // is in the game's CGM table).
-  boost::shared_ptr<const Surface> loadSurfaceFromFile(
+  boost::shared_ptr<const Surface> getSurfaceNamedAndMarkViewed(
       RLMachine& machine, const std::string& short_filename);
 
   // Just loads an image. This shouldn't be used for images that are destined
   // for one of the DCs, since those can be CGs.
-  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
-      const std::string& short_filename) = 0;
+  boost::shared_ptr<const Surface> getSurfaceNamed(
+      const std::string& short_filename);
 
   virtual boost::shared_ptr<Surface> getHaikei() = 0;
 
@@ -428,6 +429,12 @@ class GraphicsSystem : public EventListener {
       const std::string& name,
       const boost::filesystem::path& file);
 
+  // We have a cache of preloaded g00 files.
+  void PreloadG00(int slot, const std::string& name);
+  void ClearPreloadedG00(int slot);
+  void ClearAllPreloadedG00();
+  boost::shared_ptr<const Surface> GetPreloadedG00(const std::string& name);
+
  protected:
   typedef std::set<Renderable*> FinalRenderers;
 
@@ -446,6 +453,10 @@ class GraphicsSystem : public EventListener {
   void drawFrame(std::ostream* tree);
 
  private:
+  // Gets a platform appropriate surface loaded.
+  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
+      const std::string& short_filename) = 0;
+
   // Default grp name (used in grp* and rec* functions where filename
   // is '???')
   std::string default_grp_name_;
@@ -535,6 +546,19 @@ class GraphicsSystem : public EventListener {
   typedef std::pair<std::string, boost::shared_ptr<HIKScript> > HIKArrayItem;
   typedef LazyArray<HIKArrayItem> HIKScriptList;
   HIKScriptList preloaded_hik_scripts_;
+
+  // Preloaded G00 images.
+  typedef std::pair<std::string, boost::shared_ptr<const Surface> >
+      G00ArrayItem;
+  typedef LazyArray<G00ArrayItem> G00ScriptList;
+  G00ScriptList preloaded_g00_;
+
+  /**
+   * LRU cache filled with the last fifteen accessed images.
+   *
+   * This cache's contents are assumed to be immutable.
+   */
+  LRUCache<std::string, boost::shared_ptr<const Surface> > image_cache_;
 
   // Possible background script which drives graphics to the screen.
   boost::scoped_ptr<HIKRenderer> hik_renderer_;

@@ -32,6 +32,7 @@
 #include "Modules/Module_DLL.hpp"
 #include "Modules/Module_Debug.hpp"
 #include "Modules/Module_EventLoop.hpp"
+#include "Modules/Module_G00.hpp"
 #include "Modules/Module_Gan.hpp"
 #include "Modules/Module_Grp.hpp"
 #include "Modules/Module_Jmp.hpp"
@@ -73,6 +74,7 @@ void addAllModules(RLMachine& rlmachine) {
   rlmachine.attachModule(new DLLModule);
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new EventLoopModule);
+  rlmachine.attachModule(new G00Module);
   rlmachine.attachModule(new GanBgModule);
   rlmachine.attachModule(new GanFgModule);
   rlmachine.attachModule(new GrpModule);

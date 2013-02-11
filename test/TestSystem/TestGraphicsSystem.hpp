@@ -63,7 +63,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual GraphicsObject& getObject(int layer, int obj_number);
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<const Surface> loadNonCGSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
       const std::string& short_filename);
   virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
