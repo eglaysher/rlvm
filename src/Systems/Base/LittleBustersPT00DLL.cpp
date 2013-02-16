@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2013 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,39 +21,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "MachineBase/RealLiveDLL.hpp"
-
-#include "Systems/Base/LittleBustersEF00DLL.hpp"
 #include "Systems/Base/LittleBustersPT00DLL.hpp"
-#include "Systems/Base/RlBabelDLL.hpp"
-#include "Utilities/Exception.hpp"
 
-#include <string>
-#include <sstream>
+#include <iostream>
+using namespace std;
 
-using std::ostringstream;
-
-// -----------------------------------------------------------------------
-// RealLiveDLL
-// -----------------------------------------------------------------------
-
-RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
-                                        const std::string& name) {
-  if (name == "rlBabel") {
-    return new RlBabelDLL(machine);
-  } else if (name == "EF00") {
-    return new LittleBustersEF00DLL;
-  } else if (name == "PT00") {
-    return new LittleBustersPT00DLL;
-  } else {
-    ostringstream oss;
-    oss << "Unsupported DLL interface " << name;
-    throw rlvm::Exception(oss.str());
-  }
+LittleBustersPT00DLL::LittleBustersPT00DLL() {
+  cerr << "WARNING: Little Busters Baseball is implemented in a DLL and "
+       << "hasn't been reverse engineered yet." << endl;
 }
 
-RealLiveDLL::~RealLiveDLL() {
+LittleBustersPT00DLL::~LittleBustersPT00DLL() {}
+
+int LittleBustersPT00DLL::callDLL(RLMachine& machine, int func, int arg1,
+                                  int arg2, int arg3, int arg4) {
+  // Perform no spew.
+  return 0;
+}
+
+const std::string& LittleBustersPT00DLL::name() const {
+  static std::string n("PT00");
+  return n;
 }

@@ -166,6 +166,14 @@ Using rlvm with insani's English translation of Planetarian is currently
 not recommended as the indentation behaviour *will* break in the middle
 of words.
 
+Little Busters' baseball doesn't work.
+
+5) GETTING INVOLVED:
+-------------------------------------------------------------------------
+Little Buster's baseball minigame appears to be implemented by a DLL,
+not RealLive bytecode. Figuring out what its doing is the first step to
+getting it working.
+
 ;; Local Variables: **
 ;; fill-column: 72 **
 ;; End: **

@@ -160,6 +160,7 @@ librlvm_files = [
   "src/Systems/Base/HIKScript.cpp",
   "src/Systems/Base/KOEPACVoiceArchive.cpp",
   "src/Systems/Base/LittleBustersEF00DLL.cpp",
+  "src/Systems/Base/LittleBustersPT00DLL.cpp",
   "src/Systems/Base/MouseCursor.cpp",
   "src/Systems/Base/NWKVoiceArchive.cpp",
   "src/Systems/Base/ObjectMutator.cpp",
