@@ -55,7 +55,10 @@ ObjectMutator::~ObjectMutator() {}
 
 bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
   unsigned int ticks = machine.system().event().getTicks();
-  PerformSetting(machine, object);
+  if (ticks > (creation_time_ + delay_)) {
+    PerformSetting(machine, object);
+    machine.system().graphics().markObjectStateAsDirty();
+  }
   return ticks > (creation_time_ + delay_ + duration_time_);
 }
 

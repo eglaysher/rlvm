@@ -135,8 +135,9 @@ Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
 void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
   GraphicsObject& obj = getGraphicsObject(machine, this, buf);
   ((obj).*(setter))(incoming);
-}
 
+  machine.system().graphics().markObjectStateAsDirty();
+}
 
 // -----------------------------------------------------------------------
 // Obj_SetTwoIntOnObj
@@ -154,4 +155,6 @@ void Obj_SetTwoIntOnObj::operator()(RLMachine& machine, int buf,
   GraphicsObject& obj = getGraphicsObject(machine, this, buf);
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);
+
+  machine.system().graphics().markObjectStateAsDirty();
 }

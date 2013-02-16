@@ -312,7 +312,16 @@ class GraphicsSystem : public EventListener {
   virtual void forceRefresh();
 
   bool screenNeedsRefresh() const { return screen_needs_refresh_; }
-  void screenRefreshed() { screen_needs_refresh_ = false; }
+  void screenRefreshed() {
+    screen_needs_refresh_ = false;
+    object_state_dirty_ = false;
+  }
+
+  // We keep a separate state about whether object state has been modified. We
+  // do this so that background object mutation in automatic mode plays nicely
+  // with LongOperations.
+  void markObjectStateAsDirty() { object_state_dirty_ = true; }
+  bool objectStateDirty() const { return object_state_dirty_; }
 
   virtual void beginFrame() = 0;
   virtual void endFrame() = 0;
@@ -473,6 +482,9 @@ class GraphicsSystem : public EventListener {
 
   // Flag set to redraw the screen NOW
   bool screen_needs_refresh_;
+
+  // Whether object state has been mutated since the last screen refresh.
+  bool object_state_dirty_;
 
   // Whether it is the Graphics system's responsibility to redraw the
   // screen. Some LongOperations temporarily take this responsibility

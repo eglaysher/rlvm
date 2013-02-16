@@ -230,6 +230,7 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
   : screen_update_mode_(SCREENUPDATEMODE_AUTOMATIC),
     background_type_(BACKGROUND_DC0),
     screen_needs_refresh_(false),
+    object_state_dirty_(false),
     is_responsible_for_update_(true),
     display_subtitle_(gameexe("SUBTITLE").to_int(0)),
     hide_interface_(false),
