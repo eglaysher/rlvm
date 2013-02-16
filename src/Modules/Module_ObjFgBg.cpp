@@ -63,6 +63,7 @@
 #include <boost/bind.hpp>
 
 #include "libReallive/bytecode.h"
+#include "libReallive/gameexe.h"
 
 using namespace std;
 using namespace boost;
@@ -436,6 +437,185 @@ class objEveAdjustAlpha
   };
 };
 
+class DisplayMutator : public ObjectMutator {
+ public:
+  DisplayMutator(RLMachine& machine, GraphicsObject& object,
+                 int creation_time, int duration_time, int delay,
+                 int display,
+                 int dip_event_mod, // ignored
+                 int tr_mod,
+                 int move_mod, int move_len_x, int move_len_y,
+                 int rotate_mod, int rotate_count,
+                 int scale_x_mod, int scale_x_percent,
+                 int scale_y_mod, int scale_y_percent,
+                 int sin_mod, int sin_len, int sin_count)
+      : ObjectMutator(-1, "objEveDisplay", creation_time, duration_time,
+                      delay, 0),
+        display_(display),
+        tr_mod_(tr_mod),
+        tr_start_(0),
+        tr_end_(0),
+        move_mod_(move_mod),
+        move_start_x_(0),
+        move_end_x_(0),
+        move_start_y_(0),
+        move_end_y_(0),
+        rotate_mod_(rotate_mod),
+        scale_x_mod_(scale_x_mod),
+        scale_y_mod_(scale_y_mod),
+        sin_mod_(sin_mod) {
+    if (tr_mod_) {
+      tr_start_ = display ? 0 : 255;
+      tr_end_ = display ? 255 : 0;
+    }
+
+    if (move_mod_) {
+      // I suspect this isn't right here. If I start at object.x() and end at
+      // (object.x() + move_len), then the "Episode" text ends up off the right
+      // hand of the screen. However, with this, the downward scrolling text
+      // jumps downward when it starts scrolling back up (that didn't used to
+      // happen.)
+      if (display) {
+        move_start_x_ = object.x() - move_len_x;
+        move_end_x_ = object.x();
+        move_start_y_ = object.y() - move_len_y;
+        move_end_y_ = object.y();
+      } else {
+        move_start_x_ = object.x();
+        move_end_x_ = object.x() + move_len_x;
+        move_start_y_ = object.y();
+        move_end_y_ = object.y() + move_len_y;
+      }
+    }
+
+    if (rotate_mod_)
+      cerr << "We don't support rotate mod yet. (Rotate count: "
+           << rotate_count << ")" << endl;
+
+    if (scale_x_mod_) {
+      cerr << "We don't support scale Y mod yet. (Scale percent: "
+           << scale_x_percent << endl;
+    }
+
+    if (scale_y_mod_) {
+      cerr << "We don't support scale X mod yet. (Scale percent: "
+           << scale_y_percent << endl;
+    }
+
+    if (sin_mod)
+      cerr << "  We don't support \"sin\" yet." << endl;
+  }
+
+ private:
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+    object.setVisible(display_);
+
+    if (tr_mod_)
+      object.setAlpha(tr_end_);
+
+    if (move_mod_) {
+      object.setX(move_end_x_);
+      object.setY(move_end_y_);
+    }
+  }
+
+  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+    // While performing whatever visual transition, the object should be
+    // displayed.
+    object.setVisible(true);
+
+    if (tr_mod_) {
+      int alpha = GetValueForTime(machine, tr_start_, tr_end_);
+      object.setAlpha(alpha);
+    }
+
+    if (move_mod_) {
+      int x = GetValueForTime(machine, move_start_x_, move_end_x_);
+      object.setX(x);
+
+      int y = GetValueForTime(machine, move_start_y_, move_end_y_);
+      object.setY(y);
+    }
+  }
+
+  bool display_;
+
+  bool tr_mod_;
+  int tr_start_;
+  int tr_end_;
+
+  bool move_mod_;
+  int move_start_x_;
+  int move_end_x_;
+  int move_start_y_;
+  int move_end_y_;
+
+  bool rotate_mod_;
+  bool scale_x_mod_;
+  bool scale_y_mod_;
+  bool sin_mod_;
+};
+
+struct objEveDisplay_1 : public RLOp_Void_5<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int obj, int display,
+                  int duration_time, int delay, int param) {
+    Gameexe& gameexe = machine.system().gameexe();
+    const vector<int>& disp = gameexe("OBJDISP", param).to_intVector();
+
+    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    unsigned int creation_time = machine.system().event().getTicks();
+    object.AddObjectMutator(
+        new DisplayMutator(machine, object, creation_time, duration_time,
+                           delay, display,
+                           disp.at(0), disp.at(1), disp.at(2), disp.at(3),
+                           disp.at(4), disp.at(5), disp.at(6), disp.at(7),
+                           disp.at(8), disp.at(9), disp.at(10), disp.at(11),
+                           disp.at(12), disp.at(13)));
+  }
+};
+
+struct objEveDisplay_2 : public RLOp_Void_9<
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int obj, int display,
+                  int duration_time, int delay,
+                  int disp_event_mod, int tr_mod,
+                  int move_mod, int move_len_x, int move_len_y) {
+    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    unsigned int creation_time = machine.system().event().getTicks();
+    object.AddObjectMutator(
+        new DisplayMutator(machine, object, creation_time, duration_time,
+                           delay, display, disp_event_mod, tr_mod, move_mod,
+                           move_len_x, move_len_y, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+  }
+};
+
+struct objEveDisplay_3 : public RLOp_Void_18<
+    IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+    IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+    IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
+    IntConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine, int obj, int display,
+                  int duration_time, int delay,
+                  int disp_event_mod, int tr_mod,
+                  int move_mod, int move_len_x, int move_len_y,
+                  int rotate_mod, int rotate_count,
+                  int scale_x_mod, int scale_x_percent,
+                  int scale_y_mod, int scale_y_percent,
+                  int sin_mod, int sin_len, int sin_count) {
+    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    unsigned int creation_time = machine.system().event().getTicks();
+    object.AddObjectMutator(
+        new DisplayMutator(machine, object, creation_time, duration_time,
+                           delay, display, disp_event_mod, tr_mod, move_mod,
+                           move_len_x, move_len_y,
+                           rotate_mod, rotate_count,
+                           scale_x_mod, scale_x_percent,
+                           scale_y_mod, scale_y_percent,
+                           sin_mod, sin_len, sin_count));
+  }
+};
 
 bool MutatorIsDone(RLMachine& machine, RLOperation* op, int obj, int repno,
                    const char* name) {
@@ -675,6 +855,12 @@ void addEveObjectFunctions(RLModule& m) {
                                       &GraphicsObject::setAlpha,
                                       "objEveAlpha"));
 
+  m.addOpcode(2004, 0, "objEveDisplay",
+              new Obj_SetOneIntOnObj(&GraphicsObject::setVisible));
+  m.addOpcode(2004, 1, "objEveDisplay", new objEveDisplay_1);
+  m.addOpcode(2004, 2, "objEveDisplay", new objEveDisplay_2);
+  m.addOpcode(2004, 3, "objEveDisplay", new objEveDisplay_3);
+
   m.addOpcode(2006, 0, "objEveAdjust", new adjust);
   m.addOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
 
@@ -689,6 +875,8 @@ void addEveObjectFunctions(RLModule& m) {
               new Op_MutatorWaitNormal("objEveTop"));
   m.addOpcode(4003, 0, "objEveAlphaWait",
               new Op_MutatorWaitNormal("objEveAlpha"));
+  m.addOpcode(4004, 0, "objEveDisplayWait",
+              new Op_MutatorWaitNormal("objEveDisplay"));
   m.addOpcode(4006, 0, "objEveAdjustEnd",
               new Op_MutatorWaitRepNo("objEveAdjust"));
   m.addOpcode(4040, 0, "objEveAdjustAlpha",
@@ -702,6 +890,8 @@ void addEveObjectFunctions(RLModule& m) {
               new Op_MutatorWaitCNormal("objEveTop"));
   m.addOpcode(5003, 0, "objEveAlphaWaitC",
               new Op_MutatorWaitCNormal("objEveAlpha"));
+  m.addOpcode(5004, 0, "objEveDisplayWaitC",
+              new Op_MutatorWaitCNormal("objEveDisplay"));
   m.addOpcode(5006, 0, "objEveAdjustWaitC",
               new Op_MutatorWaitCRepNo("objEveAdjust"));
   m.addOpcode(5040, 0, "objEveAdjustAlphaWaitC",
@@ -715,7 +905,8 @@ void addEveObjectFunctions(RLModule& m) {
               new Op_EndObjectMutation_Normal("objEveTop"));
   m.addOpcode(6003, 0, "objEveAlphaEnd",
               new Op_EndObjectMutation_Normal("objEveAlpha"));
-
+  m.addOpcode(6004, 0, "objEveDisplayEnd",
+              new Op_EndObjectMutation_Normal("objEveDisplay"));
   m.addOpcode(6006, 0, "objEveAdjustEnd",
               new Op_EndObjectMutation_RepNo("objEveAdjust"));
   m.addOpcode(6040, 0, "objEveAdjustAlphaEnd",
