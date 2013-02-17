@@ -27,6 +27,10 @@
 
 #include "Modules/Module_Gan.hpp"
 
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Properties.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -40,8 +44,6 @@
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/System.hpp"
 
-#include <boost/shared_ptr.hpp>
-
 using namespace std;
 using namespace boost;
 using namespace libReallive;
@@ -51,17 +53,17 @@ using namespace libReallive;
 namespace {
 
 struct objWaitAll : public RLOp_Void_Void {
-  struct WaitUntilAllDone : public LongOperation {
-    bool operator()(RLMachine& machine) {
-      // Clannad puts us in DrawManual() right before calling us so we force
-      // refreshes.
-      machine.system().graphics().forceRefresh();
-      return !machine.system().graphics().animationsPlaying();
-    }
-  };
+  static bool WaitUntilDone(RLMachine& machine) {
+    // Clannad puts us in DrawManual() right before calling us so we force
+    // refreshes.
+    machine.system().graphics().forceRefresh();
+    return !machine.system().graphics().animationsPlaying();
+  }
 
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new WaitUntilAllDone);
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnEvent(boost::bind(WaitUntilDone, boost::ref(machine)));
+    machine.pushLongOperation(wait_op);
   }
 };
 

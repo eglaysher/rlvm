@@ -58,11 +58,12 @@ void addKoeWaitC(RLMachine& machine) {
   machine.pushLongOperation(wait_op);
 }
 
-struct LongOp_koeWait : public LongOperation {
-  bool operator()(RLMachine& machine) {
-    return !machine.system().sound().koePlaying();
-  }
-};
+void addKoeWait(RLMachine& machine) {
+  WaitLongOperation* wait_op = new WaitLongOperation(machine);
+  wait_op->breakOnEvent(boost::bind(koeIsPlaying, boost::ref(machine)));
+
+  machine.pushLongOperation(wait_op);
+}
 
 struct koePlay_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int koe) {
@@ -82,7 +83,7 @@ struct koePlayEx_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int koe) {
     machine.system().sound().koePlay(koe);
     addKoeIcon(machine, koe);
-    machine.pushLongOperation(new LongOp_koeWait);
+    addKoeWait(machine);
   }
 };
 
@@ -90,7 +91,7 @@ struct koePlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe, character);
     addKoeIcon(machine, koe);
-    machine.pushLongOperation(new LongOp_koeWait);
+    addKoeWait(machine);
   }
 };
 
@@ -98,7 +99,7 @@ struct koeDoPlayEx_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe);
     addKoeIcon(machine, koe);
-    machine.pushLongOperation(new LongOp_koeWait);
+    addKoeWait(machine);
   }
 };
 
@@ -114,7 +115,7 @@ struct koePlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int koe, int character) {
     machine.system().sound().koePlay(koe, character);
     addKoeIcon(machine, koe);
-    machine.pushLongOperation(new LongOp_koeWait);
+    addKoeWait(machine);
   }
 };
 
@@ -128,7 +129,7 @@ struct koeDoPlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct koeWait : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new LongOp_koeWait);
+    addKoeWait(machine);
   }
 };
 

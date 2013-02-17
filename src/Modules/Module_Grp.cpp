@@ -28,6 +28,7 @@
 #include "Modules/Module_Grp.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <iostream>
 #include <string>
@@ -35,6 +36,7 @@
 
 #include "Effects/Effect.hpp"
 #include "Effects/EffectFactory.hpp"
+#include "LongOperations/WaitLongOperation.hpp"
 #include "LongOperations/ZoomLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -211,23 +213,20 @@ struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
 struct shake : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int spec) {
     machine.system().graphics().QueueShakeSpec(spec);
-    machine.pushLongOperation(new shakeWait(machine));
+
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnEvent(boost::bind(StopShaking, boost::ref(machine)));
+    wait_op->setSleepTimeProvider(boost::bind(SleepTime, boost::ref(machine)));
+    machine.pushLongOperation(wait_op);
   }
 
-  struct shakeWait : public LongOperation {
-    shakeWait(RLMachine& machine) : machine_(machine) {}
+  static bool StopShaking(RLMachine& machine) {
+    return machine.system().graphics().IsShaking() == false;
+  }
 
-    virtual bool operator()(RLMachine& machine) {
-      return machine.system().graphics().IsShaking() == false;
-    }
-
-    virtual int sleepTime() {
-      return machine_.system().graphics().CurrentShakingFrameTime();
-    }
-
-   private:
-    RLMachine& machine_;
-  };
+  static int SleepTime(RLMachine& machine) {
+    return machine.system().graphics().CurrentShakingFrameTime();
+  }
 };
 
 // -----------------------------------------------------------------------

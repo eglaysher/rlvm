@@ -437,31 +437,22 @@ class objEveAdjustAlpha
 };
 
 
-struct LongOp_MutatorWait : public LongOperation {
-  LongOp_MutatorWait(RLOperation* op, int obj, int repno, const char* name)
-      : op_(op),
-        obj_(obj),
-        repno_(repno),
-        name_(name) {
-  }
-
-  bool operator()(RLMachine& machine) {
-    return getGraphicsObject(machine, op_, obj_).IsMutatorRunningMatching(
-        repno_, name_) == false;
-  }
-
-  RLOperation* op_;
-    int obj_, repno_;
-  const char* name_;
-};
+bool MutatorIsDone(RLMachine& machine, RLOperation* op, int obj, int repno,
+                   const char* name) {
+  return getGraphicsObject(machine, op, obj).IsMutatorRunningMatching(
+      repno, name) == false;
+}
 
 class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
  public:
   Op_MutatorWaitNormal(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj) {
-    machine.pushLongOperation(new LongOp_MutatorWait(
-        this, obj, -1, name_));
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnEvent(
+        boost::bind(MutatorIsDone, boost::ref(machine), this,
+                    obj, -1, name_));
+    machine.pushLongOperation(wait_op);
   }
 
  private:
@@ -474,8 +465,11 @@ class Op_MutatorWaitRepNo
   Op_MutatorWaitRepNo(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
-    machine.pushLongOperation(new LongOp_MutatorWait(
-        this, obj, repno, name_));
+    WaitLongOperation* wait_op = new WaitLongOperation(machine);
+    wait_op->breakOnEvent(
+        boost::bind(MutatorIsDone, boost::ref(machine), this,
+                    obj, repno, name_));
+    machine.pushLongOperation(wait_op);
   }
 
  private:

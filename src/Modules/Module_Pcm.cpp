@@ -27,8 +27,10 @@
 
 #include "Modules/Module_Pcm.hpp"
 
+#include <boost/bind.hpp>
 #include <string>
 
+#include "LongOperations/WaitLongOperation.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -36,17 +38,16 @@
 
 namespace {
 
-struct LongOp_pcmWait : public LongOperation {
-  int channel_;
-  explicit LongOp_pcmWait(int channel) : channel_(channel) {
-    // TODO: Make it reset the number of loops, or this could
-    // theoretically go on forever.
-  }
+bool NoLongerPlaying(RLMachine& machine, int channel) {
+  return !machine.system().sound().wavPlaying(channel);
+}
 
-  bool operator()(RLMachine& machine) {
-    return !machine.system().sound().wavPlaying(channel_);
-  }
-};
+void addPcmWait(RLMachine& machine, int channel) {
+  WaitLongOperation* wait_op = new WaitLongOperation(machine);
+  wait_op->breakOnEvent(boost::bind(
+      NoLongerPlaying, boost::ref(machine), channel));
+  machine.pushLongOperation(wait_op);
+}
 
 struct wavPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
@@ -71,7 +72,7 @@ struct wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 struct wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().wavPlay(fileName, false, channel);
-    machine.pushLongOperation(new LongOp_pcmWait(channel));
+    addPcmWait(machine, channel);
   }
 };
 
@@ -80,7 +81,7 @@ struct wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, std::string fileName, int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, false, channel, fadein);
-    machine.pushLongOperation(new LongOp_pcmWait(channel));
+    addPcmWait(machine, channel);
   }
 };
 
@@ -101,7 +102,7 @@ struct wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 struct wavWait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int channel) {
     // Start waiting on the channel
-    machine.pushLongOperation(new LongOp_pcmWait(channel));
+    addPcmWait(machine, channel);
   }
 };
 

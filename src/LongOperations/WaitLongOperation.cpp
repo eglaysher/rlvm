@@ -43,6 +43,7 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
       target_time_(0),
       break_on_clicks_(false), button_pressed_(0),
       break_on_event_(false),
+      has_sleep_time_provider_(false),
       break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
       ctrl_pressed_(false),
       mouse_moved_(false),
@@ -64,6 +65,12 @@ void WaitLongOperation::breakOnClicks() {
 void WaitLongOperation::breakOnEvent(const boost::function<bool()>& function) {
   break_on_event_ = true;
   event_function_ = function;
+}
+
+void WaitLongOperation::setSleepTimeProvider(
+    const boost::function<int()>& function) {
+  has_sleep_time_provider_ = true;
+  sleep_time_provider_ = function;
 }
 
 void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
@@ -139,6 +146,7 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
       done = true;
       machine.setStoreRegister(button_pressed_);
     } else if (done) {
+      // TODO(erg): this is fishy. shouldn't we record when clicked?
       if (save_click_location_)
         recordMouseCursorPosition();
       machine.setStoreRegister(0);
@@ -146,4 +154,11 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
   }
 
   return done;
+}
+
+int WaitLongOperation::sleepTime() {
+  if (has_sleep_time_provider_)
+    return sleep_time_provider_();
+
+  return LongOperation::sleepTime();
 }

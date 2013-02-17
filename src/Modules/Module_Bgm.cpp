@@ -28,7 +28,9 @@
 #include "Modules/Module_Bgm.hpp"
 
 #include <string>
+#include <boost/bind.hpp>
 
+#include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
@@ -39,6 +41,16 @@
 #include "Systems/Base/SoundSystem.hpp"
 
 namespace {
+
+bool BgmWait(RLMachine& machine) {
+  return machine.system().sound().bgmStatus() == 0;
+}
+
+LongOperation* MakeBgmWait(RLMachine& machine) {
+  WaitLongOperation* wait_op = new WaitLongOperation(machine);
+  wait_op->breakOnEvent(boost::bind(BgmWait, boost::ref(machine)));
+  return wait_op;
+}
 
 struct LongOp_bgmWait : public LongOperation {
   bool operator()(RLMachine& machine) {
@@ -88,7 +100,7 @@ struct bgmPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
 struct bgmWait : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new LongOp_bgmWait);
+    machine.pushLongOperation(MakeBgmWait(machine));
   }
 };
 
@@ -107,7 +119,7 @@ struct bgmSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
 struct bgmFadeOutEx : public RLOp_Void_1<DefaultIntValue_T<1000> > {
   void operator()(RLMachine& machine, int fadeout) {
     machine.system().sound().bgmFadeOut(fadeout);
-    machine.pushLongOperation(new LongOp_bgmWait);
+    machine.pushLongOperation(MakeBgmWait(machine));
   }
 };
 

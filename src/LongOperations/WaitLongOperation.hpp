@@ -50,6 +50,9 @@ class WaitLongOperation : public LongOperation {
   // finished. |function| should return true if we are done.
   void breakOnEvent(const boost::function<bool()>& function);
 
+  // Provides |function| which is called as the implementation of sleepTime().
+  void setSleepTimeProvider(const boost::function<int()>& function);
+
   // Whether we write out the location of a mouse click. Implies that we're
   // breaking on mouse click.
   void saveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
@@ -63,7 +66,8 @@ class WaitLongOperation : public LongOperation {
   void recordMouseCursorPosition();
 
   // Overridden from LongOperation:
-  bool operator()(RLMachine& machine);
+  virtual bool operator()(RLMachine& machine);
+  virtual int sleepTime();
 
  private:
   RLMachine& machine_;
@@ -76,6 +80,9 @@ class WaitLongOperation : public LongOperation {
 
   bool break_on_event_;
   boost::function<bool()> event_function_;
+
+  bool has_sleep_time_provider_;
+  boost::function<int()> sleep_time_provider_;
 
   bool break_on_ctrl_pressed_;
   bool ctrl_pressed_;

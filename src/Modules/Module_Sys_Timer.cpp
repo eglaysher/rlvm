@@ -27,8 +27,10 @@
 
 #include "Module_Sys_Frame.hpp"
 
+#include <boost/bind.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
+#include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
@@ -56,68 +58,11 @@ struct ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   }
 };
 
-struct LongOp_time : public LongOperation {
-  const int layer_;
-  const int counter_;
-  const unsigned int target_time_;
-  const bool cancel_on_click_;
-
-  int button_pressed_;
-  bool mouse_moved_;
-
-  LongOp_time(RLMachine& machine, int layer, int counter, int time,
-              bool cancelOnClick)
-    : layer_(layer), counter_(counter), target_time_(time),
-      cancel_on_click_(cancelOnClick), button_pressed_(0),
-      mouse_moved_(false) {}
-
-  void mouseMotion(const Point&) {
-    mouse_moved_ = true;
-  }
-
-  // Overridden from EventListener:
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed) {
-    if (pressed) {
-      if (mouseButton == MOUSE_LEFT) {
-        button_pressed_ = 1;
-        return true;
-      } else if (mouseButton == MOUSE_RIGHT) {
-        button_pressed_ = -1;
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  // Overridden from LongOperation:
-  bool operator()(RLMachine& machine) {
-    EventSystem& es = machine.system().event();
-    bool done = false;
-
-    if (mouse_moved_) {
-      machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
-      mouse_moved_ = false;
-    }
-
-    // First check to see if we're done because of time.
-    if (es.getTimer(layer_, counter_).read(es) > target_time_)
-      done = true;
-
-    if (cancel_on_click_) {
-      // The underlying timeC returns a value. Manually set that
-      // value here.
-      if (button_pressed_) {
-        done = true;
-        machine.setStoreRegister(button_pressed_);
-      } else if (done) {
-        machine.setStoreRegister(0);
-      }
-    }
-
-    return done;
-  }
-};
+bool TimerIsDone(RLMachine& machine, int layer, int counter,
+                 unsigned int target_time) {
+  EventSystem& es = machine.system().event();
+  return es.getTimer(layer, counter).read(es) > target_time;
+}
 
 struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
   const int layer_;
@@ -129,8 +74,12 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
 
     if (es.getTimer(layer_, counter).read(es) <
         numeric_cast<unsigned int>(time)) {
-      machine.pushLongOperation(new LongOp_time(machine, layer_, counter,
-                                                time, in_time_c_));
+      WaitLongOperation* wait_op = new WaitLongOperation(machine);
+      if (in_time_c_)
+        wait_op->breakOnClicks();
+      wait_op->breakOnEvent(boost::bind(
+          TimerIsDone, boost::ref(machine), layer_, counter, time));
+      machine.pushLongOperation(wait_op);
     }
   }
 };
