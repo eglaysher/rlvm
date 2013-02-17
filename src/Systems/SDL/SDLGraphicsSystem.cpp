@@ -87,22 +87,22 @@ void SDLGraphicsSystem::setCursor(int cursor) {
 void SDLGraphicsSystem::beginFrame() {
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
   glDisable(GL_LIGHTING);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0, (GLdouble)screenSize().width(), (GLdouble)screenSize().height(),
           0.0, 0.0, 1.0);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   // Full screen shaking moves where the origin is.
   Point origin = GetScreenOrigin();
@@ -349,6 +349,7 @@ void SDLGraphicsSystem::setupVideo() {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                screen_tex_width_, screen_tex_height_, 0, GL_RGB,
                GL_UNSIGNED_BYTE, NULL);
+
   ShowGLErrors();
 }
 

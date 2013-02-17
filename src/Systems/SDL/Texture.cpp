@@ -82,7 +82,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     is_upside_down_(false) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
-  ShowGLErrors();
+  DebugShowGLErrors();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -94,11 +94,11 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
                  texture_width_, texture_height_,
                  0,
                  byte_order, byte_type, NULL);
-    ShowGLErrors();
+    DebugShowGLErrors();
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
                     byte_order, byte_type, surface->pixels);
-    ShowGLErrors();
+    DebugShowGLErrors();
 
     SDL_UnlockSurface(surface);
   } else {
@@ -124,11 +124,11 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
                  texture_width_, texture_height_,
                  0,
                  byte_order, byte_type, NULL);
-    ShowGLErrors();
+    DebugShowGLErrors();
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h,
                     byte_order, byte_type, pixel_data);
-    ShowGLErrors();
+    DebugShowGLErrors();
   }
 }
 
@@ -143,7 +143,7 @@ Texture::Texture(render_to_texture, int width, int height)
     is_upside_down_(true) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
-  ShowGLErrors();
+  DebugShowGLErrors();
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -156,11 +156,11 @@ Texture::Texture(render_to_texture, int width, int height)
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                texture_width_, texture_height_,
                0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, logical_width_,
                       logical_height_);
-  ShowGLErrors();
+  DebugShowGLErrors();
 }
 
 // -----------------------------------------------------------------------
@@ -176,7 +176,7 @@ Texture::~Texture() {
   if (program_object_id_)
     glDeleteObjectARB(program_object_id_);
 
-  ShowGLErrors();
+  DebugShowGLErrors();
 }
 
 // -----------------------------------------------------------------------
@@ -204,7 +204,7 @@ void Texture::reupload(SDL_Surface* surface,
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, surface->w, surface->h,
                     byte_order, byte_type, surface->pixels);
-    ShowGLErrors();
+    DebugShowGLErrors();
 
     SDL_UnlockSurface(surface);
   } else {
@@ -228,7 +228,7 @@ void Texture::reupload(SDL_Surface* surface,
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, offset_x, offset_y, w, h,
                     byte_order, byte_type, pixel_data);
-    ShowGLErrors();
+    DebugShowGLErrors();
   }
 }
 
@@ -284,22 +284,22 @@ string Texture::getSubtractiveShaderString() {
 
 void Texture::buildShader() {
   shader_object_id_ = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   string str = getSubtractiveShaderString();
   const char* file = str.c_str();
 
   glShaderSourceARB(shader_object_id_, 1, &file, NULL);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glCompileShaderARB(shader_object_id_);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   // TODO(erg): Should check the log and propogate failures.
 
   program_object_id_ = glCreateProgramObjectARB();
   glAttachObjectARB(program_object_id_, shader_object_id_);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glLinkProgramARB(program_object_id_);
   ShowGLErrors();
@@ -404,7 +404,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  texture_width_, texture_height_,
                  0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    ShowGLErrors();
+    DebugShowGLErrors();
   }
 
   // Copy the current value of the region where we're going to render
@@ -416,7 +416,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
                       0,
                       0, 0,
                       idx1, ystart, texture_width_, texture_height_);
-  ShowGLErrors();
+  DebugShowGLErrors();
 
   glUseProgramObjectARB(program_object_id_);
 
@@ -692,7 +692,7 @@ void Texture::renderToScreenAsObject(
   }
   glPopMatrix();
 
-  ShowGLErrors();
+  DebugShowGLErrors();
 }
 
 // -----------------------------------------------------------------------

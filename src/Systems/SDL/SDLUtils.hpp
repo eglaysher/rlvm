@@ -36,6 +36,14 @@ class RGBColour;
 class RGBAColour;
 
 void ShowGLErrors(void);
+
+inline void DebugShowGLErrors() {
+#ifndef NDEBUG
+  // Don't do roundtrips to the graphics card for most debugging.
+  ShowGLErrors();
+#endif
+}
+
 void reportSDLError(const std::string& sdl_name,
                     const std::string& function_name);
 int SafeSize(int i);
