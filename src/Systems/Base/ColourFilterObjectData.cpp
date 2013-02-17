@@ -58,8 +58,11 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
 
     graphics_system_.fillScreenArea(screen_rect_, colour);
 
-    if (tree)
-      objectInfo(*tree);
+    if (tree) {
+      *tree << "  ColourFilterObjectData" << std::endl
+            << "  Screen rect: " << screen_rect_ << std::endl
+            << "  Colour: " << colour << std::endl;
+    }
   } else {
     static bool printed = false;
     if (!printed) {
