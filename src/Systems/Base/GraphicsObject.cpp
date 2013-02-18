@@ -907,8 +907,8 @@ GraphicsObject::Impl::Impl()
       own_clip_(EMPTY_CLIP),
       mono_(0), invert_(0), light_(0),
       // Do the rest later.
-      tint_(RGBColour::White()),
-      colour_(RGBAColour::White()),
+      tint_(RGBColour::Black()),
+      colour_(RGBAColour::Clear()),
       composite_mode_(0),
       scroll_rate_x_(0),
       scroll_rate_y_(0),
@@ -1068,6 +1068,14 @@ void GraphicsObject::Impl::serialize(Archive& ar, unsigned int version) {
 
   if (version > 5) {
     ar & z_order_ & z_layer_ & z_depth_;
+  }
+
+  if (version < 7) {
+    // Before version 7, tint and colour were set incorrectly. Therefore the
+    // vast majority of values in save games were set incorrectly. Oops. Set to
+    // the default here.
+    tint_ = RGBColour::Black();
+    colour_ = RGBAColour::Clear();
   }
 }
 

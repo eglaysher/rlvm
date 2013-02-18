@@ -510,7 +510,7 @@ class GraphicsObject {
   void serialize(Archive& ar, unsigned int version);
 };
 
-BOOST_CLASS_VERSION(GraphicsObject::Impl, 6)
+BOOST_CLASS_VERSION(GraphicsObject::Impl, 7)
 
 static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;

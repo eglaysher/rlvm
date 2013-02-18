@@ -82,9 +82,6 @@ class Texture {
   void renderToScreen(const Rect& src, const Rect& dst,
                       const int opacity[4]);
 
-  void buildShader();
-  std::string getSubtractiveShaderString();
-
  private:
   // Returns a shared buffer of at least size. This is not thread safe
   // or reenterant in the least; it is merely meant to prevent
@@ -118,9 +115,6 @@ class Texture {
   GLuint texture_id_;
 
   GLuint back_texture_id_;
-
-  GLuint shader_object_id_;
-  GLuint program_object_id_;
 
   /// Is this texture upside down? (Because it's a screenshot, et cetera.)
   bool is_upside_down_;

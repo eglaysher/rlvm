@@ -224,6 +224,7 @@ libsystemsdl_files = [
   "src/Systems/SDL/SDLTextSystem.cpp",
   "src/Systems/SDL/SDLTextWindow.cpp",
   "src/Systems/SDL/SDLUtils.cpp",
+  "src/Systems/SDL/Shaders.cpp",
   "src/Systems/SDL/Texture.cpp",
   "vendor/pygame/alphablit.cc"
 ]

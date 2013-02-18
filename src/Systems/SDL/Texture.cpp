@@ -47,6 +47,7 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
+#include "Systems/SDL/Shaders.hpp"
 #include "Systems/SDL/Texture.hpp"
 
 #include "pygame/alphablit.h"
@@ -78,7 +79,7 @@ Texture::Texture(SDL_Surface* surface, int x, int y, int w, int h,
     total_width_(surface->w), total_height_(surface->h),
     texture_width_(SafeSize(logical_width_)),
     texture_height_(SafeSize(logical_height_)),
-    back_texture_id_(0),  shader_object_id_(0), program_object_id_(0),
+    back_texture_id_(0),
     is_upside_down_(false) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -139,7 +140,7 @@ Texture::Texture(render_to_texture, int width, int height)
     logical_width_(width), logical_height_(height),
     total_width_(width), total_height_(height),
     texture_width_(0), texture_height_(0), texture_id_(0),
-    back_texture_id_(0), shader_object_id_(0), program_object_id_(0),
+    back_texture_id_(0),
     is_upside_down_(true) {
   glGenTextures(1, &texture_id_);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
@@ -170,11 +171,6 @@ Texture::~Texture() {
 
   if (back_texture_id_)
     glDeleteTextures(1, &back_texture_id_);
-
-  if (shader_object_id_)
-    glDeleteObjectARB(shader_object_id_);
-  if (program_object_id_)
-    glDeleteObjectARB(program_object_id_);
 
   DebugShowGLErrors();
 }
@@ -264,49 +260,6 @@ void printARBLog(GLhandleARB obj) {
 
 // -----------------------------------------------------------------------
 
-string Texture::getSubtractiveShaderString() {
-  string x =
-    "uniform sampler2D current_values, mask;"
-    ""
-    "void main()"
-    "{"
-    "vec4 bg_colour = texture2D(current_values, gl_TexCoord[0].st);"
-    "vec4 mask_vector = texture2D(mask, gl_TexCoord[1].st);"
-    "float mask_colour = clamp(mask_vector.a * gl_Color.a, 0.0, 1.0);"
-    "gl_FragColor = clamp(bg_colour - mask_colour + gl_Color * mask_colour, "
-    "                     0.0, 1.0);"
-    "}";
-
-  return x;
-}
-
-// -----------------------------------------------------------------------
-
-void Texture::buildShader() {
-  shader_object_id_ = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-  DebugShowGLErrors();
-
-  string str = getSubtractiveShaderString();
-  const char* file = str.c_str();
-
-  glShaderSourceARB(shader_object_id_, 1, &file, NULL);
-  DebugShowGLErrors();
-
-  glCompileShaderARB(shader_object_id_);
-  DebugShowGLErrors();
-
-  // TODO(erg): Should check the log and propogate failures.
-
-  program_object_id_ = glCreateProgramObjectARB();
-  glAttachObjectARB(program_object_id_, shader_object_id_);
-  DebugShowGLErrors();
-
-  glLinkProgramARB(program_object_id_);
-  ShowGLErrors();
-}
-
-// -----------------------------------------------------------------------
-
 // This is really broken and brain dead.
 void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
@@ -376,9 +329,6 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
-  if (shader_object_id_ == 0)
-    buildShader();
-
   float thisx1 = float(x1) / texture_width_;
   float thisy1 = float(y1) / texture_height_;
   float thisx2 = float(x2) / texture_width_;
@@ -418,28 +368,21 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
                       idx1, ystart, texture_width_, texture_height_);
   DebugShowGLErrors();
 
-  glUseProgramObjectARB(program_object_id_);
+  glUseProgramObjectARB(Shaders::getColorMaskProgram());
 
   // Put the back_texture in texture slot zero and set this to be the
   // texture "current_values" in the above shader program.
   glActiveTextureARB(GL_TEXTURE0_ARB);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, back_texture_id_);
-  GLint current_values_loc = glGetUniformLocationARB(program_object_id_,
-                                                   "current_values");
-  if (current_values_loc == -1)
-    throw SystemError("Bad uniform value");
-  glUniform1iARB(current_values_loc, 0);
+  glUniform1iARB(Shaders::getColorMaskUniformCurrentValues(), 0);
 
   // Put the mask in texture slot one and set this to be the
   // texture "mask" in the above shader program.
   glActiveTextureARB(GL_TEXTURE1_ARB);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture_id_);
-  GLint mask_loc = glGetUniformLocationARB(program_object_id_, "mask");
-  if (mask_loc == -1)
-    throw SystemError("Bad uniform value");
-  glUniform1iARB(mask_loc, 1);
+  glUniform1iARB(Shaders::getColorMaskUniformMask(), 1);
 
   glDisable(GL_BLEND);
 
@@ -675,8 +618,46 @@ void Texture::renderToScreenAsObject(
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
     glTranslatef(-x_rep, -y_rep, 0);
 
+    // RealLive has its own complex shading/tinting system which we implement
+    // in a shader if available. It's costly enough that we make sure we need
+    // to use it.
+    bool using_shader = false;
+    if ((go.light() || go.tint() != RGBColour::Black() ||
+         go.colour() != RGBAColour::Clear()) &&
+        GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
+
+      // Image
+      glActiveTexture(GL_TEXTURE0_ARB);
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, texture_id_);
+      glUseProgramObjectARB(Shaders::getObjectProgram());
+      glUniform1iARB(Shaders::getObjectUniformImage(), 0);
+
+      // Colour
+      RGBAColour colour = go.colour();
+      glUniform4fARB(Shaders::getObjectUniformColour(),
+                     colour.r_float(), colour.g_float(),
+                     colour.b_float(), colour.a_float());
+
+      RGBColour tint = go.tint();
+      glUniform3fARB(Shaders::getObjectUniformTint(),
+                     tint.r_float(), tint.g_float(), tint.b_float());
+
+      glUniform1fARB(Shaders::getObjectUniformLight(),
+                     go.light() / 255.0f);
+
+      glUniform1fARB(Shaders::getObjectUniformAlpha(),
+                     alpha / 255.0f);
+
+      // Our final blending color has to be all white here.
+      using_shader = true;
+    } else {
+      // The shader takes care of the alpha for us, so we need to specify when
+      // not using it.
+      glColor4ub(255, 255, 255, alpha);
+    }
+
     glBegin(GL_QUADS); {
-      glColorRGBA(RGBAColour(go.tint(), alpha));
       glTexCoord2f(thisx1, thisy1);
       glVertex2f(0, 0);
       glTexCoord2f(thisx2, thisy1);
@@ -687,6 +668,10 @@ void Texture::renderToScreenAsObject(
       glVertex2f(0, height);
     }
     glEnd();
+
+    if (using_shader) {
+      glUseProgramObjectARB(0);
+    }
 
     glBlendFunc(GL_ONE, GL_ZERO);
   }

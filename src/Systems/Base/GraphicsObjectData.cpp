@@ -84,9 +84,9 @@ void GraphicsObjectData::render(const GraphicsObject& go,
         *tree << "  (invert)";
       if (go.light())
         *tree << "  (light=" << go.light() << ")";
-      if (go.tint() != RGBColour::White())
+      if (go.tint() != RGBColour::Black())
         *tree << "  (tint=" << go.tint() << ")";
-      if (go.colour() != RGBAColour::White())
+      if (go.colour() != RGBAColour::Clear())
         *tree << "  (colour=" << go.colour() << ")";
 
       *tree << endl;
