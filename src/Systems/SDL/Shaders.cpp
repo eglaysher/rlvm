@@ -51,8 +51,9 @@ const char kColorMaskShader[] =
 const char kObjectShader[] =
     "uniform sampler2D image;\n"
     "uniform vec4 colour;\n"
-    "uniform vec3 tint;\n"
+    "uniform float mono;\n"
     "uniform float light;\n"
+    "uniform vec3 tint;\n"
     "uniform float alpha;\n"
     "\n"
     "void tinter(in float pixel_val, in float tint_val, out float mixed) {\n"
@@ -72,15 +73,22 @@ const char kObjectShader[] =
     "  vec3 coloured = mix(pixel.rgb, colour.rgb, colour.a);\n"
     "  pixel = vec4(coloured.r, coloured.g, coloured.b, pixel.a);\n"
     "\n"
-    "  float out_r, out_g, out_b;\n"
-    "  tinter(pixel.r, tint.r, out_r);\n"
-    "  tinter(pixel.g, tint.g, out_g);\n"
-    "  tinter(pixel.b, tint.b, out_b);\n"
-    "  pixel = vec4(out_r, out_g, out_b, pixel.a);\n"
+    "  if (mono > 0.0) {\n"
+    "    // NTSC grayscale\n"
+    "    float gray = dot(pixel.rgb, vec3(0.299, 0.587, 0.114));\n"
+    "    vec3 mixed = mix(pixel.rgb, vec3(gray, gray, gray), mono);\n"
+    "    pixel = vec4(mixed.r, mixed.g, mixed.b, pixel.a);\n"
+    "  }\n"
     "\n"
+    "  float out_r, out_g, out_b;\n"
     "  tinter(pixel.r, light, out_r);\n"
     "  tinter(pixel.g, light, out_g);\n"
     "  tinter(pixel.b, light, out_b);\n"
+    "  pixel = vec4(out_r, out_g, out_b, pixel.a);\n"
+    "\n"
+    "  tinter(pixel.r, tint.r, out_r);\n"
+    "  tinter(pixel.g, tint.g, out_g);\n"
+    "  tinter(pixel.b, tint.b, out_b);\n"
     "  pixel = vec4(out_r, out_g, out_b, pixel.a);\n"
     "\n"
     "  // We're responsible for doing the main alpha blending, too.\n"
@@ -102,6 +110,7 @@ GLint Shaders::object_colour_ = 0;
 GLint Shaders::object_tint_ = 0;
 GLint Shaders::object_light_ = 0;
 GLint Shaders::object_alpha_ = 0;
+GLint Shaders::object_mono_ = 0;
 
 // static
 GLuint Shaders::getColorMaskProgram() {
@@ -199,6 +208,17 @@ GLint Shaders::getObjectUniformAlpha() {
   }
 
   return object_alpha_;
+}
+
+GLint Shaders::getObjectUniformMono() {
+  if (object_mono_ == 0) {
+    object_mono_ = glGetUniformLocationARB(
+        getObjectProgram(), "mono");
+    if (object_mono_ == -1)
+      throw SystemError("Bad uniform value: mono");
+  }
+
+  return object_mono_;
 }
 
 // static
