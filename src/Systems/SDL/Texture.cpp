@@ -625,7 +625,8 @@ void Texture::renderToScreenAsObject(
     if ((go.light() ||
          go.tint() != RGBColour::Black() ||
          go.colour() != RGBAColour::Clear() ||
-         go.mono()) &&
+         go.mono() ||
+         go.invert()) &&
         GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
       // Image
       glActiveTexture(GL_TEXTURE0_ARB);
@@ -652,6 +653,9 @@ void Texture::renderToScreenAsObject(
 
       glUniform1fARB(Shaders::getObjectUniformMono(),
                      go.mono() / 255.0f);
+
+      glUniform1fARB(Shaders::getObjectUniformInvert(),
+                     go.invert() / 255.0f);
 
       // Our final blending color has to be all white here.
       using_shader = true;

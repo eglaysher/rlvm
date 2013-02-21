@@ -52,6 +52,7 @@ const char kObjectShader[] =
     "uniform sampler2D image;\n"
     "uniform vec4 colour;\n"
     "uniform float mono;\n"
+    "uniform float invert;\n"
     "uniform float light;\n"
     "uniform vec3 tint;\n"
     "uniform float alpha;\n"
@@ -77,6 +78,12 @@ const char kObjectShader[] =
     "    // NTSC grayscale\n"
     "    float gray = dot(pixel.rgb, vec3(0.299, 0.587, 0.114));\n"
     "    vec3 mixed = mix(pixel.rgb, vec3(gray, gray, gray), mono);\n"
+    "    pixel = vec4(mixed.r, mixed.g, mixed.b, pixel.a);\n"
+    "  }\n"
+    "\n"
+    "  if (invert > 0.0) {\n"
+    "    vec3 inverted = vec3(1.0, 1.0, 1.0) - pixel.rgb;\n"
+    "    vec3 mixed = mix(pixel.rgb, inverted, invert);\n"
     "    pixel = vec4(mixed.r, mixed.g, mixed.b, pixel.a);\n"
     "  }\n"
     "\n"
@@ -111,6 +118,7 @@ GLint Shaders::object_tint_ = 0;
 GLint Shaders::object_light_ = 0;
 GLint Shaders::object_alpha_ = 0;
 GLint Shaders::object_mono_ = 0;
+GLint Shaders::object_invert_ = 0;
 
 // static
 GLuint Shaders::getColorMaskProgram() {
@@ -219,6 +227,17 @@ GLint Shaders::getObjectUniformMono() {
   }
 
   return object_mono_;
+}
+
+GLint Shaders::getObjectUniformInvert() {
+  if (object_invert_ == 0) {
+    object_invert_ = glGetUniformLocationARB(
+        getObjectProgram(), "invert");
+    if (object_invert_ == -1)
+      throw SystemError("Bad uniform value: invert");
+  }
+
+  return object_invert_;
 }
 
 // static

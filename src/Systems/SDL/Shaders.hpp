@@ -49,6 +49,7 @@ class Shaders {
   static GLint getObjectUniformLight();
   static GLint getObjectUniformAlpha();
   static GLint getObjectUniformMono();
+  static GLint getObjectUniformInvert();
 
  private:
   // Compiles and links the text program in |shader| into a shader and program
@@ -70,6 +71,7 @@ class Shaders {
   static GLint object_light_;
   static GLint object_alpha_;
   static GLint object_mono_;
+  static GLint object_invert_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SHADERS_HPP_
