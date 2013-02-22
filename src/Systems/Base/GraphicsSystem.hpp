@@ -49,6 +49,7 @@
 #include "Utilities/LazyArray.hpp"
 #include "lru_cache.hpp"
 
+class ColourFilter;
 class Gameexe;
 class GraphicsObject;
 class GraphicsObjectData;
@@ -365,7 +366,7 @@ class GraphicsSystem : public EventListener {
 
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;
 
-  virtual void fillScreenArea(const Rect& rect, const RGBAColour& colour) = 0;
+  virtual ColourFilter* BuildColourFiller(const Rect& rect) = 0;
 
   // Clears and promotes objects.
   void clearAndPromoteObjects();

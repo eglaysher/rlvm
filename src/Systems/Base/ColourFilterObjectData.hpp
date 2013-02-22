@@ -35,6 +35,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 
+class ColourFilter;
 class GraphicsObject;
 class GraphicsSystem;
 
@@ -68,6 +69,8 @@ class ColourFilterObjectData : public GraphicsObjectData {
   GraphicsSystem& graphics_system_;
 
   Rect screen_rect_;
+
+  boost::scoped_ptr<ColourFilter> colour_filer_;
 
   friend class boost::serialization::access;
   template<class Archive>

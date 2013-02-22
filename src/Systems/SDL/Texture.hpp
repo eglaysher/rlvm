@@ -50,6 +50,8 @@ class Texture {
  public:
   static void SetScreenSize(const Size& s);
 
+  static int ScreenHeight();
+
  public:
   Texture(SDL_Surface* surface, int x, int y, int w, int h,
           unsigned int bytes_per_pixel, int byte_order, int byte_type);

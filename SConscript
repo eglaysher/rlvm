@@ -213,6 +213,7 @@ root_env.StaticLibrary('rlvm', librlvm_files)
 
 libsystemsdl_files = [
   "src/Systems/SDL/SDLAudioLocker.cpp",
+  "src/Systems/SDL/SDLColourFilter.cpp",
   "src/Systems/SDL/SDLEventSystem.cpp",
   "src/Systems/SDL/SDLGraphicsSystem.cpp",
   "src/Systems/SDL/SDLMusic.cpp",

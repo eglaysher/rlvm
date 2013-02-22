@@ -58,6 +58,7 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/ToneCurve.hpp"
+#include "Systems/SDL/SDLColourFilter.hpp"
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
@@ -654,24 +655,8 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
   return shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
-void SDLGraphicsSystem::fillScreenArea(const Rect& rect,
-                                       const RGBAColour& colour) {
-  if (colour.a()) {
-    glDisable(GL_TEXTURE_2D);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBegin(GL_QUADS); {
-      glColorRGBA(colour);
-      glVertex2f(rect.x(), rect.y());
-      glVertex2f(rect.x(), rect.y() + rect.height());
-      glVertex2f(rect.x() + rect.width(), rect.y() + rect.height());
-      glVertex2f(rect.x() + rect.width(), rect.y());
-    }
-    glEnd();
-
-    glEnable(GL_TEXTURE_2D);
-    glBlendFunc(GL_ONE, GL_ZERO);
-  }
+ColourFilter* SDLGraphicsSystem::BuildColourFiller(const Rect& rect) {
+  return new SDLColourFilter(rect);
 }
 
 void SDLGraphicsSystem::reset() {

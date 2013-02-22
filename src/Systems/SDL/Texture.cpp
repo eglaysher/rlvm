@@ -68,7 +68,9 @@ void Texture::SetScreenSize(const Size& s) {
   s_screen_height = s.height();
 }
 
-// -----------------------------------------------------------------------
+int Texture::ScreenHeight() {
+  return s_screen_height;
+}
 
 // -----------------------------------------------------------------------
 // Texture

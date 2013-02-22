@@ -89,7 +89,8 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
-  virtual void fillScreenArea(const Rect& rect, const RGBAColour& colour);
+
+  virtual ColourFilter* BuildColourFiller(const Rect& rect);
 
   // -----------------------------------------------------------------------
 

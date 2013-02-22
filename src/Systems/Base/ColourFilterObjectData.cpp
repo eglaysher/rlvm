@@ -35,6 +35,7 @@
 using namespace std;
 
 #include "Systems/Base/Colour.hpp"
+#include "Systems/Base/ColourFilter.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
@@ -51,24 +52,28 @@ ColourFilterObjectData::~ColourFilterObjectData() {}
 void ColourFilterObjectData::render(const GraphicsObject& go,
                                     const GraphicsObject* parent,
                                     std::ostream* tree) {
-  if (go.mono() == 0) {
-    RGBAColour colour = go.colour();
-    colour.setAlpha(
-        static_cast<int>(colour.a_float() * go.computedAlpha()));
-
-    graphics_system_.fillScreenArea(screen_rect_, colour);
-
-    if (tree) {
-      *tree << "  ColourFilterObjectData" << std::endl
-            << "  Screen rect: " << screen_rect_ << std::endl
-            << "  Colour: " << colour << std::endl;
-    }
-  } else {
+  if (go.width() != 100 || go.height() != 100) {
     static bool printed = false;
     if (!printed) {
       printed = true;
-      cerr << "We don't yet deal with objMono() and colour filters." << endl;
+      cerr << "We can't yet scaling colour filters." << endl;
     }
+  }
+
+  // Lazily create colour object.
+  if (!colour_filer_) {
+    colour_filer_.reset(graphics_system_.BuildColourFiller(screen_rect_));
+  }
+
+  RGBAColour colour = go.colour();
+  colour.setAlpha(
+      static_cast<int>(colour.a_float() * go.computedAlpha()));
+  colour_filer_->Fill(colour);
+
+  if (tree) {
+    *tree << "  ColourFilterObjectData" << std::endl
+          << "  Screen rect: " << screen_rect_ << std::endl
+          << "  Colour: " << colour << std::endl;
   }
 }
 

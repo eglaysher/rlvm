@@ -132,8 +132,8 @@ boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   return boost::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
 }
 
-void TestGraphicsSystem::fillScreenArea(const Rect& rect,
-                                        const RGBAColour& colour) {
+ColourFilter* TestGraphicsSystem::BuildColourFiller(const Rect& rect) {
+  return NULL;
 }
 
 void TestGraphicsSystem::blitSurfaceToDC(
