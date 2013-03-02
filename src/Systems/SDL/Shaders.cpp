@@ -28,6 +28,7 @@
 
 #include <iostream>
 
+#include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Shaders.hpp"
@@ -172,6 +173,26 @@ GLint Shaders::getObjectUniformImage() {
   }
 
   return object_image_;
+}
+
+void Shaders::loadObjectUniformFromGraphicsObject(const GraphicsObject& go) {
+  RGBAColour colour = go.colour();
+  glUniform4fARB(Shaders::getObjectUniformColour(),
+                 colour.r_float(), colour.g_float(),
+                 colour.b_float(), colour.a_float());
+
+  RGBColour tint = go.tint();
+  glUniform3fARB(Shaders::getObjectUniformTint(),
+                 tint.r_float(), tint.g_float(), tint.b_float());
+
+  glUniform1fARB(Shaders::getObjectUniformLight(),
+                 go.light() / 255.0f);
+
+  glUniform1fARB(Shaders::getObjectUniformMono(),
+                 go.mono() / 255.0f);
+
+  glUniform1fARB(Shaders::getObjectUniformInvert(),
+                 go.invert() / 255.0f);
 }
 
 GLint Shaders::getObjectUniformColour() {

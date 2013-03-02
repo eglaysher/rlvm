@@ -29,6 +29,8 @@
 
 #include <SDL/SDL_opengl.h>
 
+class GraphicsObject;
+
 // Static state about shaders. We just leak them.
 class Shaders {
  public:
@@ -44,10 +46,14 @@ class Shaders {
 
   // Returns the parameters to the object program.
   static GLint getObjectUniformImage();
+  static GLint getObjectUniformAlpha();
+
+  // Set the colour/tint/light/mono/invert properties from |go|. (Individual
+  // setters also exposed.)
+  static void loadObjectUniformFromGraphicsObject(const GraphicsObject& go);
   static GLint getObjectUniformColour();
   static GLint getObjectUniformTint();
   static GLint getObjectUniformLight();
-  static GLint getObjectUniformAlpha();
   static GLint getObjectUniformMono();
   static GLint getObjectUniformInvert();
 

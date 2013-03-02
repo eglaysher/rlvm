@@ -41,12 +41,16 @@ class SDLColourFilter : public ColourFilter {
   virtual ~SDLColourFilter();
 
   // Overriden from ColourFilter:
-  virtual void Fill(const RGBAColour& colour);
+  virtual void Fill(const GraphicsObject& go,
+                    const RGBAColour& colour);
 
  private:
   Rect screen_rect_;
 
-  GLint back_texture_id_;
+  unsigned int texture_width_;
+  unsigned int texture_height_;
+
+  GLuint back_texture_id_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLCOLOURFILTER_HPP_

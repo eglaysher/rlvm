@@ -68,7 +68,7 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
   RGBAColour colour = go.colour();
   colour.setAlpha(
       static_cast<int>(colour.a_float() * go.computedAlpha()));
-  colour_filer_->Fill(colour);
+  colour_filer_->Fill(go, colour);
 
   if (tree) {
     *tree << "  ColourFilterObjectData" << std::endl

@@ -27,6 +27,7 @@
 #ifndef SRC_SYSTEMS_BASE_COLOURFILTER_HPP_
 #define SRC_SYSTEMS_BASE_COLOURFILTER_HPP_
 
+class GraphicsObject;
 class RGBAColour;
 
 // An interface for platform specific colour filters.
@@ -35,7 +36,8 @@ class ColourFilter {
   virtual ~ColourFilter() {}
 
   // Fills an area of the screen with |colour|.
-  virtual void Fill(const RGBAColour& colour) = 0;
+  virtual void Fill(const GraphicsObject& go,
+                    const RGBAColour& colour) = 0;
 };
 
 #endif  // SRC_SYSTEMS_BASE_COLOURFILTER_HPP_

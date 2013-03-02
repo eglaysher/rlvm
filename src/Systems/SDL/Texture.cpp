@@ -637,27 +637,12 @@ void Texture::renderToScreenAsObject(
       glUseProgramObjectARB(Shaders::getObjectProgram());
       glUniform1iARB(Shaders::getObjectUniformImage(), 0);
 
-      // Colour
-      RGBAColour colour = go.colour();
-      glUniform4fARB(Shaders::getObjectUniformColour(),
-                     colour.r_float(), colour.g_float(),
-                     colour.b_float(), colour.a_float());
+      // Colour/Tint/Etc.
+      Shaders::loadObjectUniformFromGraphicsObject(go);
 
-      RGBColour tint = go.tint();
-      glUniform3fARB(Shaders::getObjectUniformTint(),
-                     tint.r_float(), tint.g_float(), tint.b_float());
-
-      glUniform1fARB(Shaders::getObjectUniformLight(),
-                     go.light() / 255.0f);
-
+      // Alpha.
       glUniform1fARB(Shaders::getObjectUniformAlpha(),
                      alpha / 255.0f);
-
-      glUniform1fARB(Shaders::getObjectUniformMono(),
-                     go.mono() / 255.0f);
-
-      glUniform1fARB(Shaders::getObjectUniformInvert(),
-                     go.invert() / 255.0f);
 
       // Our final blending color has to be all white here.
       using_shader = true;
