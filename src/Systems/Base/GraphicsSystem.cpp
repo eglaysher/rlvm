@@ -543,7 +543,7 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
       } else {
         getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
         if (tree) {
-          *tree << "[Haikei bitmap]";
+          *tree << "[Haikei bitmap: " << default_bgr_name_ << "]" << endl;
         }
       }
     }
