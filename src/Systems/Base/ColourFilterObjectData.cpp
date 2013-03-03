@@ -73,7 +73,10 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
   if (tree) {
     *tree << "  ColourFilterObjectData" << std::endl
           << "  Screen rect: " << screen_rect_ << std::endl
-          << "  Colour: " << colour << std::endl;
+          << "  Colour: " << colour << std::endl
+          << "  Properties: ";
+    PrintGraphicsObjectToTree(go, tree);
+    *tree << endl;
   }
 }
 

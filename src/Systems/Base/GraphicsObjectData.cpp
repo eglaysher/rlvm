@@ -76,19 +76,16 @@ void GraphicsObjectData::render(const GraphicsObject& go,
     if (tree) {
       objectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst << endl;
-      if (alpha != 255)
-        *tree << "  (alpha=" << alpha << ")";
-      if (go.mono())
-        *tree << "  (mono)";
-      if (go.invert())
-        *tree << "  (invert)";
-      if (go.light())
-        *tree << "  (light=" << go.light() << ")";
-      if (go.tint() != RGBColour::Black())
-        *tree << "  (tint=" << go.tint() << ")";
-      if (go.colour() != RGBAColour::Clear())
-        *tree << "  (colour=" << go.colour() << ")";
+      if (parent) {
+        *tree << "  Parent: ";
+        PrintGraphicsObjectToTree(*parent, tree);
+        *tree << endl;
+      }
 
+      *tree << "  Properties: ";
+      if (alpha != 255)
+        *tree << "(alpha=" << alpha << ") ";
+      PrintGraphicsObjectToTree(go, tree);
       *tree << endl;
     }
 
@@ -173,6 +170,20 @@ void GraphicsObjectData::endAnimation() {
     break;
   }
   }
+}
+
+void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
+                                                   std::ostream* tree) {
+  if (go.mono())
+    *tree << "(mono) ";
+  if (go.invert())
+    *tree << "(invert) ";
+  if (go.light())
+    *tree << "(light=" << go.light() << ") ";
+  if (go.tint() != RGBColour::Black())
+    *tree << "(tint=" << go.tint() << ") ";
+  if (go.colour() != RGBAColour::Clear())
+    *tree << "(colour=" << go.colour() << ") ";
 }
 
 Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {

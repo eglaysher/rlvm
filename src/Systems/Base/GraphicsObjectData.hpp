@@ -98,6 +98,9 @@ class GraphicsObjectData {
   // animation.
   void endAnimation();
 
+  void PrintGraphicsObjectToTree(const GraphicsObject& go,
+                                 std::ostream* tree);
+
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.
   virtual boost::shared_ptr<const Surface> currentSurface(
