@@ -100,7 +100,7 @@ class Texture {
     const Rect& src, const Rect& dst, const RGBAColour& rgba);
 
   bool filterCoords(int& x1, int& y1, int& x2, int& y2,
-                    float& dx1, float& dy1, float& dx2, float& dy2);
+                    int& dx1, int& dy1, int& dx2, int& dy2);
 
   int x_offset_;
   int y_offset_;

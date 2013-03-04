@@ -265,7 +265,7 @@ void printARBLog(GLhandleARB obj) {
 // This is really broken and brain dead.
 void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
-  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
+  int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -287,13 +287,13 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
   glBegin(GL_QUADS); {
     glColor4ub(255, 255, 255, opacity);
     glTexCoord2f(thisx1, thisy1);
-    glVertex2f(fdx1, fdy1);
+    glVertex2i(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);
-    glVertex2f(fdx2, fdy1);
+    glVertex2i(fdx2, fdy1);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);
+    glVertex2i(fdx2, fdy2);
     glTexCoord2f(thisx1, thisy2);
-    glVertex2f(fdx1, fdy2);
+    glVertex2i(fdx1, fdy2);
   }
   glEnd();
   glBlendFunc(GL_ONE, GL_ZERO);
@@ -327,7 +327,7 @@ void Texture::renderToScreenAsColorMask(
 void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
   const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
-  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
+  int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -392,16 +392,16 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
     glColorRGBA(rgba);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy2);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy1);
-    glVertex2f(fdx1, fdy1);
+    glVertex2i(fdx1, fdy1);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx2, thisy2);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx2, thisy1);
-    glVertex2f(fdx2, fdy1);
+    glVertex2i(fdx2, fdy1);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx2, thisy1);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);
+    glVertex2i(fdx2, fdy2);
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, thisx1, thisy1);
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, thisx1, thisy2);
-    glVertex2f(fdx1, fdy2);
+    glVertex2i(fdx1, fdy2);
   }
   glEnd();
 
@@ -427,7 +427,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
 void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
   const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
-  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
+  int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -453,13 +453,13 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
   glBegin(GL_QUADS); {
     glColorRGBA(rgba);
     glTexCoord2f(thisx1, thisy1);
-    glVertex2f(fdx1, fdy1);
+    glVertex2i(fdx1, fdy1);
     glTexCoord2f(thisx2, thisy1);
-    glVertex2f(fdx2, fdy1);
+    glVertex2i(fdx2, fdy1);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);
+    glVertex2i(fdx2, fdy2);
     glTexCoord2f(thisx1, thisy2);
-    glVertex2f(fdx1, fdy2);
+    glVertex2i(fdx1, fdy2);
   }
   glEnd();
 
@@ -471,7 +471,7 @@ void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
 void Texture::render_to_screen_as_colour_mask_additive(
   const Rect& src, const Rect& dst, const RGBAColour& rgba) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
-  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
+  int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -491,13 +491,13 @@ void Texture::render_to_screen_as_colour_mask_additive(
 
   glBegin(GL_QUADS); {
     glColorRGBA(rgba);
-    glTexCoord2f(thisx1, thisy1);
+    glTexCoord2i(thisx1, thisy1);
     glVertex2f(fdx1, fdy1);
-    glTexCoord2f(thisx2, thisy1);
+    glTexCoord2i(thisx2, thisy1);
     glVertex2f(fdx2, fdy1);
-    glTexCoord2f(thisx2, thisy2);
+    glTexCoord2i(thisx2, thisy2);
     glVertex2f(fdx2, fdy2);
-    glTexCoord2f(thisx1, thisy2);
+    glTexCoord2i(thisx1, thisy2);
     glVertex2f(fdx1, fdy2);
   }
   glEnd();
@@ -511,7 +511,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
                              const int opacity[4]) {
   // For the time being, we are dumb and assume that it's one texture
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
-  float fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
+  int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
     return;
 
@@ -530,16 +530,16 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   glBegin(GL_QUADS); {
     glColor4ub(255, 255, 255, opacity[0]);
     glTexCoord2f(thisx1, thisy1);
-    glVertex2f(fdx1, fdy1);
+    glVertex2i(fdx1, fdy1);
     glColor4ub(255, 255, 255, opacity[1]);
     glTexCoord2f(thisx2, thisy1);
-    glVertex2f(fdx2, fdy1);
+    glVertex2i(fdx2, fdy1);
     glColor4ub(255, 255, 255, opacity[2]);
     glTexCoord2f(thisx2, thisy2);
-    glVertex2f(fdx2, fdy2);
+    glVertex2i(fdx2, fdy2);
     glColor4ub(255, 255, 255, opacity[3]);
     glTexCoord2f(thisx1, thisy2);
-    glVertex2f(fdx1, fdy2);
+    glVertex2i(fdx1, fdy2);
   }
   glEnd();
   glBlendFunc(GL_ONE, GL_ZERO);
@@ -563,8 +563,8 @@ void Texture::renderToScreenAsObject(
   int xSrc2 = srcRect.x2();
   int ySrc2 = srcRect.y2();
 
-  float fdx1 = dstRect.x(), fdy1 = dstRect.y(), fdx2 = dstRect.x2(),
-    fdy2 = dstRect.y2();
+  int fdx1 = dstRect.x(), fdy1 = dstRect.y(), fdx2 = dstRect.x2(),
+      fdy2 = dstRect.y2();
   if (!filterCoords(xSrc1, ySrc1, xSrc2, ySrc2,
                     fdx1, fdy1, fdx2, fdy2)) {
     return;
@@ -609,12 +609,12 @@ void Texture::renderToScreenAsObject(
     // Translate to where the object starts.
     glTranslatef(fdx1, fdy1, 0);
 
-    float width = fdx2 - fdx1;
-    float height = fdy2 - fdy1;
+    int width = fdx2 - fdx1;
+    int height = fdy2 - fdy1;
 
     // Rotate the texture around the point (origin + position + reporigin)
-    float x_rep = (width / 2) + go.xRepOrigin();
-    float y_rep = (height / 2) + go.yRepOrigin();
+    float x_rep = (width / 2.0f) + go.xRepOrigin();
+    float y_rep = (height / 2.0f) + go.yRepOrigin();
 
     glTranslatef(x_rep, y_rep, 0);
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
@@ -654,13 +654,13 @@ void Texture::renderToScreenAsObject(
 
     glBegin(GL_QUADS); {
       glTexCoord2f(thisx1, thisy1);
-      glVertex2f(0, 0);
+      glVertex2i(0, 0);
       glTexCoord2f(thisx2, thisy1);
-      glVertex2f(width, 0);
+      glVertex2i(width, 0);
       glTexCoord2f(thisx2, thisy2);
-      glVertex2f(width, height);
+      glVertex2i(width, height);
       glTexCoord2f(thisx1, thisy2);
-      glVertex2f(0, height);
+      glVertex2i(0, height);
     }
     glEnd();
 
@@ -677,8 +677,12 @@ void Texture::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
+static float round(float r) {
+  return (r > 0.0f) ? floor(r + 0.5f) : ceil(r - 0.5f);
+}
+
 bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
-                           float& dx1, float& dy1, float& dx2, float& dy2) {
+                           int& dx1, int& dy1, int& dx2, int& dy2) {
   // POINT
   using std::max;
   using std::min;
@@ -693,8 +697,8 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
   // range intersects the virtual range this Texture object holds.
   //
   /// @bug s/>/>=/?
-  if (x1 + w1 > x_offset_ && x1 < x_offset_ + logical_width_ &&
-      y1 + h1 > y_offset_ && y1 < y_offset_ + logical_height_) {
+  if (x1 + w1 >= x_offset_ && x1 < x_offset_ + logical_width_ &&
+      y1 + h1 >= y_offset_ && y1 < y_offset_ + logical_height_) {
     // Do an intersection test in terms of the virtual coordinates
     int virX = max(x1, x_offset_);
     int virY = max(y1, y_offset_);
@@ -702,16 +706,16 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
     int h = min(y1+h1, y_offset_ + logical_height_) - max(y1, y_offset_);
 
     // Adjust the destination coordinates
-    float dx_width = dx2 - dx1;
-    float dy_height = dy2 - dy1;
+    int dx_width = dx2 - dx1;
+    int dy_height = dy2 - dy1;
     float dx1Off = (virX - x1) / float(w1);
-    dx1 = dx1 + (dx_width * dx1Off);
+    dx1 = round(dx1 + (dx_width * dx1Off));
     float dx2Off = w / float(w1);
-    dx2 = dx1 + (dx_width * dx2Off);
+    dx2 = round(dx1 + (dx_width * dx2Off));
     float dy1Off = (virY - y1) / float(h1);
-    dy1 = dy1 + (dy_height * dy1Off);
+    dy1 = round(dy1 + (dy_height * dy1Off));
     float dy2Off = h / float(h1);
-    dy2 = dy1 + (dy_height * dy2Off);
+    dy2 = round(dy1 + (dy_height * dy2Off));
 
     // Output the source intersection in real (instead of
     // virtual) coordinates
