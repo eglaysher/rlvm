@@ -46,6 +46,14 @@ inline void DebugShowGLErrors() {
 
 void reportSDLError(const std::string& sdl_name,
                     const std::string& function_name);
+
+// Whether we can safely use non-power of two textures.
+bool IsNPOTSafe();
+
+// Returns a safe size that can contain |i|.
+//
+// (This function is misused in some places; it can create a texture smaller
+// than |i| if GL_MAX_TEXTURE_SIZE is small.)
 int SafeSize(int i);
 
 struct SDL_Surface;

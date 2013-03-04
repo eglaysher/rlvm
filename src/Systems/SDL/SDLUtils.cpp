@@ -25,6 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
+#include "GL/glew.h"
+
 #include "Systems/SDL/SDLUtils.hpp"
 
 #include <SDL/SDL.h>
@@ -53,17 +55,28 @@ void ShowGLErrors(void) {
 
 // -----------------------------------------------------------------------
 
+bool IsNPOTSafe() {
+  static bool is_safe =
+      GLEW_VERSION_2_0 && GLEW_ARB_texture_non_power_of_two;
+  return is_safe;
+}
+
 int SafeSize(int i) {
   static GLint max_texture_size = 0;
   if (max_texture_size == 0)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
-  int p;
 
-  if (i > max_texture_size) return max_texture_size;
+  if (i > max_texture_size)
+    return max_texture_size;
 
-  for (p = 0; p < 24; p++)
+  if (IsNPOTSafe()) {
+    return i;
+  }
+
+  for (int p = 0; p < 24; p++) {
     if (i <= (1<<p))
       return 1<<p;
+  }
 
   return max_texture_size;
 }

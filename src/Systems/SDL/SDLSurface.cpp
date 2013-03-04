@@ -706,14 +706,18 @@ vector<int> SDLSurface::segmentPicture(int size_remainging) {
     size_remainging -= max_texture_size;
   }
 
-  while (size_remainging) {
-    int ss = SafeSize(size_remainging);
-    if (ss > 512) {
-      output.push_back(512);
-      size_remainging -= 512;
-    } else {
-      output.push_back(size_remainging);
-      size_remainging = 0;
+  if (IsNPOTSafe()) {
+    output.push_back(size_remainging);
+  } else {
+    while (size_remainging) {
+      int ss = SafeSize(size_remainging);
+      if (ss > 512) {
+        output.push_back(512);
+        size_remainging -= 512;
+      } else {
+        output.push_back(size_remainging);
+        size_remainging = 0;
+      }
     }
   }
 
