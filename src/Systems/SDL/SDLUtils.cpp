@@ -38,6 +38,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Colour.hpp"
 
+#include <iostream>
 using namespace std;
 
 // -----------------------------------------------------------------------
@@ -61,11 +62,24 @@ bool IsNPOTSafe() {
   return is_safe;
 }
 
-int SafeSize(int i) {
+int GetMaxTextureSize() {
   static GLint max_texture_size = 0;
-  if (max_texture_size == 0)
+  if (max_texture_size == 0) {
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+    if (max_texture_size > 4096) {
+      // Little Busters tries to page in 9 images, each 1,200 x 12,000. The AMD
+      // drivers do *not* like dealing with those images as one texture, even
+      // if it advertises that it can. Chopping those images doesn't fix the
+      // memory consumption, but helps (slightly) with the allocation pause.
+      max_texture_size = 4096;
+    }
+  }
 
+  return max_texture_size;
+}
+
+int SafeSize(int i) {
+  const GLint max_texture_size = GetMaxTextureSize();
   if (i > max_texture_size)
     return max_texture_size;
 

@@ -696,9 +696,7 @@ Surface* SDLSurface::clone() const {
  * @todo This scheme may be entirely suboptimal. Needs field testing.
  */
 vector<int> SDLSurface::segmentPicture(int size_remainging) {
-  static GLint max_texture_size = 0;
-  if (max_texture_size == 0)
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+  int max_texture_size = GetMaxTextureSize();
 
   vector<int> output;
   while (size_remainging > max_texture_size) {

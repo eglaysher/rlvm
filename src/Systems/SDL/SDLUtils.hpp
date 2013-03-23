@@ -50,6 +50,9 @@ void reportSDLError(const std::string& sdl_name,
 // Whether we can safely use non-power of two textures.
 bool IsNPOTSafe();
 
+// Returns the max texture size.
+int GetMaxTextureSize();
+
 // Returns a safe size that can contain |i|.
 //
 // (This function is misused in some places; it can create a texture smaller
