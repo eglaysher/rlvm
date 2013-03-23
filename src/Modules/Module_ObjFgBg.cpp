@@ -488,22 +488,37 @@ class DisplayMutator : public ObjectMutator {
       }
     }
 
-    if (rotate_mod_)
-      cerr << "We don't support rotate mod yet. (Rotate count: "
-           << rotate_count << ")" << endl;
+    if (rotate_mod_) {
+      static bool printed = false;
+      if (!printed) {
+        cerr << "We don't support rotate mod yet." << endl;
+        printed = true;
+      }
+    }
 
     if (scale_x_mod_) {
-      cerr << "We don't support scale Y mod yet. (Scale percent: "
-           << scale_x_percent << endl;
+      static bool printed = false;
+      if (!printed) {
+        cerr << "We don't support scale Y mod yet." << endl;
+        printed = true;
+      }
     }
 
     if (scale_y_mod_) {
-      cerr << "We don't support scale X mod yet. (Scale percent: "
-           << scale_y_percent << endl;
+      static bool printed = false;
+      if (!printed) {
+        cerr << "We don't support scale X mod yet." << endl;
+        printed = true;
+      }
     }
 
-    if (sin_mod)
-      cerr << "  We don't support \"sin\" yet." << endl;
+    if (sin_mod) {
+      static bool printed = false;
+      if (!printed) {
+        cerr << "  We don't support \"sin\" yet." << endl;
+        printed = true;
+      }
+    }
   }
 
  private:
