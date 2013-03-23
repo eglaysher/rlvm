@@ -33,13 +33,13 @@
 
 #include "Systems/Base/Rect.hpp"
 
-class GraphicsSystem;
 class Surface;
+class System;
 
 // Represents a clickable element inside TextWindows.
 class SelectionElement {
  public:
-  SelectionElement(GraphicsSystem& gs,
+  SelectionElement(System& system,
                    const boost::shared_ptr<Surface>& normal_image,
                    const boost::shared_ptr<Surface>& highlighted_image,
                    const boost::function<void(int)>& selection_callback,
@@ -67,7 +67,7 @@ class SelectionElement {
   // Callback function for when item is selected.
   boost::function<void(int)> selection_callback_;
 
-  GraphicsSystem& graphics_system_;
+  System& system_;
 
   bool isHighlighted(const Point& p);
 };

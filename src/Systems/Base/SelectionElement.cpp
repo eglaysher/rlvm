@@ -28,8 +28,10 @@
 #include "Systems/Base/SelectionElement.hpp"
 
 #include "MachineBase/RLMachine.hpp"
-#include "Systems/Base/Surface.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "Systems/Base/SoundSystem.hpp"
+#include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
 #include "Systems/Base/Rect.hpp"
 
 using boost::shared_ptr;
@@ -38,7 +40,7 @@ using boost::shared_ptr;
 // SelectionElement
 // -----------------------------------------------------------------------
 SelectionElement::SelectionElement(
-    GraphicsSystem& gs,
+    System& system,
     const boost::shared_ptr<Surface>& normal_image,
     const boost::shared_ptr<Surface>& highlighted_image,
     const boost::function<void(int)>& selection_callback,
@@ -47,7 +49,7 @@ SelectionElement::SelectionElement(
       normal_image_(normal_image),
       highlighted_image_(highlighted_image),
       selection_callback_(selection_callback),
-      graphics_system_(gs) {
+      system_(system) {
 }
 
 SelectionElement::~SelectionElement() {
@@ -66,8 +68,11 @@ void SelectionElement::setMousePosition(const Point& pos) {
   bool start_value = is_highlighted_;
   is_highlighted_ = isHighlighted(pos);
 
-  if (start_value != is_highlighted_)
-    graphics_system_.markScreenAsDirty(GUT_TEXTSYS);
+  if (start_value != is_highlighted_) {
+    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    if (is_highlighted_)
+      system_.sound().playSe(0);
+  }
 }
 
 bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {

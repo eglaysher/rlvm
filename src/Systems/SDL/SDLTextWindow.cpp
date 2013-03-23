@@ -105,7 +105,7 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
                    Size(text_insertion_point_x_, text_insertion_point_y_);
 
   SelectionElement* element = new SelectionElement(
-      system().graphics(),
+      system(),
       shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), normal)),
       shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), inverted)),
       selectionCallback(), selection_id, position);

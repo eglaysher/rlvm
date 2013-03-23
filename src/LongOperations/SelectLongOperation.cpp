@@ -39,6 +39,7 @@
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Renderable.hpp"
+#include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
@@ -105,6 +106,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 }
 
 void SelectLongOperation::selected(int num) {
+  machine_.system().sound().playSe(1);
   machine_.system().takeSelectionSnapshot(machine_);
   return_value_ = num;
 }
@@ -328,6 +330,10 @@ ButtonSelectLongOperation::~ButtonSelectLongOperation() {
 void ButtonSelectLongOperation::mouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     if (buttons_[i].bounding_rect.contains(p)) {
+      if (highlighted_item_ != i) {
+        machine_.system().sound().playSe(0);
+      }
+
       highlighted_item_ = i;
       return;
     }
