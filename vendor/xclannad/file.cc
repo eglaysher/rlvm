@@ -299,6 +299,39 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
 		int head_size = read_little_endian_short(_inbuf+5);
 		if (head_size < 0 || head_size*24 > _inlen) return;
 
+    region_table = vector<REGION>(head_size);
+
+    const char* head = _inbuf + 9;
+    bool overlaid_image = head_size > 1;
+    for (int i = 0; i < head_size; i++) {
+      region_table[i].x1 = read_little_endian_int(head+0);
+      region_table[i].y1 = read_little_endian_int(head+4);
+      region_table[i].x2 = read_little_endian_int(head+8);
+      region_table[i].y2 = read_little_endian_int(head+12);
+      region_table[i].origin_x = read_little_endian_int(head+16);
+      region_table[i].origin_y = read_little_endian_int(head+20);
+      region_table[i].Fix(w, h);
+
+      if (region_table[i].x1 != 0 || region_table[i].y1 != 0 ||
+          region_table[i].x2 != (w - 1) || region_table[i].y2 != (h - 1)) {
+        overlaid_image = false;
+      }
+
+      head += 24;
+    }
+
+    if (overlaid_image) {
+      // This is one of those newer images where each region is the size of
+      // width/height and is stacked on top of each other. We therefore have to
+      // munge the height and the region table so each region gets its own
+      // space on the canvas.
+      for (int i = 0; i < head_size; ++i) {
+        region_table[i].y1 += i * h;
+        region_table[i].y2 += i * h;
+      }
+      h = h * head_size;
+    }
+
 		const char* data_top = _inbuf + 9 + head_size*24;
 		int data_sz = read_little_endian_int(data_top);
 		if (_inbuf + _inlen != data_top + data_sz) {
@@ -638,22 +671,9 @@ bool G00CONV::Read_Type1(char* image) {
 
 bool G00CONV::Read_Type2(char* image) {
 	memset(image, 0, width*height*4);
-	/* 分割領域を得る */
-	int region_deal = read_little_endian_int(data+5);
-//	REGION* region_table = new REGION[region_deal];
-    region_table = vector<REGION>(region_deal);
 
-	const char* head = data + 9;
-	int i; for (i=0; i<region_deal; i++) {
-		region_table[i].x1 = read_little_endian_int(head+0);
-		region_table[i].y1 = read_little_endian_int(head+4);
-		region_table[i].x2 = read_little_endian_int(head+8);
-		region_table[i].y2 = read_little_endian_int(head+12);
-        region_table[i].origin_x = read_little_endian_int(head+16);
-        region_table[i].origin_y = read_little_endian_int(head+20);
-		region_table[i].Fix(width, height);
-		head += 24;
-	}
+	int region_deal = read_little_endian_int(data+5);
+	const char* head = data + 9 + (region_deal * 24);
 
 	// 展開
 	int uncompress_size = read_little_endian_int(head+4);
@@ -669,7 +689,7 @@ bool G00CONV::Read_Type2(char* image) {
 	int region_deal2 = read_little_endian_int(uncompress_data);
 	if (region_deal > region_deal2) region_deal = region_deal2;
 
-	for (i=0; i < region_deal; i++) {
+	for (int i = 0; i < region_deal; i++) {
 		int offset = read_little_endian_int(uncompress_data + i*8 + 4);
 		int length = read_little_endian_int(uncompress_data + i*8 + 8);
 		src = (const char*)(uncompress_data + offset + 0x74);

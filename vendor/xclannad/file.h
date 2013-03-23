@@ -37,24 +37,26 @@ public:
 
 class GRPCONV {
 public:
-	struct REGION {
-      int x1, y1, x2, y2;
-      int origin_x, origin_y;
-		int Width() { return x2-x1+1;}
-		int Height() { return y2-y1+1;}
-		void FixVar(int& v, int& w) {
-			if (v < 0) v = 0;
-			if (v >= w) v = w-1;
-		}
-		void Fix(int w, int h) {
-			FixVar(x1,w);
-			FixVar(x2,w);
-			FixVar(y1,h);
-			FixVar(y2,h);
-			if (x1 > x2) x2 = x1;
-			if (y1 > y2) y2 = y1;
-		}
-	};
+  struct REGION {
+    int x1, y1, x2, y2;
+    int origin_x, origin_y;
+    int Width() { return x2-x1+1;}
+    int Height() { return y2-y1+1;}
+    void FixVar(int& v, int& w) {
+      if (v < 0) v = 0;
+      if (v >= w) v = w-1;
+    }
+    // This only place I've found which relies on Fix() is the Kanon English
+    // patch. I suspect that vaconv and other fan tools are/were broken.
+    void Fix(int w, int h) {
+      FixVar(x1,w);
+      FixVar(x2,w);
+      FixVar(y1,h);
+      FixVar(y2,h);
+      if (x1 > x2) x2 = x1;
+      if (y1 > y2) y2 = y1;
+    }
+  };
 
   std::vector<REGION> region_table;
 
