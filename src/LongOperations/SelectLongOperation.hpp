@@ -56,6 +56,13 @@ class SelectLongOperation : public LongOperation {
 
     // What to print as the option.
     std::string str;
+
+    // Whether this item is selectable.
+    bool enabled;
+
+    // What color this should be.
+    bool use_colour;
+    int colour_index;
   };
 
   SelectLongOperation(RLMachine& machine,
@@ -127,6 +134,9 @@ class ButtonSelectLongOperation : public SelectLongOperation,
     // The id to return when this button is clicked.
     int id;
 
+    // Whether the button is enabled.
+    bool enabled;
+
     // Text representations to blit to the screen.
     boost::shared_ptr<Surface> default_surface;
     boost::shared_ptr<Surface> select_surface;
@@ -158,6 +168,17 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   // certain states.
   int normal_frame_;
   int select_frame_;
+  int push_frame_;
+  int dontsel_frame_;
+
+  // Offsets from our base position which correspond to the different frames.
+  Point normal_frame_offset_;
+  Point select_frame_offset_;
+  Point push_frame_offset_;
+  Point dontsel_frame_offset_;
+
+  // Whether the left mouse button is currently pressed.
+  bool mouse_down_;
 
   // Surface loaded from #SELBTN.xxx.NAME.
   boost::shared_ptr<const Surface> name_surface_;
