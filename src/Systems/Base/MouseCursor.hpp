@@ -32,27 +32,48 @@
 #include "Systems/Base/Rect.hpp"
 
 class Surface;
+class System;
 class RLMachine;
 
 // Represents a mouse cursor on screen.
 class MouseCursor {
  public:
-  explicit MouseCursor(const boost::shared_ptr<const Surface>& cursor_surface);
+  explicit MouseCursor(System& system,
+                       const boost::shared_ptr<const Surface>& cursor_surface,
+                       int count,
+                       int speed);
   ~MouseCursor();
+
+  // Updates the MouseCursor.
+  void execute(System& system);
 
   // Renders the cursor to the screen, taking the hotspot offset into account.
   void renderHotspotAt(const Point& mouse_pt);
 
+ private:
   // Returns (renderX, renderY) which is the upper left corner of where the
   // cursor is to be rendered for the incoming mouse location (mouseX, mouseY).
   Point getTopLeftForHotspotAt(const Point& mouse_location);
 
- private:
   // Sets hotspot_[XY] to the white pixel in the
   void findHotspot();
 
+  System& system_;
+
   // The raw image read from the PDT.
   boost::shared_ptr<const Surface> cursor_surface_;
+
+  // The number of frames in cursor.
+  int count_;
+
+  // How much time should be spent between mouse cursor frames.
+  int frame_speed_;
+
+  // The current frame.
+  int current_frame_;
+
+  // The last time current_frame_ was incremented in ticks
+  unsigned int last_time_frame_incremented_;
 
   // The hotspot location.
   Size hotspot_offset_;

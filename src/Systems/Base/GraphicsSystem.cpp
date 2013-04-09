@@ -565,6 +565,9 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
            foregroundObjects().allocated_end(),
            bind(&GraphicsObject::execute, _1, boost::ref(machine)));
 
+  if (mouse_cursor_)
+    mouse_cursor_->execute(system());
+
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
     hik_renderer_->execute(machine);
 
@@ -891,12 +894,17 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
       mouse_cursor_ = it->second;
     } else {
       boost::shared_ptr<const Surface> cursor_surface;
-      GameexeInterpretObject cursor_key =
-        system().gameexe()("MOUSE_CURSOR", cursor_, "NAME");
+      GameexeInterpretObject cursor =
+          system().gameexe()("MOUSE_CURSOR", cursor_);
+      GameexeInterpretObject name_key = cursor("NAME");
 
-      if (cursor_key.exists()) {
-        cursor_surface = getSurfaceNamed(cursor_key);
-        mouse_cursor_.reset(new MouseCursor(cursor_surface));
+      if (name_key.exists()) {
+        int count = cursor("CONT").to_int(1);
+        int speed = cursor("SPEED").to_int(800);
+
+        cursor_surface = getSurfaceNamed(name_key);
+        mouse_cursor_.reset(
+            new MouseCursor(system(), cursor_surface, count, speed));
         cursor_cache_[cursor_] = mouse_cursor_;
       } else {
         mouse_cursor_.reset();

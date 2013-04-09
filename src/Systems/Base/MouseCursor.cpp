@@ -27,11 +27,13 @@
 
 #include "Systems/Base/MouseCursor.hpp"
 
+#include "Systems/Base/EventSystem.hpp"
+#include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
+#include "Systems/Base/System.hpp"
 
 const int CURSOR_SIZE_INT = 32;
 const Size CURSOR_SIZE = Size(CURSOR_SIZE_INT, CURSOR_SIZE_INT);
-const Rect CURSOR_RECT = Rect(8, 8, CURSOR_SIZE);
 
 const int HOTSPOTMASK_X_OFFSET = 8;
 const int HOTSPOTMASK_Y_OFFSET = 48;
@@ -41,33 +43,59 @@ using namespace std;
 // -----------------------------------------------------------------------
 // MouseCursor (public)
 // -----------------------------------------------------------------------
-MouseCursor::MouseCursor(const boost::shared_ptr<const Surface>& cursor_surface)
-    : cursor_surface_(cursor_surface) {
+MouseCursor::MouseCursor(
+    System& system,
+    const boost::shared_ptr<const Surface>& cursor_surface,
+    int count,
+    int speed)
+    : system_(system),
+      cursor_surface_(cursor_surface),
+      count_(count),
+      frame_speed_(speed / count_),
+      current_frame_(0),
+      last_time_frame_incremented_(system.event().getTicks()) {
+  // TODO(erg): Technically, each frame might have a hotspot. In practice, the
+  // hotspot is in the same place every frame.
   findHotspot();
 
   int alphaR, alphaG, alphaB;
   cursor_surface->getDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
 
-  cursor_surface_ =
-    cursor_surface->clipAsColorMask(CURSOR_RECT, alphaR, alphaG, alphaB);
+  cursor_surface_ = cursor_surface->clipAsColorMask(
+      Rect(8, 8, Size(CURSOR_SIZE_INT * count_, CURSOR_SIZE_INT)),
+      alphaR, alphaG, alphaB);
 }
 
 MouseCursor::~MouseCursor() {}
 
+void MouseCursor::execute(System& system) {
+  unsigned int cur_time = system.event().getTicks();
+
+  if (last_time_frame_incremented_ + frame_speed_ < cur_time) {
+    last_time_frame_incremented_ = cur_time;
+
+    system.graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+
+    current_frame_++;
+    if (current_frame_ >= count_)
+      current_frame_ = 0;
+  }
+}
+
 void MouseCursor::renderHotspotAt(const Point& mouse_location) {
   Point render_point = getTopLeftForHotspotAt(mouse_location);
   cursor_surface_->renderToScreen(
-    Rect(0, 0, CURSOR_SIZE),
+    Rect(current_frame_ * CURSOR_SIZE_INT, 0, CURSOR_SIZE),
     Rect(render_point, CURSOR_SIZE));
-}
-
-Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location) {
-  return mouse_location - hotspot_offset_;
 }
 
 // -----------------------------------------------------------------------
 // MouseCursor (private)
 // -----------------------------------------------------------------------
+
+Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location) {
+  return mouse_location - hotspot_offset_;
+}
 
 void MouseCursor::findHotspot() {
   int r, g, b;
@@ -81,7 +109,7 @@ void MouseCursor::findHotspot() {
       if (r == 255 && g == 255 && b == 255) {
         hotspot_offset_ =
             Size(x - HOTSPOTMASK_X_OFFSET, y - HOTSPOTMASK_Y_OFFSET);
-        break;
+        return;
       }
     }
   }
