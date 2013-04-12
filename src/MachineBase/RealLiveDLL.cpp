@@ -28,6 +28,7 @@
 
 #include "Systems/Base/LittleBustersEF00DLL.hpp"
 #include "Systems/Base/LittleBustersPT00DLL.hpp"
+#include "Systems/Base/TomoyoAfterDT00DLL.hpp"
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
 
@@ -48,6 +49,8 @@ RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
     return new LittleBustersEF00DLL;
   } else if (name == "PT00") {
     return new LittleBustersPT00DLL;
+  } else if (name == "DT00") {
+    return new TomoyoAfterDT00DLL;
   } else {
     ostringstream oss;
     oss << "Unsupported DLL interface " << name;
