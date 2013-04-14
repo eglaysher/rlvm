@@ -185,6 +185,7 @@ librlvm_files = [
   "src/Systems/Base/TextWakuType4.cpp",
   "src/Systems/Base/TextWindow.cpp",
   "src/Systems/Base/TextWindowButton.cpp",
+  "src/Systems/Base/TomoyoAfterDT00DLL.cpp",
   "src/Systems/Base/ToneCurve.cpp",
   "src/Systems/Base/VoiceArchive.cpp",
   "src/Systems/Base/VoiceCache.cpp",
