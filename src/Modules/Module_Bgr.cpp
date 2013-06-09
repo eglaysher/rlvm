@@ -153,6 +153,7 @@ struct bgrLoadHaikei_wtf2
 
 typedef Argc_T<
   Special_T<
+    DefaultSpecialMapper,
     // 0:copy(strC 'filename')
     StrConstant_T,
     // 1:DUMMY. Unknown.

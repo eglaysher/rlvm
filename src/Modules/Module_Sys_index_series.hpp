@@ -41,7 +41,8 @@ typedef IntConstant_T ValOnly;
 typedef Complex3_T< IntConstant_T, IntConstant_T, IntConstant_T > StartEndval;
 typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
                     IntConstant_T > StartEndvalMode;
-typedef Special_T< ValOnly, StartEndval, StartEndvalMode > IndexSeriesEntry;
+typedef Special_T< DefaultSpecialMapper,
+                   ValOnly, StartEndval, StartEndvalMode > IndexSeriesEntry;
 typedef Argc_T< IndexSeriesEntry > IndexList;
 
 // Implementation of the math performing index_series command. Exposed through

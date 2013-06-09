@@ -844,6 +844,7 @@ struct zoom : public RLOp_Void_5<
 // call in a {grp,rec}Multi command.
 typedef Argc_T<
   Special_T<
+    DefaultSpecialMapper,
     // 0:copy(strC 'filename')
     StrConstant_T,
     // 1:copy(strC 'filename', 'effect')

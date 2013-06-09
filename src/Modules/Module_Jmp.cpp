@@ -98,7 +98,9 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
 // -----------------------------------------------------------------------
 
 /// Type of the parameter data in the _with functions
-typedef Argc_T< Special_T< IntConstant_T, StrConstant_T> >::type ParamVector;
+typedef Argc_T< Special_T< DefaultSpecialMapper,
+                           IntConstant_T,
+                           StrConstant_T> >::type ParamVector;
 
 // Stores the incoming parameter format into the local variables used for
 // parameters in gosub_with and farcall_with calls, and return them to the
@@ -373,7 +375,8 @@ struct rtl : public RLOp_Void_Void {
 // the static methods on the type checking structs directly to reuse code.
 struct gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    typedef Argc_T<Special_T<IntConstant_T, StrConstant_T> > ParamFormat;
+    typedef Argc_T<Special_T<DefaultSpecialMapper,
+                             IntConstant_T, StrConstant_T> > ParamFormat;
 
     const ptr_vector<ExpressionPiece>& parameterPieces =
         gotoElement.getParameters();
@@ -417,7 +420,9 @@ struct ret_with_1 : public RLOp_Void_Void {
 // values passed in to the first avaiable intL[] and strK[] memory blocks.
 struct farcall_with
   : public RLOp_Void_3< IntConstant_T, IntConstant_T,
-                      Argc_T< Special_T< IntConstant_T, StrConstant_T > > > {
+                        Argc_T< Special_T< DefaultSpecialMapper,
+                                           IntConstant_T,
+                                           StrConstant_T > > > {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint,

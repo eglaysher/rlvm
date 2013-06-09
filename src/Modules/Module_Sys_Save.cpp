@@ -185,6 +185,7 @@ struct SaveInfo
 
 typedef Argc_T<
   Special_T<
+    DefaultSpecialMapper,
     Complex3_T<IntReference_T, IntReference_T, IntConstant_T>,
     Complex3_T<StrReference_T, StrReference_T, IntConstant_T> > >
 GetSaveFlagList;
