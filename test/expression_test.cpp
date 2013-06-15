@@ -130,4 +130,17 @@ TEST(ExpressionTest, PreviousErrors) {
   EXPECT_EQ(10, values[5]) << "Incorect value for intB[5]";
 }
 
+// In later games, you found newline metadata inside special parameters. Make
+// sure that the expression parser can deal with that.
+TEST(ExpressionTest, ParseWithNewlineInIt) {
+  string parsable = libReallive::printableToParsableString(
+      "0a 77 02 61 37 61 00 ( $ ff ) 00 00 00 5c 02 $ ff 8d 01 00 00 "
+      "$ ff ff 00 00 00 )");
 
+  // This shouldn't throw.
+  const char* start = parsable.c_str();
+  boost::scoped_ptr<libReallive::ExpressionPiece> piece(
+      libReallive::get_data(start));
+
+  ASSERT_TRUE(piece->isSpecialParamater());
+}

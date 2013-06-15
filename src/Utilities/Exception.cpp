@@ -130,7 +130,7 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       const char* start = it->c_str();
       try {
         boost::scoped_ptr<libReallive::ExpressionPiece> piece(
-            libReallive::get_complex_param(start));
+            libReallive::get_data(start));
         oss << piece->getDebugValue(machine);
       } catch (libReallive::Error& e) {
         // Any error throw here is a parse error.

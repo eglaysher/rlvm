@@ -147,11 +147,17 @@ size_t next_data(const char* src) {
     const char* end = src;
     if (*end++ == 'a') {
       ++end;
+
+      // Some special cases have multiple tags.
+      if (*end == 'a')
+        end += 2;
+
       if (*end != '(') {
         end += next_data(end);
         return end - src;
       } else end++;
     }
+
     while (*end != ')') end += next_data(end);
     end++;
     if (*end == '\\')
@@ -380,6 +386,14 @@ ExpressionPiece* get_data(const char*& src) {
 
     if (*end++ == 'a') {
       int tag = *end++;
+
+      // Some special cases have multiple tags.
+      if (*end == 'a') {
+        end++;
+        int second = *end++;
+        tag = (tag << 16) | second;
+      }
+
       cep.reset(new SpecialExpressionPiece(tag));
 
       if (*end != '(') {

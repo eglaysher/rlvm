@@ -702,7 +702,20 @@ std::string FunctionElement::serializableData(RLMachine& machine) const {
 
 // -----------------------------------------------------------------------
 
-const size_t FunctionElement::param_count() const { return params.size(); }
+const size_t FunctionElement::param_count() const {
+  // Because line number metaelements can be placed inside parameters (!?!?!),
+  // it's possible that our last parameter consists only of the data for a
+  // source line MetaElement. We can't detect this during parsing (because just
+  // dropping the parameter will put the stream cursor in the wrong place), so
+  // hack this here.
+  if (!params.empty()) {
+    string final = params.back();
+    if (final.size() == 3 && final[0] == '\n')
+      return params.size() - 1;
+  }
+  return params.size();
+}
+
 string FunctionElement::get_param(int i) const { return params[i]; }
 
 // -----------------------------------------------------------------------
