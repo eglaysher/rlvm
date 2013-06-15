@@ -139,6 +139,7 @@ librlvm_files = [
   "src/Modules/Module_Sys_Timer.cpp",
   "src/Modules/Module_Sys_Wait.cpp",
   "src/Modules/Module_Sys_index_series.cpp",
+  "src/Modules/Module_Sys_timetable2.cpp",
   "src/Modules/Modules.cpp",
   "src/Systems/Base/AnmGraphicsObjectData.cpp",
   "src/Systems/Base/CGMTable.cpp",

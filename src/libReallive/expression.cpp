@@ -391,7 +391,7 @@ ExpressionPiece* get_data(const char*& src) {
       if (*end == 'a') {
         end++;
         int second = *end++;
-        tag = (tag << 16) | second;
+        tag = (second << 16) | tag;
       }
 
       cep.reset(new SpecialExpressionPiece(tag));

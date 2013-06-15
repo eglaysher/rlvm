@@ -51,6 +51,7 @@
 #include "Modules/Module_Sys_Timer.hpp"
 #include "Modules/Module_Sys_Wait.hpp"
 #include "Modules/Module_Sys_index_series.hpp"
+#include "Modules/Module_Sys_timetable2.hpp"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
@@ -635,4 +636,5 @@ SysModule::SysModule()
   addSysDateOpcodes(*this);
   addSysNameOpcodes(*this);
   addIndexSeriesOpcode(*this);
+  addTimetable2Opcode(*this);
 }
