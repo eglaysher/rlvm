@@ -1064,7 +1064,25 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
 }
 
 std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
-  return "<special value>";
+  ostringstream oss;
+
+  oss << int(overloadTag) << ":{";
+
+  bool first = true;
+
+  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
+           containedPieces.begin(); it != containedPieces.end(); ++it) {
+    if (!first) {
+      oss << ", ";
+    } else {
+      first = false;
+    }
+
+    oss << it->getDebugValue(machine);
+  }
+  oss << "}";
+
+  return oss.str();
 }
 
 std::string SpecialExpressionPiece::getDebugString() const {
@@ -1077,6 +1095,7 @@ std::string SpecialExpressionPiece::getDebugString() const {
            containedPieces.begin(); it != containedPieces.end(); ++it) {
     if (!first) {
       oss << ", ";
+    } else {
       first = false;
     }
 
