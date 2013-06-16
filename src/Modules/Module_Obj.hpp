@@ -48,6 +48,38 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
 
 // -----------------------------------------------------------------------
 
+// Special adapter to make any of obj* and objBg* operation structs
+// into an objRange* or objRangeBg* struct.
+//
+// We extract the first two expression pieces from the incoming
+// command and assume that they are integers and are the bounds on the
+// object number. We then construct a set of parameters to pass to the
+// real implementation.
+//
+// This is certainly not the most efficient way to do it, but it cuts
+// down on a duplicated operation struct for each obj* and objBg*
+// function, alowing us to just use this adapter with the already
+// defined operations.
+class ObjRangeAdapter : public RLOp_SpecialCase {
+ public:
+  explicit ObjRangeAdapter(RLOperation* in);
+
+  virtual void operator()(RLMachine& machine,
+                          const libReallive::CommandElement& ff);
+
+ private:
+  boost::scoped_ptr<RLOperation> handler;
+};
+
+// Mapping function for a MappedRLModule which turns operation op into
+// a ranged operation.
+//
+// The wrapper takes ownership of the incoming op pointer, and the
+// caller takes ownership of the resultant RLOperation.
+RLOperation* rangeMappingFun(RLOperation* op);
+
+// -----------------------------------------------------------------------
+
 // An adapter that changes a normal object operation into one that operates on
 // an object's child objects.
 class ChildObjAdapter : public RLOp_SpecialCase {

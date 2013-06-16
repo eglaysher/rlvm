@@ -277,60 +277,6 @@ struct objButtonOpts
 
 // -----------------------------------------------------------------------
 
-// Special adapter to make any of obj* and objBg* operation structs
-// into an objRange* or objRangeBg* struct.
-//
-// We extract the first two expression pieces from the incoming
-// command and assume that they are integers and are the bounds on the
-// object number. We then construct a set of parameters to pass to the
-// real implementation.
-//
-// This is certainly not the most efficient way to do it, but it cuts
-// down on a duplicated operation struct for each obj* and objBg*
-// function, alowing us to just use this adapter with the already
-// defined operations.
-//
-// @see rangeMappingFun
-struct ObjRangeAdapter : RLOp_SpecialCase {
-  // Keep a copy of the operation that we wrap
-  scoped_ptr<RLOperation> handler;
-
-  explicit ObjRangeAdapter(RLOperation* in) : handler(in) { }
-
-  void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
-    const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
-
-    // Range check the data
-    if (allParameters.size() < 2)
-      throw rlvm::Exception("Less then two arguments to an objRange function!");
-
-    // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
-    // what RLOperation.dispatchFunction() does; we manually call the
-    // subclass's dispatch() so that we can get around the automated
-    // incrementing of the instruction pointer.
-    int lowerRange = allParameters[0].integerValue(machine);
-    int upperRange = allParameters[1].integerValue(machine);
-    for (int i = lowerRange; i <= upperRange; ++i) {
-      // Create a new list of expression pieces that contain the
-      // current object we're dealing with and
-      ptr_vector<ExpressionPiece> currentInstantiation;
-      currentInstantiation.push_back(new IntegerConstant(i));
-
-      // Copy everything after the first two items
-      ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
-      std::advance(it, 2);
-      for (; it != allParameters.end(); ++it) {
-        currentInstantiation.push_back(it->clone());
-      }
-
-      // Now dispatch based on these parameters.
-      handler->dispatch(machine, currentInstantiation);
-    }
-
-    machine.advanceInstructionPointer();
-  }
-};
-
 class objEveAdjust
     : public RLOp_Void_7<IntConstant_T, IntConstant_T, IntConstant_T,
                          IntConstant_T, IntConstant_T, IntConstant_T,
@@ -966,17 +912,6 @@ ChildObjBgModule::ChildObjBgModule()
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
-}
-
-// -----------------------------------------------------------------------
-
-// Mapping function for a MappedRLModule which turns operation op into
-// a ranged operation.
-//
-// The wrapper takes ownership of the incoming op pointer, and the
-// caller takes ownership of the resultant RLOperation.
-RLOperation* rangeMappingFun(RLOperation* op) {
-  return new ObjRangeAdapter(op);
 }
 
 // -----------------------------------------------------------------------
