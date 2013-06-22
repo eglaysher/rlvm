@@ -40,7 +40,6 @@ int Sys_index_series::operator()(RLMachine& machine,
                                  int offset,
                                  int init,
                                  IndexList::type index_list) {
-  index = index + offset;
   int value = init;
   bool previous_term_finished = false;
 
@@ -56,15 +55,15 @@ int Sys_index_series::operator()(RLMachine& machine,
       }
       case 1: {
         // This is the only thing we reliably can do.
-        int start = it->second.get<0>();
-        int end = it->second.get<1>();
+        int start = it->second.get<0>() + offset;
+        int end = it->second.get<1>() + offset;
         int endval = it->second.get<2>();
         mode0(index, start, end, endval, value, init, previous_term_finished);
         break;
       }
       case 2: {
-        int start = it->third.get<0>();
-        int end = it->third.get<1>();
+        int start = it->third.get<0>() + offset;
+        int end = it->third.get<1>() + offset;
         int endval = it->third.get<2>();
         if (it->third.get<3>() == 0) {
           mode0(index, start, end, endval, value, init, previous_term_finished);
