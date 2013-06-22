@@ -603,9 +603,6 @@ void Texture::renderToScreenAsObject(
   }
 
   glPushMatrix(); {
-    // Move the "origin" to the correct position.
-    glTranslatef(go.xOrigin(), go.yOrigin(), 0);
-
     // Translate to where the object starts.
     glTranslatef(fdx1, fdy1, 0);
 

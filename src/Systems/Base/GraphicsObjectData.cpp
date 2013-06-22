@@ -144,6 +144,7 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       }
     }
 
+    // TODO: Do we want to skip this if no alpha?
     surface->renderToScreenAsObject(go, src, dst, alpha);
   }
 }
@@ -184,6 +185,10 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
     *tree << "(tint=" << go.tint() << ") ";
   if (go.colour() != RGBAColour::Clear())
     *tree << "(colour=" << go.colour() << ") ";
+  if (go.xOrigin())
+    *tree << "(xOrigin=" << go.xOrigin() << ") ";
+  if (go.yOrigin())
+    *tree << "(yOrigin=" << go.yOrigin() << ") ";
 }
 
 Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
@@ -191,6 +196,10 @@ Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
 }
 
 Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
+  if (go.xOrigin() || go.yOrigin()) {
+    return Point(go.xOrigin(), go.yOrigin());
+  }
+
   boost::shared_ptr<const Surface> surface = currentSurface(go);
   if (surface) {
     return Point(surface->getPattern(go.pattNo()).originX,
