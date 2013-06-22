@@ -77,6 +77,12 @@ struct title : public RLOp_Void_1< StrConstant_T > {
   }
 };
 
+struct GetTitle : public RLOp_Void_1< StrReference_T > {
+  void operator()(RLMachine& machine, StringReferenceIterator dest) {
+    *dest = machine.system().graphics().windowSubtitle();
+  }
+};
+
 struct GetCursorPos_gc1
   : public RLOp_Void_4<IntReference_T, IntReference_T, IntReference_T,
                        IntReference_T> {
@@ -333,6 +339,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
 SysModule::SysModule()
   : RLModule("Sys", 1, 004) {
   addOpcode(0, 0, "title", new title);
+  addOpcode(2, 0, "GetTitle", new GetTitle);
 
   addOpcode(130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
   addOpcode(133, 0, "GetCursorPos", new GetCursorPos_gc1);
