@@ -71,6 +71,7 @@ void addAllModules(RLMachine& rlmachine) {
   rlmachine.attachModule(new ChildObjFgManagement);
   rlmachine.attachModule(new ChildObjFgModule);
   rlmachine.attachModule(new ChildObjFgGettersModule);
+  rlmachine.attachModule(new ChildObjRangeFgModule);
   rlmachine.attachModule(new DLLModule);
   rlmachine.attachModule(new DebugModule);
   rlmachine.attachModule(new EventLoopModule);

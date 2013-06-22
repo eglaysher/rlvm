@@ -169,6 +169,57 @@ RLOperation* childObjMappingFun(RLOperation* op) {
 }
 
 // -----------------------------------------------------------------------
+// ChildObjRangeAdapter
+// -----------------------------------------------------------------------
+
+ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in)
+    : handler(in) {
+}
+
+void ChildObjRangeAdapter::operator()(RLMachine& machine,
+                                 const libReallive::CommandElement& ff) {
+  const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
+
+  // Range check the data
+  if (allParameters.size() < 3) {
+    throw rlvm::Exception(
+        "Less then three arguments to an objChildRange function!");
+  }
+
+  // This part is like ChildObjAdapter; the first parameter is an integer
+  // that represents the parent object.
+  int objset = allParameters[0].integerValue(machine);
+
+  // This part is like ObjRangeAdapter; the second and third parameters are
+  // integers that represent a range of child objects.
+  int lowerRange = allParameters[1].integerValue(machine);
+  int upperRange = allParameters[2].integerValue(machine);
+  for (int i = lowerRange; i <= upperRange; ++i) {
+    // Create a new list of expression pieces that contain the
+    // current object we're dealing with and
+    ptr_vector<ExpressionPiece> currentInstantiation;
+    currentInstantiation.push_back(new IntegerConstant(i));
+
+    // Copy everything after the first three items
+    ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
+    std::advance(it, 3);
+    for (; it != allParameters.end(); ++it) {
+      currentInstantiation.push_back(it->clone());
+    }
+
+    // Now dispatch based on these parameters.
+    handler->setProperty(P_PARENTOBJ, objset);
+    handler->dispatch(machine, currentInstantiation);
+  }
+
+  machine.advanceInstructionPointer();
+}
+
+RLOperation* childRangeMappingFun(RLOperation* op) {
+  return new ChildObjRangeAdapter(op);
+}
+
+// -----------------------------------------------------------------------
 // Obj_SetOneIntOnObj
 // -----------------------------------------------------------------------
 

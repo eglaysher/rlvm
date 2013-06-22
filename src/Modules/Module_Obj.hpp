@@ -97,6 +97,25 @@ RLOperation* childObjMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
+// An adapter that ranges over children of a certain parent object.
+class ChildObjRangeAdapter : public RLOp_SpecialCase {
+ public:
+  explicit ChildObjRangeAdapter(RLOperation* in);
+
+  virtual void operator()(RLMachine& machine,
+                          const libReallive::CommandElement& ff);
+
+ private:
+  boost::scoped_ptr<RLOperation> handler;
+};
+
+// The combo form of rangeMappingFun and childObjMappingFun. Used for
+// operations that start with (parent object num, first child num, last child
+// num).
+RLOperation* childRangeMappingFun(RLOperation* op);
+
+// -----------------------------------------------------------------------
+
 // Specialized form of Op_SetToIncomingInt to deal with looking up
 // object from the Obj* helper templates; since a lot of Object
 // related functions simply call a setter.

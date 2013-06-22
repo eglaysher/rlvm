@@ -929,3 +929,11 @@ ObjRangeBgModule::ObjRangeBgModule()
   addObjectFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }
+
+// -----------------------------------------------------------------------
+
+ChildObjRangeFgModule::ChildObjRangeFgModule()
+    : MappedRLModule(childRangeMappingFun, "ObjChildRangeFg", 2, 90) {
+  addObjectFunctions(*this);
+  setProperty(P_FGBG, OBJ_FG);
+}
