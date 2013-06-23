@@ -27,11 +27,11 @@
 
 #include "Modules/Module_Sys_index_series.hpp"
 
-#include <cmath>
 #include <sstream>
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
+#include "Utilities/math_util.hpp"
 
 // -----------------------------------------------------------------------
 
@@ -58,25 +58,17 @@ int Sys_index_series::operator()(RLMachine& machine,
         int start = it->second.get<0>() + offset;
         int end = it->second.get<1>() + offset;
         int endval = it->second.get<2>();
-        mode0(index, start, end, endval, value, init, previous_term_finished);
+        adder(index, start, end, endval, 0,
+              value, init, previous_term_finished);
         break;
       }
       case 2: {
         int start = it->third.get<0>() + offset;
         int end = it->third.get<1>() + offset;
         int endval = it->third.get<2>();
-        if (it->third.get<3>() == 0) {
-          mode0(index, start, end, endval, value, init, previous_term_finished);
-        } else if (it->third.get<3>() == 1) {
-          mode1(index, start, end, endval, value, init, previous_term_finished);
-        } else if (it->third.get<3>() == 2) {
-          mode2(index, start, end, endval, value, init, previous_term_finished);
-        } else {
-          std::ostringstream oss;
-          oss << "Don't know how to handle type " << it->third.get<3>()
-              << " index_series statements";
-          throw rlvm::Exception(oss.str());
-        }
+        int mod = it->third.get<3>();
+        adder(index, start, end, endval, mod,
+              value, init, previous_term_finished);
         break;
       }
     }
@@ -85,59 +77,17 @@ int Sys_index_series::operator()(RLMachine& machine,
   return value;
 }
 
-void Sys_index_series::mode0(int index,
+void Sys_index_series::adder(int index,
                              int start,
                              int end,
                              int endval,
+                             int mod,
                              int& value,
                              int& init,
                              bool& previous_term_finished) {
   if (index > start && index < end) {
-    double percentage = double(index - start) / double(end - start);
     int amount = endval - init;
-    value += (percentage * amount);
-    previous_term_finished = false;
-  } else if (index >= end) {
-    // Prevent us from going over the endval.
-    value = endval;
-    init = endval;
-    previous_term_finished = true;
-  }
-}
-
-void Sys_index_series::mode1(int index,
-                             int start,
-                             int end,
-                             int endval,
-                             int& value,
-                             int& init,
-                             bool& previous_term_finished) {
-  if (index > start && index < end) {
-    double percentage = double(index - start) / double(end - start);
-    double log_percentage = std::log(percentage + 1) / std::log(2);
-    int amount = endval - init;
-    value += (amount - ((1 - log_percentage) * amount));
-    previous_term_finished = false;
-  } else if (index >= end) {
-    // Prevent us from going over the endval.
-    value = endval;
-    init = endval;
-    previous_term_finished = true;
-  }
-}
-
-void Sys_index_series::mode2(int index,
-                             int start,
-                             int end,
-                             int endval,
-                             int& value,
-                             int& init,
-                             bool& previous_term_finished) {
-  if (index > start && index < end) {
-    double percentage = double(index - start) / double(end - start);
-    double log_percentage = std::log(percentage + 1) / std::log(2);
-    int amount = endval - init;
-    value += (log_percentage * amount);
+    value += Interpolate(start, index, end, amount, mod);
     previous_term_finished = false;
   } else if (index >= end) {
     // Prevent us from going over the endval.

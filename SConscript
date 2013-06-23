@@ -196,6 +196,7 @@ librlvm_files = [
   "src/Utilities/StringUtilities.cpp",
   "src/Utilities/dateUtil.cpp",
   "src/Utilities/findFontFile.cpp",
+  "src/Utilities/math_util.cpp",
   "src/libReallive/archive.cpp",
   "src/libReallive/bytecode.cpp",
   "src/libReallive/compression.cpp",
