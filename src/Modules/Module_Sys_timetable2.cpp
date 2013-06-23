@@ -31,6 +31,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Utilities/Exception.hpp"
+#include "Utilities/math_util.hpp"
 
 using namespace std;
 
@@ -79,6 +80,49 @@ int Sys_timetable2::operator()(RLMachine& machine, int now_time, int rep_time,
   for (TimeTable2List::type::iterator it = index_list.begin();
        it != index_list.end(); ++it) {
     switch (it->type) {
+      case 0: {
+        int end_time = it->first.get<0>();
+        int end_num = it->first.get<1>();
+        if (now_time > start_time && now_time <= end_time) {
+          int to_add = end_num - value;
+          return value + Interpolate(start_time, now_time, end_time,
+                                     to_add, 0);
+        } else {
+          value = end_num;
+        }
+
+        start_time = end_time;
+        break;
+      }
+      case 1: {
+        int end_time = it->second.get<0>();
+        int end_num = it->second.get<1>();
+        int mod = it->second.get<2>();
+
+        if (now_time > start_time && now_time <= end_time) {
+          int to_add = end_num - value;
+          return value + Interpolate(start_time, now_time, end_time,
+                                     to_add, mod);
+        } else {
+          value = end_num;
+        }
+
+        start_time = end_time;
+        break;
+      }
+      case 2: {
+        value = it->third;
+        break;
+      }
+      case 3: {
+        int end_time = it->fourth;
+        if (now_time > start_time && now_time <= end_time) {
+          return value;
+        }
+
+        start_time = end_time;
+        break;
+      }
       case 7: {
         int end_time = it->eighth.get<0>();
         int end_num = it->eighth.get<1>();
@@ -132,6 +176,64 @@ int Sys_timetable2::Jump(int start_time, int now_time, int end_time,
 
 // -----------------------------------------------------------------------
 
+struct Sys_timetablelen2 : public Sys_timetable2 {
+  virtual int operator()(RLMachine& machine, int now_time, int rep_time,
+                         int start_time, int start_num,
+                         TimeTable2List::type index_list) {
+    // Modify each part of the index list to keep a running sum of times. This
+    // changes a list of durations into a list of absolute times.
+    int total = 0;
+
+    // TODO: How are we supposed to handle |start_time|?
+
+    for (TimeTable2List::type::iterator it = index_list.begin();
+         it != index_list.end(); ++it) {
+      switch (it->type) {
+        case 0: {
+          total += it->first.get<0>();
+          it->first.get<0>() = total;
+          break;
+        }
+        case 1: {
+          total += it->second.get<0>();
+          it->second.get<0>() = total;
+          break;
+        }
+        case 2: {
+          // Set has no time, therefore it isn't modified.
+          break;
+        }
+        case 3: {
+          total += it->fourth;
+          it->fourth = total;
+          break;
+        }
+        case 7: {
+          total += it->eighth.get<0>();
+          it->eighth.get<0>() = total;
+          break;
+        }
+        case 8: {
+          total += it->ninth.get<0>();
+          it->ninth.get<0>() = total;
+          break;
+        }
+        default: {
+          ostringstream oss;
+          oss << "We don't handle " << it->type << " yet.";
+          throw rlvm::Exception(oss.str());
+        }
+      }
+    }
+
+    return Sys_timetable2::operator()(machine, now_time, rep_time,
+                                      start_time, start_num, index_list);
+  }
+};
+
+// -----------------------------------------------------------------------
+
 void addTimetable2Opcode(RLModule& module) {
   module.addOpcode(810, 0, "timetable2", new Sys_timetable2);
+  module.addOpcode(811, 0, "timetablelen2", new Sys_timetablelen2);
 }
