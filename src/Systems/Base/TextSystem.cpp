@@ -562,6 +562,13 @@ boost::shared_ptr<Surface> TextSystem::renderText(
   }
   total_height += current_line_height;
 
+  // If this text has a shadow, our surface needs to have a final two pixels
+  // added to the bottom and right to accommodate it.
+  if (shadow_colour) {
+    total_height += 2;
+    max_width += 2;
+  }
+
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
   boost::shared_ptr<Surface> surface(
