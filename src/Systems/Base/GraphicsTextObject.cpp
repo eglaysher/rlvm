@@ -44,7 +44,12 @@
 // -----------------------------------------------------------------------
 
 GraphicsTextObject::GraphicsTextObject(System& system)
-    : system_(system) {
+    : system_(system),
+      cached_text_colour_(-1),
+      cached_shadow_colour_(-1),
+      cached_text_size_(-1),
+      cached_x_space_(-1),
+      cached_y_space_(-1) {
 }
 
 // -----------------------------------------------------------------------
@@ -60,15 +65,21 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   // Get the correct colour
   Gameexe& gexe = system_.gameexe();
   std::vector<int> vec = gexe("COLOR_TABLE", rp.textColour());
+  cached_text_colour_ = rp.textColour();
   RGBColour colour(vec.at(0), vec.at(1), vec.at(2));
 
   RGBColour* shadow = NULL;
   RGBColour shadow_impl;
+  cached_shadow_colour_ = rp.textShadowColour();
   if (rp.textShadowColour() != -1) {
     vec = gexe("COLOR_TABLE", rp.textShadowColour());
     shadow_impl = RGBColour(vec.at(0), vec.at(1), vec.at(2));
     shadow = &shadow_impl;
   }
+
+  cached_text_size_ = rp.textSize();
+  cached_x_space_ = rp.textXSpace();
+  cached_y_space_ = rp.textYSpace();
 
   surface_ = system_.text().renderText(
       cached_utf8_str_, rp.textSize(), rp.textXSpace(),
@@ -79,7 +90,13 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
 // -----------------------------------------------------------------------
 
 bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
-  return !surface_ || rp.textText() != cached_utf8_str_;
+  return !surface_ ||
+      rp.textColour() != cached_text_colour_ ||
+      rp.textShadowColour() != cached_shadow_colour_ ||
+      rp.textSize() != cached_text_size_ ||
+      rp.textXSpace() != cached_x_space_ ||
+      rp.textYSpace() != cached_y_space_ ||
+      rp.textText() != cached_utf8_str_;
 }
 
 // -----------------------------------------------------------------------
@@ -132,6 +149,12 @@ void GraphicsTextObject::execute(RLMachine& machine) {
 template<class Archive>
 void GraphicsTextObject::load(Archive& ar, unsigned int version) {
   ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+
+  cached_text_colour_ = -1;
+  cached_shadow_colour_ = -1;
+  cached_text_size_ = -1;
+  cached_x_space_ = -1;
+  cached_y_space_ = -1;
 
   cached_utf8_str_ = "";
   surface_.reset();
