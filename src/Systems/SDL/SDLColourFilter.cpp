@@ -79,9 +79,8 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
     // Set up shader
     glUseProgramObjectARB(Shaders::getObjectProgram());
     glUniform1iARB(Shaders::getObjectUniformImage(), 0);
-    // The alpha is 255 because we are replacing the image on the screen
-    // instead of blending with it.
-    glUniform1fARB(Shaders::getObjectUniformAlpha(), 1.0f);
+    glUniform1fARB(Shaders::getObjectUniformAlpha(),
+                   (go.computedAlpha() / 255.0f));
     Shaders::loadObjectUniformFromGraphicsObject(go);
 
     float thisx1 = 0;
@@ -89,9 +88,7 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
     float thisx2 = float(screen_rect_.width()) / texture_width_;
     float thisy2 = float(screen_rect_.height()) / texture_height_;
 
-    // Don't blend with the background. Blit on top of it.
-    glDisable(GL_BLEND);
-
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBegin(GL_QUADS);
     {
       glTexCoord2f(thisx1, thisy2);
@@ -105,8 +102,8 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
       glVertex2f(screen_rect_.x() + screen_rect_.width(), screen_rect_.y());
     }
     glEnd();
+    glBlendFunc(GL_ONE, GL_ZERO);
 
-    glEnable(GL_BLEND);
     glUseProgramObjectARB(0);
   }
 }

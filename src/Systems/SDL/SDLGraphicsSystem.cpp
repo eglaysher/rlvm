@@ -86,7 +86,7 @@ void SDLGraphicsSystem::setCursor(int cursor) {
 }
 
 void SDLGraphicsSystem::beginFrame() {
-  glClearColor(0, 0, 0, 0);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   DebugShowGLErrors();
 
@@ -320,7 +320,7 @@ void SDLGraphicsSystem::setupVideo() {
   glShadeModel(GL_SMOOTH);
 
   // Set the background black
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
   // Depth buffer setup
   glClearDepth(1.0f);
