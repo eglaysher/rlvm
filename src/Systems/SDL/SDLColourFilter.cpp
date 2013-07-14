@@ -34,9 +34,8 @@
 #include "Systems/SDL/Shaders.hpp"
 #include "Systems/SDL/Texture.hpp"
 
-SDLColourFilter::SDLColourFilter(const Rect& screen_rect)
-    : screen_rect_(screen_rect),
-      texture_width_(0),
+SDLColourFilter::SDLColourFilter()
+    : texture_width_(0),
       texture_height_(0),
       back_texture_id_(0) {
 }
@@ -47,6 +46,7 @@ SDLColourFilter::~SDLColourFilter() {
 }
 
 void SDLColourFilter::Fill(const GraphicsObject& go,
+                           const Rect& screen_rect,
                            const RGBAColour& colour) {
   if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
     if (back_texture_id_ == 0) {
@@ -56,8 +56,8 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-      texture_width_ = SafeSize(screen_rect_.width());
-      texture_height_ = SafeSize(screen_rect_.height());
+      texture_width_ = SafeSize(screen_rect.width());
+      texture_height_ = SafeSize(screen_rect.height());
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                    texture_width_, texture_height_,
                    0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -67,9 +67,9 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
     // Copy the current value of the region where we're going to render
     // to a texture for input to the shader
     glBindTexture(GL_TEXTURE_2D, back_texture_id_);
-    int ystart = int(Texture::ScreenHeight() - screen_rect_.y() -
-                     screen_rect_.height());
-    int idx1 = screen_rect_.x();
+    int ystart = int(Texture::ScreenHeight() - screen_rect.y() -
+                     screen_rect.height());
+    int idx1 = screen_rect.x();
     glCopyTexSubImage2D(GL_TEXTURE_2D,
                         0,
                         0, 0,
@@ -85,21 +85,21 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
 
     float thisx1 = 0;
     float thisy1 = 0;
-    float thisx2 = float(screen_rect_.width()) / texture_width_;
-    float thisy2 = float(screen_rect_.height()) / texture_height_;
+    float thisx2 = float(screen_rect.width()) / texture_width_;
+    float thisy2 = float(screen_rect.height()) / texture_height_;
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBegin(GL_QUADS);
     {
       glTexCoord2f(thisx1, thisy2);
-      glVertex2f(screen_rect_.x(), screen_rect_.y());
+      glVertex2f(screen_rect.x(), screen_rect.y());
       glTexCoord2f(thisx1, thisy1);
-      glVertex2f(screen_rect_.x(), screen_rect_.y() + screen_rect_.height());
+      glVertex2f(screen_rect.x(), screen_rect.y() + screen_rect.height());
       glTexCoord2f(thisx2, thisy1);
-      glVertex2f(screen_rect_.x() + screen_rect_.width(),
-                 screen_rect_.y() + screen_rect_.height());
+      glVertex2f(screen_rect.x() + screen_rect.width(),
+                 screen_rect.y() + screen_rect.height());
       glTexCoord2f(thisx2, thisy2);
-      glVertex2f(screen_rect_.x() + screen_rect_.width(), screen_rect_.y());
+      glVertex2f(screen_rect.x() + screen_rect.width(), screen_rect.y());
     }
     glEnd();
     glBlendFunc(GL_ONE, GL_ZERO);

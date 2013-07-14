@@ -49,6 +49,9 @@ class ColourFilterObjectData : public GraphicsObjectData {
 
   void setRect(const Rect& screen_rect) { screen_rect_ = screen_rect; }
 
+  // Returns the colour filter, lazily creating it if necessary.
+  ColourFilter* GetColourFilter();
+
   // Overriden from GraphicsObjectData:
   virtual void render(const GraphicsObject& go,
                       const GraphicsObject* parent,

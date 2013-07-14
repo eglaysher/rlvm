@@ -38,10 +38,12 @@
 
 class System;
 class MockSurface;
+class MockColourFilter;
 
 class TestGraphicsSystem : public GraphicsSystem {
  public:
   TestGraphicsSystem(System& system, Gameexe& gexe);
+  virtual ~TestGraphicsSystem();
 
   virtual void executeGraphicsSystem(RLMachine& machine) {
     GraphicsSystem::executeGraphicsSystem(machine);
@@ -68,7 +70,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> getHaikei();
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
-  virtual ColourFilter* BuildColourFiller(const Rect& rect);
+  virtual ColourFilter* BuildColourFiller();
 
   virtual void blitSurfaceToDC(
       Surface& source_obj, int target_dc,

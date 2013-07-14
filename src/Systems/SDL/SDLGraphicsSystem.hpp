@@ -90,7 +90,7 @@ class SDLGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> getDC(int dc);
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
 
-  virtual ColourFilter* BuildColourFiller(const Rect& rect);
+  virtual ColourFilter* BuildColourFiller();
 
   // -----------------------------------------------------------------------
 

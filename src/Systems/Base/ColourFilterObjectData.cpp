@@ -49,6 +49,12 @@ ColourFilterObjectData::ColourFilterObjectData(GraphicsSystem& system,
 
 ColourFilterObjectData::~ColourFilterObjectData() {}
 
+ColourFilter* ColourFilterObjectData::GetColourFilter() {
+  if (!colour_filer_)
+    colour_filer_.reset(graphics_system_.BuildColourFiller());
+  return colour_filer_.get();
+}
+
 void ColourFilterObjectData::render(const GraphicsObject& go,
                                     const GraphicsObject* parent,
                                     std::ostream* tree) {
@@ -60,13 +66,8 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
     }
   }
 
-  // Lazily create colour object.
-  if (!colour_filer_) {
-    colour_filer_.reset(graphics_system_.BuildColourFiller(screen_rect_));
-  }
-
   RGBAColour colour = go.colour();
-  colour_filer_->Fill(go, colour);
+  GetColourFilter()->Fill(go, screen_rect_, colour);
 
   if (tree) {
     *tree << "  ColourFilterObjectData" << std::endl

@@ -366,7 +366,7 @@ class GraphicsSystem : public EventListener {
 
   virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;
 
-  virtual ColourFilter* BuildColourFiller(const Rect& rect) = 0;
+  virtual ColourFilter* BuildColourFiller() = 0;
 
   // Clears and promotes objects.
   void clearAndPromoteObjects();

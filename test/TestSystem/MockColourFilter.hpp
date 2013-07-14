@@ -24,32 +24,19 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_SYSTEMS_SDL_SDLCOLOURFILTER_HPP_
-#define SRC_SYSTEMS_SDL_SDLCOLOURFILTER_HPP_
+#ifndef TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_
+#define TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_
 
-#include <SDL/SDL_opengl.h>
+#include "gmock/gmock.h"
 
 #include "Systems/Base/ColourFilter.hpp"
-#include "Systems/Base/Rect.hpp"
 
-class RGBAColour;
-
-// OpenGL specific implementation of a ColourFilter.
-class SDLColourFilter : public ColourFilter {
+class MockColourFilter : public ColourFilter {
  public:
-  SDLColourFilter();
-  virtual ~SDLColourFilter();
-
-  // Overriden from ColourFilter:
-  virtual void Fill(const GraphicsObject& go,
-                    const Rect& screen_rect,
-                    const RGBAColour& colour);
-
- private:
-  unsigned int texture_width_;
-  unsigned int texture_height_;
-
-  GLuint back_texture_id_;
+  MOCK_METHOD3(Fill, void(const GraphicsObject&,
+                          const Rect&,
+                          const RGBAColour&));
 };
 
-#endif  // SRC_SYSTEMS_SDL_SDLCOLOURFILTER_HPP_
+
+#endif  // TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_

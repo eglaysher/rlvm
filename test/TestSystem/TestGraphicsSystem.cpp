@@ -30,6 +30,7 @@
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
+#include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/MockSurface.hpp"
 #include "Utilities/Exception.hpp"
 
@@ -40,7 +41,7 @@
 using namespace std;
 
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
-  : GraphicsSystem(system, gexe) {
+    : GraphicsSystem(system, gexe) {
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
@@ -53,6 +54,8 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
   haikei_.reset(MockSurface::Create("Haikei"));
   haikei_->allocate(screenSize());
 }
+
+TestGraphicsSystem::~TestGraphicsSystem() {}
 
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16)
@@ -132,8 +135,8 @@ boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
   return boost::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
 }
 
-ColourFilter* TestGraphicsSystem::BuildColourFiller(const Rect& rect) {
-  return NULL;
+ColourFilter* TestGraphicsSystem::BuildColourFiller() {
+  return new MockColourFilter;
 }
 
 void TestGraphicsSystem::blitSurfaceToDC(

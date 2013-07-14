@@ -41,8 +41,10 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Str.hpp"
+#include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/TestGraphicsSystem.hpp"
 #include "TestSystem/TestSystem.hpp"
+#include "Systems/Base/ColourFilterObjectData.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Utilities/Exception.hpp"
@@ -60,6 +62,7 @@ using namespace std;
 using namespace libReallive;
 using namespace Serialization;
 
+using ::testing::_;
 using ::testing::Ref;
 using ::testing::Return;
 
@@ -251,3 +254,32 @@ TEST_F(GraphicsObjectTest, GetObjectData) {
 }
 
 // TODO: Use the above mock to test more of the insides of GraphicsObject...
+
+
+TEST_F(GraphicsObjectTest, TestColourFilter) {
+  // In the past, we've had regressions because we ignored updated screen_rects
+  // in colour filter objects.
+
+  GraphicsObject obj;
+
+  // Two completely different rects.
+  const Rect one(10, 12, Size(18, 14));
+  const Rect two(43, 81, Size(5, 20));
+
+  ColourFilterObjectData* data =
+      new ColourFilterObjectData(system.graphics(), one);
+  obj.setObjectData(data);
+
+  MockColourFilter* filter =
+      dynamic_cast<MockColourFilter*>(data->GetColourFilter());
+  EXPECT_CALL(*filter, Fill(_, one, _));
+  EXPECT_CALL(*filter, Fill(_, two, _));
+
+  // Render as is (for the first call).
+  data->render(obj, NULL, NULL);
+
+  data->setRect(two);
+
+  // Render with the modified rect (for the second call).
+  data->render(obj, NULL, NULL);
+}

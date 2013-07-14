@@ -655,8 +655,8 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
   return shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
-ColourFilter* SDLGraphicsSystem::BuildColourFiller(const Rect& rect) {
-  return new SDLColourFilter(rect);
+ColourFilter* SDLGraphicsSystem::BuildColourFiller() {
+  return new SDLColourFilter();
 }
 
 void SDLGraphicsSystem::reset() {
