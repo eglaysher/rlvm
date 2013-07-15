@@ -295,6 +295,9 @@ class SoundSystem {
   // Plays an interface sound effect. |se_num| is an index into the #SE table.
   virtual void playSe(const int se_num) = 0;
 
+  // Returns whether there is a sound effect |se_num| in the table.
+  virtual bool hasSe(const int se_num) = 0;
+
   // ---------------------------------------------------------------------
 
   // Koe (voice) functions

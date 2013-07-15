@@ -105,6 +105,10 @@ void TestSoundSystem::wavFadeOut(const int channel, const int fadetime) {
 void TestSoundSystem::playSe(const int se_num) {
 }
 
+bool TestSoundSystem::hasSe(const int se_num) {
+  return false;
+}
+
 bool TestSoundSystem::koePlaying() const {
   return false;
 }

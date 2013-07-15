@@ -292,6 +292,11 @@ void SDLSoundSystem::playSe(const int se_num) {
   }
 }
 
+bool SDLSoundSystem::hasSe(const int se_num) {
+  SeTable::const_iterator it = seTable().find(se_num);
+  return it != seTable().end();
+}
+
 int SDLSoundSystem::bgmStatus() const {
   boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing) {

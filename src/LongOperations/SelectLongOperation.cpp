@@ -106,7 +106,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 }
 
 void SelectLongOperation::selected(int num) {
-  machine_.system().sound().playSe(1);
+  if (machine_.system().sound().hasSe(1))
+    machine_.system().sound().playSe(1);
   machine_.system().takeSelectionSnapshot(machine_);
   return_value_ = num;
 }
@@ -330,7 +331,8 @@ ButtonSelectLongOperation::~ButtonSelectLongOperation() {
 void ButtonSelectLongOperation::mouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     if (buttons_[i].bounding_rect.contains(p)) {
-      if (highlighted_item_ != i) {
+      if (highlighted_item_ != i &&
+          machine_.system().sound().hasSe(0)) {
         machine_.system().sound().playSe(0);
       }
 

@@ -62,6 +62,7 @@ class SDLSoundSystem : public SoundSystem {
   virtual void wavFadeOut(const int channel, const int fadetime);
 
   virtual void playSe(const int se_num);
+  virtual bool hasSe(const int se_num);
 
   virtual int bgmStatus() const;
   virtual void bgmPlay(const std::string& bgm_name, bool loop);

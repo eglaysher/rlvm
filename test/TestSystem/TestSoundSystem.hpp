@@ -64,6 +64,7 @@ class TestSoundSystem : public SoundSystem {
   virtual void wavFadeOut(const int channel, const int fadetime);
 
   virtual void playSe(const int se_num);
+  virtual bool hasSe(const int se_num);
 
   virtual bool koePlaying() const;
   virtual void koeStop();
