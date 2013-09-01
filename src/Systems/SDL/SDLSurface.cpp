@@ -184,25 +184,20 @@ void TransformSurface(SDLSurface* our_surface, const Rect& area,
 
 // -----------------------------------------------------------------------
 
+// Note to self: These describe the byte order IN THE RAW G00 DATA!
+// These should NOT be switched to native byte order.
+#define DefaultRmask 0xff0000
+#define DefaultGmask 0xff00
+#define DefaultBmask 0xff
+#define DefaultAmask 0xff000000
+#define DefaultBpp 32
+
 SDL_Surface* buildNewSurface(const Size& size) {
   // Create an empty surface
-  Uint32 rmask, gmask, bmask, amask;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-  rmask = 0xff000000;
-  gmask = 0x00ff0000;
-  bmask = 0x0000ff00;
-  amask = 0x000000ff;
-#else
-  rmask = 0x000000ff;
-  gmask = 0x0000ff00;
-  bmask = 0x00ff0000;
-  amask = 0xff000000;
-#endif
-
   SDL_Surface* tmp =
     SDL_CreateRGBSurface(
-      SDL_HWSURFACE | SDL_SRCALPHA, size.width(), size.height(),
-      32, rmask, gmask, bmask, amask);
+        SDL_SWSURFACE | SDL_SRCALPHA, size.width(), size.height(),
+        DefaultBpp, DefaultRmask, DefaultGmask, DefaultBmask, DefaultAmask);
 
   if (tmp == NULL) {
     ostringstream ss;
@@ -211,10 +206,7 @@ SDL_Surface* buildNewSurface(const Size& size) {
     throw SystemError(ss.str());
   }
 
-  SDL_Surface* out = SDL_DisplayFormatAlpha(tmp);
-  SDL_FreeSurface(tmp);
-
-  return out;
+  return tmp;
 }
 
 // -----------------------------------------------------------------------
