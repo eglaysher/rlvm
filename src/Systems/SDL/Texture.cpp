@@ -578,30 +578,6 @@ void Texture::renderToScreenAsObject(
 
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
-  // Make this so that when we have composite 1, we're doing a pure
-  // additive blend, (ignoring the alpha channel?)
-  switch (go.compositeMode()) {
-  case 0:
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
-  case 1:
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
-  case 2: {
-    static int displayedWarning = 0;
-    if (displayedWarning == 0) {
-      cerr << "Composite mode 2 (unwritten!)" << endl;
-      displayedWarning = 1;
-    }
-    break;
-  }
-  default: {
-    ostringstream oss;
-    oss << "Invalid composite_mode in render: " << go.compositeMode();
-    throw SystemError(oss.str());
-  }
-  }
-
   glPushMatrix(); {
     // Translate to where the object starts.
     glTranslatef(fdx1, fdy1, 0);
@@ -649,6 +625,27 @@ void Texture::renderToScreenAsObject(
       glColor4ub(255, 255, 255, alpha);
     }
 
+    // Make this so that when we have composite 1, we're doing a pure
+    // additive blend, (ignoring the alpha channel?)
+    switch (go.compositeMode()) {
+      case 0:
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        break;
+      case 1:
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        break;
+      case 2: {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        break;
+      }
+      default: {
+        ostringstream oss;
+        oss << "Invalid composite_mode in render: " << go.compositeMode();
+        throw SystemError(oss.str());
+      }
+    }
+
     glBegin(GL_QUADS); {
       glTexCoord2f(thisx1, thisy1);
       glVertex2i(0, 0);
@@ -665,6 +662,7 @@ void Texture::renderToScreenAsObject(
       glUseProgramObjectARB(0);
     }
 
+    glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ZERO);
   }
   glPopMatrix();

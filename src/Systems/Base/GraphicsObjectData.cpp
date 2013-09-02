@@ -185,6 +185,8 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
     *tree << "(tint=" << go.tint() << ") ";
   if (go.colour() != RGBAColour::Clear())
     *tree << "(colour=" << go.colour() << ") ";
+  if (go.compositeMode())
+    *tree << "(composite=" << go.compositeMode() << ") ";
   if (go.xOrigin())
     *tree << "(xOrigin=" << go.xOrigin() << ") ";
   if (go.yOrigin())
