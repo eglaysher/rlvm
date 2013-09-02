@@ -112,11 +112,6 @@ class SDLMusic : public boost::noncopyable,
   // the static method WavChunk::callback in music2/music.cc.
   static void MixMusic(void *udata, Uint8 *stream, int len);
 
-  // Initializes the loop_point_ variable to either the looping point
-  // for the track or a value which signals that we don't want to
-  // loop.
-  void setLoopPoint(bool loop);
-
   // Strongly coupled because of access to SDLMusic::MixMusic.
   friend class SDLSoundSystem;
 
@@ -131,6 +126,9 @@ class SDLMusic : public boost::noncopyable,
 
   // Number of milliseconds left to fade out the
   int fadetime_total_;
+
+  // Number of milliseconds to fade in.
+  int fade_in_ms_;
 
   // The starting loop point.
   int loop_point_;

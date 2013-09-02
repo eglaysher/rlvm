@@ -50,6 +50,8 @@ namespace fs = boost::filesystem;
 const int STOP_AT_END = -1;
 const int STOP_NOW = -2;
 
+const int DEFAULT_FADE_MS = 10;
+
 boost::shared_ptr<SDLMusic> SDLMusic::s_currently_playing;
 bool SDLMusic::s_bgm_enabled = true;
 int SDLMusic::s_computed_bgm_vol = 128;
@@ -59,7 +61,11 @@ int SDLMusic::s_computed_bgm_vol = 128;
 // -----------------------------------------------------------------------
 
 SDLMusic::SDLMusic(const SoundSystem::DSTrack& track, WAVFILE* wav)
-    : file_(wav), track_(track), fadetime_total_(0), music_paused_(false) {
+    : file_(wav),
+      track_(track),
+      fadetime_total_(0),
+      fade_in_ms_(0),
+      music_paused_(false) {
   // Advance the audio stream to the starting point
   if (track.from > 0)
     wav->Seek(track.from);
@@ -84,9 +90,7 @@ bool SDLMusic::isFading() const {
 }
 
 void SDLMusic::play(bool loop) {
-  SDLAudioLocker locker;
-  setLoopPoint(loop);
-  s_currently_playing = shared_from_this();
+  fadeIn(loop, DEFAULT_FADE_MS);
 }
 
 void SDLMusic::stop() {
@@ -96,17 +100,23 @@ void SDLMusic::stop() {
 }
 
 void SDLMusic::fadeIn(bool loop, int fade_in_ms) {
-  // Set up, then just play normally.
-  cerr << "Doesn't deal with fade_in properly yet..." << endl;
+  SDLAudioLocker locker;
 
-  play(loop);
+  if (loop)
+    loop_point_ = track_.loop;
+  else
+    loop_point_ = STOP_AT_END;
+
+  fade_count_ = 0;
+  fade_in_ms_ = fade_in_ms;
+  s_currently_playing = shared_from_this();
 }
 
 void SDLMusic::fadeOut(int fade_out_ms) {
   SDLAudioLocker locker;
   fade_count_ = 0;
   if (fade_out_ms <= 0)
-    fade_out_ms = 1;
+    fade_out_ms = DEFAULT_FADE_MS;
   fadetime_total_ = fade_out_ms;
 }
 
@@ -161,10 +171,17 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
 
   int cur_vol = s_computed_bgm_vol;
   // Compute in fadetime results.
-  if (music->fadetime_total_) {
+  if (music->fade_in_ms_) {
+    int count_total = music->fade_in_ms_*(WAVFILE::freq/1000);
+    if (music->fade_count_ > count_total) {
+      music->fade_in_ms_ = 0;
+    } else {
+      cur_vol = cur_vol * (music->fade_count_) / count_total;
+      music->fade_count_ += len/4;
+    }
+  } else if (music->fadetime_total_) {
     int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
-    if (music->fade_count_ > count_total ||
-        music->fadetime_total_ == 1) {
+    if (music->fade_count_ > count_total) {
       music->loop_point_ = STOP_NOW;
       s_currently_playing.reset();
       memset(stream, 0, len);
@@ -228,16 +245,4 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
   ostringstream oss;
   oss << "Unsupported music file: \"" << file_path << "\"";
   throw std::runtime_error(oss.str());
-}
-
-// -----------------------------------------------------------------------
-// SDLMusic (private)
-// -----------------------------------------------------------------------
-void SDLMusic::setLoopPoint(bool loop) {
-  SDLAudioLocker locker;
-
-  if (loop)
-    loop_point_ = track_.loop;
-  else
-    loop_point_ = STOP_AT_END;
 }
