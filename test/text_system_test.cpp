@@ -254,3 +254,43 @@ TEST_F(TextSystemTest, RubyRepeats) {
   getTextSystem().backPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
+
+// -----------------------------------------------------------------------
+
+TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("One", 12, 0, 0, RGBColour::White(), NULL, 3);
+  // Ensure that when the number of characters equals the max number of
+  // characters, we only use one line.
+  EXPECT_EQ(12, text_surface->size().height());
+}
+
+TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("OneTwo", 12, 0, 0, RGBColour::White(), NULL, 3);
+  EXPECT_EQ(24, text_surface->size().height());
+
+  // Tests the location of rendered glyphs.
+  struct {
+    const char* str;
+    int xpos;
+    int ypos;
+  } test_data[] = {
+    { "O", 0, 0 },
+    { "n", 20, 0},
+    { "e", 40, 0},
+    { "T", 0, 12},
+    { "w", 20, 12},
+    { "o", 40, 12}
+  };
+
+  std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
+  ASSERT_EQ(6, data.size());
+  for (int i = 0; i < data.size(); ++i) {
+    EXPECT_EQ(test_data[i].str, data[i].get<0>());
+    EXPECT_EQ(test_data[i].xpos, data[i].get<1>());
+    EXPECT_EQ(test_data[i].ypos, data[i].get<2>());
+  }
+}

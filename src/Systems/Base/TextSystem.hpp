@@ -222,7 +222,8 @@ class TextSystem : public EventListener {
   // various properties based on that syntax.
   boost::shared_ptr<Surface> renderText(
       const std::string& utf8str, int size, int xspace,
-      int yspace, const RGBColour& colour, RGBColour* shadow_colour);
+      int yspace, const RGBColour& colour, RGBColour* shadow_colour,
+      int max_chars_in_line);
 
   // Renders a glyph onto destination. Returns the size of the glyph blitted.
   virtual Size renderGlyphOnto(

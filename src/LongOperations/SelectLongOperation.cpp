@@ -366,9 +366,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
       o.id = i;
       o.enabled = options_[i].enabled;
       o.default_surface = ts.renderText(
-          text, moji_size_, 0, 0, text_colour, &shadow_colour);
+          text, moji_size_, 0, 0, text_colour, &shadow_colour, 0);
       o.select_surface = ts.renderText(
-          text, moji_size_, 0, 0, text_selection_colour, &shadow_colour);
+          text, moji_size_, 0, 0, text_selection_colour, &shadow_colour, 0);
       if (back_surface_) {
         o.bounding_rect = Rect(baseposx, baseposy, back_surface_->size());
       } else {

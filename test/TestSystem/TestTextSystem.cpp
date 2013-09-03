@@ -51,3 +51,17 @@ boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
   return it->second;
 }
 
+Size TestTextSystem::renderGlyphOnto(
+    const std::string& current,
+    int font_size,
+    const RGBColour& font_colour,
+    const RGBColour* shadow_colour,
+    int insertion_point_x,
+    int insertion_point_y,
+    const boost::shared_ptr<Surface>& destination) {
+  // Keep track of the incoming data:
+  rendered_glyps_.push_back(
+      boost::make_tuple(current, insertion_point_x, insertion_point_y));
+
+  return Size(20, 20);
+}

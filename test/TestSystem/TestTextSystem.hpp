@@ -31,6 +31,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <string>
 
 class MockTextWindow;
@@ -61,8 +62,15 @@ class TestTextSystem : public TextSystem {
       const RGBColour* shadow_colour,
       int insertion_point_x,
       int insertion_point_y,
-      const boost::shared_ptr<Surface>& destination) { return Size(20, 20); }
+      const boost::shared_ptr<Surface>& destination);
   int charWidth(int size, uint16_t codepoint) { return 20; }
+
+  const std::vector<boost::tuple<std::string, int, int> >& glyphs() {
+    return rendered_glyps_;
+  }
+
+ private:
+  std::vector<boost::tuple<std::string, int, int> > rendered_glyps_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_

@@ -210,12 +210,12 @@ class GraphicsObject {
   void setTextText(const std::string& utf8str);
   const std::string& textText() const;
 
-  void setTextOps(int size, int xspace, int yspace, int vertical, int colour,
+  void setTextOps(int size, int xspace, int yspace, int char_count, int colour,
                   int shadow);
   int textSize() const;
   int textXSpace() const;
   int textYSpace() const;
-  int textVertical() const;
+  int textCharCount() const;
   int textColour() const;
   int textShadowColour() const;
 
@@ -386,8 +386,7 @@ class GraphicsObject {
 
       int text_size, xspace, yspace;
 
-      // Figure this out later.
-      int vertical;
+      int char_count;
       int colour;
       int shadow_colour;
 

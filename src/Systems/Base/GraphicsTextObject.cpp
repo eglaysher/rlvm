@@ -49,7 +49,8 @@ GraphicsTextObject::GraphicsTextObject(System& system)
       cached_shadow_colour_(-1),
       cached_text_size_(-1),
       cached_x_space_(-1),
-      cached_y_space_(-1) {
+      cached_y_space_(-1),
+      cached_char_count_(-1) {
 }
 
 // -----------------------------------------------------------------------
@@ -80,10 +81,11 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   cached_text_size_ = rp.textSize();
   cached_x_space_ = rp.textXSpace();
   cached_y_space_ = rp.textYSpace();
+  cached_char_count_ = rp.textCharCount();
 
   surface_ = system_.text().renderText(
       cached_utf8_str_, rp.textSize(), rp.textXSpace(),
-      rp.textYSpace(), colour, shadow);
+      rp.textYSpace(), colour, shadow, cached_char_count_);
   surface_->EnsureUploaded();
 }
 
@@ -96,6 +98,7 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
       rp.textSize() != cached_text_size_ ||
       rp.textXSpace() != cached_x_space_ ||
       rp.textYSpace() != cached_y_space_ ||
+      rp.textCharCount() != cached_char_count_ ||
       rp.textText() != cached_utf8_str_;
 }
 

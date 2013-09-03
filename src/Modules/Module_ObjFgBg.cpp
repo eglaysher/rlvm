@@ -218,9 +218,9 @@ struct objTextOpts
                        IntConstant_T, IntConstant_T, IntConstant_T,
                        IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int size, int xspace,
-                  int yspace, int vert, int colour, int shadow) {
+                  int yspace, int char_count, int colour, int shadow) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
-    obj.setTextOps(size, xspace, yspace, vert, colour, shadow);
+    obj.setTextOps(size, xspace, yspace, char_count, colour, shadow);
     machine.system().graphics().markObjectStateAsDirty();
   }
 };

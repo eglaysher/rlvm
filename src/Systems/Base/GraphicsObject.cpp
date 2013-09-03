@@ -47,7 +47,7 @@ using namespace std;
 const int DEFAULT_TEXT_SIZE = 14;
 const int DEFAULT_TEXT_XSPACE = 0;
 const int DEFAULT_TEXT_YSPACE = 0;
-const int DEFAULT_TEXT_VERTICAL = 0;
+const int DEFAULT_TEXT_CHAR_COUNT = 0;
 const int DEFAULT_TEXT_COLOUR = 0;
 const int DEFAULT_TEXT_SHADOWCOLOUR = -1;
 
@@ -94,7 +94,7 @@ GraphicsObject::Impl::TextProperties::TextProperties()
     : text_size(DEFAULT_TEXT_SIZE),
       xspace(DEFAULT_TEXT_XSPACE),
       yspace(DEFAULT_TEXT_YSPACE),
-      vertical(DEFAULT_TEXT_VERTICAL),
+      char_count(DEFAULT_TEXT_CHAR_COUNT),
       colour(DEFAULT_TEXT_COLOUR),
       shadow_colour(DEFAULT_TEXT_SHADOWCOLOUR) {
 }
@@ -473,11 +473,11 @@ int GraphicsObject::textYSpace() const {
     return DEFAULT_TEXT_YSPACE;
 }
 
-int GraphicsObject::textVertical() const {
+int GraphicsObject::textCharCount() const {
   if (impl_->text_properties_)
-    return impl_->text_properties_->vertical;
+    return impl_->text_properties_->char_count;
   else
-    return DEFAULT_TEXT_VERTICAL;
+    return DEFAULT_TEXT_CHAR_COUNT;
 }
 
 int GraphicsObject::textColour() const {
@@ -495,14 +495,14 @@ int GraphicsObject::textShadowColour() const {
 }
 
 void GraphicsObject::setTextOps(
-  int size, int xspace, int yspace, int vertical, int colour, int shadow) {
+  int size, int xspace, int yspace, int char_count, int colour, int shadow) {
   makeImplUnique();
 
   impl_->makeSureHaveTextProperties();
   impl_->text_properties_->text_size = size;
   impl_->text_properties_->xspace = xspace;
   impl_->text_properties_->yspace = yspace;
-  impl_->text_properties_->vertical = vertical;
+  impl_->text_properties_->char_count = char_count;
   impl_->text_properties_->colour = colour;
   impl_->text_properties_->shadow_colour = shadow;
 }
@@ -1096,7 +1096,7 @@ template void GraphicsObject::Impl::serialize<boost::archive::text_iarchive>(
 template<class Archive>
 void GraphicsObject::Impl::TextProperties::serialize(
   Archive& ar, unsigned int version) {
-  ar & value & text_size & xspace & yspace & vertical & colour &
+  ar & value & text_size & xspace & yspace & char_count & colour &
     shadow_colour;
 }
 

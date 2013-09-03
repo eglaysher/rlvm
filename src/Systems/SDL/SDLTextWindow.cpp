@@ -82,7 +82,7 @@ void SDLTextWindow::clearWin() {
 void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
   RGBColour shadow = RGBAColour::Black().rgb();
   name_surface_ = system_.text().renderText(
-      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow);
+      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow, 0);
 }
 
 void SDLTextWindow::addSelectionItem(const std::string& utf8str,

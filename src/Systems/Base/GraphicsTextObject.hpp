@@ -72,6 +72,7 @@ class GraphicsTextObject : public GraphicsObjectData {
   int cached_text_size_;
   int cached_x_space_;
   int cached_y_space_;
+  int cached_char_count_;
   std::string cached_utf8_str_;
 
   boost::shared_ptr<Surface> surface_;
