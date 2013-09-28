@@ -497,15 +497,18 @@ boost::shared_ptr<Surface> TextSystem::renderText(
     const std::string& utf8str, int size, int xspace, int yspace,
     const RGBColour& colour, RGBColour* shadow_colour,
     int max_chars_in_line) {
+  const int line_max_width =
+      (max_chars_in_line > 0) ? (size + xspace) * max_chars_in_line :
+      INT_MAX;
+
   // On the first pass, we figure out how large of a surface we need for
   // rendering the text.
   int current_size = size;
-  int current_chars = 0;
   int total_height = 0;
-  bool should_break = false;
   int max_width = 0;
   int current_line_width = 0;
   int current_line_height = 0;
+  bool should_break = false;
   std::string::const_iterator it = utf8str.begin();
   std::string::const_iterator strend = utf8str.end();
   while (it != strend) {
@@ -551,30 +554,22 @@ boost::shared_ptr<Surface> TextSystem::renderText(
     }
 
     if (add_char) {
-      if (should_break) {
-        // We only actually expand the output surface once we add the first
-        // character on the new line.
+      int w = charWidth(current_size, codepoint) + xspace;
+      if (should_break || current_line_width + w > line_max_width) {
         total_height += current_line_height + yspace;
-        current_line_height = 0;
-        current_line_width = 0;
-        current_chars = 0;
+        current_line_height = current_size;
+        current_line_width = w;
         should_break = false;
+      } else {
+        current_line_width += w;
+        current_line_height = std::max(current_line_height, current_size);
       }
 
-      int w = charWidth(current_size, codepoint);
-      // TODO(erg): xspace should be added on the next character add.
-      current_line_width += (w + xspace);
-
       max_width = std::max(max_width, current_line_width);
-      current_line_height = std::max(current_line_height, current_size);
-
-      current_chars++;
-      if (max_chars_in_line != 0 && max_chars_in_line == current_chars)
-        should_break = true;
     }
   }
   total_height += current_line_height;
-  current_chars = 0;
+  should_break = false;
 
   // If this text has a shadow, our surface needs to have a final two pixels
   // added to the bottom and right to accommodate it.
@@ -645,11 +640,12 @@ boost::shared_ptr<Surface> TextSystem::renderText(
     }
 
     if (add_char) {
-      if (should_break) {
+      // If we add this character, will we horizontally overflow?
+      int w = charWidth(current_size, codepoint);
+      if (should_break || currentX + w > max_width) {
         currentX = 0;
         currentY += current_line_height + yspace;
         current_line_height = 0;
-        current_chars = 0;
         should_break = false;
       }
 
@@ -662,10 +658,6 @@ boost::shared_ptr<Surface> TextSystem::renderText(
                                surface);
       currentX += s.width() + xspace;
       current_line_height = std::max(current_line_height, current_size);
-
-      current_chars++;
-      if (max_chars_in_line != 0 && max_chars_in_line == current_chars)
-        should_break = true;
     }
 
     it = cur_end;

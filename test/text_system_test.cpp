@@ -260,17 +260,27 @@ TEST_F(TextSystemTest, RubyRepeats) {
 TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("One", 12, 0, 0, RGBColour::White(), NULL, 3);
+      sys.renderText("One", 20, 0, 0, RGBColour::White(), NULL, 3);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
-  EXPECT_EQ(12, text_surface->size().height());
+  EXPECT_EQ(20, text_surface->size().height());
+}
+
+TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("A Very Long String That Goes On And On",
+                     20, 0, 0, RGBColour::White(), NULL, 0);
+  // Ensure that when the number of characters equals the max number of
+  // characters, we only use one line.
+  EXPECT_EQ(20, text_surface->size().height());
 }
 
 TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("OneTwo", 12, 0, 0, RGBColour::White(), NULL, 3);
-  EXPECT_EQ(24, text_surface->size().height());
+      sys.renderText("OneTwo", 20, 0, 0, RGBColour::White(), NULL, 3);
+  EXPECT_EQ(40, text_surface->size().height());
 
   // Tests the location of rendered glyphs.
   struct {
@@ -281,9 +291,9 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
     { "O", 0, 0 },
     { "n", 20, 0},
     { "e", 40, 0},
-    { "T", 0, 12},
-    { "w", 20, 12},
-    { "o", 40, 12}
+    { "T", 0, 20},
+    { "w", 20, 20},
+    { "o", 40, 20}
   };
 
   std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
