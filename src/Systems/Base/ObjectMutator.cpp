@@ -109,6 +109,33 @@ void OneIntObjectMutator::PerformSetting(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
+RepnoIntObjectMutator::RepnoIntObjectMutator(
+    const char* name,
+    int creation_time, int duration_time, int delay,
+    int type, int repno, int start_value, int target_value, Setter setter)
+    : ObjectMutator(repno, name, creation_time, duration_time, delay, type),
+      repno_(repno),
+      startval_(start_value),
+      endval_(target_value),
+      setter_(setter) {
+}
+
+RepnoIntObjectMutator::~RepnoIntObjectMutator() {
+}
+
+void RepnoIntObjectMutator::SetToEnd(RLMachine& machine,
+                                   GraphicsObject& object) {
+  (object.*setter_)(repno_, endval_);
+}
+
+void RepnoIntObjectMutator::PerformSetting(RLMachine& machine,
+                                         GraphicsObject& object) {
+  int value = GetValueForTime(machine, startval_, endval_);
+  (object.*setter_)(repno_, value);
+}
+
+// -----------------------------------------------------------------------
+
 TwoIntObjectMutator::TwoIntObjectMutator(
     const char* name,
     int creation_time, int duration_time, int delay, int type,

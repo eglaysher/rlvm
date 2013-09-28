@@ -64,6 +64,34 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
+Op_ObjectMutatorRepnoInt::Op_ObjectMutatorRepnoInt(Getter getter,
+                                                   Setter setter,
+                                                   const char* name)
+    : getter_(getter),
+      setter_(setter),
+      name_(name) {
+}
+
+Op_ObjectMutatorRepnoInt::~Op_ObjectMutatorRepnoInt() {}
+
+void Op_ObjectMutatorRepnoInt::operator()(RLMachine& machine,
+                                          int object,
+                                          int repno,
+                                          int endval,
+                                          int duration_time,
+                                          int delay,
+                                          int type) {
+  unsigned int creation_time = machine.system().event().getTicks();
+  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+
+  int startval = (obj.*getter_)(repno);
+  obj.AddObjectMutator(
+      new RepnoIntObjectMutator(name_, creation_time, duration_time, delay,
+                                type, repno, startval, endval, setter_));
+}
+
+// -----------------------------------------------------------------------
+
 
 Op_ObjectMutatorIntInt::Op_ObjectMutatorIntInt(
     Getter getter_one, Setter setter_one,

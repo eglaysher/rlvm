@@ -53,6 +53,29 @@ class Op_ObjectMutatorInt
   const char* name_;
 };
 
+class Op_ObjectMutatorRepnoInt
+    : public RLOp_Void_6< IntConstant_T, IntConstant_T, IntConstant_T,
+                          IntConstant_T, IntConstant_T, IntConstant_T > {
+ public:
+  typedef int(GraphicsObject::*Getter)(const int) const;
+  typedef void(GraphicsObject::*Setter)(const int, const int);
+
+  Op_ObjectMutatorRepnoInt(Getter getter, Setter setter, const char* name);
+  virtual ~Op_ObjectMutatorRepnoInt();
+
+  virtual void operator()(RLMachine& machine,
+                          int object,
+                          int repno,
+                          int endval,
+                          int duration_time,
+                          int delay,
+                          int type);
+ private:
+  Getter getter_;
+  Setter setter_;
+  const char* name_;
+};
+
 class Op_ObjectMutatorIntInt
     : public RLOp_Void_6< IntConstant_T, IntConstant_T, IntConstant_T,
                           IntConstant_T, IntConstant_T, IntConstant_T > {

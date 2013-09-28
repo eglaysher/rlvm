@@ -100,6 +100,29 @@ class OneIntObjectMutator : public ObjectMutator {
 
 // -----------------------------------------------------------------------
 
+// An object mutator that takes a repno and an integer.
+class RepnoIntObjectMutator : public ObjectMutator {
+ public:
+  typedef void(GraphicsObject::*Setter)(const int, const int);
+
+  RepnoIntObjectMutator(const char* name,
+                        int creation_time, int duration_time, int delay,
+                        int type, int repno, int start_value, int target_value,
+                        Setter setter);
+  virtual ~RepnoIntObjectMutator();
+
+ private:
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object);
+  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object);
+
+  int repno_;
+  int startval_;
+  int endval_;
+  Setter setter_;
+};
+
+// -----------------------------------------------------------------------
+
 // An object mutator that varies two integers.
 class TwoIntObjectMutator : public ObjectMutator {
  public:
