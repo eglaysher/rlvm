@@ -75,6 +75,20 @@ struct objGetPos
   }
 };
 
+struct objGetAdjustX : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+  int operator()(RLMachine& machine, int objNum, int repno) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    return obj.xAdjustment(repno);
+  }
+};
+
+struct objGetAdjustY : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+  int operator()(RLMachine& machine, int objNum, int repno) {
+    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    return obj.yAdjustment(repno);
+  }
+};
+
 /**
  * @note objGetDims takes an integer as its fourth argument, but we
  * have no idea what this is or how it affects things. Usually appears
@@ -95,7 +109,16 @@ void addFunctions(RLModule& m) {
   m.addOpcode(1000, 0, "objGetPos", new objGetPos);
   m.addOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
   m.addOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
+  m.addOpcode(1003, 0, "objGetAlpha",
+              new Obj_GetInt(&GraphicsObject::rawAlpha));
+  m.addOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
+
+  m.addOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
+  m.addOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
+  m.addOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));
+  m.addOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
   m.addOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
+
   m.addOpcode(1039, 0, "objGetPattNo", new Obj_GetInt(&GraphicsObject::pattNo));
   m.addOpcode(1100, 0, "objGetDims", new objGetDims);
   m.addOpcode(1100, 1, "objGetDims", new objGetDims);
