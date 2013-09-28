@@ -60,7 +60,7 @@ TestGraphicsSystem::~TestGraphicsSystem() {}
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16)
     throw rlvm::Exception("Invalid DC number in "
-                          "TestGrpahicsSystem::allocate_dc");
+                          "TestGraphicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
   if (dc == 0)

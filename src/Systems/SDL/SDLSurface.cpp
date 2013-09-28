@@ -383,36 +383,36 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
     // Blit the source rectangle into its own image.
     SDL_Surface* src_image = buildNewSurface(src.size());
     if (pygame_AlphaBlit(surface_, &src_rect, src_image, NULL))
-      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
 
     SDL_Surface* tmp = buildNewSurface(dst.size());
     pygame_stretch(src_image, tmp);
 
     if (use_src_alpha) {
       if (SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
-        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
     } else {
       if (SDL_SetAlpha(tmp, 0, 0))
-        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
     }
 
     if (SDL_BlitSurface(tmp, NULL, sdl_dest_surface.surface(), &dest_rect))
-      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
 
     SDL_FreeSurface(tmp);
     SDL_FreeSurface(src_image);
   } else {
     if (use_src_alpha) {
       if (SDL_SetAlpha(surface_, SDL_SRCALPHA, alpha))
-        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
     } else {
       if (SDL_SetAlpha(surface_, 0, 0))
-        reportSDLError("SDL_SetAlpha", "SDLGrpahicsSystem::blitSurfaceToDC()");
+        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
     }
 
     if (SDL_BlitSurface(surface_, &src_rect, sdl_dest_surface.surface(),
                        &dest_rect))
-      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
   }
   sdl_dest_surface.markWrittenTo(dst);
 }
@@ -433,10 +433,10 @@ void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
   if (use_src_alpha) {
     if (pygame_AlphaBlit(src_surface, &src_rect, surface_, &dest_rect))
       reportSDLError("pygame_AlphaBlit",
-                     "SDLGrpahicsSystem::blitSurfaceToDC()");
+                     "SDLGraphicsSystem::blitSurfaceToDC()");
   } else {
     if (SDL_BlitSurface(src_surface, &src_rect, surface_, &dest_rect))
-      reportSDLError("SDL_BlitSurface", "SDLGrpahicsSystem::blitSurfaceToDC()");
+      reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
   }
 
   markWrittenTo(dst);
@@ -595,7 +595,7 @@ void SDLSurface::fill(const RGBAColour& colour) {
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
   if (SDL_FillRect(surface_, NULL, sdl_colour))
-    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
+    reportSDLError("SDL_FillRect", "SDLGraphicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
   markWrittenTo(rect());
@@ -611,7 +611,7 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
   RectToSDLRect(area, &rect);
 
   if (SDL_FillRect(surface_, &rect, sdl_colour))
-    reportSDLError("SDL_FillRect", "SDLGrpahicsSystem::wipe()");
+    reportSDLError("SDL_FillRect", "SDLGraphicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
   markWrittenTo(area);

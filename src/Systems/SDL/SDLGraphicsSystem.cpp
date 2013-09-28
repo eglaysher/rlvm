@@ -414,7 +414,7 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16) {
     throw rlvm::Exception(
-        "Invalid DC number in SDLGrpahicsSystem::allocate_dc");
+        "Invalid DC number in SDLGraphicsSystem::allocate_dc");
   }
 
   // We can't reallocate the screen!

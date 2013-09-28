@@ -151,7 +151,7 @@ inline ExpressionPiece* new_clone( const ExpressionPiece& a ) {
 // -----------------------------------------------------------------------
 
 // Taking |bytecode|, raw RealLive bytecode, change all instances of memory
-// references into raw integers or strings. Used by the grpahics system to
+// references into raw integers or strings. Used by the graphics system to
 // serialize raw commands. Returns the input on error.
 std::string changeToConstantData(RLMachine& machine,
                                  const std::string& bytecode);

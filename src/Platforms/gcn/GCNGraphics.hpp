@@ -87,7 +87,7 @@ struct ImageRect : public NotificationObserver {
 };
 
 /**
- * Custom Grpahics with extra draw primatives used within the widget code that
+ * Custom Graphics with extra draw primatives used within the widget code that
  * I'm taking from TMW.
  *
  * The basic idea is taken from The Mana World; this is the same interface they
