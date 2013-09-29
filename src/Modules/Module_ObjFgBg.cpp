@@ -56,6 +56,7 @@
 
 #include <cmath>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>

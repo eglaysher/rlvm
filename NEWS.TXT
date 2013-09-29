@@ -1,10 +1,22 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
-Version 0.13:
+Version 0.13:                                                [2013-10-13]
 
+- rlvm will now warn on startup when it detects Japanese save data, but
+  English patched game files, and offer to reset the save data. (This
+  problem has been the number one support request for years.)
+- Much better support for Little Busters. Most graphical glitches during
+  the Little Busters Refrain have been fixed.
 - TCC tone curve effects have been reverse-engineered and implemented
   (thanks to lurkmoar)
+- Sepia scenes (and other graphical filters) should look much better.
+- Simple shake commands implemented (fancy per-layer shaking still
+  unimplemented).
+- Make animations smooth: data should be uploaded to the graphics card
+  before an animation loop starts, not while the animation loop is
+  running.
+- Fixes finding system fonts on Linux
 
 -------------------------------------------------------------------------
 
