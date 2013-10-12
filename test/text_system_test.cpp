@@ -31,6 +31,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "LongOperations/TextoutLongOperation.hpp"
 #include "TestSystem/TestSystem.hpp"
+#include "TestSystem/MockSurface.hpp"
 #include "TestSystem/MockTextWindow.hpp"
 #include "Systems/Base/TextPage.hpp"
 #include "libReallive/archive.h"
@@ -68,6 +69,10 @@ class TextSystemTest : public FullSystemTest {
 
   TestTextSystem& getTextSystem() {
     return dynamic_cast<TestTextSystem&>(system.text());
+  }
+
+  TestGraphicsSystem& getGraphicsSystem() {
+    return dynamic_cast<TestGraphicsSystem&>(system.graphics());
   }
 
   MockTextWindow& getTextWindow(int twn) {
@@ -298,6 +303,54 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
 
   std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
   ASSERT_EQ(6, data.size());
+  for (int i = 0; i < data.size(); ++i) {
+    EXPECT_EQ(test_data[i].str, data[i].get<0>());
+    EXPECT_EQ(test_data[i].xpos, data[i].get<1>());
+    EXPECT_EQ(test_data[i].ypos, data[i].get<2>());
+  }
+}
+
+TEST_F(TextSystemTest, DontCrashWithNoEmojiFile) {
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("One＃Ａ００Two", 20, 0, 0, RGBColour::White(), NULL, -1);
+  EXPECT_EQ(20, text_surface->size().height());
+}
+
+TEST_F(TextSystemTest, TestEmoji) {
+  // Set up emoji printing:
+  system.gameexe().setStringAt("E_MOJI.004", "emoji_file");
+
+  // Inject a fake surface of (24*5, 24). We will expect this to blit to the
+  // text surface.
+  boost::shared_ptr<MockSurface> mock(
+      MockSurface::Create("emoji_file", Size(24*5, 24)));
+  getGraphicsSystem().injectSurface("emoji_file", mock);
+
+  // Our mock surface should render its icon between the Es.
+  EXPECT_CALL(*mock, blitToSurface(_,
+                                   Rect(24*2, 0, Size(24, 24)),
+                                   Rect(20, 0, Size(24, 24)),
+                                   255,
+                                   false));
+
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("E＃Ａ０２E", 20, 0, 0, RGBColour::White(), NULL, -1);
+  EXPECT_EQ(20, text_surface->size().height());
+
+  // Tests the location of rendered glyphs.
+  struct {
+    const char* str;
+    int xpos;
+    int ypos;
+  } test_data[] = {
+    { "E", 0, 0 },
+    { "E", 40, 0},
+  };
+
+  std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
+  ASSERT_EQ(2, data.size());
   for (int i = 0; i < data.size(); ++i) {
     EXPECT_EQ(test_data[i].str, data[i].get<0>());
     EXPECT_EQ(test_data[i].xpos, data[i].get<1>());

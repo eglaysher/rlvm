@@ -65,6 +65,12 @@ using std::vector;
 
 const unsigned int MAX_PAGE_HISTORY = 100;
 
+const int FULLWIDTH_NUMBER_SIGN = 0xFF03;
+const int FULLWIDTH_A = 0xFF21;
+const int FULLWIDTH_B = 0xFF22;
+const int FULLWIDTH_ZERO = 0xFF10;
+const int FULLWIDTH_NINE = 0xFF19;
+
 // -----------------------------------------------------------------------
 // TextSystemGlobals
 // -----------------------------------------------------------------------
@@ -514,6 +520,7 @@ boost::shared_ptr<Surface> TextSystem::renderText(
   while (it != strend) {
     int codepoint = utf8::next(it, strend);
     bool add_char = true;
+    bool is_emoji = false;
 
     if (codepoint == '#') {
       add_char = false;
@@ -551,17 +558,39 @@ boost::shared_ptr<Surface> TextSystem::renderText(
           add_char = true;
         }
       }
+    } else if (codepoint == FULLWIDTH_NUMBER_SIGN) {
+      // The codepoint is a fullwidth '#'. If the codepoint after this is a
+      // fullwidth 'A' or 'B', followed by two fullwidth digits, we have an
+      // emoji code, and should treat it like a fullwidth space during the
+      // allocation phase.
+      std::string::const_iterator n = it;
+      int next_codepoint = utf8::next(n, strend);
+      if (next_codepoint == FULLWIDTH_A || next_codepoint == FULLWIDTH_B) {
+        int num_one = utf8::next(n, strend);
+        int num_two = utf8::next(n, strend);
+        if (num_one >= FULLWIDTH_ZERO && num_one <= FULLWIDTH_NINE &&
+            num_two >= FULLWIDTH_ZERO && num_two <= FULLWIDTH_NINE) {
+          // This is an emoji mark. We should consume all input so far.
+          it = n;
+          is_emoji = true;
+        }
+      }
     }
 
-    if (add_char) {
-      int w = charWidth(current_size, codepoint) + xspace;
-      if (should_break || current_line_width + w > line_max_width) {
+    int added_width = 0;
+    if (add_char)
+      added_width = charWidth(current_size, codepoint) + xspace;
+    else if (is_emoji)
+      added_width = size + xspace;
+
+    if (added_width) {
+      if (should_break || current_line_width + added_width > line_max_width) {
         total_height += current_line_height + yspace;
         current_line_height = current_size;
-        current_line_width = w;
+        current_line_width = added_width;
         should_break = false;
       } else {
-        current_line_width += w;
+        current_line_width += added_width;
         current_line_height = std::max(current_line_height, current_size);
       }
 
@@ -595,6 +624,9 @@ boost::shared_ptr<Surface> TextSystem::renderText(
     int codepoint = utf8::next(cur_end, strend);
     std::string character(it, cur_end);
     bool add_char = true;
+    bool is_emoji = false;
+    int emoji_id = 0;
+    boost::shared_ptr<const Surface> emoji_surface;
 
     if (codepoint == '#') {
       add_char = false;
@@ -637,18 +669,55 @@ boost::shared_ptr<Surface> TextSystem::renderText(
           add_char = true;
         }
       }
+    } else if (codepoint == FULLWIDTH_NUMBER_SIGN) {
+      // The codepoint is a fullwidth '#'. If the codepoint after this is a
+      // fullwidth 'A' or 'B', followed by two fullwidth digits, we have an
+      // emoji code, and should treat it like a fullwidth space during the
+      // allocation phase.
+      std::string::const_iterator n = cur_end;
+      int next_codepoint = utf8::next(n, strend);
+      if (next_codepoint == FULLWIDTH_A || next_codepoint == FULLWIDTH_B) {
+        int num_one = utf8::next(n, strend);
+        int num_two = utf8::next(n, strend);
+        if (num_one >= FULLWIDTH_ZERO && num_one <= FULLWIDTH_NINE &&
+            num_two >= FULLWIDTH_ZERO && num_two <= FULLWIDTH_NINE) {
+          // This is an emoji mark. We should consume all input so far.
+          cur_end = n;
+
+          // Get the emoji number from the text.
+          num_one -= FULLWIDTH_ZERO;
+          num_two -= FULLWIDTH_ZERO;
+          emoji_id = num_one * 10 + num_two;
+
+          // Lookup what g00 surface we should use for emoji.
+          emoji_surface = system().graphics().GetEmojiSurface();
+          is_emoji = true;
+          add_char = false;
+        }
+      }
     }
 
+    int item_width = 0;
     if (add_char) {
       // If we add this character, will we horizontally overflow?
-      int w = charWidth(current_size, codepoint);
-      if (should_break || currentX + w > max_width) {
+      item_width = charWidth(current_size, codepoint);
+    } else if (is_emoji) {
+      // Whatever the real size is, we only allocate the incoming size. This
+      // means that if the emoji is larger than |size|, we'll draw text over
+      // it. This is to be bug for bug compatible with RealLive.
+      item_width = size;
+    }
+
+    if (item_width) {
+      if (should_break || currentX + item_width > max_width) {
         currentX = 0;
         currentY += current_line_height + yspace;
         current_line_height = 0;
         should_break = false;
       }
+    }
 
+    if (add_char) {
       Size s = renderGlyphOnto(character,
                                current_size,
                                current_colour,
@@ -657,6 +726,19 @@ boost::shared_ptr<Surface> TextSystem::renderText(
                                currentY,
                                surface);
       currentX += s.width() + xspace;
+      current_line_height = std::max(current_line_height, current_size);
+    } else if (is_emoji) {
+      if (emoji_surface) {
+        // Emoji surfaces don't have internal pattnos. Instead, assume that
+        // icons are square and laid out to the right, sort of like mouse
+        // cursors.
+        int height = emoji_surface->size().height();
+        Rect src = Rect(height * emoji_id, 0, Size(height, height));
+        Rect dst = Rect(currentX, currentY, Size(height, height));
+        emoji_surface->blitToSurface(*surface, src, dst, 255, false);
+      }
+
+      currentX += size + xspace;
       current_line_height = std::max(current_line_height, current_size);
     }
 

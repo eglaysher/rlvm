@@ -425,7 +425,10 @@ class GraphicsSystem : public EventListener {
 
   // Access to the tone curve effects file
   ToneCurve& toneCurve() { return globals_.tone_curves; }
-  
+
+  // Gets the emoji surface, if any.
+  boost::shared_ptr<const Surface> GetEmojiSurface();
+
   // We have a cache of HIK scripts. This is done so we can load HIKScripts
   // outside of loops.
   void PreloadHIKScript(System& system,

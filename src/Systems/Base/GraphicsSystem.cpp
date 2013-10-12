@@ -610,6 +610,20 @@ void GraphicsSystem::reset() {
   hide_interface_ = false;
 }
 
+boost::shared_ptr<const Surface> GraphicsSystem::GetEmojiSurface() {
+  GameexeFilteringIterator it = system().gameexe().filtering_begin("E_MOJI.");
+  GameexeFilteringIterator end = system().gameexe().filtering_end();
+  for (; it != end; ++it) {
+    // Try to interpret each key as a filename.
+    std::string file_name = it->to_string("");
+    boost::shared_ptr<const Surface> surface = getSurfaceNamed(file_name);
+    if (surface)
+      return surface;
+  }
+
+  return boost::shared_ptr<const Surface>();
+}
+
 void GraphicsSystem::PreloadHIKScript(
     System& system,
     int slot,
