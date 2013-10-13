@@ -22,13 +22,13 @@ env = Environment(
   tools = ["default", "rlvm"],
 
   LIBS = [
-    "boost_program_options-mt",
-    "boost_serialization-mt",
-    "boost_iostreams-mt",
-    "boost_filesystem-mt",
-    "boost_date_time-mt",
-    "boost_thread-mt",
-    "boost_system-mt",
+    "boost_program_options",
+    "boost_serialization",
+    "boost_iostreams",
+    "boost_filesystem",
+    "boost_date_time",
+    "boost_thread",
+    "boost_system",
     "z"
   ],
 
