@@ -61,7 +61,6 @@ class Shaders {
   // Compiles and links the text program in |shader| into a shader and program
   // object.
   static void buildShader(const char* shader,
-                          GLuint* shader_object,
                           GLuint* program_object);
 
   static GLuint color_mask_program_object_id_;

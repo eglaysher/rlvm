@@ -107,12 +107,10 @@ const char kObjectShader[] =
 } // namespace
 
 GLuint Shaders::color_mask_program_object_id_ = 0;
-GLuint Shaders::color_mask_shader_object_id_= 0;
 GLint Shaders::color_mask_current_values_ = 0;
 GLint Shaders::color_mask_mask_ = 0;
 
 GLuint Shaders::object_program_object_id_ = 0;
-GLuint Shaders::object_shader_object_id_ = 0;
 GLint Shaders::object_image_ = 0;
 GLint Shaders::object_colour_ = 0;
 GLint Shaders::object_tint_ = 0;
@@ -125,7 +123,6 @@ GLint Shaders::object_invert_ = 0;
 GLuint Shaders::getColorMaskProgram() {
   if (color_mask_program_object_id_ == 0) {
     buildShader(kColorMaskShader,
-                &color_mask_shader_object_id_,
                 &color_mask_program_object_id_);
   }
 
@@ -157,7 +154,6 @@ GLint Shaders::getColorMaskUniformMask() {
 GLuint Shaders::getObjectProgram() {
   if (object_program_object_id_ == 0) {
     buildShader(kObjectShader,
-                &object_shader_object_id_,
                 &object_program_object_id_);
   }
 
@@ -263,33 +259,33 @@ GLint Shaders::getObjectUniformInvert() {
 
 // static
 void Shaders::buildShader(const char* shader,
-                          GLuint* shader_object,
                           GLuint* program_object) {
-  *shader_object = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+  GLuint shader_object = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
   DebugShowGLErrors();
 
-  glShaderSourceARB(*shader_object, 1, &shader, NULL);
+  glShaderSourceARB(shader_object, 1, &shader, NULL);
   DebugShowGLErrors();
 
-  glCompileShaderARB(*shader_object);
+  glCompileShaderARB(shader_object);
   DebugShowGLErrors();
 
 #ifndef NDEBUG
   GLint blen = 0;
   GLsizei slen = 0;
-  glGetShaderiv(*shader_object, GL_INFO_LOG_LENGTH , &blen);
+  glGetShaderiv(shader_object, GL_INFO_LOG_LENGTH , &blen);
   if (blen > 1) {
     GLchar* compiler_log = new GLchar[blen];
-    glGetInfoLogARB(*shader_object, blen, &slen, compiler_log);
+    glGetInfoLogARB(shader_object, blen, &slen, compiler_log);
     cout << "compiler_log: " << endl << compiler_log << endl;
     delete [] compiler_log;
   }
 #endif
 
   *program_object = glCreateProgramObjectARB();
-  glAttachObjectARB(*program_object, *shader_object);
+  glAttachObjectARB(*program_object, shader_object);
   DebugShowGLErrors();
 
   glLinkProgramARB(*program_object);
+  glDeleteObjectARB(shader_object);
   ShowGLErrors();
 }
