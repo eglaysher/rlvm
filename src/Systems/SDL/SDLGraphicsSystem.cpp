@@ -47,6 +47,7 @@
 #include <SDL/SDL_image.h>
 #endif
 
+#include "base/notification_source.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/Colour.hpp"
@@ -63,6 +64,7 @@
 #include "Systems/SDL/SDLRenderToTextureSurface.hpp"
 #include "Systems/SDL/SDLSurface.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
+#include "Systems/SDL/Shaders.hpp"
 #include "Systems/SDL/Texture.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
@@ -251,6 +253,10 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   }
 
   SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+
+  registrar_.Add(this,
+                 NotificationType::FULLSCREEN_STATE_CHANGED,
+                 Source<GraphicsSystem>(static_cast<GraphicsSystem*>(this)));
 }
 
 void SDLGraphicsSystem::setupVideo() {
@@ -395,6 +401,12 @@ void SDLGraphicsSystem::setWindowTitle() {
     SDL_WM_SetCaption(new_caption.c_str(), NULL);
     currently_set_title_ = new_caption;
   }
+}
+
+void SDLGraphicsSystem::Observe(NotificationType type,
+                                const NotificationSource& source,
+                                const NotificationDetails& details) {
+  Shaders::Reset();
 }
 
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,

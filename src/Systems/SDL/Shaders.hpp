@@ -34,6 +34,9 @@ class GraphicsObject;
 // Static state about shaders. We just leak them.
 class Shaders {
  public:
+  // Immediately frees all OpenGL resources associated with shaders.
+  static void Reset();
+
   // Returns the shader for the subtractive color mask used in text boxes.
   static GLuint getColorMaskProgram();
 

@@ -26,14 +26,14 @@
 
 #include "GL/glew.h"
 
-#include <iostream>
-
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Systems/SDL/Shaders.hpp"
 
-using namespace std;
+#ifndef NDEBUG
+#include <iostream>
+#endif
 
 namespace {
 
@@ -118,6 +118,32 @@ GLint Shaders::object_light_ = 0;
 GLint Shaders::object_alpha_ = 0;
 GLint Shaders::object_mono_ = 0;
 GLint Shaders::object_invert_ = 0;
+
+// static
+void Shaders::Reset() {
+  if (color_mask_program_object_id_) {
+    glDeleteObjectARB(color_mask_program_object_id_);
+    DebugShowGLErrors();
+
+    color_mask_program_object_id_ = 0;
+    color_mask_current_values_ = 0;
+    color_mask_mask_ = 0;
+  }
+
+  if (object_program_object_id_) {
+    glDeleteObjectARB(object_program_object_id_);
+    DebugShowGLErrors();
+
+    object_program_object_id_ = 0;
+    object_image_ = 0;
+    object_colour_ = 0;
+    object_tint_ = 0;
+    object_light_ = 0;
+    object_alpha_ = 0;
+    object_mono_ = 0;
+    object_invert_ = 0;
+  }
+}
 
 // static
 GLuint Shaders::getColorMaskProgram() {
@@ -276,7 +302,7 @@ void Shaders::buildShader(const char* shader,
   if (blen > 1) {
     GLchar* compiler_log = new GLchar[blen];
     glGetInfoLogARB(shader_object, blen, &slen, compiler_log);
-    cout << "compiler_log: " << endl << compiler_log << endl;
+    std::cout << "compiler_log: " << std::endl << compiler_log << std::endl;
     delete [] compiler_log;
   }
 #endif

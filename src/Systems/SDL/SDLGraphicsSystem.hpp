@@ -32,6 +32,8 @@
 #include <string>
 
 #include <boost/shared_ptr.hpp>
+#include "base/notification_observer.h"
+#include "base/notification_registrar.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 
 #include <SDL/SDL_opengl.h>
@@ -52,7 +54,8 @@ class Texture;
  *
  * @todo This public interface really needs to be rethought out.
  */
-class SDLGraphicsSystem : public GraphicsSystem {
+class SDLGraphicsSystem : public GraphicsSystem,
+                          public NotificationObserver {
  public:
   // SDL should be initialized before you create an SDLGraphicsSystem.
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
@@ -136,6 +139,11 @@ class SDLGraphicsSystem : public GraphicsSystem {
 
   void setWindowTitle();
 
+  // NotificationObserver:
+  virtual void Observe(NotificationType type,
+                       const NotificationSource& source,
+                       const NotificationDetails& details);
+
   // ---------------------------------------------------------------------
 
   SDL_Surface* screen_;
@@ -185,6 +193,8 @@ class SDLGraphicsSystem : public GraphicsSystem {
   /// OpenGL v1.x drivers.
   int screen_tex_width_;
   int screen_tex_height_;
+
+  NotificationRegistrar registrar_;
 };
 
 
