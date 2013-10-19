@@ -10,22 +10,34 @@ rlvm should now do a much better job running Little Busters. It should also dete
 <div class="downloadinfo">
 <h2>Downloads</h2>
 <ul>
+  <li class="macicon">
+    <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13/rlvm_0.13.dmg"
+       onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13.dmg']);">
+      Mac OSX Application (Intel)
+    </a>
+  </li>
+  <li class="ubuntuicon">
+    <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13-saucy/rlvm_0.13.1_i386.deb"
+     onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13.1_i386.deb']);">
+      Ubuntu (Saucy) package for x86 machines
+    </a>
+  </li>
+  <li class="ubuntuicon">
+    <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13-saucy/rlvm_0.13.1_amd64.deb"
+     onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13.1_amd64.deb']);">
+      Ubuntu (Saucy) package for amd64 machines
+    </a>
+  </li>
   <li class="ubuntuicon">
     <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13/rlvm_0.13_i386.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13_i386.deb']);">
-      Ubuntu (Precise) package for x86 machines (version 0.13)
+      Ubuntu LTS (Precise) package for x86 machines
     </a>
   </li>
   <li class="ubuntuicon">
     <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13/rlvm_0.13_amd64.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13_amd64.deb']);">
-      Ubuntu (Precise) package for amd64 machines (version 0.13)
-    </a>
-  </li>
-  <li class="macicon">
-    <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.13/rlvm_0.13.dmg"
-       onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.13.dmg']);">
-      Mac OSX Application (Intel) (version 0.13)
+      Ubuntu LTS (Precise) package for amd64 machines
     </a>
   </li>
   <li class="sourceicon">
