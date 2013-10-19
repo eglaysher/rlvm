@@ -1,3 +1,9 @@
+rlvm (0.13+1) saucy; urgency=low
+
+  * Release for saucy.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 19 Oct 2013 13:16:59 -0700
+
 rlvm (0.13) precise; urgency=low
 
   * rlvm will now warn on startup when it detects Japanese save data, but
