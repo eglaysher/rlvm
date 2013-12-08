@@ -357,3 +357,13 @@ TEST_F(TextSystemTest, TestEmoji) {
     EXPECT_EQ(test_data[i].ypos, data[i].get<2>());
   }
 }
+
+// If we return an empty surface, we crash. Make sure passing an empty string
+// doesn't return an empty surface.
+TEST_F(TextSystemTest, TestEmptyString) {
+  TestTextSystem& sys = getTextSystem();
+  boost::shared_ptr<Surface> text_surface =
+      sys.renderText("", 20, 0, 0, RGBColour::White(), NULL, -1);
+  EXPECT_GT(text_surface->size().width(), 0);
+  EXPECT_GT(text_surface->size().height(), 0);
+}

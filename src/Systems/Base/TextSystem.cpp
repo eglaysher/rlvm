@@ -606,6 +606,13 @@ boost::shared_ptr<Surface> TextSystem::renderText(
     max_width += 2;
   }
 
+  // If we have an empty width or height, make sure we create a non-empty
+  // surface to render onto.
+  if (max_width == 0)
+    max_width = 1;
+  if (total_height == 0)
+    total_height = 1;
+
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
   boost::shared_ptr<Surface> surface(
