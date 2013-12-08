@@ -52,16 +52,18 @@
 #define GTEST_INCLUDE_GTEST_GTEST_H_
 
 #include <limits>
+#include <ostream>
 #include <vector>
 
-#include <gtest/internal/gtest-internal.h>
-#include <gtest/internal/gtest-string.h>
-#include <gtest/gtest-death-test.h>
-#include <gtest/gtest-message.h>
-#include <gtest/gtest-param-test.h>
-#include <gtest/gtest_prod.h>
-#include <gtest/gtest-test-part.h>
-#include <gtest/gtest-typed-test.h>
+#include "gtest/internal/gtest-internal.h"
+#include "gtest/internal/gtest-string.h"
+#include "gtest/gtest-death-test.h"
+#include "gtest/gtest-message.h"
+#include "gtest/gtest-param-test.h"
+#include "gtest/gtest-printers.h"
+#include "gtest/gtest_prod.h"
+#include "gtest/gtest-test-part.h"
+#include "gtest/gtest-typed-test.h"
 
 // Depending on the platform, different string classes are available.
 // On Linux, in addition to ::std::string, Google also makes use of
@@ -136,6 +138,11 @@ GTEST_DECLARE_int32_(stack_trace_depth);
 // non-zero code otherwise.
 GTEST_DECLARE_bool_(throw_on_failure);
 
+// When this flag is set with a "host:port" string, on supported
+// platforms test results are streamed to the specified port on
+// the specified host machine.
+GTEST_DECLARE_string_(stream_result_to);
+
 // The upper limit for valid stack trace depths.
 const int kMaxStackTraceDepth = 100;
 
@@ -147,30 +154,25 @@ class ExecDeathTest;
 class NoExecDeathTest;
 class FinalSuccessChecker;
 class GTestFlagSaver;
-class TestInfoImpl;
+class StreamingListenerTest;
 class TestResultAccessor;
 class TestEventListenersAccessor;
 class TestEventRepeater;
+class UnitTestRecordPropertyTestHelper;
 class WindowsDeathTest;
 class UnitTestImpl* GetUnitTestImpl();
 void ReportFailureInUnknownLocation(TestPartResult::Type result_type,
-                                    const String& message);
-class PrettyUnitTestResultPrinter;
-class XmlUnitTestResultPrinter;
-
-// Converts a streamable value to a String.  A NULL pointer is
-// converted to "(null)".  When the input value is a ::string,
-// ::std::string, ::wstring, or ::std::wstring object, each NUL
-// character in it is replaced with "\\0".
-// Declared in gtest-internal.h but defined here, so that it has access
-// to the definition of the Message class, required by the ARM
-// compiler.
-template <typename T>
-String StreamableToString(const T& streamable) {
-  return (Message() << streamable).GetString();
-}
+                                    const std::string& message);
 
 }  // namespace internal
+
+// The friend relationship of some of these classes is cyclic.
+// If we don't forward declare them the compiler might confuse the classes
+// in friendship clauses with same named classes on the scope.
+class Test;
+class TestCase;
+class TestInfo;
+class UnitTest;
 
 // A class for indicating whether an assertion was successful.  When
 // the assertion wasn't successful, the AssertionResult object
@@ -270,20 +272,33 @@ class GTEST_API_ AssertionResult {
   // assertion's expectation). When nothing has been streamed into the
   // object, returns an empty string.
   const char* message() const {
-    return message_.get() != NULL && message_->c_str() != NULL ?
-           message_->c_str() : "";
+    return message_.get() != NULL ?  message_->c_str() : "";
   }
   // TODO(vladl@google.com): Remove this after making sure no clients use it.
   // Deprecated; please use message() instead.
   const char* failure_message() const { return message(); }
 
   // Streams a custom failure message into this object.
-  template <typename T> AssertionResult& operator<<(const T& value);
+  template <typename T> AssertionResult& operator<<(const T& value) {
+    AppendMessage(Message() << value);
+    return *this;
+  }
+
+  // Allows streaming basic output manipulators such as endl or flush into
+  // this object.
+  AssertionResult& operator<<(
+      ::std::ostream& (*basic_manipulator)(::std::ostream& stream)) {
+    AppendMessage(Message() << basic_manipulator);
+    return *this;
+  }
 
  private:
-  // No implementation - we want AssertionResult to be
-  // copy-constructible but not assignable.
-  void operator=(const AssertionResult& other);
+  // Appends the contents of message to message_.
+  void AppendMessage(const Message& a_message) {
+    if (message_.get() == NULL)
+      message_.reset(new ::std::string);
+    message_->append(a_message.GetString().c_str());
+  }
 
   // Stores result of the assertion predicate.
   bool success_;
@@ -291,19 +306,10 @@ class GTEST_API_ AssertionResult {
   // construct is not satisfied with the predicate's outcome.
   // Referenced via a pointer to avoid taking too much stack frame space
   // with test assertions.
-  internal::scoped_ptr<internal::String> message_;
-};  // class AssertionResult
+  internal::scoped_ptr< ::std::string> message_;
 
-// Streams a custom failure message into this object.
-template <typename T>
-AssertionResult& AssertionResult::operator<<(const T& value) {
-  Message msg;
-  if (message_.get() != NULL)
-    msg << *message_;
-  msg << value;
-  message_.reset(new internal::String(msg.GetString()));
-  return *this;
-}
+  GTEST_DISALLOW_ASSIGN_(AssertionResult);
+};
 
 // Makes a successful assertion result.
 GTEST_API_ AssertionResult AssertionSuccess();
@@ -340,7 +346,7 @@ GTEST_API_ AssertionResult AssertionFailure(const Message& msg);
 // Test is not copyable.
 class GTEST_API_ Test {
  public:
-  friend class internal::TestInfoImpl;
+  friend class TestInfo;
 
   // Defines types for pointers to functions that set up and tear down
   // a test case.
@@ -376,20 +382,21 @@ class GTEST_API_ Test {
   // non-fatal) failure.
   static bool HasFailure() { return HasFatalFailure() || HasNonfatalFailure(); }
 
-  // Logs a property for the current test.  Only the last value for a given
-  // key is remembered.
-  // These are public static so they can be called from utility functions
-  // that are not members of the test fixture.
-  // The arguments are const char* instead strings, as Google Test is used
-  // on platforms where string doesn't compile.
-  //
-  // Note that a driving consideration for these RecordProperty methods
-  // was to produce xml output suited to the Greenspan charting utility,
-  // which at present will only chart values that fit in a 32-bit int. It
-  // is the user's responsibility to restrict their values to 32-bit ints
-  // if they intend them to be used with Greenspan.
-  static void RecordProperty(const char* key, const char* value);
-  static void RecordProperty(const char* key, int value);
+  // Logs a property for the current test, test case, or for the entire
+  // invocation of the test program when used outside of the context of a
+  // test case.  Only the last value for a given key is remembered.  These
+  // are public static so they can be called from utility functions that are
+  // not members of the test fixture.  Calls to RecordProperty made during
+  // lifespan of the test (from the moment its constructor starts to the
+  // moment its destructor finishes) will be output in XML as attributes of
+  // the <testcase> element.  Properties recorded from fixture's
+  // SetUpTestCase or TearDownTestCase are logged as attributes of the
+  // corresponding <testsuite> element.  Calls to RecordProperty made in the
+  // global context (before or after invocation of RUN_ALL_TESTS and from
+  // SetUp/TearDown method of Environment objects registered with Google
+  // Test) will be output as attributes of the <testsuites> element.
+  static void RecordProperty(const std::string& key, const std::string& value);
+  static void RecordProperty(const std::string& key, int value);
 
  protected:
   // Creates a Test object.
@@ -416,6 +423,10 @@ class GTEST_API_ Test {
 
   // Sets up, executes, and tears down the test.
   void Run();
+
+  // Deletes self.  We deliberately pick an unusual name for this
+  // internal method to avoid clashing with names used in user TESTs.
+  void DeleteSelf_() { delete this; }
 
   // Uses a GTestFlagSaver to save and restore all Google Test flags.
   const internal::GTestFlagSaver* const gtest_flag_saver_;
@@ -454,7 +465,7 @@ class TestProperty {
   // C'tor.  TestProperty does NOT have a default constructor.
   // Always use this constructor (with parameters) to create a
   // TestProperty object.
-  TestProperty(const char* a_key, const char* a_value) :
+  TestProperty(const std::string& a_key, const std::string& a_value) :
     key_(a_key), value_(a_value) {
   }
 
@@ -469,15 +480,15 @@ class TestProperty {
   }
 
   // Sets a new value, overriding the one supplied in the constructor.
-  void SetValue(const char* new_value) {
+  void SetValue(const std::string& new_value) {
     value_ = new_value;
   }
 
  private:
   // The key supplied by the user.
-  internal::String key_;
+  std::string key_;
   // The value supplied by the user.
-  internal::String value_;
+  std::string value_;
 };
 
 // The result of a single Test.  This includes a list of
@@ -528,10 +539,10 @@ class GTEST_API_ TestResult {
 
  private:
   friend class TestInfo;
+  friend class TestCase;
   friend class UnitTest;
   friend class internal::DefaultGlobalTestPartResultReporter;
   friend class internal::ExecDeathTest;
-  friend class internal::TestInfoImpl;
   friend class internal::TestResultAccessor;
   friend class internal::UnitTestImpl;
   friend class internal::WindowsDeathTest;
@@ -553,13 +564,16 @@ class GTEST_API_ TestResult {
   // a non-fatal failure if invalid (e.g., if it conflicts with reserved
   // key names). If a property is already recorded for the same key, the
   // value will be updated, rather than storing multiple values for the same
-  // key.
-  void RecordProperty(const TestProperty& test_property);
+  // key.  xml_element specifies the element for which the property is being
+  // recorded and is used for validation.
+  void RecordProperty(const std::string& xml_element,
+                      const TestProperty& test_property);
 
   // Adds a failure if the key is a reserved attribute of Google Test
   // testcase tags.  Returns true if the property is valid.
   // TODO(russr): Validate attribute names are legal and human readable.
-  static bool ValidateTestProperty(const TestProperty& test_property);
+  static bool ValidateTestProperty(const std::string& xml_element,
+                                   const TestProperty& test_property);
 
   // Adds a test part result to the list.
   void AddTestPartResult(const TestPartResult& test_part_result);
@@ -611,20 +625,30 @@ class GTEST_API_ TestInfo {
   ~TestInfo();
 
   // Returns the test case name.
-  const char* test_case_name() const;
+  const char* test_case_name() const { return test_case_name_.c_str(); }
 
   // Returns the test name.
-  const char* name() const;
+  const char* name() const { return name_.c_str(); }
 
-  // Returns the test case comment.
-  const char* test_case_comment() const;
+  // Returns the name of the parameter type, or NULL if this is not a typed
+  // or a type-parameterized test.
+  const char* type_param() const {
+    if (type_param_.get() != NULL)
+      return type_param_->c_str();
+    return NULL;
+  }
 
-  // Returns the test comment.
-  const char* comment() const;
+  // Returns the text representation of the value parameter, or NULL if this
+  // is not a value-parameterized test.
+  const char* value_param() const {
+    if (value_param_.get() != NULL)
+      return value_param_->c_str();
+    return NULL;
+  }
 
-  // Returns true if this test should run, that is if the test is not disabled
-  // (or it is disabled but the also_run_disabled_tests flag has been specified)
-  // and its full name matches the user-specified filter.
+  // Returns true if this test should run, that is if the test is not
+  // disabled (or it is disabled but the also_run_disabled_tests flag has
+  // been specified) and its full name matches the user-specified filter.
   //
   // Google Test allows the user to filter the tests by their full names.
   // The full name of a test Bar in test case Foo is defined as
@@ -638,10 +662,18 @@ class GTEST_API_ TestInfo {
   //
   // For example, *A*:Foo.* is a filter that matches any string that
   // contains the character 'A' or starts with "Foo.".
-  bool should_run() const;
+  bool should_run() const { return should_run_; }
+
+  // Returns true iff this test will appear in the XML report.
+  bool is_reportable() const {
+    // For now, the XML report includes all tests matching the filter.
+    // In the future, we may trim tests that are excluded because of
+    // sharding.
+    return matches_filter_;
+  }
 
   // Returns the result of the test.
-  const TestResult* result() const;
+  const TestResult* result() const { return &result_; }
 
  private:
 #if GTEST_HAS_DEATH_TEST
@@ -649,36 +681,61 @@ class GTEST_API_ TestInfo {
 #endif  // GTEST_HAS_DEATH_TEST
   friend class Test;
   friend class TestCase;
-  friend class internal::TestInfoImpl;
   friend class internal::UnitTestImpl;
+  friend class internal::StreamingListenerTest;
   friend TestInfo* internal::MakeAndRegisterTestInfo(
-      const char* test_case_name, const char* name,
-      const char* test_case_comment, const char* comment,
+      const char* test_case_name,
+      const char* name,
+      const char* type_param,
+      const char* value_param,
       internal::TypeId fixture_class_id,
       Test::SetUpTestCaseFunc set_up_tc,
       Test::TearDownTestCaseFunc tear_down_tc,
       internal::TestFactoryBase* factory);
 
-  // Returns true if this test matches the user-specified filter.
-  bool matches_filter() const;
-
-  // Increments the number of death tests encountered in this test so
-  // far.
-  int increment_death_test_count();
-
-  // Accessors for the implementation object.
-  internal::TestInfoImpl* impl() { return impl_; }
-  const internal::TestInfoImpl* impl() const { return impl_; }
-
   // Constructs a TestInfo object. The newly constructed instance assumes
   // ownership of the factory object.
-  TestInfo(const char* test_case_name, const char* name,
-           const char* test_case_comment, const char* comment,
+  TestInfo(const std::string& test_case_name,
+           const std::string& name,
+           const char* a_type_param,   // NULL if not a type-parameterized test
+           const char* a_value_param,  // NULL if not a value-parameterized test
            internal::TypeId fixture_class_id,
            internal::TestFactoryBase* factory);
 
-  // An opaque implementation object.
-  internal::TestInfoImpl* impl_;
+  // Increments the number of death tests encountered in this test so
+  // far.
+  int increment_death_test_count() {
+    return result_.increment_death_test_count();
+  }
+
+  // Creates the test object, runs it, records its result, and then
+  // deletes it.
+  void Run();
+
+  static void ClearTestResult(TestInfo* test_info) {
+    test_info->result_.Clear();
+  }
+
+  // These fields are immutable properties of the test.
+  const std::string test_case_name_;     // Test case name
+  const std::string name_;               // Test name
+  // Name of the parameter type, or NULL if this is not a typed or a
+  // type-parameterized test.
+  const internal::scoped_ptr<const ::std::string> type_param_;
+  // Text representation of the value parameter, or NULL if this is not a
+  // value-parameterized test.
+  const internal::scoped_ptr<const ::std::string> value_param_;
+  const internal::TypeId fixture_class_id_;   // ID of the test fixture class
+  bool should_run_;                 // True iff this test should run
+  bool is_disabled_;                // True iff this test is disabled
+  bool matches_filter_;             // True if this test matches the
+                                    // user-specified filter.
+  internal::TestFactoryBase* const factory_;  // The factory that creates
+                                              // the test object
+
+  // This field is mutable and needs to be reset before running the
+  // test for the second time.
+  TestResult result_;
 
   GTEST_DISALLOW_COPY_AND_ASSIGN_(TestInfo);
 };
@@ -696,9 +753,11 @@ class GTEST_API_ TestCase {
   // Arguments:
   //
   //   name:         name of the test case
+  //   a_type_param: the name of the test's type parameter, or NULL if
+  //                 this is not a type-parameterized test.
   //   set_up_tc:    pointer to the function that sets up the test case
   //   tear_down_tc: pointer to the function that tears down the test case
-  TestCase(const char* name, const char* comment,
+  TestCase(const char* name, const char* a_type_param,
            Test::SetUpTestCaseFunc set_up_tc,
            Test::TearDownTestCaseFunc tear_down_tc);
 
@@ -708,8 +767,13 @@ class GTEST_API_ TestCase {
   // Gets the name of the TestCase.
   const char* name() const { return name_.c_str(); }
 
-  // Returns the test case comment.
-  const char* comment() const { return comment_.c_str(); }
+  // Returns the name of the parameter type, or NULL if this is not a
+  // type-parameterized test case.
+  const char* type_param() const {
+    if (type_param_.get() != NULL)
+      return type_param_->c_str();
+    return NULL;
+  }
 
   // Returns true if any test in this test case should run.
   bool should_run() const { return should_run_; }
@@ -720,8 +784,14 @@ class GTEST_API_ TestCase {
   // Gets the number of failed tests in this test case.
   int failed_test_count() const;
 
+  // Gets the number of disabled tests that will be reported in the XML report.
+  int reportable_disabled_test_count() const;
+
   // Gets the number of disabled tests in this test case.
   int disabled_test_count() const;
+
+  // Gets the number of tests to be printed in the XML report.
+  int reportable_test_count() const;
 
   // Get the number of tests in this test case that should run.
   int test_to_run_count() const;
@@ -741,6 +811,10 @@ class GTEST_API_ TestCase {
   // Returns the i-th test among all the tests. i can range from 0 to
   // total_test_count() - 1. If i is not in that range, returns NULL.
   const TestInfo* GetTestInfo(int i) const;
+
+  // Returns the TestResult that holds test properties recorded during
+  // execution of SetUpTestCase and TearDownTestCase.
+  const TestResult& ad_hoc_test_result() const { return ad_hoc_test_result_; }
 
  private:
   friend class Test;
@@ -776,17 +850,44 @@ class GTEST_API_ TestCase {
   // Runs every test in this TestCase.
   void Run();
 
+  // Runs SetUpTestCase() for this TestCase.  This wrapper is needed
+  // for catching exceptions thrown from SetUpTestCase().
+  void RunSetUpTestCase() { (*set_up_tc_)(); }
+
+  // Runs TearDownTestCase() for this TestCase.  This wrapper is
+  // needed for catching exceptions thrown from TearDownTestCase().
+  void RunTearDownTestCase() { (*tear_down_tc_)(); }
+
   // Returns true iff test passed.
-  static bool TestPassed(const TestInfo * test_info);
+  static bool TestPassed(const TestInfo* test_info) {
+    return test_info->should_run() && test_info->result()->Passed();
+  }
 
   // Returns true iff test failed.
-  static bool TestFailed(const TestInfo * test_info);
+  static bool TestFailed(const TestInfo* test_info) {
+    return test_info->should_run() && test_info->result()->Failed();
+  }
+
+  // Returns true iff the test is disabled and will be reported in the XML
+  // report.
+  static bool TestReportableDisabled(const TestInfo* test_info) {
+    return test_info->is_reportable() && test_info->is_disabled_;
+  }
 
   // Returns true iff test is disabled.
-  static bool TestDisabled(const TestInfo * test_info);
+  static bool TestDisabled(const TestInfo* test_info) {
+    return test_info->is_disabled_;
+  }
+
+  // Returns true iff this test will appear in the XML report.
+  static bool TestReportable(const TestInfo* test_info) {
+    return test_info->is_reportable();
+  }
 
   // Returns true if the given test should run.
-  static bool ShouldRunTest(const TestInfo *test_info);
+  static bool ShouldRunTest(const TestInfo* test_info) {
+    return test_info->should_run();
+  }
 
   // Shuffles the tests in this test case.
   void ShuffleTests(internal::Random* random);
@@ -795,9 +896,10 @@ class GTEST_API_ TestCase {
   void UnshuffleTests();
 
   // Name of the test case.
-  internal::String name_;
-  // Comment on the test case.
-  internal::String comment_;
+  std::string name_;
+  // Name of the parameter type, or NULL if this is not a typed or a
+  // type-parameterized test.
+  const internal::scoped_ptr<const ::std::string> type_param_;
   // The vector of TestInfos in their original order.  It owns the
   // elements in the vector.
   std::vector<TestInfo*> test_info_list_;
@@ -813,6 +915,9 @@ class GTEST_API_ TestCase {
   bool should_run_;
   // Elapsed time, in milliseconds.
   TimeInMillis elapsed_time_;
+  // Holds test properties recorded during execution of SetUpTestCase and
+  // TearDownTestCase.
+  TestResult ad_hoc_test_result_;
 
   // We disallow copying TestCases.
   GTEST_DISALLOW_COPY_AND_ASSIGN_(TestCase);
@@ -876,7 +981,7 @@ class TestEventListener {
   // Fired before the test starts.
   virtual void OnTestStart(const TestInfo& test_info) = 0;
 
-  // Fired after a failed assertion or a SUCCESS().
+  // Fired after a failed assertion or a SUCCEED() invocation.
   virtual void OnTestPartResult(const TestPartResult& test_part_result) = 0;
 
   // Fired after the test ends.
@@ -961,10 +1066,10 @@ class GTEST_API_ TestEventListeners {
 
  private:
   friend class TestCase;
+  friend class TestInfo;
   friend class internal::DefaultGlobalTestPartResultReporter;
   friend class internal::NoExecDeathTest;
   friend class internal::TestEventListenersAccessor;
-  friend class internal::TestInfoImpl;
   friend class internal::UnitTestImpl;
 
   // Returns repeater that broadcasts the TestEventListener events to all
@@ -1032,11 +1137,13 @@ class GTEST_API_ UnitTest {
 
   // Returns the TestCase object for the test that's currently running,
   // or NULL if no test is running.
-  const TestCase* current_test_case() const;
+  const TestCase* current_test_case() const
+      GTEST_LOCK_EXCLUDED_(mutex_);
 
   // Returns the TestInfo object for the test that's currently running,
   // or NULL if no test is running.
-  const TestInfo* current_test_info() const;
+  const TestInfo* current_test_info() const
+      GTEST_LOCK_EXCLUDED_(mutex_);
 
   // Returns the random seed used at the start of the current test run.
   int random_seed() const;
@@ -1046,7 +1153,8 @@ class GTEST_API_ UnitTest {
   // value-parameterized tests and instantiate and register them.
   //
   // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-  internal::ParameterizedTestCaseRegistry& parameterized_test_registry();
+  internal::ParameterizedTestCaseRegistry& parameterized_test_registry()
+      GTEST_LOCK_EXCLUDED_(mutex_);
 #endif  // GTEST_HAS_PARAM_TEST
 
   // Gets the number of successful test cases.
@@ -1068,14 +1176,24 @@ class GTEST_API_ UnitTest {
   // Gets the number of failed tests.
   int failed_test_count() const;
 
+  // Gets the number of disabled tests that will be reported in the XML report.
+  int reportable_disabled_test_count() const;
+
   // Gets the number of disabled tests.
   int disabled_test_count() const;
+
+  // Gets the number of tests to be printed in the XML report.
+  int reportable_test_count() const;
 
   // Gets the number of all tests.
   int total_test_count() const;
 
   // Gets the number of tests that should run.
   int test_to_run_count() const;
+
+  // Gets the time of the test program start, in ms from the start of the
+  // UNIX epoch.
+  TimeInMillis start_timestamp() const;
 
   // Gets the elapsed time, in milliseconds.
   TimeInMillis elapsed_time() const;
@@ -1090,6 +1208,10 @@ class GTEST_API_ UnitTest {
   // Gets the i-th test case among all the test cases. i can range from 0 to
   // total_test_case_count() - 1. If i is not in that range, returns NULL.
   const TestCase* GetTestCase(int i) const;
+
+  // Returns the TestResult containing information on test failures and
+  // properties logged outside of individual test cases.
+  const TestResult& ad_hoc_test_result() const;
 
   // Returns the list of event listeners that can be used to track events
   // inside Google Test.
@@ -1114,12 +1236,16 @@ class GTEST_API_ UnitTest {
   void AddTestPartResult(TestPartResult::Type result_type,
                          const char* file_name,
                          int line_number,
-                         const internal::String& message,
-                         const internal::String& os_stack_trace);
+                         const std::string& message,
+                         const std::string& os_stack_trace)
+      GTEST_LOCK_EXCLUDED_(mutex_);
 
-  // Adds a TestProperty to the current TestResult object. If the result already
-  // contains a property with the same key, the value will be updated.
-  void RecordPropertyForCurrentTest(const char* key, const char* value);
+  // Adds a TestProperty to the current TestResult object when invoked from
+  // inside a test, to current TestCase's ad_hoc_test_result_ when invoked
+  // from SetUpTestCase or TearDownTestCase, or to the global property set
+  // when invoked elsewhere.  If the result already contains a property with
+  // the same key, the value will be updated.
+  void RecordProperty(const std::string& key, const std::string& value);
 
   // Gets the i-th test case among all the test cases. i can range from 0 to
   // total_test_case_count() - 1. If i is not in that range, returns NULL.
@@ -1134,11 +1260,13 @@ class GTEST_API_ UnitTest {
   friend class Test;
   friend class internal::AssertHelper;
   friend class internal::ScopedTrace;
+  friend class internal::StreamingListenerTest;
+  friend class internal::UnitTestRecordPropertyTestHelper;
   friend Environment* AddGlobalTestEnvironment(Environment* env);
   friend internal::UnitTestImpl* internal::GetUnitTestImpl();
   friend void internal::ReportFailureInUnknownLocation(
       TestPartResult::Type result_type,
-      const internal::String& message);
+      const std::string& message);
 
   // Creates an empty UnitTest.
   UnitTest();
@@ -1148,10 +1276,12 @@ class GTEST_API_ UnitTest {
 
   // Pushes a trace defined by SCOPED_TRACE() on to the per-thread
   // Google Test trace stack.
-  void PushGTestTrace(const internal::TraceInfo& trace);
+  void PushGTestTrace(const internal::TraceInfo& trace)
+      GTEST_LOCK_EXCLUDED_(mutex_);
 
   // Pops a trace from the per-thread Google Test trace stack.
-  void PopGTestTrace();
+  void PopGTestTrace()
+      GTEST_LOCK_EXCLUDED_(mutex_);
 
   // Protects mutable state in *impl_.  This is mutable as some const
   // methods need to lock it too.
@@ -1206,46 +1336,101 @@ GTEST_API_ void InitGoogleTest(int* argc, wchar_t** argv);
 
 namespace internal {
 
-// These overloaded versions handle ::std::string and ::std::wstring.
-GTEST_API_ inline String FormatForFailureMessage(const ::std::string& str) {
-  return (Message() << '"' << str << '"').GetString();
-}
+// FormatForComparison<ToPrint, OtherOperand>::Format(value) formats a
+// value of type ToPrint that is an operand of a comparison assertion
+// (e.g. ASSERT_EQ).  OtherOperand is the type of the other operand in
+// the comparison, and is used to help determine the best way to
+// format the value.  In particular, when the value is a C string
+// (char pointer) and the other operand is an STL string object, we
+// want to format the C string as a string, since we know it is
+// compared by value with the string object.  If the value is a char
+// pointer but the other operand is not an STL string object, we don't
+// know whether the pointer is supposed to point to a NUL-terminated
+// string, and thus want to print it as a pointer to be safe.
+//
+// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
 
-#if GTEST_HAS_STD_WSTRING
-GTEST_API_ inline String FormatForFailureMessage(const ::std::wstring& wstr) {
-  return (Message() << "L\"" << wstr << '"').GetString();
-}
-#endif  // GTEST_HAS_STD_WSTRING
+// The default case.
+template <typename ToPrint, typename OtherOperand>
+class FormatForComparison {
+ public:
+  static ::std::string Format(const ToPrint& value) {
+    return ::testing::PrintToString(value);
+  }
+};
 
-// These overloaded versions handle ::string and ::wstring.
+// Array.
+template <typename ToPrint, size_t N, typename OtherOperand>
+class FormatForComparison<ToPrint[N], OtherOperand> {
+ public:
+  static ::std::string Format(const ToPrint* value) {
+    return FormatForComparison<const ToPrint*, OtherOperand>::Format(value);
+  }
+};
+
+// By default, print C string as pointers to be safe, as we don't know
+// whether they actually point to a NUL-terminated string.
+
+#define GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_(CharType)                \
+  template <typename OtherOperand>                                      \
+  class FormatForComparison<CharType*, OtherOperand> {                  \
+   public:                                                              \
+    static ::std::string Format(CharType* value) {                      \
+      return ::testing::PrintToString(static_cast<const void*>(value)); \
+    }                                                                   \
+  }
+
+GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_(char);
+GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_(const char);
+GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_(wchar_t);
+GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_(const wchar_t);
+
+#undef GTEST_IMPL_FORMAT_C_STRING_AS_POINTER_
+
+// If a C string is compared with an STL string object, we know it's meant
+// to point to a NUL-terminated string, and thus can print it as a string.
+
+#define GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(CharType, OtherStringType) \
+  template <>                                                           \
+  class FormatForComparison<CharType*, OtherStringType> {               \
+   public:                                                              \
+    static ::std::string Format(CharType* value) {                      \
+      return ::testing::PrintToString(value);                           \
+    }                                                                   \
+  }
+
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(char, ::std::string);
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(const char, ::std::string);
+
 #if GTEST_HAS_GLOBAL_STRING
-GTEST_API_ inline String FormatForFailureMessage(const ::string& str) {
-  return (Message() << '"' << str << '"').GetString();
-}
-#endif  // GTEST_HAS_GLOBAL_STRING
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(char, ::string);
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(const char, ::string);
+#endif
 
 #if GTEST_HAS_GLOBAL_WSTRING
-GTEST_API_ inline String FormatForFailureMessage(const ::wstring& wstr) {
-  return (Message() << "L\"" << wstr << '"').GetString();
-}
-#endif  // GTEST_HAS_GLOBAL_WSTRING
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(wchar_t, ::wstring);
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(const wchar_t, ::wstring);
+#endif
+
+#if GTEST_HAS_STD_WSTRING
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(wchar_t, ::std::wstring);
+GTEST_IMPL_FORMAT_C_STRING_AS_STRING_(const wchar_t, ::std::wstring);
+#endif
+
+#undef GTEST_IMPL_FORMAT_C_STRING_AS_STRING_
 
 // Formats a comparison assertion (e.g. ASSERT_EQ, EXPECT_LT, and etc)
 // operand to be used in a failure message.  The type (but not value)
 // of the other operand may affect the format.  This allows us to
 // print a char* as a raw pointer when it is compared against another
-// char*, and print it as a C string when it is compared against an
-// std::string object, for example.
-//
-// The default implementation ignores the type of the other operand.
-// Some specialized versions are used to handle formatting wide or
-// narrow C strings.
+// char* or void*, and print it as a C string when it is compared
+// against an std::string object, for example.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
 template <typename T1, typename T2>
-String FormatForComparisonFailureMessage(const T1& value,
-                                         const T2& /* other_operand */) {
-  return FormatForFailureMessage(value);
+std::string FormatForComparisonFailureMessage(
+    const T1& value, const T2& /* other_operand */) {
+  return FormatForComparison<T1, T2>::Format(value);
 }
 
 // The helper function for {ASSERT|EXPECT}_EQ.
@@ -1255,9 +1440,9 @@ AssertionResult CmpHelperEQ(const char* expected_expression,
                             const T1& expected,
                             const T2& actual) {
 #ifdef _MSC_VER
-#pragma warning(push)          // Saves the current warning state.
-#pragma warning(disable:4389)  // Temporarily disables warning on
-                               // signed/unsigned mismatch.
+# pragma warning(push)          // Saves the current warning state.
+# pragma warning(disable:4389)  // Temporarily disables warning on
+                                // signed/unsigned mismatch.
 #endif
 
   if (expected == actual) {
@@ -1265,7 +1450,7 @@ AssertionResult CmpHelperEQ(const char* expected_expression,
   }
 
 #ifdef _MSC_VER
-#pragma warning(pop)          // Restores the warning state.
+# pragma warning(pop)          // Restores the warning state.
 #endif
 
   return EqFailure(expected_expression,
@@ -1316,7 +1501,7 @@ class EqHelper {
 };
 
 // This specialization is used when the first argument to ASSERT_EQ()
-// is a null pointer literal.
+// is a null pointer literal, like NULL, false, or 0.
 template <>
 class EqHelper<true> {
  public:
@@ -1325,24 +1510,38 @@ class EqHelper<true> {
   // NOT a pointer, e.g. ASSERT_EQ(0, AnIntFunction()) or
   // EXPECT_EQ(false, a_bool).
   template <typename T1, typename T2>
-  static AssertionResult Compare(const char* expected_expression,
-                                 const char* actual_expression,
-                                 const T1& expected,
-                                 const T2& actual) {
+  static AssertionResult Compare(
+      const char* expected_expression,
+      const char* actual_expression,
+      const T1& expected,
+      const T2& actual,
+      // The following line prevents this overload from being considered if T2
+      // is not a pointer type.  We need this because ASSERT_EQ(NULL, my_ptr)
+      // expands to Compare("", "", NULL, my_ptr), which requires a conversion
+      // to match the Secret* in the other overload, which would otherwise make
+      // this template match better.
+      typename EnableIf<!is_pointer<T2>::value>::type* = 0) {
     return CmpHelperEQ(expected_expression, actual_expression, expected,
                        actual);
   }
 
-  // This version will be picked when the second argument to
-  // ASSERT_EQ() is a pointer, e.g. ASSERT_EQ(NULL, a_pointer).
-  template <typename T1, typename T2>
-  static AssertionResult Compare(const char* expected_expression,
-                                 const char* actual_expression,
-                                 const T1& /* expected */,
-                                 T2* actual) {
+  // This version will be picked when the second argument to ASSERT_EQ() is a
+  // pointer, e.g. ASSERT_EQ(NULL, a_pointer).
+  template <typename T>
+  static AssertionResult Compare(
+      const char* expected_expression,
+      const char* actual_expression,
+      // We used to have a second template parameter instead of Secret*.  That
+      // template parameter would deduce to 'long', making this a better match
+      // than the first overload even without the first overload's EnableIf.
+      // Unfortunately, gcc with -Wconversion-null warns when "passing NULL to
+      // non-pointer argument" (even a deduced integral argument), so the old
+      // implementation caused warnings in user code.
+      Secret* /* expected (NULL) */,
+      T* actual) {
     // We already know that 'expected' is a null pointer.
     return CmpHelperEQ(expected_expression, actual_expression,
-                       static_cast<T2*>(NULL), actual);
+                       static_cast<T*>(NULL), actual);
   }
 };
 
@@ -1363,11 +1562,10 @@ AssertionResult CmpHelper##op_name(const char* expr1, const char* expr2, \
   if (val1 op val2) {\
     return AssertionSuccess();\
   } else {\
-    Message msg;\
-    msg << "Expected: (" << expr1 << ") " #op " (" << expr2\
+    return AssertionFailure() \
+        << "Expected: (" << expr1 << ") " #op " (" << expr2\
         << "), actual: " << FormatForComparisonFailureMessage(val1, val2)\
         << " vs " << FormatForComparisonFailureMessage(val2, val1);\
-    return AssertionFailure(msg);\
   }\
 }\
 GTEST_API_ AssertionResult CmpHelper##op_name(\
@@ -1380,11 +1578,11 @@ GTEST_IMPL_CMP_HELPER_(NE, !=);
 // Implements the helper function for {ASSERT|EXPECT}_LE
 GTEST_IMPL_CMP_HELPER_(LE, <=);
 // Implements the helper function for {ASSERT|EXPECT}_LT
-GTEST_IMPL_CMP_HELPER_(LT, < );
+GTEST_IMPL_CMP_HELPER_(LT, <);
 // Implements the helper function for {ASSERT|EXPECT}_GE
 GTEST_IMPL_CMP_HELPER_(GE, >=);
 // Implements the helper function for {ASSERT|EXPECT}_GT
-GTEST_IMPL_CMP_HELPER_(GT, > );
+GTEST_IMPL_CMP_HELPER_(GT, >);
 
 #undef GTEST_IMPL_CMP_HELPER_
 
@@ -1495,18 +1693,18 @@ AssertionResult CmpHelperFloatingPointEQ(const char* expected_expression,
     return AssertionSuccess();
   }
 
-  StrStream expected_ss;
+  ::std::stringstream expected_ss;
   expected_ss << std::setprecision(std::numeric_limits<RawType>::digits10 + 2)
               << expected;
 
-  StrStream actual_ss;
+  ::std::stringstream actual_ss;
   actual_ss << std::setprecision(std::numeric_limits<RawType>::digits10 + 2)
             << actual;
 
   return EqFailure(expected_expression,
                    actual_expression,
-                   StrStreamToString(&expected_ss),
-                   StrStreamToString(&actual_ss),
+                   StringStreamToString(&expected_ss),
+                   StringStreamToString(&actual_ss),
                    false);
 }
 
@@ -1548,9 +1746,9 @@ class GTEST_API_ AssertHelper {
         : type(t), file(srcfile), line(line_num), message(msg) { }
 
     TestPartResult::Type const type;
-    const char*        const file;
-    int                const line;
-    String             const message;
+    const char* const file;
+    int const line;
+    std::string const message;
 
    private:
     GTEST_DISALLOW_COPY_AND_ASSIGN_(AssertHelperData);
@@ -1564,9 +1762,13 @@ class GTEST_API_ AssertHelper {
 }  // namespace internal
 
 #if GTEST_HAS_PARAM_TEST
-// The abstract base class that all value-parameterized tests inherit from.
+// The pure interface class that all value-parameterized tests inherit from.
+// A value-parameterized class must inherit from both ::testing::Test and
+// ::testing::WithParamInterface. In most cases that just means inheriting
+// from ::testing::TestWithParam, but more complicated test hierarchies
+// may need to inherit from Test and WithParamInterface at different levels.
 //
-// This class adds support for accessing the test parameter value via
+// This interface has support for accessing the test parameter value via
 // the GetParam() method.
 //
 // Use it with one of the parameter generator defining functions, like Range(),
@@ -1595,13 +1797,22 @@ class GTEST_API_ AssertHelper {
 // INSTANTIATE_TEST_CASE_P(OneToTenRange, FooTest, ::testing::Range(1, 10));
 
 template <typename T>
-class TestWithParam : public Test {
+class WithParamInterface {
  public:
   typedef T ParamType;
+  virtual ~WithParamInterface() {}
 
   // The current parameter value. Is also available in the test fixture's
-  // constructor.
-  const ParamType& GetParam() const { return *parameter_; }
+  // constructor. This member function is non-static, even though it only
+  // references static data, to reduce the opportunity for incorrect uses
+  // like writing 'WithParamInterface<bool>::GetParam()' for a test that
+  // uses a fixture whose parameter type is int.
+  const ParamType& GetParam() const {
+    GTEST_CHECK_(parameter_ != NULL)
+        << "GetParam() can only be called inside a value-parameterized test "
+        << "-- did you intend to write TEST_P instead of TEST_F?";
+    return *parameter_;
+  }
 
  private:
   // Sets parameter value. The caller is responsible for making sure the value
@@ -1613,12 +1824,19 @@ class TestWithParam : public Test {
   // Static value used for accessing parameter during a test lifetime.
   static const ParamType* parameter_;
 
-  // TestClass must be a subclass of TestWithParam<T>.
+  // TestClass must be a subclass of WithParamInterface<T> and Test.
   template <class TestClass> friend class internal::ParameterizedTestFactory;
 };
 
 template <typename T>
-const T* TestWithParam<T>::parameter_ = NULL;
+const T* WithParamInterface<T>::parameter_ = NULL;
+
+// Most value-parameterized classes can ignore the existence of
+// WithParamInterface, and can just inherit from ::testing::TestWithParam.
+
+template <typename T>
+class TestWithParam : public Test, public WithParamInterface<T> {
+};
 
 #endif  // GTEST_HAS_PARAM_TEST
 
@@ -1640,15 +1858,15 @@ const T* TestWithParam<T>::parameter_ = NULL;
 // usually want the fail-fast behavior of FAIL and ASSERT_*, but those
 // writing data-driven tests often find themselves using ADD_FAILURE
 // and EXPECT_* more.
-//
-// Examples:
-//
-//   EXPECT_TRUE(server.StatusIsOK());
-//   ASSERT_FALSE(server.HasPendingRequest(port))
-//       << "There are still pending requests " << "on port " << port;
 
 // Generates a nonfatal failure with a generic message.
 #define ADD_FAILURE() GTEST_NONFATAL_FAILURE_("Failed")
+
+// Generates a nonfatal failure at the given source file location with
+// a generic message.
+#define ADD_FAILURE_AT(file, line) \
+  GTEST_MESSAGE_AT_(file, line, "Failed", \
+                    ::testing::TestPartResult::kNonFatalFailure)
 
 // Generates a fatal failure with a generic message.
 #define GTEST_FAIL() GTEST_FATAL_FAILURE_("Failed")
@@ -1656,7 +1874,7 @@ const T* TestWithParam<T>::parameter_ = NULL;
 // Define this macro to 1 to omit the definition of FAIL(), which is a
 // generic name and clashes with some other libraries.
 #if !GTEST_DONT_DEFINE_FAIL
-#define FAIL() GTEST_FAIL()
+# define FAIL() GTEST_FAIL()
 #endif
 
 // Generates a success with a generic message.
@@ -1665,7 +1883,7 @@ const T* TestWithParam<T>::parameter_ = NULL;
 // Define this macro to 1 to omit the definition of SUCCEED(), which
 // is a generic name and clashes with some other libraries.
 #if !GTEST_DONT_DEFINE_SUCCEED
-#define SUCCEED() GTEST_SUCCEED()
+# define SUCCEED() GTEST_SUCCEED()
 #endif
 
 // Macros for testing exceptions.
@@ -1708,7 +1926,7 @@ const T* TestWithParam<T>::parameter_ = NULL;
 
 // Includes the auto-generated header that implements a family of
 // generic predicate assertion macros.
-#include <gtest/gtest_pred_impl.h>
+#include "gtest/gtest_pred_impl.h"
 
 // Macros for testing equalities and inequalities.
 //
@@ -1771,22 +1989,49 @@ const T* TestWithParam<T>::parameter_ = NULL;
 #define EXPECT_GT(val1, val2) \
   EXPECT_PRED_FORMAT2(::testing::internal::CmpHelperGT, val1, val2)
 
-#define ASSERT_EQ(expected, actual) \
+#define GTEST_ASSERT_EQ(expected, actual) \
   ASSERT_PRED_FORMAT2(::testing::internal:: \
                       EqHelper<GTEST_IS_NULL_LITERAL_(expected)>::Compare, \
                       expected, actual)
-#define ASSERT_NE(val1, val2) \
+#define GTEST_ASSERT_NE(val1, val2) \
   ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperNE, val1, val2)
-#define ASSERT_LE(val1, val2) \
+#define GTEST_ASSERT_LE(val1, val2) \
   ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperLE, val1, val2)
-#define ASSERT_LT(val1, val2) \
+#define GTEST_ASSERT_LT(val1, val2) \
   ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperLT, val1, val2)
-#define ASSERT_GE(val1, val2) \
+#define GTEST_ASSERT_GE(val1, val2) \
   ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperGE, val1, val2)
-#define ASSERT_GT(val1, val2) \
+#define GTEST_ASSERT_GT(val1, val2) \
   ASSERT_PRED_FORMAT2(::testing::internal::CmpHelperGT, val1, val2)
 
-// C String Comparisons.  All tests treat NULL and any non-NULL string
+// Define macro GTEST_DONT_DEFINE_ASSERT_XY to 1 to omit the definition of
+// ASSERT_XY(), which clashes with some users' own code.
+
+#if !GTEST_DONT_DEFINE_ASSERT_EQ
+# define ASSERT_EQ(val1, val2) GTEST_ASSERT_EQ(val1, val2)
+#endif
+
+#if !GTEST_DONT_DEFINE_ASSERT_NE
+# define ASSERT_NE(val1, val2) GTEST_ASSERT_NE(val1, val2)
+#endif
+
+#if !GTEST_DONT_DEFINE_ASSERT_LE
+# define ASSERT_LE(val1, val2) GTEST_ASSERT_LE(val1, val2)
+#endif
+
+#if !GTEST_DONT_DEFINE_ASSERT_LT
+# define ASSERT_LT(val1, val2) GTEST_ASSERT_LT(val1, val2)
+#endif
+
+#if !GTEST_DONT_DEFINE_ASSERT_GE
+# define ASSERT_GE(val1, val2) GTEST_ASSERT_GE(val1, val2)
+#endif
+
+#if !GTEST_DONT_DEFINE_ASSERT_GT
+# define ASSERT_GT(val1, val2) GTEST_ASSERT_GT(val1, val2)
+#endif
+
+// C-string Comparisons.  All tests treat NULL and any non-NULL string
 // as different.  Two NULLs are equal.
 //
 //    * {ASSERT|EXPECT}_STREQ(s1, s2):     Tests that s1 == s2
@@ -1882,16 +2127,16 @@ GTEST_API_ AssertionResult DoubleLE(const char* expr1, const char* expr2,
 // expected result and the actual result with both a human-readable
 // string representation of the error, if available, as well as the
 // hex result code.
-#define EXPECT_HRESULT_SUCCEEDED(expr) \
+# define EXPECT_HRESULT_SUCCEEDED(expr) \
     EXPECT_PRED_FORMAT1(::testing::internal::IsHRESULTSuccess, (expr))
 
-#define ASSERT_HRESULT_SUCCEEDED(expr) \
+# define ASSERT_HRESULT_SUCCEEDED(expr) \
     ASSERT_PRED_FORMAT1(::testing::internal::IsHRESULTSuccess, (expr))
 
-#define EXPECT_HRESULT_FAILED(expr) \
+# define EXPECT_HRESULT_FAILED(expr) \
     EXPECT_PRED_FORMAT1(::testing::internal::IsHRESULTFailure, (expr))
 
-#define ASSERT_HRESULT_FAILED(expr) \
+# define ASSERT_HRESULT_FAILED(expr) \
     ASSERT_PRED_FORMAT1(::testing::internal::IsHRESULTFailure, (expr))
 
 #endif  // GTEST_OS_WINDOWS
@@ -1926,17 +2171,6 @@ GTEST_API_ AssertionResult DoubleLE(const char* expr1, const char* expr2,
   ::testing::internal::ScopedTrace GTEST_CONCAT_TOKEN_(gtest_trace_, __LINE__)(\
     __FILE__, __LINE__, ::testing::Message() << (message))
 
-namespace internal {
-
-// This template is declared, but intentionally undefined.
-template <typename T1, typename T2>
-struct StaticAssertTypeEqHelper;
-
-template <typename T>
-struct StaticAssertTypeEqHelper<T, T> {};
-
-}  // namespace internal
-
 // Compile-time assertion for type equality.
 // StaticAssertTypeEq<type1, type2>() compiles iff type1 and type2 are
 // the same type.  The value it returns is not interesting.
@@ -1969,7 +2203,7 @@ struct StaticAssertTypeEqHelper<T, T> {};
 // to cause a compiler error.
 template <typename T1, typename T2>
 bool StaticAssertTypeEq() {
-  internal::StaticAssertTypeEqHelper<T1, T2>();
+  (void)internal::StaticAssertTypeEqHelper<T1, T2>();
   return true;
 }
 
@@ -2005,7 +2239,7 @@ bool StaticAssertTypeEq() {
 // Define this macro to 1 to omit the definition of TEST(), which
 // is a generic name and clashes with some other libraries.
 #if !GTEST_DONT_DEFINE_TEST
-#define TEST(test_case_name, test_name) GTEST_TEST(test_case_name, test_name)
+# define TEST(test_case_name, test_name) GTEST_TEST(test_case_name, test_name)
 #endif
 
 // Defines a test that uses a test fixture.
@@ -2038,15 +2272,20 @@ bool StaticAssertTypeEq() {
   GTEST_TEST_(test_fixture, test_name, test_fixture, \
               ::testing::internal::GetTypeId<test_fixture>())
 
-// Use this macro in main() to run all tests.  It returns 0 if all
+}  // namespace testing
+
+// Use this function in main() to run all tests.  It returns 0 if all
 // tests are successful, or 1 otherwise.
 //
 // RUN_ALL_TESTS() should be invoked after the command line has been
 // parsed by InitGoogleTest().
+//
+// This function was formerly a macro; thus, it is in the global
+// namespace and has an all-caps name.
+int RUN_ALL_TESTS() GTEST_MUST_USE_RESULT_;
 
-#define RUN_ALL_TESTS()\
-  (::testing::UnitTest::GetInstance()->Run())
-
-}  // namespace testing
+inline int RUN_ALL_TESTS() {
+  return ::testing::UnitTest::GetInstance()->Run();
+}
 
 #endif  // GTEST_INCLUDE_GTEST_GTEST_H_

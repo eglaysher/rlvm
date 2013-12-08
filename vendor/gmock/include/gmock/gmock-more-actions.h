@@ -36,7 +36,9 @@
 #ifndef GMOCK_INCLUDE_GMOCK_GMOCK_MORE_ACTIONS_H_
 #define GMOCK_INCLUDE_GMOCK_GMOCK_MORE_ACTIONS_H_
 
-#include <gmock/gmock-generated-actions.h>
+#include <algorithm>
+
+#include "gmock/gmock-generated-actions.h"
 
 namespace testing {
 namespace internal {
@@ -134,8 +136,8 @@ WithArg(const InnerAction& action) {
 // is expanded and macro expansion cannot contain #pragma.  Therefore
 // we suppress them here.
 #ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable:4100)
+# pragma warning(push)
+# pragma warning(disable:4100)
 #endif
 
 // Action ReturnArg<k>() returns the k-th argument of the mock function.
@@ -153,6 +155,14 @@ ACTION_TEMPLATE(SaveArg,
   *pointer = ::std::tr1::get<k>(args);
 }
 
+// Action SaveArgPointee<k>(pointer) saves the value pointed to
+// by the k-th (0-based) argument of the mock function to *pointer.
+ACTION_TEMPLATE(SaveArgPointee,
+                HAS_1_TEMPLATE_PARAMS(int, k),
+                AND_1_VALUE_PARAMS(pointer)) {
+  *pointer = *::std::tr1::get<k>(args);
+}
+
 // Action SetArgReferee<k>(value) assigns 'value' to the variable
 // referenced by the k-th (0-based) argument of the mock function.
 ACTION_TEMPLATE(SetArgReferee,
@@ -162,7 +172,7 @@ ACTION_TEMPLATE(SetArgReferee,
   // Ensures that argument #k is a reference.  If you get a compiler
   // error on the next line, you are using SetArgReferee<k>(value) in
   // a mock function whose k-th (0-based) argument is not a reference.
-  GMOCK_COMPILE_ASSERT_(internal::is_reference<argk_type>::value,
+  GTEST_COMPILE_ASSERT_(internal::is_reference<argk_type>::value,
                         SetArgReferee_must_be_used_with_a_reference_argument);
   ::std::tr1::get<k>(args) = value;
 }
@@ -178,12 +188,12 @@ ACTION_TEMPLATE(SetArrayArgument,
   // Microsoft compiler deprecates ::std::copy, so we want to suppress warning
   // 4996 (Function call with parameters that may be unsafe) there.
 #ifdef _MSC_VER
-#pragma warning(push)          // Saves the current warning state.
-#pragma warning(disable:4996)  // Temporarily disables warning 4996.
+# pragma warning(push)          // Saves the current warning state.
+# pragma warning(disable:4996)  // Temporarily disables warning 4996.
 #endif
   ::std::copy(first, last, ::std::tr1::get<k>(args));
 #ifdef _MSC_VER
-#pragma warning(pop)           // Restores the warning state.
+# pragma warning(pop)           // Restores the warning state.
 #endif
 }
 
@@ -195,14 +205,27 @@ ACTION_TEMPLATE(DeleteArg,
   delete ::std::tr1::get<k>(args);
 }
 
+// This action returns the value pointed to by 'pointer'.
+ACTION_P(ReturnPointee, pointer) { return *pointer; }
+
 // Action Throw(exception) can be used in a mock function of any type
 // to throw the given exception.  Any copyable value can be thrown.
 #if GTEST_HAS_EXCEPTIONS
+
+// Suppresses the 'unreachable code' warning that VC generates in opt modes.
+# ifdef _MSC_VER
+#  pragma warning(push)          // Saves the current warning state.
+#  pragma warning(disable:4702)  // Temporarily disables warning 4702.
+# endif
 ACTION_P(Throw, exception) { throw exception; }
+# ifdef _MSC_VER
+#  pragma warning(pop)           // Restores the warning state.
+# endif
+
 #endif  // GTEST_HAS_EXCEPTIONS
 
 #ifdef _MSC_VER
-#pragma warning(pop)
+# pragma warning(pop)
 #endif
 
 }  // namespace testing

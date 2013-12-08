@@ -9,12 +9,7 @@ component_env.Append(
 )
 
 libgmock_files = [
-  "src/gmock-cardinalities.cc",
-  "src/gmock-internal-utils.cc",
-  "src/gmock-matchers.cc",
-  "src/gmock-printers.cc",
-  "src/gmock-spec-builders.cc",
-  "src/gmock.cc"
+  "src/gmock-all.cc",
 ]
 
 component_env.StaticLibrary('libgmock', libgmock_files)

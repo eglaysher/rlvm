@@ -35,7 +35,7 @@
 #ifndef GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 #define GTEST_INCLUDE_GTEST_GTEST_SPI_H_
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 namespace testing {
 
@@ -98,12 +98,12 @@ class GTEST_API_ SingleFailureChecker {
   // The constructor remembers the arguments.
   SingleFailureChecker(const TestPartResultArray* results,
                        TestPartResult::Type type,
-                       const char* substr);
+                       const string& substr);
   ~SingleFailureChecker();
  private:
   const TestPartResultArray* const results_;
   const TestPartResult::Type type_;
-  const String substr_;
+  const string substr_;
 
   GTEST_DISALLOW_COPY_AND_ASSIGN_(SingleFailureChecker);
 };
@@ -223,7 +223,7 @@ class GTEST_API_ SingleFailureChecker {
         (substr));\
     {\
       ::testing::ScopedFakeTestPartResultReporter gtest_reporter(\
-          ::testing::ScopedFakeTestPartResultReporter::INTERCEPT_ALL_THREADS,\
+          ::testing::ScopedFakeTestPartResultReporter::INTERCEPT_ALL_THREADS, \
           &gtest_failures);\
       if (::testing::internal::AlwaysTrue()) { statement; }\
     }\
