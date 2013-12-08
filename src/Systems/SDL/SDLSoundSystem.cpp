@@ -41,7 +41,6 @@
 #include "Systems/SDL/SDLSoundChunk.hpp"
 #include "Utilities/Exception.hpp"
 
-using boost::shared_ptr;
 using namespace std;
 namespace fs = boost::filesystem;
 

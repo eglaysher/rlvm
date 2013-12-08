@@ -34,8 +34,6 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/Rect.hpp"
 
-using boost::shared_ptr;
-
 // -----------------------------------------------------------------------
 // SelectionElement
 // -----------------------------------------------------------------------
@@ -88,7 +86,7 @@ bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {
 }
 
 void SelectionElement::render() {
-  shared_ptr<Surface> target;
+  boost::shared_ptr<Surface> target;
 
   if (is_highlighted_)
     target = highlighted_image_;

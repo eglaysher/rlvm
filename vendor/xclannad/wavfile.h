@@ -38,6 +38,8 @@
 #define WR_NODATACHUNK		10
 #define WR_BADFORMATDATA	11
 
+class NWAData;
+
 /*
  * These values represent values found in/or destined for a
  * WAV file.
@@ -88,7 +90,7 @@ struct WAVFILE_Stream : WAVFILE{
 struct NWAFILE : WAVFILE {
 	int skip_count;
 	FILE* stream;
-	struct NWAData* nwa;
+	NWAData* nwa;
 	char* data;
 	int block_size;
 	int data_len;

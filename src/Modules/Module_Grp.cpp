@@ -109,8 +109,8 @@ void loadImageToDC1(RLMachine& machine,
     if (name == "???")
       name = graphics.defaultGrpName();
 
-    shared_ptr<Surface> dc0 = graphics.getDC(0);
-    shared_ptr<Surface> dc1 = graphics.getDC(1);
+    boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
+    boost::shared_ptr<Surface> dc1 = graphics.getDC(1);
 
     // Inclusive ranges are a monstrosity to computer people
     Size size = srcRect.size() + Size(1, 1);
@@ -118,7 +118,7 @@ void loadImageToDC1(RLMachine& machine,
     dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
 
     // Load the section of the image file on top of dc1
-    shared_ptr<const Surface> surface(
+    boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, name));
     surface->blitToSurface(*graphics.getDC(1),
                            Rect(srcRect.origin(), size),
@@ -133,8 +133,8 @@ void loadDCToDC1(RLMachine& machine,
                  const Point& dest,
                  int opacity) {
   GraphicsSystem& graphics = machine.system().graphics();
-  shared_ptr<Surface> dc1 = graphics.getDC(1);
-  shared_ptr<Surface> src = graphics.getDC(srcDc);
+  boost::shared_ptr<Surface> dc1 = graphics.getDC(1);
+  boost::shared_ptr<Surface> src = graphics.getDC(srcDc);
 
   // Inclusive ranges are a monstrosity to computer people
   Size size = srcRect.size() + Size(1, 1);
@@ -146,8 +146,8 @@ void loadDCToDC1(RLMachine& machine,
 }
 
 void performEffect(RLMachine& machine,
-                   const shared_ptr<Surface>& src,
-                   const shared_ptr<Surface>& dst,
+                   const boost::shared_ptr<Surface>& src,
+                   const boost::shared_ptr<Surface>& dst,
                    int selnum) {
   if (!machine.replaying_graphics_stack()) {
     LongOperation* lop =
@@ -157,8 +157,8 @@ void performEffect(RLMachine& machine,
 }
 
 void performEffect(RLMachine& machine,
-                   const shared_ptr<Surface>& src,
-                   const shared_ptr<Surface>& dst,
+                   const boost::shared_ptr<Surface>& src,
+                   const boost::shared_ptr<Surface>& dst,
                    int time, int style, int direction, int interpolation,
                    int xsize, int ysize, int a, int b, int c) {
   if (!machine.replaying_graphics_stack()) {
@@ -248,7 +248,7 @@ struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   void operator()(RLMachine& machine, string filename, int dc, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<const Surface> surface(
+    boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, filename));
 
     if (dc != 0 && dc != 1) {
@@ -276,7 +276,7 @@ struct load_3 : public RLOp_Void_5<
   void operator()(RLMachine& machine, string filename, int dc,
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<const Surface> surface(
+    boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, filename));
 
     Rect destRect = Rect(dest, srcRect.size());
@@ -303,12 +303,12 @@ struct display_1
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadDCToDC1(machine, dc, src, dest, opacity);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
   }
 };
@@ -330,12 +330,12 @@ struct display_3
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
   }
 };
@@ -362,12 +362,12 @@ struct display_4
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, time, style, direction,
                   interpolation, xsize, ysize, a, b, c);
   }
@@ -396,12 +396,12 @@ struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     getSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -432,14 +432,14 @@ struct open_3 : public RLOp_Void_5<
                   Rect srcRect, Point dest, int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
     loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -478,14 +478,14 @@ struct open_4 : public RLOp_Void_13<
                   int xsize, int ysize, int a, int b, int opacity, int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
     loadImageToDC1(machine, fileName, srcRect, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, time, style, direction,
                   interpolation, xsize, ysize, a, b, c);
     performHideAllTextWindows(machine);
@@ -503,12 +503,12 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 
     OpenBgPrelude(machine, fileName);
 
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPoint, opacity, false);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -535,12 +535,12 @@ struct openBg_3 : public RLOp_Void_5<
     OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -576,13 +576,13 @@ struct openBg_4 : public RLOp_Void_13<
     OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
     // Render the screen to a temporary
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     performEffect(machine, after, before, time, style, direction,
                   interpolation, xsize, ysize, a, b, c);
     performHideAllTextWindows(machine);
@@ -607,7 +607,7 @@ struct copy_3
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
       graphics.setMinimumSizeForDC(dst, srcRect.size());
@@ -631,7 +631,7 @@ struct copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
       graphics.setMinimumSizeForDC(dst, sourceSurface->size());
@@ -743,9 +743,9 @@ struct fade_7 : public RLOp_Void_3<
   void operator()(RLMachine& machine, Rect rect,
                   RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
     graphics.getDC(0)->fill(colour, rect);
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
     if (time > 0) {
       performEffect(machine, after, before, time, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -804,7 +804,7 @@ struct stretchBlit_1
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
-    shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
 
     if (dst != 0 && dst != 1) {
       graphics.setMinimumSizeForDC(dst, sourceSurface->size());

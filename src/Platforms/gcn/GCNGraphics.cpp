@@ -109,12 +109,12 @@ void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
                      h - i.top().height() - i.bottom().height());
 
   // Draw the corners
-  drawImage(image, i.topLeft(), 0, 0);
-  drawImage(image, i.topRight(), w - i.topRight().width(), 0);
-  drawImage(image, i.bottomLeft(), 0, h - i.bottomLeft().height());
-  drawImage(image, i.bottomRight(),
-            w - i.bottomRight().width(),
-            h - i.bottomRight().height());
+  drawImageImpl(image, i.topLeft(), 0, 0);
+  drawImageImpl(image, i.topRight(), w - i.topRight().width(), 0);
+  drawImageImpl(image, i.bottomLeft(), 0, h - i.bottomLeft().height());
+  drawImageImpl(image, i.bottomRight(),
+                w - i.bottomRight().width(),
+                h - i.bottomRight().height());
 
   popClipArea();
 }
@@ -172,8 +172,8 @@ void GCNGraphics::drawImageStretched(
 
 // -----------------------------------------------------------------------
 
-void GCNGraphics::drawImage(gcn::Image* image, const Rect& source,
-                            int dstX, int dstY) {
+void GCNGraphics::drawImageImpl(gcn::Image* image, const Rect& source,
+                                int dstX, int dstY) {
   OpenGLGraphics::drawImage(image, source.x(), source.y(), dstX, dstY,
                             source.width(), source.height());
 }

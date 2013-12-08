@@ -51,7 +51,6 @@
 using namespace std;
 namespace fs = boost::filesystem;
 using boost::iends_with;
-using boost::shared_ptr;
 
 // Working theory of how this module works: The haikei module is one backing
 // surface and (optionally) a HIK script. Games like AIR and the Maiden Halo
@@ -174,7 +173,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
     GraphicsSystem& graphics = machine.system().graphics();
 
     // Get the state of the world before we do any processing.
-    shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
     graphics.setGraphicsBackground(BACKGROUND_HIK);
 
@@ -183,7 +182,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
       filename = graphics.defaultBgrName();
 
     // Load "filename" as the background.
-    shared_ptr<const Surface> surface(
+    boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, filename));
     surface->blitToSurface(*graphics.getHaikei(),
                            surface->rect(), surface->rect(),
@@ -227,7 +226,7 @@ struct bgrMulti_1 : public RLOp_Void_3<
     if (!machine.replaying_graphics_stack())
       graphics.clearAndPromoteObjects();
 
-    shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, after, before, effectNum);
     machine.pushLongOperation(effect);

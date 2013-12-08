@@ -311,8 +311,6 @@ class RLMachine {
   System& system() { return system_; }
 
   unsigned int packModuleNumber(int modtype, int module);
-  void unpackModuleNumber(unsigned int packed_module_number, int& modtype,
-                          int& module);
 
   // Pushes a stack frame onto the call stack, alerting possible
   // LongOperations of this change if needed.

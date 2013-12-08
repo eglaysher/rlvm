@@ -115,7 +115,8 @@ class GCNGraphics : public gcn::OpenGLGraphics {
                           const Rect& source,
                           int dstX, int dstY, int height, int width);
 
-  void drawImage(gcn::Image* image, const Rect& source, int dstX, int dstY);
+  void drawImageImpl(gcn::Image* image, const Rect& source,
+                     int dstX, int dstY);
 };
 
 #endif  // SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_

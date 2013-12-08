@@ -36,7 +36,6 @@
 #include <string>
 
 using std::ostringstream;
-using boost::shared_ptr;
 
 TestTextWindow::TestTextWindow(System& system, int x)
     : TextWindow(system, x) {
@@ -44,13 +43,13 @@ TestTextWindow::TestTextWindow(System& system, int x)
 
 TestTextWindow::~TestTextWindow() {}
 
-shared_ptr<Surface> TestTextWindow::textSurface() {
+boost::shared_ptr<Surface> TestTextWindow::textSurface() {
   // TODO(erg): May need to use a real size?
-  return shared_ptr<Surface>(
+  return boost::shared_ptr<Surface>(
       MockSurface::Create("Text Surface", Size(640, 480)));
 }
 
-shared_ptr<Surface> TestTextWindow::nameSurface() {
+boost::shared_ptr<Surface> TestTextWindow::nameSurface() {
   return name_surface_;
 }
 

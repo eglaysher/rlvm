@@ -47,8 +47,7 @@ ObjectMutator::ObjectMutator(int repr,
       name_(name),
       creation_time_(creation_time),
       duration_time_(duration_time),
-      delay_(delay),
-      type_(type) {
+      delay_(delay) {
 }
 
 ObjectMutator::~ObjectMutator() {}

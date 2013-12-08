@@ -106,8 +106,10 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
 
   SelectionElement* element = new SelectionElement(
       system(),
-      shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), normal)),
-      shared_ptr<Surface>(new SDLSurface(getSDLGraphics(system()), inverted)),
+      boost::shared_ptr<Surface>(
+          new SDLSurface(getSDLGraphics(system()), normal)),
+      boost::shared_ptr<Surface>(
+          new SDLSurface(getSDLGraphics(system()), inverted)),
       selectionCallback(), selection_id, position);
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);

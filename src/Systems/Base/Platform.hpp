@@ -33,7 +33,7 @@
 
 class Gameexe;
 class RLMachine;
-class RlvmInfo;
+struct RlvmInfo;
 
 // Encapsulates platform specific details; this is mainly dealing with the
 // underlying widget set.

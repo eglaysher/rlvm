@@ -672,7 +672,7 @@ void Texture::renderToScreenAsObject(
 
 // -----------------------------------------------------------------------
 
-static float round(float r) {
+static float our_round(float r) {
   return (r > 0.0f) ? floor(r + 0.5f) : ceil(r - 0.5f);
 }
 
@@ -704,13 +704,13 @@ bool Texture::filterCoords(int& x1, int& y1, int& x2, int& y2,
     int dx_width = dx2 - dx1;
     int dy_height = dy2 - dy1;
     float dx1Off = (virX - x1) / float(w1);
-    dx1 = round(dx1 + (dx_width * dx1Off));
+    dx1 = our_round(dx1 + (dx_width * dx1Off));
     float dx2Off = w / float(w1);
-    dx2 = round(dx1 + (dx_width * dx2Off));
+    dx2 = our_round(dx1 + (dx_width * dx2Off));
     float dy1Off = (virY - y1) / float(h1);
-    dy1 = round(dy1 + (dy_height * dy1Off));
+    dy1 = our_round(dy1 + (dy_height * dy1Off));
     float dy2Off = h / float(h1);
-    dy2 = round(dy1 + (dy_height * dy2Off));
+    dy2 = our_round(dy1 + (dy_height * dy2Off));
 
     // Output the source intersection in real (instead of
     // virtual) coordinates

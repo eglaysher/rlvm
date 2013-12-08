@@ -39,8 +39,8 @@ namespace libReallive {
 class CommandElement;
 };
 
-struct RLOperation;
 class RLMachine;
+class RLOperation;
 
 // Modules and Opcode Definitions
 //

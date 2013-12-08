@@ -175,9 +175,6 @@ class SDLGraphicsSystem : public GraphicsSystem,
   // memory leak in PulseAudio.
   std::string currently_set_title_;
 
-  /// Window icon
-  SDL_Surface* icon_;
-
   /**
    * Texture used to store the contents of the screen while in DrawManual()
    * mode. The stored image is then used if we need to redraw in the

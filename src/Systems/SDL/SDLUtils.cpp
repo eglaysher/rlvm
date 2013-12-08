@@ -38,6 +38,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Colour.hpp"
 
+#include <cassert>
 #include <iostream>
 using namespace std;
 

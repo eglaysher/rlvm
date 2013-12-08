@@ -33,7 +33,7 @@
 #include <guichan/widgets/button.hpp>
 
 class RLMachine;
-class RlvmInfo;
+struct RlvmInfo;
 
 /**
  * Displays information about the currently played game.

@@ -45,7 +45,6 @@
 #include "libReallive/gameexe.h"
 
 using namespace std;
-using boost::shared_ptr;
 
 namespace {
 

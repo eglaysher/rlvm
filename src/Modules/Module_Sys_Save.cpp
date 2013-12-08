@@ -67,7 +67,6 @@ using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;
 using boost::bind;
-using boost::shared_ptr;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -219,20 +218,21 @@ struct GetSaveFlag : public RLOp_Store_2<
     Memory overlayedMemory(machine, slot);
     Serialization::loadLocalMemoryForSlot(machine, slot, overlayedMemory);
 
-    using boost::detail::multi_array::copy_n;
     for (GetSaveFlagList::type::iterator it = flagList.begin();
          it != flagList.end(); ++it) {
       switch (it->type) {
         case 0: {
           IntReferenceIterator jt = it->first.get<0>()
                                     .changeMemoryTo(&overlayedMemory);
-          copy_n(jt, it->first.get<2>(), it->first.get<1>());
+          boost::detail::multi_array::copy_n(
+              jt, it->first.get<2>(), it->first.get<1>());
           break;
         }
         case 1: {
           StringReferenceIterator jt = it->second.get<0>()
                                        .changeMemoryTo(&overlayedMemory);
-          copy_n(jt, it->second.get<2>(), it->second.get<1>());
+          boost::detail::multi_array::copy_n(
+              jt, it->second.get<2>(), it->second.get<1>());
           break;
         }
         default:

@@ -50,7 +50,6 @@
 
 using boost::bind;
 using boost::scoped_ptr;
-using boost::shared_ptr;
 using std::cerr;
 using std::endl;
 using std::string;
@@ -271,7 +270,8 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   moji_size_ = selbtn("MOJISIZE");
 
   // Retrieve the parameters needed to render as a color mask.
-  shared_ptr<TextWindow> window = machine.system().text().currentWindow();
+  boost::shared_ptr<TextWindow> window =
+      machine.system().text().currentWindow();
   window_bg_colour_ = window->colour();
   window_filter_ = window->filter();
 

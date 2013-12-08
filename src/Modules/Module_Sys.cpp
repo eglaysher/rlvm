@@ -66,7 +66,6 @@
 const float PI = 3.14159265;
 
 using namespace std;
-using boost::shared_ptr;
 
 namespace {
 
@@ -317,13 +316,13 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   // Render the screen as is.
-  shared_ptr<Surface> dc0 = graphics.getDC(0);
-  shared_ptr<Surface> before = graphics.renderToSurface();
+  boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
+  boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
   // Clear everything
   machine.localReset();
 
-  shared_ptr<Surface> after = graphics.renderToSurface();
+  boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").to_int();

@@ -58,7 +58,6 @@
 #include "libReallive/defs.h"
 
 using boost::scoped_array;
-using boost::shared_ptr;
 
 using libReallive::read_i32;
 

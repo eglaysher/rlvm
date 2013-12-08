@@ -207,7 +207,8 @@ WAVFILE* buildMusicImplementation(FILE* file, int size) {
 
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     System& system, const SoundSystem::DSTrack& track) {
-  typedef vector<pair<string, function<WAVFILE*(FILE*, int)> > > FileTypes;
+  typedef vector<pair<string,
+                      boost::function<WAVFILE*(FILE*, int)> > > FileTypes;
   static FileTypes types =
       map_list_of
       ("wav", &buildMusicImplementation<WAVFILE_Stream>)
@@ -238,7 +239,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 
       WAVFILE* w = it->second(f, size);
       if (w)
-        return shared_ptr<SDLMusic>(new SDLMusic(track, w));
+        return boost::shared_ptr<SDLMusic>(new SDLMusic(track, w));
     }
   }
 

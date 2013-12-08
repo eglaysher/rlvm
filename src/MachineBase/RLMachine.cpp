@@ -78,7 +78,6 @@ using boost::assign::list_of;
 using boost::bind;
 using boost::function;
 using boost::lexical_cast;
-using boost::shared_ptr;
 
 // -----------------------------------------------------------------------
 
@@ -262,7 +261,7 @@ void RLMachine::executeNextInstruction() {
           popStackFrame();
 
         // Now we can perform the queued actions
-        for (vector<function<void(void)> >::iterator it =
+        for (vector<boost::function<void(void)> >::iterator it =
                  delayed_modifications_.begin();
              it != delayed_modifications_.end(); ++it) {
           (*it)();
@@ -518,13 +517,13 @@ void RLMachine::localReset() {
   system().reset();
 }
 
-shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
+boost::shared_ptr<LongOperation> RLMachine::currentLongOperation() const {
   if (call_stack_.size() &&
       call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
     return call_stack_.back().long_op;
   }
 
-  return shared_ptr<LongOperation>();
+  return boost::shared_ptr<LongOperation>();
 }
 
 void RLMachine::clearCallstack() {
@@ -641,12 +640,6 @@ int RLMachine::callDLL(int slot, int one, int two, int three, int four,
 
 unsigned int RLMachine::packModuleNumber(int modtype, int module) {
   return (modtype << 8) | module;
-}
-
-void RLMachine::unpackModuleNumber(unsigned int packed_module_number,
-                                   int& modtype, int& module) {
-  modtype = packed_module_number >> 8;
-  module = packed_module_number && 0xFF;
 }
 
 void RLMachine::setPrintUndefinedOpcodes(bool in) {

@@ -71,9 +71,6 @@ class ObjectMutator {
 
   // An optional duration after |creation_time_| where we don't do anything.
   int delay_;
-
-  // Reallive's linear/accelerating/decelerating flag
-  int type_;
 };
 
 // -----------------------------------------------------------------------

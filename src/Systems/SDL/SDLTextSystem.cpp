@@ -69,7 +69,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
     it = text_window_.insert(std::make_pair(
-      text_window, shared_ptr<TextWindow>(
+        text_window, boost::shared_ptr<TextWindow>(
           new SDLTextWindow(sdl_system_, text_window)))).first;
   }
 
@@ -150,7 +150,7 @@ boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
     TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
 
     // Build a smart_ptr to own this font, and set a deleter function.
-    shared_ptr<TTF_Font> font(f, TTF_CloseFont);
+    boost::shared_ptr<TTF_Font> font(f, TTF_CloseFont);
 
     map_[size] = font;
     return font;

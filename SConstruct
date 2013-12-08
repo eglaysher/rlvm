@@ -113,11 +113,19 @@ if env['PLATFORM'] == "darwin":
       CPPPATH = ["/opt/local/include/"],
       LIBPATH = ["/opt/local/lib/"]
     )
+  # Manually installed / homebrew
   if os.path.exists("/usr/local/"):
     env['ENV']['PATH'] += ":/usr/local/bin/"
     env.Append(
       CPPPATH = ["/usr/local/include/"],
       LIBPATH = ["/usr/local/lib/"]
+    )
+  if os.path.exists('/usr/local/opt/gettext/'):
+    # Homebrew does this bogus thing where installing the gettext bottle doesn't
+    # actually symlink the headers and libraries into /usr/local/.
+    env.Append(
+      CPPPATH = ["/usr/local/opt/gettext/include/"],
+      LIBPATH = ["/usr/local/opt/gettext/lib/"]
     )
 
 #########################################################################

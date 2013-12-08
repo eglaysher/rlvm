@@ -88,9 +88,6 @@ class SDLRenderToTextureSurface : public Surface,
   // The SDLTexture which wraps one or more OpenGL textures
   boost::scoped_ptr<Texture> texture_;
 
-  // A pointer to the graphics_system.
-  SDLGraphicsSystem* graphics_system_;
-
   NotificationRegistrar registrar_;
 };
 

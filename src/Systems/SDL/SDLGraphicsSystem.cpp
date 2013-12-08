@@ -200,8 +200,9 @@ void SDLGraphicsSystem::drawCursor() {
   }
 }
 
-shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
-  return shared_ptr<Surface>(new SDLRenderToTextureSurface(this, screenSize()));
+boost::shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
+  return boost::shared_ptr<Surface>(
+      new SDLRenderToTextureSurface(this, screenSize()));
 }
 
 // -----------------------------------------------------------------------
@@ -620,7 +621,8 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
     region_table.push_back(rect);
   }
 
-  shared_ptr<Surface> surface_to_ret(new SDLSurface(this, s, region_table));
+  boost::shared_ptr<Surface> surface_to_ret(
+      new SDLSurface(this, s, region_table));
   // handle tone curve effect loading
   if(short_filename.find("?") != short_filename.npos) {
     string effect_no_str = short_filename.substr(short_filename.find("?") + 1);
@@ -656,7 +658,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc) {
 }
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
-  return shared_ptr<Surface>(new SDLSurface(this, size));
+  return boost::shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
 ColourFilter* SDLGraphicsSystem::BuildColourFiller() {

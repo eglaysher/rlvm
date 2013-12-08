@@ -47,8 +47,7 @@ using namespace std;
 
 SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
                                                      const Size& size)
-    : texture_(new Texture(render_to_texture(), size.width(), size.height())),
-      graphics_system_(system) {
+    : texture_(new Texture(render_to_texture(), size.width(), size.height())) {
   registrar_.Add(this,
                  NotificationType::FULLSCREEN_STATE_CHANGED,
                  Source<GraphicsSystem>(system));

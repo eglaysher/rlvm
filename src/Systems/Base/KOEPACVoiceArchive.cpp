@@ -71,7 +71,6 @@
 
 using namespace std;
 using boost::scoped_array;
-using boost::shared_ptr;
 using std::ifstream;
 using std::ostringstream;
 namespace fs = boost::filesystem;
@@ -281,11 +280,11 @@ KOEPACVoiceArchive::~KOEPACVoiceArchive() {
 
 // -----------------------------------------------------------------------
 
-shared_ptr<VoiceSample> KOEPACVoiceArchive::findSample(int sample_num) {
+boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {
-    return shared_ptr<VoiceSample>(
+    return boost::shared_ptr<VoiceSample>(
         new KOEPACVoiceSample(file_, it->offset, it->length, rate_));
   }
 

@@ -56,7 +56,6 @@
 #include "utf8cpp/utf8.h"
 
 using boost::bind;
-using boost::shared_ptr;
 using std::back_inserter;
 using std::endl;
 using std::ostringstream;

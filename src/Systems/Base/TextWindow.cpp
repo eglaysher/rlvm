@@ -53,7 +53,6 @@
 
 using boost::bind;
 using boost::ref;
-using boost::shared_ptr;
 using std::endl;
 using std::ostringstream;
 using std::setfill;
@@ -400,7 +399,7 @@ void TextWindow::faceClose(int index) {
 // TODO(erg): Make this pass the #WINDOW_ATTR colour off wile rendering the
 // waku_backing.
 void TextWindow::render(std::ostream* tree) {
-  shared_ptr<Surface> text_surface = textSurface();
+  boost::shared_ptr<Surface> text_surface = textSurface();
 
   if (text_surface && isVisible()) {
     Size surface_size = text_surface->size();
@@ -421,7 +420,7 @@ void TextWindow::render(std::ostream* tree) {
       for_each(selections_.begin(), selections_.end(),
                bind(&SelectionElement::render, _1));
     } else {
-      shared_ptr<Surface> name_surface = nameSurface();
+      boost::shared_ptr<Surface> name_surface = nameSurface();
       if (name_surface) {
         Rect r = nameboxWakuRect();
 

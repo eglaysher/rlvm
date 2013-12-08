@@ -39,7 +39,6 @@
 
 #include <boost/shared_ptr.hpp>
 
-using boost::shared_ptr;
 using boost::scoped_ptr;
 
 using namespace testing;
@@ -62,7 +61,7 @@ class EffectTest : public FullSystemTest {
         .setMockHandler(event_system_impl);
   }
 
-  shared_ptr<EffectEventSystemTest> event_system_impl;
+  boost::shared_ptr<EffectEventSystemTest> event_system_impl;
 };
 
 class MockEffect : public Effect {
@@ -78,8 +77,8 @@ class MockEffect : public Effect {
 };
 
 TEST_F(EffectTest, TestBase) {
-  shared_ptr<Surface> src(MockSurface::Create("src"));
-  shared_ptr<Surface> dst(MockSurface::Create("dst"));
+  boost::shared_ptr<Surface> src(MockSurface::Create("src"));
+  boost::shared_ptr<Surface> dst(MockSurface::Create("dst"));
 
   scoped_ptr<MockEffect> effect(
     new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
@@ -114,8 +113,8 @@ class MockBlitTopToBottom : public BlindTopToBottomEffect {
 };
 
 TEST_F(EffectTest, BlindTopToBottomEffect) {
-  shared_ptr<MockSurface> src(MockSurface::Create("src"));
-  shared_ptr<MockSurface> dst(MockSurface::Create("dst"));
+  boost::shared_ptr<MockSurface> src(MockSurface::Create("src"));
+  boost::shared_ptr<MockSurface> dst(MockSurface::Create("dst"));
 
   const int DURATION = 100;
   const int BLIND_SIZE = 50;

@@ -44,7 +44,6 @@
 const int ID_RADIX = 100000;
 
 using boost::iends_with;
-using boost::shared_ptr;
 using std::string;
 
 namespace fs = boost::filesystem;
@@ -61,7 +60,7 @@ boost::shared_ptr<VoiceSample> VoiceCache::find(int id) {
   int file_no = id / ID_RADIX;
   int index = id % ID_RADIX;
 
-  shared_ptr<VoiceArchive> archive = file_cache_.fetch(file_no);
+  boost::shared_ptr<VoiceArchive> archive = file_cache_.fetch(file_no);
   if (archive) {
     return archive->findSample(index);
   } else {
@@ -73,7 +72,8 @@ boost::shared_ptr<VoiceSample> VoiceCache::find(int id) {
     } else {
       // There aren't any archives with |file_no|. Look for an individual file
       // instead.
-      shared_ptr<VoiceSample> sample = findUnpackedSample(file_no, index);
+      boost::shared_ptr<VoiceSample> sample =
+          findUnpackedSample(file_no, index);
       if (sample) {
         return sample;
       } else {
@@ -83,29 +83,30 @@ boost::shared_ptr<VoiceSample> VoiceCache::find(int id) {
   }
 }
 
-shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
+boost::shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   std::ostringstream oss;
   oss << "z" << std::setw(4) << std::setfill('0') << file_no;
 
   fs::path file =
       sound_system_.system().findFile(oss.str(), KOE_ARCHIVE_FILETYPES);
   if (file.empty()) {
-    return shared_ptr<VoiceArchive>();
+    return boost::shared_ptr<VoiceArchive>();
   }
 
   string file_str = file.string();
   if (iends_with(file_str, "ovk")) {
-    return shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
+    return boost::shared_ptr<VoiceArchive>(new OVKVoiceArchive(file, file_no));
   } else if (iends_with(file_str, "nwk")) {
-    return shared_ptr<VoiceArchive>(new NWKVoiceArchive(file, file_no));
+    return boost::shared_ptr<VoiceArchive>(new NWKVoiceArchive(file, file_no));
   } else if (iends_with(file_str, "koe")) {
-    return shared_ptr<VoiceArchive>(new KOEPACVoiceArchive(file, file_no));
+    return boost::shared_ptr<VoiceArchive>(
+        new KOEPACVoiceArchive(file, file_no));
   }
 
-  return shared_ptr<VoiceArchive>();
+  return boost::shared_ptr<VoiceArchive>();
 }
 
-shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
+boost::shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
     int file_no, int index) const {
   // Loose voice files are packed into directories, like:
   // /KOE/0008/z000800073.ogg. We only need to search for the filename though.
@@ -119,8 +120,8 @@ shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
   string file_str = file.string();
 
   if (iends_with(file_str, "ogg")) {
-    return shared_ptr<VoiceSample>(new OVKVoiceSample(file));
+    return boost::shared_ptr<VoiceSample>(new OVKVoiceSample(file));
   }
 
-  return shared_ptr<VoiceSample>();
+  return boost::shared_ptr<VoiceSample>();
 }

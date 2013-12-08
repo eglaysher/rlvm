@@ -116,7 +116,8 @@ public:
   /// a memory access or a calculation based on some subexpressions.
   virtual int integerValue(RLMachine& machine) const;
 
-  virtual void assignStringValue(RLMachine& machine);
+  virtual void assignStringValue(RLMachine& machine,
+                                 const std::string& rvalue);
   virtual const std::string& getStringValue(RLMachine& machine) const;
 
   // A persistable version of this value. This method should return RealLive

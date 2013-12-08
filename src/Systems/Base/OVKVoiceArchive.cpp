@@ -69,7 +69,6 @@
 #include "Utilities/Exception.hpp"
 #include "xclannad/endian.hpp"
 
-using boost::shared_ptr;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -88,11 +87,11 @@ OVKVoiceArchive::~OVKVoiceArchive() {
 
 // -----------------------------------------------------------------------
 
-shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
+boost::shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {
-    return shared_ptr<VoiceSample>(
+    return boost::shared_ptr<VoiceSample>(
         new OVKVoiceSample(file_, it->offset, it->length));
   }
 

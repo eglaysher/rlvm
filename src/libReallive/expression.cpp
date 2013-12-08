@@ -527,7 +527,8 @@ int ExpressionPiece::integerValue(RLMachine& machine) const {
       "ExpressionPiece::getStringValue() invalid on this object");
 }
 
-void ExpressionPiece::assignStringValue(RLMachine& machine) {}
+void ExpressionPiece::assignStringValue(RLMachine& machine,
+                                        const std::string&) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {
   throw libReallive::Error(
       "ExpressionPiece::getStringValue() invalid on this object");
