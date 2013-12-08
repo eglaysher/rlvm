@@ -27,7 +27,7 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 #define SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <map>
 #include <memory>

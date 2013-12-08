@@ -27,7 +27,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_COLOUR_FILTER_H_
 #define SRC_SYSTEMS_SDL_SDL_COLOUR_FILTER_H_
 
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL_opengl.h>
 
 #include "systems/base/colour_filter.h"
 #include "systems/base/rect.h"

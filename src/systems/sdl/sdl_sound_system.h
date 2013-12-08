@@ -29,7 +29,7 @@
 #define SRC_SYSTEMS_SDL_SDL_SOUND_SYSTEM_H_
 
 #include <boost/filesystem/operations.hpp>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include <memory>
 #include <string>

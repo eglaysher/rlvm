@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 #define SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <memory>
 #include <string>

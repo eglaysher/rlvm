@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_EVENT_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_EVENT_SYSTEM_H_
 
-#include <SDL/SDL_events.h>
+#include <SDL2/SDL_events.h>
 
 #include "systems/base/event_system.h"
 #include "systems/base/rect.h"

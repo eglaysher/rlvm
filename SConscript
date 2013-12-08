@@ -26,7 +26,7 @@ root_env.Append(
 #   root_env.Append(FRAMEWORKS=["OpenGL"])
 # else:
 
-root_env.ParseConfig("sdl-config --libs")
+root_env.ParseConfig("sdl2-config --libs")
 
 #########################################################################
 

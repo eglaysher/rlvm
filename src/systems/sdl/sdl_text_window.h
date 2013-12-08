@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <memory>
 #include <string>

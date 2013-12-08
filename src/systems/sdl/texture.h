@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_TEXTURE_H_
 #define SRC_SYSTEMS_SDL_TEXTURE_H_
 
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <memory>
 #include <string>

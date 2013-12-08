@@ -29,8 +29,8 @@
 
 #include "systems/sdl/sdl_utils.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <cassert>
 #include <string>
@@ -106,44 +106,44 @@ void reportSDLError(const std::string& sdl_name,
 // -----------------------------------------------------------------------
 
 /// TODO(erg): This is not endian safe in any way.
-SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
-  SDL_PixelFormat* format = in_surface->format;
+// SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
+//   SDL_PixelFormat* format = in_surface->format;
 
-  if (format->BitsPerPixel != 32)
-    throw SystemError("AlphaInvert requires an alpha channel!");
+//   if (format->BitsPerPixel != 32)
+//     throw SystemError("AlphaInvert requires an alpha channel!");
 
-  // Build a copy of the surface
-  SDL_Surface* dst = SDL_AllocSurface(in_surface->flags,
-                                      in_surface->w,
-                                      in_surface->h,
-                                      format->BitsPerPixel,
-                                      format->Rmask,
-                                      format->Gmask,
-                                      format->Bmask,
-                                      format->Amask);
+//   // Build a copy of the surface
+//   SDL_Surface* dst = SDL_AllocSurface(in_surface->flags,
+//                                       in_surface->w,
+//                                       in_surface->h,
+//                                       format->BitsPerPixel,
+//                                       format->Rmask,
+//                                       format->Gmask,
+//                                       format->Bmask,
+//                                       format->Amask);
 
-  SDL_BlitSurface(in_surface, NULL, dst, NULL);
+//   SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
-  // iterate over the copy and make the alpha value = 255 - alpha value.
-  if (SDL_MUSTLOCK(dst))
-    SDL_LockSurface(dst);
-  {
-    int num_pixels = dst->h * dst->pitch;
-    char* p_data = (char*)dst->pixels;
+//   // iterate over the copy and make the alpha value = 255 - alpha value.
+//   if (SDL_MUSTLOCK(dst))
+//     SDL_LockSurface(dst);
+//   {
+//     int num_pixels = dst->h * dst->pitch;
+//     char* p_data = (char*)dst->pixels;
 
-    for (int i = 0; i < num_pixels; i += 4) {
-      // Invert the pixel here.
-      p_data[i] = 255 - p_data[i];
-      p_data[i + 1] = 255 - p_data[i + 1];
-      p_data[i + 2] = 255 - p_data[i + 2];
-      p_data[i + 3] = 255 - p_data[i + 3];
-    }
-  }
-  if (SDL_MUSTLOCK(dst))
-    SDL_UnlockSurface(dst);
+//     for (int i = 0; i < num_pixels; i += 4) {
+//       // Invert the pixel here.
+//       p_data[i] = 255 - p_data[i];
+//       p_data[i + 1] = 255 - p_data[i + 1];
+//       p_data[i + 2] = 255 - p_data[i + 2];
+//       p_data[i + 3] = 255 - p_data[i + 3];
+//     }
+//   }
+//   if (SDL_MUSTLOCK(dst))
+//     SDL_UnlockSurface(dst);
 
-  return dst;
-}
+//   return dst;
+// }
 
 // -----------------------------------------------------------------------
 

@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_UTILS_H_
 #define SRC_SYSTEMS_SDL_SDL_UTILS_H_
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 
@@ -60,8 +60,9 @@ int GetMaxTextureSize();
 // than |i| if GL_MAX_TEXTURE_SIZE is small.)
 int SafeSize(int i);
 
-struct SDL_Surface;
-SDL_Surface* AlphaInvert(SDL_Surface* in_surface);
+// TODO(sdl2): port
+// struct SDL_Surface;
+// SDL_Surface* AlphaInvert(SDL_Surface* in_surface);
 
 void RectToSDLRect(const Rect& rect, SDL_Rect* out);
 

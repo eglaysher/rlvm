@@ -22,7 +22,7 @@ if test_env['PLATFORM'] == 'darwin':
   test_env.Append(FRAMEWORKS=["OpenGL"])
 else:
   test_env.Append(LIBS=["GL", "GLU"])
-test_env.ParseConfig("sdl-config --libs")
+test_env.ParseConfig("sdl2-config --libs")
 
 test_env.Append(CPPPATH = ["#/test"])
 
@@ -56,6 +56,6 @@ if env['BUILD_LUA_TESTS'] == True:
   test_env.BuildSubcomponent("luabind")
 
   test_env.RlvmProgram("lua_rlvm", ['test/lua_rlvm.cc', script_machine_files],
-                       use_lib_set = ["SDL", "LUA"],
+                       use_lib_set = ["SDL2", "LUA"],
                        rlvm_libs = ["system_sdl", "rlvm"])
   test_env.Install('$OUTPUT_DIR', 'lua_rlvm')

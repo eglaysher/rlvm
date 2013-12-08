@@ -128,7 +128,7 @@ def generate(env, **kw):
   env.Append(
     # A list of absolute paths to static sdl libraries to make things that need
     # SDL work.
-    STATIC_SDL_LIBS = [ ],
+    STATIC_SDL2_LIBS = [ ],
 
     # A list of absolute paths to static lua objects to make that subsystem
     # work.

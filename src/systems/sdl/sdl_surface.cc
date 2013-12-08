@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_surface.h"
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -176,7 +176,7 @@ void TransformSurface(SDLSurface* our_surface,
 
 SDL_Surface* buildNewSurface(const Size& size) {
   // Create an empty surface
-  SDL_Surface* tmp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
+  SDL_Surface* tmp = SDL_CreateRGBSurface(SDL_SWSURFACE,
                                           size.width(),
                                           size.height(),
                                           DefaultBpp,
@@ -403,13 +403,15 @@ void SDLSurface::BlitToSurface(Surface& dest_surface,
     SDL_Surface* tmp = buildNewSurface(dst.size());
     pygame_stretch(src_image, tmp);
 
-    if (use_src_alpha) {
-      if (SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
-        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
-    } else {
-      if (SDL_SetAlpha(tmp, 0, 0))
-        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
-    }
+    // TODO(sdl2): port
+
+    // if (use_src_alpha) {
+    //   if (SDL_SetAlpha(tmp, SDL_SRCALPHA, alpha))
+    //     reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+    // } else {
+    //   if (SDL_SetAlpha(tmp, 0, 0))
+    //     reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+    // }
 
     if (SDL_BlitSurface(tmp, NULL, sdl_dest_surface.surface(), &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
@@ -417,13 +419,16 @@ void SDLSurface::BlitToSurface(Surface& dest_surface,
     SDL_FreeSurface(tmp);
     SDL_FreeSurface(src_image);
   } else {
-    if (use_src_alpha) {
-      if (SDL_SetAlpha(surface_, SDL_SRCALPHA, alpha))
-        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
-    } else {
-      if (SDL_SetAlpha(surface_, 0, 0))
-        reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
-    }
+
+    // TODO(sdl2): port
+
+    // if (use_src_alpha) {
+    //   if (SDL_SetAlpha(surface_, SDL_SRCALPHA, alpha))
+    //     reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+    // } else {
+    //   if (SDL_SetAlpha(surface_, 0, 0))
+    //     reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+    // }
 
     if (SDL_BlitSurface(
             surface_, &src_rect, sdl_dest_surface.surface(), &dest_rect))
@@ -712,8 +717,10 @@ Surface* SDLSurface::Clone() const {
 
   // Disable alpha blending because we're copying onto a blank (and
   // blank alpha!) surface
-  if (SDL_SetAlpha(surface_, 0, 0))
-    reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
+
+  // TODO(sdl2): port
+  // if (SDL_SetAlpha(surface_, 0, 0))
+  //   reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
 
   if (SDL_BlitSurface(surface_, NULL, tmp_surface, NULL))
     reportSDLError("SDL_BlitSurface", "SDLSurface::clone()");
@@ -795,9 +802,10 @@ std::shared_ptr<Surface> SDLSurface::ClipAsColorMask(const Rect& clip_rect,
   if (SDL_BlitSurface(surface_, NULL, tmp_surface, NULL))
     reportSDLError("SDL_BlitSurface", function_name);
 
-  Uint32 colour = SDL_MapRGB(tmp_surface->format, r, g, b);
-  if (SDL_SetColorKey(tmp_surface, SDL_SRCCOLORKEY, colour))
-    reportSDLError("SDL_SetAlpha", function_name);
+  // TODO(sdl2): port
+  // Uint32 colour = SDL_MapRGB(tmp_surface->format, r, g, b);
+  // if (SDL_SetColorKey(tmp_surface, SDL_SRCCOLORKEY, colour))
+  //   reportSDLError("SDL_SetAlpha", function_name);
 
   // The OpenGL pieces don't know what to do an image formatted to
   // (FF0000, FF00, FF, 0), so convert it to a standard RGBA image

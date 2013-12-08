@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_audio_locker.h"
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 // -----------------------------------------------------------------------
 // SDLAudioLocker

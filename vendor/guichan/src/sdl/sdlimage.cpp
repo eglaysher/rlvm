@@ -165,15 +165,17 @@ namespace gcn
             throw GCN_EXCEPTION("Unable to convert image to display format.");
         }
 
-        if (hasPink)
-        {
-            SDL_SetColorKey(tmp, SDL_SRCCOLORKEY,
-                            SDL_MapRGB(tmp->format,255,0,255));
-        }
-        if (hasAlpha)
-        {
-            SDL_SetAlpha(tmp, SDL_SRCALPHA, 255);
-        }
+        // TODO(sdl2): port
+
+        // if (hasPink)
+        // {
+        //     SDL_SetColorKey(tmp, SDL_SRCCOLORKEY,
+        //                     SDL_MapRGB(tmp->format,255,0,255));
+        // }
+        // if (hasAlpha)
+        // {
+        //     SDL_SetAlpha(tmp, SDL_SRCALPHA, 255);
+        // }
 
         mSurface = tmp;
     }

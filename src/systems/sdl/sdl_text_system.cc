@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_text_system.h"
 
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <iostream>
 #include <sstream>
