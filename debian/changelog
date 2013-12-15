@@ -1,3 +1,10 @@
+rlvm (0.13.1) saucy; urgency=low
+
+  * Fix crash on the Clannad loading screen on certain OpenGL drivers.
+  * Fix order of font loading to prefer working fonts on Linux.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sun, 15 Dec 2013 15:13:07 -0800
+
 rlvm (0.13+1) saucy; urgency=low
 
   * Release for saucy.

@@ -501,5 +501,5 @@ void System::addDirectoryToCache(const fs::path& directory) {
 }
 
 std::string rlvm_version() {
-  return "Version 0.13";
+  return "Version 0.13.1";
 }

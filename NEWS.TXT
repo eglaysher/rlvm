@@ -1,6 +1,13 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
 
+Version 0.13.1:                                              [2013-12-15]
+
+- Fix crash on the Clannad loading screen on certain OpenGL drivers.
+- Fix order of font loading to prefer working fonts on Linux.
+
+-------------------------------------------------------------------------
+
 Version 0.13:                                                [2013-10-13]
 
 - rlvm will now warn on startup when it detects Japanese save data, but
