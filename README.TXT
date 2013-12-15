@@ -24,9 +24,10 @@ Share / {insert name of popular P2P app in your locale}.
 
 Special thanks to Jagarl for the first work on reverse engineering the
 RealLive interpreter and for Free software licensed source code for
-decoding their file formats, and to Haeleth for creating rldev along
-with answering all my dumb questions about the internal workings of the
-RealLive system.
+decoding their file formats, to Richard 23 for figuring out features
+added to RealLive for Little Busters, and to Haeleth for creating rldev
+along with answering all my dumb questions about the internal workings
+of the RealLive system, and
 
 
 2) STATUS
