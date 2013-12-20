@@ -31,9 +31,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "MachineBase/Memory.hpp"
@@ -116,7 +116,7 @@ TEST_F(GraphicsObjectTest, SerializeObject) {
 // -----------------------------------------------------------------------
 
 // Automated tests for accessors that take one int.
-typedef boost::tuple<
+typedef std::tuple<
   boost::function<void(GraphicsObject&, const int)>,
   boost::function<int(const GraphicsObject&)> > TupleT;
 
@@ -139,7 +139,7 @@ TEST_P(AccessorTest, TestReferenceCount) {
 
   // Call the getter method (ignoring the result). We expect that
   // this won't force a copy-on-write.
-  (accessors.get<1>())(objCopy);
+  (get<1>(accessors))(objCopy);
 
   EXPECT_EQ(3, obj.referenceCount())
       << "Both objects have the same internal object";
@@ -148,7 +148,7 @@ TEST_P(AccessorTest, TestReferenceCount) {
 
   // Call this setter function. This should force the copy-on-write
   // code to trigger.
-  (accessors.get<0>())(objCopy, 1);
+  (get<0>(accessors))(objCopy, 1);
 
   EXPECT_EQ(2, obj.referenceCount())
       << "Untouched object still points to empty";

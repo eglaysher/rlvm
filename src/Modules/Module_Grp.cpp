@@ -896,10 +896,10 @@ void multi_command<SPACE>::handleMultiCommands(
       // 1:copy(strC 'filename', 'effect')
       Rect src;
       Point dest;
-      getSELPointAndRect(machine, it->second.get<1>(), src, dest);
+      getSELPointAndRect(machine, get<1>(it->second), src, dest);
 
       load_3<SPACE>(true)
-        (machine, it->second.get<0>(), MULTI_TARGET_DC,
+        (machine, get<0>(it->second), MULTI_TARGET_DC,
          src, dest, 255);
       break;
     }
@@ -907,29 +907,29 @@ void multi_command<SPACE>::handleMultiCommands(
       // 2:copy(strC 'filename', 'effect', 'alpha')
       Rect src;
       Point dest;
-      getSELPointAndRect(machine, it->third.get<1>(), src, dest);
+      getSELPointAndRect(machine, get<1>(it->third), src, dest);
 
       load_3<SPACE>(true)
-        (machine, it->third.get<0>(), MULTI_TARGET_DC,
-         src, dest, it->third.get<2>());
+        (machine, get<0>(it->third), MULTI_TARGET_DC,
+         src, dest, get<2>(it->third));
       break;
     }
     case 3: {
       // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
       load_3<SPACE>(true)
-        (machine, it->fourth.get<0>(), MULTI_TARGET_DC,
-         SPACE::makeRect(it->fourth.get<1>(), it->fourth.get<2>(),
-                         it->fourth.get<3>(), it->fourth.get<4>()),
-         Point(it->fourth.get<5>(), it->fourth.get<6>()), 255);
+        (machine, get<0>(it->fourth), MULTI_TARGET_DC,
+         SPACE::makeRect(get<1>(it->fourth), get<2>(it->fourth),
+                         get<3>(it->fourth), get<4>(it->fourth)),
+         Point(get<5>(it->fourth), get<6>(it->fourth)), 255);
       break;
     }
     case 4: {
       // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
       load_3<SPACE>(true)
-        (machine, it->fifth.get<0>(), MULTI_TARGET_DC,
-         SPACE::makeRect(it->fifth.get<1>(), it->fifth.get<2>(),
-                         it->fifth.get<3>(), it->fifth.get<4>()),
-         Point(it->fifth.get<5>(), it->fifth.get<6>()), it->fifth.get<7>());
+        (machine, get<0>(it->fifth), MULTI_TARGET_DC,
+         SPACE::makeRect(get<1>(it->fifth), get<2>(it->fifth),
+                         get<3>(it->fifth), get<4>(it->fifth)),
+         Point(get<5>(it->fifth), get<6>(it->fifth)), get<7>(it->fifth));
       break;
     }
     }

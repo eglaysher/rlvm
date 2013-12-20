@@ -182,18 +182,17 @@ struct sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
 //
 // Returns the sum of all the numbers in all the given memory ranges.
 struct sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
-                                                         IntReference_T > > > {
+                                                       IntReference_T > > > {
   int operator()(
       RLMachine& machine,
-      vector<boost::tuple<IntReferenceIterator,
-                          IntReferenceIterator> > ranges) {
+      vector<std::tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
     int total = 0;
-    for (std::vector<boost::tuple<IntReferenceIterator,
+    for (std::vector<std::tuple<IntReferenceIterator,
              IntReferenceIterator> >::iterator
              it = ranges.begin(); it != ranges.end(); ++it) {
-      IntReferenceIterator last = it->get<1>();
+      IntReferenceIterator last = get<1>(*it);
       ++last;
-      total += accumulate(it->get<0>(), last, 0);
+      total += accumulate(get<0>(*it), last, 0);
     }
     return total;
   }

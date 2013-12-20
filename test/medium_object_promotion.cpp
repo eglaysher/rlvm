@@ -27,9 +27,9 @@
 #include "gtest/gtest.h"
 
 #include <boost/assign.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "MachineBase/RLMachine.hpp"
@@ -43,11 +43,10 @@
 #include "testUtils.hpp"
 
 using namespace boost;
-using namespace boost::assign;
 
 // A test suite that tests that certain graphical commands promote the object
 // layer... and tests that others that are known to not promote objects don't.
-typedef boost::tuple<
+typedef std::tuple<
   std::string,                            // function name
   int,                                    // overload number
   TestMachine::ExeArgument,               // function arguments
@@ -86,10 +85,10 @@ TEST_P(PromotionTest, BgLayerPromotion) {
   obj.setObjectData(new GraphicsTextObject(system));
 
   // Run the graphics command.
-  rlmachine.exe(data.get<0>(), data.get<1>(), data.get<2>());
+  rlmachine.exe(get<0>(data), get<1>(data), get<2>(data));
 
   // Whether the object was promoted to the fg layer.
-  EXPECT_EQ(data.get<3>() & SHOULD_PROMOTE_BG,
+  EXPECT_EQ(get<3>(data) & SHOULD_PROMOTE_BG,
             !gs.getObject(OBJ_FG, 0).isCleared());
 }
 

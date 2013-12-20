@@ -37,8 +37,6 @@
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
 #include <deque>
 #include <iterator>
 #include <list>
@@ -82,6 +80,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::fill;
+using std::get;
 using std::for_each;
 using std::ostringstream;
 using std::vector;
@@ -863,7 +862,7 @@ void GraphicsSystem::clearAllDCs() {
 void GraphicsSystem::renderObjects(std::ostream* tree) {
   // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
   // to sort.
-  typedef std::vector<boost::tuple<int, int, int, int, GraphicsObject*> >
+  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*> >
       ToRenderVec;
   ToRenderVec to_render;
 
@@ -883,7 +882,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
     else if (settings.space_key && interfaceHidden())
       continue;
 
-    to_render.push_back(boost::make_tuple(
+    to_render.push_back(std::make_tuple(
         it->zOrder(), it->zLayer(), it->zDepth(), it.pos(), &*it));
   }
 
@@ -892,7 +891,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
 
   for (ToRenderVec::iterator it = to_render.begin(); it != to_render.end();
        ++it) {
-    it->get<4>()->render(it->get<3>(), NULL, tree);
+    get<4>(*it)->render(get<3>(*it), NULL, tree);
   }
 }
 

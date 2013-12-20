@@ -300,12 +300,12 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
     { "o", 40, 20}
   };
 
-  std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
+  std::vector<std::tuple<std::string, int, int> > data = sys.glyphs();
   ASSERT_EQ(6, data.size());
   for (int i = 0; i < data.size(); ++i) {
-    EXPECT_EQ(test_data[i].str, data[i].get<0>());
-    EXPECT_EQ(test_data[i].xpos, data[i].get<1>());
-    EXPECT_EQ(test_data[i].ypos, data[i].get<2>());
+    EXPECT_EQ(test_data[i].str, get<0>(data[i]));
+    EXPECT_EQ(test_data[i].xpos, get<1>(data[i]));
+    EXPECT_EQ(test_data[i].ypos, get<2>(data[i]));
   }
 }
 
@@ -348,12 +348,12 @@ TEST_F(TextSystemTest, TestEmoji) {
     { "E", 40, 0},
   };
 
-  std::vector<boost::tuple<std::string, int, int> > data = sys.glyphs();
+  std::vector<std::tuple<std::string, int, int> > data = sys.glyphs();
   ASSERT_EQ(2, data.size());
   for (int i = 0; i < data.size(); ++i) {
-    EXPECT_EQ(test_data[i].str, data[i].get<0>());
-    EXPECT_EQ(test_data[i].xpos, data[i].get<1>());
-    EXPECT_EQ(test_data[i].ypos, data[i].get<2>());
+    EXPECT_EQ(test_data[i].str, get<0>(data[i]));
+    EXPECT_EQ(test_data[i].xpos, get<1>(data[i]));
+    EXPECT_EQ(test_data[i].ypos, get<2>(data[i]));
   }
 }
 

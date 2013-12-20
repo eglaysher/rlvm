@@ -31,8 +31,8 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <string>
+#include <tuple>
 
 class MockTextWindow;
 class RLMachine;
@@ -65,12 +65,12 @@ class TestTextSystem : public TextSystem {
       const boost::shared_ptr<Surface>& destination);
   int charWidth(int size, uint16_t codepoint) { return 20; }
 
-  const std::vector<boost::tuple<std::string, int, int> >& glyphs() {
+  const std::vector<std::tuple<std::string, int, int> >& glyphs() {
     return rendered_glyps_;
   }
 
  private:
-  std::vector<boost::tuple<std::string, int, int> > rendered_glyps_;
+  std::vector<std::tuple<std::string, int, int> > rendered_glyps_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_

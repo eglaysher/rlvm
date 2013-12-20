@@ -204,9 +204,9 @@ struct bgrMulti_1 : public RLOp_Void_3<
           // 2:copy(strC 'filename', '?')
           Rect srcRect;
           Point dest;
-          getSELPointAndRect(machine, it->third.get<1>(), srcRect, dest);
+          getSELPointAndRect(machine, get<1>(it->third), srcRect, dest);
 
-          surface = graphics.getSurfaceNamedAndMarkViewed(machine, it->third.get<0>());
+          surface = graphics.getSurfaceNamedAndMarkViewed(machine, get<0>(it->third));
           Rect destRect = Rect(dest, srcRect.size());
           surface->blitToSurface(*graphics.getHaikei(), srcRect, destRect,
                                  255, true);

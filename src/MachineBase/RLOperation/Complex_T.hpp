@@ -24,10 +24,10 @@
 #define SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
@@ -40,7 +40,7 @@
 template<typename A, typename B>
 struct Complex2_T {
   // The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type> type;
+  typedef std::tuple<typename A::type, typename B::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -79,8 +79,8 @@ struct Complex2_T {
 template<typename A, typename B, typename C>
 struct Complex3_T {
   // The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type,
-                       typename C::type> type;
+  typedef std::tuple<typename A::type, typename B::type,
+                     typename C::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -121,8 +121,8 @@ struct Complex3_T {
 template<typename A, typename B, typename C, typename D>
 struct Complex4_T {
   // The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type,
-                       typename C::type, typename D::type> type;
+  typedef std::tuple<typename A::type, typename B::type,
+                     typename C::type, typename D::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -167,10 +167,10 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 struct Complex7_T {
   // The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type,
-                       typename C::type, typename D::type,
-                       typename E::type, typename F::type,
-                       typename G::type> type;
+  typedef std::tuple<typename A::type, typename B::type,
+                     typename C::type, typename D::type,
+                     typename E::type, typename F::type,
+                     typename G::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -221,10 +221,10 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
 struct Complex8_T {
   // The output type of this type struct
-  typedef boost::tuple<typename A::type, typename B::type,
-                       typename C::type, typename D::type,
-                       typename E::type, typename F::type,
-                       typename G::type, typename H::type> type;
+  typedef std::tuple<typename A::type, typename B::type,
+                     typename C::type, typename D::type,
+                     typename E::type, typename F::type,
+                     typename G::type, typename H::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,

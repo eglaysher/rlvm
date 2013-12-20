@@ -61,7 +61,7 @@ Size TestTextSystem::renderGlyphOnto(
     const boost::shared_ptr<Surface>& destination) {
   // Keep track of the incoming data:
   rendered_glyps_.push_back(
-      boost::make_tuple(current, insertion_point_x, insertion_point_y));
+      std::make_tuple(current, insertion_point_x, insertion_point_y));
 
   return Size(20, 20);
 }

@@ -68,6 +68,7 @@ using boost::starts_with;
 using boost::ends_with;
 using boost::bind;
 namespace fs = boost::filesystem;
+using std::get;
 
 // -----------------------------------------------------------------------
 
@@ -222,17 +223,17 @@ struct GetSaveFlag : public RLOp_Store_2<
          it != flagList.end(); ++it) {
       switch (it->type) {
         case 0: {
-          IntReferenceIterator jt = it->first.get<0>()
+          IntReferenceIterator jt = get<0>(it->first)
                                     .changeMemoryTo(&overlayedMemory);
           boost::detail::multi_array::copy_n(
-              jt, it->first.get<2>(), it->first.get<1>());
+              jt, get<2>(it->first), get<1>(it->first));
           break;
         }
         case 1: {
-          StringReferenceIterator jt = it->second.get<0>()
+          StringReferenceIterator jt = get<0>(it->second)
                                        .changeMemoryTo(&overlayedMemory);
           boost::detail::multi_array::copy_n(
-              jt, it->second.get<2>(), it->second.get<1>());
+              jt, get<2>(it->second), get<1>(it->second));
           break;
         }
         default:

@@ -27,7 +27,6 @@
 #include <vector>
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode_fwd.h"

@@ -26,20 +26,24 @@
 
 #include "gtest/gtest.h"
 
+#include <tuple>
+
 #include "testUtils.hpp"
 #include "Modules/Module_Sys_index_series.hpp"
+
+using std::get;
 
 class IndexSeriesTest : public FullSystemTest {
  public:
   void verifyIndexSeries(IndexList::type index_list,
                          int offset,
                          int init,
-                         const std::vector<boost::tuple<int, int> >& tests) {
+                         const std::vector<std::tuple<int, int> >& tests) {
     Sys_index_series fun;
-    for (std::vector<boost::tuple<int, int> >::const_iterator it =
+    for (std::vector<std::tuple<int, int> >::const_iterator it =
              tests.begin(); it != tests.end(); ++it) {
-      EXPECT_EQ(it->get<1>(),
-                fun(rlmachine, it->get<0>(), offset, init, index_list));
+      EXPECT_EQ(get<1>(*it),
+                fun(rlmachine, get<0>(*it), offset, init, index_list));
     }
   }
 
@@ -56,7 +60,7 @@ class IndexSeriesTest : public FullSystemTest {
     IndexSeriesEntry::type a = {
       1,
       0,
-      boost::tuple<int, int, int>(start, end, endval)
+      std::tuple<int, int, int>(start, end, endval)
     };
     orig.push_back(a);
     return orig;

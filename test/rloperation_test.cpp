@@ -278,10 +278,10 @@ struct ComplexCapturer
   virtual void operator()(RLMachine& machine,
                           Complex2_T<IntConstant_T, IntConstant_T>::type one,
                           Complex2_T<IntConstant_T, IntConstant_T>::type two) {
-    one_ = one.get<0>();
-    two_ = one.get<1>();
-    three_ = two.get<0>();
-    four_ = two.get<1>();
+    one_ = get<0>(one);
+    two_ = get<1>(one);
+    three_ = get<0>(two);
+    four_ = get<1>(two);
   }
 };
 

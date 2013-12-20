@@ -28,10 +28,13 @@
 #include "Modules/Module_Sys_index_series.hpp"
 
 #include <sstream>
+#include <tuple>
 
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Utilities/math_util.hpp"
+
+using std::get;
 
 // -----------------------------------------------------------------------
 
@@ -55,18 +58,18 @@ int Sys_index_series::operator()(RLMachine& machine,
       }
       case 1: {
         // This is the only thing we reliably can do.
-        int start = it->second.get<0>() + offset;
-        int end = it->second.get<1>() + offset;
-        int endval = it->second.get<2>();
+        int start = get<0>(it->second) + offset;
+        int end = get<1>(it->second) + offset;
+        int endval = get<2>(it->second);
         adder(index, start, end, endval, 0,
               value, init, previous_term_finished);
         break;
       }
       case 2: {
-        int start = it->third.get<0>() + offset;
-        int end = it->third.get<1>() + offset;
-        int endval = it->third.get<2>();
-        int mod = it->third.get<3>();
+        int start = get<0>(it->third) + offset;
+        int end = get<1>(it->third) + offset;
+        int endval = get<2>(it->third);
+        int mod = get<3>(it->third);
         adder(index, start, end, endval, mod,
               value, init, previous_term_finished);
         break;
