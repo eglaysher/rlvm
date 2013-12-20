@@ -74,7 +74,6 @@ namespace fs = boost::filesystem;
 using namespace std;
 using namespace libReallive;
 
-using boost::assign::list_of;
 using boost::bind;
 using boost::function;
 using boost::lexical_cast;

@@ -29,7 +29,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <boost/assign/list_of.hpp>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Rect.hpp"
@@ -38,7 +37,6 @@
 #include "libReallive/gameexe.h"
 
 using namespace std;
-using namespace boost::assign;
 
 std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();

@@ -31,7 +31,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/tuple/tuple.hpp>
 
 #include <string>
@@ -57,7 +56,6 @@
 #include <iostream>
 
 using namespace boost;
-using namespace boost::assign;
 using namespace std;
 using namespace libReallive;
 using namespace Serialization;
@@ -159,26 +157,26 @@ TEST_P(AccessorTest, TestReferenceCount) {
 }
 
 typedef vector<TupleT> SetterVec;
-SetterVec graphics_object_setters =
-    tuple_list_of
-         (&GraphicsObject::setVisible, &GraphicsObject::visible)
-         (&GraphicsObject::setX, &GraphicsObject::x)
-         (&GraphicsObject::setY, &GraphicsObject::y)
-         (&GraphicsObject::setVert, &GraphicsObject::vert)
-         (&GraphicsObject::setXOrigin, &GraphicsObject::xOrigin)
-         (&GraphicsObject::setYOrigin, &GraphicsObject::yOrigin)
-         (&GraphicsObject::setWidth, &GraphicsObject::width)
-         (&GraphicsObject::setHeight, &GraphicsObject::height)
-         (&GraphicsObject::setRotation, &GraphicsObject::rotation)
-         (&GraphicsObject::setPattNo, &GraphicsObject::pattNo)
-         (&GraphicsObject::setMono, &GraphicsObject::mono)
-         (&GraphicsObject::setInvert, &GraphicsObject::invert)
-         (&GraphicsObject::setLight, &GraphicsObject::light)
-         (&GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode)
-         (&GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX)
-         (&GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY)
-         (&GraphicsObject::setAlpha, &GraphicsObject::rawAlpha)
-         (&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy);
+SetterVec graphics_object_setters = {
+  { &GraphicsObject::setVisible, &GraphicsObject::visible },
+  { &GraphicsObject::setX, &GraphicsObject::x },
+  { &GraphicsObject::setY, &GraphicsObject::y },
+  { &GraphicsObject::setVert, &GraphicsObject::vert },
+  { &GraphicsObject::setXOrigin, &GraphicsObject::xOrigin },
+  { &GraphicsObject::setYOrigin, &GraphicsObject::yOrigin },
+  { &GraphicsObject::setWidth, &GraphicsObject::width },
+  { &GraphicsObject::setHeight, &GraphicsObject::height },
+  { &GraphicsObject::setRotation, &GraphicsObject::rotation },
+  { &GraphicsObject::setPattNo, &GraphicsObject::pattNo },
+  { &GraphicsObject::setMono, &GraphicsObject::mono },
+  { &GraphicsObject::setInvert, &GraphicsObject::invert },
+  { &GraphicsObject::setLight, &GraphicsObject::light },
+  { &GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode },
+  { &GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX },
+  { &GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY },
+  { &GraphicsObject::setAlpha, &GraphicsObject::rawAlpha },
+  { &GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy }
+};
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,
                         AccessorTest,
@@ -195,15 +193,15 @@ int getColourB(const GraphicsObject& obj) { return obj.colour().b(); }
 int getColourLevel(const GraphicsObject& obj) { return obj.colour().a(); }
 
 typedef vector<TupleT> SetterVec;
-SetterVec graphics_object_colour_setters =
-    tuple_list_of
-         (&GraphicsObject::setTintR, getTintR)
-         (&GraphicsObject::setTintG, getTintG)
-         (&GraphicsObject::setTintB, getTintB)
-         (&GraphicsObject::setColourR, getColourR)
-         (&GraphicsObject::setColourG, getColourG)
-         (&GraphicsObject::setColourB, getColourB)
-         (&GraphicsObject::setColourLevel, getColourLevel);
+SetterVec graphics_object_colour_setters = {
+  { &GraphicsObject::setTintR, getTintR },
+  { &GraphicsObject::setTintG, getTintG },
+  { &GraphicsObject::setTintB, getTintB },
+  { &GraphicsObject::setColourR, getColourR },
+  { &GraphicsObject::setColourG, getColourG },
+  { &GraphicsObject::setColourB, getColourB },
+  { &GraphicsObject::setColourLevel, getColourLevel }
+};
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
                         AccessorTest,

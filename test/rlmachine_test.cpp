@@ -27,7 +27,6 @@
 
 #include "gtest/gtest.h"
 
-#include <boost/assign/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <utility>
@@ -45,7 +44,6 @@
 using namespace std;
 using namespace libReallive;
 using boost::lexical_cast;
-using boost::assign::list_of;
 
 class RLMachineTest : public FullSystemTest {
  protected:
@@ -122,7 +120,7 @@ TEST_F(RLMachineTest, RegisterStore) {
 
 // Test valid string memory access.
 TEST_F(RLMachineTest, StringMemory) {
-  vector<int> types = list_of(STRK_LOCATION)(STRM_LOCATION)(STRS_LOCATION);
+  vector<int> types = { STRK_LOCATION, STRM_LOCATION, STRS_LOCATION };
 
   for (vector<int>::const_iterator it = types.begin(); it != types.end();
        ++it) {
@@ -152,7 +150,7 @@ TEST_F(RLMachineTest, StringMemoryErrors) {
 //
 // For    8-bit integers: 38,39,40,41
 TEST_F(RLMachineTest, IntegerMemory) {
-  vector<char> banks = list_of('A')('B')('C')('D')('E')('F')('G')('L')('Z');
+  vector<char> banks = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'L', 'Z' };
 
   const int in8b[] = {38,  39, 40, 41};
   const int base = (in8b[0] << 24) | (in8b[1] << 16) | (in8b[2] << 8) | in8b[3];

@@ -27,7 +27,6 @@
 
 #include "MachineBase/Memory.hpp"
 
-#include <boost/assign/list_of.hpp>
 #include <iostream>
 #include <map>
 #include <string>
@@ -38,21 +37,22 @@
 #include "libReallive/gameexe.h"
 #include "libReallive/intmemref.h"
 
-using boost::assign::list_of;
 using namespace std;
 using namespace libReallive;
 
-const IntegerBank_t LOCAL_INTEGER_BANKS =
-  list_of(make_pair(INTB_LOCATION, 'A'))
-  (make_pair(INTB_LOCATION, 'B'))
-  (make_pair(INTC_LOCATION, 'C'))
-  (make_pair(INTD_LOCATION, 'D'))
-  (make_pair(INTE_LOCATION, 'E'))
-  (make_pair(INTF_LOCATION, 'F'));
+const IntegerBank_t LOCAL_INTEGER_BANKS = {
+  make_pair(INTB_LOCATION, 'A'),
+  make_pair(INTB_LOCATION, 'B'),
+  make_pair(INTC_LOCATION, 'C'),
+  make_pair(INTD_LOCATION, 'D'),
+  make_pair(INTE_LOCATION, 'E'),
+  make_pair(INTF_LOCATION, 'F')
+};
 
-const IntegerBank_t GLOBAL_INTEGER_BANKS =
-  list_of(make_pair(INTG_LOCATION, 'G'))
-  (make_pair(INTZ_LOCATION, 'Z'));
+const IntegerBank_t GLOBAL_INTEGER_BANKS = {
+  make_pair(INTG_LOCATION, 'G'),
+  make_pair(INTZ_LOCATION, 'Z')
+};
 
 // -----------------------------------------------------------------------
 // GlobalMemory

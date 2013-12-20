@@ -27,7 +27,6 @@
 #include "gtest/gtest.h"
 
 #include <boost/assign.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/tuple/tuple.hpp>
 
 #include <string>
@@ -94,132 +93,132 @@ TEST_P(PromotionTest, BgLayerPromotion) {
             !gs.getObject(OBJ_FG, 0).isCleared());
 }
 
-std::vector<PromotionData> data =
-    tuple_list_of
-    // These commands shouldn't promote:
-    ("grpLoad", 0, TestMachine::Arg("file", 0),
-     NONE)
-    ("grpLoad", 1, TestMachine::Arg("file", 0, 255),
-     NONE)
-    ("grpLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     NONE)
-    ("grpLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     NONE)
-    ("recLoad", 0, TestMachine::Arg("file", 0),
-     NONE)
-    ("recLoad", 1, TestMachine::Arg("file", 0, 255),
-     NONE)
-    ("recLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     NONE)
-    ("recLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     NONE)
-    ("grpMaskLoad", 0, TestMachine::Arg("file", 0),
-     NONE)
-    ("grpMaskLoad", 1, TestMachine::Arg("file", 0, 255),
-     NONE)
-    ("grpMaskLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     NONE)
-    ("grpMaskLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     NONE)
-    ("recMaskLoad", 0, TestMachine::Arg("file", 0),
-     NONE)
-    ("recMaskLoad", 1, TestMachine::Arg("file", 0, 255),
-     NONE)
-    ("recMaskLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     NONE)
-    ("recMaskLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     NONE)
+std::vector<PromotionData> data = {
+  // These commands shouldn't promote:
+  { "grpLoad", 0, TestMachine::Arg("file", 0),
+    NONE },
+  { "grpLoad", 1, TestMachine::Arg("file", 0, 255),
+    NONE },
+  { "grpLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    NONE },
+  { "grpLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    NONE },
+  { "recLoad", 0, TestMachine::Arg("file", 0),
+    NONE },
+  { "recLoad", 1, TestMachine::Arg("file", 0, 255),
+    NONE },
+  { "recLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    NONE },
+  { "recLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    NONE },
+  { "grpMaskLoad", 0, TestMachine::Arg("file", 0),
+    NONE },
+  { "grpMaskLoad", 1, TestMachine::Arg("file", 0, 255),
+    NONE },
+  { "grpMaskLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    NONE },
+  { "grpMaskLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    NONE },
+  { "recMaskLoad", 0, TestMachine::Arg("file", 0),
+    NONE },
+  { "recMaskLoad", 1, TestMachine::Arg("file", 0, 255),
+    NONE },
+  { "recMaskLoad", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    NONE },
+  { "recMaskLoad", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    NONE },
 
-    ("grpCopy", 0, TestMachine::Arg(1, 0),
-     NONE)
-    ("grpCopy", 1, TestMachine::Arg(1, 0, 255),
-     NONE)
-    ("grpCopy", 2, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0),
-     NONE)
-    ("grpCopy", 3, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0, 255),
-     NONE)
-    ("recCopy", 0, TestMachine::Arg(1, 0),
-     NONE)
-    ("recCopy", 1, TestMachine::Arg(1, 0, 255),
-     NONE)
-    ("recCopy", 2, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0),
-     NONE)
-    ("recCopy", 3, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0, 255),
-     NONE)
+  { "grpCopy", 0, TestMachine::Arg(1, 0),
+    NONE },
+  { "grpCopy", 1, TestMachine::Arg(1, 0, 255),
+    NONE },
+  { "grpCopy", 2, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0),
+    NONE },
+  { "grpCopy", 3, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0, 255),
+    NONE },
+  { "recCopy", 0, TestMachine::Arg(1, 0),
+    NONE },
+  { "recCopy", 1, TestMachine::Arg(1, 0, 255),
+    NONE },
+  { "recCopy", 2, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0),
+    NONE },
+  { "recCopy", 3, TestMachine::Arg(0, 0, 200, 200, 1, 0, 0, 0, 255),
+    NONE },
 
-    // These commands should promote:
-    ("grpDisplay", 0, TestMachine::Arg(0, 5),
-     SHOULD_PROMOTE_BG)
-    ("grpDisplay", 1, TestMachine::Arg(0, 5, 255),
-     SHOULD_PROMOTE_BG)
-    ("grpDisplay", 2, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("grpDisplay", 3, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recDisplay", 0, TestMachine::Arg(0, 5),
-     SHOULD_PROMOTE_BG)
-    ("recDisplay", 1, TestMachine::Arg(0, 5, 255),
-     SHOULD_PROMOTE_BG)
-    ("recDisplay", 2, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("recDisplay", 3, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
+  // These commands should promote:
+  { "grpDisplay", 0, TestMachine::Arg(0, 5),
+    SHOULD_PROMOTE_BG },
+  { "grpDisplay", 1, TestMachine::Arg(0, 5, 255),
+    SHOULD_PROMOTE_BG },
+  { "grpDisplay", 2, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "grpDisplay", 3, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recDisplay", 0, TestMachine::Arg(0, 5),
+    SHOULD_PROMOTE_BG },
+  { "recDisplay", 1, TestMachine::Arg(0, 5, 255),
+    SHOULD_PROMOTE_BG },
+  { "recDisplay", 2, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "recDisplay", 3, TestMachine::Arg(0, 5, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
 
-    ("grpOpenBg", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("grpOpenBg", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("grpOpenBg", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("grpOpenBg", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recOpenBg", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("recOpenBg", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recOpenBg", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("recOpenBg", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
+  { "grpOpenBg", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "grpOpenBg", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "grpOpenBg", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "grpOpenBg", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recOpenBg", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "recOpenBg", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recOpenBg", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "recOpenBg", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
 
-    ("grpMaskOpen", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("grpMaskOpen", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("grpMaskOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("grpMaskOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recMaskOpen", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("recMaskOpen", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recMaskOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("recMaskOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
+  { "grpMaskOpen", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "grpMaskOpen", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "grpMaskOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "grpMaskOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recMaskOpen", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "recMaskOpen", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recMaskOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "recMaskOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
 
-    ("recMulti", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("recMulti", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
+  { "recMulti", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "recMulti", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
 
-    ("grpOpen", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("grpOpen", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("grpOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("grpOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recOpen", 0, TestMachine::Arg("file", 0),
-     SHOULD_PROMOTE_BG)
-    ("recOpen", 1, TestMachine::Arg("file", 0, 255),
-     SHOULD_PROMOTE_BG)
-    ("recOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
-     SHOULD_PROMOTE_BG)
-    ("recOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
-     SHOULD_PROMOTE_BG);
+  { "grpOpen", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "grpOpen", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "grpOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "grpOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recOpen", 0, TestMachine::Arg("file", 0),
+    SHOULD_PROMOTE_BG },
+  { "recOpen", 1, TestMachine::Arg("file", 0, 255),
+    SHOULD_PROMOTE_BG },
+  { "recOpen", 2, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0),
+    SHOULD_PROMOTE_BG },
+  { "recOpen", 3, TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
+    SHOULD_PROMOTE_BG }
+};
 
 INSTANTIATE_TEST_CASE_P(MediumObjectPoromotion,
                         PromotionTest,

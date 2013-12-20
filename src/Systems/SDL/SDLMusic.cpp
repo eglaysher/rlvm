@@ -29,7 +29,6 @@
 
 #include <SDL/SDL_mixer.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/function.hpp>
 #include <iostream>
@@ -44,7 +43,6 @@
 
 using namespace std;
 using namespace boost;
-using boost::assign::map_list_of;
 namespace fs = boost::filesystem;
 
 const int STOP_AT_END = -1;
@@ -209,12 +207,12 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     System& system, const SoundSystem::DSTrack& track) {
   typedef vector<pair<string,
                       boost::function<WAVFILE*(FILE*, int)> > > FileTypes;
-  static FileTypes types =
-      map_list_of
-      ("wav", &buildMusicImplementation<WAVFILE_Stream>)
-      ("nwa", &buildMusicImplementation<NWAFILE>)
-      ("mp3", &buildMusicImplementation<MP3FILE>)
-      ("ogg", &buildMusicImplementation<OggFILE>);
+  static FileTypes types = {
+    { "wav", &buildMusicImplementation<WAVFILE_Stream> },
+    { "nwa", &buildMusicImplementation<NWAFILE> },
+    { "mp3", &buildMusicImplementation<MP3FILE> },
+    { "ogg", &buildMusicImplementation<OggFILE> }
+  };
 
   fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {

@@ -29,7 +29,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <boost/assign/list_of.hpp>  // for 'list_of()'
 #include <boost/bind.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -57,7 +56,6 @@
 #include "libReallive/gameexe.h"
 
 using namespace std;
-using boost::assign::list_of;
 using boost::bind;
 using boost::replace_all;
 using boost::to_lower;
@@ -66,9 +64,10 @@ namespace fs = boost::filesystem;
 
 namespace {
 
-const std::vector<std::string> ALL_FILETYPES =
-    list_of("g00")("pdt")("anm")("gan")("hik")("wav")("ogg")("nwa")("mp3")
-    ("ovk")("koe")("nwk");
+const std::vector<std::string> ALL_FILETYPES = {
+  "g00", "pdt", "anm", "gan", "hik", "wav", "ogg", "nwa", "mp3",
+  "ovk", "koe", "nwk"
+};
 
 struct LoadingGameFromStream : public LoadGameLongOperation {
   LoadingGameFromStream(RLMachine& machine,
@@ -90,24 +89,15 @@ struct LoadingGameFromStream : public LoadGameLongOperation {
 }  // namespace
 
 // I assume GAN files can't go through the OBJ_FILETYPES path.
-const std::vector<std::string> OBJ_FILETYPES =
-    list_of("anm")("g00")("pdt");
-const std::vector<std::string> IMAGE_FILETYPES =
-    list_of("g00")("pdt");
-const std::vector<std::string> PDT_IMAGE_FILETYPES =
-    list_of("pdt");
-const std::vector<std::string> GAN_FILETYPES =
-    list_of("gan");
-const std::vector<std::string> ANM_FILETYPES =
-    list_of("anm");
-const std::vector<std::string> HIK_FILETYPES =
-    list_of("hik")("g00")("pdt");
-const std::vector<std::string> SOUND_FILETYPES =
-    list_of("wav")("ogg")("nwa")("mp3");
-const std::vector<std::string> KOE_ARCHIVE_FILETYPES =
-    list_of("ovk")("koe")("nwk");
-const std::vector<std::string> KOE_LOOSE_FILETYPES =
-    list_of("ogg");
+const std::vector<std::string> OBJ_FILETYPES = { "anm", "g00", "pdt" };
+const std::vector<std::string> IMAGE_FILETYPES = { "g00", "pdt" };
+const std::vector<std::string> PDT_IMAGE_FILETYPES = { "pdt" };
+const std::vector<std::string> GAN_FILETYPES = { "gan" };
+const std::vector<std::string> ANM_FILETYPES = { "anm" };
+const std::vector<std::string> HIK_FILETYPES = { "hik", "g00", "pdt" };
+const std::vector<std::string> SOUND_FILETYPES = { "wav", "ogg", "nwa", "mp3" };
+const std::vector<std::string> KOE_ARCHIVE_FILETYPES = { "ovk", "koe", "nwk" };
+const std::vector<std::string> KOE_LOOSE_FILETYPES = { "ogg" };
 
 class MenuReseter : public LongOperation {
  public:

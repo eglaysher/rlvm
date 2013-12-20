@@ -43,10 +43,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <boost/assign/list_of.hpp>
 #include <boost/bind.hpp>
-
-using boost::assign::list_of;
 
 using namespace boost;
 using namespace std;
@@ -91,9 +88,10 @@ TEST_F(RLOperationTest, TestIntConstant_T) {
   int two = -1;
   IntcIntcCapturer capturer(one, two);
 
-  vector<string> unparsed =
-      list_of("$ FF 01 00 00 00")
-      ("$ FF 02 00 00 00");
+  vector<string> unparsed = {
+    "$ FF 01 00 00 00",
+    "$ FF 02 00 00 00"
+  };
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);
@@ -127,9 +125,10 @@ TEST_F(RLOperationTest, TestIntReference_T) {
   int two = -1;
   IntRefIntRefCapturer capturer(one, two);
 
-  vector<string> unparsed =
-      list_of("$ 00 [ $ FF 00 00 00 00 ]")
-      ("$ 01 [ $ FF 05 00 00 00 ]");
+  vector<string> unparsed = {
+    "$ 00 [ $ FF 00 00 00 00 ]",
+    "$ 01 [ $ FF 05 00 00 00 ]"
+  };
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);
@@ -159,9 +158,10 @@ TEST_F(RLOperationTest, TestStringConstant_T) {
   std::string two = "empty";
   StringcStringcCapturer capturer(one, two);
 
-  vector<string> unparsed =
-      list_of("\"string one\"")
-      ("\"string two\"");
+  vector<string> unparsed = {
+    "\"string one\"",
+    "\"string two\""
+  };
   ExpressionPiecesVector expression_pieces;
   capturer.parseParameters(unparsed, expression_pieces);
   capturer.dispatch(rlmachine, expression_pieces);
@@ -197,9 +197,10 @@ TEST_F(RLOperationTest, TestStringReference_T) {
   std::string two = "empty";
   StrRefStrRefCapturer capturer(one, two);
 
-  vector<string> unparsed =
-      list_of("$ 0C [ $ FF 00 00 00 00 ]")
-      ("$ 12 [ $ FF 05 00 00 00 ]");
+  vector<string> unparsed = {
+    "$ 0C [ $ FF 00 00 00 00 ]",
+    "$ 12 [ $ FF 05 00 00 00 ]"
+  };
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ("string one", one);
@@ -221,11 +222,12 @@ TEST_F(RLOperationTest, TestArgc_T) {
   vector<int> output;
   ArgcCapturer capturer(output);
 
-  vector<string> unparsed =
-      list_of("$ FF 09 00 00 00")
-      ("$ FF 03 00 00 00")
-      ("$ FF 07 00 00 00")
-      ("$ FF 00 00 00 00");
+  vector<string> unparsed = {
+    "$ FF 09 00 00 00",
+    "$ FF 03 00 00 00",
+    "$ FF 07 00 00 00",
+    "$ FF 00 00 00 00"
+  };
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(4, output.size());
@@ -290,9 +292,10 @@ TEST_F(RLOperationTest, TestComplex2_T) {
   int four = -1;
   ComplexCapturer capturer(one, two, three, four);
 
-  vector<string> unparsed =
-      list_of("( $ FF 01 00 00 00 $ FF 02 00 00 00 )")
-      ("( $ FF 03 00 00 00 $ FF 04 00 00 00 )");
+  vector<string> unparsed = {
+    "( $ FF 01 00 00 00 $ FF 02 00 00 00 )",
+    "( $ FF 03 00 00 00 $ FF 04 00 00 00 )"
+  };
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);

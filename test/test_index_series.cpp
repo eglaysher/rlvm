@@ -26,12 +26,8 @@
 
 #include "gtest/gtest.h"
 
-#include <boost/assign/list_of.hpp>  // for 'list_of()'
-
 #include "testUtils.hpp"
 #include "Modules/Module_Sys_index_series.hpp"
-
-using boost::assign::tuple_list_of;
 
 class IndexSeriesTest : public FullSystemTest {
  public:
@@ -70,16 +66,17 @@ class IndexSeriesTest : public FullSystemTest {
 TEST_F(IndexSeriesTest, SimpleMode0Test) {
   verifyIndexSeries(addMode0(IndexList::type(), 0, 10, 5),
                     0, 0,
-                    tuple_list_of(0, 0)(1, 0)(2, 1)(3, 1)(4, 2)(5, 2)
-                    (6, 3)(7, 3)(8, 4)(9, 4)(10, 5));
+                    { {0, 0}, {1, 0}, {2, 1}, {3, 1}, {4, 2}, {5, 2},
+                      {6, 3}, {7, 3}, {8, 4}, {9, 4}, {10, 5} });
 }
 
 TEST_F(IndexSeriesTest, RldevExample) {
   // This example is listed in the rldev documentation.
   verifyIndexSeries(addMode0(addMode0(IndexList::type(), 0, 5, 10), 8, 10, 0),
                     0, 5,
-                    tuple_list_of(0, 5)(1, 6)(2, 7)(3, 8)(4, 9)(5, 10)
-                    (6, 10)(7, 10)(8, 10)(9, 5)(10, 0));
+                    { { 0, 5 }, { 1, 6 }, { 2, 7 }, { 3, 8 }, { 4, 9 },
+                      { 5, 10 }, {6, 10 }, { 7, 10 }, { 8, 10 }, { 9, 5 },
+                      { 10, 0 } });
 }
 
 TEST_F(IndexSeriesTest, RawValueTest) {
@@ -88,6 +85,6 @@ TEST_F(IndexSeriesTest, RawValueTest) {
   verifyIndexSeries(
       addMode0(addValue(addMode0(IndexList::type(), 0, 5, 10), 40), 8, 10, 0),
       0, 5,
-      tuple_list_of(0, 5)(1, 6)(2, 7)(3, 8)(4, 9)(5, 40)
-      (6, 40)(7, 40)(8, 40)(9, 20)(10, 0));
+      { { 0, 5 }, { 1, 6 }, { 2, 7 }, { 3, 8 }, { 4, 9 }, { 5, 40 },
+        { 6, 40 }, { 7, 40 }, { 8, 40 }, { 9, 20 }, { 10, 0 } });
 }
