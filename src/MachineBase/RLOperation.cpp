@@ -138,7 +138,7 @@ void IntConstant_T::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output) {
   const char* data = input.at(position).c_str();
-  auto_ptr<ExpressionPiece> ep(get_data(data));
+  unique_ptr<ExpressionPiece> ep(get_data(data));
 
   if (ep->expressionValueType() != libReallive::ValueTypeInteger) {
     throw rlvm::Exception("IntConstant_T parse err.");
@@ -161,7 +161,7 @@ void IntReference_T::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output) {
   const char* data = input.at(position).c_str();
-  auto_ptr<ExpressionPiece> ep(get_data(data));
+  unique_ptr<ExpressionPiece> ep(get_data(data));
 
   if (ep->expressionValueType() != libReallive::ValueTypeInteger) {
     throw rlvm::Exception("IntReference_T parse err.");
@@ -219,7 +219,7 @@ void StrConstant_T::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output) {
   const char* data = input.at(position).c_str();
-  auto_ptr<ExpressionPiece> ep(get_data(data));
+  unique_ptr<ExpressionPiece> ep(get_data(data));
 
   if (ep->expressionValueType() != libReallive::ValueTypeString) {
     throw rlvm::Exception("StrConstant_T parse err.");
@@ -242,7 +242,7 @@ void StrReference_T::parseParameters(
   const std::vector<std::string>& input,
   boost::ptr_vector<libReallive::ExpressionPiece>& output) {
   const char* data = input.at(position).c_str();
-  auto_ptr<ExpressionPiece> ep(get_data(data));
+  unique_ptr<ExpressionPiece> ep(get_data(data));
 
   if (ep->expressionValueType() != libReallive::ValueTypeString) {
     throw rlvm::Exception("StrReference_T parse err.");

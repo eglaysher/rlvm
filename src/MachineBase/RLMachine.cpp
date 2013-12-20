@@ -576,7 +576,7 @@ void RLMachine::performTextout(const std::string& cp932str) {
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters
-  auto_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
+  unique_ptr<TextoutLongOperation> ptr(new TextoutLongOperation(*this, utf8str));
 
   if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
     ptr->setNoWait();
@@ -609,8 +609,8 @@ bool RLMachine::dllLoaded(const std::string& name) {
 }
 
 void RLMachine::loadDLL(int slot, const std::string& name) {
-  auto_ptr<RealLiveDLL> dll(RealLiveDLL::BuildDLLNamed(*this, name));
-  if (dll.get()) {
+  RealLiveDLL* dll = RealLiveDLL::BuildDLLNamed(*this, name);
+  if (dll) {
     loaded_dlls_.insert(slot, dll);
   } else {
     ostringstream oss;

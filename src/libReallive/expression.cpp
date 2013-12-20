@@ -332,10 +332,10 @@ ExpressionPiece* get_expression(const char*& src) {
 
 // Parses an expression of the form [dest] = [source expression];
 ExpressionPiece* get_assignment(const char*& src) {
-  auto_ptr<ExpressionPiece> itok(get_expr_term(src));
+  unique_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
   src += 2;
-  auto_ptr<ExpressionPiece> etok(get_expression(src));
+  unique_ptr<ExpressionPiece> etok(get_expression(src));
   if (op >= 0x14 && op <= 0x24) {
     return new AssignmentExpressionOperator(op, itok.release(), etok.release());
   } else {
@@ -382,7 +382,7 @@ ExpressionPiece* get_data(const char*& src) {
   } else if (*src == 'a') {
     // @todo Cleanup below.
     const char* end = src;
-    auto_ptr<ComplexExpressionPiece> cep;
+    unique_ptr<ComplexExpressionPiece> cep;
 
     if (*end++ == 'a') {
       int tag = *end++;
@@ -419,7 +419,7 @@ ExpressionPiece* get_complex_param(const char*& src) {
     return get_data(src);
   } else if (*src == '(') {
     ++src;
-    auto_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
+    unique_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
 
     while (*src != ')') {
       cep->addContainedPiece(get_data(src));
@@ -436,7 +436,7 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
   // rldev manual.
   if (boost::starts_with(in, "###PRINT(")) {
     const char* expression_start = in.c_str() + 9;
-    auto_ptr<ExpressionPiece> piece(get_expression(expression_start));
+    unique_ptr<ExpressionPiece> piece(get_expression(expression_start));
 
     if (*expression_start != ')') {
       ostringstream ss;

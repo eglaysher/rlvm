@@ -61,7 +61,7 @@ struct Complex2_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(
+    std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
@@ -103,7 +103,7 @@ struct Complex3_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(
+    std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
@@ -148,7 +148,7 @@ struct Complex4_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(
+    std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
@@ -202,7 +202,7 @@ struct Complex7_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(
+    std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;
@@ -257,7 +257,7 @@ struct Complex8_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(
+    std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
     output.push_back(ep.release());
     position++;

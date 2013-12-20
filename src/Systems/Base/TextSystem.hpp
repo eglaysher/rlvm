@@ -295,7 +295,7 @@ class TextSystem : public EventListener {
   bool is_reading_backlog_;
 
   // The current page set. Represents what is on the screen right now.
-  std::auto_ptr<PageSet> current_pageset_;
+  std::unique_ptr<PageSet> current_pageset_;
 
   // Previous Text Pages. The TextSystem owns the list of previous
   // pages because multiple windows can be displayed in one text page.

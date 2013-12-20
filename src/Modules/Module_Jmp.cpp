@@ -61,7 +61,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
   string tmpval = gotoElement.get_param(0);
   const char* location = tmpval.c_str();
 
-  auto_ptr<ExpressionPiece> condition(get_expression(location));
+  unique_ptr<ExpressionPiece> condition(get_expression(location));
   int value = condition->integerValue(machine);
 
   // Walk linearly through the output cases, executing the first
@@ -87,7 +87,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
     // Parse this expression, and goto the corresponding label if
     // it's equal to the value we're searching for
     const char* e = (const char*)caseUnparsed.c_str();
-    auto_ptr<ExpressionPiece> output(get_expression(e));
+    unique_ptr<ExpressionPiece> output(get_expression(e));
     if (output->integerValue(machine) == value)
       return i;
   }
@@ -193,7 +193,7 @@ struct goto_on : public RLOp_SpecialCase {
     // use a temporary object so that it is only destroyed at end of scope! --RT
     string tmpval = gotoElement.get_param(0);
     const char* location = tmpval.c_str();
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
+    unique_ptr<ExpressionPiece> condition(get_expression(location));
     int value = condition->integerValue(machine);
 
     if (value >= 0 && value < int(gotoElement.pointers_count())) {
@@ -236,7 +236,7 @@ struct gosub_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     string tmpval = gotoElement.get_param(0);
     const char* location = tmpval.c_str();
-    auto_ptr<ExpressionPiece> condition(get_expression(location));
+    unique_ptr<ExpressionPiece> condition(get_expression(location));
 
     if (condition->integerValue(machine)) {
       machine.gosub(gotoElement.get_pointer(0));

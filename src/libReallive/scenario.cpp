@@ -138,7 +138,6 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     }
   }
 
-  /// @todo Removed auto_ptr because of new[] / delete mismatch
   char* uncompressed = new char[dlen];
   Compression::decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),

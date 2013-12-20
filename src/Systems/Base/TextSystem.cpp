@@ -758,7 +758,7 @@ void TextSystem::reset() {
   is_reading_backlog_ = false;
   script_message_no_wait_ = false;
 
-  current_pageset_ = std::auto_ptr<PageSet>(new PageSet);
+  current_pageset_ = std::unique_ptr<PageSet>(new PageSet);
   previous_page_sets_.clear();
   previous_page_it_ = previous_page_sets_.end();
 

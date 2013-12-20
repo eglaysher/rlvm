@@ -83,7 +83,7 @@ class TextSystemTest : public FullSystemTest {
   }
 
   void writeString(const std::string& text, bool nowait) {
-    auto_ptr<TextoutLongOperation> tolo(
+    unique_ptr<TextoutLongOperation> tolo(
       new TextoutLongOperation(rlmachine, text));
 
     if (nowait)

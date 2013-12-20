@@ -156,7 +156,7 @@ struct Special_T {
       const std::vector<std::string>& input,
       boost::ptr_vector<libReallive::ExpressionPiece>& output) {
     const char* data = input.at(position).c_str();
-    std::auto_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
+    std::unique_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
     output.push_back(ep.release());
     position++;
   }
