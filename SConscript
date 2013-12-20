@@ -17,7 +17,8 @@ root_env.Append(
     "--ansi",
     "-Wall",
     "-Wno-sign-compare",
-    "-Wno-narrowing"
+    "-Wno-narrowing",
+    "-std=c++11"
   ]
 )
 

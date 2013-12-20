@@ -92,7 +92,7 @@ class SDLMusic : public boost::noncopyable,
   }
 
   // Whether music is currently playing.
-  static bool IsCurrentlyPlaying() { return s_currently_playing; }
+  static bool IsCurrentlyPlaying() { return s_currently_playing.get(); }
 
   // Whether we should output music.
   static void SetBgmEnabled(const int in) { s_bgm_enabled = in; }

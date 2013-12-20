@@ -185,9 +185,11 @@ struct sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
                                                          IntReference_T > > > {
   int operator()(
       RLMachine& machine,
-      vector<tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
+      vector<boost::tuple<IntReferenceIterator,
+                          IntReferenceIterator> > ranges) {
     int total = 0;
-    for (vector<tuple<IntReferenceIterator, IntReferenceIterator> >::iterator
+    for (std::vector<boost::tuple<IntReferenceIterator,
+             IntReferenceIterator> >::iterator
              it = ranges.begin(); it != ranges.end(); ++it) {
       IntReferenceIterator last = it->get<1>();
       ++last;

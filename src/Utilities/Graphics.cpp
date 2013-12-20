@@ -63,8 +63,8 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
       // a SEL vector that is a screenwide, short fade because we absolutely
       // can't fail here.
       Size screen = getScreenSize(gexe);
-      selEffect = list_of(0)(0)(screen.width())(screen.height())(0)(0)(1000)
-                  (000)(0)(0)(0)(0)(0)(0)(255)(0);
+      selEffect = { 0, 0, screen.width(), screen.height(), 0, 0, 1000,
+                    000, 0, 0, 0, 0, 0, 0, 255, 0 };
     }
   }
 

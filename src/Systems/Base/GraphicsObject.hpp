@@ -179,7 +179,7 @@ class GraphicsObject {
   void setOwnClip(const Rect& rec);
   const Rect& ownClipRect() const { return impl_->own_clip_; }
 
-  bool hasObjectData() const { return object_data_; }
+  bool hasObjectData() const { return object_data_.get(); }
 
   GraphicsObjectData& objectData();
   void setObjectData(GraphicsObjectData* obj);
