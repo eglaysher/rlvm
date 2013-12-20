@@ -139,7 +139,7 @@ int SDLTrueTypeFont::getGlyphSpacing() {
 }
 
 void SDLTrueTypeFont::setAntiAlias(bool anti_alias) {
-  anti_alias_ = anti_alias_;
+  anti_alias_ = anti_alias;
 }
 
 bool SDLTrueTypeFont::isAntiAlias() {
