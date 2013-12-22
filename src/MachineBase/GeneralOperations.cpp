@@ -38,8 +38,6 @@
 #include "libReallive/bytecode.h"
 #include "Utilities/Exception.hpp"
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 using namespace std;
 using namespace boost;
 using namespace libReallive;
@@ -96,7 +94,7 @@ MultiDispatch::~MultiDispatch() {
 
 void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
-    boost::ptr_vector<ExpressionPiece>& output) {
+    libReallive::ExpressionPiecesVector& output) {
   for (vector<string>::const_iterator it = input.begin(); it != input.end();
        ++it) {
     const char* src = it->c_str();
@@ -108,11 +106,11 @@ void MultiDispatch::parseParameters(
 void MultiDispatch::operator()(
     RLMachine& machine,
     const libReallive::CommandElement& ff) {
-  const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
+  const libReallive::ExpressionPiecesVector& parameter_pieces = ff.getParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
-    const ptr_vector<ExpressionPiece>& element =
-        dynamic_cast<const ComplexExpressionPiece&>(parameter_pieces[i]).
+    const libReallive::ExpressionPiecesVector& element =
+        dynamic_cast<const ComplexExpressionPiece&>(*parameter_pieces[i]).
         getContainedPieces();
 
     handler_->dispatch(machine, element);
@@ -164,7 +162,7 @@ UndefinedFunction::UndefinedFunction(
 }
 
 void UndefinedFunction::dispatch(RLMachine& machine,
-                                 const ExpressionPiecesVector& parameters) {
+                                 const libReallive::ExpressionPiecesVector& parameters) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
@@ -174,7 +172,7 @@ void UndefinedFunction::dispatchFunction(RLMachine& machine,
 }
 
 void UndefinedFunction::parseParameters(const std::vector<std::string>& input,
-                                        ExpressionPiecesVector& output) {
+                                        libReallive::ExpressionPiecesVector& output) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 

@@ -39,7 +39,6 @@
 
 using libReallive::IntegerConstant;
 using libReallive::ExpressionPiece;
-using boost::ptr_vector;
 
 void ensureIsParentObject(GraphicsObject& parent, int size) {
   if (parent.hasObjectData()) {
@@ -97,7 +96,7 @@ ObjRangeAdapter::ObjRangeAdapter(RLOperation* in)
 
 void ObjRangeAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
-  const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
+  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 2)
@@ -107,19 +106,20 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
   // what RLOperation.dispatchFunction() does; we manually call the
   // subclass's dispatch() so that we can get around the automated
   // incrementing of the instruction pointer.
-  int lowerRange = allParameters[0].integerValue(machine);
-  int upperRange = allParameters[1].integerValue(machine);
+  int lowerRange = allParameters[0]->integerValue(machine);
+  int upperRange = allParameters[1]->integerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
-    ptr_vector<ExpressionPiece> currentInstantiation;
-    currentInstantiation.push_back(new IntegerConstant(i));
+    libReallive::ExpressionPiecesVector currentInstantiation;
+    currentInstantiation.emplace_back(new IntegerConstant(i));
 
     // Copy everything after the first two items
-    ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
+    libReallive::ExpressionPiecesVector::const_iterator it =
+        allParameters.begin();
     std::advance(it, 2);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.push_back(it->clone());
+      currentInstantiation.emplace_back((*it)->clone());
     }
 
     // Now dispatch based on these parameters.
@@ -142,20 +142,21 @@ ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {
 
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
-  const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
+  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 1)
     throw rlvm::Exception("Less than one argument to an objLayered function!");
 
-  int objset = allParameters[0].integerValue(machine);
+  int objset = allParameters[0]->integerValue(machine);
 
   // Copy everything after the first item
-  ptr_vector<ExpressionPiece> currentInstantiation;
-  ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
+  libReallive::ExpressionPiecesVector currentInstantiation;
+  libReallive::ExpressionPiecesVector::const_iterator it =
+      allParameters.begin();
   ++it;
   for (; it != allParameters.end(); ++it) {
-    currentInstantiation.push_back(it->clone());
+    currentInstantiation.emplace_back((*it)->clone());
   }
 
   handler->setProperty(P_PARENTOBJ, objset);
@@ -178,7 +179,7 @@ ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in)
 
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
-  const ptr_vector<ExpressionPiece>& allParameters = ff.getParameters();
+  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 3) {
@@ -188,23 +189,24 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
   // This part is like ChildObjAdapter; the first parameter is an integer
   // that represents the parent object.
-  int objset = allParameters[0].integerValue(machine);
+  int objset = allParameters[0]->integerValue(machine);
 
   // This part is like ObjRangeAdapter; the second and third parameters are
   // integers that represent a range of child objects.
-  int lowerRange = allParameters[1].integerValue(machine);
-  int upperRange = allParameters[2].integerValue(machine);
+  int lowerRange = allParameters[1]->integerValue(machine);
+  int upperRange = allParameters[2]->integerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
-    ptr_vector<ExpressionPiece> currentInstantiation;
-    currentInstantiation.push_back(new IntegerConstant(i));
+    libReallive::ExpressionPiecesVector currentInstantiation;
+    currentInstantiation.emplace_back(new IntegerConstant(i));
 
     // Copy everything after the first three items
-    ptr_vector<ExpressionPiece>::const_iterator it = allParameters.begin();
+    libReallive::ExpressionPiecesVector::const_iterator it =
+        allParameters.begin();
     std::advance(it, 3);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.push_back(it->clone());
+      currentInstantiation.emplace_back((*it)->clone());
     }
 
     // Now dispatch based on these parameters.

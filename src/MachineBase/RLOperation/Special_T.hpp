@@ -26,8 +26,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
@@ -79,7 +77,7 @@ struct Special_T {
   template<typename TYPE>
   static typename TYPE::type getDataFor(
     RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    const libReallive::ExpressionPiecesVector& p,
     unsigned int& position,
     const libReallive::SpecialExpressionPiece& sp) {
     if (TYPE::is_complex) {
@@ -94,7 +92,7 @@ struct Special_T {
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
-                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     if (position >= p.size()) {
       std::ostringstream oss;
@@ -104,7 +102,7 @@ struct Special_T {
     }
 
     const libReallive::SpecialExpressionPiece& sp =
-      static_cast<const libReallive::SpecialExpressionPiece&>(p[position]);
+      static_cast<const libReallive::SpecialExpressionPiece&>(*p[position]);
 
     if (sp.getContainedPieces().size() == 0)
       throw rlvm::Exception("Empty special construct in Special_T");
@@ -154,10 +152,9 @@ struct Special_T {
   static void parseParameters(
       unsigned int& position,
       const std::vector<std::string>& input,
-      boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+      libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
-    std::unique_ptr<libReallive::ExpressionPiece> ep(libReallive::get_data(data));
-    output.push_back(ep.release());
+    output.emplace_back(libReallive::get_data(data));
     position++;
   }
 

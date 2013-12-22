@@ -56,7 +56,7 @@ struct Sel_select : public RLOp_SpecialCase {
   // RealLive expressions (because they are not).
   virtual void parseParameters(
     const std::vector<std::string>& input,
-    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+    libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -73,7 +73,7 @@ struct Sel_select_s : public RLOp_SpecialCase {
   // RealLive expressions (because they are not).
   virtual void parseParameters(
     const std::vector<std::string>& input,
-    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+    libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -102,7 +102,7 @@ struct Sel_select_w : public RLOp_SpecialCase {
   // RealLive expressions (because they are not).
   virtual void parseParameters(
     const std::vector<std::string>& input,
-    boost::ptr_vector<libReallive::ExpressionPiece>& output) {}
+    libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())

@@ -129,7 +129,7 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       // Take the binary stuff and try to get usefull, printable values.
       const char* start = it->c_str();
       try {
-        boost::scoped_ptr<libReallive::ExpressionPiece> piece(
+        std::unique_ptr<libReallive::ExpressionPiece> piece(
             libReallive::get_data(start));
         oss << piece->getDebugValue(machine);
       } catch (libReallive::Error& e) {

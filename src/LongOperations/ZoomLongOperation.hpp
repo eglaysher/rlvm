@@ -49,8 +49,6 @@ class ZoomLongOperation : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
  private:
-  RLMachine& machine_;
-
   boost::shared_ptr<Surface> orig_surface_;
   boost::shared_ptr<Surface> src_surface_;
 

@@ -32,8 +32,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/expression.h"
 
@@ -81,8 +79,6 @@ class RLModule;
 // attach to an RLMachine instance, please see @ref ModulesOpcodes
 // "Modules and Opcode Definitions".
 
-typedef boost::ptr_vector<libReallive::ExpressionPiece> ExpressionPiecesVector;
-
 // Each RLOperation can optionally carry some numeric properties.
 enum OperationProperties {
   PROP_NAME,
@@ -121,12 +117,13 @@ class RLOperation {
   // The dispatch function is implemented on a per type basis and is called by
   // the Module, after checking to make sure that the
   virtual void dispatch(
-    RLMachine& machine, const ExpressionPiecesVector& parameters) = 0;
+      RLMachine& machine,
+      const libReallive::ExpressionPiecesVector& parameters) = 0;
 
   // Parses the parameters in the CommandElement passed in into an
-  // output ptr_vector that contains parsed ExpressionPieces for each
+  // output vector that contains parsed ExpressionPieces for each
   virtual void parseParameters(
-    const std::vector<std::string>& input, ExpressionPiecesVector& output) = 0;
+    const std::vector<std::string>& input, libReallive::ExpressionPiecesVector& output) = 0;
 
   // The public interface used by the RLModule; how a method is dispatched.
   virtual void dispatchFunction(RLMachine& machine,
@@ -169,13 +166,13 @@ struct IntConstant_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const ExpressionPiecesVector& p,
+                      const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              ExpressionPiecesVector& output);
+                              libReallive::ExpressionPiecesVector& output);
 
   enum {
     is_complex = false
@@ -194,14 +191,14 @@ struct StrConstant_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const ExpressionPiecesVector& p,
+                      const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              ExpressionPiecesVector& output);
+                              libReallive::ExpressionPiecesVector& output);
 
   enum {
     is_complex = false
@@ -216,7 +213,7 @@ struct Empty_T {
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
-                      const ExpressionPiecesVector& p,
+                      const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     return empty_struct();
   }
@@ -224,7 +221,7 @@ struct Empty_T {
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              ExpressionPiecesVector& output) {
+                              libReallive::ExpressionPiecesVector& output) {
   }
 
   enum {
@@ -248,7 +245,7 @@ class RLOp_SpecialCase : public RLOperation {
  public:
   // Empty function defined simply to obey the interface
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void dispatchFunction(RLMachine& machine,
                                 const libReallive::CommandElement& f);
@@ -256,7 +253,7 @@ class RLOp_SpecialCase : public RLOperation {
   // Default implementation that simply parses everything as data;
   // doesn't work in the case of complex expressions.
   virtual void parseParameters(const std::vector<std::string>& input,
-                               ExpressionPiecesVector& output);
+                               libReallive::ExpressionPiecesVector& output);
 
   // Method that is overridden by all subclasses to implement the
   // function of this opcode
@@ -291,7 +288,7 @@ template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
 struct RLOp_NormalOperation : public RLOperation {
  public:
   void parseParameters(const std::vector<std::string>& input,
-                       ExpressionPiecesVector& output);
+                       libReallive::ExpressionPiecesVector& output);
 };
 
 // Partial specialization for RLOp_Normal::check_types for when
@@ -303,7 +300,7 @@ inline void RLOp_NormalOperation<
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
   Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
 parseParameters(const std::vector<std::string>& input,
-                ExpressionPiecesVector& output) {
+                libReallive::ExpressionPiecesVector& output) {
 }
 
 template<typename A, typename B, typename C,
@@ -318,7 +315,7 @@ template<typename A, typename B, typename C,
 void RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
                           Q, R, S, T, U, V, W, X, Y, Z>::parseParameters(
                               const std::vector<std::string>& input,
-                              ExpressionPiecesVector& output) {
+                              libReallive::ExpressionPiecesVector& output) {
   unsigned int position = 0;
   A::parseParameters(position, input, output);
   B::parseParameters(position, input, output);
@@ -350,7 +347,7 @@ void RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
 
 struct RLOp_Void_Void : public RLOp_NormalOperation<> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&) = 0;
 };
@@ -359,14 +356,14 @@ struct RLOp_Void_Void : public RLOp_NormalOperation<> {
 template<typename A>
 struct RLOp_Void_1 : public RLOp_NormalOperation<A> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&, typename A::type) = 0;
 };
 
 template<typename A>
 void RLOp_Void_1<A>::dispatch(RLMachine& machine,
-                              const ExpressionPiecesVector& parameters) {
+                              const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   operator()(machine, A::getData(machine, parameters, position));
 }
@@ -375,14 +372,14 @@ void RLOp_Void_1<A>::dispatch(RLMachine& machine,
 template<typename A, typename B>
 struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type) = 0;
 };
 
 template<typename A, typename B>
 void RLOp_Void_2<A, B>::dispatch(RLMachine& machine,
-                                 const ExpressionPiecesVector& parameters) {
+                                 const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -393,7 +390,7 @@ void RLOp_Void_2<A, B>::dispatch(RLMachine& machine,
 template<typename A, typename B, typename C>
 struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type,
                           typename C::type) = 0;
@@ -401,7 +398,7 @@ struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
 
 template<typename A, typename B, typename C>
 void RLOp_Void_3<A, B, C>::dispatch(RLMachine& machine,
-                                    const ExpressionPiecesVector& parameters) {
+                                    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -413,7 +410,7 @@ void RLOp_Void_3<A, B, C>::dispatch(RLMachine& machine,
 template<typename A, typename B, typename C, typename D>
 struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type,
                           typename C::type, typename D::type) = 0;
@@ -422,7 +419,7 @@ struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
 template<typename A, typename B, typename C, typename D>
 void RLOp_Void_4<A, B, C, D>::dispatch(
     RLMachine& machine,
-    const ExpressionPiecesVector& parameters) {
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -435,7 +432,7 @@ void RLOp_Void_4<A, B, C, D>::dispatch(
 template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(RLMachine&, typename A::type, typename B::type,
                           typename C::type, typename D::type,
@@ -445,7 +442,7 @@ struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
 template<typename A, typename B, typename C, typename D, typename E>
 void RLOp_Void_5<A, B, C, D, E>::dispatch(
     RLMachine& machine,
-    const ExpressionPiecesVector& parameters) {
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -459,7 +456,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F>
 struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(
       RLMachine&, typename A::type, typename B::type, typename C::type,
@@ -470,7 +467,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F>
 void RLOp_Void_6<A, B, C, D, E, F>::dispatch(
     RLMachine& machine,
-    const ExpressionPiecesVector& parameters) {
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -486,7 +483,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters);
+                        const libReallive::ExpressionPiecesVector& parameters);
 
   virtual void operator()(
       RLMachine&, typename A::type, typename B::type, typename C::type,
@@ -498,7 +495,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G>
 void RLOp_Void_7<A, B, C, D, E, F, G>::dispatch(
     RLMachine& machine,
-    const ExpressionPiecesVector& parameters) {
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -514,7 +511,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H>
 struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -537,7 +534,7 @@ template<typename A, typename B, typename C, typename D, typename E,
          typename F, typename G, typename H, typename I>
 struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -562,7 +559,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_10
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -589,7 +586,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_11
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -618,7 +615,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_12
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -648,7 +645,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_13
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -679,7 +676,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_14
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -711,7 +708,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Void_15
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -747,7 +744,7 @@ struct RLOp_Void_16
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -784,7 +781,7 @@ struct RLOp_Void_17
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -823,7 +820,7 @@ struct RLOp_Void_18
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -863,7 +860,7 @@ struct RLOp_Void_19
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -905,7 +902,7 @@ struct RLOp_Void_20
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -949,7 +946,7 @@ struct RLOp_Void_21
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -994,7 +991,7 @@ struct RLOp_Void_22
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U, V> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1040,7 +1037,7 @@ struct RLOp_Void_23
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U, V, W> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1088,7 +1085,7 @@ struct RLOp_Void_24
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U, V, W, X> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1137,7 +1134,7 @@ struct RLOp_Void_25
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U, V, W, X, Y> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1188,7 +1185,7 @@ struct RLOp_Void_26
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
                                   P, Q, R, S, T, U, V, W, X, Y, Z> {
   virtual void dispatch(RLMachine& machine,
-                        const ExpressionPiecesVector& parameters) {
+                        const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);

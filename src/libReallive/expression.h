@@ -37,8 +37,8 @@
 
 #include "MachineBase/reference.hpp"
 
-#include <boost/scoped_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
+#include <vector>
 
 class RLMachine;
 
@@ -52,15 +52,15 @@ size_t next_data(const char* src);
 
 // Parse expression functions
 class ExpressionPiece;
-ExpressionPiece* get_expr_token(const char*& src);
-ExpressionPiece* get_expr_term(const char*& src);
-ExpressionPiece* get_expr_arith(const char*& src);
-ExpressionPiece* get_expr_cond(const char*& src);
-ExpressionPiece* get_expr_bool(const char*& src);
-ExpressionPiece* get_expression(const char*& src);
-ExpressionPiece* get_assignment(const char*& src);
-ExpressionPiece* get_data(const char*& src);
-ExpressionPiece* get_complex_param(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expr_arith(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expr_cond(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expr_bool(const char*& src);
+std::unique_ptr<ExpressionPiece> get_expression(const char*& src);
+std::unique_ptr<ExpressionPiece> get_assignment(const char*& src);
+std::unique_ptr<ExpressionPiece> get_data(const char*& src);
+std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src);
 
 std::string evaluatePRINT(RLMachine& machine, const std::string& in);
 
@@ -140,14 +140,11 @@ public:
       RLMachine& machine) const;
   virtual StringReferenceIterator getStringReferenceIterator(
       RLMachine& machine) const;
-
-  virtual ExpressionPiece* clone() const = 0;
+  virtual std::unique_ptr<ExpressionPiece> clone() const = 0;
 };
 
-// Boost helper
-inline ExpressionPiece* new_clone( const ExpressionPiece& a ) {
-    return a.clone();
-}
+typedef std::vector<std::unique_ptr<libReallive::ExpressionPiece> >
+    ExpressionPiecesVector;
 
 // -----------------------------------------------------------------------
 

@@ -139,7 +139,7 @@ TEST(ExpressionTest, ParseWithNewlineInIt) {
 
   // This shouldn't throw.
   const char* start = parsable.c_str();
-  boost::scoped_ptr<libReallive::ExpressionPiece> piece(
+  std::unique_ptr<libReallive::ExpressionPiece> piece(
       libReallive::get_data(start));
 
   ASSERT_TRUE(piece->isSpecialParamater());

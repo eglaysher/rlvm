@@ -29,7 +29,7 @@
 struct RLOp_Store_Void : public RLOp_NormalOperation<> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     int store = operator()(machine);
     machine.setStoreRegister(store);
   }
@@ -41,7 +41,7 @@ template<typename A>
 struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     int store = operator()(machine, A::getData(machine, parameters, position));
     machine.setStoreRegister(store);
@@ -54,7 +54,7 @@ template<typename A, typename B>
 struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -69,7 +69,7 @@ template<typename A, typename B, typename C>
 struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -86,7 +86,7 @@ template<typename A, typename B, typename C, typename D>
 struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -105,7 +105,7 @@ template<typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -126,7 +126,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -148,7 +148,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -172,7 +172,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -197,7 +197,7 @@ template<typename A, typename B, typename C, typename D, typename E,
 struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -224,7 +224,7 @@ struct RLOp_Store_10
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -253,7 +253,7 @@ struct RLOp_Store_11
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -284,7 +284,7 @@ struct RLOp_Store_12
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -316,7 +316,7 @@ struct RLOp_Store_13
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -349,7 +349,7 @@ struct RLOp_Store_14
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -383,7 +383,7 @@ struct RLOp_Store_15
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -422,7 +422,7 @@ struct RLOp_Store_16
                                   P> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -462,7 +462,7 @@ struct RLOp_Store_17
                                   P, Q> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -503,7 +503,7 @@ struct RLOp_Store_18
                                   P, Q, R> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -545,7 +545,7 @@ struct RLOp_Store_19
                                   P, Q, R, S> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -589,7 +589,7 @@ struct RLOp_Store_20
                                   P, Q, R, S, T> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -635,7 +635,7 @@ struct RLOp_Store_21
                                   P, Q, R, S, T, U> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -682,7 +682,7 @@ struct RLOp_Store_22
                                   P, Q, R, S, T, U, V> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -730,7 +730,7 @@ struct RLOp_Store_23
                                   P, Q, R, S, T, U, V, W> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -780,7 +780,7 @@ struct RLOp_Store_24
                                   P, Q, R, S, T, U, V, W, X> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -831,7 +831,7 @@ struct RLOp_Store_25
                                   P, Q, R, S, T, U, V, W, X, Y> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -884,7 +884,7 @@ struct RLOp_Store_26
                                   P, Q, R, S, T, U, V, W, X, Y, Z> {
   void dispatch(
       RLMachine& machine,
-      const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+      const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);

@@ -43,7 +43,7 @@ ZoomLongOperation::ZoomLongOperation(
   const boost::shared_ptr<Surface>& srcSurface,
   const Rect& frect, const Rect& trect, const Rect& drect,
   const int time)
-  : machine_(machine), orig_surface_(origSurface),
+  : orig_surface_(origSurface),
     src_surface_(srcSurface),
     frect_(frect), trect_(trect), drect_(drect), duration_(time),
     start_time_(machine.system().event().getTicks()) {

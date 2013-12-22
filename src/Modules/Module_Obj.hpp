@@ -28,9 +28,9 @@
 #ifndef SRC_MODULES_MODULE_OBJ_HPP_
 #define SRC_MODULES_MODULE_OBJ_HPP_
 
-// Reusable function objects for the GraphicsObject system.
+#include <boost/scoped_ptr.hpp>
 
-#include <boost/ptr_container/ptr_vector.hpp>
+// Reusable function objects for the GraphicsObject system.
 
 #include "MachineBase/RLOperation.hpp"
 

@@ -103,12 +103,13 @@ void RLOperation::dispatchFunction(RLMachine& machine,
                                    const CommandElement& ff) {
   if (!ff.areParametersParsed()) {
     vector<string> unparsed = ff.getUnparsedParameters();
-    ptr_vector<ExpressionPiece> output;
+    vector<unique_ptr<ExpressionPiece>> output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
 
-  const ptr_vector<ExpressionPiece>& parameter_pieces = ff.getParameters();
+  const vector<unique_ptr<ExpressionPiece>>& parameter_pieces =
+      ff.getParameters();
 
   // Now dispatch based on these parameters.
   dispatch(machine, parameter_pieces);
@@ -127,16 +128,16 @@ void RLOperation::throw_unimplemented() {
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(
     RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return p[position++].integerValue(machine);
+  return p[position++]->integerValue(machine);
 }
 
 // Was working to change the verify_type to parse_parameters.
 void IntConstant_T::parseParameters(
   unsigned int& position,
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -144,22 +145,22 @@ void IntConstant_T::parseParameters(
     throw rlvm::Exception("IntConstant_T parse err.");
   }
 
-  output.push_back(ep.release());
+  output.push_back(std::move(ep));
   position++;
 }
 
 IntReference_T::type IntReference_T::getData(
     RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(p[position++]).
+  return static_cast<const libReallive::MemoryReference&>(*p[position++]).
     getIntegerReferenceIterator(machine);
 }
 
 void IntReference_T::parseParameters(
   unsigned int& position,
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -167,13 +168,13 @@ void IntReference_T::parseParameters(
     throw rlvm::Exception("IntReference_T parse err.");
   }
 
-  output.push_back(ep.release());
+  output.push_back(std::move(ep));
   position++;
 }
 
 StrConstant_T::type StrConstant_T::getData(
     RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
   // When I was trying to get P_BRIDE running in rlvm, I noticed that when
   // loading a game, I would often crash with invalid iterators in the LRUCache
@@ -210,14 +211,14 @@ StrConstant_T::type StrConstant_T::getData(
   // So to fix this, we break the COW semantics here by forcing a copy. I'd
   // prefer to do this in RLMachine or Memory, but I can't because they return
   // references.
-  string tmp = p[position++].getStringValue(machine);
+  string tmp = p[position++]->getStringValue(machine);
   return string(tmp.data(), tmp.size());
 }
 
 void StrConstant_T::parseParameters(
   unsigned int& position,
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -225,22 +226,22 @@ void StrConstant_T::parseParameters(
     throw rlvm::Exception("StrConstant_T parse err.");
   }
 
-  output.push_back(ep.release());
+  output.push_back(std::move(ep));
   position++;
 }
 
 StrReference_T::type StrReference_T::getData(
     RLMachine& machine,
-    const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(p[position++]).
+  return static_cast<const libReallive::MemoryReference&>(*p[position++]).
     getStringReferenceIterator(machine);
 }
 
 void StrReference_T::parseParameters(
   unsigned int& position,
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -248,20 +249,20 @@ void StrReference_T::parseParameters(
     throw rlvm::Exception("StrReference_T parse err.");
   }
 
-  output.push_back(ep.release());
+  output.push_back(std::move(ep));
   position++;
 }
 
 void RLOp_SpecialCase::dispatch(
   RLMachine& machine,
-  const boost::ptr_vector<libReallive::ExpressionPiece>& parameters) {
+  const libReallive::ExpressionPiecesVector& parameters) {
   throw rlvm::Exception(
       "Tried to call empty RLOp_SpecialCase::dispatch().");
 }
 
 void RLOp_SpecialCase::parseParameters(
   const std::vector<std::string>& input,
-  boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+  libReallive::ExpressionPiecesVector& output) {
   for (vector<string>::const_iterator it = input.begin(); it != input.end();
       ++it) {
     const char* src = it->c_str();
@@ -274,7 +275,7 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
   // First try to run the default parse_parameters if we can.
   if (!ff.areParametersParsed()) {
     vector<string> unparsed = ff.getUnparsedParameters();
-    ptr_vector<ExpressionPiece> output;
+    libReallive::ExpressionPiecesVector output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
@@ -284,6 +285,6 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
 }
 
 void RLOp_Void_Void::dispatch(RLMachine& machine,
-                              const ExpressionPiecesVector& parameters) {
+                              const libReallive::ExpressionPiecesVector& parameters) {
   operator()(machine);
 }

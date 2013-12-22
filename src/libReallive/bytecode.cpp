@@ -37,7 +37,6 @@
 #include <exception>
 #include <utility>
 #include <sstream>
-#include <boost/scoped_ptr.hpp>
 
 #include "bytecode.h"
 #include "scenario.h"
@@ -86,7 +85,7 @@ void PrintParameterString(std::ostream& oss,
     // Take the binary stuff and try to get usefull, printable values.
     const char* start = it->c_str();
     try {
-      boost::scoped_ptr<ExpressionPiece> piece(get_data(start));
+      std::unique_ptr<ExpressionPiece> piece(get_data(start));
       oss << piece->getDebugString();
     } catch (libReallive::Error& e) {
       // Any error throw here is a parse error.
@@ -223,10 +222,6 @@ const size_t CommaElement::length() const {
   return 1;
 }
 
-CommaElement* CommaElement::clone() const {
-  return new CommaElement;
-}
-
 // -----------------------------------------------------------------------
 // MetaElement
 // -----------------------------------------------------------------------
@@ -284,10 +279,6 @@ void MetaElement::runOnMachine(RLMachine& machine) const {
 
   machine.advanceInstructionPointer();
 }
-
-// -----------------------------------------------------------------------
-
-MetaElement* MetaElement::clone() const { return new MetaElement(*this); }
 
 // -----------------------------------------------------------------------
 // TextoutElement
@@ -363,10 +354,6 @@ void TextoutElement::runOnMachine(RLMachine& machine) const {
 }
 
 // -----------------------------------------------------------------------
-
-TextoutElement* TextoutElement::clone() const { return new TextoutElement(*this); }
-
-// -----------------------------------------------------------------------
 // ExpressionElement
 // -----------------------------------------------------------------------
 
@@ -406,20 +393,14 @@ const size_t ExpressionElement::length() const {
 // -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(NULL) {
-}
-
-// -----------------------------------------------------------------------
-
-ExpressionElement* ExpressionElement::clone() const {
-  return new ExpressionElement(*this);
+    : parsed_expression_(nullptr) {
 }
 
 // -----------------------------------------------------------------------
 
 int ExpressionElement::valueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
-  boost::scoped_ptr<ExpressionPiece> e(get_expression(location));
+  std::unique_ptr<ExpressionPiece> e(get_expression(location));
   return e->integerValue(machine);
 }
 
@@ -428,7 +409,7 @@ int ExpressionElement::valueOnly(RLMachine& machine) const {
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
   if (parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
-    parsed_expression_.reset(get_assignment(location));
+    parsed_expression_ = get_assignment(location);
   }
 
   return *parsed_expression_;
@@ -485,21 +466,15 @@ bool CommandElement::areParametersParsed() const {
 
 // -----------------------------------------------------------------------
 
-/// This function shows...some deeper truth about mutability and
-/// const-ness in C++, but I for one can't figure it out.
 void CommandElement::setParsedParameters(
-  boost::ptr_vector<libReallive::ExpressionPiece>& parsedParameters) const {
+  ExpressionPiecesVector& parsedParameters) const {
   parsed_parameters_.clear();
-  parsed_parameters_.transfer( parsed_parameters_.end(),
-                               parsedParameters.begin(),
-                               parsedParameters.end(),
-                               parsedParameters);
+  parsed_parameters_ = std::move(parsedParameters);
 }
 
 // -----------------------------------------------------------------------
 
-const boost::ptr_vector<libReallive::ExpressionPiece>&
-CommandElement::getParameters() const {
+const ExpressionPiecesVector& CommandElement::getParameters() const {
   return parsed_parameters_;
 }
 
@@ -650,10 +625,6 @@ string SelectElement::get_param(int i) const {
 }
 
 // -----------------------------------------------------------------------
-
-SelectElement* SelectElement::clone() const { return new SelectElement(*this); }
-
-// -----------------------------------------------------------------------
 // FunctionElement
 // -----------------------------------------------------------------------
 
@@ -691,13 +662,12 @@ std::string FunctionElement::serializableData(RLMachine& machine) const {
     for (std::vector<string>::const_iterator it = params.begin();
          it != params.end(); ++it) {
       const char* data = it->c_str();
-      boost::scoped_ptr<ExpressionPiece> expression(get_data(data));
+      std::unique_ptr<ExpressionPiece> expression(get_data(data));
       rv.append(expression->serializedValue(machine));
     }
     rv.push_back(')');
   }
   return rv;
-
 }
 
 // -----------------------------------------------------------------------
@@ -717,10 +687,6 @@ const size_t FunctionElement::param_count() const {
 }
 
 string FunctionElement::get_param(int i) const { return params[i]; }
-
-// -----------------------------------------------------------------------
-
-FunctionElement* FunctionElement::clone() const { return new FunctionElement(*this); }
 
 // -----------------------------------------------------------------------
 // VoidFunctionElement
@@ -752,10 +718,6 @@ std::string VoidFunctionElement::serializableData(RLMachine& machine) const {
 const size_t VoidFunctionElement::param_count() const { return 0; }
 string VoidFunctionElement::get_param(int i) const { return std::string(); }
 
-VoidFunctionElement* VoidFunctionElement::clone() const {
-  return new VoidFunctionElement(*this);
-}
-
 // -----------------------------------------------------------------------
 // SingleArgFunctionElement
 // -----------------------------------------------------------------------
@@ -785,7 +747,7 @@ std::string SingleArgFunctionElement::serializableData(
     rv.push_back(command[i]);
   rv.push_back('(');
   const char* data = arg_.c_str();
-  boost::scoped_ptr<ExpressionPiece> expression(get_data(data));
+  std::unique_ptr<ExpressionPiece> expression(get_data(data));
   rv.append(expression->serializedValue(machine));
   rv.push_back(')');
   return rv;
@@ -796,10 +758,6 @@ std::string SingleArgFunctionElement::serializableData(
 const size_t SingleArgFunctionElement::param_count() const { return 1; }
 string SingleArgFunctionElement::get_param(int i) const {
   return i == 0 ? arg_ : std::string();
-}
-
-SingleArgFunctionElement* SingleArgFunctionElement::clone() const {
-  return new SingleArgFunctionElement(*this);
 }
 
 // -----------------------------------------------------------------------
@@ -844,8 +802,6 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata)
 const ElementType GotoElement::type() const { return Goto; }
 
 // -----------------------------------------------------------------------
-
-GotoElement* GotoElement::clone() const { return new GotoElement(*this); }
 
 const size_t GotoElement::param_count() const {
   return 0;
@@ -900,8 +856,6 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
 const ElementType GotoIfElement::type() const { return Goto; }
 
 // -----------------------------------------------------------------------
-
-GotoIfElement* GotoIfElement::clone() const { return new GotoIfElement(*this); }
 
 const size_t GotoIfElement::param_count() const {
   return repr.size() == 8 ? 0 : 1;
@@ -971,10 +925,6 @@ const ElementType GotoCaseElement::type() const { return GotoCase; }
 
 // -----------------------------------------------------------------------
 
-GotoCaseElement* GotoCaseElement::clone() const { return new GotoCaseElement(*this); }
-
-// -----------------------------------------------------------------------
-
 const size_t
 GotoCaseElement::length() const {
   size_t rv = repr.size() + 2;
@@ -1016,10 +966,6 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
 // -----------------------------------------------------------------------
 
 const ElementType GotoOnElement::type() const { return GotoOn; }
-
-// -----------------------------------------------------------------------
-
-GotoOnElement* GotoOnElement::clone() const { return new GotoOnElement(*this); }
 
 // -----------------------------------------------------------------------
 
@@ -1080,10 +1026,6 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 // -----------------------------------------------------------------------
 
 const ElementType GosubWithElement::type() const { return Goto; }
-
-// -----------------------------------------------------------------------
-
-GosubWithElement* GosubWithElement::clone() const { return new GosubWithElement(*this); }
 
 // -----------------------------------------------------------------------
 

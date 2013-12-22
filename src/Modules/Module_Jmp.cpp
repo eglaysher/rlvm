@@ -157,9 +157,9 @@ struct Jmp_goto : public RLOp_SpecialCase {
 // condition is non-zero
 struct goto_if : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
-    if (conditions.at(0).integerValue(machine)) {
+    if (conditions[0]->integerValue(machine)) {
       machine.gotoLocation(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
@@ -170,9 +170,9 @@ struct goto_if : public RLOp_SpecialCase {
 // Implements op<0:Jmp:00002, 0>, fun goto_unless (<'condition').
 struct goto_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
-    if (!conditions.at(0).integerValue(machine)) {
+    if (!conditions[0]->integerValue(machine)) {
       machine.gotoLocation(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
@@ -252,9 +252,9 @@ struct gosub_if : public RLOp_SpecialCase {
 // @label in the current scenario, if the passed in condition is false.
 struct gosub_unless : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
-    if (!conditions.at(0).integerValue(machine)) {
+    if (!conditions[0]->integerValue(machine)) {
       machine.gosub(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
@@ -270,8 +270,8 @@ struct gosub_unless : public RLOp_SpecialCase {
 // instead.
 struct gosub_on : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    const ptr_vector<ExpressionPiece>& conditions = gotoElement.getParameters();
-    int value = conditions.at(0).integerValue(machine);
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
+    int value = conditions[0]->integerValue(machine);
 
     if (value >= 0 && value < int(gotoElement.pointers_count()))
       machine.gosub(gotoElement.get_pointer(value));
@@ -378,8 +378,7 @@ struct gosub_with : public RLOp_SpecialCase {
     typedef Argc_T<Special_T<DefaultSpecialMapper,
                              IntConstant_T, StrConstant_T> > ParamFormat;
 
-    const ptr_vector<ExpressionPiece>& parameterPieces =
-        gotoElement.getParameters();
+    const ExpressionPiecesVector& parameterPieces = gotoElement.getParameters();
     unsigned int position = 0;
     ParamFormat::type data =
         ParamFormat::getData(machine, parameterPieces, position);

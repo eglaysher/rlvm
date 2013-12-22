@@ -180,19 +180,19 @@ size_t next_data(const char* src) {
 // dissassembler.ml in RLDev, so really, while I coded this, Haeleth
 // really gets all the credit.
 
-ExpressionPiece* get_expr_token(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
   if (src[0] == 0xff) {
     src++;
     int value = read_i32(src);
     src += 4;
-    return new IntegerConstant(value);
+    return std::unique_ptr<ExpressionPiece>(new IntegerConstant(value));
   } else if (src[0] == 0xc8) {
     src++;
-    return new StoreRegisterExpressionPiece();
+    return std::unique_ptr<ExpressionPiece>(new StoreRegisterExpressionPiece());
   } else if ((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
     int type = src[0];
     src += 2;
-    ExpressionPiece* location = get_expression(src);
+    std::unique_ptr<ExpressionPiece> location = get_expression(src);
 
     if (src[0] != ']') {
       ostringstream ss;
@@ -202,7 +202,8 @@ ExpressionPiece* get_expr_token(const char*& src) {
     }
     src++;
 
-    return new MemoryReference(type, location);
+    return std::unique_ptr<ExpressionPiece>(
+        new MemoryReference(type, std::move(location)));
   } else if (src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
@@ -213,7 +214,7 @@ ExpressionPiece* get_expr_token(const char*& src) {
   }
 }
 
-ExpressionPiece* get_expr_term(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src) {
   if (src[0] == '$') {
     src++;
     return get_expr_token(src);
@@ -223,10 +224,11 @@ ExpressionPiece* get_expr_term(const char*& src) {
   } else if (src[0] == '\\' && src[1] == 0x01) {
     // Uniary -
     src += 2;
-    return new UniaryExpressionOperator(0x01, get_expr_term(src));
+    return std::unique_ptr<ExpressionPiece>(
+        new UniaryExpressionOperator(0x01, get_expr_term(src)));
   } else if (src[0] == '(') {
     src++;
-    ExpressionPiece* p = get_expr_bool(src);
+    std::unique_ptr<ExpressionPiece> p = get_expr_bool(src);
     if (src[0] != ')') {
       ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
@@ -245,106 +247,118 @@ ExpressionPiece* get_expr_term(const char*& src) {
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop_hi_prec(const char*& src,
-                                                    ExpressionPiece* tok) {
+static std::unique_ptr<ExpressionPiece>
+get_expr_arith_loop_hi_prec(const char*& src,
+                            std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
     char op = src[1];
     // Advance past this operator
     src += 2;
-    ExpressionPiece* rhs = get_expr_term(src);
-    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
-    return get_expr_arith_loop_hi_prec(src, newPiece);
+    std::unique_ptr<ExpressionPiece> newPiece(
+        new BinaryExpressionOperator(op, std::move(tok), get_expr_term(src)));
+    return get_expr_arith_loop_hi_prec(src, std::move(newPiece));
   } else {
     // We don't consume anything and just return our input token.
     return tok;
   }
 }
 
-static ExpressionPiece* get_expr_arith_loop(const char*& src,
-                                            ExpressionPiece* tok) {
+static std::unique_ptr<ExpressionPiece> get_expr_arith_loop(
+    const char*& src,
+    std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
     char op = src[1];
     src += 2;
-    ExpressionPiece* other = get_expr_term(src);
-    ExpressionPiece* rhs = get_expr_arith_loop_hi_prec(src, other);
-    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
-    return get_expr_arith_loop(src, newPiece);
+    std::unique_ptr<ExpressionPiece> other = get_expr_term(src);
+    std::unique_ptr<ExpressionPiece> rhs =
+        get_expr_arith_loop_hi_prec(src, std::move(other));
+    std::unique_ptr<ExpressionPiece> newPiece(
+        new BinaryExpressionOperator(op, std::move(tok), std::move(rhs)));
+    return get_expr_arith_loop(src, std::move(newPiece));
   } else {
     return tok;
   }
 }
 
-ExpressionPiece* get_expr_arith(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expr_arith(const char*& src) {
   return get_expr_arith_loop(src, get_expr_arith_loop_hi_prec(
       src, get_expr_term(src)));
 }
 
-static ExpressionPiece* get_expr_cond_loop(const char*& src,
-                                           ExpressionPiece* tok) {
+static std::unique_ptr<ExpressionPiece> get_expr_cond_loop(
+    const char*& src,
+    std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
     char op = src[1];
     src += 2;
-    ExpressionPiece* rhs = get_expr_arith(src);
-    ExpressionPiece* newPiece = new BinaryExpressionOperator(op, tok, rhs);
-    return get_expr_cond_loop(src, newPiece);
+    std::unique_ptr<ExpressionPiece> rhs = get_expr_arith(src);
+    std::unique_ptr<ExpressionPiece> newPiece(
+        new BinaryExpressionOperator(op, std::move(tok), std::move(rhs)));
+    return get_expr_cond_loop(src, std::move(newPiece));
   } else {
     return tok;
   }
 }
 
-ExpressionPiece* get_expr_cond(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expr_cond(const char*& src) {
   return get_expr_cond_loop(src, get_expr_arith(src));
 }
 
-static ExpressionPiece* get_expr_bool_loop_and(const char*& src,
-                                               ExpressionPiece* tok) {
+static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_and(
+    const char*& src,
+    std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] == '<') {
     src += 2;
-    ExpressionPiece* rhs = get_expr_cond(src);
+    std::unique_ptr<ExpressionPiece> rhs = get_expr_cond(src);
     return get_expr_bool_loop_and(
-        src, new BinaryExpressionOperator(0x3c, tok, rhs));
+        src, std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
+            0x3c, std::move(tok), std::move(rhs))));
   } else {
     return tok;
   }
 }
 
-static ExpressionPiece* get_expr_bool_loop_or(const char*& src,
-                                              ExpressionPiece* tok) {
+static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_or(
+    const char*& src,
+    std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] == '=') {
     src += 2;
-    ExpressionPiece* innerTerm = get_expr_cond(src);
-    ExpressionPiece* rhs = get_expr_bool_loop_and(src, innerTerm);
+    std::unique_ptr<ExpressionPiece> innerTerm = get_expr_cond(src);
+    std::unique_ptr<ExpressionPiece> rhs =
+        get_expr_bool_loop_and(src, std::move(innerTerm));
     return get_expr_bool_loop_or(
-        src, new BinaryExpressionOperator(0x3d, tok, rhs));
+        src, std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
+            0x3d, std::move(tok), std::move(rhs))));
   } else {
     return tok;
   }
 }
 
-ExpressionPiece* get_expr_bool(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expr_bool(const char*& src) {
   return get_expr_bool_loop_or(
       src, get_expr_bool_loop_and(src, get_expr_cond(src)));
 }
 
-ExpressionPiece* get_expression(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_expression(const char*& src) {
   return get_expr_bool(src);
 }
 
 // Parses an expression of the form [dest] = [source expression];
-ExpressionPiece* get_assignment(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_assignment(const char*& src) {
   unique_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
   src += 2;
   unique_ptr<ExpressionPiece> etok(get_expression(src));
   if (op >= 0x14 && op <= 0x24) {
-    return new AssignmentExpressionOperator(op, itok.release(), etok.release());
+    return unique_ptr<ExpressionPiece>(
+        new AssignmentExpressionOperator(op, std::move(itok), std::move(etok)));
   } else {
     throw Error("Undefined assignment in get_assignment");
   }
 }
 
 // Parses a string in the parameter list.
-static ExpressionPiece* get_string(const char*& src) {
+static std::unique_ptr<ExpressionPiece> get_string(const char*& src) {
   // Get the length of this string in the bytecode:
   size_t length = next_string(src);
 
@@ -358,14 +372,14 @@ static ExpressionPiece* get_string(const char*& src) {
   // Increment the source by that many characters
   src += length;
 
-  return new StringConstant(s);
+  return std::unique_ptr<ExpressionPiece>(new StringConstant(s));
 }
 
 // Parses a parameter in the parameter list. This is the only method
 // of all the get_*(const char*& src) functions that can parse
 // strings. It also deals with things like special and complex
 // parameters.
-ExpressionPiece* get_data(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
   if (*src == ',') {
     ++src;
     return get_data(src);
@@ -399,7 +413,7 @@ ExpressionPiece* get_data(const char*& src) {
       if (*end != '(') {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
-        return cep.release();
+        return unique_ptr<ExpressionPiece>(cep.release());
       } else end++;
     } else
       cep.reset(new ComplexExpressionPiece());
@@ -408,12 +422,12 @@ ExpressionPiece* get_data(const char*& src) {
       cep->addContainedPiece(get_data(end));
     }
 
-    return cep.release();
+    return unique_ptr<ExpressionPiece>(cep.release());
   } else
     return get_expression(src);
 }
 
-ExpressionPiece* get_complex_param(const char*& src) {
+std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src) {
   if (*src == ',') {
     ++src;
     return get_data(src);
@@ -425,7 +439,7 @@ ExpressionPiece* get_complex_param(const char*& src) {
       cep->addContainedPiece(get_data(src));
     }
 
-    return cep.release();
+    return unique_ptr<ExpressionPiece>(cep.release());
   } else {
     return get_expression(src);
   }
@@ -579,8 +593,8 @@ IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
   return IntReferenceIterator(machine.storeRegisterAddress());
 }
 
-ExpressionPiece* StoreRegisterExpressionPiece::clone() const {
-  return new StoreRegisterExpressionPiece;
+unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
+  return unique_ptr<ExpressionPiece>(new StoreRegisterExpressionPiece);
 }
 
 // -----------------------------------------------------------------------
@@ -608,8 +622,8 @@ std::string IntegerConstant::getDebugString() const {
   return boost::lexical_cast<std::string>(constant);
 }
 
-ExpressionPiece* IntegerConstant::clone() const {
-  return new IntegerConstant(constant);
+std::unique_ptr<ExpressionPiece> IntegerConstant::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new IntegerConstant(constant));
 }
 
 // -----------------------------------------------------------------------
@@ -638,15 +652,16 @@ std::string StringConstant::getDebugString() const {
   return string("\"") + constant + string("\"");
 }
 
-ExpressionPiece* StringConstant::clone() const {
-  return new StringConstant(constant);
+std::unique_ptr<ExpressionPiece> StringConstant::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new StringConstant(constant));
 }
 
 // -----------------------------------------------------------------------
 
 // MemoryReference
-MemoryReference::MemoryReference(int inType, ExpressionPiece* target)
-    : type(inType), location(target) {
+MemoryReference::MemoryReference(int inType,
+                                 std::unique_ptr<ExpressionPiece> target)
+    : type(inType), location(std::move(target)) {
 }
 
 MemoryReference::~MemoryReference() {
@@ -746,15 +761,17 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(
                                  location->integerValue(machine));
 }
 
-ExpressionPiece* MemoryReference::clone() const {
-  return new MemoryReference(type, location->clone());
+std::unique_ptr<ExpressionPiece> MemoryReference::clone() const {
+  return std::unique_ptr<ExpressionPiece>(
+      new MemoryReference(type, location->clone()));
 }
 
 // ----------------------------------------------------------------------
 
-UniaryExpressionOperator::UniaryExpressionOperator(char inOperation,
-                                                   ExpressionPiece* inOperand)
-    : operand(inOperand), operation(inOperation) {
+UniaryExpressionOperator::UniaryExpressionOperator(
+    char inOperation,
+    std::unique_ptr<ExpressionPiece> inOperand)
+    : operand(std::move(inOperand)), operation(inOperation) {
 }
 
 UniaryExpressionOperator::~UniaryExpressionOperator() {
@@ -796,16 +813,21 @@ std::string UniaryExpressionOperator::getDebugString() const {
   return str.str();
 }
 
-ExpressionPiece* UniaryExpressionOperator::clone() const {
-  return new UniaryExpressionOperator(operation, operand->clone());
+std::unique_ptr<ExpressionPiece> UniaryExpressionOperator::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new UniaryExpressionOperator(
+      operation,
+      operand->clone()));
 }
 
 // ----------------------------------------------------------------------
 
-BinaryExpressionOperator::BinaryExpressionOperator(char inOperation,
-                                                   ExpressionPiece* lhs,
-                                                   ExpressionPiece* rhs)
-    : operation(inOperation), leftOperand(lhs), rightOperand(rhs) {
+BinaryExpressionOperator::BinaryExpressionOperator(
+    char inOperation,
+    unique_ptr<ExpressionPiece> lhs,
+    unique_ptr<ExpressionPiece> rhs)
+    : operation(inOperation),
+      leftOperand(std::move(lhs)),
+      rightOperand(std::move(rhs)) {
 }
 
 BinaryExpressionOperator::~BinaryExpressionOperator() {
@@ -964,17 +986,20 @@ std::string BinaryExpressionOperator::getDebugString() const {
   return str.str();
 }
 
-ExpressionPiece* BinaryExpressionOperator::clone() const {
-  return new BinaryExpressionOperator(operation, leftOperand->clone(),
-                                      rightOperand->clone());
+std::unique_ptr<ExpressionPiece> BinaryExpressionOperator::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
+      operation,
+      leftOperand->clone(),
+      rightOperand->clone()));
 }
 
 // ----------------------------------------------------------------------
 
-AssignmentExpressionOperator::AssignmentExpressionOperator(char op,
-                                                           ExpressionPiece* lhs,
-                                                           ExpressionPiece* rhs)
-    : BinaryExpressionOperator(op, lhs, rhs) {
+AssignmentExpressionOperator::AssignmentExpressionOperator(
+    char op,
+    unique_ptr<ExpressionPiece> lhs,
+    unique_ptr<ExpressionPiece> rhs)
+    : BinaryExpressionOperator(op, std::move(lhs), std::move(rhs)) {
 }
 
 AssignmentExpressionOperator::~AssignmentExpressionOperator() {
@@ -1002,9 +1027,11 @@ std::string AssignmentExpressionOperator::getDebugValue(
   return "<assignment>";
 }
 
-ExpressionPiece* AssignmentExpressionOperator::clone() const {
-  return new AssignmentExpressionOperator(operation, leftOperand->clone(),
-                                          rightOperand->clone());
+unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
+  return unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
+      operation,
+      leftOperand->clone(),
+      rightOperand->clone()));
 }
 
 // -----------------------------------------------------------------------
@@ -1013,17 +1040,18 @@ bool ComplexExpressionPiece::isComplexParameter() const {
   return true;
 }
 
-void ComplexExpressionPiece::addContainedPiece(ExpressionPiece* piece) {
-  containedPieces.push_back(piece);
+void ComplexExpressionPiece::addContainedPiece(
+    std::unique_ptr<ExpressionPiece> piece) {
+  contained_pieces_.push_back(std::move(piece));
 }
 
 std::string ComplexExpressionPiece::serializedValue(
     RLMachine& machine) const {
   string s("(");
-  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
-           containedPieces.begin(); it != containedPieces.end(); ++it) {
+  for (ExpressionPiecesVector::const_iterator it =
+           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
     s += "(";
-    s += it->serializedValue(machine);
+    s += (*it)->serializedValue(machine);
     s += ")";
   }
   s += ")";
@@ -1036,20 +1064,21 @@ std::string ComplexExpressionPiece::getDebugValue(RLMachine& machine) const {
 
 std::string ComplexExpressionPiece::getDebugString() const {
   string s("(");
-  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
-           containedPieces.begin(); it != containedPieces.end(); ++it) {
+  for (ExpressionPiecesVector::const_iterator it =
+           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
     s += "(";
-    s += it->getDebugString();
+    s += (*it)->getDebugString();
     s += ")";
   }
   s += ")";
   return s;
 }
 
-ExpressionPiece* ComplexExpressionPiece::clone() const {
+unique_ptr<ExpressionPiece> ComplexExpressionPiece::clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
-  cep->containedPieces = containedPieces.clone();
-  return cep;
+  for (auto const& piece : contained_pieces_)
+    cep->contained_pieces_.push_back(piece->clone());
+  return unique_ptr<ExpressionPiece>(cep);
 }
 
 // -----------------------------------------------------------------------
@@ -1066,13 +1095,13 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
   string s("a");
   s += char(overloadTag);
 
-  if (containedPieces.size() > 1)
+  if (contained_pieces_.size() > 1)
     s.append("(");
-  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
-           containedPieces.begin(); it != containedPieces.end(); ++it) {
-    s += it->serializedValue(machine);
+  for (ExpressionPiecesVector::const_iterator it =
+           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
+    s += (*it)->serializedValue(machine);
   }
-  if (containedPieces.size() > 1)
+  if (contained_pieces_.size() > 1)
     s.append(")");
 
   return s;
@@ -1085,15 +1114,15 @@ std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
 
   bool first = true;
 
-  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
-           containedPieces.begin(); it != containedPieces.end(); ++it) {
+  for (ExpressionPiecesVector::const_iterator it =
+           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
     if (!first) {
       oss << ", ";
     } else {
       first = false;
     }
 
-    oss << it->getDebugValue(machine);
+    oss << (*it)->getDebugValue(machine);
   }
   oss << "}";
 
@@ -1106,25 +1135,26 @@ std::string SpecialExpressionPiece::getDebugString() const {
   oss << int(overloadTag) << ":{";
 
   bool first = true;
-  for (boost::ptr_vector<ExpressionPiece>::const_iterator it =
-           containedPieces.begin(); it != containedPieces.end(); ++it) {
+  for (ExpressionPiecesVector::const_iterator it =
+           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
     if (!first) {
       oss << ", ";
     } else {
       first = false;
     }
 
-    oss << it->getDebugString();
+    oss << (*it)->getDebugString();
   }
   oss << "}";
 
   return oss.str();
 }
 
-ExpressionPiece* SpecialExpressionPiece::clone() const {
+unique_ptr<ExpressionPiece> SpecialExpressionPiece::clone() const {
   SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
-  cep->containedPieces = containedPieces.clone();
-  return cep;
+  for (auto const& piece : contained_pieces_)
+    cep->contained_pieces_.push_back(piece->clone());
+  return unique_ptr<ExpressionPiece>(cep);
 }
 
 }  // namespace libReallive

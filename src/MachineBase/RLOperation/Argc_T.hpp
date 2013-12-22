@@ -41,14 +41,14 @@ struct Argc_T {
   // Convert the incoming parameter objects into the resulting type.
   // Passes each parameter down to
   static type getData(RLMachine& machine,
-                      const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                      const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(
       unsigned int& position,
       const std::vector<std::string>& input,
-      boost::ptr_vector<libReallive::ExpressionPiece>& output);
+      libReallive::ExpressionPiecesVector& output);
 
   enum {
     is_complex = false
@@ -58,7 +58,7 @@ struct Argc_T {
 template<typename CON>
 typename Argc_T<CON>::type Argc_T<CON>::
 getData(RLMachine& machine,
-                     const boost::ptr_vector<libReallive::ExpressionPiece>& p,
+                     const libReallive::ExpressionPiecesVector& p,
                      unsigned int& position) {
   type return_vector;
   for (; position < p.size(); )
@@ -71,7 +71,7 @@ template<typename CON>
 void Argc_T<CON>::
 parseParameters(unsigned int& position,
                 const std::vector<std::string>& input,
-                boost::ptr_vector<libReallive::ExpressionPiece>& output) {
+                libReallive::ExpressionPiecesVector& output) {
   for (; position < input.size(); ) {
     CON::parseParameters(position, input, output);
   }

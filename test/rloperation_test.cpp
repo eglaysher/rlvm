@@ -39,7 +39,6 @@
 
 #include "testUtils.hpp"
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <algorithm>
 #include <string>
 #include <vector>

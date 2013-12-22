@@ -35,11 +35,10 @@
 #define BYTECODE_H
 
 #include "defs.h"
-#include <boost/scoped_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <stdint.h>
 
 #include "bytecode_fwd.h"
+#include "expression.h"
 
 class RLMachine;
 
@@ -103,9 +102,6 @@ public:
 
   virtual void set_pointers(ConstructionData& cdata);
 
-  // Note that x.clone() != x, since the copy constructor assigns a new id.
-  virtual BytecodeElement* clone() const = 0;
-
   virtual ~BytecodeElement();
 
   BytecodeElement();
@@ -121,18 +117,12 @@ public:
                                ConstructionData& cdata);
 };
 
-inline BytecodeElement* new_clone(const BytecodeElement& e)
-{
-  return e.clone();
-}
-
 class CommaElement : public BytecodeElement {
  public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
 
-  virtual CommaElement* clone() const;
   CommaElement();
   ~CommaElement();
 };
@@ -158,8 +148,6 @@ public:
 
   MetaElement(const ConstructionData* cv, const char* src);
   ~MetaElement();
-
-  virtual MetaElement* clone() const;
 };
 
 // Display-text elements.
@@ -174,7 +162,6 @@ class TextoutElement : public BytecodeElement {
   const string text() const;
   TextoutElement(const char* src, const char* file_end);
   TextoutElement();
-  TextoutElement* clone() const;
 
   /// Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
@@ -190,9 +177,9 @@ class ExpressionElement : public BytecodeElement {
  private:
   string repr;
 
-  /// Storage for the parsed expression so we only have to calculate
-  /// it once (and so we can return it by const reference)
-  mutable boost::scoped_ptr<ExpressionPiece> parsed_expression_;
+  // Storage for the parsed expression so we only have to calculate
+  // it once (and so we can return it by const reference)
+  mutable std::unique_ptr<ExpressionPiece> parsed_expression_;
 
 public:
   virtual const ElementType type() const;
@@ -201,7 +188,6 @@ public:
   ExpressionElement(const long val);
   ExpressionElement(const char* src);
   ExpressionElement(const ExpressionElement& rhs);
-  ExpressionElement* clone() const;
 
   // Assumes the expression isn't an assignment and returns the integer value.
   int valueOnly(RLMachine& machine) const;
@@ -226,7 +212,7 @@ class CommandElement : public BytecodeElement {
   static const int COMMAND_SIZE = 8;
   unsigned char command[COMMAND_SIZE];
 
-  mutable boost::ptr_vector<libReallive::ExpressionPiece> parsed_parameters_;
+  mutable std::vector<std::unique_ptr<ExpressionPiece> > parsed_parameters_;
 
  public:
   virtual const ElementType type() const;
@@ -244,8 +230,8 @@ class CommandElement : public BytecodeElement {
   std::vector<string> getUnparsedParameters() const;
   bool areParametersParsed() const;
 
-  void setParsedParameters(boost::ptr_vector<libReallive::ExpressionPiece>& p) const;
-  const boost::ptr_vector<libReallive::ExpressionPiece>& getParameters() const;
+  void setParsedParameters(ExpressionPiecesVector& p) const;
+  const ExpressionPiecesVector& getParameters() const;
 
   // Methods that deal with pointers.
   virtual const size_t pointers_count() const { return 0; }
@@ -259,6 +245,9 @@ class CommandElement : public BytecodeElement {
   ~CommandElement();
 
   virtual void runOnMachine(RLMachine& machine) const;
+
+ private:
+  CommandElement(const CommandElement& e);
 };
 
 class SelectElement : public CommandElement {
@@ -309,7 +298,6 @@ public:
   const params_t& getRawParams() const { return params; }
 
   SelectElement(const char* src);
-  SelectElement* clone() const;
 };
 
 class FunctionElement : public CommandElement {
@@ -323,8 +311,6 @@ public:
 
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
-
-  virtual FunctionElement* clone() const;
 };
 
 class VoidFunctionElement : public CommandElement {
@@ -337,8 +323,6 @@ public:
 
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
-
-  virtual VoidFunctionElement* clone() const;
 };
 
 class SingleArgFunctionElement : public CommandElement {
@@ -355,8 +339,6 @@ class SingleArgFunctionElement : public CommandElement {
 
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
-
-  virtual SingleArgFunctionElement* clone() const;
 };
 
 class PointerElement : public CommandElement {
@@ -380,7 +362,6 @@ class GotoElement : public CommandElement {
  public:
   virtual const ElementType type() const;
   GotoElement(const char* src, ConstructionData& cdata);
-  virtual GotoElement* clone() const;
 
   // The pointer is not counted as a parameter.
   virtual const size_t param_count() const;
@@ -401,7 +382,6 @@ class GotoIfElement : public CommandElement {
  public:
   virtual const ElementType type() const;
   GotoIfElement(const char* src, ConstructionData& cdata);
-  virtual GotoIfElement* clone() const;
 
   // The pointer is not counted as a parameter.
   virtual const size_t param_count() const;
@@ -422,7 +402,6 @@ class GotoCaseElement : public PointerElement {
   virtual const size_t length() const;
 
   GotoCaseElement(const char* src, ConstructionData& cdata);
-  virtual GotoCaseElement* clone() const;
 
   // The cases are not counted as parameters.
   virtual const size_t param_count() const;
@@ -441,7 +420,6 @@ class GotoOnElement : public PointerElement {
   virtual const size_t length() const;
 
   GotoOnElement(const char* src, ConstructionData& cdata);
-  virtual GotoOnElement* clone() const;
 
   // The pointers are not counted as parameters.
   virtual const size_t param_count() const;
@@ -460,7 +438,6 @@ class GosubWithElement : public CommandElement {
   virtual const size_t length() const;
 
   GosubWithElement(const char* src, ConstructionData& cdata);
-  virtual GosubWithElement* clone() const;
 
   // The pointer is not counted as a parameter.
   virtual const size_t param_count() const;

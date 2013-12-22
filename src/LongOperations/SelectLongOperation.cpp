@@ -30,7 +30,6 @@
 #include <vector>
 #include <string>
 #include <boost/bind.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
@@ -49,7 +48,6 @@
 #include "libReallive/gameexe.h"
 
 using boost::bind;
-using boost::scoped_ptr;
 using std::cerr;
 using std::endl;
 using std::string;
@@ -87,8 +85,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           bool value = false;
           if (it->condition != "") {
             const char* location = it->condition.c_str();
-            scoped_ptr<ExpressionPiece> condition(
-              libReallive::get_expression(location));
+            std::unique_ptr<ExpressionPiece> condition(
+                libReallive::get_expression(location));
             value = !condition->integerValue(machine);
           }
 
@@ -99,8 +97,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           bool enabled = false;
           if (it->condition != "") {
             const char* location = it->condition.c_str();
-            scoped_ptr<ExpressionPiece> condition(
-              libReallive::get_expression(location));
+            std::unique_ptr<ExpressionPiece> condition(
+                libReallive::get_expression(location));
             enabled = !condition->integerValue(machine);
           }
 
@@ -108,7 +106,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           int colour_index = 0;
           if (!enabled && it->effect_argument != "") {
             const char* location = it->effect_argument.c_str();
-            scoped_ptr<ExpressionPiece> effect_argument(
+            std::unique_ptr<ExpressionPiece> effect_argument(
               libReallive::get_expression(location));
             colour_index = !effect_argument->integerValue(machine);
             use_colour = true;
