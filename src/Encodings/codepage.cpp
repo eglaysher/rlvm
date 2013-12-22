@@ -92,7 +92,7 @@ bool Codepage::IsItalic(uint16_t ch) const {
   return false;
 }
 
-boost::scoped_ptr<Codepage> Cp::instance_;
+std::unique_ptr<Codepage> Cp::instance_;
 int Cp::codepage = -1;
 int Cp::scenario = -1;
 

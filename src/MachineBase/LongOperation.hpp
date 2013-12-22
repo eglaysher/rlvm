@@ -28,7 +28,7 @@
 #ifndef SRC_MACHINEBASE_LONGOPERATION_HPP_
 #define SRC_MACHINEBASE_LONGOPERATION_HPP_
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #include "Systems/Base/EventListener.hpp"
 
@@ -79,7 +79,7 @@ class PerformAfterLongOperationDecorator : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
  private:
-  boost::scoped_ptr<LongOperation> operation_;
+  std::unique_ptr<LongOperation> operation_;
 
   // Payload of decorator implemented by subclasses
   virtual void performAfterLongOperation(RLMachine& machine) = 0;

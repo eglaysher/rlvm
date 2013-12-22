@@ -28,7 +28,7 @@
 #ifndef SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 #define SRC_MACHINEBASE_GENERALOPERATIONS_HPP_
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -145,7 +145,7 @@ class MultiDispatch : public RLOp_SpecialCase {
                           const libReallive::CommandElement& ff);
 
  private:
-  boost::scoped_ptr<RLOperation> handler_;
+  std::unique_ptr<RLOperation> handler_;
 };
 
 // Returns a Gameexe value to the store register.

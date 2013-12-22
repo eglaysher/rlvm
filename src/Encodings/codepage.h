@@ -37,8 +37,8 @@
 #ifndef CODEPAGE_H
 #define CODEPAGE_H
 
+#include <memory>
 #include <string>
-#include <boost/scoped_ptr.hpp>
 
 struct Codepage {
   virtual ~Codepage();
@@ -60,7 +60,7 @@ class Cp {
   // Singleton constructor
   static Codepage& instance(int desired);
  private:
-  static boost::scoped_ptr<Codepage> instance_;
+  static std::unique_ptr<Codepage> instance_;
   static int codepage;
   static int scenario;
 };

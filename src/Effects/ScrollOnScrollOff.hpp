@@ -72,20 +72,20 @@ class ScrollSquashSlideBaseEffect : public Effect {
   virtual ~ScrollSquashSlideBaseEffect();
 
  private:
-  /// Calculates the amountVisible passed into composeEffectsFor().
+  // Calculates the amountVisible passed into composeEffectsFor().
   int calculateAmountVisible(int currentTime, int screenSize);
 
-  /// Don't blit the original image.
+  // Don't blit the original image.
   virtual bool blitOriginalImage() const;
 
-  /// Implement the Effect interface
+  // Implement the Effect interface
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
-  /// Drawer behavior class
-  boost::scoped_ptr<ScrollSquashSlideDrawer> drawer_;
+  // Drawer behavior class
+  std::unique_ptr<ScrollSquashSlideDrawer> drawer_;
 
-  /// Effect type behavior class
-  boost::scoped_ptr<ScrollSquashSlideEffectTypeBase> effect_type_;
+  // Effect type behavior class
+  std::unique_ptr<ScrollSquashSlideEffectTypeBase> effect_type_;
 };
 
 

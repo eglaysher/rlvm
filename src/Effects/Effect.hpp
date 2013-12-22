@@ -28,7 +28,6 @@
 #ifndef SRC_EFFECTS_EFFECT_HPP_
 #define SRC_EFFECTS_EFFECT_HPP_
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
