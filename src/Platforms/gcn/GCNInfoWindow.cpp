@@ -57,10 +57,9 @@ int max_space(const std::vector<gcn::Label*>& labels) {
 void set_size_and_align(std::vector<gcn::Label*>& items,
                         int max_size,
                         gcn::Graphics::Alignment alignment) {
-  for (vector<gcn::Label*>::iterator it = items.begin();
-       it != items.end(); ++it) {
-    (*it)->setWidth(max_size);
-    (*it)->setAlignment(alignment);
+  for (auto* label : items) {
+    label->setWidth(max_size);
+    label->setAlignment(alignment);
   }
 }
 

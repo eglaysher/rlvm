@@ -39,9 +39,6 @@ void DumpScenario(libReallive::Scenario* scenario) {
     return;
   }
 
-  libReallive::Scenario::iterator it = scenario->begin();
-  libReallive::Scenario::iterator end = scenario->end();
-  for (; it != end; ++it) {
-    it->print(cout);
-  }
+  for (auto const& instruction : *scenario)
+    instruction.print(cout);
 }

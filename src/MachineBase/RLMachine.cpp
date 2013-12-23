@@ -260,10 +260,8 @@ void RLMachine::executeNextInstruction() {
           popStackFrame();
 
         // Now we can perform the queued actions
-        for (vector<boost::function<void(void)> >::iterator it =
-                 delayed_modifications_.begin();
-             it != delayed_modifications_.end(); ++it) {
-          (*it)();
+        for (auto const& action : delayed_modifications_) {
+          (action)();
         }
         delayed_modifications_.clear();
       } else {
@@ -599,9 +597,8 @@ void RLMachine::setKidokuMarker(int kidoku_number) {
 }
 
 bool RLMachine::dllLoaded(const std::string& name) {
-  for (DLLMap::const_iterator it = loaded_dlls_.begin();
-       it != loaded_dlls_.end(); ++it) {
-    if (it->second->name() == name)
+  for (auto const& dll : loaded_dlls_) {
+    if (dll.second->name() == name)
       return true;
   }
 

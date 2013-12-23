@@ -1251,14 +1251,13 @@ GrpModule::GrpModule()
 void replayGraphicsStackCommand(RLMachine& machine,
                                 const std::deque<std::string>& stack) {
   try {
-    for (deque<std::string>::const_iterator it = stack.begin();
-         it != stack.end(); ++it) {
-      if (*it != "") {
+    for (auto const& command : stack) {
+      if (command != "") {
         // Parse the string as a chunk of Reallive bytecode.
         libReallive::ConstructionData cdata(0, libReallive::pointer_t());
         libReallive::BytecodeElement* element =
             libReallive::BytecodeElement::read(
-                it->c_str(), it->c_str() + it->size(), cdata);
+                command.c_str(), command.c_str() + command.size(), cdata);
         libReallive::CommandElement* command =
             dynamic_cast<libReallive::CommandElement*>(element);
         if (command) {
@@ -1277,52 +1276,51 @@ void replayGraphicsStackCommand(RLMachine& machine,
 void replayDepricatedGraphicsStackVector(
     RLMachine& machine,
     const std::vector<GraphicsStackFrame>& gstack) {
-  for (vector<GraphicsStackFrame>::const_iterator it = gstack.begin();
-       it != gstack.end(); ++it) {
+  for (auto const& frame : gstack) {
     try {
-      if (it->name() == GRP_LOAD) {
-        if (it->hasTargetCoordinates()) {
-          load_3<rect_impl::REC>(it->mask())(
-              machine, it->filename(), it->targetDC(),
-              it->sourceRect(), it->targetPoint(),
-              it->opacity());
+      if (frame.name() == GRP_LOAD) {
+        if (frame.hasTargetCoordinates()) {
+          load_3<rect_impl::REC>(frame.mask())(
+              machine, frame.filename(), frame.targetDC(),
+              frame.sourceRect(), frame.targetPoint(),
+              frame.opacity());
         } else {
           // Older versions of rlvm didn't record the mask bit, so make sure we
           // check for that since we don't want to break old save games.
-          bool mask = (it->hasMask() ? it->mask() : true);
+          bool mask = (frame.hasMask() ? frame.mask() : true);
           load_1 loader(mask);
-          loader(machine, it->filename(), it->targetDC(), it->opacity());
+          loader(machine, frame.filename(), frame.targetDC(), frame.opacity());
         }
-      } else if (it->name() == GRP_OPEN) {
+      } else if (frame.name() == GRP_OPEN) {
         // open is just a load + an animation.
-        loadImageToDC1(machine, it->filename(), it->sourceRect(),
-                       it->targetPoint(), it->opacity(), it->mask());
+        loadImageToDC1(machine, frame.filename(), frame.sourceRect(),
+                       frame.targetPoint(), frame.opacity(), frame.mask());
         blitDC1toDC0(machine);
-      } else if (it->name() == GRP_COPY) {
-        if (it->hasSourceCoordinates()) {
-          copy_3<rect_impl::REC>(it->mask())(
+      } else if (frame.name() == GRP_COPY) {
+        if (frame.hasSourceCoordinates()) {
+          copy_3<rect_impl::REC>(frame.mask())(
               machine,
-              it->sourceRect(), it->sourceDC(),
-              it->targetPoint(), it->targetDC(),
-              it->opacity());
+              frame.sourceRect(), frame.sourceDC(),
+              frame.targetPoint(), frame.targetDC(),
+              frame.opacity());
         } else {
-          copy_1(it->mask())(
-              machine, it->sourceDC(), it->targetDC(), it->opacity());
+          copy_1(frame.mask())(
+              machine, frame.sourceDC(), frame.targetDC(), frame.opacity());
         }
-      } else if (it->name() == GRP_DISPLAY) {
+      } else if (frame.name() == GRP_DISPLAY) {
         loadDCToDC1(machine,
-                    it->sourceDC(), it->sourceRect(),
-                    it->targetPoint(), it->opacity());
+                    frame.sourceDC(), frame.sourceRect(),
+                    frame.targetPoint(), frame.opacity());
         blitDC1toDC0(machine);
-      } else if (it->name() == GRP_OPENBG) {
-        loadImageToDC1(machine, it->filename(), it->sourceRect(),
-                       it->targetPoint(), it->opacity(), false);
+      } else if (frame.name() == GRP_OPENBG) {
+        loadImageToDC1(machine, frame.filename(), frame.sourceRect(),
+                       frame.targetPoint(), frame.opacity(), false);
         blitDC1toDC0(machine);
-      } else if (it->name() == GRP_ALLOC) {
-        Point target = it->targetPoint();
-        allocDC()(machine, it->targetDC(), target.x(), target.y());
-      } else if (it->name() == GRP_WIPE) {
-        wipe()(machine, it->targetDC(), it->r(), it->g(), it->b());
+      } else if (frame.name() == GRP_ALLOC) {
+        Point target = frame.targetPoint();
+        allocDC()(machine, frame.targetDC(), target.x(), target.y());
+      } else if (frame.name() == GRP_WIPE) {
+        wipe()(machine, frame.targetDC(), frame.r(), frame.g(), frame.b());
       }
     } catch(rlvm::Exception& e) {
       cerr << "WARNING: Error while thawing graphics stack: " << e.what()

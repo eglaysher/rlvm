@@ -116,11 +116,9 @@ struct msgHideAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
 
-    vector<int> activeWindows = text.activeWindows();
-    for (vector<int>::const_iterator it = activeWindows.begin();
-        it != activeWindows.end(); ++it) {
-      text.hideTextWindow(*it);
-      text.newPageOnWindow(*it);
+    for (int window : text.activeWindows()) {
+      text.hideTextWindow(window);
+      text.newPageOnWindow(window);
     }
   }
 };

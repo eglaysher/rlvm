@@ -785,9 +785,8 @@ void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
 }
 
 bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
-  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
-       it != object_mutators_.end(); ++it) {
-    if ((*it)->OperationMatches(repno, name))
+  for (auto const* mutator : object_mutators_) {
+    if (mutator->OperationMatches(repno, name))
       return true;
   }
 
@@ -823,9 +822,8 @@ void GraphicsObject::makeImplUnique() {
 }
 
 void GraphicsObject::deleteObjectMutators() {
-  for (std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
-       it != object_mutators_.end(); ++it) {
-    delete *it;
+  for (auto* mutator : object_mutators_) {
+    delete mutator;
   }
   object_mutators_.clear();
 }

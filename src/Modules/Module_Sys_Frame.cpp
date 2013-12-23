@@ -171,18 +171,17 @@ struct ReadFrames : public RLOp_Store_1< Argc_T<FrameDataInReadFrames> > {
 
     bool storeValue = false;
 
-    for (vector<FrameDataInReadFrames::type>::iterator it = frames.begin();
-        it != frames.end(); ++it) {
-      int counter = get<0>(*it);
+    for (auto& frame : frames) {
+      int counter = get<0>(frame);
 
       if (es.frameCounterExists(layer_, counter)) {
         int val = es.getFrameCounter(layer_, counter).readFrame();
-        *(get<1>(*it)) = val;
+        *(get<1>(frame)) = val;
 
         if (es.getFrameCounter(layer_, counter).isActive())
           storeValue = true;
       } else {
-        *(get<1>(*it)) = 0;
+        *(get<1>(frame)) = 0;
       }
     }
 

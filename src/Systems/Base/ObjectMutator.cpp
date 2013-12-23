@@ -61,7 +61,7 @@ bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
   return ticks > (creation_time_ + delay_ + duration_time_);
 }
 
-bool ObjectMutator::OperationMatches(int repr, const char* name) {
+bool ObjectMutator::OperationMatches(int repr, const char* name) const {
   return repr_ == repr && (strcmp(name, name_) == 0);
 }
 

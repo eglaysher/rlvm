@@ -42,7 +42,7 @@ class ObjectMutator {
   bool operator()(RLMachine& machine, GraphicsObject& object);
 
   // Returns true if this ObjectMutator is operating on |name|/|repr|.
-  bool OperationMatches(int repr, const char* name);
+  bool OperationMatches(int repr, const char* name) const;
 
   // Called to end the mutation prematurely.
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) = 0;

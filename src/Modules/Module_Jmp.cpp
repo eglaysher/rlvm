@@ -109,18 +109,17 @@ typedef Argc_T< Special_T< DefaultSpecialMapper,
 void readWithData(RLMachine& machine, const ParamVector& f,
                   std::vector<int>& integers,
                   std::vector<std::string>& strings) {
-  for (ParamVector::const_iterator it = f.begin(); it != f.end();
-      ++it) {
-    switch (it->type) {
+  for (auto const& param : f) {
+    switch (param.type) {
     case 0:
-      integers.push_back(it->first);
+      integers.push_back(param.first);
       break;
     case 1:
-      strings.push_back(it->second);
+      strings.push_back(param.second);
       break;
     default: {
       ostringstream ss;
-      ss << "Unknown type tag " << it->type
+      ss << "Unknown type tag " << param.type
          << " during a *_with function call";
       throw rlvm::Exception(ss.str());
     }

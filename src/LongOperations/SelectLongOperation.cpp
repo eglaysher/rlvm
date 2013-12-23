@@ -75,16 +75,14 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
         libReallive::evaluatePRINT(machine, params[i].text);
     o.str = cp932toUTF8(evaluated_native, machine.getTextEncoding());
 
-    std::vector<SelectElement::Condition> conditions = params[i].cond_parsed;
-    for (std::vector<SelectElement::Condition>::const_iterator it =
-             conditions.begin(); it != conditions.end(); ++it) {
-      switch (it->effect) {
+    for (auto const& condition : params[i].cond_parsed) {
+      switch (condition.effect) {
         // TODO(erg): Someday, I might need to support the other options, but
         // for now, I've never seen anything other than hide.
         case SelectElement::OPTION_HIDE: {
           bool value = false;
-          if (it->condition != "") {
-            const char* location = it->condition.c_str();
+          if (condition.condition != "") {
+            const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
                 libReallive::get_expression(location));
             value = !condition->integerValue(machine);
@@ -95,8 +93,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
         }
         case SelectElement::OPTION_TITLE: {
           bool enabled = false;
-          if (it->condition != "") {
-            const char* location = it->condition.c_str();
+          if (condition.condition != "") {
+            const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
                 libReallive::get_expression(location));
             enabled = !condition->integerValue(machine);
@@ -104,8 +102,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 
           bool use_colour = false;
           int colour_index = 0;
-          if (!enabled && it->effect_argument != "") {
-            const char* location = it->effect_argument.c_str();
+          if (!enabled && condition.effect_argument != "") {
+            const char* location = condition.effect_argument.c_str();
             std::unique_ptr<ExpressionPiece> effect_argument(
               libReallive::get_expression(location));
             colour_index = !effect_argument->integerValue(machine);
@@ -120,9 +118,10 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
         default:
           cerr << "Unsupported option in select statement "
                << "(condition: "
-               << libReallive::parsableToPrintableString(it->condition)
-               << ", effect: " << it->effect << ", effect_argument: "
-               << libReallive::parsableToPrintableString(it->effect_argument)
+               << libReallive::parsableToPrintableString(condition.condition)
+               << ", effect: " << condition.effect << ", effect_argument: "
+               << libReallive::parsableToPrintableString(
+                   condition.effect_argument)
                << ")" << endl;
           break;
       }

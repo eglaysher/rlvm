@@ -95,9 +95,8 @@ MultiDispatch::~MultiDispatch() {
 void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
     libReallive::ExpressionPiecesVector& output) {
-  for (vector<string>::const_iterator it = input.begin(); it != input.end();
-       ++it) {
-    const char* src = it->c_str();
+  for (auto const& parameter : input) {
+    const char* src = parameter.c_str();
     output.push_back(get_complex_param(src));
   }
 }

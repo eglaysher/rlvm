@@ -63,10 +63,9 @@ std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
 
     os << "  " << "-----" << endl;
 
-    for (OpcodeLog::Storage::const_iterator it = log.begin(); it != log.end();
-        ++it) {
-      os << setw(max_function_name_len) << left <<  it->first << "  "
-         << it->second
+    for (auto const& entry : log) {
+      os << setw(max_function_name_len) << left <<  entry.first << "  "
+         << entry.second
          << endl;
     }
   } else {

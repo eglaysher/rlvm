@@ -140,9 +140,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
       object_nums.push_back(lexical_cast<int>(s));
     }
 
-    for ( std::list<int>::const_iterator intit = object_nums.begin();
-         intit != object_nums.end(); ++intit ) {
-      int obj_num = *intit;
+    for (int obj_num : object_nums) {
       if (obj_num != 999 && obj_num < objects_in_a_layer) {
         position[obj_num] = data.size();
         data.push_back(ObjectSettings(*it));
