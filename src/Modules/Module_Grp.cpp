@@ -873,13 +873,13 @@ typedef Argc_T<
 //
 // TODO(erg): Finish this operation; it's in an incomplete, but compiling state.
 
-/// All work is applied to DC 1.
+// All work is applied to DC 1.
 const int MULTI_TARGET_DC = 1;
 
 template<typename SPACE>
 struct multi_command {
   void handleMultiCommands(
-    RLMachine& machine, const MultiCommand::type& commands);
+      RLMachine& machine, const MultiCommand::type& commands);
 };
 
 template<typename SPACE>

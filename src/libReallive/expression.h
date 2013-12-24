@@ -81,39 +81,39 @@ class ExpressionPiece {
 public:
   virtual ~ExpressionPiece();
 
-  /// Capability method; returns false by default. Override when
-  /// ExpressionPiece subclass accesses a piece of memory.
+  // Capability method; returns false by default. Override when
+  // ExpressionPiece subclass accesses a piece of memory.
   virtual bool isMemoryReference() const;
 
-  /// Capability method; returns false by default. Override when
-  /// ExpressionPiece subclass is an operation on one or more other
-  /// ExpressionPieces.
+  // Capability method; returns false by default. Override when
+  // ExpressionPiece subclass is an operation on one or more other
+  // ExpressionPieces.
   virtual bool isOperator() const;
 
-  /// Used only to add a '=' in debug strings.
+  // Used only to add a '=' in debug strings.
   virtual bool isAssignment() const;
 
-  /// Capability method; returns false by default. Override only in
-  /// classes that represent a complex parameter to the type system.
-  /// @see Complex2_T
+  // Capability method; returns false by default. Override only in
+  // classes that represent a complex parameter to the type system.
+  // @see Complex2_T
   virtual bool isComplexParameter() const;
 
-  /// Capability method; returns false by default. Override only in
-  /// classes that represent a special parameter to the type system.
-  /// @see Special_T
+  // Capability method; returns false by default. Override only in
+  // classes that represent a special parameter to the type system.
+  // @see Special_T
   virtual bool isSpecialParamater() const;
 
-  /// Returns the value type of this expression (i.e. string or
-  /// integer)
+  // Returns the value type of this expression (i.e. string or
+  // integer)
   virtual ExpressionValueType expressionValueType() const;
 
-  /// Assigns the value into the memory location represented by the
-  /// current expression. Not all ExpressionPieces can do this, so
-  /// there is a default implementation which does nothing.
+  // Assigns the value into the memory location represented by the
+  // current expression. Not all ExpressionPieces can do this, so
+  // there is a default implementation which does nothing.
   virtual void assignIntValue(RLMachine& machine, int rvalue);
 
-  /// Returns the integer value of this expression; this can either be
-  /// a memory access or a calculation based on some subexpressions.
+  // Returns the integer value of this expression; this can either be
+  // a memory access or a calculation based on some subexpressions.
   virtual int integerValue(RLMachine& machine) const;
 
   virtual void assignStringValue(RLMachine& machine,
@@ -132,10 +132,10 @@ public:
   // parsing of the bytecode to the console.
   virtual std::string getDebugString() const = 0;
 
-  /// I used to be able to just static cast any ExpressionPiece to a
-  /// MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
-  /// rlBabel library instead uses the store register as an argument to a
-  /// function that takes a integer reference. So this needs to be here now.
+  // I used to be able to just static cast any ExpressionPiece to a
+  // MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
+  // rlBabel library instead uses the store register as an argument to a
+  // function that takes a integer reference. So this needs to be here now.
   virtual IntReferenceIterator getIntegerReferenceIterator(
       RLMachine& machine) const;
   virtual StringReferenceIterator getStringReferenceIterator(

@@ -89,7 +89,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
       boost::scoped_array<char>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
 
-  /// The system we are a part of.
+  // The system we are a part of.
   System& system_;
 
   // Raw, short name for the ANM file.

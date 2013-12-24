@@ -266,7 +266,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
 
 // -----------------------------------------------------------------------
 
-/// Surface that takes ownership of an externally created surface.
+// Surface that takes ownership of an externally created surface.
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
                        const vector<SDLSurface::GrpRect>& region_table)
   : surface_(surf), region_table_(region_table),
@@ -302,7 +302,7 @@ void SDLSurface::registerForNotification(GraphicsSystem* system) {
 
 // -----------------------------------------------------------------------
 
-/// Constructor helper function
+// Constructor helper function
 void SDLSurface::buildRegionTable(const Size& size) {
   // Build a region table with one entry the size of the surface (This
   // should never need to be used with objects created with this

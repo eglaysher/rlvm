@@ -102,40 +102,22 @@ class SDLGraphicsSystem : public GraphicsSystem,
 
   virtual void setScreenMode(const int in);
 
-  /**
-   * Reset the system. Should clear all state for when a user loads a
-   * game.
-   */
+  // Reset the system. Should clear all state for when a user loads a
+  // game.
   virtual void reset();
 
  private:
   void setupVideo();
 
-  /**
-   * @name Internal Error Checking Methods
-   *
-   * These methods are used internally to seperate out commonly used
-   * error checking and parameter validation code from the rest of the
-   * class.
-   *
-   * @{
-   */
-
-  /**
-   * Makes sure that a passed in dc number is valid.
-   *
-   * @exception Error Throws when dc is greater then the maximum.
-   * @exception Error Throws when dc is unallocated.
-   */
+  // Makes sure that a passed in dc number is valid.
+  //
+  // @exception Error Throws when dc is greater then the maximum.
+  // @exception Error Throws when dc is unallocated.
   void verifySurfaceExists(int dc, const std::string& caller);
 
-  /**
-   * Makes sure that a surface we just allocated was, in fact,
-   * allocated.
-   */
+  // Makes sure that a surface we just allocated was, in fact,
+  // allocated.
   void verifyDCAllocation(int dc, const std::string& caller);
-
-  /// @}
 
   void setWindowTitle();
 
@@ -153,41 +135,39 @@ class SDLGraphicsSystem : public GraphicsSystem,
 
   bool redraw_last_frame_;
 
-  /// Whether to display (SEEN####)(Line ###) in the title bar
+  // Whether to display (SEEN####)(Line ###) in the title bar
   bool display_data_in_titlebar_;
 
-  /// The last time the titlebar was updated (in getTicks())
+  // The last time the titlebar was updated (in getTicks())
   unsigned int time_of_last_titlebar_update_;
 
-  /// The last seen number;
+  // The last seen number;
   int last_seen_number_;
 
-  /// The last line number;
+  // The last line number;
   int last_line_number_;
 
-  /// utf8 encoded title string
+  // utf8 encoded title string
   std::string caption_title_;
 
-  /// utf8 encoded subtitle
+  // utf8 encoded subtitle
   std::string subtitle_;
 
   // The value we've set the window title to. We do this to work around a
   // memory leak in PulseAudio.
   std::string currently_set_title_;
 
-  /**
-   * Texture used to store the contents of the screen while in DrawManual()
-   * mode. The stored image is then used if we need to redraw in the
-   * intervening time (expose events, mouse cursor moves, et cetera).
-   */
+  // Texture used to store the contents of the screen while in DrawManual()
+  // mode. The stored image is then used if we need to redraw in the
+  // intervening time (expose events, mouse cursor moves, et cetera).
   GLuint screen_contents_texture_;
 
-  /// Whether |screen_contents_texture_| is valid to use.
+  // Whether |screen_contents_texture_| is valid to use.
   bool screen_contents_texture_valid_;
 
-  /// The size of |screen_contents_texture_|. This can be different
-  /// from |screen_size_| because textures need to be powers of two on
-  /// OpenGL v1.x drivers.
+  // The size of |screen_contents_texture_|. This can be different
+  // from |screen_size_| because textures need to be powers of two on
+  // OpenGL v1.x drivers.
   int screen_tex_width_;
   int screen_tex_height_;
 

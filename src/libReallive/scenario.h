@@ -73,7 +73,7 @@ public:
   int savepointSelcom()  const { return header.savepoint_selcom;  }
   int savepointSeentop() const { return header.savepoint_seentop; }
 
-  /// Locate the entrypoint
+  // Locate the entrypoint
   const_iterator findEntrypoint(int entrypoint) const;
 
   iterator begin();

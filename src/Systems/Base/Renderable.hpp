@@ -27,13 +27,13 @@
 #ifndef SRC_SYSTEMS_BASE_RENDERABLE_HPP_
 #define SRC_SYSTEMS_BASE_RENDERABLE_HPP_
 
-/// An object that is renderable to screen.
+// An object that is renderable to screen.
 class Renderable {
  public:
   virtual ~Renderable() {}
 
-  /// Renders this object to screen (and optionally writes metadata about what
-  /// was rendered to |tree|).
+  // Renders this object to screen (and optionally writes metadata about what
+  // was rendered to |tree|).
   virtual void render(std::ostream* tree) = 0;
 };
 

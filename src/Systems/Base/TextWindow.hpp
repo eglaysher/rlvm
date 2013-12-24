@@ -206,7 +206,7 @@ class TextWindow {
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
-  /// Returns a surface that is the text.
+  // Returns a surface that is the text.
   virtual boost::shared_ptr<Surface> textSurface() = 0;
   virtual boost::shared_ptr<Surface> nameSurface() = 0;
 
@@ -302,7 +302,7 @@ class TextWindow {
   int current_indentation_in_pixels_;
 
   // Whether the last token was a setName. This is used to control indentation
-  /// for quotes.
+  // for quotes.
   bool last_token_was_name_;
 
   // The default font size.

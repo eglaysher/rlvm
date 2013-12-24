@@ -66,7 +66,7 @@ class IntegerConstant : public ExpressionPiece {
   IntegerConstant(const int in);
   ~IntegerConstant();
 
-  /// Returns the constant value
+  // Returns the constant value
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
   virtual std::string getDebugValue(RLMachine& machine) const;

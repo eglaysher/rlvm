@@ -46,8 +46,8 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   struct GrpRect {
     Rect rect;
 
-    /// Describes an offset to rect. Why VisualArts threw this in is
-    /// unknown.
+    // Describes an offset to rect. Why VisualArts threw this in is
+    // unknown.
     int originX, originY;
   };
 
@@ -87,7 +87,7 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   virtual void dump();
 
-  /// Blits to another surface
+  // Blits to another surface
   virtual void blitToSurface(
       Surface& dest_surface,
       const Rect& src, const Rect& dst,

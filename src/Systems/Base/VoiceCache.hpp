@@ -55,7 +55,7 @@ class VoiceCache {
 
   SoundSystem& sound_system_;
 
-  /// A mapping between a file id number and the underlying file object.
+  // A mapping between a file id number and the underlying file object.
   LRUCache<int, boost::shared_ptr<VoiceArchive> > file_cache_;
 };  // class VoiceCache
 

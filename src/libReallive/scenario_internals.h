@@ -49,8 +49,8 @@ class Header {
 public:
   Header(const char* data, const size_t length);
 
-  /// Starting around the release of Little Busters!, scenario files has a
-  /// second round of xor done to them. When will they learn?
+  // Starting around the release of Little Busters!, scenario files has a
+  // second round of xor done to them. When will they learn?
   bool use_xor_2;
 
   long zminusone, zminustwo, savepoint_message,

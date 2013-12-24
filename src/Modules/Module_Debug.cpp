@@ -36,23 +36,18 @@
 #include <iostream>
 using namespace std;
 
-/**
- * @defgroup ModuleDebug The Debug Module (mod<1:255)
- * @ingroup ModulesOpcodes
- *
- * Module that defines runtime debugging operations. The following
- * operations are only executed when \#MEMORY is defined in the
- * incoming Gameexe file.
- *
- * @{
- */
+// The Debug Module (mod<1:255)
+//
+// Module that defines runtime debugging operations. The following
+// operations are only executed when \#MEMORY is defined in the
+// incoming Gameexe file.
 
 namespace {
 
 struct DebugMessageInt : public RLOp_Void_1< IntConstant_T > {
   void operator()(RLMachine& machine, int value) {
     if (machine.system().gameexe()("MEMORY").exists())
-       cerr << "DebugMessage: " << value << endl;
+      cerr << "DebugMessage: " << value << endl;
   }
 };
 
@@ -68,9 +63,7 @@ struct DebugMessageStr : public RLOp_Void_1< StrConstant_T > {
 }  // namespace
 
 DebugModule::DebugModule()
-  : RLModule("Debug", 1, 255) {
+    : RLModule("Debug", 1, 255) {
   addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
   addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }
-
-/// @}

@@ -74,7 +74,7 @@ class Archive {
   void readOverrides();
 
 public:
-  /// Read an archive, assuming no per-game xor key. (Used in unit testing).
+  // Read an archive, assuming no per-game xor key. (Used in unit testing).
   Archive(const string& filename);
 
   /**

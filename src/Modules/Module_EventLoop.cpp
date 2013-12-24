@@ -47,12 +47,12 @@ struct setOverride : public RLOp_Void_1< IntConstant_T > {
 }  // namespace
 
 EventLoopModule::EventLoopModule()
-  : RLModule("EventLoop", 0, 4) {
+    : RLModule("EventLoop", 0, 4) {
   addUnsupportedOpcode(120, 0, "SetInterrupt");
   addUnsupportedOpcode(121, 0, "ClearInterrupt");
   addUnsupportedOpcode(303, 0, "yield");
 
-  /// Theoretically the same as rtl, but we don't really know.
+  // Theoretically the same as rtl, but we don't really know.
   addOpcode(300, 0, "rtlButton", callFunction(&RLMachine::returnFromFarcall));
   addOpcode(301, 0, "rtlCancel", callFunction(&RLMachine::returnFromFarcall));
   addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::returnFromFarcall));

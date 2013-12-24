@@ -86,11 +86,11 @@ struct GraphicsSystemGlobals {
 
   // CG Table
   CGMTable cg_table;
-  
+
   // tone curve table
   ToneCurve tone_curves;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar & show_object_1 & show_object_2 & show_weather;

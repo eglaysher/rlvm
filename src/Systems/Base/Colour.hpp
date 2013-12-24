@@ -64,7 +64,7 @@ class RGBColour {
  private:
   int r_, g_, b_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
@@ -120,7 +120,7 @@ class RGBAColour {
 
   int alpha_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {

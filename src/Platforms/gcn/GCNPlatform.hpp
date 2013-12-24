@@ -86,52 +86,43 @@ class GCNPlatform : public Platform,
   virtual void keyReleased(gcn::KeyEvent& keyEvent);
 
  private:
-  /// Blocks the world until we're done.
+  // Blocks the world until we're done.
   void pushBlocker(RLMachine& machine);
 
-  /// Initializes all of the above.
+  // Initializes all of the above.
   void initializeGuichan(System& system, const Rect& screen_size);
 
-  /// Builds the current syscom menu, based on the currently visisble syscom
-  /// items, erasing the old one if necessary.
+  // Builds the current syscom menu, based on the currently visisble syscom
+  // items, erasing the old one if necessary.
   void buildSyscomMenuFor(const std::string& label,
                           const MenuSpec menu_items[], RLMachine& machine);
 
-  /// Clears the window stack (unblocking the RLMachine).
+  // Clears the window stack (unblocking the RLMachine).
   void clearWindowStack();
 
-  /// Deallocates the window on the top of the window stack.
+  // Deallocates the window on the top of the window stack.
   void popWindowFromStack();
 
-  /// Displays a window.
+  // Displays a window.
   void pushWindowOntoStack(GCNWindow* window);
 
-  /**
-   * @name Event Handling functions
-   *
-   * @{
-   */
+  // Event Handling functions
   void MenuSave(RLMachine& machine);
   void DoSave(RLMachine& machine, int slot);
   void MenuLoad(RLMachine& machine);
   void DoLoad(RLMachine& machine, int slot);
   void InvokeSyscom(RLMachine& machine, int syscom);
-  /// @}
 
-  /// This is our LongOperation on the stack.
+  // This is our LongOperation on the stack.
   GCNPlatformBlocker* blocker_;
 
-  /// Used to center dialogs in the window.
+  // Used to center dialogs in the window.
   Rect screen_size_;
 
-  /**
-   * @name GUIchan syscom implementation
-   *
-   * In addition to the SDL systems, SDLSystem also owns the guichan based
-   * GUI. The following gcn objects are the
-   *
-   * @{
-   */
+  // GUIchan syscom implementation
+  //
+  // In addition to the SDL systems, SDLSystem also owns the guichan based
+  // GUI. The following gcn objects are the
   boost::scoped_ptr<gcn::OpenGLSDLImageLoader> sdl_image_loader_;
   boost::scoped_ptr<gcn::OpenGLGraphics> opengl_graphics_;
   boost::scoped_ptr<gcn::SDLInput> sdl_input_;
@@ -141,11 +132,8 @@ class GCNPlatform : public Platform,
 
   boost::scoped_ptr<gcn::Font> global_font_;
 
-  /**
-   * Stack of menus rendered on top of each other.
-   */
+  // Stack of menus rendered on top of each other.
   std::vector<GCNWindow*> window_stack_;
-  /// @}
 
   friend class GCNPlatformBlocker;
 };  // end of class GCNPlatform

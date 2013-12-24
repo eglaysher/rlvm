@@ -224,7 +224,7 @@ class Rect {
   Point origin_;
   Size size_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {

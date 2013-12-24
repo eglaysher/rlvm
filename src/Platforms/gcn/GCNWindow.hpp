@@ -43,17 +43,17 @@ class GCNWindow : public gcn::Container {
   explicit GCNWindow(GCNPlatform* platform);
   ~GCNWindow();
 
-  /// Centers this GCNWindow in the rlvm window.
+  // Centers this GCNWindow in the rlvm window.
   void centerInWindow(const Size& screen_size);
 
   // Override from gcn::Container:
   virtual void draw(gcn::Graphics* graphics);
 
  protected:
-  /// Our owning platform.
+  // Our owning platform.
   GCNPlatform* platform_;
 
-  /// The border that's put around a window
+  // The border that's put around a window
   static ImageRect s_border;
 };  // end of class GCNWindow
 

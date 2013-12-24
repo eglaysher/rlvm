@@ -97,7 +97,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
 
 // -----------------------------------------------------------------------
 
-/// Type of the parameter data in the _with functions
+// Type of the parameter data in the _with functions
 typedef Argc_T< Special_T< DefaultSpecialMapper,
                            IntConstant_T,
                            StrConstant_T> >::type ParamVector;

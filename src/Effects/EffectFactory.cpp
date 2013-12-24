@@ -115,7 +115,7 @@ Effect* EffectFactory::build(
 // Private methods
 // -----------------------------------------------------------------------
 
-/// Which direction we wipe in
+// Which direction we wipe in
 enum ScreenDirection {
   TOP_TO_BOTTOM = 0,  // From the top to the bottom
   BOTTOM_TO_TOP = 1,  // From the bottom to the top

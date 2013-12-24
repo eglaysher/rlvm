@@ -400,7 +400,7 @@ class RLMachine {
   // stuff.
   bool replaying_graphics_stack_;
 
-  /// The actions that were delayed when |delay_stack_modifications_| is on.
+  // The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<boost::function<void(void)> > delayed_modifications_;
 
   // An optional set of game specific hacks that run at certain SEEN/line

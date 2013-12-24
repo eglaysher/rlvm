@@ -86,31 +86,26 @@ struct ImageRect : public NotificationObserver {
   NotificationRegistrar registrar_;
 };
 
-/**
- * Custom Graphics with extra draw primatives used within the widget code that
- * I'm taking from TMW.
- *
- * The basic idea is taken from The Mana World; this is the same interface they
- * expose in their drawing code. The difference here is that I'm stretching
- * widgets with anti-aliasing instead of mirroring their internals back and
- * forth.
- */
+// Custom Graphics with extra draw primatives used within the widget code that
+// I'm taking from TMW.
+//
+// The basic idea is taken from The Mana World; this is the same interface they
+// expose in their drawing code. The difference here is that I'm stretching
+// widgets with anti-aliasing instead of mirroring their internals back and
+// forth.
 class GCNGraphics : public gcn::OpenGLGraphics {
  public:
-  /// Initializes the graphics with the current screen resolution.
+  // Initializes the graphics with the current screen resolution.
   GCNGraphics(int width, int height);
-
   ~GCNGraphics();
 
-  /**
-   * Draws a rectangle using images. 4 corner images, 4 side images and 1
-   * image for the inside.
-   */
+  // Draws a rectangle using images. 4 corner images, 4 side images and 1
+  // image for the inside.
   void drawImageRect(int x, int y, int w, int h, ImageRect &imgRect);
 
  private:
-  /// Hack around OpenGLGraphics::drawImage to render the image (stretched)
-  /// into the target rectangle.
+  // Hack around OpenGLGraphics::drawImage to render the image (stretched)
+  // into the target rectangle.
   void drawImageStretched(gcn::Image* image,
                           const Rect& source,
                           int dstX, int dstY, int height, int width);

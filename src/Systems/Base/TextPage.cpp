@@ -62,10 +62,6 @@ inline TextPageElement* new_clone(const TextPageElement& in) {
 // -----------------------------------------------------------------------
 
 class TextTextPageElement : public TextPageElement {
- private:
-  /// A list of UTF-8 characters to print.
-  string list_of_chars_to_print_;
-
  public:
   TextTextPageElement();
   virtual bool isTextElement() { return true; }
@@ -75,6 +71,10 @@ class TextTextPageElement : public TextPageElement {
   virtual TextPageElement* clone() const {
     return new TextTextPageElement(*this);
   }
+
+ private:
+  // A list of UTF-8 characters to print.
+  string list_of_chars_to_print_;
 };
 
 TextTextPageElement::TextTextPageElement() {

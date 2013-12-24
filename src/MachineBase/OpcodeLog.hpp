@@ -38,10 +38,8 @@
 // undefined opcode was encountered, et cetera.
 class OpcodeLog {
  public:
-  /// Storage type
   typedef std::map<std::string, int> Storage;
 
- public:
   OpcodeLog();
   ~OpcodeLog();
 

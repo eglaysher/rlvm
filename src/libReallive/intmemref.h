@@ -70,13 +70,13 @@ inline bool isStringLocation(const int type)
 class IntMemRef
 {
 private:
-  /// Which piece of memory to operate on.
+  // Which piece of memory to operate on.
   int memoryBank;
 
-  /// How to access
+  // How to access
   int accessType;
 
-  /// The memory location to
+  // The memory location to
   int loc;
 
 public:

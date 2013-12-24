@@ -135,7 +135,7 @@ class GraphicsObjectData {
 
   friend class boost::serialization::access;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
     // boost::serialization should take care of the swizzling of

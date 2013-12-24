@@ -80,8 +80,8 @@ using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 
-/// Seen files are terminated with the string "SeenEnd", which isn't NULL
-/// terminated and has a bunch of random garbage after it.
+// Seen files are terminated with the string "SeenEnd", which isn't NULL
+// terminated and has a bunch of random garbage after it.
 static const char seen_end[] = {
   130, 114,  // S
   130, 133,  // e
@@ -679,7 +679,7 @@ void RLMachine::save(Archive & ar, unsigned int version) const {
   int line_num = lineNumber();
   ar & line_num;
 
-  /// Save the state of the stack when the last save point was hit
+  // Save the state of the stack when the last save point was hit
   ar & savepoint_call_stack_;
 }
 

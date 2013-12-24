@@ -77,11 +77,10 @@ typedef std::multimap<std::string, Gameexe_vec_type> GameexeData_t;
  * on Gameexe and that default values are in the casting function in
  * GameexeInterpretObject solves this accidental difficulty.
  */
-class GameexeInterpretObject
-{
+class GameexeInterpretObject {
 private:
-  /// We expose our private interface to tightly couple with Gameexe,
-  /// since we are a helper class for it.
+  // We expose our private interface to tightly couple with Gameexe,
+  // since we are a helper class for it.
   friend class Gameexe;
   friend class GameexeFilteringIterator;
 
@@ -125,12 +124,12 @@ public:
    */
   const int to_int() const;
 
-  /// Allow implicit casts to int with no default value
+  // Allow implicit casts to int with no default value
   operator int() const {
     return to_int();
   }
 
-  /// Returns a specific piece of data at index as an int
+  // Returns a specific piece of data at index as an int
   int getIntAt(int index) const;
 
   /**
@@ -149,12 +148,12 @@ public:
    */
   const std::string to_string() const;
 
-  /// Allow implicit casts to string
+  // Allow implicit casts to string
   operator std::string() const {
     return to_string();
   }
 
-  /// Returns a piece of data at a certain location as a string.
+  // Returns a piece of data at a certain location as a string.
   const std::string getStringAt(int index) const;
 
   /**
@@ -205,11 +204,11 @@ public:
 class Gameexe
 {
 private:
-  /// Allow access from the helper class
+  // Allow access from the helper class
   friend class GameexeInterpretObject;
   friend class GameexeFilteringIterator;
 
-  /// @{
+  // @{
   /**
    * @name Data storage
    *
@@ -221,7 +220,7 @@ private:
    */
   GameexeData_t data_;
   std::vector<std::string> cdata_;
-  /// @}
+  // @}
 
 public:
   /**
@@ -243,7 +242,6 @@ public:
   // Parses an individual Gameexe.ini line.
   void parseLine(const std::string& line);
 
-  /// @{
   /**
    * @name Streamlined Interface for data access
    *
@@ -270,21 +268,16 @@ public:
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey,
                                     const C& thirdKey);
 
-  /// @}
-
   /**
    * @name Iterated interface for keys
    *
    * This interface gives filtering iterators that filter on a
    * possible value.
    *
-   * @{
    */
   GameexeFilteringIterator filtering_begin(const std::string& filter);
   GameexeFilteringIterator filtering_end();
-  /// @}
 
-  /// @{
   /**
    * @name Raw interface for Gameexe.ini data access
    *
@@ -319,7 +312,6 @@ public:
 
   void setStringAt(const std::string& key, const std::string& value);
   void setIntAt(const std::string& key, const int value);
-  /// @}
 
 private:
   /**

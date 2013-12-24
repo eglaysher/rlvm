@@ -39,8 +39,8 @@ struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
 
   explicit Sys_wait(bool cancelable) : cancelable_(cancelable) {}
 
-  /// Simply set the long operation
   void operator()(RLMachine& machine, int time) {
+    // Simply set the long operation
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->waitMilliseconds(time);
     if (cancelable_)

@@ -375,7 +375,7 @@ class SoundSystem {
     return (channel_volume * system_volume) / 255;
   }
 
-  /// Plays a voice sample.
+  // Plays a voice sample.
   virtual void koePlayImpl(int id) = 0;
 
   static void checkChannel(int channel, const char* function_name);

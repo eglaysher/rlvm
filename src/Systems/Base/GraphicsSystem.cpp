@@ -90,12 +90,12 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 // GraphicsSystem::GraphicsObjectSettings
 // -----------------------------------------------------------------------
-/// Impl object
+// Impl object
 struct GraphicsSystem::GraphicsObjectSettings {
   // Number of graphical objects in a layer.
   int objects_in_a_layer;
 
-  /// Each is a valid index into data, refering to
+  // Each is a valid index into data, refering to
   boost::scoped_array<unsigned char> position;
 
   std::vector<ObjectSettings> data;
@@ -183,16 +183,16 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
 struct GraphicsSystem::GraphicsObjectImpl {
   GraphicsObjectImpl(int objects_in_layer);
 
-  /// Foreground objects
+  // Foreground objects
   LazyArray<GraphicsObject> foreground_objects;
 
-  /// Background objects
+  // Background objects
   LazyArray<GraphicsObject> background_objects;
 
-  /// Foreground objects (at the time of the last save)
+  // Foreground objects (at the time of the last save)
   LazyArray<GraphicsObject> saved_foreground_objects;
 
-  /// Background objects (at the time of the last save)
+  // Background objects (at the time of the last save)
   LazyArray<GraphicsObject> saved_background_objects;
 
   // Whether we restore |old_graphics_stack| using the old method instead of

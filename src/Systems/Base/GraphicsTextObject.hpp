@@ -64,7 +64,7 @@ class GraphicsTextObject : public GraphicsObjectData {
   virtual void objectInfo(std::ostream& tree);
 
  private:
-  /// Current machine context.
+  // Current machine context.
   System& system_;
 
   int cached_text_colour_;
@@ -79,7 +79,7 @@ class GraphicsTextObject : public GraphicsObjectData {
 
   bool needsUpdate(const GraphicsObject& rendering_properties);
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>

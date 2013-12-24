@@ -30,47 +30,39 @@
 
 #include <vector>
 
-/**
- * Holds certain properties of regarding an object that are set from
- * the Gameexe.ini and are immutable inside of an instance.
- */
+// Holds certain properties of regarding an object that are set from
+// the Gameexe.ini and are immutable inside of an instance.
 struct ObjectSettings {
   ObjectSettings();
   explicit ObjectSettings(const std::vector<int>& data);
 
-  /// Purpose unknown
+  // Purpose unknown
   int layer;
 
-  /**
-   * SpaceKey determines whether an object is considered part of the
-   * UI layer or not; if it's non-zero, then the object is hidden
-   * temporarily if the player hides the text window to view the
-   * picture properly (typically by pressing the space key).
-   */
+  // SpaceKey determines whether an object is considered part of the
+  // UI layer or not; if it's non-zero, then the object is hidden
+  // temporarily if the player hides the text window to view the
+  // picture properly (typically by pressing the space key).
   int space_key;
 
-  /**
-   * ObjOnOff determines whether an object can be toggled on and off
-   * independently by the player.  Valid values are 0, 1, and 2.
-   * Values of 1 and 2 correspond to [Set]ShowObject1() and
-   * [Set]ShowObject2(), and to \#SYSCOMs 18 and 19 respectively.
-   */
+  // ObjOnOff determines whether an object can be toggled on and off
+  // independently by the player.  Valid values are 0, 1, and 2.
+  // Values of 1 and 2 correspond to [Set]ShowObject1() and
+  // [Set]ShowObject2(), and to \#SYSCOMs 18 and 19 respectively.
   int obj_on_off;
 
-  /// Purpose Unknown
+  // Purpose Unknown
   int time_mod;
 
-  /// Purpose Unknown
+  // Purpose Unknown
   int disp_sort;
 
-  /// Purpose Unknown. (Set to 1 in objects 08[1234] in CLANNAD)
+  // Purpose Unknown. (Set to 1 in objects 08[1234] in CLANNAD)
   int init_mod;
 
-  /**
-   * WeatherOnOff determines whether the object is considered a
-   * weather effect object or not; if it's non-zero, the object will
-   * be shown and hidden with [Set]ShowWeather(), \#SYSCOM 17.
-   */
+  // WeatherOnOff determines whether the object is considered a
+  // weather effect object or not; if it's non-zero, the object will
+  // be shown and hidden with [Set]ShowWeather(), \#SYSCOM 17.
   int weather_on_off;
 };
 

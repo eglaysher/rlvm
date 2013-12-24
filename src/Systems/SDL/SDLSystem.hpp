@@ -63,7 +63,7 @@ class SDLSystem : public System {
   unsigned int last_time_paused_;
 };
 
-/// Convenience function to do the casting.
+// Convenience function to do the casting.
 SDLGraphicsSystem* getSDLGraphics(System& system);
 
 #endif  // SRC_SYSTEMS_SDL_SDLSYSTEM_HPP_

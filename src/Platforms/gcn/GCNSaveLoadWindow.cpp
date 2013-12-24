@@ -56,9 +56,8 @@ const std::string VALUE_CHANGE = "VALUECHANGE";
 // -----------------------------------------------------------------------
 // SaveGameListModel
 // -----------------------------------------------------------------------
-/**
- * Creates a list of save games from the save game files on disk.
- */
+
+// Creates a list of save games from the save game files on disk.
 class SaveGameListModel : public gcn::ListModel {
  public:
   SaveGameListModel(const std::string& no_data, RLMachine& machine);
@@ -68,7 +67,7 @@ class SaveGameListModel : public gcn::ListModel {
   virtual int getNumberOfElements();
   virtual std::string getElementAt(int i);
 
-  /// Whether this save should enable the action button while loading.
+  // Whether this save should enable the action button while loading.
   bool getSaveExistsAt(int i);
 
  private:

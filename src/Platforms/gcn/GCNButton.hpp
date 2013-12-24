@@ -33,21 +33,14 @@
 
 #include "Platforms/gcn/GCNGraphics.hpp"
 
-/**
- * Graphical button overriding the default GUIchan ugliness.
- *
- * Spiritual copy of The Mana World's Button class; the resource images are
- * actual copies.
- */
+// Graphical button overriding the default GUIchan ugliness.
+//
+// Spiritual copy of The Mana World's Button class; the resource images are
+// actual copies.
 class GCNButton : public gcn::Button {
  public:
-  /// Default constructor.
   GCNButton();
-
-  /// Initializes the button with a label.
   explicit GCNButton(const std::string& label);
-
-  /// Destructor
   ~GCNButton();
 
   // Override from gcn::Button:

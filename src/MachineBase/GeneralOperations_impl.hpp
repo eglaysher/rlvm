@@ -92,8 +92,8 @@ class Op_CallWithInt : public RLOp_Void_1< IntConstant_T > {
   }
 
  private:
-  /// The setter function to call on Op_SetToIncoming::reference when
-  /// called.
+  // The setter function to call on Op_SetToIncoming::reference when
+  // called.
   Setter setter;
 };
 
@@ -319,7 +319,7 @@ class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
 template<typename OBJTYPE>
 class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
  public:
-  /// The signature of a string getter function
+  // The signature of a string getter function
   typedef const std::string&(OBJTYPE::*Getter)() const;  // NOLINT
 
   explicit Op_ReturnStringValue(Getter g)
@@ -331,7 +331,7 @@ class Op_ReturnStringValue : public RLOp_Void_1< StrReference_T > {
   }
 
  private:
-  /// The string getter function to call
+  // The string getter function to call
   Getter getter_;
 };
 

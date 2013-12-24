@@ -107,7 +107,7 @@ class DriftGraphicsObject : public GraphicsObjectData {
   // don't force refresh in a loop.
   int last_rendered_time_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>

@@ -84,27 +84,27 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   // Used in serialization system.
   void loadFile();
 
-  /// Our parent system.
+  // Our parent system.
   System& system_;
 
-  /// The name of the graphics file that was loaded.
+  // The name of the graphics file that was loaded.
   std::string filename_;
 
-  /// The encapsulated surface to render
+  // The encapsulated surface to render
   boost::shared_ptr<const Surface> surface_;
 
-  /// Number of miliseconds to spend on a single frame in the
-  /// animation
+  // Number of miliseconds to spend on a single frame in the
+  // animation
   unsigned int frame_time_;
 
-  /// Current frame displayed (when animating)
+  // Current frame displayed (when animating)
   int current_frame_;
 
-  /// While currentlyPlaying() is true, this variable is used to store
-  /// the time when the frame was switched last
+  // While currentlyPlaying() is true, this variable is used to store
+  // the time when the frame was switched last
   unsigned int time_at_last_frame_change_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>

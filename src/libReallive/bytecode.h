@@ -106,7 +106,7 @@ public:
 
   BytecodeElement();
 
-  /// Execute this bytecode instruction on this virtual machine
+  // Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
 
   // Needed for MetaElement during reading the script
@@ -143,7 +143,7 @@ public:
   void set_value(const int value) { value_ = value; }
   const int entrypoint() const;
 
-  /// Execute this bytecode instruction on this virtual machine
+  // Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
 
   MetaElement(const ConstructionData* cv, const char* src);
@@ -163,7 +163,7 @@ class TextoutElement : public BytecodeElement {
   TextoutElement(const char* src, const char* file_end);
   TextoutElement();
 
-  /// Execute this bytecode instruction on this virtual machine
+  // Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
 };
 

@@ -73,31 +73,27 @@ class TextWakuNormal : public TextWaku {
                                 bool pressed);
 
  private:
-  /// Renders all the buttons in |button_map_|.
+  // Renders all the buttons in |button_map_|.
   void renderButtons();
 
-  /// Loads all bitmaps and sets up all window buttons for this waku.
+  // Loads all bitmaps and sets up all window buttons for this waku.
   void loadWindowWaku();
 
   void setWakuMain(const std::string& name);
 
-  /**
-   * Loads the graphics file name as the mask for represents the areas
-   * of the text window that should be shaded.
-   */
+  // Loads the graphics file name as the mask for represents the areas
+  // of the text window that should be shaded.
   void setWakuBacking(const std::string& name);
 
-  /**
-   * Loads the graphics file name as the image with all the button
-   * images used when drawing
-   */
+  // Loads the graphics file name as the image with all the button
+  // images used when drawing
   void setWakuButton(const std::string& name);
 
-  /// The system we are a part of.
+  // The system we are a part of.
   System& system_;
 
-  /// The text window we decorate. TODO: Figure out how wrong this is when we
-  /// are a name box.
+  // The text window we decorate. TODO: Figure out how wrong this is when we
+  // are a name box.
   TextWindow& window_;
 
   int setno_, no_;
@@ -106,19 +102,12 @@ class TextWakuNormal : public TextWaku {
   boost::shared_ptr<Surface> waku_backing_;
   boost::shared_ptr<const Surface> waku_button_;
 
-  /**
-   * @name Buttons in this text box
-   *
-   * Attached action buttons defined in the
-   * \#WAKU.index1.index2.XXX_BOX properties. These actions represent
-   * things such as moving the text box, clearing the text box, moving
-   * forward or backwards in message history, and farcall()-ing a
-   * custom handler (EXBTN_index_BOX).
-   *
-   * @{
-   */
+  // Attached action buttons defined in the
+  // #WAKU.index1.index2.XXX_BOX properties. These actions represent
+  // things such as moving the text box, clearing the text box, moving
+  // forward or backwards in message history, and farcall()-ing a
+  // custom handler (EXBTN_index_BOX).
   boost::scoped_ptr<TextWindowButton> button_map_[12];
-  /// @}
 };  // end of class TextWakuNormal
 
 #endif  // SRC_SYSTEMS_BASE_TEXTWAKUNORMAL_HPP_

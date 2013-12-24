@@ -99,12 +99,14 @@ const int MENU_SEPARATOR = -2;
 const int MENU = -3;
 
 struct MenuSpec {
-  /// Syscom id >= 0, or a MENU* thing.
+  // Syscom id >= 0, or a MENU* thing.
   int16_t syscom_id;
-  /// User interface string key, or NULL for syscom default.
+
+  // User interface string key, or NULL for syscom default.
   const char* label;
-  /// Event to send back if the button is pressed, or NULL for
-  /// SYSCOM_EVENTS[syscom_id]
+
+  // Event to send back if the button is pressed, or NULL for
+  // SYSCOM_EVENTS[syscom_id]
   const char* event_name;
 };
 

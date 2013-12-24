@@ -43,7 +43,7 @@ using boost::scoped_ptr;
 
 using namespace testing;
 
-/// Helper to specify the return value of getTicks().
+// Helper to specify the return value of getTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
  public:
   EffectEventSystemTest() : ticks(0) { }

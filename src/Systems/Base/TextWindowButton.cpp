@@ -326,11 +326,11 @@ ExbtnWindowButton::~ExbtnWindowButton() {
 }
 
 void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
-  /// Hide all text boxes when entering an Exbtn
+  // Hide all text boxes when entering an Exbtn
   machine.system().text().setSystemVisible(false);
 
-  /// Push a LongOperation onto the stack which will restore
-  /// visibility when we return from this Exbtn call
+  // Push a LongOperation onto the stack which will restore
+  // visibility when we return from this Exbtn call
   machine.pushLongOperation(new RestoreTextSystemVisibility);
   machine.farcall(scenario_, entrypoint_);
 }

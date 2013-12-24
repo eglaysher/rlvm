@@ -67,7 +67,7 @@ class GCNScrollArea : public gcn::ScrollArea,
     RIGHT
   };
 
-  /// Initializes object and shared data.
+  // Initializes object and shared data.
   void init();
 
   void drawButton(gcn::Graphics *graphics, BUTTON_DIR dir);

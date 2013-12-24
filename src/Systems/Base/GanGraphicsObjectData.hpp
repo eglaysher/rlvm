@@ -69,7 +69,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   virtual void playSet(int set);
 
  protected:
-  /// Resets to the first frame.
+  // Resets to the first frame.
   virtual void loopAnimation();
 
   virtual boost::shared_ptr<const Surface> currentSurface(
@@ -99,7 +99,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
     boost::scoped_array<char>& gan_data, int file_size);
   Frame readSetFrame(const std::string& filename, const char*& data);
 
-  /// Throws an error on bad GAN files.
+  // Throws an error on bad GAN files.
   void throwBadFormat(const std::string& filename, const std::string& error);
 
   System& system_;
@@ -113,7 +113,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   int current_frame_;
   int time_at_last_frame_change_;
 
-  /// The image the above coordinates map into.
+  // The image the above coordinates map into.
   boost::shared_ptr<const Surface> image_;
 
   friend class boost::serialization::access;

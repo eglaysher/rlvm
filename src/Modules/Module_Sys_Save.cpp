@@ -208,9 +208,7 @@ GetSaveFlagList;
 //     str class
 //     GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
 //     menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
-struct GetSaveFlag : public RLOp_Store_2<
-  IntConstant_T, GetSaveFlagList> {
-  /// Main operation
+struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList) {
     int fileExists = SaveExists()(machine, slot);
     if (!fileExists)

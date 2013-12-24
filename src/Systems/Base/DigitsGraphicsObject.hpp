@@ -71,7 +71,7 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   // The current composited surface.
   boost::shared_ptr<Surface> surface_;
 
-  /// boost::serialization support
+  // boost::serialization support
   friend class boost::serialization::access;
 
   template<class Archive>

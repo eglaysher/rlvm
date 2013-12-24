@@ -113,7 +113,7 @@ class GraphicsStackFrame {
 
   friend class boost::serialization::access;
 
-  /// boost::serialization support
+  // boost::serialization support
   template<class Archive>
   void serialize(Archive& ar, unsigned int version) {
     ar & command_name_ & has_filename_ & file_name_ & has_source_dc_

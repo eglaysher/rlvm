@@ -223,7 +223,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   setScreenSize(getScreenSize(gameexe));
   Texture::SetScreenSize(screenSize());
 
-  /// Grab the caption
+  // Grab the caption
   std::string cp932caption = gameexe("CAPTION").to_string();
   int name_enc = gameexe("NAME_ENC").to_int(0);
   caption_title_ = cp932toUTF8(cp932caption, name_enc);

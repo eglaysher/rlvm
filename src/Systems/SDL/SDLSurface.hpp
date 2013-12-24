@@ -76,17 +76,15 @@ class SDLSurface : public Surface,
                   int x, int y, int w, int h, unsigned int bytes_per_pixel,
                   int byte_order, int byte_type);
 
-    /**
-     * Reuploads this current piece of surface from the supplied
-     * surface without allocating a new texture.
-     */
+    // Reuploads this current piece of surface from the supplied
+    // surface without allocating a new texture.
     void reupload(SDL_Surface* surface, const Rect& dirty);
 
-    /// Clears |texture|. Called before a switch between windowed and
-    /// fullscreen mode, so that we aren't holding stale references.
+    // Clears |texture|. Called before a switch between windowed and
+    // fullscreen mode, so that we aren't holding stale references.
     void forceUnload();
 
-    /// The actual texture.
+    // The actual texture.
     boost::shared_ptr<Texture> texture;
 
     int x_, y_, w_, h_;
@@ -94,37 +92,35 @@ class SDLSurface : public Surface,
     int byte_order_, byte_type_;
   };
 
-  /// The SDL_Surface that contains the software version of the bitmap.
+  // The SDL_Surface that contains the software version of the bitmap.
   SDL_Surface* surface_;
 
-  /// The region table
+  // The region table
   std::vector<GrpRect> region_table_;
 
-  /// The SDLTexture which wraps one or more OpenGL textures
+  // The SDLTexture which wraps one or more OpenGL textures
   mutable std::vector<TextureRecord> textures_;
 
-  /// Whether texture_ represents the contents of surface_. Blits
-  /// from surfaces to surfaces invalidate the target surfaces's
-  /// texture.
+  // Whether texture_ represents the contents of surface_. Blits
+  // from surfaces to surfaces invalidate the target surfaces's
+  // texture.
   mutable bool texture_is_valid_;
 
-  /// When a chunk of the surface is invalidated, we only want to upload the
-  /// smallest possible area, but for simplicity, we only keep one dirty area.
+  // When a chunk of the surface is invalidated, we only want to upload the
+  // smallest possible area, but for simplicity, we only keep one dirty area.
   mutable Rect dirty_rectangle_;
 
-  /// Whether this surface is DC0 and needs special treatment.
+  // Whether this surface is DC0 and needs special treatment.
   bool is_dc0_;
 
-  /// A pointer to the graphics_system. We use this to make sure the
-  /// GraphicsSystem has a weak_ptr to all SDLSurface instances so it can
-  /// invalidate them all in the case of a screen change.
+  // A pointer to the graphics_system. We use this to make sure the
+  // GraphicsSystem has a weak_ptr to all SDLSurface instances so it can
+  // invalidate them all in the case of a screen change.
   SDLGraphicsSystem* graphics_system_;
 
-  /**
-   * Makes sure that texture_ is a valid object and that it's
-   * updated. This method should be called before doing anything with
-   * texture_.
-   */
+  // Makes sure that texture_ is a valid object and that it's
+  // updated. This method should be called before doing anything with
+  // texture_.
   void uploadTextureIfNeeded() const;
 
   bool is_mask_;
@@ -136,15 +132,15 @@ class SDLSurface : public Surface,
  public:
   explicit SDLSurface(SDLGraphicsSystem* system);
 
-  /// Surface that takes ownership of an externally created surface
-  /// and assumes it is only a single region.
+  // Surface that takes ownership of an externally created surface
+  // and assumes it is only a single region.
   SDLSurface(SDLGraphicsSystem* system, SDL_Surface* sruf);
 
-  /// Surface that takes ownership of an externally created surface.
+  // Surface that takes ownership of an externally created surface.
   SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
              const std::vector<SDLSurface::GrpRect>& region_table);
 
-  /// Surface created with a specified width and height
+  // Surface created with a specified width and height
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
@@ -161,12 +157,8 @@ class SDLSurface : public Surface,
 
   void dump();
 
-  /// allocate a surface
   void allocate(const Size& size);
-
   void allocate(const Size& size, bool is_dc0);
-
-  /// Deallocate
   void deallocate();
 
   operator SDL_Surface*() {
@@ -175,7 +167,6 @@ class SDLSurface : public Surface,
 
   SDL_Surface* rawSurface() { return surface_; }
 
-  /// Blits to another surface
   virtual void blitToSurface(Surface& dest_surface,
                              const Rect& src, const Rect& dst,
                              int alpha = 255, bool use_src_alpha = true) const;
@@ -201,7 +192,7 @@ class SDLSurface : public Surface,
 
   virtual int numPatterns() const;
 
-  /// Returns pattern information.
+  // Returns pattern information.
   virtual const GrpRect& getPattern(int patt_no) const;
 
   // -----------------------------------------------------------------------
