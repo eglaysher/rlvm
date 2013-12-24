@@ -55,13 +55,13 @@
 #include "Utilities/StringUtilities.hpp"
 
 #include <cmath>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/bind.hpp>
 
 #include "libReallive/bytecode.h"
 #include "libReallive/gameexe.h"
@@ -544,7 +544,7 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
   virtual void operator()(RLMachine& machine, int obj) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(
-        boost::bind(MutatorIsDone, boost::ref(machine), this,
+        std::bind(MutatorIsDone, std::ref(machine), this,
                     obj, -1, name_));
     machine.pushLongOperation(wait_op);
   }
@@ -561,8 +561,8 @@ class Op_MutatorWaitRepNo
   virtual void operator()(RLMachine& machine, int obj, int repno) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(
-        boost::bind(MutatorIsDone, boost::ref(machine), this,
-                    obj, repno, name_));
+        std::bind(MutatorIsDone, std::ref(machine), this,
+                  obj, repno, name_));
     machine.pushLongOperation(wait_op);
   }
 
@@ -585,8 +585,8 @@ class Op_MutatorWaitCNormal
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(
-        boost::bind(objectMutatorIsWorking,
-                    boost::ref(machine), this, obj, -1, name_));
+        std::bind(objectMutatorIsWorking,
+                  std::ref(machine), this, obj, -1, name_));
     machine.pushLongOperation(wait_op);
   }
 
@@ -603,8 +603,8 @@ class Op_MutatorWaitCRepNo
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(
-        boost::bind(objectMutatorIsWorking,
-                    boost::ref(machine), this, obj, repno, name_));
+        std::bind(objectMutatorIsWorking,
+                  std::ref(machine), this, obj, repno, name_));
     machine.pushLongOperation(wait_op);
   }
 

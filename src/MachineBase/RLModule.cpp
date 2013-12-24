@@ -27,7 +27,6 @@
 
 #include "MachineBase/RLModule.hpp"
 
-#include <boost/bind.hpp>
 #include <utility>
 #include <sstream>
 #include <string>
@@ -38,7 +37,6 @@
 #include "Utilities/Exception.hpp"
 #include "libReallive/bytecode.h"
 
-using namespace boost;
 using namespace std;
 using namespace libReallive;
 
@@ -119,7 +117,7 @@ bool RLModule::getProperty(int property, int& value) const {
 
 RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
   return find_if(property_list_->begin(), property_list_->end(),
-                 bind(&Property::first, _1) == property);
+                 [&](Property& p) { return p.first == property; });
 }
 
 void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {

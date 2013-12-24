@@ -26,7 +26,7 @@
 
 #include "Systems/Base/TextWakuNormal.hpp"
 
-#include <boost/bind.hpp>
+#include <functional>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -44,6 +44,7 @@ using std::endl;
 using std::ostringstream;
 using std::setfill;
 using std::setw;
+using namespace std::placeholders;
 
 namespace {
 
@@ -198,14 +199,14 @@ void TextWakuNormal::loadWindowWaku() {
         new ActionTextWindowButton(
             system_,
             ts.windowClearUse(), waku("CLEAR_BOX"),
-            bind(&GraphicsSystem::toggleInterfaceHidden, ref(gs))));
+            std::bind(&GraphicsSystem::toggleInterfaceHidden, std::ref(gs))));
   }
   if (waku("MSGBKLEFT_BOX").exists()) {
     button_map_[1].reset(
         new RepeatActionWhileHoldingWindowButton(
             system_,
             ts.windowMsgbkleftUse(), waku("MSGBKLEFT_BOX"),
-            bind(&TextSystem::backPage, ref(ts)),
+            std::bind(&TextSystem::backPage, std::ref(ts)),
             250));
   }
   if (waku("MSGBKRIGHT_BOX").exists()) {
@@ -213,7 +214,7 @@ void TextWakuNormal::loadWindowWaku() {
         new RepeatActionWhileHoldingWindowButton(
             system_,
             ts.windowMsgbkrightUse(), waku("MSGBKRIGHT_BOX"),
-            bind(&TextSystem::forwardPage, ref(ts)),
+            std::bind(&TextSystem::forwardPage, std::ref(ts)),
             250));
   }
 
@@ -233,7 +234,7 @@ void TextWakuNormal::loadWindowWaku() {
         new ActivationTextWindowButton(
             system_,
             ts.windowReadJumpUse(), waku("READJUMP_BOX"),
-            bind(&TextSystem::setSkipMode, ref(ts), _1));
+            std::bind(&TextSystem::setSkipMode, std::ref(ts), _1));
     readjump_box->setEnabledNotification(
         NotificationType::SKIP_MODE_ENABLED_CHANGED);
     readjump_box->setChangeNotification(
@@ -251,7 +252,7 @@ void TextWakuNormal::loadWindowWaku() {
         new ActivationTextWindowButton(
             system_,
             ts.windowAutomodeUse(), waku("AUTOMODE_BOX"),
-            bind(&TextSystem::setAutoMode, ref(ts), _1));
+            std::bind(&TextSystem::setAutoMode, std::ref(ts), _1));
     automode_button->setChangeNotification(
         NotificationType::AUTO_MODE_STATE_CHANGED);
 

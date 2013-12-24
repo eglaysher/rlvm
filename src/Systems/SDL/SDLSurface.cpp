@@ -28,7 +28,6 @@
 #include "Systems/SDL/SDLSurface.hpp"
 
 #include <SDL/SDL.h>
-#include <boost/bind.hpp>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -45,9 +44,7 @@
 #include "pygame/alphablit.h"
 
 using namespace std;
-using boost::bind;
 using boost::ptr_vector;
-
 
 namespace {
 
@@ -533,8 +530,9 @@ void SDLSurface::uploadTextureIfNeeded() const {
       }
     } else {
       // Reupload the textures without reallocating them.
-      for_each(textures_.begin(), textures_.end(),
-               bind(&TextureRecord::reupload, _1, surface_, dirty_rectangle_));
+      for_each(textures_.begin(), textures_.end(), [&](TextureRecord& record) {
+          record.reupload(surface_, dirty_rectangle_);
+        });
     }
 
     dirty_rectangle_ = Rect();

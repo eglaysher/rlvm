@@ -28,13 +28,6 @@
 #include "Effects/BlindEffect.hpp"
 #include "Systems/Base/Surface.hpp"
 
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-
-using boost::bind;
-using boost::function;
-using boost::ref;
-
 // -----------------------------------------------------------------------
 // BlindEffect
 // -----------------------------------------------------------------------

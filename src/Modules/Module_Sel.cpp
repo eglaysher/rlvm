@@ -29,7 +29,6 @@
 
 #include <vector>
 #include <iterator>
-#include <boost/bind.hpp>
 #include <string>
 
 #include "LongOperations/ButtonObjectSelectLongOperation.hpp"
@@ -45,7 +44,6 @@
 #include "libReallive/bytecode.h"
 #include "libReallive/gameexe.h"
 
-using boost::bind;
 using libReallive::SelectElement;
 using libReallive::CommandElement;
 

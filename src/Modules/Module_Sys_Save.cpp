@@ -29,7 +29,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/bind.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -66,7 +65,6 @@ using namespace libReallive;
 using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;
-using boost::bind;
 namespace fs = boost::filesystem;
 using std::get;
 

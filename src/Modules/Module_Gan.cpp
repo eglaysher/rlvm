@@ -27,7 +27,6 @@
 
 #include "Modules/Module_Gan.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "LongOperations/WaitLongOperation.hpp"
@@ -62,7 +61,7 @@ struct objWaitAll : public RLOp_Void_Void {
 
   void operator()(RLMachine& machine) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(boost::bind(WaitUntilDone, boost::ref(machine)));
+    wait_op->breakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
     machine.pushLongOperation(wait_op);
   }
 };

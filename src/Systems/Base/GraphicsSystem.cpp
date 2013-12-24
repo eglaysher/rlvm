@@ -32,7 +32,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
@@ -73,7 +72,6 @@
 #include "libReallive/gameexe.h"
 #include "libReallive/expression.h"
 
-using boost::bind;
 using boost::iends_with;
 using boost::lexical_cast;
 using std::cerr;
@@ -560,7 +558,7 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // they want to force a redraw
   for_each(foregroundObjects().allocated_begin(),
            foregroundObjects().allocated_end(),
-           bind(&GraphicsObject::execute, _1, boost::ref(machine)));
+           [&](GraphicsObject& obj) { obj.execute(machine); });
 
   if (mouse_cursor_)
     mouse_cursor_->execute(system());

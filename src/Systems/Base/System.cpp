@@ -29,7 +29,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -56,7 +55,6 @@
 #include "libReallive/gameexe.h"
 
 using namespace std;
-using boost::bind;
 using boost::replace_all;
 using boost::to_lower;
 

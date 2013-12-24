@@ -27,7 +27,7 @@
 
 #include "Modules/Module_Koe.hpp"
 
-#include <boost/bind.hpp>
+#include <functional>
 
 #include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
@@ -53,14 +53,14 @@ bool koeIsPlaying(RLMachine& machine) {
 void addKoeWaitC(RLMachine& machine) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
   wait_op->breakOnClicks();
-  wait_op->breakOnEvent(boost::bind(koeIsPlaying, boost::ref(machine)));
+  wait_op->breakOnEvent(std::bind(koeIsPlaying, std::ref(machine)));
 
   machine.pushLongOperation(wait_op);
 }
 
 void addKoeWait(RLMachine& machine) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(boost::bind(koeIsPlaying, boost::ref(machine)));
+  wait_op->breakOnEvent(std::bind(koeIsPlaying, std::ref(machine)));
 
   machine.pushLongOperation(wait_op);
 }

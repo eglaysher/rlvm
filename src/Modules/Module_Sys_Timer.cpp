@@ -27,7 +27,6 @@
 
 #include "Module_Sys_Frame.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
 #include "LongOperations/WaitLongOperation.hpp"
@@ -77,8 +76,8 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
       WaitLongOperation* wait_op = new WaitLongOperation(machine);
       if (in_time_c_)
         wait_op->breakOnClicks();
-      wait_op->breakOnEvent(boost::bind(
-          TimerIsDone, boost::ref(machine), layer_, counter, time));
+      wait_op->breakOnEvent(std::bind(
+          TimerIsDone, std::ref(machine), layer_, counter, time));
       machine.pushLongOperation(wait_op);
     }
   }

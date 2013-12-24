@@ -29,7 +29,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include "MachineBase/LongOperation.hpp"
@@ -47,7 +46,6 @@
 #include "libReallive/expression.h"
 #include "libReallive/gameexe.h"
 
-using boost::bind;
 using std::cerr;
 using std::endl;
 using std::string;
@@ -56,6 +54,8 @@ using std::distance;
 using libReallive::SelectElement;
 using libReallive::ExpressionPiece;
 using libReallive::CommandElement;
+
+using namespace std::placeholders;
 
 // -----------------------------------------------------------------------
 // SelectLongOperation
@@ -138,8 +138,10 @@ void SelectLongOperation::selected(int num) {
 }
 
 bool SelectLongOperation::selectOption(const std::string& str) {
-  std::vector<Option>::iterator it =
-      find_if(options_.begin(), options_.end(), bind(&Option::str, _1) == str);
+  std::vector<Option>::iterator it = find_if(
+      options_.begin(),
+      options_.end(),
+      [&](Option& o) { return o.str == str; });
 
   if (it != options_.end() && it->shown) {
     selected(distance(options_.begin(), it));
@@ -179,7 +181,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
   text_window_->setVisible(true);
   text_window_->startSelectionMode();
   text_window_->setSelectionCallback(
-    bind(&NormalSelectLongOperation::selected, this, _1));
+      std::bind(&NormalSelectLongOperation::selected, this, _1));
 
   for (size_t i = 0; i < options_.size(); ++i) {
     // TODO(erg): Also deal with colour.
@@ -317,7 +319,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   // Build graphic representations of the choices to display to the user.
   TextSystem& ts = machine.system().text();
   int shown_option_count = std::count_if(options_.begin(), options_.end(),
-                                         bind(&Option::shown, _1));
+                                         std::bind(&Option::shown, _1));
 
   // Calculate out the bounding rectangles for all the options.
   Size screen_size = machine.system().graphics().screenSize();

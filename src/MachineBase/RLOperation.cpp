@@ -36,10 +36,8 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <boost/bind.hpp>
 
 using namespace std;
-using namespace boost;
 using namespace libReallive;
 
 // -----------------------------------------------------------------------
@@ -91,8 +89,8 @@ bool RLOperation::getProperty(int property, int& value) const {
 
 RLOperation::PropertyList::iterator RLOperation::findProperty(
     int property) const {
-  return find_if (property_list_->begin(), property_list_->end(),
-                 bind(&Property::first, _1) == property);
+  return find_if(property_list_->begin(), property_list_->end(),
+                 [&](Property& p) { return p.first == property; });
 }
 
 bool RLOperation::advanceInstructionPointer() {

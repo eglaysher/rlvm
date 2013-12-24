@@ -26,8 +26,8 @@
 
 #include "Platforms/gcn/GCNPlatform.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
+#include <functional>
 #include <iomanip>
 #include <queue>
 #include <string>
@@ -51,7 +51,7 @@
 #include "libReallive/gameexe.h"
 
 using namespace std;
-using boost::bind;
+using namespace std::placeholders;
 namespace fs = boost::filesystem;
 
 const char* EVENT_CANCEL = "EVENT_CANCEL";

@@ -28,7 +28,6 @@
 #include "Systems/Base/TextPage.hpp"
 
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <string>
 
 #include "MachineBase/RLMachine.hpp"
@@ -39,7 +38,9 @@
 #include "libReallive/gameexe.h"
 #include "utf8cpp/utf8.h"
 
-using namespace boost;
+using std::bind;
+using std::ref;
+using namespace std::placeholders;
 
 // -----------------------------------------------------------------------
 // TextPageElement

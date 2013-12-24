@@ -27,7 +27,6 @@
 
 #include "GL/glew.h"
 
-#include <boost/bind.hpp>
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
@@ -53,7 +52,6 @@
 #include "pygame/alphablit.h"
 
 using namespace std;
-using namespace boost;
 
 unsigned int Texture::s_screen_width = 0;
 unsigned int Texture::s_screen_height = 0;
@@ -523,9 +521,10 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst,
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   // Blend when we have less opacity
-  if (find_if(opacity, opacity + 4, bind(std::less<int>(), _1, 255))
-     != opacity + 4)
+  if (find_if(opacity, opacity + 4, [](int o) { return o < 255; }) !=
+      opacity + 4) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
 
   glBegin(GL_QUADS); {
     glColor4ub(255, 255, 255, opacity[0]);

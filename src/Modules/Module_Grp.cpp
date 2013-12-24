@@ -28,8 +28,8 @@
 #include "Modules/Module_Grp.hpp"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -215,8 +215,8 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
     machine.system().graphics().QueueShakeSpec(spec);
 
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(boost::bind(StopShaking, boost::ref(machine)));
-    wait_op->setSleepTimeProvider(boost::bind(SleepTime, boost::ref(machine)));
+    wait_op->breakOnEvent(std::bind(StopShaking, std::ref(machine)));
+    wait_op->setSleepTimeProvider(std::bind(SleepTime, std::ref(machine)));
     machine.pushLongOperation(wait_op);
   }
 

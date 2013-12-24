@@ -27,7 +27,7 @@
 
 #include "Modules/Module_Pcm.hpp"
 
-#include <boost/bind.hpp>
+#include <functional>
 #include <string>
 
 #include "LongOperations/WaitLongOperation.hpp"
@@ -44,8 +44,8 @@ bool NoLongerPlaying(RLMachine& machine, int channel) {
 
 void addPcmWait(RLMachine& machine, int channel) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(boost::bind(
-      NoLongerPlaying, boost::ref(machine), channel));
+  wait_op->breakOnEvent(std::bind(
+      NoLongerPlaying, std::ref(machine), channel));
   machine.pushLongOperation(wait_op);
 }
 

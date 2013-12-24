@@ -31,7 +31,6 @@
 #include "Systems/Base/TextSystem.hpp"
 
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <map>
 #include <sstream>
@@ -55,7 +54,6 @@
 #include "libReallive/gameexe.h"
 #include "utf8cpp/utf8.h"
 
-using boost::bind;
 using std::back_inserter;
 using std::endl;
 using std::ostringstream;

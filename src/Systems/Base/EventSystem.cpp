@@ -27,7 +27,6 @@
 
 #include "Systems/Base/EventSystem.hpp"
 
-#include <boost/bind.hpp>
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"

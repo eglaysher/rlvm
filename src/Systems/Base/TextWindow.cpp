@@ -28,7 +28,6 @@
 #include "Systems/Base/TextWindow.hpp"
 
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iomanip>
 #include <ostream>
@@ -51,13 +50,15 @@
 #include "libReallive/gameexe.h"
 #include "utf8cpp/utf8.h"
 
-using boost::bind;
-using boost::ref;
+using std::bind;
 using std::endl;
 using std::ostringstream;
+using std::ref;
 using std::setfill;
 using std::setw;
 using std::vector;
+
+using namespace std::placeholders;
 
 struct TextWindow::FaceSlot {
   explicit FaceSlot(const std::vector<int>& vec)

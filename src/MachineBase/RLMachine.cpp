@@ -31,6 +31,7 @@
 
 #include "MachineBase/RLMachine.hpp"
 
+#include <functional>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -38,7 +39,6 @@
 #include <vector>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign.hpp>
-#include <boost/bind.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
@@ -74,15 +74,16 @@ namespace fs = boost::filesystem;
 using namespace std;
 using namespace libReallive;
 
-using boost::bind;
 using boost::function;
 using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 
+namespace {
+
 // Seen files are terminated with the string "SeenEnd", which isn't NULL
 // terminated and has a bunch of random garbage after it.
-static const char seen_end[] = {
+const char seen_end[] = {
   130, 114,  // S
   130, 133,  // e
   130, 133,  // e
@@ -92,7 +93,13 @@ static const char seen_end[] = {
   130, 132   // d
 };
 
-static const std::string SeenEnd(seen_end, 14);
+const std::string SeenEnd(seen_end, 14);
+
+bool IsNotLongOp(StackFrame& frame) {
+  return frame.frame_type != StackFrame::TYPE_LONGOP;
+}
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 // RLMachine
@@ -319,9 +326,10 @@ void RLMachine::executeUntilHalted() {
 
 void RLMachine::advanceInstructionPointer() {
   if (!replaying_graphics_stack()) {
-    std::vector<StackFrame>::reverse_iterator it =
-        find_if(call_stack_.rbegin(), call_stack_.rend(),
-                bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+    std::vector<StackFrame>::reverse_iterator it = find_if(
+        call_stack_.rbegin(),
+        call_stack_.rend(),
+        IsNotLongOp);
 
     if (it != call_stack_.rend()) {
       it->ip++;
@@ -358,8 +366,7 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
     //
     // The lag is noticeable on the CLANNAD menu, without profiling tools.
     std::vector<StackFrame>::reverse_iterator it =
-        find_if(call_stack_.rbegin(), call_stack_.rend(),
-                bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+        find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
 
     if (it != call_stack_.rend()) {
       it->scenario = scenario;
@@ -424,13 +431,11 @@ void RLMachine::pushStringValueUp(int index, const std::string& val) {
 
   // Find the first real stack frame.
   std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
-              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+      find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
   if (it != call_stack_.rend()) {
     // Now try to move one stack frame up.
     it++;
-    it = find_if(it, call_stack_.rend(),
-                 bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+    it = find_if(it, call_stack_.rend(), IsNotLongOp);
 
     if (it != call_stack_.rend()) {
       it->strK[index] = val;
@@ -468,8 +473,7 @@ void RLMachine::popStackFrame() {
 
 int* RLMachine::currentIntLBank() {
   std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
-              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+      find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
   if (it != call_stack_.rend()) {
     return it->intL;
   }
@@ -479,8 +483,7 @@ int* RLMachine::currentIntLBank() {
 
 std::string* RLMachine::currentStrKBank() {
   std::vector<StackFrame>::reverse_iterator it =
-      find_if(call_stack_.rbegin(), call_stack_.rend(),
-              bind(&StackFrame::frame_type, _1) != StackFrame::TYPE_LONGOP);
+      find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
   if (it != call_stack_.rend()) {
     return it->strK;
   }

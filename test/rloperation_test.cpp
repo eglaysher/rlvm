@@ -42,10 +42,9 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <boost/bind.hpp>
 
-using namespace boost;
 using namespace std;
+using namespace std::placeholders;
 using namespace libReallive;
 
 // -----------------------------------------------------------------------

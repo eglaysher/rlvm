@@ -40,7 +40,6 @@
 #include "Utilities/findFontFile.h"
 #include "libReallive/gameexe.h"
 
-#include <boost/bind.hpp>
 #include <SDL/SDL_ttf.h>
 #include <iostream>
 #include <sstream>
@@ -49,7 +48,6 @@
 #include <vector>
 
 using namespace std;
-using namespace boost;
 
 SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
     : TextSystem(system, gameexe), sdl_system_(system) {

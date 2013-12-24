@@ -39,11 +39,12 @@
 #include "testUtils.hpp"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 
 #include <string>
 #include <vector>
 
+using namespace std;
+using namespace std::placeholders;
 using namespace boost;
 
 namespace {
@@ -194,7 +195,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
                       str, "");
 
   EXPECT_EQ(window.currentContents(),
@@ -222,7 +223,7 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
                       str, "");
 
   EXPECT_EQ(window.currentContents(),
@@ -252,7 +253,7 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   str += kPeriod;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, ref(window), _1, _2),
+  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
                       str, "");
 
   EXPECT_EQ(window.currentContents(),

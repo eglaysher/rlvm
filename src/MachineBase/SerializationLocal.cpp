@@ -43,7 +43,6 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
-#include <boost/bind.hpp>
 
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"

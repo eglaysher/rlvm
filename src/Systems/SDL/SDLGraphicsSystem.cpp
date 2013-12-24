@@ -33,7 +33,6 @@
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>

@@ -31,7 +31,6 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
-#include <boost/bind.hpp>
 
 using namespace std;
 

@@ -27,7 +27,7 @@
 
 #include "Systems/SDL/SDLEventSystem.hpp"
 
-#include <boost/bind.hpp>
+#include <functional>
 #include <SDL/SDL.h>
 
 #include "MachineBase/RLMachine.hpp"
@@ -35,7 +35,8 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
 
-using boost::bind;
+using std::bind;
+using namespace std::placeholders;
 
 SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
     : EventSystem(gexe), shift_pressed_(false), ctrl_pressed_(false),

@@ -27,8 +27,8 @@
 
 #include "Modules/Module_Bgm.hpp"
 
+#include <functional>
 #include <string>
-#include <boost/bind.hpp>
 
 #include "LongOperations/WaitLongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
@@ -48,7 +48,7 @@ bool BgmWait(RLMachine& machine) {
 
 LongOperation* MakeBgmWait(RLMachine& machine) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(boost::bind(BgmWait, boost::ref(machine)));
+  wait_op->breakOnEvent(std::bind(BgmWait, std::ref(machine)));
   return wait_op;
 }
 

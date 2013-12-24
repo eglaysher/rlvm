@@ -26,12 +26,14 @@
 
 #include "MachineBase/GameHacks.hpp"
 
-#include <boost/bind.hpp>
+#include <functional>
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "libReallive/gameexe.h"
+
+using namespace std;
 
 namespace {
 
@@ -56,10 +58,8 @@ void addGameHacks(RLMachine& machine) {
   std::string diskmark = machine.system().gameexe()("DISKMARK");
 
   if (diskmark == "P_BRIDE_SE.ENV") {
-    machine.addLineAction(310, 446, bind(PBRIDE_ResetAutoMode,
-                                         boost::ref(machine)));
+    machine.addLineAction(310, 446, bind(PBRIDE_ResetAutoMode, ref(machine)));
   } else if (diskmark == "LB.ENV" || diskmark == "LB_EX.ENV") {
-    machine.addLineAction(7030, 15, bind(LB_SkipBaseball,
-                                         boost::ref(machine)));
+    machine.addLineAction(7030, 15, bind(LB_SkipBaseball, ref(machine)));
   }
 }
