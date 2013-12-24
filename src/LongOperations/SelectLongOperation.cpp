@@ -64,18 +64,17 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
                                          const SelectElement& commandElement)
     : machine_(machine),
       return_value_(-1) {
-  const vector<SelectElement::Param>& params = commandElement.getRawParams();
-  for (unsigned int i = 0; i < params.size(); ++i) {
+  for (SelectElement::Param const& param : commandElement.getRawParams()) {
     Option o;
     o.shown = true;
     o.enabled = true;
     o.use_colour = false;
 
     std::string evaluated_native =
-        libReallive::evaluatePRINT(machine, params[i].text);
+        libReallive::evaluatePRINT(machine, param.text);
     o.str = cp932toUTF8(evaluated_native, machine.getTextEncoding());
 
-    for (auto const& condition : params[i].cond_parsed) {
+    for (auto const& condition : param.cond_parsed) {
       switch (condition.effect) {
         // TODO(erg): Someday, I might need to support the other options, but
         // for now, I've never seen anything other than hide.
@@ -152,8 +151,8 @@ bool SelectLongOperation::selectOption(const std::string& str) {
 
 std::vector<std::string> SelectLongOperation::options() const {
   std::vector<std::string> opt;
-  for (size_t i = 0; i < options_.size(); i++) {
-    opt.push_back(options_[i].str);
+  for (Option const& option : options_) {
+    opt.push_back(option.str);
   }
 
   return opt;

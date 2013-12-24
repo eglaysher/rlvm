@@ -499,8 +499,7 @@ std::string printableToParsableString(const std::string& src) {
 
   boost::char_separator<char> sep(" ");
   ttokenizer tokens(src, sep);
-  for (ttokenizer::iterator it = tokens.begin(); it != tokens.end(); ++it) {
-    const std::string& tok = *it;
+  for (string const& tok : tokens) {
     if (tok.size() > 2)
       throw libReallive::Error(
           "Invalid string given to printableToParsableString");
@@ -1048,10 +1047,9 @@ void ComplexExpressionPiece::addContainedPiece(
 std::string ComplexExpressionPiece::serializedValue(
     RLMachine& machine) const {
   string s("(");
-  for (ExpressionPiecesVector::const_iterator it =
-           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
+  for (auto const& piece : contained_pieces_) {
     s += "(";
-    s += (*it)->serializedValue(machine);
+    s += piece->serializedValue(machine);
     s += ")";
   }
   s += ")";
@@ -1064,10 +1062,9 @@ std::string ComplexExpressionPiece::getDebugValue(RLMachine& machine) const {
 
 std::string ComplexExpressionPiece::getDebugString() const {
   string s("(");
-  for (ExpressionPiecesVector::const_iterator it =
-           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
+  for (auto const& piece : contained_pieces_) {
     s += "(";
-    s += (*it)->getDebugString();
+    s += piece->getDebugString();
     s += ")";
   }
   s += ")";
@@ -1097,9 +1094,8 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
 
   if (contained_pieces_.size() > 1)
     s.append("(");
-  for (ExpressionPiecesVector::const_iterator it =
-           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
-    s += (*it)->serializedValue(machine);
+  for (auto const& piece : contained_pieces_) {
+    s += piece->serializedValue(machine);
   }
   if (contained_pieces_.size() > 1)
     s.append(")");
@@ -1114,15 +1110,14 @@ std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
 
   bool first = true;
 
-  for (ExpressionPiecesVector::const_iterator it =
-           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
+  for (auto const& piece : contained_pieces_) {
     if (!first) {
       oss << ", ";
     } else {
       first = false;
     }
 
-    oss << (*it)->getDebugValue(machine);
+    oss << piece->getDebugValue(machine);
   }
   oss << "}";
 
@@ -1135,15 +1130,14 @@ std::string SpecialExpressionPiece::getDebugString() const {
   oss << int(overloadTag) << ":{";
 
   bool first = true;
-  for (ExpressionPiecesVector::const_iterator it =
-           contained_pieces_.begin(); it != contained_pieces_.end(); ++it) {
+  for (auto const& piece : contained_pieces_) {
     if (!first) {
       oss << ", ";
     } else {
       first = false;
     }
 
-    oss << (*it)->getDebugString();
+    oss << piece->getDebugString();
   }
   oss << "}";
 

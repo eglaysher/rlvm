@@ -105,7 +105,8 @@ void MultiDispatch::parseParameters(
 void MultiDispatch::operator()(
     RLMachine& machine,
     const libReallive::CommandElement& ff) {
-  const libReallive::ExpressionPiecesVector& parameter_pieces = ff.getParameters();
+  const libReallive::ExpressionPiecesVector& parameter_pieces =
+      ff.getParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libReallive::ExpressionPiecesVector& element =

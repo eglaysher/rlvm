@@ -170,19 +170,17 @@ SoundSystem::SoundSystem(System& system)
       vector<string> string_koeplay_ids;
       boost::split(string_koeplay_ids, no_parens, boost::is_any_of(","));
 
-      for (vector<string>::iterator it = string_koeplay_ids.begin();
-           it != string_koeplay_ids.end(); ++it) {
-        koeplay_ids.push_back(lexical_cast<int>(*it));
+      for (std::string const& string_id : string_koeplay_ids) {
+        koeplay_ids.push_back(lexical_cast<int>(string_id));
       }
     } else {
       koeplay_ids.push_back(lexical_cast<int>(unprocessed_koeids));
     }
 
     int onoff = (keyparts.at(3) == "ON") ? 1 : 0;
-    for (vector<int>::iterator it = koeplay_ids.begin();
-         it != koeplay_ids.end(); ++it) {
-      usekoe_to_koeplay_mapping_.insert(std::make_pair(usekoe_id, *it));
-      globals_.character_koe_enabled[*it] = onoff;
+    for (int id : koeplay_ids) {
+      usekoe_to_koeplay_mapping_.insert(std::make_pair(usekoe_id, id));
+      globals_.character_koe_enabled[id] = onoff;
     }
   }
 }

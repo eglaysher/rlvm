@@ -263,14 +263,11 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
   }
 
   // For every Animation, sum up the frame_length_ms.
-  for (std::vector<Layer>::iterator it = layers_.begin();
-       it != layers_.end(); ++it) {
-    for (std::vector<Animation>::iterator jt = it->animations.begin();
-         jt != it->animations.end(); ++jt) {
-      jt->total_time = 0;
-      for (std::vector<Frame>::const_iterator kt = jt->frames.begin();
-           kt != jt->frames.end(); ++kt) {
-        jt->total_time += kt->frame_length_ms;
+  for (Layer& layer : layers_) {
+    for (Animation& animation : layer.animations) {
+      animation.total_time = 0;
+      for (Frame& frame : animation.frames) {
+        animation.total_time += frame.frame_length_ms;
       }
     }
   }
@@ -281,13 +278,10 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
 
 void HIKScript::EnsureUploaded() {
   // Force every frame to be uploaded.
-  for (std::vector<Layer>::iterator it = layers_.begin();
-       it != layers_.end(); ++it) {
-    for (std::vector<Animation>::iterator jt = it->animations.begin();
-         jt != it->animations.end(); ++jt) {
-      for (std::vector<Frame>::const_iterator kt = jt->frames.begin();
-           kt != jt->frames.end(); ++kt) {
-        kt->surface->EnsureUploaded();
+  for (Layer& layer : layers_) {
+    for (Animation& animation : layer.animations) {
+      for (Frame& frame : animation.frames) {
+        frame.surface->EnsureUploaded();
       }
     }
   }

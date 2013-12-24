@@ -75,21 +75,20 @@ void PrintParameterString(std::ostream& oss,
                           const std::vector<std::string>& parameters) {
   bool first = true;
   oss << "(";
-  for (std::vector<std::string>::const_iterator it = parameters.begin();
-       it != parameters.end(); ++it) {
+  for (std::string const& param : parameters) {
     if (!first) {
       oss << ", ";
     }
     first = false;
 
     // Take the binary stuff and try to get usefull, printable values.
-    const char* start = it->c_str();
+    const char* start = param.c_str();
     try {
       std::unique_ptr<ExpressionPiece> piece(get_data(start));
       oss << piece->getDebugString();
     } catch (libReallive::Error& e) {
       // Any error throw here is a parse error.
-      oss << "{RAW : " << parsableToPrintableString(*it) << "}";
+      oss << "{RAW : " << parsableToPrintableString(param) << "}";
     }
   }
   oss << ")";
@@ -604,8 +603,8 @@ SelectElement::text(const int index) const {
 const size_t
 SelectElement::length() const {
   size_t rv = repr.size() + 5;
-  for (params_t::const_iterator it = params.begin(); it != params.end(); ++it)
-    rv += it->cond_text.size() + it->text.size() + 3;
+  for (Param const& param : params)
+    rv += param.cond_text.size() + param.text.size() + 3;
   rv += (uselessjunk * 3);
   return rv;
 }
@@ -644,7 +643,8 @@ const size_t
 FunctionElement::length() const {
   if (params.size() > 0) {
     size_t rv(COMMAND_SIZE + 2);
-    for (std::vector<string>::const_iterator it = params.begin(); it != params.end(); ++it) rv += it->size();
+    for (std::string const& param : params)
+      rv += param.size();
     return rv;
   } else {
     return COMMAND_SIZE;
@@ -659,9 +659,8 @@ std::string FunctionElement::serializableData(RLMachine& machine) const {
     rv.push_back(command[i]);
   if (params.size() > 0) {
     rv.push_back('(');
-    for (std::vector<string>::const_iterator it = params.begin();
-         it != params.end(); ++it) {
-      const char* data = it->c_str();
+    for (string const& param : params) {
+      const char* data = param.c_str();
       std::unique_ptr<ExpressionPiece> expression(get_data(data));
       rv.append(expression->serializedValue(machine));
     }
