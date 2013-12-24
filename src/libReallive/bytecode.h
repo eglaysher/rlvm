@@ -153,8 +153,6 @@ public:
 // Display-text elements.
 
 class TextoutElement : public BytecodeElement {
- private:
-  string repr;
  public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
@@ -165,6 +163,9 @@ class TextoutElement : public BytecodeElement {
 
   // Execute this bytecode instruction on this virtual machine
   virtual void runOnMachine(RLMachine& machine) const;
+
+ private:
+  string repr;
 };
 
 // Expression elements.
@@ -174,14 +175,7 @@ class TextoutElement : public BytecodeElement {
  * A BytecodeElement that represents an expression
  */
 class ExpressionElement : public BytecodeElement {
- private:
-  string repr;
-
-  // Storage for the parsed expression so we only have to calculate
-  // it once (and so we can return it by const reference)
-  mutable std::unique_ptr<ExpressionPiece> parsed_expression_;
-
-public:
+ public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
@@ -203,17 +197,18 @@ public:
   const ExpressionPiece& parsedExpression() const;
 
   virtual void runOnMachine(RLMachine& machine) const;
+
+ private:
+  string repr;
+
+  // Storage for the parsed expression so we only have to calculate
+  // it once (and so we can return it by const reference)
+  mutable std::unique_ptr<ExpressionPiece> parsed_expression_;
 };
 
 // Command elements.
 
 class CommandElement : public BytecodeElement {
- protected:
-  static const int COMMAND_SIZE = 8;
-  unsigned char command[COMMAND_SIZE];
-
-  mutable std::vector<std::unique_ptr<ExpressionPiece> > parsed_parameters_;
-
  public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
@@ -246,8 +241,11 @@ class CommandElement : public BytecodeElement {
 
   virtual void runOnMachine(RLMachine& machine) const;
 
- private:
-  CommandElement(const CommandElement& e);
+ protected:
+  static const int COMMAND_SIZE = 8;
+  unsigned char command[COMMAND_SIZE];
+
+  mutable std::vector<std::unique_ptr<ExpressionPiece> > parsed_parameters_;
 };
 
 class SelectElement : public CommandElement {
@@ -301,8 +299,7 @@ public:
 };
 
 class FunctionElement : public CommandElement {
-  std::vector<string> params;
-public:
+ public:
   virtual const ElementType type() const;
   FunctionElement(const char* src, const std::vector<string>& params);
 
@@ -311,10 +308,13 @@ public:
 
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
+
+ private:
+  std::vector<string> params;
 };
 
 class VoidFunctionElement : public CommandElement {
-public:
+ public:
   virtual const ElementType type() const;
   VoidFunctionElement(const char* src);
 
@@ -326,9 +326,6 @@ public:
 };
 
 class SingleArgFunctionElement : public CommandElement {
- private:
-  std::string arg_;
-
  public:
   virtual const ElementType type() const;
   SingleArgFunctionElement(const char* src,
@@ -339,26 +336,25 @@ class SingleArgFunctionElement : public CommandElement {
 
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
+
+ private:
+  std::string arg_;
 };
 
 class PointerElement : public CommandElement {
-protected:
-  Pointers targets;
-
-public:
+ public:
   PointerElement(const char* src);
   ~PointerElement();
 
   virtual void set_pointers(ConstructionData& cdata);
   virtual const size_t pointers_count() const;
   virtual pointer_t get_pointer(int i) const;
+
+ protected:
+  Pointers targets;
 };
 
 class GotoElement : public CommandElement {
- private:
-  unsigned long id_;
-  pointer_t pointer_;
-
  public:
   virtual const ElementType type() const;
   GotoElement(const char* src, ConstructionData& cdata);
@@ -371,14 +367,13 @@ class GotoElement : public CommandElement {
   virtual void set_pointers(ConstructionData& cdata);
   virtual const size_t pointers_count() const;
   virtual pointer_t get_pointer(int i) const;
-};
 
-class GotoIfElement : public CommandElement {
  private:
   unsigned long id_;
   pointer_t pointer_;
-  string repr;
+};
 
+class GotoIfElement : public CommandElement {
  public:
   virtual const ElementType type() const;
   GotoIfElement(const char* src, ConstructionData& cdata);
@@ -391,12 +386,14 @@ class GotoIfElement : public CommandElement {
   virtual void set_pointers(ConstructionData& cdata);
   virtual const size_t pointers_count() const;
   virtual pointer_t get_pointer(int i) const;
+
+ private:
+  unsigned long id_;
+  pointer_t pointer_;
+  string repr;
 };
 
 class GotoCaseElement : public PointerElement {
- private:
-  string repr;
-  std::vector<string> cases;
  public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
@@ -410,11 +407,13 @@ class GotoCaseElement : public PointerElement {
   // Accessors for the cases
   const size_t case_count() const { return cases.size(); }
   const string get_case(int i) const { return cases[i]; }
+
+ private:
+  string repr;
+  std::vector<string> cases;
 };
 
 class GotoOnElement : public PointerElement {
- private:
-  string repr;
  public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
@@ -424,15 +423,12 @@ class GotoOnElement : public PointerElement {
   // The pointers are not counted as parameters.
   virtual const size_t param_count() const;
   virtual string get_param(int i) const;
+
+ private:
+  string repr;
 };
 
 class GosubWithElement : public CommandElement {
- private:
-  unsigned long id_;
-  pointer_t pointer_;
-  int repr_size;
-  std::vector<string> params;
-
  public:
   virtual const ElementType type() const;
   virtual const size_t length() const;
@@ -446,6 +442,12 @@ class GosubWithElement : public CommandElement {
   virtual void set_pointers(ConstructionData& cdata);
   virtual const size_t pointers_count() const;
   virtual pointer_t get_pointer(int i) const;
+
+ private:
+  unsigned long id_;
+  pointer_t pointer_;
+  int repr_size;
+  std::vector<string> params;
 };
 
 }

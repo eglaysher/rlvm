@@ -29,20 +29,23 @@
 class Scenario;
 
 struct FilePos {
-  const char* data;
-  size_t length;
   FilePos() : data(NULL), length(0) {}
   FilePos(const char* d, const size_t l) : data(d), length(l) {}
+
+  const char* data;
+  size_t length;
 };
 
 class Metadata {
-  string as_string;
-  int encoding;
-public:
+ public:
   Metadata();
   void assign(const char* input);
   const string& to_string() const { return as_string; }
   const int text_encoding() const { return encoding; }
+
+ private:
+  string as_string;
+  int encoding;
 };
 
 class Header {
@@ -60,8 +63,16 @@ public:
 };
 
 class Script {
+public:
+  const pointer_t getEntrypoint(int entrypoint) const;
+
 private:
   friend class Scenario;
+
+  Script(const Header& hdr, const char* data, const size_t length,
+         const std::string& regname,
+         bool use_xor_2, const Compression::XorKey* second_level_xor_key);
+
   // Recalculate all internal data lazily
   mutable bool uptodate;
   mutable size_t lencache;
@@ -69,15 +80,7 @@ private:
   BytecodeList elts;
   bool strip;
 
-  Script(const Header& hdr, const char* data, const size_t length,
-         const std::string& regname,
-         bool use_xor_2, const Compression::XorKey* second_level_xor_key);
-
   // Entrypoint handeling
   typedef std::map<int, pointer_t> pointernumber;
   pointernumber entrypointAssociations;
-
-public:
-
-  const pointer_t getEntrypoint(int entrypoint) const;
 };

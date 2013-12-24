@@ -49,6 +49,7 @@ class EffectEventSystemTest : public EventSystemMockHandler {
   EffectEventSystemTest() : ticks(0) { }
   void setTicks(unsigned int in) { ticks = in; }
   virtual unsigned int getTicks() const { return ticks; }
+
  private:
   unsigned int ticks;
 };

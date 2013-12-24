@@ -67,19 +67,8 @@ inline bool isStringLocation(const int type)
 /**
  * References a piece of integer memory.
  */
-class IntMemRef
-{
-private:
-  // Which piece of memory to operate on.
-  int memoryBank;
-
-  // How to access
-  int accessType;
-
-  // The memory location to
-  int loc;
-
-public:
+class IntMemRef {
+ public:
   IntMemRef(int bytecodeRep, int location);
   IntMemRef(int bank, int type, int location);
 
@@ -90,6 +79,16 @@ public:
   int bank() const { return memoryBank; }
   int type() const { return accessType; }
   int location() const { return loc;    }
+
+ private:
+  // Which piece of memory to operate on.
+  int memoryBank;
+
+  // How to access
+  int accessType;
+
+  // The memory location to
+  int loc;
 };
 
 }

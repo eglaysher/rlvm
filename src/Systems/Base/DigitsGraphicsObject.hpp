@@ -52,7 +52,8 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   virtual void execute(RLMachine& machine);
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& go);
   virtual void objectInfo(std::ostream& tree);
 
  private:

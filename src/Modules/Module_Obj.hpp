@@ -123,19 +123,19 @@ RLOperation* childRangeMappingFun(RLOperation* op);
 // This template magic saves having to write out 25 - 30 operation
 // structs.
 class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
- private:
+ public:
   // The function signature for the setter function
   typedef void(GraphicsObject::*Setter)(const int);
 
-  // The setter function to call on Op_SetToIncoming::reference when
-  // called.
-  Setter setter;
-
- public:
   explicit Obj_SetOneIntOnObj(Setter s);
   ~Obj_SetOneIntOnObj();
 
   void operator()(RLMachine& machine, int buf, int incoming);
+
+ private:
+  // The setter function to call on Op_SetToIncoming::reference when
+  // called.
+  Setter setter;
 };
 
 // -----------------------------------------------------------------------

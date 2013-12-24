@@ -271,7 +271,8 @@ template <class CInfo> class LZComp {
 		memcpy(window+window_datalen, window+info.WindowSize(), dust_len);
 		dust_top = window_datalen;
 	}
-private:
+
+ private:
 	long data_pool_capacity;
 	long data_pool_length;
 	int data_pool_top;

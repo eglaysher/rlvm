@@ -60,75 +60,6 @@ SDL_Surface* buildNewSurface(const Size& size);
  */
 class SDLSurface : public Surface,
                    public NotificationObserver {
- private:
-  /**
-   * Keeps track of a texture and the information about which region
-   * of the current surface this Texture is. We keep track of this
-   * information so we can reupload a certain part of the Texture
-   * without allocating a new opengl texture. glGenTexture()/
-   * glTexImage2D() is SLOW and should never be done in a loop.)
-   */
-  struct TextureRecord {
-    /**
-     * Builds the texture and
-     */
-    TextureRecord(SDL_Surface* surface,
-                  int x, int y, int w, int h, unsigned int bytes_per_pixel,
-                  int byte_order, int byte_type);
-
-    // Reuploads this current piece of surface from the supplied
-    // surface without allocating a new texture.
-    void reupload(SDL_Surface* surface, const Rect& dirty);
-
-    // Clears |texture|. Called before a switch between windowed and
-    // fullscreen mode, so that we aren't holding stale references.
-    void forceUnload();
-
-    // The actual texture.
-    boost::shared_ptr<Texture> texture;
-
-    int x_, y_, w_, h_;
-    unsigned int bytes_per_pixel_;
-    int byte_order_, byte_type_;
-  };
-
-  // The SDL_Surface that contains the software version of the bitmap.
-  SDL_Surface* surface_;
-
-  // The region table
-  std::vector<GrpRect> region_table_;
-
-  // The SDLTexture which wraps one or more OpenGL textures
-  mutable std::vector<TextureRecord> textures_;
-
-  // Whether texture_ represents the contents of surface_. Blits
-  // from surfaces to surfaces invalidate the target surfaces's
-  // texture.
-  mutable bool texture_is_valid_;
-
-  // When a chunk of the surface is invalidated, we only want to upload the
-  // smallest possible area, but for simplicity, we only keep one dirty area.
-  mutable Rect dirty_rectangle_;
-
-  // Whether this surface is DC0 and needs special treatment.
-  bool is_dc0_;
-
-  // A pointer to the graphics_system. We use this to make sure the
-  // GraphicsSystem has a weak_ptr to all SDLSurface instances so it can
-  // invalidate them all in the case of a screen change.
-  SDLGraphicsSystem* graphics_system_;
-
-  // Makes sure that texture_ is a valid object and that it's
-  // updated. This method should be called before doing anything with
-  // texture_.
-  void uploadTextureIfNeeded() const;
-
-  bool is_mask_;
-
-  NotificationRegistrar registrar_;
-
-  static std::vector<int> segmentPicture(int size_remainging);
-
  public:
   explicit SDLSurface(SDLGraphicsSystem* system);
 
@@ -225,6 +156,75 @@ class SDLSurface : public Surface,
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
                        const NotificationDetails& details);
+
+ private:
+  /**
+   * Keeps track of a texture and the information about which region
+   * of the current surface this Texture is. We keep track of this
+   * information so we can reupload a certain part of the Texture
+   * without allocating a new opengl texture. glGenTexture()/
+   * glTexImage2D() is SLOW and should never be done in a loop.)
+   */
+  struct TextureRecord {
+    /**
+     * Builds the texture and
+     */
+    TextureRecord(SDL_Surface* surface,
+                  int x, int y, int w, int h, unsigned int bytes_per_pixel,
+                  int byte_order, int byte_type);
+
+    // Reuploads this current piece of surface from the supplied
+    // surface without allocating a new texture.
+    void reupload(SDL_Surface* surface, const Rect& dirty);
+
+    // Clears |texture|. Called before a switch between windowed and
+    // fullscreen mode, so that we aren't holding stale references.
+    void forceUnload();
+
+    // The actual texture.
+    boost::shared_ptr<Texture> texture;
+
+    int x_, y_, w_, h_;
+    unsigned int bytes_per_pixel_;
+    int byte_order_, byte_type_;
+  };
+
+  // Makes sure that texture_ is a valid object and that it's
+  // updated. This method should be called before doing anything with
+  // texture_.
+  void uploadTextureIfNeeded() const;
+
+  static std::vector<int> segmentPicture(int size_remainging);
+
+  // The SDL_Surface that contains the software version of the bitmap.
+  SDL_Surface* surface_;
+
+  // The region table
+  std::vector<GrpRect> region_table_;
+
+  // The SDLTexture which wraps one or more OpenGL textures
+  mutable std::vector<TextureRecord> textures_;
+
+  // Whether texture_ represents the contents of surface_. Blits
+  // from surfaces to surfaces invalidate the target surfaces's
+  // texture.
+  mutable bool texture_is_valid_;
+
+  // When a chunk of the surface is invalidated, we only want to upload the
+  // smallest possible area, but for simplicity, we only keep one dirty area.
+  mutable Rect dirty_rectangle_;
+
+  // Whether this surface is DC0 and needs special treatment.
+  bool is_dc0_;
+
+  // A pointer to the graphics_system. We use this to make sure the
+  // GraphicsSystem has a weak_ptr to all SDLSurface instances so it can
+  // invalidate them all in the case of a screen change.
+  SDLGraphicsSystem* graphics_system_;
+
+  bool is_mask_;
+
+  NotificationRegistrar registrar_;
 };
 
 

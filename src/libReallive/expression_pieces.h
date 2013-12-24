@@ -123,7 +123,7 @@ class MemoryReference : public ExpressionPiece {
 
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
-private:
+ private:
   // The type of an memory reference refers to both the memory
   // bank we're accessing, and how we're addressing it.
   int type;
