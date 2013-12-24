@@ -73,12 +73,7 @@ private:
          const std::string& regname,
          bool use_xor_2, const Compression::XorKey* second_level_xor_key);
 
-  // Recalculate all internal data lazily
-  mutable bool uptodate;
-  mutable size_t lencache;
-
   BytecodeList elts;
-  bool strip;
 
   // Entrypoint handeling
   typedef std::map<int, pointer_t> pointernumber;

@@ -48,8 +48,7 @@ MouseCursor::MouseCursor(
     const boost::shared_ptr<const Surface>& cursor_surface,
     int count,
     int speed)
-    : system_(system),
-      cursor_surface_(cursor_surface),
+    : cursor_surface_(cursor_surface),
       count_(count),
       frame_speed_(speed / count_),
       current_frame_(0),

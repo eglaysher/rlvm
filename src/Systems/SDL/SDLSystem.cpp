@@ -47,7 +47,7 @@ using namespace libReallive;
 // -----------------------------------------------------------------------
 
 SDLSystem::SDLSystem(Gameexe& gameexe)
-    : System(), gameexe_(gameexe), last_time_paused_(0) {
+    : System(), gameexe_(gameexe) {
   // First, initialize SDL's video subsystem.
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     ostringstream ss;

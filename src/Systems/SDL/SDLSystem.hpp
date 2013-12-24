@@ -59,8 +59,6 @@ class SDLSystem : public System {
   boost::scoped_ptr<SDLTextSystem> text_system_;
   boost::scoped_ptr<SDLSoundSystem> sound_system_;
   Gameexe& gameexe_;
-
-  unsigned int last_time_paused_;
 };
 
 // Convenience function to do the casting.

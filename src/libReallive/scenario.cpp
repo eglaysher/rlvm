@@ -108,10 +108,12 @@ Header::Header(const char* data, const size_t length) {
   }
 }
 
-Script::Script(const Header& hdr, const char* data, const size_t length,
+Script::Script(const Header& hdr,
+               const char* data,
+               const size_t length,
                const std::string& regname,
-               bool use_xor_2, const Compression::XorKey* second_level_xor_key)
-  : uptodate(true), strip(false) {
+               bool use_xor_2,
+               const Compression::XorKey* second_level_xor_key) {
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
@@ -165,7 +167,7 @@ Script::Script(const Header& hdr, const char* data, const size_t length,
     stream += l;
     pos += l;
   }
-  lencache = pos;
+
   // Resolve pointers
   for (pointer_t it = elts.begin(); it != elts.end(); ++it) {
     it->set_pointers(cdat);

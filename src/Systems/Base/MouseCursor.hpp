@@ -58,8 +58,6 @@ class MouseCursor {
   // Sets hotspot_[XY] to the white pixel in the
   void findHotspot();
 
-  System& system_;
-
   // The raw image read from the PDT.
   boost::shared_ptr<const Surface> cursor_surface_;
 

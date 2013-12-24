@@ -363,8 +363,7 @@ class DisplayMutator : public ObjectMutator {
         move_end_y_(0),
         rotate_mod_(rotate_mod),
         scale_x_mod_(scale_x_mod),
-        scale_y_mod_(scale_y_mod),
-        sin_mod_(sin_mod) {
+        scale_y_mod_(scale_y_mod) {
     if (tr_mod_) {
       tr_start_ = display ? 0 : 255;
       tr_end_ = display ? 255 : 0;
@@ -469,7 +468,6 @@ class DisplayMutator : public ObjectMutator {
   bool rotate_mod_;
   bool scale_x_mod_;
   bool scale_y_mod_;
-  bool sin_mod_;
 };
 
 struct objEveDisplay_1 : public RLOp_Void_5<
