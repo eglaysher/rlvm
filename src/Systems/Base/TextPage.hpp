@@ -29,7 +29,6 @@
 #define SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/noncopyable.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -47,7 +46,7 @@ class TextTextPageElement;
 // The majority of public methods in TextPage simply call the private versions
 // of these methods, and add the appropriate TextPageElement to this page's
 // back log for replay.
-class TextPage : public boost::noncopyable {
+class TextPage {
  public:
   TextPage(System& system, int window_num);
   TextPage(const TextPage& rhs);
