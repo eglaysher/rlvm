@@ -29,10 +29,10 @@
 #define SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 
 #include <algorithm>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -132,11 +132,12 @@ class TextPage : public boost::noncopyable {
   friend class TextTextPageElement;
 
   // Performs the passed in action and then adds it to |elements_to_replay_|.
-  void addAction(const boost::function<void(TextPage&, bool)>& action);
+  void addAction(const std::function<void(TextPage&, bool)>& action);
 
   // Private implementations; These methods are what actually does things. They
   // output to the screen, etc.
   bool CharacterImpl(const std::string& c, const std::string& rest);
+  void VoidCharacterImpl(const std::string& c, const std::string& rest);
   void NameImpl(const std::string& name, const std::string& next_char,
                 bool is_active_page);
   void KoeMarkerImpl(int id, bool is_active_page);

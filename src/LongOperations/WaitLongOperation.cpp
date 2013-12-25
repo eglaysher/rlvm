@@ -62,13 +62,13 @@ void WaitLongOperation::breakOnClicks() {
   break_on_clicks_ = true;
 }
 
-void WaitLongOperation::breakOnEvent(const boost::function<bool()>& function) {
+void WaitLongOperation::breakOnEvent(const std::function<bool()>& function) {
   break_on_event_ = true;
   event_function_ = function;
 }
 
 void WaitLongOperation::setSleepTimeProvider(
-    const boost::function<int()>& function) {
+    const std::function<int()>& function) {
   has_sleep_time_provider_ = true;
   sleep_time_provider_ = function;
 }

@@ -99,7 +99,7 @@ void TextTextPageElement::append(const string& c) {
 // -----------------------------------------------------------------------
 class ActionElement : public TextPageElement {
  public:
-  ActionElement(const boost::function<void(TextPage&, bool)>& action)
+  ActionElement(const std::function<void(TextPage&, bool)>& action)
       : action_(action) {
   }
 
@@ -112,7 +112,7 @@ class ActionElement : public TextPageElement {
   }
 
  private:
-  boost::function<void(TextPage&, bool)> action_;
+  std::function<void(TextPage&, bool)> action_;
 };
 
 // -----------------------------------------------------------------------
@@ -256,7 +256,7 @@ bool TextPage::isFull() const {
 }
 
 void TextPage::addAction(
-    const boost::function<void(TextPage&, bool)>& action) {
+    const std::function<void(TextPage&, bool)>& action) {
   action(*this, true);
   elements_to_replay_.push_back(new ActionElement(action));
 }

@@ -52,7 +52,7 @@
 
 #include "testUtils.hpp"
 #include <boost/scoped_ptr.hpp>
-#include <boost/function.hpp>
+#include <functional>
 #include <iostream>
 
 using namespace boost;
@@ -117,8 +117,8 @@ TEST_F(GraphicsObjectTest, SerializeObject) {
 
 // Automated tests for accessors that take one int.
 typedef std::tuple<
-  boost::function<void(GraphicsObject&, const int)>,
-  boost::function<int(const GraphicsObject&)> > TupleT;
+  std::function<void(GraphicsObject&, const int)>,
+  std::function<int(const GraphicsObject&)> > TupleT;
 
 class AccessorTest : public ::testing::TestWithParam<TupleT> {
   // Empty.

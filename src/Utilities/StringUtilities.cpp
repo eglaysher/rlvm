@@ -154,7 +154,7 @@ void addShiftJISChar(uint16_t c, string& output) {
 }
 
 void printTextToFunction(
-  boost::function<void(const string& c, const string& nextChar)> fun,
+  std::function<bool(const string& c, const string& nextChar)> fun,
   const string& charsToPrint,
   const std::string& nextCharForFinal) {
   // Iterate over each incoming character to display (we do this
@@ -166,6 +166,7 @@ void printTextToFunction(
   utf8::next(tmp, end);
   string curChar(cur, tmp);
   for (cur = tmp; tmp != end; cur = tmp) {
+    // @todo Do we have to check the return value here?
     fun(curChar, string(cur, end));
 
     utf8::next(tmp, end);

@@ -27,7 +27,7 @@
 #ifndef SRC_LONGOPERATIONS_WAITLONGOPERATION_HPP_
 #define SRC_LONGOPERATIONS_WAITLONGOPERATION_HPP_
 
-#include <boost/function.hpp>
+#include <functional>
 
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/reference.hpp"
@@ -48,10 +48,10 @@ class WaitLongOperation : public LongOperation {
 
   // Checks |function| on every LongOperation invocation to see if we are
   // finished. |function| should return true if we are done.
-  void breakOnEvent(const boost::function<bool()>& function);
+  void breakOnEvent(const std::function<bool()>& function);
 
   // Provides |function| which is called as the implementation of sleepTime().
-  void setSleepTimeProvider(const boost::function<int()>& function);
+  void setSleepTimeProvider(const std::function<int()>& function);
 
   // Whether we write out the location of a mouse click. Implies that we're
   // breaking on mouse click.
@@ -79,10 +79,10 @@ class WaitLongOperation : public LongOperation {
   int button_pressed_;
 
   bool break_on_event_;
-  boost::function<bool()> event_function_;
+  std::function<bool()> event_function_;
 
   bool has_sleep_time_provider_;
-  boost::function<int()> sleep_time_provider_;
+  std::function<int()> sleep_time_provider_;
 
   bool break_on_ctrl_pressed_;
   bool ctrl_pressed_;

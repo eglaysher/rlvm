@@ -31,11 +31,11 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/Colour.hpp"
 
+#include <functional>
 #include <vector>
 #include <string>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -251,13 +251,13 @@ class TextWindow {
 
   virtual void addSelectionItem(const std::string& utf8str,
                                 int selection_id) = 0;
-  virtual void setSelectionCallback(const boost::function<void(int)>& func);
+  virtual void setSelectionCallback(const std::function<void(int)>& func);
 
   void endSelectionMode();
 
  protected:
   // Accessor for the |selection_callback_| for TextWindow subclasses
-  const boost::function<void(int)>& selectionCallback();
+  const std::function<void(int)>& selectionCallback();
 
   // The actual selection items in this TextWindow.
   typedef boost::ptr_vector<SelectionElement> Selections;
@@ -402,7 +402,7 @@ class TextWindow {
 
   // Callback function for when item is selected; usually will call a
   // specific method on Select_LongOperation
-  boost::function<void(int)> selection_callback_;
+  std::function<void(int)> selection_callback_;
 
   struct FaceSlot;
   boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];

@@ -87,7 +87,7 @@ void EventSystem::removeMouseListener(EventListener* listener) {
 }
 
 void EventSystem::dispatchEvent(RLMachine& machine,
-  const boost::function<bool(EventListener&)>& event) {
+  const std::function<bool(EventListener&)>& event) {
   // In addition to the handled variable, we need to add break statements to
   // the loops since |event| can be any arbitrary code and may modify listeners
   // or handlers. (i.e., System::showSyscomMenu)
@@ -109,7 +109,7 @@ void EventSystem::dispatchEvent(RLMachine& machine,
 }
 
 void EventSystem::broadcastEvent(RLMachine& machine,
-  const boost::function<void(EventListener&)>& event) {
+  const std::function<void(EventListener&)>& event) {
   EventListeners::iterator listenerIt = listeners_begin();
   for (; listenerIt != listeners_end(); ++listenerIt) {
     event(**listenerIt);

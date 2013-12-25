@@ -32,7 +32,6 @@
 
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
-#include <boost/function.hpp>
 
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

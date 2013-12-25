@@ -32,9 +32,9 @@
 #include "Systems/Base/RLTimer.hpp"
 #include "Systems/Base/Rect.hpp"
 
-#include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <functional>
 #include <queue>
 #include <set>
 
@@ -182,9 +182,9 @@ class EventSystem : public boost::noncopyable {
   // Calls a EventListener member function on all event listeners, and then
   // event handlers, stopping when an object says they handled it.
   void dispatchEvent(RLMachine& machine,
-                     const boost::function<bool(EventListener&)>& event);
+                     const std::function<bool(EventListener&)>& event);
   void broadcastEvent(RLMachine& machine,
-                      const boost::function<void(EventListener&)>& event);
+                      const std::function<void(EventListener&)>& event);
 
  private:
   // Helper function that verifies input

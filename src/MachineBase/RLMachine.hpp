@@ -28,17 +28,17 @@
 #ifndef SRC_MACHINEBASE_RLMACHINE_HPP_
 #define SRC_MACHINEBASE_RLMACHINE_HPP_
 
-#include <boost/function.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "libReallive/bytecode_fwd.h"
 #include "libReallive/scenario.h"
 
+#include <functional>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 namespace  libReallive {
 class Archive;
@@ -342,7 +342,7 @@ class RLMachine {
   // drive rlvm's playing certain games, but is also used for game specific
   // hacks.
   void addLineAction(const int seen, const int line,
-                     boost::function<void(void)>);
+                     std::function<void(void)>);
 
  private:
   // The Reallive VM's integer and string memory
@@ -401,11 +401,11 @@ class RLMachine {
   bool replaying_graphics_stack_;
 
   // The actions that were delayed when |delay_stack_modifications_| is on.
-  std::vector<boost::function<void(void)> > delayed_modifications_;
+  std::vector<std::function<void(void)> > delayed_modifications_;
 
   // An optional set of game specific hacks that run at certain SEEN/line
   // pairs. These run during setLineNumer().
-  typedef std::map<std::pair<int, int>, boost::function<void(void)> > ActionMap;
+  typedef std::map<std::pair<int, int>, std::function<void(void)> > ActionMap;
   boost::scoped_ptr<ActionMap> on_line_actions_;
 
   typedef boost::ptr_map<int, RealLiveDLL> DLLMap;

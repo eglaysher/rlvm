@@ -74,7 +74,6 @@ namespace fs = boost::filesystem;
 using namespace std;
 using namespace libReallive;
 
-using boost::function;
 using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
@@ -670,7 +669,7 @@ void RLMachine::setLineNumber(const int i) {
 }
 
 void RLMachine::addLineAction(const int seen, const int line,
-                              boost::function<void(void)> function) {
+                              std::function<void(void)> function) {
   if (!on_line_actions_)
     on_line_actions_.reset(new ActionMap);
 

@@ -185,11 +185,11 @@ class GCNPlatformBlocker : public LongOperation,
     platform_->blocker_ = NULL;
   }
 
-  void addTask(const boost::function<void(void)>& task) {
+  void addTask(const std::function<void(void)>& task) {
     delayed_tasks_.push(task);
   }
 
-  void addMachineTask(const boost::function<void(RLMachine&)>& task) {
+  void addMachineTask(const std::function<void(RLMachine&)>& task) {
     delayed_rlmachine_tasks_.push(task);
   }
 
@@ -225,8 +225,8 @@ class GCNPlatformBlocker : public LongOperation,
   GraphicsSystem& graphics_system_;
   boost::shared_ptr<GCNPlatform> platform_;
 
-  std::queue<boost::function<void(void)> > delayed_tasks_;
-  std::queue<boost::function<void(RLMachine&)> > delayed_rlmachine_tasks_;
+  std::queue<std::function<void(void)> > delayed_tasks_;
+  std::queue<std::function<void(RLMachine&)> > delayed_rlmachine_tasks_;
 };
 
 // -----------------------------------------------------------------------

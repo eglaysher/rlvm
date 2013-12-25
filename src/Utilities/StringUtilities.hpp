@@ -28,9 +28,9 @@
 #ifndef SRC_UTILITIES_STRINGUTILITIES_HPP_
 #define SRC_UTILITIES_STRINGUTILITIES_HPP_
 
-#include <stdint.h>
+#include <cstdint>
+#include <functional>
 #include <string>
-#include <boost/function.hpp>
 
 // Converts a CP932/Shift_JIS string into a wstring with Unicode
 // characters.
@@ -95,7 +95,7 @@ void addShiftJISChar(uint16_t c, std::string& output);
 
 // Feeds each two consecutive pair of characters to |fun|.
 void printTextToFunction(
-  boost::function<void(const std::string& c, const std::string& nextChar)> fun,
+  std::function<bool(const std::string& c, const std::string& nextChar)> fun,
   const std::string& charsToPrint, const std::string& nextCharForFinal);
 
 // Removes quotes from the beginning and end of the string.

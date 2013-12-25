@@ -30,7 +30,7 @@
 #include <SDL/SDL_mixer.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/function.hpp>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -205,8 +205,7 @@ WAVFILE* buildMusicImplementation(FILE* file, int size) {
 
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     System& system, const SoundSystem::DSTrack& track) {
-  typedef vector<pair<string,
-                      boost::function<WAVFILE*(FILE*, int)> > > FileTypes;
+  typedef vector<pair<string, std::function<WAVFILE*(FILE*, int)> > > FileTypes;
   static FileTypes types = {
     { "wav", &buildMusicImplementation<WAVFILE_Stream> },
     { "nwa", &buildMusicImplementation<NWAFILE> },

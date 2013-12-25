@@ -28,8 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
 #define SRC_SYSTEMS_BASE_TEXTWINDOWBUTTON_HPP_
 
+#include <functional>
 #include <vector>
-#include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -90,7 +90,7 @@ class TextWindowButton : public boost::noncopyable {
 
 class ActionTextWindowButton : public TextWindowButton {
  public:
-  typedef boost::function<void(void)> CallbackFunction;
+  typedef std::function<void(void)> CallbackFunction;
 
  public:
   ActionTextWindowButton(System& system, bool use,
@@ -109,7 +109,7 @@ class ActionTextWindowButton : public TextWindowButton {
 class ActivationTextWindowButton : public TextWindowButton,
                                    public NotificationObserver {
  public:
-  typedef boost::function<void(int)> CallbackFunction;
+  typedef std::function<void(int)> CallbackFunction;
 
  public:
   ActivationTextWindowButton(System& system, bool use,
@@ -146,7 +146,7 @@ class ActivationTextWindowButton : public TextWindowButton,
 
 class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
  public:
-  typedef boost::function<void(void)> CallbackFunction;
+  typedef std::function<void(void)> CallbackFunction;
 
  public:
   RepeatActionWhileHoldingWindowButton(

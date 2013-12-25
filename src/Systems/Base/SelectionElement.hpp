@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
 #define SRC_SYSTEMS_BASE_SELECTIONELEMENT_HPP_
 
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/shared_ptr.hpp>
 
 #include "Systems/Base/Rect.hpp"
@@ -42,11 +42,11 @@ class SelectionElement {
   SelectionElement(System& system,
                    const boost::shared_ptr<Surface>& normal_image,
                    const boost::shared_ptr<Surface>& highlighted_image,
-                   const boost::function<void(int)>& selection_callback,
+                   const std::function<void(int)>& selection_callback,
                    int id, const Point& pos);
   ~SelectionElement();
 
-  void setSelectionCallback(const boost::function<void(int)>& func);
+  void setSelectionCallback(const std::function<void(int)>& func);
 
   void setMousePosition(const Point& pos);
   bool handleMouseClick(const Point& pos, bool pressed);
@@ -65,7 +65,7 @@ class SelectionElement {
   boost::shared_ptr<Surface> highlighted_image_;
 
   // Callback function for when item is selected.
-  boost::function<void(int)> selection_callback_;
+  std::function<void(int)> selection_callback_;
 
   System& system_;
 

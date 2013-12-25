@@ -712,17 +712,17 @@ void TextWindow::startSelectionMode() {
   in_selection_mode_ = true;
 }
 
-void TextWindow::setSelectionCallback(const boost::function<void(int)>& in) {
+void TextWindow::setSelectionCallback(const std::function<void(int)>& in) {
   selection_callback_ = in;
 }
 
 void TextWindow::endSelectionMode() {
   in_selection_mode_ = false;
-  selection_callback_.clear();
+  selection_callback_ = nullptr;
   selections_.clear();
   clearWin();
 }
 
-const boost::function<void(int)>& TextWindow::selectionCallback() {
+const std::function<void(int)>& TextWindow::selectionCallback() {
   return selection_callback_;
 }

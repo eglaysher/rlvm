@@ -28,7 +28,7 @@
 #ifndef SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 #define SRC_MACHINEBASE_MAPPEDRLMODULE_HPP_
 
-#include <boost/function.hpp>
+#include <functional>
 #include <string>
 
 #include "MachineBase/RLModule.hpp"
@@ -37,7 +37,7 @@
 // mapping function.
 class MappedRLModule : public RLModule {
  public:
-  typedef boost::function<RLOperation*(RLOperation* op)> MappingFunction;
+  typedef std::function<RLOperation*(RLOperation* op)> MappingFunction;
 
  protected:
   MappedRLModule(const MappingFunction& fun, const std::string& in_module_name,

@@ -73,8 +73,8 @@ void setObjectDataToGan(
       new GanGraphicsObjectData(machine.system(), ganFilename, imgFilename));
 }
 
-typedef boost::function<void(RLMachine&, GraphicsObject& obj,
-                             const string&)> DataFunction;
+typedef std::function<void(RLMachine&, GraphicsObject& obj,
+                           const string&)> DataFunction;
 
 void objOfFileLoader(RLMachine& machine, GraphicsObject& obj,
                      const string& val) {
