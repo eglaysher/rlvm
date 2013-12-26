@@ -317,7 +317,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   // Build graphic representations of the choices to display to the user.
   TextSystem& ts = machine.system().text();
   int shown_option_count = std::count_if(
-      options_.begin(), options_.end(), std::bind(&Option::shown, _1));
+      options_.begin(), options_.end(), [&](Option& o) { return o.shown; });
 
   // Calculate out the bounding rectangles for all the options.
   Size screen_size = machine.system().graphics().screenSize();
