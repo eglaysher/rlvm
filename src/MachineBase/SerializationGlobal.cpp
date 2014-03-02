@@ -111,7 +111,8 @@ void loadGlobalMemory(RLMachine& machine) {
   if (file) {
     try {
       loadGlobalMemoryFrom(file, machine);
-    } catch(...) {
+    }
+    catch (...) {
       // Swallow ALL exceptions during file reading. If loading the global
       // memory file fails in any way, something is EXTREMELY wrong. Either
       // we're trying to read an incompatible old version's files or the global
@@ -158,11 +159,8 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
   // settings. Most people don't change these values and save games and global
   // memory still work (per above.)
   if (version == CURRENT_GLOBAL_VERSION) {
-    ia >> sys.globals()
-       >> sys.graphics().globals()
-       >> sys.event().globals()
-       >> sys.text().globals()
-       >> sys.sound().globals();
+    ia >> sys.globals() >> sys.graphics().globals() >> sys.event().globals() >>
+        sys.text().globals() >> sys.sound().globals();
 
     // Restore options which may have System specific implementations. (This
     // will probably expand as more of RealLive is implemented).

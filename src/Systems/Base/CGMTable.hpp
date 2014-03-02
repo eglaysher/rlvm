@@ -85,13 +85,12 @@ class CGMTable {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
     // We don't save |cgm_info_|. That will be the same during each run since
     // it's read from a game data file.
-    ar & cgm_data_;
+    ar& cgm_data_;
   }
 };  // end of class CGMTable
-
 
 #endif  // SRC_SYSTEMS_BASE_CGMTABLE_HPP_

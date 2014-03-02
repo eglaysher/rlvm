@@ -185,9 +185,7 @@ class GraphicsObject {
   void setObjectData(GraphicsObjectData* obj);
 
   // Render!
-  void render(int objNum,
-              const GraphicsObject* parent,
-              std::ostream* tree);
+  void render(int objNum, const GraphicsObject* parent, std::ostream* tree);
 
   // Deletes the object data. Corresponds to the RLAPI command obj_delete.
   void deleteObject();
@@ -210,7 +208,11 @@ class GraphicsObject {
   void setTextText(const std::string& utf8str);
   const std::string& textText() const;
 
-  void setTextOps(int size, int xspace, int yspace, int char_count, int colour,
+  void setTextOps(int size,
+                  int xspace,
+                  int yspace,
+                  int char_count,
+                  int colour,
                   int shadow);
   int textSize() const;
   int textXSpace() const;
@@ -220,10 +222,17 @@ class GraphicsObject {
   int textShadowColour() const;
 
   // Drift object accessors
-  void setDriftOpts(int count, int use_animation, int start_pattern,
-                    int end_pattern, int total_animation_time_ms, int yspeed,
-                    int period, int amplitude, int use_drift,
-                    int unknown_drift_property, int driftspeed,
+  void setDriftOpts(int count,
+                    int use_animation,
+                    int start_pattern,
+                    int end_pattern,
+                    int total_animation_time_ms,
+                    int yspeed,
+                    int period,
+                    int amplitude,
+                    int use_drift,
+                    int unknown_drift_property,
+                    int driftspeed,
                     Rect driftarea);
 
   int driftParticleCount() const;
@@ -282,8 +291,10 @@ class GraphicsObject {
   bool IsMutatorRunningMatching(int repno, const char* name);
 
   // Ends all mutators that match the given parameters.
-  void EndObjectMutatorMatching(RLMachine& machine, int repno,
-                                const char* name, int speedup);
+  void EndObjectMutatorMatching(RLMachine& machine,
+                                int repno,
+                                const char* name,
+                                int speedup);
 
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
@@ -391,7 +402,7 @@ class GraphicsObject {
       int shadow_colour;
 
       // boost::serialization support
-      template<class Archive>
+      template <class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
 
@@ -421,7 +432,7 @@ class GraphicsObject {
       Rect drift_area;
 
       // boost::serialization support
-      template<class Archive>
+      template <class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
 
@@ -441,7 +452,7 @@ class GraphicsObject {
       int space;
 
       // boost::serialization support
-      template<class Archive>
+      template <class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
 
@@ -467,7 +478,7 @@ class GraphicsObject {
       int y_offset_override;
 
       // boost::serialization support
-      template<class Archive>
+      template <class Archive>
       void serialize(Archive& ar, unsigned int version);
     };
 
@@ -480,7 +491,7 @@ class GraphicsObject {
     friend class boost::serialization::access;
 
     // boost::serialization support
-    template<class Archive>
+    template <class Archive>
     void serialize(Archive& ar, unsigned int version);
   };
 
@@ -505,7 +516,7 @@ class GraphicsObject {
   friend class boost::serialization::access;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version);
 };
 
@@ -515,4 +526,3 @@ static const int OBJ_FG = 0;
 static const int OBJ_BG = 1;
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICSOBJECT_HPP_
-

@@ -56,5 +56,4 @@ class ChildObjBgManagement : public MappedRLModule {
   ChildObjBgManagement();
 };
 
-
 #endif  // SRC_MODULES_MODULE_OBJMANAGEMENT_HPP_

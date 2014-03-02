@@ -33,7 +33,7 @@
 // how I'd check this concept.) This type struct takes a type struct
 // as its parameter type, and then will accept a variable number of
 // items of that type.
-template<typename CON>
+template <typename CON>
 struct Argc_T {
   // The output type of this type struct
   typedef typename std::vector<typename CON::type> type;
@@ -45,34 +45,30 @@ struct Argc_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output);
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output);
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
-template<typename CON>
-typename Argc_T<CON>::type Argc_T<CON>::
-getData(RLMachine& machine,
-                     const libReallive::ExpressionPiecesVector& p,
-                     unsigned int& position) {
+template <typename CON>
+typename Argc_T<CON>::type Argc_T<CON>::getData(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& p,
+    unsigned int& position) {
   type return_vector;
-  for (; position < p.size(); )
+  for (; position < p.size();)
     return_vector.push_back(CON::getData(machine, p, position));
 
   return return_vector;
 }
 
-template<typename CON>
-void Argc_T<CON>::
-parseParameters(unsigned int& position,
-                const std::vector<std::string>& input,
-                libReallive::ExpressionPiecesVector& output) {
-  for (; position < input.size(); ) {
+template <typename CON>
+void Argc_T<CON>::parseParameters(unsigned int& position,
+                                  const std::vector<std::string>& input,
+                                  libReallive::ExpressionPiecesVector& output) {
+  for (; position < input.size();) {
     CON::parseParameters(position, input, output);
   }
 }

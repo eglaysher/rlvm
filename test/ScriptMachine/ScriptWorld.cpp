@@ -44,9 +44,9 @@
 #include "Systems/Base/System.hpp"
 
 extern "C" {
-    #include "lua.h"
-    #include "lualib.h"
-    #include "lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
 
 #include <luabind/luabind.hpp>
@@ -65,9 +65,7 @@ ScriptWorld::ScriptWorld() {
   luabind::globals(L)["World"] = this;
 }
 
-ScriptWorld::~ScriptWorld() {
-  lua_close(L);
-}
+ScriptWorld::~ScriptWorld() { lua_close(L); }
 
 void ScriptWorld::loadToplevelFile(const std::string& lua_file) {
   script_dir_ = fs::path(lua_file).branch_path();
@@ -98,8 +96,8 @@ void ScriptWorld::import(const std::string& file_name) {
 }
 
 std::string ScriptWorld::regname() const {
-  ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
-    luabind::globals(L)["Machine"]);
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
   if (machine) {
     return machine->system().regname();
   } else {
@@ -117,16 +115,16 @@ void ScriptWorld::setDecisionList(luabind::object table) {
     }
   }
 
-  ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
-    luabind::globals(L)["Machine"]);
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
   if (machine) {
     machine->setDecisionList(decisions_);
   }
 }
 
 void ScriptWorld::error(const std::string& error_message) {
-  ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
-    luabind::globals(L)["Machine"]);
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
   if (machine)
     machine->halt();
 
@@ -134,11 +132,11 @@ void ScriptWorld::error(const std::string& error_message) {
 }
 
 void ScriptWorld::addHandler(int scene, int lineNo, luabind::object handler) {
-  ScriptMachine* machine = luabind::object_cast<ScriptMachine*>(
-    luabind::globals(L)["Machine"]);
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
   if (machine) {
-    machine->addLineAction(scene, lineNo,
-                           boost::bind(&ScriptWorld::RunHandler, handler));
+    machine->addLineAction(
+        scene, lineNo, boost::bind(&ScriptWorld::RunHandler, handler));
   }
 }
 
@@ -175,19 +173,16 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
   using namespace luabind;
 
   open(L);
-  module(L)
-  [
+  module(L)[
     // High level interface
-    class_<ScriptWorld>("World").
-    def("import", &ScriptWorld::import).
-    def("regname", &ScriptWorld::regname).
-    def("setDecisionList", &ScriptWorld::setDecisionList).
-    def("error", &ScriptWorld::error).
-    def("addHandler", &ScriptWorld::addHandler).
-    def("setDecisionHandler", &ScriptWorld::setDecisionHandler),
-
+    class_<ScriptWorld>("World")
+        .def("import", &ScriptWorld::import)
+        .def("regname", &ScriptWorld::regname)
+        .def("setDecisionList", &ScriptWorld::setDecisionList)
+        .def("error", &ScriptWorld::error)
+        .def("addHandler", &ScriptWorld::addHandler)
+        .def("setDecisionHandler", &ScriptWorld::setDecisionHandler),
     register_utility(),
-
     register_machine(),
     register_system(),
     register_event_system(),
@@ -200,7 +195,8 @@ void ScriptWorld::InitializeLuabind(lua_State* L) {
 void ScriptWorld::RunHandler(luabind::object handler) {
   try {
     luabind::call_function<void>(handler);
-  } catch(const luabind::error& e) {
+  }
+  catch (const luabind::error& e) {
     lua_State* state = e.state();
     std::cerr << lua_tostring(state, -1) << endl;
   }

@@ -145,8 +145,7 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
       TextSystem& text = machine_.system().text();
       bool ctrlKeySkips = text.ctrlKeySkip();
 
-      if (ctrlKeySkips &&
-          (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
+      if (ctrlKeySkips && (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
         is_done_ = true;
         handled = true;
       } else if (keyCode == RLKEY_SPACE) {
@@ -197,8 +196,7 @@ bool PauseLongOperation::AutomodeTimerFired() {
   int time_since_last_pass = current_time - time_at_last_pass_;
   time_at_last_pass_ = current_time;
 
-  if (machine_.system().event().timeOfLastMouseMove() <
-      (current_time - 2000)) {
+  if (machine_.system().event().timeOfLastMouseMove() < (current_time - 2000)) {
     // If the mouse has been moved within the last two seconds, don't advance
     // the timer so the user has a chance to click on buttons.
     total_time_ += time_since_last_pass;

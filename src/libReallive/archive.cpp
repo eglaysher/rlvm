@@ -48,7 +48,7 @@ namespace fs = boost::filesystem;
 namespace libReallive {
 
 Archive::Archive(const string& filename)
-  : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
+    : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
   readTOC();
   readOverrides();
 }
@@ -63,11 +63,11 @@ Archive::Archive(const string& filename, const std::string& regname)
 
   if (regname == "KEY\\CLANNAD_FV") {
     second_level_xor_key_ =
-      libReallive::Compression::clannad_full_voice_xor_mask;
-  } else if (regname == "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
+        libReallive::Compression::clannad_full_voice_xor_mask;
+  } else if (regname ==
+             "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
              "\x6f\x83\x58\x83\x5e\x81\x5b\x83\x59\x81\x49") {
-    second_level_xor_key_ =
-      libReallive::Compression::little_busters_xor_mask;
+    second_level_xor_key_ = libReallive::Compression::little_busters_xor_mask;
   } else if (regname ==
              "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83\x6f\x83\x58\x83\x5e"
              "\x81\x5b\x83\x59\x81\x49\x82\x64\x82\x77") {
@@ -87,12 +87,12 @@ Archive::~Archive() {
 }
 
 void Archive::readTOC() {
-	const char* idx = info.get();
-	for (int i = 0; i < 10000; ++i, idx += 8) {
-		const int offs = read_i32(idx);
-		if (offs)
+  const char* idx = info.get();
+  for (int i = 0; i < 10000; ++i, idx += 8) {
+    const int offs = read_i32(idx);
+    if (offs)
       scenarios[i] = FilePos(info.get() + offs, read_i32(idx + 4));
-	}
+  }
 }
 
 void Archive::readOverrides() {
@@ -102,13 +102,9 @@ void Archive::readOverrides() {
   fs::directory_iterator end;
   for (fs::directory_iterator it(seen_dir); it != end; ++it) {
     string filename = it->path().filename().string();
-    if (filename.size() == 12 &&
-        istarts_with(filename, "seen") &&
-        iends_with(filename, ".txt") &&
-        isdigit(filename[4]) &&
-        isdigit(filename[5]) &&
-        isdigit(filename[6]) &&
-        isdigit(filename[7])) {
+    if (filename.size() == 12 && istarts_with(filename, "seen") &&
+        iends_with(filename, ".txt") && isdigit(filename[4]) &&
+        isdigit(filename[5]) && isdigit(filename[6]) && isdigit(filename[7])) {
       Mapping* mapping = new Mapping((seen_dir / filename).string(), Read);
       maps_to_delete_.push_back(mapping);
 
@@ -118,16 +114,15 @@ void Archive::readOverrides() {
   }
 }
 
-Scenario*
-Archive::scenario(int index) {
-	accessed_t::const_iterator at = accessed.find(index);
-	if (at != accessed.end())
+Scenario* Archive::scenario(int index) {
+  accessed_t::const_iterator at = accessed.find(index);
+  if (at != accessed.end())
     return at->second;
-	scenarios_t::const_iterator st = scenarios.find(index);
-	if (st != scenarios.end())
+  scenarios_t::const_iterator st = scenarios.find(index);
+  if (st != scenarios.end())
     return accessed[index] =
-        new Scenario(st->second, index, regname_, second_level_xor_key_);
-	return NULL;
+               new Scenario(st->second, index, regname_, second_level_xor_key_);
+  return NULL;
 }
 
 int Archive::getProbableEncodingType() const {
@@ -142,10 +137,9 @@ int Archive::getProbableEncodingType() const {
   return 0;
 }
 
-void
-Archive::reset() {
-	for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it) delete it->second;
-	accessed.clear();
+void Archive::reset() {
+  for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it)
+    delete it->second;
+  accessed.clear();
 }
-
 }

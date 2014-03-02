@@ -43,9 +43,7 @@ using namespace std;
 
 ColourFilterObjectData::ColourFilterObjectData(GraphicsSystem& system,
                                                const Rect& screen_rect)
-    : graphics_system_(system),
-      screen_rect_(screen_rect) {
-}
+    : graphics_system_(system), screen_rect_(screen_rect) {}
 
 ColourFilterObjectData::~ColourFilterObjectData() {}
 
@@ -72,8 +70,7 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
   if (tree) {
     *tree << "  ColourFilterObjectData" << std::endl
           << "  Screen rect: " << screen_rect_ << std::endl
-          << "  Colour: " << colour << std::endl
-          << "  Properties: ";
+          << "  Colour: " << colour << std::endl << "  Properties: ";
     PrintGraphicsObjectToTree(go, tree);
     *tree << endl;
   }
@@ -97,9 +94,7 @@ void ColourFilterObjectData::execute(RLMachine& machine) {
   // Nothing to do.
 }
 
-bool ColourFilterObjectData::isAnimation() const {
-  return false;
-}
+bool ColourFilterObjectData::isAnimation() const { return false; }
 
 void ColourFilterObjectData::playSet(int set) {
   // No op
@@ -115,13 +110,12 @@ void ColourFilterObjectData::objectInfo(std::ostream& tree) {
 }
 
 ColourFilterObjectData::ColourFilterObjectData(System& system)
-    : graphics_system_(system.graphics()) {
-}
+    : graphics_system_(system.graphics()) {}
 
-template<class Archive>
+template <class Archive>
 void ColourFilterObjectData::serialize(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
-  ar & screen_rect_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& screen_rect_;
 }
 
 // -----------------------------------------------------------------------
@@ -130,8 +124,10 @@ void ColourFilterObjectData::serialize(Archive& ar, unsigned int version) {
 // implementation)
 
 template void ColourFilterObjectData::serialize<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive& ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);
 template void ColourFilterObjectData::serialize<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive& ar, unsigned int version);
+    boost::archive::text_oarchive& ar,
+    unsigned int version);
 
 BOOST_CLASS_EXPORT(ColourFilterObjectData);

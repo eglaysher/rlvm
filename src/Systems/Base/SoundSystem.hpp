@@ -44,8 +44,8 @@ class System;
 const int NUM_BASE_CHANNELS = 16;
 const int NUM_EXTRA_WAVPLAY_CHANNELS = 8;
 const int NUM_KOE_CHANNELS = 1;
-const int NUM_TOTAL_CHANNELS = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS +
-                               NUM_KOE_CHANNELS;
+const int NUM_TOTAL_CHANNELS =
+    NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS + NUM_KOE_CHANNELS;
 
 // The koe channel is the last one.
 const int KOE_CHANNEL = NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS;
@@ -108,14 +108,14 @@ struct SoundSystemGlobals {
   std::map<int, int> character_koe_enabled;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & sound_quality & bgm_enabled & bgm_volume_mod & pcm_enabled &
-      pcm_volume_mod & se_enabled & se_volume_mod;
+    ar& sound_quality& bgm_enabled& bgm_volume_mod& pcm_enabled& pcm_volume_mod&
+        se_enabled& se_volume_mod;
 
     if (version >= 1) {
-      ar & koe_mode & koe_enabled & koe_volume_mod & bgm_koe_fade &
-          bgm_koe_fade_vol & character_koe_enabled;
+      ar& koe_mode& koe_enabled& koe_volume_mod& bgm_koe_fade& bgm_koe_fade_vol&
+          character_koe_enabled;
     }
   }
 };
@@ -131,8 +131,11 @@ class SoundSystem {
   // VisualArt's nwa format.
   struct DSTrack {
     DSTrack();
-    DSTrack(const std::string name, const std::string file,
-            int from, int to, int loop);
+    DSTrack(const std::string name,
+            const std::string file,
+            int from,
+            int to,
+            int loop);
 
     std::string name;
     std::string file;
@@ -154,7 +157,7 @@ class SoundSystem {
 
  protected:
   // Type for a parsed \#SE table.
-  typedef std::map<int, std::pair<std::string, int> > SeTable;
+  typedef std::map<int, std::pair<std::string, int>> SeTable;
 
   // Type for parsed \#DSTRACK entries.
   typedef std::map<std::string, DSTrack> DSTable;
@@ -165,8 +168,10 @@ class SoundSystem {
   // Stores data about an ongoing volume adjustment (such as those started by
   // fun wavSetVolume(int, int, int).)
   struct VolumeAdjustTask {
-    VolumeAdjustTask(unsigned int current_time, int in_start_volume,
-                     int in_final_volume, int fade_time_in_ms);
+    VolumeAdjustTask(unsigned int current_time,
+                     int in_start_volume,
+                     int in_final_volume,
+                     int fade_time_in_ms);
 
     unsigned int start_time;
     unsigned int end_time;
@@ -228,10 +233,13 @@ class SoundSystem {
   virtual int bgmStatus() const = 0;
 
   virtual void bgmPlay(const std::string& bgm_name, bool loop) = 0;
-  virtual void bgmPlay(const std::string& bgm_name, bool loop,
+  virtual void bgmPlay(const std::string& bgm_name,
+                       bool loop,
                        int fade_in_ms) = 0;
-  virtual void bgmPlay(const std::string& bgm_name, bool loop,
-                       int fade_in_ms, int fade_out_ms) = 0;
+  virtual void bgmPlay(const std::string& bgm_name,
+                       bool loop,
+                       int fade_in_ms,
+                       int fade_out_ms) = 0;
   virtual void bgmStop() = 0;
   virtual void bgmPause() = 0;
   virtual void bgmUnPause() = 0;
@@ -258,18 +266,21 @@ class SoundSystem {
 
   // Change the volume smoothly; the change from the current volume to level
   // will take fade_time_in_ms
-  void setChannelVolume(const int channel, const int level,
+  void setChannelVolume(const int channel,
+                        const int level,
                         const int fade_time_in_ms);
 
   // Fetches an individual channel volume
   int channelVolume(const int channel) const;
 
+  virtual void wavPlay(const std::string& wav_file, bool loop) = 0;
   virtual void wavPlay(const std::string& wav_file,
-                       bool loop) = 0;
+                       bool loop,
+                       const int channel) = 0;
   virtual void wavPlay(const std::string& wav_file,
-                       bool loop, const int channel) = 0;
-  virtual void wavPlay(const std::string& wav_file,
-                       bool loop, const int channel, const int fadein_ms) = 0;
+                       bool loop,
+                       const int channel,
+                       const int fadein_ms) = 0;
   virtual bool wavPlaying(const int channel) = 0;
   virtual void wavStop(const int channel) = 0;
   virtual void wavStopAll() = 0;
@@ -384,7 +395,6 @@ class SoundSystem {
   VoiceCache voice_cache_;
 
  private:
-
   System& system_;
 
   // Defined music tracks (files)
@@ -429,10 +439,10 @@ class SoundSystem {
   // boost::serialization support
   friend class boost::serialization::access;
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

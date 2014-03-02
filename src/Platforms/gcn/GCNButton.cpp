@@ -43,16 +43,11 @@ ImageRect GCNButton::s_button_disabled(IMG_BUTTON_DISABLED, xpos, ypos);
 // -----------------------------------------------------------------------
 // GCNButton
 // -----------------------------------------------------------------------
-GCNButton::GCNButton() {
-  init();
-}
+GCNButton::GCNButton() { init(); }
 
 // -----------------------------------------------------------------------
 
-GCNButton::GCNButton(const std::string& label)
-  : gcn::Button(label) {
-  init();
-}
+GCNButton::GCNButton(const std::string& label) : gcn::Button(label) { init(); }
 
 // -----------------------------------------------------------------------
 
@@ -61,8 +56,8 @@ GCNButton::~GCNButton() {}
 // -----------------------------------------------------------------------
 
 void GCNButton::draw(gcn::Graphics* graphics) {
-  static_cast<GCNGraphics*>(graphics)->
-    drawImageRect(0, 0, getWidth(), getHeight(), currentButtonImage());
+  static_cast<GCNGraphics*>(graphics)
+      ->drawImageRect(0, 0, getWidth(), getHeight(), currentButtonImage());
 
   graphics->setColor(getForegroundColor());
 
@@ -70,17 +65,17 @@ void GCNButton::draw(gcn::Graphics* graphics) {
   int textY = getHeight() / 2 - getFont()->getHeight() / 2;
 
   switch (getAlignment()) {
-  case gcn::Graphics::LEFT:
-    textX = 4;
-    break;
-  case gcn::Graphics::CENTER:
-    textX = getWidth() / 2;
-    break;
-  case gcn::Graphics::RIGHT:
-    textX = getWidth() - 4;
-    break;
-  default:
-    throw GCN_EXCEPTION("GCNButton::draw. Unknown alignment.");
+    case gcn::Graphics::LEFT:
+      textX = 4;
+      break;
+    case gcn::Graphics::CENTER:
+      textX = getWidth() / 2;
+      break;
+    case gcn::Graphics::RIGHT:
+      textX = getWidth() - 4;
+      break;
+    default:
+      throw GCN_EXCEPTION("GCNButton::draw. Unknown alignment.");
   }
 
   graphics->setFont(getFont());
@@ -93,9 +88,7 @@ void GCNButton::draw(gcn::Graphics* graphics) {
 
 // -----------------------------------------------------------------------
 
-void GCNButton::init() {
-  setFrameSize(0);
-}
+void GCNButton::init() { setFrameSize(0); }
 
 // -----------------------------------------------------------------------
 

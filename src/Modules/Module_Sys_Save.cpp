@@ -72,19 +72,24 @@ using std::get;
 
 namespace {
 
-struct SaveExists : public RLOp_Store_1< IntConstant_T > {
+struct SaveExists : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int slot) {
     fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
     return fs::exists(saveFile) ? 1 : 0;
   }
 };
 
-struct SaveDate
-    : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
-                          IntReference_T, IntReference_T> {
-  int operator()(RLMachine& machine, int slot,
-                 IntReferenceIterator yIt, IntReferenceIterator mIt,
-                 IntReferenceIterator dIt, IntReferenceIterator wdIt) {
+struct SaveDate : public RLOp_Store_5<IntConstant_T,
+                                      IntReference_T,
+                                      IntReference_T,
+                                      IntReference_T,
+                                      IntReference_T> {
+  int operator()(RLMachine& machine,
+                 int slot,
+                 IntReferenceIterator yIt,
+                 IntReferenceIterator mIt,
+                 IntReferenceIterator dIt,
+                 IntReferenceIterator wdIt) {
     int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
@@ -100,12 +105,17 @@ struct SaveDate
   }
 };
 
-struct SaveTime
-    : public RLOp_Store_5<IntConstant_T, IntReference_T, IntReference_T,
-                          IntReference_T, IntReference_T> {
-  int operator()(RLMachine& machine, int slot,
-                 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
-                 IntReferenceIterator ssIt, IntReferenceIterator msIt) {
+struct SaveTime : public RLOp_Store_5<IntConstant_T,
+                                      IntReference_T,
+                                      IntReference_T,
+                                      IntReference_T,
+                                      IntReference_T> {
+  int operator()(RLMachine& machine,
+                 int slot,
+                 IntReferenceIterator hhIt,
+                 IntReferenceIterator mmIt,
+                 IntReferenceIterator ssIt,
+                 IntReferenceIterator msIt) {
     int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
@@ -121,14 +131,25 @@ struct SaveTime
   }
 };
 
-struct SaveDateTime : public RLOp_Store_9<
-  IntConstant_T, IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T > {
-  int operator()(RLMachine& machine, int slot,
-                 IntReferenceIterator yIt, IntReferenceIterator mIt,
-                 IntReferenceIterator dIt, IntReferenceIterator wdIt,
-                 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
-                 IntReferenceIterator ssIt, IntReferenceIterator msIt) {
+struct SaveDateTime : public RLOp_Store_9<IntConstant_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T,
+                                          IntReference_T> {
+  int operator()(RLMachine& machine,
+                 int slot,
+                 IntReferenceIterator yIt,
+                 IntReferenceIterator mIt,
+                 IntReferenceIterator dIt,
+                 IntReferenceIterator wdIt,
+                 IntReferenceIterator hhIt,
+                 IntReferenceIterator mmIt,
+                 IntReferenceIterator ssIt,
+                 IntReferenceIterator msIt) {
     int fileExists = SaveExists()(machine, slot);
 
     if (fileExists) {
@@ -148,16 +169,26 @@ struct SaveDateTime : public RLOp_Store_9<
   }
 };
 
-struct SaveInfo
-    : public RLOp_Store_10<IntConstant_T, IntReference_T, IntReference_T,
-                           IntReference_T, IntReference_T, IntReference_T,
-                           IntReference_T, IntReference_T, IntReference_T,
-                           StrReference_T > {
-  int operator()(RLMachine& machine, int slot,
-                 IntReferenceIterator yIt, IntReferenceIterator mIt,
-                 IntReferenceIterator dIt, IntReferenceIterator wdIt,
-                 IntReferenceIterator hhIt, IntReferenceIterator mmIt,
-                 IntReferenceIterator ssIt, IntReferenceIterator msIt,
+struct SaveInfo : public RLOp_Store_10<IntConstant_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       StrReference_T> {
+  int operator()(RLMachine& machine,
+                 int slot,
+                 IntReferenceIterator yIt,
+                 IntReferenceIterator mIt,
+                 IntReferenceIterator dIt,
+                 IntReferenceIterator wdIt,
+                 IntReferenceIterator hhIt,
+                 IntReferenceIterator mmIt,
+                 IntReferenceIterator ssIt,
+                 IntReferenceIterator msIt,
                  StringReferenceIterator titleIt) {
     int fileExists = SaveExists()(machine, slot);
 
@@ -181,12 +212,10 @@ struct SaveInfo
   }
 };
 
-typedef Argc_T<
-  Special_T<
+typedef Argc_T<Special_T<
     DefaultSpecialMapper,
     Complex3_T<IntReference_T, IntReference_T, IntConstant_T>,
-    Complex3_T<StrReference_T, StrReference_T, IntConstant_T> > >
-GetSaveFlagList;
+    Complex3_T<StrReference_T, StrReference_T, IntConstant_T>>> GetSaveFlagList;
 
 // Retrieves the values of variables from saved games. If slot is
 // empty, returns 0 and does nothing further; if slot contains a saved
@@ -216,18 +245,19 @@ struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
     Serialization::loadLocalMemoryForSlot(machine, slot, overlayedMemory);
 
     for (GetSaveFlagList::type::iterator it = flagList.begin();
-         it != flagList.end(); ++it) {
+         it != flagList.end();
+         ++it) {
       switch (it->type) {
         case 0: {
-          IntReferenceIterator jt = get<0>(it->first)
-                                    .changeMemoryTo(&overlayedMemory);
+          IntReferenceIterator jt =
+              get<0>(it->first).changeMemoryTo(&overlayedMemory);
           boost::detail::multi_array::copy_n(
               jt, get<2>(it->first), get<1>(it->first));
           break;
         }
         case 1: {
-          StringReferenceIterator jt = get<0>(it->second)
-                                       .changeMemoryTo(&overlayedMemory);
+          StringReferenceIterator jt =
+              get<0>(it->second).changeMemoryTo(&overlayedMemory);
           boost::detail::multi_array::copy_n(
               jt, get<2>(it->second), get<1>(it->second));
           break;
@@ -269,7 +299,7 @@ struct LatestSave : public RLOp_Store_Void {
   }
 };
 
-struct save : public RLOp_Void_1< IntConstant_T > {
+struct save : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int slot) {
     Serialization::saveGlobalMemory(machine);
     Serialization::saveGameForSlot(machine, slot);
@@ -306,10 +336,10 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
   m.addOpcode(1421, 0, "LatestSave", new LatestSave);
 
-  m.addOpcode(2053, 0, "SetConfirmSaveLoad",
-              callFunction(&System::setConfirmSaveLoad));
-  m.addOpcode(2003, 0, "ConfirmSaveLoad",
-              returnIntValue(&System::confirmSaveLoad));
+  m.addOpcode(
+      2053, 0, "SetConfirmSaveLoad", callFunction(&System::setConfirmSaveLoad));
+  m.addOpcode(
+      2003, 0, "ConfirmSaveLoad", returnIntValue(&System::confirmSaveLoad));
 
   m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
   m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
@@ -323,10 +353,13 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
   m.addOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3500, 0, "Savepoint",
-              callFunction(&RLMachine::markSavepoint));
-  m.addOpcode(3501, 0, "EnableAutoSavepoints",
+  m.addOpcode(3500, 0, "Savepoint", callFunction(&RLMachine::markSavepoint));
+  m.addOpcode(3501,
+              0,
+              "EnableAutoSavepoints",
               callFunctionWith(&RLMachine::setMarkSavepoints, 1));
-  m.addOpcode(3502, 0, "DisableAutoSavepoints",
+  m.addOpcode(3502,
+              0,
+              "DisableAutoSavepoints",
               callFunctionWith(&RLMachine::setMarkSavepoints, 0));
 }

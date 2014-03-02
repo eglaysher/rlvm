@@ -27,9 +27,6 @@
 #ifndef SRC_MACHINEBASE_PROPERTIES_HPP_
 #define SRC_MACHINEBASE_PROPERTIES_HPP_
 
-enum Properties {
-  P_FGBG = 1,
-  P_PARENTOBJ
-};
+enum Properties { P_FGBG = 1, P_PARENTOBJ };
 
 #endif  // SRC_MACHINEBASE_PROPERTIES_HPP_

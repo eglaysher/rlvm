@@ -62,16 +62,14 @@ namespace fs = boost::filesystem;
 
 namespace {
 
-const std::vector<std::string> ALL_FILETYPES = {
-  "g00", "pdt", "anm", "gan", "hik", "wav", "ogg", "nwa", "mp3",
-  "ovk", "koe", "nwk"
-};
+const std::vector<std::string> ALL_FILETYPES = {"g00", "pdt", "anm", "gan",
+                                                "hik", "wav", "ogg", "nwa",
+                                                "mp3", "ovk", "koe", "nwk"};
 
 struct LoadingGameFromStream : public LoadGameLongOperation {
   LoadingGameFromStream(RLMachine& machine,
                         const boost::shared_ptr<std::stringstream>& selection)
-      : LoadGameLongOperation(machine),
-        selection_(selection) {}
+      : LoadGameLongOperation(machine), selection_(selection) {}
 
   virtual void load(RLMachine& machine) {
     // We need to copy data here onto the stack because the action of loading
@@ -87,15 +85,15 @@ struct LoadingGameFromStream : public LoadGameLongOperation {
 }  // namespace
 
 // I assume GAN files can't go through the OBJ_FILETYPES path.
-const std::vector<std::string> OBJ_FILETYPES = { "anm", "g00", "pdt" };
-const std::vector<std::string> IMAGE_FILETYPES = { "g00", "pdt" };
-const std::vector<std::string> PDT_IMAGE_FILETYPES = { "pdt" };
-const std::vector<std::string> GAN_FILETYPES = { "gan" };
-const std::vector<std::string> ANM_FILETYPES = { "anm" };
-const std::vector<std::string> HIK_FILETYPES = { "hik", "g00", "pdt" };
-const std::vector<std::string> SOUND_FILETYPES = { "wav", "ogg", "nwa", "mp3" };
-const std::vector<std::string> KOE_ARCHIVE_FILETYPES = { "ovk", "koe", "nwk" };
-const std::vector<std::string> KOE_LOOSE_FILETYPES = { "ogg" };
+const std::vector<std::string> OBJ_FILETYPES = {"anm", "g00", "pdt"};
+const std::vector<std::string> IMAGE_FILETYPES = {"g00", "pdt"};
+const std::vector<std::string> PDT_IMAGE_FILETYPES = {"pdt"};
+const std::vector<std::string> GAN_FILETYPES = {"gan"};
+const std::vector<std::string> ANM_FILETYPES = {"anm"};
+const std::vector<std::string> HIK_FILETYPES = {"hik", "g00", "pdt"};
+const std::vector<std::string> SOUND_FILETYPES = {"wav", "ogg", "nwa", "mp3"};
+const std::vector<std::string> KOE_ARCHIVE_FILETYPES = {"ovk", "koe", "nwk"};
+const std::vector<std::string> KOE_LOOSE_FILETYPES = {"ogg"};
 
 class MenuReseter : public LongOperation {
  public:
@@ -115,8 +113,7 @@ class MenuReseter : public LongOperation {
 // -----------------------------------------------------------------------
 
 SystemGlobals::SystemGlobals()
-  : confirm_save_load_(true), low_priority_(false) {}
-
+    : confirm_save_load_(true), low_priority_(false) {}
 
 // -----------------------------------------------------------------------
 // System
@@ -130,8 +127,7 @@ System::System()
   fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
 }
 
-System::~System() {
-}
+System::~System() {}
 
 void System::takeSelectionSnapshot(RLMachine& machine) {
   previous_selection_.reset(new std::stringstream);
@@ -220,73 +216,75 @@ void System::showSyscomMenu(RLMachine& machine) {
 
 void System::invokeSyscom(RLMachine& machine, int syscom) {
   switch (syscom) {
-  case SYSCOM_SAVE:
-    invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
-    break;
-  case SYSCOM_LOAD:
-    invokeSaveOrLoad(machine, syscom, "SYSTEMCALL_LOAD_MOD", "SYSTEMCALL_LOAD");
-    break;
-  case SYSCOM_MESSAGE_SPEED:
-  case SYSCOM_WINDOW_ATTRIBUTES:
-  case SYSCOM_VOLUME_SETTINGS:
-  case SYSCOM_MISCELLANEOUS_SETTINGS:
-  case SYSCOM_VOICE_SETTINGS:
-  case SYSCOM_FONT_SELECTION:
-  case SYSCOM_BGM_FADE:
-  case SYSCOM_BGM_SETTINGS:
-  case SYSCOM_AUTO_MODE_SETTINGS:
-  case SYSCOM_USE_KOE:
-  case SYSCOM_DISPLAY_VERSION: {
-    if (platform_)
-      platform_->invokeSyscomStandardUI(machine, syscom);
-    break;
-  }
-  case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
-    restoreSelectionSnapshot(machine);
-    break;
-  case SYSCOM_SHOW_WEATHER:
-    graphics().setShowWeather(!graphics().showWeather());
-    break;
-  case SYSCOM_SHOW_OBJECT_1:
-    graphics().setShowObject1(!graphics().showObject1());
-    break;
-  case SYSCOM_SHOW_OBJECT_2:
-    graphics().setShowObject2(!graphics().showObject2());
-    break;
-  case SYSCOM_CLASSIFY_TEXT:
-    cerr << "We have no idea what classifying text even means!" << endl;
-    break;
-  case SYSCOM_OPEN_MANUAL_PATH:
-    cerr << "Opening manual path..." << endl;
-    break;
-  case SYSCOM_SET_SKIP_MODE:
-    text().setSkipMode(!text().skipMode());
-    break;
-  case SYSCOM_AUTO_MODE:
-    text().setAutoMode(!text().autoMode());
-    break;
-  case SYSCOM_MENU_RETURN:
-    // This is a hack since we probably have a bunch of crap on the stack.
-    machine.clearLongOperationsOffBackOfStack();
+    case SYSCOM_SAVE:
+      invokeSaveOrLoad(
+          machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
+      break;
+    case SYSCOM_LOAD:
+      invokeSaveOrLoad(
+          machine, syscom, "SYSTEMCALL_LOAD_MOD", "SYSTEMCALL_LOAD");
+      break;
+    case SYSCOM_MESSAGE_SPEED:
+    case SYSCOM_WINDOW_ATTRIBUTES:
+    case SYSCOM_VOLUME_SETTINGS:
+    case SYSCOM_MISCELLANEOUS_SETTINGS:
+    case SYSCOM_VOICE_SETTINGS:
+    case SYSCOM_FONT_SELECTION:
+    case SYSCOM_BGM_FADE:
+    case SYSCOM_BGM_SETTINGS:
+    case SYSCOM_AUTO_MODE_SETTINGS:
+    case SYSCOM_USE_KOE:
+    case SYSCOM_DISPLAY_VERSION: {
+      if (platform_)
+        platform_->invokeSyscomStandardUI(machine, syscom);
+      break;
+    }
+    case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
+      restoreSelectionSnapshot(machine);
+      break;
+    case SYSCOM_SHOW_WEATHER:
+      graphics().setShowWeather(!graphics().showWeather());
+      break;
+    case SYSCOM_SHOW_OBJECT_1:
+      graphics().setShowObject1(!graphics().showObject1());
+      break;
+    case SYSCOM_SHOW_OBJECT_2:
+      graphics().setShowObject2(!graphics().showObject2());
+      break;
+    case SYSCOM_CLASSIFY_TEXT:
+      cerr << "We have no idea what classifying text even means!" << endl;
+      break;
+    case SYSCOM_OPEN_MANUAL_PATH:
+      cerr << "Opening manual path..." << endl;
+      break;
+    case SYSCOM_SET_SKIP_MODE:
+      text().setSkipMode(!text().skipMode());
+      break;
+    case SYSCOM_AUTO_MODE:
+      text().setAutoMode(!text().autoMode());
+      break;
+    case SYSCOM_MENU_RETURN:
+      // This is a hack since we probably have a bunch of crap on the stack.
+      machine.clearLongOperationsOffBackOfStack();
 
-    // Simulate a MenuReturn.
-    Sys_MenuReturn()(machine);
-    break;
-  case SYSCOM_EXIT_GAME:
-    machine.halt();
-    break;
-  case SYSCOM_SHOW_BACKGROUND:
-    graphics().toggleInterfaceHidden();
-    break;
-  case SYSCOM_HIDE_MENU:
-    // Do nothing. The menu will be hidden on its own.
-    break;
-  case SYSCOM_GENERIC_1:
-  case SYSCOM_GENERIC_2:
-  case SYSCOM_SCREEN_MODE:
-  case SYSCOM_WINDOW_DECORATION_STYLE:
-    cerr << "No idea what to do!" << endl;
-    break;
+      // Simulate a MenuReturn.
+      Sys_MenuReturn()(machine);
+      break;
+    case SYSCOM_EXIT_GAME:
+      machine.halt();
+      break;
+    case SYSCOM_SHOW_BACKGROUND:
+      graphics().toggleInterfaceHidden();
+      break;
+    case SYSCOM_HIDE_MENU:
+      // Do nothing. The menu will be hidden on its own.
+      break;
+    case SYSCOM_GENERIC_1:
+    case SYSCOM_GENERIC_2:
+    case SYSCOM_SCREEN_MODE:
+    case SYSCOM_WINDOW_DECORATION_STYLE:
+      cerr << "No idea what to do!" << endl;
+      break;
   };
 }
 
@@ -323,15 +321,16 @@ boost::filesystem::path System::findFile(
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
   string lower_name =
-    string(file_name.begin(), find(file_name.begin(), file_name.end(), '?'));
+      string(file_name.begin(), find(file_name.begin(), file_name.end(), '?'));
   to_lower(lower_name);
 
   std::pair<FileSystemCache::const_iterator, FileSystemCache::const_iterator>
       ret = filesystem_cache_.equal_range(lower_name);
   for (vector<string>::const_iterator ext = extensions.begin();
-       ext != extensions.end(); ++ext) {
-    for (FileSystemCache::const_iterator it = ret.first;
-         it != ret.second; ++it) {
+       ext != extensions.end();
+       ++ext) {
+    for (FileSystemCache::const_iterator it = ret.first; it != ret.second;
+         ++it) {
       if (*ext == it->second.first) {
         return it->second.second;
       }
@@ -372,8 +371,7 @@ boost::filesystem::path System::gameSaveDirectory() {
 
 bool System::fastForward() {
   return (event().ctrlPressed() && text().ctrlKeySkip()) ||
-    text().currentlySkipping() ||
-    force_fast_forward_;
+         text().currentlySkipping() || force_fast_forward_;
 }
 
 void System::dumpRenderTree(RLMachine& machine) {
@@ -387,17 +385,15 @@ void System::dumpRenderTree(RLMachine& machine) {
 
 boost::filesystem::path System::getHomeDirectory() {
   string drive, home;
-  char *homeptr     = getenv("HOME");
-  char *driveptr    = getenv("HOMEDRIVE");
-  char *homepathptr = getenv("HOMEPATH");
-  char *profileptr  = getenv("USERPROFILE");
+  char* homeptr = getenv("HOME");
+  char* driveptr = getenv("HOMEDRIVE");
+  char* homepathptr = getenv("HOMEPATH");
+  char* profileptr = getenv("USERPROFILE");
   if (homeptr != 0 && (home = homeptr) != "") {
     // UN*X like home directory
     return fs::path(home);
-  } else if (driveptr != 0 &&
-             homepathptr !=0 &&
-             (drive = driveptr) != "" &&
-             (home  = homepathptr) != "") {
+  } else if (driveptr != 0 && homepathptr != 0 && (drive = driveptr) != "" &&
+             (home = homepathptr) != "") {
     // Windows.
     return fs::path(drive) / fs::path(home);
   } else if (profileptr != 0 && (home = profileptr) != "") {
@@ -481,13 +477,10 @@ void System::addDirectoryToCache(const fs::path& directory) {
         to_lower(stem);
 
         filesystem_cache_.insert(
-            make_pair(stem,
-                      make_pair(extension, dir->path())));
+            make_pair(stem, make_pair(extension, dir->path())));
       }
     }
   }
 }
 
-std::string rlvm_version() {
-  return "Version 0.13.1";
-}
+std::string rlvm_version() { return "Version 0.13.1"; }

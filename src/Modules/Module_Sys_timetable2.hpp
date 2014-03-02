@@ -51,29 +51,38 @@ typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Loop;
 typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Jump;
 typedef Complex2_T<IntConstant_T, IntConstant_T> TT_WaitSet;
 
-typedef Special_T< TimeTableMapper,
-                   TT_Move2,
-                   TT_Move3,
-                   TT_Set,
-                   TT_Wait,
-                   TT_Turn,
-                   TT_Turnup,
-                   TT_Loop,
-                   TT_Jump,
-                   TT_WaitSet > TimeTable2Entry;
-typedef Argc_T< TimeTable2Entry > TimeTable2List;
+typedef Special_T<TimeTableMapper,
+                  TT_Move2,
+                  TT_Move3,
+                  TT_Set,
+                  TT_Wait,
+                  TT_Turn,
+                  TT_Turnup,
+                  TT_Loop,
+                  TT_Jump,
+                  TT_WaitSet> TimeTable2Entry;
+typedef Argc_T<TimeTable2Entry> TimeTable2List;
 
 // Implementation of the math performing timetable2 command.
-struct Sys_timetable2
-    : public RLOp_Store_5<IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, TimeTable2List> {
+struct Sys_timetable2 : public RLOp_Store_5<IntConstant_T,
+                                            IntConstant_T,
+                                            IntConstant_T,
+                                            IntConstant_T,
+                                            TimeTable2List> {
   // Main entrypoint
-  virtual int operator()(RLMachine& machine, int now_time, int rep_time,
-                         int start_time, int start_num,
+  virtual int operator()(RLMachine& machine,
+                         int now_time,
+                         int rep_time,
+                         int start_time,
+                         int start_num,
                          TimeTable2List::type index_list);
 
-  int Jump(int start_time, int now_time, int end_time,
-           int start_num, int end_num, int count);
+  int Jump(int start_time,
+           int now_time,
+           int end_time,
+           int start_num,
+           int end_num,
+           int count);
 };
 
 // index_series has its own file.

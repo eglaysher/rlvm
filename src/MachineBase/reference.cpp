@@ -66,7 +66,7 @@ IntAccessor& IntAccessor::operator=(const IntAccessor& rhs) {
 // -----------------------------------------------------------------------
 
 StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i)
-  : it(i) {}
+    : it(i) {}
 
 StringAccessor::~StringAccessor() {}
 
@@ -86,4 +86,3 @@ bool StringAccessor::operator==(const std::string& rhs) {
 StringAccessor& StringAccessor::operator=(const StringAccessor& rhs) {
   return operator=(rhs.operator std::string());
 }
-

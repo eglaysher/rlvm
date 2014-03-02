@@ -44,14 +44,14 @@ using namespace std;
 
 namespace {
 
-struct DebugMessageInt : public RLOp_Void_1< IntConstant_T > {
+struct DebugMessageInt : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
     if (machine.system().gameexe()("MEMORY").exists())
       cerr << "DebugMessage: " << value << endl;
   }
 };
 
-struct DebugMessageStr : public RLOp_Void_1< StrConstant_T > {
+struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string value) {
     if (machine.system().gameexe()("MEMORY").exists()) {
       string utfvalue = cp932toUTF8(value, machine.getTextEncoding());
@@ -62,8 +62,7 @@ struct DebugMessageStr : public RLOp_Void_1< StrConstant_T > {
 
 }  // namespace
 
-DebugModule::DebugModule()
-    : RLModule("Debug", 1, 255) {
+DebugModule::DebugModule() : RLModule("Debug", 1, 255) {
   addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
   addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }

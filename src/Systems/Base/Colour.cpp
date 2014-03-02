@@ -34,10 +34,7 @@
 // RGBColour
 // -----------------------------------------------------------------------
 RGBColour::RGBColour(const std::vector<int>& colour)
-    : r_(colour.at(0)),
-      g_(colour.at(1)),
-      b_(colour.at(2)) {
-}
+    : r_(colour.at(0)), g_(colour.at(1)), b_(colour.at(2)) {}
 
 bool RGBColour::operator==(const RGBColour& rhs) const {
   return r_ == rhs.r_ && g_ == rhs.g_ && b_ == rhs.b_;
@@ -57,8 +54,7 @@ std::ostream& operator<<(std::ostream& os, const RGBColour& rgb) {
 // RGBAColour
 // -----------------------------------------------------------------------
 RGBAColour::RGBAColour(const std::vector<int>& colour)
-    : rgb_(colour), alpha_(255) {
-}
+    : rgb_(colour), alpha_(255) {}
 
 bool RGBAColour::operator==(const RGBAColour& rhs) const {
   return rgb_ == rhs.rgb_ && alpha_ == rhs.alpha_;
@@ -69,8 +65,8 @@ bool RGBAColour::operator!=(const RGBAColour& rhs) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const RGBAColour& rgba) {
-  os << "RGBA(" << rgba.r() << ", " << rgba.g() << ", " << rgba.b()
-     << ", " << rgba.a() << ")";
+  os << "RGBA(" << rgba.r() << ", " << rgba.g() << ", " << rgba.b() << ", "
+     << rgba.a() << ")";
 
   return os;
 }

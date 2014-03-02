@@ -381,7 +381,6 @@ TEST(LargeJmpTest, gosub_if_true) {
 
 // -----------------------------------------------------------------------
 
-
 /**
  * Tests gosub_unless (if false)
  *
@@ -701,8 +700,10 @@ TEST(LargeJmpTest, gosub_with) {
  * test it. Used in test<20>
  */
 static int recFib(int input) {
-  if (input == 0) return 0;
-  if (input == 1) return 1;
+  if (input == 0)
+    return 0;
+  if (input == 1)
+    return 1;
   return recFib(input - 1) + recFib(input - 2);
 }
 

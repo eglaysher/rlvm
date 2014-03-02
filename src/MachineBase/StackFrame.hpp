@@ -87,10 +87,10 @@ struct StackFrame {
 
   ~StackFrame();
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

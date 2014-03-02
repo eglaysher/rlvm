@@ -52,14 +52,14 @@ class TestMachine : public RLMachine {
   typedef std::pair<int, std::string> ExeArgument;
 
   // Constructs an argument string from C++ types.
-  template<typename A>
+  template <typename A>
   static ExeArgument Arg(const A& a) {
     std::string output;
     addEntity(output, a);
     return ExeArgument(1, output);
   }
 
-  template<typename A, typename B>
+  template <typename A, typename B>
   static ExeArgument Arg(const A& a, const B& b) {
     std::string output;
     addEntity(output, a);
@@ -67,7 +67,7 @@ class TestMachine : public RLMachine {
     return ExeArgument(2, output);
   }
 
-  template<typename A, typename B, typename C>
+  template <typename A, typename B, typename C>
   static ExeArgument Arg(const A& a, const B& b, const C& c) {
     std::string output;
     addEntity(output, a);
@@ -76,7 +76,7 @@ class TestMachine : public RLMachine {
     return ExeArgument(3, output);
   }
 
-  template<typename A, typename B, typename C, typename D>
+  template <typename A, typename B, typename C, typename D>
   static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d) {
     std::string output;
     addEntity(output, a);
@@ -86,8 +86,11 @@ class TestMachine : public RLMachine {
     return ExeArgument(4, output);
   }
 
-  template<typename A, typename B, typename C, typename D, typename E>
-  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
+  template <typename A, typename B, typename C, typename D, typename E>
+  static ExeArgument Arg(const A& a,
+                         const B& b,
+                         const C& c,
+                         const D& d,
                          const E& e) {
     std::string output;
     addEntity(output, a);
@@ -98,10 +101,18 @@ class TestMachine : public RLMachine {
     return ExeArgument(5, output);
   }
 
-  template<typename A, typename B, typename C, typename D, typename E,
-           typename F>
-  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
-                         const E& e, const F& f) {
+  template <typename A,
+            typename B,
+            typename C,
+            typename D,
+            typename E,
+            typename F>
+  static ExeArgument Arg(const A& a,
+                         const B& b,
+                         const C& c,
+                         const D& d,
+                         const E& e,
+                         const F& f) {
     std::string output;
     addEntity(output, a);
     addEntity(output, b);
@@ -112,10 +123,20 @@ class TestMachine : public RLMachine {
     return ExeArgument(6, output);
   }
 
-  template<typename A, typename B, typename C, typename D, typename E,
-           typename F, typename G>
-  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
-                         const E& e, const F& f, const G& g) {
+  template <typename A,
+            typename B,
+            typename C,
+            typename D,
+            typename E,
+            typename F,
+            typename G>
+  static ExeArgument Arg(const A& a,
+                         const B& b,
+                         const C& c,
+                         const D& d,
+                         const E& e,
+                         const F& f,
+                         const G& g) {
     std::string output;
     addEntity(output, a);
     addEntity(output, b);
@@ -127,10 +148,22 @@ class TestMachine : public RLMachine {
     return ExeArgument(7, output);
   }
 
-  template<typename A, typename B, typename C, typename D, typename E,
-           typename F, typename G, typename H>
-  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
-                         const E& e, const F& f, const G& g, const H& h) {
+  template <typename A,
+            typename B,
+            typename C,
+            typename D,
+            typename E,
+            typename F,
+            typename G,
+            typename H>
+  static ExeArgument Arg(const A& a,
+                         const B& b,
+                         const C& c,
+                         const D& d,
+                         const E& e,
+                         const F& f,
+                         const G& g,
+                         const H& h) {
     std::string output;
     addEntity(output, a);
     addEntity(output, b);
@@ -143,10 +176,23 @@ class TestMachine : public RLMachine {
     return ExeArgument(8, output);
   }
 
-  template<typename A, typename B, typename C, typename D, typename E,
-           typename F, typename G, typename H, typename I>
-  static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d,
-                         const E& e, const F& f, const G& g, const H& h,
+  template <typename A,
+            typename B,
+            typename C,
+            typename D,
+            typename E,
+            typename F,
+            typename G,
+            typename H,
+            typename I>
+  static ExeArgument Arg(const A& a,
+                         const B& b,
+                         const C& c,
+                         const D& d,
+                         const E& e,
+                         const F& f,
+                         const G& g,
+                         const H& h,
                          const I& i) {
     std::string output;
     addEntity(output, a);
@@ -170,7 +216,8 @@ class TestMachine : public RLMachine {
   void exe(const std::string& name, unsigned char overload);
 
   // Invokes a named opcode (with arguments)
-  void exe(const std::string& name, unsigned char overload,
+  void exe(const std::string& name,
+           unsigned char overload,
            const ExeArgument& arguments);
 
  private:
@@ -179,11 +226,13 @@ class TestMachine : public RLMachine {
   static void addEntity(std::string& output, const int arg);
 
   // Implementation of the two exe() methods.
-  void runOpcode(const std::string& name, unsigned char overload,
-                 int argc, const std::string& argument_string);
+  void runOpcode(const std::string& name,
+                 unsigned char overload,
+                 int argc,
+                 const std::string& argument_string);
 
-  typedef std::map< std::pair<std::string, unsigned char>, RLOperation*>
-  OpcodeRegistry;
+  typedef std::map<std::pair<std::string, unsigned char>, RLOperation*>
+      OpcodeRegistry;
   OpcodeRegistry registry_;
 };
 

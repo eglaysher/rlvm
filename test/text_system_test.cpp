@@ -61,8 +61,7 @@ class TextSystemTest : public FullSystemTest {
  protected:
   TextSystemTest() {
     event_mock.reset(new IncrementingTickCounter);
-    dynamic_cast<TestEventSystem&>(system.event())
-        .setMockHandler(event_mock);
+    dynamic_cast<TestEventSystem&>(system.event()).setMockHandler(event_mock);
 
     system.text().setActiveWindow(0);
   }
@@ -79,18 +78,17 @@ class TextSystemTest : public FullSystemTest {
     return dynamic_cast<MockTextWindow&>(*system.text().textWindow(twn));
   }
 
-  TextPage& currentPage() {
-    return system.text().currentPage();
-  }
+  TextPage& currentPage() { return system.text().currentPage(); }
 
   void writeString(const std::string& text, bool nowait) {
     unique_ptr<TextoutLongOperation> tolo(
-      new TextoutLongOperation(rlmachine, text));
+        new TextoutLongOperation(rlmachine, text));
 
     if (nowait)
       tolo->setNoWait();
 
-    while (!(*tolo)(rlmachine));
+    while (!(*tolo)(rlmachine))
+      ;
   }
 
   void snapshotAndClear() {
@@ -275,7 +273,12 @@ TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
       sys.renderText("A Very Long String That Goes On And On",
-                     20, 0, 0, RGBColour::White(), NULL, 0);
+                     20,
+                     0,
+                     0,
+                     RGBColour::White(),
+                     NULL,
+                     0);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
   EXPECT_EQ(20, text_surface->size().height());
@@ -292,16 +295,14 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
     const char* str;
     int xpos;
     int ypos;
-  } test_data[] = {
-    { "O", 0, 0 },
-    { "n", 20, 0},
-    { "e", 40, 0},
-    { "T", 0, 20},
-    { "w", 20, 20},
-    { "o", 40, 20}
-  };
+  } test_data[] = {{"O", 0, 0},
+                   {"n", 20, 0},
+                   {"e", 40, 0},
+                   {"T", 0, 20},
+                   {"w", 20, 20},
+                   {"o", 40, 20}};
 
-  std::vector<std::tuple<std::string, int, int> > data = sys.glyphs();
+  std::vector<std::tuple<std::string, int, int>> data = sys.glyphs();
   ASSERT_EQ(6, data.size());
   for (int i = 0; i < data.size(); ++i) {
     EXPECT_EQ(test_data[i].str, get<0>(data[i]));
@@ -324,15 +325,16 @@ TEST_F(TextSystemTest, TestEmoji) {
   // Inject a fake surface of (24*5, 24). We will expect this to blit to the
   // text surface.
   boost::shared_ptr<MockSurface> mock(
-      MockSurface::Create("emoji_file", Size(24*5, 24)));
+      MockSurface::Create("emoji_file", Size(24 * 5, 24)));
   getGraphicsSystem().injectSurface("emoji_file", mock);
 
   // Our mock surface should render its icon between the Es.
-  EXPECT_CALL(*mock, blitToSurface(_,
-                                   Rect(24*2, 0, Size(24, 24)),
-                                   Rect(20, 0, Size(24, 24)),
-                                   255,
-                                   false));
+  EXPECT_CALL(*mock,
+              blitToSurface(_,
+                            Rect(24 * 2, 0, Size(24, 24)),
+                            Rect(20, 0, Size(24, 24)),
+                            255,
+                            false));
 
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
@@ -344,12 +346,9 @@ TEST_F(TextSystemTest, TestEmoji) {
     const char* str;
     int xpos;
     int ypos;
-  } test_data[] = {
-    { "E", 0, 0 },
-    { "E", 40, 0},
-  };
+  } test_data[] = {{"E", 0, 0}, {"E", 40, 0}, };
 
-  std::vector<std::tuple<std::string, int, int> > data = sys.glyphs();
+  std::vector<std::tuple<std::string, int, int>> data = sys.glyphs();
   ASSERT_EQ(2, data.size());
   for (int i = 0; i < data.size(); ++i) {
     EXPECT_EQ(test_data[i].str, get<0>(data[i]));

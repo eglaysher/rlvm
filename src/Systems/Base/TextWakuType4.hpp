@@ -41,7 +41,8 @@ class TextWakuType4 : public TextWaku {
   ~TextWakuType4();
 
   virtual void execute();
-  virtual void render(std::ostream* tree, Point box_location,
+  virtual void render(std::ostream* tree,
+                      Point box_location,
                       Size namebox_size);
 
   // We have no size other than what is passed to |namebox_size|. Always
@@ -57,7 +58,8 @@ class TextWakuType4 : public TextWaku {
   // instead some sort of listener. I'm currently thinking that the individual
   // buttons that need to handle events should be listeners.
   virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
+  virtual bool handleMouseClick(RLMachine& machine,
+                                const Point& pos,
                                 bool pressed);
 
  private:
@@ -96,6 +98,5 @@ class TextWakuType4 : public TextWaku {
   Surface::GrpRect bottom_center;
   Surface::GrpRect bottom_right;
 };
-
 
 #endif  // SRC_SYSTEMS_BASE_TEXTWAKUTYPE4_HPP_

@@ -66,9 +66,11 @@ SDLTextSystem::~SDLTextSystem() {
 boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
-    it = text_window_.insert(std::make_pair(
-        text_window, boost::shared_ptr<TextWindow>(
-          new SDLTextWindow(sdl_system_, text_window)))).first;
+    it =
+        text_window_.insert(std::make_pair(
+                                text_window,
+                                boost::shared_ptr<TextWindow>(new SDLTextWindow(
+                                    sdl_system_, text_window)))).first;
   }
 
   return it->second;
@@ -114,10 +116,10 @@ Size SDLTextSystem::renderGlyphOnto(
 
   if (shadow) {
     Size offset(shadow->w, shadow->h);
-    sdl_surface->blitFROMSurface(
-        shadow.get(), Rect(Point(0, 0), offset),
-        Rect(insertion + Point(2, 2), offset),
-        255);
+    sdl_surface->blitFROMSurface(shadow.get(),
+                                 Rect(Point(0, 0), offset),
+                                 Rect(insertion + Point(2, 2), offset),
+                                 255);
   }
 
   Size size(character->w, character->h);
@@ -129,8 +131,7 @@ Size SDLTextSystem::renderGlyphOnto(
 int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
-  TTF_GlyphMetrics(font.get(), codepoint,
-                   &minx, &maxx, &miny, &maxy, &advance);
+  TTF_GlyphMetrics(font.get(), codepoint, &minx, &maxx, &miny, &maxy, &advance);
   return advance;
 }
 

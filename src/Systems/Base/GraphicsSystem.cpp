@@ -106,7 +106,7 @@ struct GraphicsSystem::GraphicsObjectSettings {
 // -----------------------------------------------------------------------
 
 GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
-  Gameexe& gameexe) {
+    Gameexe& gameexe) {
   if (gameexe.exists("OBJECT_MAX"))
     objects_in_a_layer = gameexe("OBJECT_MAX");
   else
@@ -128,10 +128,10 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     string s = it->key().substr(it->key().find_first_of(".") + 1);
     std::list<int> object_nums;
     string::size_type poscolon = s.find_first_of(":");
-    if ( poscolon != string::npos ) {
+    if (poscolon != string::npos) {
       int obj_num_first = lexical_cast<int>(s.substr(0, poscolon));
       int obj_num_last = lexical_cast<int>(s.substr(poscolon + 1));
-      while ( obj_num_first <= obj_num_last ) {
+      while (obj_num_first <= obj_num_last) {
         object_nums.push_back(obj_num_first++);
       }
     } else {
@@ -158,12 +158,13 @@ GraphicsSystem::GraphicsObjectSettings::getObjectSettingsFor(int obj_num) {
 // GraphicsSystemGlobals
 // -----------------------------------------------------------------------
 GraphicsSystemGlobals::GraphicsSystemGlobals()
-  : show_object_1(false), show_object_2(false), show_weather(false),
-    skip_animations(0),
-    screen_mode(1),
-    cg_table(),
-    tone_curves() {
-}
+    : show_object_1(false),
+      show_object_2(false),
+      show_weather(false),
+      skip_animations(0),
+      screen_mode(1),
+      cg_table(),
+      tone_curves() {}
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
     : show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
@@ -172,8 +173,7 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
       skip_animations(0),
       screen_mode(1),
       cg_table(gameexe),
-      tone_curves(gameexe) {
-}
+      tone_curves(gameexe) {}
 
 // -----------------------------------------------------------------------
 // GraphicsObjectImpl
@@ -215,32 +215,31 @@ GraphicsSystem::GraphicsObjectImpl::GraphicsObjectImpl(int size)
       background_objects(size),
       saved_foreground_objects(size),
       saved_background_objects(size),
-      use_old_graphics_stack(false) {
-}
+      use_old_graphics_stack(false) {}
 
 // -----------------------------------------------------------------------
 // GraphicsSystem
 // -----------------------------------------------------------------------
 GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
-  : screen_update_mode_(SCREENUPDATEMODE_AUTOMATIC),
-    background_type_(BACKGROUND_DC0),
-    screen_needs_refresh_(false),
-    object_state_dirty_(false),
-    is_responsible_for_update_(true),
-    display_subtitle_(gameexe("SUBTITLE").to_int(0)),
-    hide_interface_(false),
-    globals_(gameexe),
-    time_at_last_queue_change_(0),
-    graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
-    graphics_object_impl_(new GraphicsObjectImpl(
-        graphics_object_settings_->objects_in_a_layer)),
-    use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
-    show_cursor_from_bytecode_(true),
-    cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
-    system_(system),
-    preloaded_hik_scripts_(32),
-    preloaded_g00_(256),
-    image_cache_(10) {}
+    : screen_update_mode_(SCREENUPDATEMODE_AUTOMATIC),
+      background_type_(BACKGROUND_DC0),
+      screen_needs_refresh_(false),
+      object_state_dirty_(false),
+      is_responsible_for_update_(true),
+      display_subtitle_(gameexe("SUBTITLE").to_int(0)),
+      hide_interface_(false),
+      globals_(gameexe),
+      time_at_last_queue_change_(0),
+      graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
+      graphics_object_impl_(new GraphicsObjectImpl(
+          graphics_object_settings_->objects_in_a_layer)),
+      use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
+      show_cursor_from_bytecode_(true),
+      cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
+      system_(system),
+      preloaded_hik_scripts_(32),
+      preloaded_g00_(256),
+      image_cache_(10) {}
 
 // -----------------------------------------------------------------------
 
@@ -256,21 +255,21 @@ void GraphicsSystem::setIsResponsibleForUpdate(bool in) {
 
 void GraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
   switch (screenUpdateMode()) {
-  case SCREENUPDATEMODE_AUTOMATIC:
-  case SCREENUPDATEMODE_SEMIAUTOMATIC: {
-    // Perform a blit of DC0 to the screen, and update it.
-    screen_needs_refresh_ = true;
-    break;
-  }
-  case SCREENUPDATEMODE_MANUAL: {
-    // Don't really do anything.
-    break;
-  }
-  default: {
-    ostringstream oss;
-    oss << "Invalid screen update mode value: " << screenUpdateMode();
-    throw SystemError(oss.str());
-  }
+    case SCREENUPDATEMODE_AUTOMATIC:
+    case SCREENUPDATEMODE_SEMIAUTOMATIC: {
+      // Perform a blit of DC0 to the screen, and update it.
+      screen_needs_refresh_ = true;
+      break;
+    }
+    case SCREENUPDATEMODE_MANUAL: {
+      // Don't really do anything.
+      break;
+    }
+    default: {
+      ostringstream oss;
+      oss << "Invalid screen update mode value: " << screenUpdateMode();
+      throw SystemError(oss.str());
+    }
   }
 }
 
@@ -330,9 +329,7 @@ Point GraphicsSystem::GetScreenOrigin() {
 
 // -----------------------------------------------------------------------
 
-bool GraphicsSystem::IsShaking() const {
-  return !screen_shake_queue_.empty();
-}
+bool GraphicsSystem::IsShaking() const { return !screen_shake_queue_.empty(); }
 
 // -----------------------------------------------------------------------
 
@@ -344,12 +341,12 @@ int GraphicsSystem::CurrentShakingFrameTime() const {
   }
 }
 
-
 // -----------------------------------------------------------------------
 
 int GraphicsSystem::useCustomCursor() {
   return use_custom_mouse_cursor_ &&
-      system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").to_string("") != "";
+         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").to_string("") !=
+             "";
 }
 
 // -----------------------------------------------------------------------
@@ -446,9 +443,7 @@ void GraphicsSystem::setWindowSubtitle(const std::string& cp932str,
 
 // -----------------------------------------------------------------------
 
-const std::string& GraphicsSystem::windowSubtitle() const {
-  return subtitle_;
-}
+const std::string& GraphicsSystem::windowSubtitle() const { return subtitle_; }
 
 // -----------------------------------------------------------------------
 
@@ -485,9 +480,7 @@ void GraphicsSystem::setScreenMode(const int in) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::toggleFullscreen() {
-  setScreenMode(screenMode() ? 0 : 1);
-}
+void GraphicsSystem::toggleFullscreen() { setScreenMode(screenMode() ? 0 : 1); }
 
 // -----------------------------------------------------------------------
 
@@ -497,9 +490,7 @@ void GraphicsSystem::toggleInterfaceHidden() {
 
 // -----------------------------------------------------------------------
 
-bool GraphicsSystem::interfaceHidden() {
-  return hide_interface_;
-}
+bool GraphicsSystem::interfaceHidden() { return hide_interface_; }
 
 // -----------------------------------------------------------------------
 
@@ -627,8 +618,8 @@ void GraphicsSystem::PreloadHIKScript(
   HIKScript* script = new HIKScript(system, file_path);
   script->EnsureUploaded();
 
-  preloaded_hik_scripts_[slot] = std::make_pair(
-      name, boost::shared_ptr<HIKScript>(script));
+  preloaded_hik_scripts_[slot] =
+      std::make_pair(name, boost::shared_ptr<HIKScript>(script));
 }
 
 void GraphicsSystem::ClearPreloadedHIKScript(int slot) {
@@ -669,20 +660,16 @@ void GraphicsSystem::PreloadG00(int slot, const std::string& name) {
 }
 
 void GraphicsSystem::ClearPreloadedG00(int slot) {
-  preloaded_g00_[slot] =
-      std::make_pair("", boost::shared_ptr<const Surface>());
+  preloaded_g00_[slot] = std::make_pair("", boost::shared_ptr<const Surface>());
 }
 
-void GraphicsSystem::ClearAllPreloadedG00() {
-  preloaded_g00_.clear();
-}
+void GraphicsSystem::ClearAllPreloadedG00() { preloaded_g00_.clear(); }
 
 boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
     const std::string& name) {
   AllocatedLazyArrayIterator<G00ArrayItem> it =
       preloaded_g00_.allocated_begin();
-  AllocatedLazyArrayIterator<G00ArrayItem> end =
-      preloaded_g00_.allocated_end();
+  AllocatedLazyArrayIterator<G00ArrayItem> end = preloaded_g00_.allocated_end();
   for (; it != end; ++it) {
     if (it->first == name)
       return it->second;
@@ -694,7 +681,8 @@ boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<const Surface> GraphicsSystem::getSurfaceNamedAndMarkViewed(
-  RLMachine& machine, const std::string& short_filename) {
+    RLMachine& machine,
+    const std::string& short_filename) {
   // Record that we viewed this CG.
   cgTable().setViewed(machine, short_filename);
 
@@ -787,9 +775,9 @@ void GraphicsSystem::clearAllObjects() {
 
 void GraphicsSystem::resetAllObjectsProperties() {
   AllocatedLazyArrayIterator<GraphicsObject> it =
-    graphics_object_impl_->foreground_objects.allocated_begin();
+      graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-    graphics_object_impl_->foreground_objects.allocated_end();
+      graphics_object_impl_->foreground_objects.allocated_end();
   for (; it != end; ++it)
     it->resetProperties();
 
@@ -821,9 +809,9 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() {
 
 bool GraphicsSystem::animationsPlaying() const {
   AllocatedLazyArrayIterator<GraphicsObject> it =
-    graphics_object_impl_->foreground_objects.allocated_begin();
+      graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-    graphics_object_impl_->foreground_objects.allocated_end();
+      graphics_object_impl_->foreground_objects.allocated_end();
   for (; it != end; ++it) {
     if (it->hasObjectData()) {
       GraphicsObjectData& data = it->objectData();
@@ -858,15 +846,15 @@ void GraphicsSystem::clearAllDCs() {
 void GraphicsSystem::renderObjects(std::ostream* tree) {
   // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
   // to sort.
-  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*> >
+  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*>>
       ToRenderVec;
   ToRenderVec to_render;
 
   // Collate all objects that we might want to render.
   AllocatedLazyArrayIterator<GraphicsObject> it =
-    graphics_object_impl_->foreground_objects.allocated_begin();
+      graphics_object_impl_->foreground_objects.allocated_begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-    graphics_object_impl_->foreground_objects.allocated_end();
+      graphics_object_impl_->foreground_objects.allocated_end();
   for (; it != end; ++it) {
     const ObjectSettings& settings = getObjectSettings(it.pos());
     if (settings.obj_on_off == 1 && showObject1() == false)
@@ -959,34 +947,30 @@ GraphicsObjectData* GraphicsSystem::buildObjOfFile(
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsSystem::save(Archive& ar, unsigned int version) const {
-  ar
-    & subtitle_
-    & default_grp_name_
-    & default_bgr_name_
-    & graphics_object_impl_->saved_graphics_stack
-    & graphics_object_impl_->saved_background_objects
-    & graphics_object_impl_->saved_foreground_objects;
+  ar& subtitle_& default_grp_name_& default_bgr_name_& graphics_object_impl_
+      ->saved_graphics_stack& graphics_object_impl_->saved_background_objects&
+            graphics_object_impl_->saved_foreground_objects;
 }
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsSystem::load(Archive& ar, unsigned int version) {
-  ar & subtitle_;
+  ar& subtitle_;
   if (version > 0) {
-    ar & default_grp_name_;
-    ar & default_bgr_name_;
+    ar& default_grp_name_;
+    ar& default_bgr_name_;
     graphics_object_impl_->use_old_graphics_stack = false;
-    ar & graphics_object_impl_->graphics_stack;
+    ar& graphics_object_impl_->graphics_stack;
   } else {
     graphics_object_impl_->use_old_graphics_stack = true;
-    ar & graphics_object_impl_->old_graphics_stack;
+    ar& graphics_object_impl_->old_graphics_stack;
   }
 
-  ar & graphics_object_impl_->background_objects
-     & graphics_object_impl_->foreground_objects;
+  ar& graphics_object_impl_->background_objects& graphics_object_impl_
+      ->foreground_objects;
 
   // Now alert all subclasses that we've set the subtitle
   setWindowSubtitle(subtitle_,
@@ -996,6 +980,8 @@ void GraphicsSystem::load(Archive& ar, unsigned int version) {
 // -----------------------------------------------------------------------
 
 template void GraphicsSystem::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);
 template void GraphicsSystem::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;

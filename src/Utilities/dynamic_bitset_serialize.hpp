@@ -44,31 +44,31 @@
 namespace boost {
 namespace serialization {
 
-template<class Archive, class Block, class Allocator>
-inline void save(Archive & ar,
+template <class Archive, class Block, class Allocator>
+inline void save(Archive& ar,
                  const boost::dynamic_bitset<Block, Allocator>& bs,
                  const unsigned int /* file_version */) {
   std::string text_representation;
   boost::to_string(bs, text_representation);
-  ar & text_representation;
+  ar& text_representation;
 }
 
-template<class Archive, class Block, class Allocator>
-inline void load(Archive & ar,
+template <class Archive, class Block, class Allocator>
+inline void load(Archive& ar,
                  boost::dynamic_bitset<Block, Allocator>& bs,
                  const unsigned int /* file_version */) {
   std::string text_representation;
-  ar & text_representation;
+  ar& text_representation;
   bs = boost::dynamic_bitset<Block, Allocator>(text_representation);
 }
 
 // split non-intrusive serialization function member into separate
 // non intrusive save/load member functions
-template<class Archive, class Block, class Allocator >
-inline void serialize(Archive & ar,
+template <class Archive, class Block, class Allocator>
+inline void serialize(Archive& ar,
                       boost::dynamic_bitset<Block, Allocator>& bs,
                       const unsigned int file_version) {
-    boost::serialization::split_free(ar, bs, file_version);
+  boost::serialization::split_free(ar, bs, file_version);
 }
 
 }  // namespace serialization

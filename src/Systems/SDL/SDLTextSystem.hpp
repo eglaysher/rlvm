@@ -49,14 +49,13 @@ class SDLTextSystem : public TextSystem {
 
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
-  virtual Size renderGlyphOnto(
-      const std::string& current,
-      int font_size,
-      const RGBColour& font_colour,
-      const RGBColour* shadow_colour,
-      int insertion_point_x,
-      int insertion_point_y,
-      const boost::shared_ptr<Surface>& destination);
+  virtual Size renderGlyphOnto(const std::string& current,
+                               int font_size,
+                               const RGBColour& font_colour,
+                               const RGBColour* shadow_colour,
+                               int insertion_point_x,
+                               int insertion_point_y,
+                               const boost::shared_ptr<Surface>& destination);
   virtual int charWidth(int size, uint16_t codepoint);
 
   // Returns (and caches) a SDL_ttf font object for a font of |size|.
@@ -64,11 +63,10 @@ class SDLTextSystem : public TextSystem {
 
  private:
   // Font storage.
-  typedef std::map< int , boost::shared_ptr<TTF_Font> > FontSizeMap;
+  typedef std::map<int, boost::shared_ptr<TTF_Font>> FontSizeMap;
   FontSizeMap map_;
 
   SDLSystem& sdl_system_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDLTEXTSYSTEM_HPP_
-

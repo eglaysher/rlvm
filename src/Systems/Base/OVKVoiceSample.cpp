@@ -80,29 +80,29 @@ std::string oggErrorCodeToString(int code) {
       return "Not true, or no data available";
     case OV_HOLE:
       return "Vorbisfile encoutered missing or corrupt data in the bitstream. "
-          "Recovery is normally automatic and this return code is for "
-          "informational purposes only.";
+             "Recovery is normally automatic and this return code is for "
+             "informational purposes only.";
     case OV_EREAD:
       return "Read error while fetching compressed data for decode";
     case OV_EFAULT:
       return "Internal inconsistency in decode state. Continuing is likely "
-          "not possible.";
+             "not possible.";
     case OV_EIMPL:
       return "Feature not implemented";
     case OV_EINVAL:
       return "Either an invalid argument, or incompletely initialized argument "
-          "passed to libvorbisfile call";
+             "passed to libvorbisfile call";
     case OV_ENOTVORBIS:
       return "The given file/data was not recognized as Ogg Vorbis data.";
     case OV_EBADHEADER:
       return "The file/data is apparently an Ogg Vorbis stream, but contains a "
-          "corrupted or undecipherable header.";
+             "corrupted or undecipherable header.";
     case OV_EVERSION:
       return "The bitstream format revision of the given stream is not "
-          "supported.";
+             "supported.";
     case OV_EBADLINK:
       return "The given link exists in the Vorbis data stream, but is not "
-          "decipherable due to garbacge or corruption.";
+             "decipherable due to garbacge or corruption.";
     case OV_ENOSEEK:
       return "The given stream is not seekable";
     default:
@@ -113,8 +113,7 @@ std::string oggErrorCodeToString(int code) {
 }  // namespace
 
 OVKVoiceSample::OVKVoiceSample(fs::path file)
-    : stream_(std::fopen(file.native().c_str(), "rb")),
-      offset_(0), length_(0) {
+    : stream_(std::fopen(file.native().c_str(), "rb")), offset_(0), length_(0) {
   std::fseek(stream_, 0, SEEK_END);
   length_ = ftell(stream_);
   std::fseek(stream_, 0, SEEK_SET);
@@ -122,8 +121,8 @@ OVKVoiceSample::OVKVoiceSample(fs::path file)
 
 OVKVoiceSample::OVKVoiceSample(fs::path file, int offset, int length)
     : stream_(std::fopen(file.native().c_str(), "rb")),
-      offset_(offset), length_(length) {
-}
+      offset_(offset),
+      length_(length) {}
 
 OVKVoiceSample::~OVKVoiceSample() {
   if (stream_)
@@ -163,16 +162,17 @@ char* OVKVoiceSample::decode(int* size) {
     buffer = new char[buffer_size];
 
     do {
-      r = ov_read(&vf, buffer + buffer_pos, buffer_size - buffer_pos,
-                  0, 2, 1, 0);
-      if (r <= 0) break;
+      r = ov_read(
+          &vf, buffer + buffer_pos, buffer_size - buffer_pos, 0, 2, 1, 0);
+      if (r <= 0)
+        break;
       buffer_pos += r;
       if ((buffer_size - INITSIZE / 4) < buffer_pos) {
         int new_size = buffer_size + INITSIZE;
         char* new_buffer = new char[new_size];
         memcpy(new_buffer, buffer, buffer_size);
 
-        delete [] buffer;
+        delete[] buffer;
         buffer = new_buffer;
         buffer_size = new_size;
       }
@@ -182,18 +182,21 @@ char* OVKVoiceSample::decode(int* size) {
     *size = buffer_size;
     const char* header = MakeWavHeader(rate, channels, 2, buffer_pos);
     memcpy(buffer, header, WAV_HEADER_SIZE);
-  } catch (...) {
-    delete [] buffer;
+  }
+  catch (...) {
+    delete[] buffer;
     throw;
   }
 
   return buffer;
 }
 
-size_t OVKVoiceSample::ogg_readfunc(void* ptr, size_t size, size_t nmemb,
+size_t OVKVoiceSample::ogg_readfunc(void* ptr,
+                                    size_t size,
+                                    size_t nmemb,
                                     OVKVoiceSample* info) {
   int pt = ftell(info->stream_) - info->offset_;
-  if (pt+size*nmemb > info->length_) {
+  if (pt + size * nmemb > info->length_) {
     nmemb = (info->length_ - pt) / size;
   }
   return fread(ptr, size, nmemb, info->stream_);
@@ -214,7 +217,7 @@ int OVKVoiceSample::ogg_seekfunc(OVKVoiceSample* info,
 
 long OVKVoiceSample::ogg_tellfunc(OVKVoiceSample* info) {  // NOLINT
   int pos = ftell(info->stream_);
-  if (pos == -1) return -1;
+  if (pos == -1)
+    return -1;
   return pos - info->offset_;
 }
-

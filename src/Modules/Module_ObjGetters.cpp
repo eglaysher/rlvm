@@ -40,9 +40,9 @@
 
 namespace {
 
-class Obj_GetInt : public RLOp_Store_1< IntConstant_T > {
+class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
  public:
-  typedef int(GraphicsObject::*Getter)() const;
+  typedef int (GraphicsObject::*Getter)() const;
 
   Obj_GetInt(Getter getter) : getter_(getter) {}
   virtual ~Obj_GetInt() {}
@@ -56,7 +56,6 @@ class Obj_GetInt : public RLOp_Store_1< IntConstant_T > {
   Getter getter_;
 };
 
-
 /**
  * Theoretically implements objGetPos. People don't actually
  * understand what's going on in this module (more so then anything
@@ -66,8 +65,10 @@ class Obj_GetInt : public RLOp_Store_1< IntConstant_T > {
  * that aren't immediatly obvious.
  */
 struct objGetPos
-    : public RLOp_Void_3< IntConstant_T, IntReference_T, IntReference_T > {
-  void operator()(RLMachine& machine, int objNum, IntReferenceIterator xIt,
+    : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine,
+                  int objNum,
+                  IntReferenceIterator xIt,
                   IntReferenceIterator yIt) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     *xIt = obj.x();
@@ -75,14 +76,14 @@ struct objGetPos
   }
 };
 
-struct objGetAdjustX : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     return obj.xAdjustment(repno);
   }
 };
 
-struct objGetAdjustY : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
+struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     return obj.yAdjustment(repno);
@@ -94,11 +95,15 @@ struct objGetAdjustY : public RLOp_Store_2< IntConstant_T, IntConstant_T > {
  * have no idea what this is or how it affects things. Usually appears
  * to be 4. ????
  */
-struct objGetDims
-  : public RLOp_Void_4< IntConstant_T, IntReference_T, IntReference_T,
-                        DefaultIntValue_T<4> > {
-  void operator()(RLMachine& machine, int objNum, IntReferenceIterator widthIt,
-                  IntReferenceIterator heightIt, int unknown) {
+struct objGetDims : public RLOp_Void_4<IntConstant_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       DefaultIntValue_T<4>> {
+  void operator()(RLMachine& machine,
+                  int objNum,
+                  IntReferenceIterator widthIt,
+                  IntReferenceIterator heightIt,
+                  int unknown) {
     GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
     *widthIt = obj.pixelWidth();
     *heightIt = obj.pixelHeight();
@@ -109,8 +114,8 @@ void addFunctions(RLModule& m) {
   m.addOpcode(1000, 0, "objGetPos", new objGetPos);
   m.addOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
   m.addOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
-  m.addOpcode(1003, 0, "objGetAlpha",
-              new Obj_GetInt(&GraphicsObject::rawAlpha));
+  m.addOpcode(
+      1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::rawAlpha));
   m.addOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
 
   m.addOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
@@ -128,16 +133,14 @@ void addFunctions(RLModule& m) {
 
 // -----------------------------------------------------------------------
 
-ObjFgGettersModule::ObjFgGettersModule()
-    : RLModule("ObjFgGetters", 1, 84) {
+ObjFgGettersModule::ObjFgGettersModule() : RLModule("ObjFgGetters", 1, 84) {
   addFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
-ObjBgGettersModule::ObjBgGettersModule()
-    : RLModule("ObjBgGetters", 1, 85) {
+ObjBgGettersModule::ObjBgGettersModule() : RLModule("ObjBgGetters", 1, 85) {
   addFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

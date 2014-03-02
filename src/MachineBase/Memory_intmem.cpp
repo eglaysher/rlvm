@@ -55,8 +55,7 @@ using libReallive::IntMemRef;
 namespace {
 
 // Helper function that throws errors for illegal memory access
-void throwIllegalIndex(const IntMemRef& ref,
-                       const std::string& function) {
+void throwIllegalIndex(const IntMemRef& ref, const std::string& function) {
   ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
@@ -102,8 +101,8 @@ int Memory::getIntValue(const IntMemRef& ref) {
     if ((unsigned int)(location) >= (64000u / factor))
       throwIllegalIndex(ref, "RLMachine::getIntValue()");
 
-    return (bank[location / eltsize] >>
-            ((location % eltsize) * factor)) & ((1 << factor) - 1);
+    return (bank[location / eltsize] >> ((location % eltsize) * factor)) &
+           ((1 << factor) - 1);
   }
 }
 
@@ -140,7 +139,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
 
     saveOriginalValue(bank, original_bank, location / eltsize);
     bank[location / eltsize] =
-      (bank[location / eltsize] & ~(eltmask << shift))
-      | (value & eltmask) << shift;
+        (bank[location / eltsize] & ~(eltmask << shift)) | (value & eltmask)
+                                                               << shift;
   }
 }

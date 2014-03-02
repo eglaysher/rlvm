@@ -72,9 +72,11 @@ const int FULLWIDTH_NINE = 0xFF19;
 // TextSystemGlobals
 // -----------------------------------------------------------------------
 TextSystemGlobals::TextSystemGlobals()
-    : auto_mode_base_time(100), auto_mode_char_time(100), message_speed(30),
-      font_weight(0), font_shadow(1)
-{}
+    : auto_mode_base_time(100),
+      auto_mode_char_time(100),
+      message_speed(30),
+      font_weight(0),
+      font_shadow(1) {}
 
 // -----------------------------------------------------------------------
 
@@ -82,7 +84,8 @@ TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
     : auto_mode_base_time(gexe("MESSAGE_KEY_WAIT_TIME").to_int(1500)),
       auto_mode_char_time(gexe("INIT_MESSAGE_SPEED").to_int(30)),
       message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)),
-      font_weight(0), font_shadow(1) {
+      font_weight(0),
+      font_shadow(1) {
   GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
   if (in_window_attr.exists())
     window_attr = in_window_attr;
@@ -132,8 +135,7 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
   previous_page_it_ = previous_page_sets_.end();
 }
 
-TextSystem::~TextSystem() {
-}
+TextSystem::~TextSystem() {}
 
 void TextSystem::executeTextSystem() {
   // Check to see if the cursor is displayed
@@ -164,7 +166,8 @@ void TextSystem::render(std::ostream* tree) {
     }
 
     for (WindowMap::iterator it = text_window_.begin();
-         it != text_window_.end(); ++it) {
+         it != text_window_.end();
+         ++it) {
       if (showWindow(it->first)) {
         it->second->render(tree);
       }
@@ -238,15 +241,14 @@ void TextSystem::setVisualOverrideAll(bool show_window) {
   }
 }
 
-void TextSystem::clearVisualOverrides() {
-  window_visual_override_.clear();
-}
+void TextSystem::clearVisualOverrides() { window_visual_override_.clear(); }
 
 boost::shared_ptr<TextWindow> TextSystem::currentWindow() {
   return textWindow(active_window_);
 }
 
-void TextSystem::checkAndSetBool(Gameexe& gexe, const std::string& key,
+void TextSystem::checkAndSetBool(Gameexe& gexe,
+                                 const std::string& key,
                                  bool& out) {
   GameexeInterpretObject key_obj(gexe(key));
   if (key_obj.exists())
@@ -280,7 +282,8 @@ bool TextSystem::keyStateChanged(KeyCode key_code, bool pressed) {
 vector<int> TextSystem::activeWindows() {
   vector<int> tmp;
   for (PageSet::iterator it = current_pageset_->begin();
-       it != current_pageset_->end(); ++it) {
+       it != current_pageset_->end();
+       ++it) {
     tmp.push_back(it->first);
   }
   return tmp;
@@ -307,8 +310,8 @@ TextPage& TextSystem::currentPage() {
   // Check to see if the active window has a current page.
   PageSet::iterator it = current_pageset_->find(active_window_);
   if (it == current_pageset_->end())
-    it = current_pageset_->insert(
-        active_window_, new TextPage(system(), active_window_)).first;
+    it = current_pageset_->insert(active_window_,
+                                  new TextPage(system(), active_window_)).first;
 
   return *it->second;
 }
@@ -349,7 +352,7 @@ void TextSystem::replayPageSet(PageSet& set, bool is_current_page) {
     try {
       it->second->replay(is_current_page);
     }
-    catch(rlvm::Exception& e) {
+    catch (rlvm::Exception& e) {
       // Currently, the text system can throw on a few unimplemented situations,
       // such as ruby across lines.
 
@@ -359,9 +362,7 @@ void TextSystem::replayPageSet(PageSet& set, bool is_current_page) {
   }
 }
 
-bool TextSystem::isReadingBacklog() const {
-  return is_reading_backlog_;
-}
+bool TextSystem::isReadingBacklog() const { return is_reading_backlog_; }
 
 void TextSystem::stopReadingBacklog() {
   is_reading_backlog_ = false;
@@ -382,8 +383,8 @@ void TextSystem::setAutoMode(int i) {
 }
 
 int TextSystem::getAutoTime(int num_chars) {
-  return globals_.auto_mode_base_time + globals_.auto_mode_char_time *
-      num_chars;
+  return globals_.auto_mode_base_time +
+         globals_.auto_mode_char_time * num_chars;
 }
 
 void TextSystem::setKeyCursor(int new_cursor) {
@@ -404,8 +405,8 @@ int TextSystem::cursorNumber() const {
 
 void TextSystem::updateWindowsForChangeToWindowAttr() {
   // Check each text window to see if it needs updating
-  for (WindowMap::iterator it = text_window_.begin();
-       it != text_window_.end(); ++it) {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
     if (!it->second->windowAttrMod())
       it->second->setRGBAF(windowAttr());
   }
@@ -451,19 +452,21 @@ void TextSystem::setWindowAttrF(int i) {
 }
 
 void TextSystem::setMousePosition(const Point& pos) {
-  for (WindowMap::iterator it = text_window_.begin();
-       it != text_window_.end(); ++it) {
+  for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
+       ++it) {
     if (showWindow(it->first)) {
       it->second->setMousePosition(pos);
     }
   }
 }
 
-bool TextSystem::handleMouseClick(RLMachine& machine, const Point& pos,
+bool TextSystem::handleMouseClick(RLMachine& machine,
+                                  const Point& pos,
                                   bool pressed) {
   if (systemVisible()) {
     for (WindowMap::iterator it = text_window_.begin();
-         it != text_window_.end(); ++it) {
+         it != text_window_.end();
+         ++it) {
       if (showWindow(it->first)) {
         if (it->second->handleMouseClick(machine, pos, pressed))
           return true;
@@ -496,13 +499,15 @@ bool parseInteger(std::string::const_iterator& begin,
   return true;
 }
 
-boost::shared_ptr<Surface> TextSystem::renderText(
-    const std::string& utf8str, int size, int xspace, int yspace,
-    const RGBColour& colour, RGBColour* shadow_colour,
-    int max_chars_in_line) {
+boost::shared_ptr<Surface> TextSystem::renderText(const std::string& utf8str,
+                                                  int size,
+                                                  int xspace,
+                                                  int yspace,
+                                                  const RGBColour& colour,
+                                                  RGBColour* shadow_colour,
+                                                  int max_chars_in_line) {
   const int line_max_width =
-      (max_chars_in_line > 0) ? (size + xspace) * max_chars_in_line :
-      INT_MAX;
+      (max_chars_in_line > 0) ? (size + xspace) * max_chars_in_line : INT_MAX;
 
   // On the first pass, we figure out how large of a surface we need for
   // rendering the text.
@@ -797,18 +802,18 @@ void TextSystem::setSkipMode(int in) {
   }
 }
 
-template<class Archive>
+template <class Archive>
 void TextSystem::load(Archive& ar, unsigned int version) {
   int win, cursor_num;
-  ar & win & cursor_num;
+  ar& win& cursor_num;
 
   setActiveWindow(win);
   setKeyCursor(cursor_num);
 }
 
-template<class Archive>
+template <class Archive>
 void TextSystem::save(Archive& ar, unsigned int version) const {
-  ar & savepoint_active_window_ & savepoint_cursor_number_;
+  ar& savepoint_active_window_& savepoint_cursor_number_;
 }
 
 // -----------------------------------------------------------------------
@@ -817,14 +822,17 @@ void TextSystem::save(Archive& ar, unsigned int version) const {
 // implementation)
 
 template void TextSystem::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void TextSystem::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);
 
 // -----------------------------------------------------------------------
 
-void parseNames(const Memory& memory, const std::string& input,
+void parseNames(const Memory& memory,
+                const std::string& input,
                 std::string& output) {
   const char* cur = input.c_str();
 

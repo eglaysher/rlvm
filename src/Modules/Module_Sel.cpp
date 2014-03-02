@@ -52,9 +52,8 @@ namespace {
 struct Sel_select : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(
-    const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {}
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -69,9 +68,8 @@ struct Sel_select : public RLOp_SpecialCase {
 struct Sel_select_s : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(
-    const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {}
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -98,9 +96,8 @@ struct ClearAndRestoreWindow : public LongOperation {
 struct Sel_select_w : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(
-    const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {}
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               libReallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -149,7 +146,6 @@ struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-
 struct Sel_select_objbtn_cancel_1
     : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int group, int se) {
@@ -174,8 +170,7 @@ struct objbtn_init_1 : public RLOp_Void_Void {
 
 }  // namespace
 
-SelModule::SelModule()
-    : RLModule("Sel", 0, 2) {
+SelModule::SelModule() : RLModule("Sel", 0, 2) {
   addOpcode(0, 0, "select_w", new Sel_select_w);
   addOpcode(1, 0, "select", new Sel_select);
   addOpcode(2, 0, "select_s2", new Sel_select_s);

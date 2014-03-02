@@ -31,17 +31,15 @@
 
 // -----------------------------------------------------------------------
 
-Surface::Surface() { }
+Surface::Surface() {}
 
 // -----------------------------------------------------------------------
 
-Surface::~Surface() { }
+Surface::~Surface() {}
 
 // -----------------------------------------------------------------------
 
-Rect Surface::rect() const {
-  return Rect(Point(0, 0), size());
-}
+Rect Surface::rect() const { return Rect(Point(0, 0), size()); }
 
 // -----------------------------------------------------------------------
 
@@ -62,7 +60,9 @@ const Surface::GrpRect& Surface::getPattern(int patt_no) const {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> Surface::clipAsColorMask(
-  const Rect& clip_rect, int r, int g, int b) const {
+boost::shared_ptr<Surface> Surface::clipAsColorMask(const Rect& clip_rect,
+                                                    int r,
+                                                    int g,
+                                                    int b) const {
   throw rlvm::Exception("Unimplemented function Surface::clipAsColorMask()");
 }

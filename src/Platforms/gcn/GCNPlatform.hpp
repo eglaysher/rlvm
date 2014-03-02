@@ -95,7 +95,8 @@ class GCNPlatform : public Platform,
   // Builds the current syscom menu, based on the currently visisble syscom
   // items, erasing the old one if necessary.
   void buildSyscomMenuFor(const std::string& label,
-                          const MenuSpec menu_items[], RLMachine& machine);
+                          const MenuSpec menu_items[],
+                          RLMachine& machine);
 
   // Clears the window stack (unblocking the RLMachine).
   void clearWindowStack();

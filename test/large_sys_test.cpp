@@ -62,7 +62,6 @@ TEST(LargeModuleSysTest, SceneNum) {
   EXPECT_EQ(639, values[2]) << "SceneNum::SEEN0639 didn't set value";
 }
 
-
 // Tests integer built-in functions.
 TEST(LargeModuleSysTest, BuiltIns) {
   libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));

@@ -43,31 +43,29 @@ using namespace std;
 // -----------------------------------------------------------------------
 // StackFrame
 // -----------------------------------------------------------------------
-StackFrame::StackFrame()
-  : scenario(NULL), ip(), frame_type() {
+StackFrame::StackFrame() : scenario(NULL), ip(), frame_type() {
   memset(intL, 0, sizeof(intL));
 }
 
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        FrameType t)
-  : scenario(s), ip(i), frame_type(t) {
+    : scenario(s), ip(i), frame_type(t) {
   memset(intL, 0, sizeof(intL));
 }
 
 StackFrame::StackFrame(libReallive::Scenario const* s,
                        const libReallive::Scenario::const_iterator& i,
                        LongOperation* op)
-  : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP) {
+    : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP) {
   memset(intL, 0, sizeof(intL));
 }
 
-StackFrame::~StackFrame() {
-}
+StackFrame::~StackFrame() {}
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame) {
-  os << "{seen=" << frame.scenario->sceneNumber() << ", offset="
-     << distance(frame.scenario->begin(), frame.ip);
+  os << "{seen=" << frame.scenario->sceneNumber()
+     << ", offset=" << distance(frame.scenario->begin(), frame.ip);
 
   if (frame.long_op)
     os << " [LONG OP=" << typeid(*frame.long_op).name() << "]";
@@ -77,21 +75,21 @@ std::ostream& operator<<(std::ostream& os, const StackFrame& frame) {
   return os;
 }
 
-template<class Archive>
-void StackFrame::save(Archive & ar, unsigned int version) const {
+template <class Archive>
+void StackFrame::save(Archive& ar, unsigned int version) const {
   int scene_number = scenario->sceneNumber();
   int position = distance(scenario->begin(), ip);
-  ar & scene_number & position & frame_type & intL & strK;
+  ar& scene_number& position& frame_type& intL& strK;
 }
 
-template<class Archive>
-void StackFrame::load(Archive & ar, unsigned int version) {
+template <class Archive>
+void StackFrame::load(Archive& ar, unsigned int version) {
   int scene_number, offset;
   FrameType type;
-  ar & scene_number & offset & type;
+  ar& scene_number& offset& type;
 
   libReallive::Scenario const* scenario =
-    Serialization::g_current_machine->archive().scenario(scene_number);
+      Serialization::g_current_machine->archive().scenario(scene_number);
   if (scenario == NULL) {
     ostringstream oss;
     oss << "Unknown SEEN #" << scene_number << " in save file!";
@@ -100,8 +98,8 @@ void StackFrame::load(Archive & ar, unsigned int version) {
 
   if (offset > distance(scenario->begin(), scenario->end()) || offset < 0) {
     ostringstream oss;
-    oss << offset << " is an illegal bytecode offset for SEEN #"
-        << scene_number << " in save file!";
+    oss << offset << " is an illegal bytecode offset for SEEN #" << scene_number
+        << " in save file!";
     throw rlvm::Exception(oss.str());
   }
 
@@ -111,7 +109,7 @@ void StackFrame::load(Archive & ar, unsigned int version) {
   *this = StackFrame(scenario, position_it, type);
 
   if (version >= 1) {
-    ar & intL & strK;
+    ar& intL& strK;
   }
 }
 
@@ -121,8 +119,9 @@ void StackFrame::load(Archive & ar, unsigned int version) {
 // implementation)
 
 template void StackFrame::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void StackFrame::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
-
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

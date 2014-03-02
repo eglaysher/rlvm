@@ -48,7 +48,7 @@ using namespace std::placeholders;
 
 class TextPageElement {
  public:
-  virtual ~TextPageElement() { }
+  virtual ~TextPageElement() {}
   virtual bool isTextElement() { return false; }
   virtual void replayElement(TextPage& ts, bool is_active_page) = 0;
   virtual TextPageElement* clone() const = 0;
@@ -78,15 +78,15 @@ class TextTextPageElement : public TextPageElement {
   string list_of_chars_to_print_;
 };
 
-TextTextPageElement::TextTextPageElement() {
-}
+TextTextPageElement::TextTextPageElement() {}
 
 void TextTextPageElement::replayElement(TextPage& page, bool is_active_page) {
   // Sometimes there are empty TextTextPageElements. I hypothesize these happen
   // because of empty strings which just set the speaker's name.
   if (list_of_chars_to_print_.size()) {
     printTextToFunction(bind(&TextPage::CharacterImpl, ref(page), _1, _2),
-                        list_of_chars_to_print_, "");
+                        list_of_chars_to_print_,
+                        "");
   }
 }
 
@@ -100,16 +100,13 @@ void TextTextPageElement::append(const string& c) {
 class ActionElement : public TextPageElement {
  public:
   ActionElement(const std::function<void(TextPage&, bool)>& action)
-      : action_(action) {
-  }
+      : action_(action) {}
 
   virtual void replayElement(TextPage& page, bool is_active_page) {
     action_(page, is_active_page);
   }
 
-  virtual TextPageElement* clone() const {
-    return new ActionElement(*this);
-  }
+  virtual TextPageElement* clone() const { return new ActionElement(*this); }
 
  private:
   std::function<void(TextPage&, bool)> action_;
@@ -132,14 +129,12 @@ TextPage::TextPage(const TextPage& rhs)
       window_num_(rhs.window_num_),
       number_of_chars_on_page_(rhs.number_of_chars_on_page_),
       in_ruby_gloss_(rhs.in_ruby_gloss_) {
-  elements_to_replay_.insert(
-    elements_to_replay_.end(),
-    rhs.elements_to_replay_.begin(),
-    rhs.elements_to_replay_.end());
+  elements_to_replay_.insert(elements_to_replay_.end(),
+                             rhs.elements_to_replay_.begin(),
+                             rhs.elements_to_replay_.end());
 }
 
-TextPage::~TextPage() {
-}
+TextPage::~TextPage() {}
 
 TextPage& TextPage::operator=(const TextPage& rhs) {
   TextPage tmp(rhs);
@@ -156,9 +151,10 @@ void TextPage::swap(TextPage& rhs) {
 }
 
 void TextPage::replay(bool is_active_page) {
-  for_each(elements_to_replay_.begin(), elements_to_replay_.end(),
-           bind(&TextPageElement::replayElement, _1, ref(*this),
-                is_active_page));
+  for_each(
+      elements_to_replay_.begin(),
+      elements_to_replay_.end(),
+      bind(&TextPageElement::replayElement, _1, ref(*this), is_active_page));
 }
 
 // ------------------------------------------------- [ Public operations ]
@@ -171,8 +167,8 @@ bool TextPage::character(const string& current, const string& rest) {
         !elements_to_replay_.back().isTextElement())
       elements_to_replay_.push_back(new TextTextPageElement);
 
-    dynamic_cast<TextTextPageElement&>(elements_to_replay_.back()).
-      append(current);
+    dynamic_cast<TextTextPageElement&>(elements_to_replay_.back())
+        .append(current);
 
     number_of_chars_on_page_++;
   }
@@ -247,16 +243,14 @@ void TextPage::faceClose(int index) {
 
 void TextPage::addSetToRightStartingColorElement() {
   elements_to_replay_.push_back(
-      new ActionElement(
-          bind(&TextPage::SetToRightStartingColourImpl, _1, _2)));
+      new ActionElement(bind(&TextPage::SetToRightStartingColourImpl, _1, _2)));
 }
 
 bool TextPage::isFull() const {
-  return system_->text().textWindow( window_num_)->isFull();
+  return system_->text().textWindow(window_num_)->isFull();
 }
 
-void TextPage::addAction(
-    const std::function<void(TextPage&, bool)>& action) {
+void TextPage::addAction(const std::function<void(TextPage&, bool)>& action) {
   action(*this, true);
   elements_to_replay_.push_back(new ActionElement(action));
 }
@@ -291,8 +285,8 @@ void TextPage::ResetIndentationImpl(bool is_active_page) {
 
 void TextPage::FontColourImpl(int colour, bool is_active_page) {
   if (is_active_page) {
-    system_->text().textWindow(window_num_)
-        ->setFontColor(system_->gameexe()("COLOR_TABLE", colour));
+    system_->text().textWindow(window_num_)->setFontColor(
+        system_->gameexe()("COLOR_TABLE", colour));
   }
 }
 
@@ -343,8 +337,8 @@ void TextPage::FaceCloseImpl(int index, bool is_active_page) {
 
 void TextPage::SetToRightStartingColourImpl(bool is_active_page) {
   Gameexe& gexe = system_->gameexe();
-  boost::shared_ptr<TextWindow> window = system_->text().textWindow(
-    window_num_);
+  boost::shared_ptr<TextWindow> window =
+      system_->text().textWindow(window_num_);
   if (!is_active_page) {
     GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
     if (colour.exists())

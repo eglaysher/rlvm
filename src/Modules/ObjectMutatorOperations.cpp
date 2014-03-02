@@ -40,10 +40,7 @@
 Op_ObjectMutatorInt::Op_ObjectMutatorInt(Getter getter,
                                          Setter setter,
                                          const char* name)
-    : getter_(getter),
-      setter_(setter),
-      name_(name) {
-}
+    : getter_(getter), setter_(setter), name_(name) {}
 
 Op_ObjectMutatorInt::~Op_ObjectMutatorInt() {}
 
@@ -57,9 +54,14 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
   GraphicsObject& obj = getGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)();
-  obj.AddObjectMutator(
-      new OneIntObjectMutator(name_, creation_time, duration_time, delay,
-                              type, startval, endval, setter_));
+  obj.AddObjectMutator(new OneIntObjectMutator(name_,
+                                               creation_time,
+                                               duration_time,
+                                               delay,
+                                               type,
+                                               startval,
+                                               endval,
+                                               setter_));
 }
 
 // -----------------------------------------------------------------------
@@ -67,10 +69,7 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
 Op_ObjectMutatorRepnoInt::Op_ObjectMutatorRepnoInt(Getter getter,
                                                    Setter setter,
                                                    const char* name)
-    : getter_(getter),
-      setter_(setter),
-      name_(name) {
-}
+    : getter_(getter), setter_(setter), name_(name) {}
 
 Op_ObjectMutatorRepnoInt::~Op_ObjectMutatorRepnoInt() {}
 
@@ -85,24 +84,29 @@ void Op_ObjectMutatorRepnoInt::operator()(RLMachine& machine,
   GraphicsObject& obj = getGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)(repno);
-  obj.AddObjectMutator(
-      new RepnoIntObjectMutator(name_, creation_time, duration_time, delay,
-                                type, repno, startval, endval, setter_));
+  obj.AddObjectMutator(new RepnoIntObjectMutator(name_,
+                                                 creation_time,
+                                                 duration_time,
+                                                 delay,
+                                                 type,
+                                                 repno,
+                                                 startval,
+                                                 endval,
+                                                 setter_));
 }
 
 // -----------------------------------------------------------------------
 
-
-Op_ObjectMutatorIntInt::Op_ObjectMutatorIntInt(
-    Getter getter_one, Setter setter_one,
-    Getter getter_two, Setter setter_two,
-    const char* name)
+Op_ObjectMutatorIntInt::Op_ObjectMutatorIntInt(Getter getter_one,
+                                               Setter setter_one,
+                                               Getter getter_two,
+                                               Setter setter_two,
+                                               const char* name)
     : getter_one_(getter_one),
       setter_one_(setter_one),
       getter_two_(getter_two),
       setter_two_(setter_two),
-      name_(name) {
-}
+      name_(name) {}
 
 Op_ObjectMutatorIntInt::~Op_ObjectMutatorIntInt() {}
 
@@ -118,11 +122,17 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
   int startval_one = (obj.*getter_one_)();
   int startval_two = (obj.*getter_two_)();
 
-  obj.AddObjectMutator(
-      new TwoIntObjectMutator(name_,
-                              creation_time, duration_time, delay, type,
-                              startval_one, endval_one, setter_one_,
-                              startval_two, endval_two, setter_two_));
+  obj.AddObjectMutator(new TwoIntObjectMutator(name_,
+                                               creation_time,
+                                               duration_time,
+                                               delay,
+                                               type,
+                                               startval_one,
+                                               endval_one,
+                                               setter_one_,
+                                               startval_two,
+                                               endval_two,
+                                               setter_two_));
 }
 
 // -----------------------------------------------------------------------
@@ -135,8 +145,8 @@ Op_EndObjectMutation_Normal::~Op_EndObjectMutation_Normal() {}
 void Op_EndObjectMutation_Normal::operator()(RLMachine& machine,
                                              int object,
                                              int speedup) {
-  getGraphicsObject(machine, this, object).EndObjectMutatorMatching(
-      machine, -1, name_, speedup);
+  getGraphicsObject(machine, this, object)
+      .EndObjectMutatorMatching(machine, -1, name_, speedup);
 }
 
 // -----------------------------------------------------------------------
@@ -150,6 +160,6 @@ void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
                                             int object,
                                             int repno,
                                             int speedup) {
-  getGraphicsObject(machine, this, object).EndObjectMutatorMatching(
-      machine, repno, name_, speedup);
+  getGraphicsObject(machine, this, object)
+      .EndObjectMutatorMatching(machine, repno, name_, speedup);
 }

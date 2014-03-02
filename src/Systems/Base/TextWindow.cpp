@@ -62,9 +62,11 @@ using namespace std::placeholders;
 
 struct TextWindow::FaceSlot {
   explicit FaceSlot(const std::vector<int>& vec)
-      : x(vec.at(0)), y(vec.at(1)), behind(vec.at(2)),
+      : x(vec.at(0)),
+        y(vec.at(1)),
+        behind(vec.at(2)),
         hide_other_windows(vec.at(3)),
-        unknown(vec.at(4)) { }
+        unknown(vec.at(4)) {}
 
   int x, y;
 
@@ -82,18 +84,23 @@ struct TextWindow::FaceSlot {
   boost::shared_ptr<const Surface> face_surface;
 };
 
-
 // -----------------------------------------------------------------------
 // TextWindow
 // -----------------------------------------------------------------------
 
 TextWindow::TextWindow(System& system, int window_num)
-    : window_num_(window_num), text_insertion_point_x_(0),
+    : window_num_(window_num),
+      text_insertion_point_x_(0),
       text_insertion_point_y_(0),
-      ruby_begin_point_(-1), current_line_number_(0),
-      current_indentation_in_pixels_(0), last_token_was_name_(false),
-      use_indentation_(0), colour_(),
-      filter_(0), is_visible_(0), in_selection_mode_(0),
+      ruby_begin_point_(-1),
+      current_line_number_(0),
+      current_indentation_in_pixels_(0),
+      last_token_was_name_(false),
+      use_indentation_(0),
+      colour_(),
+      filter_(0),
+      is_visible_(0),
+      in_selection_mode_(0),
       system_(system),
       text_system_(system.text()) {
   Gameexe& gexe = system.gameexe();
@@ -163,7 +170,8 @@ TextWindow::TextWindow(System& system, int window_num)
       if (slot < kNumFaceSlots) {
         face_slot_[slot].reset(new FaceSlot(it->to_intVector()));
       }
-    } catch (...) {
+    }
+    catch (...) {
       // Parsing failure. Ignore this key.
     }
   }
@@ -188,8 +196,8 @@ void TextWindow::setName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
     // Display the name in one pass
-    printTextToFunction(bind(&TextWindow::character, ref(*this), _1, _2),
-                        utf8name, next_char);
+    printTextToFunction(
+        bind(&TextWindow::character, ref(*this), _1, _2), utf8name, next_char);
     setIndentation();
   }
 
@@ -201,7 +209,8 @@ void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
     namebox_characters_ = 0;
     try {
       namebox_characters_ = utf8::distance(utf8name.begin(), utf8name.end());
-    } catch(...) {
+    }
+    catch (...) {
       // If utf8name isn't a real UTF-8 string, possibly overestimate:
       namebox_characters_ = utf8name.size();
     }
@@ -239,10 +248,10 @@ void TextWindow::setWindowPosition(const vector<int>& pos_data) {
 }
 
 Size TextWindow::textWindowSize() const {
-  return Size((x_window_size_in_chars_ *
-               (default_font_size_in_pixels_ + x_spacing_)),
-              (y_window_size_in_chars_ *
-               (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
+  return Size(
+      (x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_)),
+      (y_window_size_in_chars_ *
+       (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
 }
 
 Size TextWindow::textSurfaceSize() const {
@@ -311,8 +320,8 @@ Rect TextWindow::windowRect() const {
 Rect TextWindow::textSurfaceRect() const {
   Rect window = windowRect();
 
-  Point textOrigin = window.origin() +
-                     Size(left_box_padding_, upper_box_padding_);
+  Point textOrigin =
+      window.origin() + Size(left_box_padding_, upper_box_padding_);
 
   Size rectSize = textSurfaceSize();
   rectSize += Size(right_box_padding_, lower_box_padding_);
@@ -334,9 +343,9 @@ Rect TextWindow::nameboxWakuRect() const {
 
 Size TextWindow::nameboxTextArea() const {
   // TODO: This seems excessively wide.
-  return Size(2 * horizontal_namebox_padding_ +
-              namebox_characters_ * name_size_,
-              vertical_namebox_padding_ + name_size_);
+  return Size(
+      2 * horizontal_namebox_padding_ + namebox_characters_ * name_size_,
+      vertical_namebox_padding_ + name_size_);
 }
 
 void TextWindow::setNameSpacingBetweenCharacters(
@@ -363,15 +372,15 @@ void TextWindow::setKeycurMod(const vector<int>& keycur) {
 
 Point TextWindow::keycursorPosition(const Size& cursor_size) const {
   switch (keycursor_type_) {
-  case 0:
-    return textSurfaceRect().lowerRight() - cursor_size;
-  case 1:
-    return textSurfaceRect().origin() +
-        Point(text_insertion_point_x_, text_insertion_point_y_);
-  case 2:
-    return textSurfaceRect().origin() + keycursor_pos_;
-  default:
-    throw SystemError("Invalid keycursor type");
+    case 0:
+      return textSurfaceRect().lowerRight() - cursor_size;
+    case 1:
+      return textSurfaceRect().origin() +
+             Point(text_insertion_point_x_, text_insertion_point_y_);
+    case 2:
+      return textSurfaceRect().origin() + keycursor_pos_;
+    default:
+      throw SystemError("Invalid keycursor type");
   }
 }
 
@@ -396,7 +405,6 @@ void TextWindow::faceClose(int index) {
   }
 }
 
-
 // TODO(erg): Make this pass the #WINDOW_ATTR colour off wile rendering the
 // waku_backing.
 void TextWindow::render(std::ostream* tree) {
@@ -418,7 +426,8 @@ void TextWindow::render(std::ostream* tree) {
     renderFaces(tree, 1);
 
     if (inSelectionMode()) {
-      for_each(selections_.begin(), selections_.end(),
+      for_each(selections_.begin(),
+               selections_.end(),
                bind(&SelectionElement::render, _1));
     } else {
       boost::shared_ptr<Surface> name_surface = nameSurface();
@@ -433,8 +442,7 @@ void TextWindow::render(std::ostream* tree) {
 
         Point insertion_point = namebox_waku_->insertionPoint(
             r,
-            Size(horizontal_namebox_padding_,
-                 vertical_namebox_padding_),
+            Size(horizontal_namebox_padding_, vertical_namebox_padding_),
             name_surface->size(),
             namebox_centering_);
         name_surface->renderToScreen(
@@ -451,9 +459,7 @@ void TextWindow::render(std::ostream* tree) {
       renderKoeReplayButtons(tree);
 
       text_surface->renderToScreen(
-        Rect(Point(0, 0), surface_size),
-        Rect(textOrigin, surface_size),
-        255);
+          Rect(Point(0, 0), surface_size), Rect(textOrigin, surface_size), 255);
 
       if (tree) {
         *tree << "    Text Area: " << Rect(textOrigin, surface_size) << endl;
@@ -464,8 +470,7 @@ void TextWindow::render(std::ostream* tree) {
 
 void TextWindow::renderFaces(std::ostream* tree, int behind) {
   for (int i = 0; i < kNumFaceSlots; ++i) {
-    if (face_slot_[i] &&
-        face_slot_[i]->face_surface &&
+    if (face_slot_[i] && face_slot_[i]->face_surface &&
         face_slot_[i]->behind == behind) {
       const boost::shared_ptr<const Surface>& surface =
           face_slot_[i]->face_surface;
@@ -483,8 +488,10 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
 }
 
 void TextWindow::renderKoeReplayButtons(std::ostream* tree) {
-  for (std::vector<std::pair<Point, int> >::const_iterator it =
-           koe_replay_button_.begin(); it != koe_replay_button_.end(); ++it) {
+  for (std::vector<std::pair<Point, int>>::const_iterator it =
+           koe_replay_button_.begin();
+       it != koe_replay_button_.end();
+       ++it) {
     koe_replay_info_->icon->renderToScreen(
         Rect(Point(0, 0), koe_replay_info_->icon->size()),
         Rect(textSurfaceRect().origin() + it->first,
@@ -552,10 +559,13 @@ bool TextWindow::character(const std::string& current,
     }
 
     RGBColour shadow = RGBAColour::Black().rgb();
-    text_system_.renderGlyphOnto(
-        current, fontSizeInPixels(), font_colour_, &shadow,
-        text_insertion_point_x_, text_insertion_point_y_,
-        textSurface());
+    text_system_.renderGlyphOnto(current,
+                                 fontSizeInPixels(),
+                                 font_colour_,
+                                 &shadow,
+                                 text_insertion_point_x_,
+                                 text_insertion_point_y_,
+                                 textSurface());
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
@@ -650,9 +660,7 @@ void TextWindow::setIndentation() {
   current_indentation_in_pixels_ = text_insertion_point_x_;
 }
 
-void TextWindow::resetIndentation() {
-  current_indentation_in_pixels_ = 0;
-}
+void TextWindow::resetIndentation() { current_indentation_in_pixels_ = 0; }
 
 void TextWindow::markRubyBegin() {
   ruby_begin_point_ = text_insertion_point_x_;
@@ -667,29 +675,34 @@ void TextWindow::setMousePosition(const Point& pos) {
   using namespace boost;
 
   if (inSelectionMode()) {
-    for_each(selections_.begin(), selections_.end(),
+    for_each(selections_.begin(),
+             selections_.end(),
              bind(&SelectionElement::setMousePosition, _1, pos));
   }
 
   textbox_waku_->setMousePosition(pos);
 }
 
-bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
+bool TextWindow::handleMouseClick(RLMachine& machine,
+                                  const Point& pos,
                                   bool pressed) {
   using namespace boost;
 
   if (inSelectionMode()) {
     bool found =
-      find_if(selections_.begin(), selections_.end(),
-              bind(&SelectionElement::handleMouseClick, _1, pos, pressed))
-      != selections_.end();
+        find_if(selections_.begin(),
+                selections_.end(),
+                bind(&SelectionElement::handleMouseClick, _1, pos, pressed)) !=
+        selections_.end();
 
     if (found)
       return true;
   }
 
-  for (std::vector<std::pair<Point, int> >::const_iterator it =
-           koe_replay_button_.begin(); it != koe_replay_button_.end(); ++it) {
+  for (std::vector<std::pair<Point, int>>::const_iterator it =
+           koe_replay_button_.begin();
+       it != koe_replay_button_.end();
+       ++it) {
     Rect r = Rect(textSurfaceRect().origin() + it->first,
                   koe_replay_info_->icon->size());
     if (r.contains(pos)) {
@@ -708,9 +721,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine, const Point& pos,
   return false;
 }
 
-void TextWindow::startSelectionMode() {
-  in_selection_mode_ = true;
-}
+void TextWindow::startSelectionMode() { in_selection_mode_ = true; }
 
 void TextWindow::setSelectionCallback(const std::function<void(int)>& in) {
   selection_callback_ = in;

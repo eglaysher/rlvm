@@ -40,7 +40,6 @@
 using namespace std;
 using libReallive::IntMemRef;
 
-
 // Tests setarray_0.
 //
 // Corresponding kepago listing:
@@ -64,7 +63,6 @@ TEST(LargeMemTest, setarray_0) {
   EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 3)))
       << "setarray touched the value in intA[3]!!";
 }
-
 
 // Tests setrng_0.
 //

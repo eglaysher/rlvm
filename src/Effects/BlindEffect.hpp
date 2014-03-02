@@ -36,17 +36,19 @@ class BlindEffect : public Effect {
   BlindEffect(RLMachine& machine,
               boost::shared_ptr<Surface> src,
               boost::shared_ptr<Surface> dst,
-              const Size& screenSize, int time, int blindSize);
+              const Size& screenSize,
+              int time,
+              int blindSize);
 
   ~BlindEffect();
 
  protected:
   const int blindSize() const { return blind_size_; }
 
-  virtual void computeGrowing(
-    RLMachine& machine, int maxSize, int currentTime);
-  virtual void computeDecreasing(
-    RLMachine& machine, int maxSize, int currentTime);
+  virtual void computeGrowing(RLMachine& machine, int maxSize, int currentTime);
+  virtual void computeDecreasing(RLMachine& machine,
+                                 int maxSize,
+                                 int currentTime);
 
   virtual void renderPolygon(int polyStart, int polyEnd) = 0;
 
@@ -58,14 +60,16 @@ class BlindEffect : public Effect {
 
 class BlindTopToBottomEffect : public BlindEffect {
  public:
-  BlindTopToBottomEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+  BlindTopToBottomEffect(RLMachine& machine,
+                         boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time, int blindSize);
+                         const Size& screenSize,
+                         int time,
+                         int blindSize);
 
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
   virtual void renderPolygon(int polyStart, int polyEnd);
-
 };
 
 class BlindBottomToTopEffect : public BlindEffect {
@@ -73,7 +77,9 @@ class BlindBottomToTopEffect : public BlindEffect {
   BlindBottomToTopEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time, int blindSize);
+                         const Size& screenSize,
+                         int time,
+                         int blindSize);
 
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
@@ -85,7 +91,9 @@ class BlindLeftToRightEffect : public BlindEffect {
   BlindLeftToRightEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time, int blindSize);
+                         const Size& screenSize,
+                         int time,
+                         int blindSize);
 
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
@@ -97,7 +105,9 @@ class BlindRightToLeftEffect : public BlindEffect {
   BlindRightToLeftEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time, int blindSize);
+                         const Size& screenSize,
+                         int time,
+                         int blindSize);
 
  protected:
   virtual void performEffectForTime(RLMachine& machine, int currentTime);

@@ -56,8 +56,8 @@ NWKVoiceSample::NWKVoiceSample(boost::filesystem::path file,
                                int offset,
                                int length)
     : stream_(std::fopen(file.native().c_str(), "rb")),
-      offset_(offset), length_(length) {
-}
+      offset_(offset),
+      length_(length) {}
 
 NWKVoiceSample::~NWKVoiceSample() {
   if (stream_)
@@ -72,13 +72,11 @@ char* NWKVoiceSample::decode(int* size) {
 }  // namespace
 
 NWKVoiceArchive::NWKVoiceArchive(fs::path file, int file_no)
-    : VoiceArchive(file_no),
-      file_(file) {
+    : VoiceArchive(file_no), file_(file) {
   readVisualArtsTable(file, 12, entries_);
 }
 
-NWKVoiceArchive::~NWKVoiceArchive() {
-}
+NWKVoiceArchive::~NWKVoiceArchive() {}
 
 boost::shared_ptr<VoiceSample> NWKVoiceArchive::findSample(int sample_num) {
   std::vector<Entry>::const_iterator it =

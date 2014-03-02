@@ -58,31 +58,22 @@ double scaleAmplitude(int amplitude) {
 }  // namespace
 
 DriftGraphicsObject::DriftGraphicsObject(System& system)
-    : system_(system),
-      filename_(),
-      surface_(),
-      last_rendered_time_(0) {
-}
+    : system_(system), filename_(), surface_(), last_rendered_time_(0) {}
 
 DriftGraphicsObject::DriftGraphicsObject(const DriftGraphicsObject& obj)
     : GraphicsObjectData(obj),
       system_(obj.system_),
       filename_(obj.filename_),
       surface_(obj.surface_),
-      last_rendered_time_(0) {
-}
+      last_rendered_time_(0) {}
 
 DriftGraphicsObject::DriftGraphicsObject(System& system,
                                          const std::string& filename)
-    : system_(system),
-      filename_(filename),
-      surface_(),
-      last_rendered_time_(0) {
+    : system_(system), filename_(filename), surface_(), last_rendered_time_(0) {
   loadFile();
 }
 
-DriftGraphicsObject::~DriftGraphicsObject() {
-}
+DriftGraphicsObject::~DriftGraphicsObject() {}
 
 void DriftGraphicsObject::render(const GraphicsObject& go,
                                  const GraphicsObject* parent,
@@ -125,13 +116,14 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
     // Now that we have all the particles, update state and render each
     // particle.
     for (std::vector<Particle>::iterator it = particles_.begin();
-         it != particles_.end(); ++it) {
+         it != particles_.end();
+         ++it) {
       int pattern = start_pattern;
       if (use_animation && end_pattern > start_pattern) {
         int number_of_patterns = end_pattern - start_pattern + 1;
         int frame_time = animation_time / number_of_patterns;
-        int frame_number = ((current_time - it->start_time) / frame_time) %
-                           number_of_patterns;
+        int frame_number =
+            ((current_time - it->start_time) / frame_time) % number_of_patterns;
         pattern = start_pattern + frame_number;
       }
       Rect src = surface->getPattern(pattern).rect;
@@ -146,18 +138,18 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
 
       // Add the sine wave that defines how the particle moves back and forth.
       if (period != 0 && amplitude != 0) {
-        double result = sin(
-            (static_cast<double>(current_time - it->start_time) / period) *
-            (2*3.14));
+        double result =
+            sin((static_cast<double>(current_time - it->start_time) / period) *
+                (2 * 3.14));
         dest_x += scaled_amplitude * result;
       }
 
       // Add the left drift if we have this bit set.
       if (use_drift) {
         dest_x -= bounding_box.size().width() *
-                (static_cast<double>((current_time - it->start_time) %
-                                     drift_speed) /
-                 static_cast<double>(drift_speed));
+                  (static_cast<double>((current_time - it->start_time) %
+                                       drift_speed) /
+                   static_cast<double>(drift_speed));
       }
 
       if (dest_x < 0)
@@ -203,7 +195,7 @@ void DriftGraphicsObject::execute(RLMachine& machine) {
 }
 
 boost::shared_ptr<const Surface> DriftGraphicsObject::currentSurface(
-  const GraphicsObject& rp) {
+    const GraphicsObject& rp) {
   return surface_;
 }
 
@@ -211,26 +203,23 @@ void DriftGraphicsObject::objectInfo(std::ostream& tree) {
   tree << "  Drift image: " << filename_ << std::endl;
 }
 
-
 void DriftGraphicsObject::loadFile() {
   surface_ = system_.graphics().getSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
 
-template<class Archive>
+template <class Archive>
 void DriftGraphicsObject::load(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-      & filename_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_;
 
   loadFile();
 }
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void DriftGraphicsObject::save(Archive& ar, unsigned int version) const {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-     & filename_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_;
 }
 
 // -----------------------------------------------------------------------
@@ -243,7 +232,9 @@ BOOST_CLASS_EXPORT(DriftGraphicsObject);
 // implementation)
 
 template void DriftGraphicsObject::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void DriftGraphicsObject::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

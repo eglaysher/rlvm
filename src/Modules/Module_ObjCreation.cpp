@@ -59,11 +59,10 @@ using namespace libReallive;
 
 namespace {
 
-void setObjectDataToGan(
-  RLMachine& machine,
-  GraphicsObject& obj,
-  string& imgFilename,
-  const string& ganFilename) {
+void setObjectDataToGan(RLMachine& machine,
+                        GraphicsObject& obj,
+                        string& imgFilename,
+                        const string& ganFilename) {
   /// @todo This is a hack and probably a source of errors. Figure
   ///       out what '???' means when used as the first parameter to
   ///       objOfFileGan.
@@ -73,15 +72,17 @@ void setObjectDataToGan(
       new GanGraphicsObjectData(machine.system(), ganFilename, imgFilename));
 }
 
-typedef std::function<void(RLMachine&, GraphicsObject& obj,
-                           const string&)> DataFunction;
+typedef std::function<void(RLMachine&, GraphicsObject& obj, const string&)>
+    DataFunction;
 
-void objOfFileLoader(RLMachine& machine, GraphicsObject& obj,
+void objOfFileLoader(RLMachine& machine,
+                     GraphicsObject& obj,
                      const string& val) {
   obj.setObjectData(machine.system().graphics().buildObjOfFile(val));
 }
 
-void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
+void objOfTextBuilder(RLMachine& machine,
+                      GraphicsObject& obj,
                       const string& val) {
   // The text at this point is still cp932. Convert it.
   string utf8str = cp932toUTF8(val, machine.getTextEncoding());
@@ -91,12 +92,14 @@ void objOfTextBuilder(RLMachine& machine, GraphicsObject& obj,
   text_obj->updateSurface(obj);
 }
 
-void objOfDriftLoader(RLMachine& machine, GraphicsObject& obj,
+void objOfDriftLoader(RLMachine& machine,
+                      GraphicsObject& obj,
                       const string& value) {
   obj.setObjectData(new DriftGraphicsObject(machine.system(), value));
 }
 
-void objOfDigitsLoader(RLMachine& machine, GraphicsObject& obj,
+void objOfDigitsLoader(RLMachine& machine,
+                       GraphicsObject& obj,
                        const string& value) {
   obj.setObjectData(new DigitsGraphicsObject(machine.system(), value));
 }
@@ -111,8 +114,8 @@ struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   }
 };
 
-struct objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
-                                         IntConstant_T> {
+struct objGeneric_1
+    : public RLOp_Void_3<IntConstant_T, StrConstant_T, IntConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -123,14 +126,20 @@ struct objGeneric_1 : public RLOp_Void_3<IntConstant_T, StrConstant_T,
   }
 };
 
-struct objGeneric_2
-    : public RLOp_Void_5<IntConstant_T, StrConstant_T, IntConstant_T,
-                         IntConstant_T, IntConstant_T> {
+struct objGeneric_2 : public RLOp_Void_5<IntConstant_T,
+                                         StrConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_2(const DataFunction& fun) : data_fun_(fun) {}
 
-  void operator()(RLMachine& machine, int buf, string filename, int visible,
-                  int x, int y) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string filename,
+                  int visible,
+                  int x,
+                  int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
@@ -139,14 +148,22 @@ struct objGeneric_2
   }
 };
 
-struct objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
-                                         IntConstant_T, IntConstant_T,
-                                         IntConstant_T, IntConstant_T> {
+struct objGeneric_3 : public RLOp_Void_6<IntConstant_T,
+                                         StrConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_3(const DataFunction& fun) : data_fun_(fun) {}
 
-  void operator()(RLMachine& machine, int buf, string filename, int visible,
-                  int x, int y, int pattern) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string filename,
+                  int visible,
+                  int x,
+                  int y,
+                  int pattern) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
@@ -156,14 +173,26 @@ struct objGeneric_3 : public RLOp_Void_6<IntConstant_T, StrConstant_T,
   }
 };
 
-struct objGeneric_4 : public RLOp_Void_8<
-  IntConstant_T, StrConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+struct objGeneric_4 : public RLOp_Void_8<IntConstant_T,
+                                         StrConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_4(const DataFunction& fun) : data_fun_(fun) {}
 
-  void operator()(RLMachine& machine, int buf, string filename, int visible,
-                  int x, int y, int pattern, int scrollX, int scrollY) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string filename,
+                  int visible,
+                  int x,
+                  int y,
+                  int pattern,
+                  int scrollX,
+                  int scrollY) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
 
     data_fun_(machine, obj, filename);
@@ -178,7 +207,9 @@ struct objGeneric_4 : public RLOp_Void_8<
 
 struct objOfFileGan_0
     : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T> {
-  void operator()(RLMachine& machine, int buf, string imgFilename,
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string imgFilename,
                   string ganFilename) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
@@ -186,22 +217,34 @@ struct objOfFileGan_0
   }
 };
 
-struct objOfFileGan_1
-    : public RLOp_Void_4<IntConstant_T, StrConstant_T, StrConstant_T,
-                         IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible) {
+struct objOfFileGan_1 : public RLOp_Void_4<IntConstant_T,
+                                           StrConstant_T,
+                                           StrConstant_T,
+                                           IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string imgFilename,
+                  string ganFilename,
+                  int visible) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
   }
 };
 
-struct objOfFileGan_2
-    : public RLOp_Void_6<IntConstant_T, StrConstant_T, StrConstant_T,
-                         IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible, int x, int y) {
+struct objOfFileGan_2 : public RLOp_Void_6<IntConstant_T,
+                                           StrConstant_T,
+                                           StrConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string imgFilename,
+                  string ganFilename,
+                  int visible,
+                  int x,
+                  int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -210,12 +253,21 @@ struct objOfFileGan_2
   }
 };
 
-struct objOfFileGan_3
-    : public RLOp_Void_7<IntConstant_T, StrConstant_T, StrConstant_T,
-                         IntConstant_T, IntConstant_T, IntConstant_T,
-                         IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, string imgFilename,
-                  string ganFilename, int visible, int x, int y, int pattern) {
+struct objOfFileGan_3 : public RLOp_Void_7<IntConstant_T,
+                                           StrConstant_T,
+                                           StrConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  string imgFilename,
+                  string ganFilename,
+                  int visible,
+                  int x,
+                  int y,
+                  int pattern) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
@@ -225,7 +277,9 @@ struct objOfFileGan_3
   }
 };
 
-void setObjectDataToRect(RLMachine& machine, RLOperation* op, int buf,
+void setObjectDataToRect(RLMachine& machine,
+                         RLOperation* op,
+                         int buf,
                          const Rect& r) {
   GraphicsObject& obj = getGraphicsObject(machine, op, buf);
   obj.setObjectData(new ColourFilterObjectData(machine.system().graphics(), r));
@@ -238,16 +292,14 @@ struct objOfArea_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct objOfArea_1
-    : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP> > {
+struct objOfArea_1 : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine, int buf, Rect rect) {
     setObjectDataToRect(machine, this, buf, rect);
   }
 };
 
 struct objOfArea_2
-    : public RLOp_Void_3<IntConstant_T, Rect_T<rect_impl::GRP>,
-                         IntConstant_T> {
+    : public RLOp_Void_3<IntConstant_T, Rect_T<rect_impl::GRP>, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, Rect rect, int visible) {
     setObjectDataToRect(machine, this, buf, rect);
 
@@ -256,30 +308,41 @@ struct objOfArea_2
   }
 };
 
-struct objOfRect_1
-    : public RLOp_Void_5<IntConstant_T, IntConstant_T, IntConstant_T,
-                         DefaultIntValue_T<INT_MIN>,
-                         DefaultIntValue_T<INT_MIN> > {
-  void operator()(RLMachine& machine, int buf, int x, int y, int width,
+struct objOfRect_1 : public RLOp_Void_5<IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        DefaultIntValue_T<INT_MIN>,
+                                        DefaultIntValue_T<INT_MIN>> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int x,
+                  int y,
+                  int width,
                   int height) {
     // Because of the screwed up optionality here, (x and y are optional while
     // width height are not, we hack with the INT_MIN value).
     if (width == INT_MIN) {
       Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
-      setObjectDataToRect(machine, this, buf,
-                          Size(x, y).centeredIn(screen));
+      setObjectDataToRect(machine, this, buf, Size(x, y).centeredIn(screen));
     } else {
       setObjectDataToRect(machine, this, buf, Rect(x, y, Size(width, height)));
     }
   }
 };
 
-struct objOfRect_2 : public RLOp_Void_6<IntConstant_T, IntConstant_T,
-                                        IntConstant_T, IntConstant_T,
+struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
                                         DefaultIntValue_T<INT_MIN>,
-                                        DefaultIntValue_T<INT_MIN> > {
-  void operator()(RLMachine& machine, int buf, int x, int y, int width,
-                  int height, int visible) {
+                                        DefaultIntValue_T<INT_MIN>> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int x,
+                  int y,
+                  int width,
+                  int height,
+                  int visible) {
     Rect data_rect;
     if (height == INT_MIN) {
       Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
@@ -299,34 +362,53 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T, IntConstant_T,
 // reallive.kfn and the rldev docs disagree about whether there's an
 // objOfRect_4. Blank until I see it in the wild.
 
-struct objOfChild_0 : public RLOp_Void_4<IntConstant_T, IntConstant_T,
-                                         StrConstant_T, StrConstant_T> {
-  void operator()(RLMachine& machine, int buf, int count,
-                  string imgFilename, string ganFilename) {
+struct objOfChild_0 : public RLOp_Void_4<IntConstant_T,
+                                         IntConstant_T,
+                                         StrConstant_T,
+                                         StrConstant_T> {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int count,
+                  string imgFilename,
+                  string ganFilename) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(true);
   }
 };
 
-struct objOfChild_1 : public RLOp_Void_5<IntConstant_T, IntConstant_T,
-                                         StrConstant_T, StrConstant_T,
+struct objOfChild_1 : public RLOp_Void_5<IntConstant_T,
+                                         IntConstant_T,
+                                         StrConstant_T,
+                                         StrConstant_T,
                                          IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int count,
-                  string imgFilename, string ganFilename, int visible) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int count,
+                  string imgFilename,
+                  string ganFilename,
+                  int visible) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(visible);
   }
 };
 
-struct objOfChild_2 : public RLOp_Void_7<IntConstant_T, IntConstant_T,
-                                         StrConstant_T, StrConstant_T,
-                                         IntConstant_T, IntConstant_T,
+struct objOfChild_2 : public RLOp_Void_7<IntConstant_T,
+                                         IntConstant_T,
+                                         StrConstant_T,
+                                         StrConstant_T,
+                                         IntConstant_T,
+                                         IntConstant_T,
                                          IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int count,
-                  string imgFilename, string ganFilename, int visible,
-                  int x, int y) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int count,
+                  string imgFilename,
+                  string ganFilename,
+                  int visible,
+                  int x,
+                  int y) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(visible);
@@ -386,16 +468,14 @@ void addObjectCreationFunctions(RLModule& m) {
 
 // -----------------------------------------------------------------------
 
-ObjFgCreationModule::ObjFgCreationModule()
-    : RLModule("ObjFgCreation", 1, 71) {
+ObjFgCreationModule::ObjFgCreationModule() : RLModule("ObjFgCreation", 1, 71) {
   addObjectCreationFunctions(*this);
   setProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
-ObjBgCreationModule::ObjBgCreationModule()
-    : RLModule("ObjBgCreation", 1, 72) {
+ObjBgCreationModule::ObjBgCreationModule() : RLModule("ObjBgCreation", 1, 72) {
   addObjectCreationFunctions(*this);
   setProperty(P_FGBG, OBJ_BG);
 }

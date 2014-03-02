@@ -44,10 +44,7 @@ using namespace libReallive;
 // RLOperation
 // -----------------------------------------------------------------------
 
-RLOperation::RLOperation()
-    : property_list_(NULL),
-      name_(NULL) {
-}
+RLOperation::RLOperation() : property_list_(NULL), name_(NULL) {}
 
 RLOperation::~RLOperation() {
   if (property_list_)
@@ -56,7 +53,7 @@ RLOperation::~RLOperation() {
 
 RLOperation* RLOperation::setProperty(int property, int value) {
   if (!property_list_) {
-    property_list_ = new std::vector< std::pair<int, int> >;
+    property_list_ = new std::vector<std::pair<int, int>>;
   }
 
   // Modify the property if it already exists
@@ -87,15 +84,14 @@ bool RLOperation::getProperty(int property, int& value) const {
   return false;
 }
 
-RLOperation::PropertyList::iterator RLOperation::findProperty(
-    int property) const {
-  return find_if(property_list_->begin(), property_list_->end(),
+RLOperation::PropertyList::iterator RLOperation::findProperty(int property)
+    const {
+  return find_if(property_list_->begin(),
+                 property_list_->end(),
                  [&](Property& p) { return p.first == property; });
 }
 
-bool RLOperation::advanceInstructionPointer() {
-  return true;
-}
+bool RLOperation::advanceInstructionPointer() { return true; }
 
 void RLOperation::dispatchFunction(RLMachine& machine,
                                    const CommandElement& ff) {
@@ -133,9 +129,9 @@ IntConstant_T::type IntConstant_T::getData(
 
 // Was working to change the verify_type to parse_parameters.
 void IntConstant_T::parseParameters(
-  unsigned int& position,
-  const std::vector<std::string>& input,
-  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    unsigned int& position,
+    const std::vector<std::string>& input,
+    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -151,14 +147,14 @@ IntReference_T::type IntReference_T::getData(
     RLMachine& machine,
     const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(*p[position++]).
-    getIntegerReferenceIterator(machine);
+  return static_cast<const libReallive::MemoryReference&>(*p[position++])
+      .getIntegerReferenceIterator(machine);
 }
 
 void IntReference_T::parseParameters(
-  unsigned int& position,
-  const std::vector<std::string>& input,
-  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    unsigned int& position,
+    const std::vector<std::string>& input,
+    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -214,9 +210,9 @@ StrConstant_T::type StrConstant_T::getData(
 }
 
 void StrConstant_T::parseParameters(
-  unsigned int& position,
-  const std::vector<std::string>& input,
-  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    unsigned int& position,
+    const std::vector<std::string>& input,
+    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -232,14 +228,14 @@ StrReference_T::type StrReference_T::getData(
     RLMachine& machine,
     const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(*p[position++]).
-    getStringReferenceIterator(machine);
+  return static_cast<const libReallive::MemoryReference&>(*p[position++])
+      .getStringReferenceIterator(machine);
 }
 
 void StrReference_T::parseParameters(
-  unsigned int& position,
-  const std::vector<std::string>& input,
-  std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    unsigned int& position,
+    const std::vector<std::string>& input,
+    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
@@ -252,15 +248,14 @@ void StrReference_T::parseParameters(
 }
 
 void RLOp_SpecialCase::dispatch(
-  RLMachine& machine,
-  const libReallive::ExpressionPiecesVector& parameters) {
-  throw rlvm::Exception(
-      "Tried to call empty RLOp_SpecialCase::dispatch().");
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
+  throw rlvm::Exception("Tried to call empty RLOp_SpecialCase::dispatch().");
 }
 
 void RLOp_SpecialCase::parseParameters(
-  const std::vector<std::string>& input,
-  libReallive::ExpressionPiecesVector& output) {
+    const std::vector<std::string>& input,
+    libReallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
     output.push_back(get_data(src));
@@ -281,7 +276,8 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
   operator()(machine, ff);
 }
 
-void RLOp_Void_Void::dispatch(RLMachine& machine,
-                              const libReallive::ExpressionPiecesVector& parameters) {
+void RLOp_Void_Void::dispatch(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
   operator()(machine);
 }

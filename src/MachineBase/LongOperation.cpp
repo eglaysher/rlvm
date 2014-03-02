@@ -35,39 +35,35 @@
 // LongOperation
 // -----------------------------------------------------------------------
 
-LongOperation::LongOperation()
-  : EventListener() {}
+LongOperation::LongOperation() : EventListener() {}
 
 LongOperation::~LongOperation() {}
 
-int LongOperation::sleepTime() {
-  return 10;
-}
+int LongOperation::sleepTime() { return 10; }
 
 // -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator
 // -----------------------------------------------------------------------
 
 PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
-  LongOperation* in_op)
-  : operation_(in_op) {
-}
+    LongOperation* in_op)
+    : operation_(in_op) {}
 
-PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator() {
-}
+PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator() {}
 
 void PerformAfterLongOperationDecorator::mouseMotion(
-  const Point& new_location) {
+    const Point& new_location) {
   operation_->mouseMotion(new_location);
 }
 
 bool PerformAfterLongOperationDecorator::mouseButtonStateChanged(
-  MouseButton mouse_button, bool pressed) {
+    MouseButton mouse_button,
+    bool pressed) {
   return operation_->mouseButtonStateChanged(mouse_button, pressed);
 }
 
-bool PerformAfterLongOperationDecorator::keyStateChanged(
-  KeyCode key_code, bool pressed) {
+bool PerformAfterLongOperationDecorator::keyStateChanged(KeyCode key_code,
+                                                         bool pressed) {
   return operation_->keyStateChanged(key_code, pressed);
 }
 

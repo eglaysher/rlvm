@@ -62,16 +62,14 @@ TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
 
 // -----------------------------------------------------------------------
 
-TextKeyCursor::~TextKeyCursor() {
-}
+TextKeyCursor::~TextKeyCursor() {}
 
 // -----------------------------------------------------------------------
 
 void TextKeyCursor::execute() {
   unsigned int cur_time = system_.event().getTicks();
 
-  if (cursor_image_ && last_time_frame_incremented_ +
-      frame_speed_ < cur_time) {
+  if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;
 
     system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -90,9 +88,9 @@ void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
     Point keycur = text_window.keycursorPosition(frame_size_);
 
     cursor_image_->renderToScreen(
-      Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),
-      Rect(keycur, frame_size_),
-      255);
+        Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),
+        Rect(keycur, frame_size_),
+        255);
 
     if (tree) {
       *tree << "  Key Cursor #" << cursor_number_ << endl
@@ -104,8 +102,7 @@ void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorImage(System& system,
-                                   const std::string& name) {
+void TextKeyCursor::setCursorImage(System& system, const std::string& name) {
   if (name != "") {
     cursor_image_ = system.graphics().getSurfaceNamed(name);
     cursor_image_file_ = name;

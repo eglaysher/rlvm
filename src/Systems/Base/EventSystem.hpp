@@ -25,7 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_
 #define SRC_SYSTEMS_BASE_EVENTSYSTEM_HPP_
 
@@ -55,9 +54,9 @@ struct EventSystemGlobals {
   int generic1, generic2;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & generic1 & generic2;
+    ar& generic1& generic2;
   }
 };
 
@@ -175,9 +174,7 @@ class EventSystem : public boost::noncopyable {
   EventListeners::iterator listeners_begin() {
     return event_listeners_.begin();
   }
-  EventListeners::iterator listeners_end() {
-    return event_listeners_.end();
-  }
+  EventListeners::iterator listeners_end() { return event_listeners_.end(); }
 
   // Calls a EventListener member function on all event listeners, and then
   // event handlers, stopping when an object says they handled it.

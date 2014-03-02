@@ -40,9 +40,7 @@ using namespace std;
 OpcodeLog::OpcodeLog() {}
 OpcodeLog::~OpcodeLog() {}
 
-void OpcodeLog::increment(const std::string& name) {
-  storage_[name]++;
-}
+void OpcodeLog::increment(const std::string& name) { storage_[name]++; }
 
 static bool nameLessThan(const OpcodeLog::Storage::value_type& lhs,
                          const OpcodeLog::Storage::value_type& rhs) {
@@ -54,18 +52,19 @@ std::ostream& operator<<(std::ostream& os, const OpcodeLog& log) {
     int max_function_name_len =
         max_element(log.begin(), log.end(), nameLessThan)->first.size();
 
-    os << setw(max_function_name_len) << left << "Name" << "  " << "Count"
-       << endl;
+    os << setw(max_function_name_len) << left << "Name"
+       << "  "
+       << "Count" << endl;
 
     for (int i = 0; i < max_function_name_len; ++i)
       os << "-";
 
-    os << "  " << "-----" << endl;
+    os << "  "
+       << "-----" << endl;
 
     for (auto const& entry : log) {
-      os << setw(max_function_name_len) << left <<  entry.first << "  "
-         << entry.second
-         << endl;
+      os << setw(max_function_name_len) << left << entry.first << "  "
+         << entry.second << endl;
     }
   } else {
     os << "No undefined opcodes called!";

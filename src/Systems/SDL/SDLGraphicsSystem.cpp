@@ -98,8 +98,12 @@ void SDLGraphicsSystem::beginFrame() {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0.0, (GLdouble)screenSize().width(), (GLdouble)screenSize().height(),
-          0.0, 0.0, 1.0);
+  glOrtho(0.0,
+          (GLdouble)screenSize().width(),
+          (GLdouble)screenSize().height(),
+          0.0,
+          0.0,
+          1.0);
   DebugShowGLErrors();
 
   glMatrixMode(GL_MODELVIEW);
@@ -113,8 +117,7 @@ void SDLGraphicsSystem::beginFrame() {
 
 void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
   if (isResponsibleForUpdate() &&
-      screenUpdateMode() == SCREENUPDATEMODE_MANUAL &&
-      type == GUT_MOUSE_MOTION)
+      screenUpdateMode() == SCREENUPDATEMODE_MANUAL && type == GUT_MOUSE_MOTION)
     redraw_last_frame_ = true;
   else
     GraphicsSystem::markScreenAsDirty(type);
@@ -133,8 +136,14 @@ void SDLGraphicsSystem::endFrame() {
     // and I've just been lucky that the Intel i810 and whatever my Mac machine
     // has have been doing things that way.)
     glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,
-                        screenSize().width(), screenSize().height());
+    glCopyTexSubImage2D(GL_TEXTURE_2D,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        screenSize().width(),
+                        screenSize().height());
     screen_contents_texture_valid_ = true;
   } else {
     screen_contents_texture_valid_ = false;
@@ -156,7 +165,8 @@ void SDLGraphicsSystem::redrawLastFrame() {
   if (screen_contents_texture_valid_) {
     // Redraw the screen
     glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
-    glBegin(GL_QUADS); {
+    glBegin(GL_QUADS);
+    {
       int dx1 = 0;
       int dx2 = screenSize().width();
       int dy1 = 0;
@@ -209,12 +219,15 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
 // -----------------------------------------------------------------------
 
 SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
-  : GraphicsSystem(system, gameexe), redraw_last_frame_(false),
-    display_data_in_titlebar_(false), time_of_last_titlebar_update_(0),
-    last_seen_number_(0), last_line_number_(0),
-    screen_contents_texture_valid_(false),
-    screen_tex_width_(0),
-    screen_tex_height_(0) {
+    : GraphicsSystem(system, gameexe),
+      redraw_last_frame_(false),
+      display_data_in_titlebar_(false),
+      time_of_last_titlebar_update_(0),
+      last_seen_number_(0),
+      last_line_number_(0),
+      screen_contents_texture_valid_(false),
+      screen_tex_width_(0),
+      screen_tex_height_(0) {
   haikei_.reset(new SDLSurface(this));
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
@@ -241,7 +254,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   // automatically and this doesn't look too awesome.
   SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
   if (icon) {
-    SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 0, 0, 0) );
+    SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 0, 0, 0));
     SDL_WM_SetIcon(icon, NULL);
     SDL_FreeSurface(icon);
   }
@@ -264,7 +277,7 @@ void SDLGraphicsSystem::setupVideo() {
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
   SDL_WM_SetCaption("rlvm", "rlvm");
 
-  if ( !info ) {
+  if (!info) {
     ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
     throw SystemError(ss.str());
@@ -274,8 +287,8 @@ void SDLGraphicsSystem::setupVideo() {
 
   // the flags to pass to SDL_SetVideoMode
   int video_flags;
-  video_flags  = SDL_OPENGL;          // Enable OpenGL in SDL
-  video_flags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
+  video_flags = SDL_OPENGL;            // Enable OpenGL in SDL
+  video_flags |= SDL_GL_DOUBLEBUFFER;  // Enable double buffering
   video_flags |= SDL_SWSURFACE;
 
   if (screenMode() == 0)
@@ -289,7 +302,8 @@ void SDLGraphicsSystem::setupVideo() {
 
   // Set the video mode
   if ((screen_ = SDL_SetVideoMode(
-        screenSize().width(), screenSize().height(), bpp, video_flags)) == 0 ) {
+           screenSize().width(), screenSize().height(), bpp, video_flags)) ==
+      0) {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
     // resolution not being available, etc.
@@ -343,15 +357,20 @@ void SDLGraphicsSystem::setupVideo() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   screen_tex_width_ = SafeSize(screenSize().width());
   screen_tex_height_ = SafeSize(screenSize().height());
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               screen_tex_width_, screen_tex_height_, 0, GL_RGB,
-               GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               screen_tex_width_,
+               screen_tex_height_,
+               0,
+               GL_RGB,
+               GL_UNSIGNED_BYTE,
+               NULL);
 
   ShowGLErrors();
 }
 
-SDLGraphicsSystem::~SDLGraphicsSystem() {
-}
+SDLGraphicsSystem::~SDLGraphicsSystem() {}
 
 void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // For now, nothing, but later, we need to put all code each cycle
@@ -371,7 +390,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
     time_of_last_titlebar_update_ = current_time;
 
     if (machine.sceneNumber() != last_seen_number_ ||
-       machine.lineNumber() != last_line_number_) {
+        machine.lineNumber() != last_line_number_) {
       last_seen_number_ = machine.sceneNumber();
       last_line_number_ = machine.lineNumber();
       setWindowTitle();
@@ -390,8 +409,8 @@ void SDLGraphicsSystem::setWindowTitle() {
   }
 
   if (display_data_in_titlebar_) {
-    oss << " - (SEEN" << last_seen_number_ << ")(Line "
-        << last_line_number_ << ")";
+    oss << " - (SEEN" << last_seen_number_ << ")(Line " << last_line_number_
+        << ")";
   }
 
   // PulseAudio allocates a string each time we set the title. Make sure we
@@ -462,9 +481,7 @@ void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
       newdc->allocate(maxSize);
 
       display_contexts_[dc]->blitToSurface(
-          *newdc,
-          display_contexts_[dc]->rect(),
-          display_contexts_[dc]->rect());
+          *newdc, display_contexts_[dc]->rect(), display_contexts_[dc]->rect());
 
       display_contexts_[dc] = newdc;
     }
@@ -499,15 +516,15 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
 void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
   if (display_contexts_[dc] == NULL) {
     ostringstream ss;
-    ss << "Couldn't allocate DC[" << dc << "] in " << caller
-       << ": " << SDL_GetError();
+    ss << "Couldn't allocate DC[" << dc << "] in " << caller << ": "
+       << SDL_GetError();
     throw SystemError(ss.str());
   }
 }
 
 // -----------------------------------------------------------------------
 
-typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
+typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK } MaskType;
 
 // Note to self: These describe the byte order IN THE RAW G00 DATA!
 // These should NOT be switched to native byte order.
@@ -517,12 +534,20 @@ typedef enum { NO_MASK, ALPHA_MASK, COLOR_MASK} MaskType;
 #define DefaultAmask 0xff000000
 #define DefaultBpp 32
 
-static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
+static SDL_Surface* newSurfaceFromRGBAData(int w,
+                                           int h,
+                                           char* data,
                                            MaskType with_mask) {
   int amask = (with_mask == ALPHA_MASK) ? DefaultAmask : 0;
-  SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(
-    data, w, h, DefaultBpp, w*4, DefaultRmask, DefaultGmask,
-    DefaultBmask, amask);
+  SDL_Surface* tmp = SDL_CreateRGBSurfaceFrom(data,
+                                              w,
+                                              h,
+                                              DefaultBpp,
+                                              w * 4,
+                                              DefaultRmask,
+                                              DefaultGmask,
+                                              DefaultBmask,
+                                              amask);
 
   // We now need to convert this surface to a format suitable for use across
   // the rest of the program. We can't (regretfully) rely on
@@ -547,8 +572,8 @@ static SDL_Surface* newSurfaceFromRGBAData(int w, int h, char* data,
 static SDLSurface::GrpRect xclannadRegionToGrpRect(
     const GRPCONV::REGION& region) {
   SDLSurface::GrpRect rect;
-  rect.rect = Rect(Point(region.x1, region.y1),
-                   Point(region.x2 + 1, region.y2 + 1));
+  rect.rect =
+      Rect(Point(region.x1, region.y1), Point(region.x2 + 1, region.y2 + 1));
   rect.originX = region.origin_x;
   rect.originY = region.origin_y;
   return rect;
@@ -589,11 +614,12 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   if (conv->Read(mem)) {
     MaskType is_mask = conv->IsMask() ? ALPHA_MASK : NO_MASK;
     if (is_mask == ALPHA_MASK) {
-      int len = conv->Width()*conv->Height();
+      int len = conv->Width() * conv->Height();
       unsigned int* d = (unsigned int*)mem;
       int i;
       for (i = 0; i < len; i++) {
-        if ( (*d&0xff000000) != 0xff000000) break;
+        if ((*d & 0xff000000) != 0xff000000)
+          break;
         d++;
       }
       if (i == len) {
@@ -609,7 +635,8 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   // default region if none exist
   vector<SDLSurface::GrpRect> region_table;
   if (conv->region_table.size()) {
-    transform(conv->region_table.begin(), conv->region_table.end(),
+    transform(conv->region_table.begin(),
+              conv->region_table.end(),
               back_inserter(region_table),
               xclannadRegionToGrpRect);
   } else {
@@ -623,16 +650,20 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   boost::shared_ptr<Surface> surface_to_ret(
       new SDLSurface(this, s, region_table));
   // handle tone curve effect loading
-  if(short_filename.find("?") != short_filename.npos) {
+  if (short_filename.find("?") != short_filename.npos) {
     string effect_no_str = short_filename.substr(short_filename.find("?") + 1);
     int effect_no = boost::lexical_cast<int>(effect_no_str);
-    // the effect number is an index that goes from 10 to getEffectCount() * 10, so keep that in mind here
-    if((effect_no / 10) > globals().tone_curves.getEffectCount() || effect_no < 10) {
+    // the effect number is an index that goes from 10 to getEffectCount() * 10,
+    // so keep that in mind here
+    if ((effect_no / 10) > globals().tone_curves.getEffectCount() ||
+        effect_no < 10) {
       ostringstream oss;
       oss << "Tone curve index " << effect_no << " is invalid.";
       throw rlvm::Exception(oss.str());
     }
-    surface_to_ret.get()->toneCurve(globals().tone_curves.getEffect(effect_no / 10 - 1), Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
+    surface_to_ret.get()->toneCurve(
+        globals().tone_curves.getEffect(effect_no / 10 - 1),
+        Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
   }
 
   return surface_to_ret;

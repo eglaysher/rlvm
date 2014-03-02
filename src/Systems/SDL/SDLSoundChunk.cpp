@@ -37,13 +37,11 @@
 SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
 
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
-    : sample_(loadSample(path)) {
-}
+    : sample_(loadSample(path)) {}
 
 SDLSoundChunk::SDLSoundChunk(char* data, int length)
-    : sample_(Mix_LoadWAV_RW(SDL_RWFromMem(data, length+0x2c), 1)),
-      data_(data) {
-}
+    : sample_(Mix_LoadWAV_RW(SDL_RWFromMem(data, length + 0x2c), 1)),
+      data_(data) {}
 
 SDLSoundChunk::~SDLSoundChunk() {
   Mix_FreeChunk(sample_);
@@ -63,7 +61,7 @@ Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
     fclose(f);
 
     Mix_Chunk* chunk = Mix_LoadWAV_RW(SDL_RWFromMem(data, size), 1);
-    delete [] data;
+    delete[] data;
 
     return chunk;
   } else {
@@ -108,7 +106,8 @@ int SDLSoundChunk::FindNextFreeExtraChannel() {
   SDLAudioLocker locker;
 
   for (int i = NUM_BASE_CHANNELS;
-      i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS; ++i) {
+       i < NUM_BASE_CHANNELS + NUM_EXTRA_WAVPLAY_CHANNELS;
+       ++i) {
     if (s_playing_table[i].get() == 0)
       return i;
   }
@@ -117,13 +116,9 @@ int SDLSoundChunk::FindNextFreeExtraChannel() {
 }
 
 // static
-void SDLSoundChunk::StopChannel(int channel) {
-  Mix_HaltChannel(channel);
-}
+void SDLSoundChunk::StopChannel(int channel) { Mix_HaltChannel(channel); }
 
-void SDLSoundChunk::StopAllChannels() {
-  Mix_HaltChannel(-1);
-}
+void SDLSoundChunk::StopAllChannels() { Mix_HaltChannel(-1); }
 
 void SDLSoundChunk::FadeOut(const int channel, const int fadetime) {
   Mix_FadeOutChannel(channel, fadetime);

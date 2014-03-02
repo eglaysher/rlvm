@@ -42,36 +42,36 @@ class TextWindow;
 // Possible commands sent to the rlBabel DLL from the code. These will be
 // passed in as the first integer argument (func) to RlBabelDLL::callDLL().
 enum dllFunction {
-  dllInitialise       =   0,
-  dllTextoutStart     =  10,
-  dllTextoutAppend    =  11,
-  dllTextoutGetChar   =  12,
-  dllTextoutNewScreen =  13,
-  dllClearGlosses     =  20,
-  dllNewGloss         =  21,
-  dllAddGloss         =  22,
-  dllTestGlosses      =  23,
-  endSetWindowName    =  98,
-  endGetCharWinNam    =  99,
-  dllSetNameMod       = 100,
-  dllGetNameMod       = 101,
-  dllSetWindowName    = 102,
-  dllGetTextWindow    = 103,
-  dllGetRCommandMod   = 104,
-  dllMessageBox       = 105,
-  dllSelectAdd        = 200
+  dllInitialise = 0,
+  dllTextoutStart = 10,
+  dllTextoutAppend = 11,
+  dllTextoutGetChar = 12,
+  dllTextoutNewScreen = 13,
+  dllClearGlosses = 20,
+  dllNewGloss = 21,
+  dllAddGloss = 22,
+  dllTestGlosses = 23,
+  endSetWindowName = 98,
+  endGetCharWinNam = 99,
+  dllSetNameMod = 100,
+  dllGetNameMod = 101,
+  dllSetWindowName = 102,
+  dllGetTextWindow = 103,
+  dllGetRCommandMod = 104,
+  dllMessageBox = 105,
+  dllSelectAdd = 200
 };
 
 // Return codes from the above functions sent back to the RealLive bytecode.
 enum getcReturn {
-  getcError       = 0,
+  getcError = 0,
   getcEndOfString = 1,
-  getcPrintChar   = 2,
-  getcNewLine     = 3,
-  getcNewScreen   = 4,
-  getcSetIndent   = 5,
+  getcPrintChar = 2,
+  getcNewLine = 3,
+  getcNewScreen = 4,
+  getcSetIndent = 5,
   getcClearIndent = 6,
-  getcBeginGloss  = 7
+  getcBeginGloss = 7
 };
 
 // Clickable on screen areas that display a message.
@@ -79,7 +79,10 @@ class Gloss {
  public:
   Gloss(const boost::shared_ptr<TextWindow>& window,
         const std::string& cp932_src,
-        int x1, int y1, int x2, int y2);
+        int x1,
+        int y1,
+        int x2,
+        int y2);
 
   // Whether the passed in point intersects with
   bool contains(const Point& point);
@@ -128,8 +131,12 @@ class RlBabelDLL : public RealLiveDLL {
 
   // Main entrypoint to the "DLL". It's a giant switch function that handles
   // all the commands that Haeleth added with rlBabel.
-  virtual int callDLL(RLMachine& machine, int func, int arg1, int arg2,
-                      int arg3, int arg4);
+  virtual int callDLL(RLMachine& machine,
+                      int func,
+                      int arg1,
+                      int arg2,
+                      int arg3,
+                      int arg4);
 
   virtual const std::string& name() const;
 
@@ -153,8 +160,7 @@ class RlBabelDLL : public RealLiveDLL {
   // Retrieves an action specified in getcReturn, which directs the side of
   // rlBabel implemented in RealLive code. Uses buffer and xmod as output
   // variables for the command given.
-  int textoutGetChar(StringReferenceIterator buffer,
-                     IntReferenceIterator xmod);
+  int textoutGetChar(StringReferenceIterator buffer, IntReferenceIterator xmod);
 
   // (rlBabel function not entirely understood...)
   int startNewScreen(const std::string& cnam);

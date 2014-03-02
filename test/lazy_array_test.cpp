@@ -49,9 +49,9 @@ class LazyArrayTest : public ::testing::Test {
   class IntWrapper {
    private:
     friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version) {
-      ar & num;
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version) {
+      ar& num;
     }
 
     int num;
@@ -64,13 +64,11 @@ class LazyArrayTest : public ::testing::Test {
       return *this;
     }
 
-    operator int() const {
-      return num;
-    }
+    operator int() const { return num; }
   };
 
  protected:
-  template<typename T>
+  template <typename T>
   void populateIntArray(T& lazyArray) {
     // Set each even slot to its number
     for (int i = 0; i < SIZE; ++i)
@@ -78,7 +76,7 @@ class LazyArrayTest : public ::testing::Test {
         lazyArray[i] = i;
   }
 
-  template<typename T>
+  template <typename T>
   void checkArray(LazyArray<T>& in) {
     // iterating across everything; every other cell should report
     // being unallocated
@@ -134,7 +132,7 @@ TEST_F(LazyArrayTest, AllozatedLazyArrayIterator) {
   EXPECT_TRUE(ait != aend)
       << "Allocated Lazy iterator is invalid on an array with items in it";
 
-  for (int i = 0; ait != aend && i < SIZE; ++ait, i+=2) {
+  for (int i = 0; ait != aend && i < SIZE; ++ait, i += 2) {
     EXPECT_EQ(0, ait.pos() % 2) << "Stopped on invalid item!";
     EXPECT_EQ(i, *ait) << "Correct value";
   }
@@ -169,10 +167,12 @@ TEST_F(LazyArrayTest, Serialization) {
 
   LazyArray<IntWrapper> lazyArray(SIZE);
   EXPECT_EQ(SIZE, lazyArray.size()) << "Lazy Array didn't remember its size";
-  populateIntArray(lazyArray); {
+  populateIntArray(lazyArray);
+  {
     boost::archive::text_oarchive oa(ss);
     oa << const_cast<const LazyArray<IntWrapper>&>(lazyArray);
-  } {
+  }
+  {
     // Thaw the data that was saved into a different LazyArray and
     // make sure that it's the same data.
     LazyArray<IntWrapper> newArray(SIZE);

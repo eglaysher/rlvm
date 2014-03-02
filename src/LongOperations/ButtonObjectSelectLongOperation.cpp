@@ -50,8 +50,8 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
       graphics.foregroundObjects().allocated_end();
   for (; it != end; ++it) {
     if (it->isButton() && it->buttonGroup() == group_) {
-      buttons_.push_back(std::make_pair(&*it,
-                                        static_cast<GraphicsObject*>(NULL)));
+      buttons_.push_back(
+          std::make_pair(&*it, static_cast<GraphicsObject*>(NULL)));
     } else if (it->hasObjectData()) {
       ParentGraphicsObjectData* parent =
           dynamic_cast<ParentGraphicsObjectData*>(&it->objectData());
@@ -112,7 +112,8 @@ void ButtonObjectSelectLongOperation::mouseMotion(const Point& point) {
 }
 
 bool ButtonObjectSelectLongOperation::mouseButtonStateChanged(
-    MouseButton mouseButton, bool pressed) {
+    MouseButton mouseButton,
+    bool pressed) {
   if (mouseButton == MOUSE_LEFT) {
     if (pressed) {
       currently_pressed_button_ = currently_hovering_button_;
@@ -149,9 +150,8 @@ bool ButtonObjectSelectLongOperation::operator()(RLMachine& machine) {
   }
 }
 
-void ButtonObjectSelectLongOperation::setButtonOverride(
-    GraphicsObject* object,
-    const char* type) {
+void ButtonObjectSelectLongOperation::setButtonOverride(GraphicsObject* object,
+                                                        const char* type) {
   int action = object->buttonAction();
 
   GameexeInterpretObject key = gameexe_("BTNOBJ.ACTION", action, type);

@@ -71,8 +71,7 @@ class TextWindowTest : public ::testing::Test {
   TextWindowTest()
       : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
         system(),
-        rlmachine(system, arc) {
-  }
+        rlmachine(system, arc) {}
 
   void kanonLikeTextbox() {
     const std::string gameexe_data =
@@ -106,8 +105,8 @@ class TextWindowTest : public ::testing::Test {
     // Inject an image for the textbox.
     system.graphics().injectSurface(
         "name_image",
-        boost::shared_ptr<Surface>(MockSurface::Create("name_image",
-                                                       Size(640, 122))));
+        boost::shared_ptr<Surface>(
+            MockSurface::Create("name_image", Size(640, 122))));
   }
 
   void setGameexeData(const std::string& data) {
@@ -115,7 +114,8 @@ class TextWindowTest : public ::testing::Test {
     boost::split(lines, data, is_any_of("\n"));
 
     for (std::vector<std::string>::const_iterator it = lines.begin();
-         it != lines.end(); ++it) {
+         it != lines.end();
+         ++it) {
       system.gameexe().parseLine(*it);
     }
   }
@@ -170,8 +170,8 @@ TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
   // Inject an image for the textbox.
   system.graphics().injectSurface(
       "background",
-      boost::shared_ptr<Surface>(MockSurface::Create("background",
-                                                     Size(800, 300))));
+      boost::shared_ptr<Surface>(
+          MockSurface::Create("background", Size(800, 300))));
 
   TestTextWindow window(system, 2);
 
@@ -195,8 +195,8 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
-                      str, "");
+  printTextToFunction(
+      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
@@ -223,8 +223,8 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
-                      str, "");
+  printTextToFunction(
+      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
@@ -253,8 +253,8 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   str += kPeriod;
   str += kCloseQuote;
 
-  printTextToFunction(bind(&TextWindow::character, std::ref(window), _1, _2),
-                      str, "");
+  printTextToFunction(
+      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"

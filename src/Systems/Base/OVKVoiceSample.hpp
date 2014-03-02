@@ -44,11 +44,14 @@ class OVKVoiceSample : public VoiceSample {
   virtual char* decode(int* size);
 
  private:
-  static size_t ogg_readfunc(void* ptr, size_t size, size_t nmemb,
+  static size_t ogg_readfunc(void* ptr,
+                             size_t size,
+                             size_t nmemb,
                              OVKVoiceSample* datasource);
-  static int ogg_seekfunc(OVKVoiceSample* datasource, ogg_int64_t new_offset,
+  static int ogg_seekfunc(OVKVoiceSample* datasource,
+                          ogg_int64_t new_offset,
                           int whence);
-  static long ogg_tellfunc(OVKVoiceSample* datasource); // NOLINT
+  static long ogg_tellfunc(OVKVoiceSample* datasource);  // NOLINT
 
   FILE* stream_;
   int offset_;

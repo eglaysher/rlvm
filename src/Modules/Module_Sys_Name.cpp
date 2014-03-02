@@ -39,27 +39,29 @@
 
 namespace {
 
-struct GetName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
-  void operator()(RLMachine& machine, int index,
+struct GetName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
+  void operator()(RLMachine& machine,
+                  int index,
                   StringReferenceIterator strIt) {
     *strIt = machine.memory().getName(index);
   }
 };
 
-struct SetName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
+struct SetName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().setName(index, name);
   }
 };
 
-struct GetLocalName : public RLOp_Void_2< IntConstant_T, StrReference_T > {
-  void operator()(RLMachine& machine, int index,
+struct GetLocalName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
+  void operator()(RLMachine& machine,
+                  int index,
                   StringReferenceIterator strIt) {
     *strIt = machine.memory().getLocalName(index);
   }
 };
 
-struct SetLocalName : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
+struct SetLocalName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().setLocalName(index, name);
   }

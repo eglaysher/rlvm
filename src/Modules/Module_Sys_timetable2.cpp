@@ -67,8 +67,11 @@ int TimeTableMapper::GetTypeForTag(
 
 // -----------------------------------------------------------------------
 
-int Sys_timetable2::operator()(RLMachine& machine, int now_time, int rep_time,
-                               int start_time, int start_num,
+int Sys_timetable2::operator()(RLMachine& machine,
+                               int now_time,
+                               int rep_time,
+                               int start_time,
+                               int start_num,
                                TimeTable2List::type index_list) {
   now_time = now_time + rep_time;
 
@@ -78,15 +81,15 @@ int Sys_timetable2::operator()(RLMachine& machine, int now_time, int rep_time,
   int value = start_num;
 
   for (TimeTable2List::type::iterator it = index_list.begin();
-       it != index_list.end(); ++it) {
+       it != index_list.end();
+       ++it) {
     switch (it->type) {
       case 0: {
         int end_time = get<0>(it->first);
         int end_num = get<1>(it->first);
         if (now_time > start_time && now_time <= end_time) {
           int to_add = end_num - value;
-          return value + Interpolate(start_time, now_time, end_time,
-                                     to_add, 0);
+          return value + Interpolate(start_time, now_time, end_time, to_add, 0);
         } else {
           value = end_num;
         }
@@ -101,8 +104,8 @@ int Sys_timetable2::operator()(RLMachine& machine, int now_time, int rep_time,
 
         if (now_time > start_time && now_time <= end_time) {
           int to_add = end_num - value;
-          return value + Interpolate(start_time, now_time, end_time,
-                                     to_add, mod);
+          return value +
+                 Interpolate(start_time, now_time, end_time, to_add, mod);
         } else {
           value = end_num;
         }
@@ -161,8 +164,12 @@ int Sys_timetable2::operator()(RLMachine& machine, int now_time, int rep_time,
   return value;
 }
 
-int Sys_timetable2::Jump(int start_time, int now_time, int end_time,
-                         int start_num, int end_num, int count) {
+int Sys_timetable2::Jump(int start_time,
+                         int now_time,
+                         int end_time,
+                         int start_num,
+                         int end_num,
+                         int count) {
   int duration = end_time - start_time;
   int one_cycle = duration / count;
 
@@ -171,14 +178,17 @@ int Sys_timetable2::Jump(int start_time, int now_time, int end_time,
 
   double percent = static_cast<double>(current_cycle) / one_cycle;
   return start_num +
-      ((end_num - start_num) * (1 - std::pow(percent * 2 - 1, 2)));
+         ((end_num - start_num) * (1 - std::pow(percent * 2 - 1, 2)));
 }
 
 // -----------------------------------------------------------------------
 
 struct Sys_timetablelen2 : public Sys_timetable2 {
-  virtual int operator()(RLMachine& machine, int now_time, int rep_time,
-                         int start_time, int start_num,
+  virtual int operator()(RLMachine& machine,
+                         int now_time,
+                         int rep_time,
+                         int start_time,
+                         int start_num,
                          TimeTable2List::type index_list) {
     // Modify each part of the index list to keep a running sum of times. This
     // changes a list of durations into a list of absolute times.
@@ -187,7 +197,8 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
     // TODO: How are we supposed to handle |start_time|?
 
     for (TimeTable2List::type::iterator it = index_list.begin();
-         it != index_list.end(); ++it) {
+         it != index_list.end();
+         ++it) {
       switch (it->type) {
         case 0: {
           total += get<0>(it->first);
@@ -226,8 +237,8 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
       }
     }
 
-    return Sys_timetable2::operator()(machine, now_time, rep_time,
-                                      start_time, start_num, index_list);
+    return Sys_timetable2::operator()(
+        machine, now_time, rep_time, start_time, start_num, index_list);
   }
 };
 

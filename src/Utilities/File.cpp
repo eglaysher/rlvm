@@ -64,7 +64,8 @@ fs::path correctPathCase(fs::path Path) {
   return Path;
 #else
   // If the path is OK as it stands, do nothing.
-  if (exists(Path)) return Path;
+  if (exists(Path))
+    return Path;
   // If the path doesn't seem to be OK, track backwards through it
   // looking for the point at which the problem first arises.  Path
   // will contain the parts of the path that exist on the current
@@ -87,7 +88,7 @@ fs::path correctPathCase(fs::path Path) {
     string elt(pathElts.top());
     pathElts.pop();
     // Does this element exist?
-    if (exists(Path/elt) && (!needDir || is_directory(Path/elt))) {
+    if (exists(Path / elt) && (!needDir || is_directory(Path / elt))) {
       // If so, use it.
       Path /= elt;
     } else {
@@ -104,7 +105,8 @@ fs::path correctPathCase(fs::path Path) {
           break;
         }
       }
-      if (!found) return "";
+      if (!found)
+        return "";
     }
   }
   return Path.string();
@@ -132,4 +134,3 @@ bool loadFileData(const boost::filesystem::path& path,
 
   return !ifs.good();
 }
-

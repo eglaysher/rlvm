@@ -67,20 +67,18 @@ namespace fs = boost::filesystem;
 
 // Constants
 static const int ANM_MAGIC_SIZE = 12;
-static const char ANM_MAGIC[ANM_MAGIC_SIZE] = {
-  'A', 'N', 'M', '3', '2', 0, 0, 0, 0, 1, 0, 0
-};
+static const char ANM_MAGIC[ANM_MAGIC_SIZE] = {'A', 'N', 'M', '3', '2', 0,
+                                               0,   0,   0,   1,   0,   0};
 
 // -----------------------------------------------------------------------
 // AnmGraphicsObjectData
 // -----------------------------------------------------------------------
 
 AnmGraphicsObjectData::AnmGraphicsObjectData(System& system)
-    : system_(system), current_set_(-1)
-{}
+    : system_(system), current_set_(-1) {}
 
-AnmGraphicsObjectData::AnmGraphicsObjectData(
-    System& system, const std::string& file)
+AnmGraphicsObjectData::AnmGraphicsObjectData(System& system,
+                                             const std::string& file)
     : system_(system), filename_(file), current_set_(-1) {
   loadAnmFile();
 }
@@ -140,27 +138,31 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
   for (int i = 0; i < frames_len; ++i) {
     Frame f;
     f.src_x1 = read_i32(buf);
-    f.src_y1 = read_i32(buf+4);
-    f.src_x2 = read_i32(buf+8);
-    f.src_y2 = read_i32(buf+12);
-    f.dest_x = read_i32(buf+16);
-    f.dest_y = read_i32(buf+20);
-    f.time = read_i32(buf+0x38);
+    f.src_y1 = read_i32(buf + 4);
+    f.src_x2 = read_i32(buf + 8);
+    f.src_y2 = read_i32(buf + 12);
+    f.dest_x = read_i32(buf + 16);
+    f.dest_y = read_i32(buf + 20);
+    f.time = read_i32(buf + 0x38);
     fixAxis(f, screen_size.width(), screen_size.height());
     frames.push_back(f);
 
     buf += 0x60;
   }
 
-  readIntegerList(data + 0xb8 + frames_len*0x60, 0x68, framelist_len,
-                  framelist);
-  readIntegerList(data + 0xb8 + frames_len*0x60 + framelist_len*0x68,
-                  0x78, animation_set_len, animation_set);
+  readIntegerList(
+      data + 0xb8 + frames_len * 0x60, 0x68, framelist_len, framelist);
+  readIntegerList(data + 0xb8 + frames_len * 0x60 + framelist_len * 0x68,
+                  0x78,
+                  animation_set_len,
+                  animation_set);
 }
 
 void AnmGraphicsObjectData::readIntegerList(
-  const char* start, int offset, int iterations,
-  std::vector< std::vector<int> >& dest) {
+    const char* start,
+    int offset,
+    int iterations,
+    std::vector<std::vector<int>>& dest) {
   for (int i = 0; i < iterations; ++i) {
     int list_length = read_i32(start + 4);
     const char* tmpbuf = start + 8;
@@ -204,7 +206,7 @@ void AnmGraphicsObjectData::execute(RLMachine& machine) {
 void AnmGraphicsObjectData::advanceFrame() {
   // Do things that advance the state
   int time_since_last_frame_change =
-    system_.event().getTicks() - time_at_last_frame_change_;
+      system_.event().getTicks() - time_at_last_frame_change_;
   bool done = false;
 
   while (currentlyPlaying() && !done) {
@@ -264,7 +266,7 @@ void AnmGraphicsObjectData::playSet(int set) {
 }
 
 boost::shared_ptr<const Surface> AnmGraphicsObjectData::currentSurface(
-  const GraphicsObject& rp) {
+    const GraphicsObject& rp) {
   return image_;
 }
 
@@ -282,7 +284,9 @@ Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go,
   if (current_frame_ != -1) {
     // TODO(erg): Should this account for either |go| or |parent|?
     const Frame& frame = frames.at(current_frame_);
-    return Rect::REC(frame.dest_x, frame.dest_y, (frame.src_x2 - frame.src_x1),
+    return Rect::REC(frame.dest_x,
+                     frame.dest_y,
+                     (frame.src_x2 - frame.src_x1),
                      (frame.src_y2 - frame.src_y1));
   }
 
@@ -293,21 +297,21 @@ void AnmGraphicsObjectData::objectInfo(std::ostream& tree) {
   tree << "  ANM file: " << filename_ << std::endl;
 }
 
-template<class Archive>
+template <class Archive>
 void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
 
-  ar & filename_;
+  ar& filename_;
 
   // Reconstruct the ANM data from whatever file was linked.
   loadAnmFile();
 
   // Now load the rest of the data.
-  ar & currently_playing_ & current_set_;
+  ar& currently_playing_& current_set_;
 
   // Reconstruct the cur_* variables from their
   int cur_frame_set, current_frame;
-  ar & cur_frame_set & current_frame;
+  ar& cur_frame_set& current_frame;
 
   cur_frame_set_ = animation_set.at(current_set_).begin();
   advance(cur_frame_set_, cur_frame_set);
@@ -318,26 +322,28 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
   cur_frame_end_ = framelist.at(*cur_frame_set_).end();
 }
 
-template<class Archive>
+template <class Archive>
 void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
-  ar & filename_ & currently_playing_ & current_set_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& filename_& currently_playing_& current_set_;
 
   // Figure out what set we're playing, which
-  int cur_frame_set = distance(animation_set.at(current_set_).begin(),
-                             cur_frame_set_);
-  int current_frame = distance(framelist.at(*cur_frame_set_).begin(),
-                              cur_frame_);
+  int cur_frame_set =
+      distance(animation_set.at(current_set_).begin(), cur_frame_set_);
+  int current_frame =
+      distance(framelist.at(*cur_frame_set_).begin(), cur_frame_);
 
-  ar & cur_frame_set & current_frame;
+  ar& cur_frame_set& current_frame;
 }
 
 // -----------------------------------------------------------------------
 
 template void AnmGraphicsObjectData::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void AnmGraphicsObjectData::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);
 
 BOOST_CLASS_EXPORT(AnmGraphicsObjectData);

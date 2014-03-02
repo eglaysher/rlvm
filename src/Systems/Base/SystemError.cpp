@@ -33,15 +33,11 @@
 // SystemError
 // -----------------------------------------------------------------------
 
-const char* SystemError::what() const throw() {
-  return description.c_str();
-}
+const char* SystemError::what() const throw() { return description.c_str(); }
 
 // -----------------------------------------------------------------------
 
-SystemError::SystemError(std::string what)
-    : description(what) {
-}
+SystemError::SystemError(std::string what) : description(what) {}
 
 // -----------------------------------------------------------------------
 

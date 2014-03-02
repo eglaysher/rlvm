@@ -53,7 +53,8 @@ class GraphicsObject;
 class GanGraphicsObjectData : public GraphicsObjectData {
  public:
   explicit GanGraphicsObjectData(System& system);
-  GanGraphicsObjectData(System& system, const std::string& ganfile,
+  GanGraphicsObjectData(System& system,
+                        const std::string& ganfile,
                         const std::string& imgfile);
   ~GanGraphicsObjectData();
 
@@ -90,13 +91,14 @@ class GanGraphicsObjectData : public GraphicsObjectData {
     int other;  // No idea what this is.
   };
 
-  typedef std::vector< std::vector<Frame> > AnimationSets;
+  typedef std::vector<std::vector<Frame>> AnimationSets;
 
   void testFileMagic(const std::string& file_name,
-                     boost::scoped_array<char>& gan_data, int file_size);
-  void readData(
-    const std::string& file_name,
-    boost::scoped_array<char>& gan_data, int file_size);
+                     boost::scoped_array<char>& gan_data,
+                     int file_size);
+  void readData(const std::string& file_name,
+                boost::scoped_array<char>& gan_data,
+                int file_size);
   Frame readSetFrame(const std::string& filename, const char*& data);
 
   // Throws an error on bad GAN files.
@@ -119,11 +121,11 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   friend class boost::serialization::access;
 
   // boost::serialization forward declaration
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
   // boost::serialization forward declaration
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -131,13 +133,15 @@ class GanGraphicsObjectData : public GraphicsObjectData {
 
 // We need help creating GanGraphicsObjectData s since they don't have a
 // default constructor:
-namespace boost { namespace serialization {
-template<class Archive>
-inline void load_construct_data(
-  Archive & ar, GanGraphicsObjectData* t, const unsigned int file_version) {
-  ::new(t)GanGraphicsObjectData(Serialization::g_current_machine->system());
+namespace boost {
+namespace serialization {
+template <class Archive>
+inline void load_construct_data(Archive& ar,
+                                GanGraphicsObjectData* t,
+                                const unsigned int file_version) {
+  ::new (t) GanGraphicsObjectData(Serialization::g_current_machine->system());
 }
-}}  // namespace boost::serialization
-
+}
+}  // namespace boost::serialization
 
 #endif  // SRC_SYSTEMS_BASE_GANGRAPHICSOBJECTDATA_HPP_

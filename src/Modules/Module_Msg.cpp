@@ -60,33 +60,32 @@ struct Msg_pause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int windowNum = text.activeWindow();
-    boost::shared_ptr<TextWindow> textWindow =
-      text.textWindow(windowNum);
+    boost::shared_ptr<TextWindow> textWindow = text.textWindow(windowNum);
 
     if (textWindow->actionOnPause()) {
       machine.pushLongOperation(
-        new NewParagraphAfterLongop(new PauseLongOperation(machine)));
+          new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     } else {
       machine.pushLongOperation(
-        new NewPageAfterLongop(new PauseLongOperation(machine)));
+          new NewPageAfterLongop(new PauseLongOperation(machine)));
     }
   }
 };
 
-struct Msg_TextWindow : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+struct Msg_TextWindow : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int window) {
     machine.system().text().setActiveWindow(window);
   }
 };
 
-struct FontColour : public RLOp_Void_2< DefaultIntValue_T< 0 >,
-                                        DefaultIntValue_T< 0 > > {
+struct FontColour
+    : public RLOp_Void_2<DefaultIntValue_T<0>, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum, int shadowColorNum) {
     machine.system().text().currentPage().fontColour(textColorNum);
   }
 };
 
-struct SetFontColour : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
     if (gexe("COLOR_TABLE", textColorNum).exists()) {
@@ -96,14 +95,14 @@ struct SetFontColour : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   }
 };
 
-struct doruby_display : public RLOp_Void_1< StrConstant_T > {
+struct doruby_display : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string cpStr) {
     std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
     machine.system().text().currentPage().displayRubyText(utf8str);
   }
 };
 
-struct msgHide : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+struct msgHide : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int unknown) {
     TextSystem& text = machine.system().text();
     int winNum = text.activeWindow();
@@ -141,7 +140,8 @@ struct msgClearAll : public RLOp_Void_Void {
 
     text.snapshot();
     for (vector<int>::const_iterator it = activeWindows.begin();
-        it != activeWindows.end(); ++it) {
+         it != activeWindows.end();
+         ++it) {
       text.textWindow(activeWindow)->clearWin();
       text.newPageOnWindow(*it);
     }
@@ -157,7 +157,7 @@ struct spause : public RLOp_Void_Void {
 struct page : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     machine.pushLongOperation(
-      new NewPageAfterLongop(new PauseLongOperation(machine)));
+        new NewPageAfterLongop(new PauseLongOperation(machine)));
   }
 };
 
@@ -170,7 +170,8 @@ struct TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 };
 
 struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator x,
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator x,
                   IntReferenceIterator y) {
     boost::shared_ptr<TextWindow> textWindow =
         machine.system().text().currentWindow();
@@ -190,14 +191,14 @@ struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0> > {
+struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, string file, int index) {
     TextPage& page = machine.system().text().currentPage();
     page.faceOpen(file, index);
   }
 };
 
-struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0> > {
+struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int index) {
     TextPage& page = machine.system().text().currentPage();
     page.faceClose(index);
@@ -206,10 +207,9 @@ struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0> > {
 
 }  // namespace
 
-MsgModule::MsgModule()
-  : RLModule("Msg", 0, 003) {
+MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   addOpcode(3, 0, "par", new par);
-//  addOpcode(15, 0, /* spause3 */ );
+  //  addOpcode(15, 0, /* spause3 */ );
   addOpcode(17, 0, "pause", new Msg_pause);
 
   addUnsupportedOpcode(100, 0, "SetFontColour");
@@ -221,10 +221,10 @@ MsgModule::MsgModule()
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addOpcode(103, 0, "FastText",
-            callFunctionWith(&TextSystem::setFastTextMode, 1));
-  addOpcode(104, 0, "NormalText",
-            callFunctionWith(&TextSystem::setFastTextMode, 0));
+  addOpcode(
+      103, 0, "FastText", callFunctionWith(&TextSystem::setFastTextMode, 1));
+  addOpcode(
+      104, 0, "NormalText", callFunctionWith(&TextSystem::setFastTextMode, 0));
 
   addOpcode(105, 0, "FontColor", new FontColour);
   addOpcode(105, 1, "FontColor", new FontColour);
@@ -236,13 +236,16 @@ MsgModule::MsgModule()
 
   addUnsupportedOpcode(107, 0, "FontSizeAll");
 
-  addOpcode(109, 0, "messageNoWaitOn",
+  addOpcode(109,
+            0,
+            "messageNoWaitOn",
             callFunctionWith(&TextSystem::setScriptMessageNowait, 1));
-  addOpcode(110, 0, "messageNoWaitOff",
+  addOpcode(110,
+            0,
+            "messageNoWaitOff",
             callFunctionWith(&TextSystem::setScriptMessageNowait, 0));
 
-  addOpcode(111, 0, "activeWindow",
-            returnIntValue(&TextSystem::activeWindow));
+  addOpcode(111, 0, "activeWindow", returnIntValue(&TextSystem::activeWindow));
 
   addOpcode(120, 0, "__doruby_on", new doruby_display);
   addOpcode(120, 1, "__doruby_off", callFunction(&TextPage::markRubyBegin));
@@ -266,10 +269,10 @@ MsgModule::MsgModule()
   addOpcode(311, 0, "TextPosX", callFunction(&TextPage::setInsertionPointX));
   addOpcode(312, 0, "TextPosY", callFunction(&TextPage::setInsertionPointY));
   addOpcode(320, 0, "TextOffset", new TextOffset);
-  addOpcode(321, 0, "TextOffsetX",
-            callFunction(&TextPage::offsetInsertionPointX));
-  addOpcode(322, 0, "TextOffsetY",
-            callFunction(&TextPage::offsetInsertionPointY));
+  addOpcode(
+      321, 0, "TextOffsetX", callFunction(&TextPage::offsetInsertionPointX));
+  addOpcode(
+      322, 0, "TextOffsetY", callFunction(&TextPage::offsetInsertionPointY));
   addOpcode(330, 0, "GetTextPos", new GetTextPos);
 
   addUnsupportedOpcode(340, 0, "WindowLen");

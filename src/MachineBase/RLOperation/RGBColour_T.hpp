@@ -53,9 +53,7 @@ struct RGBColour_T {
     IntConstant_T::parseParameters(position, input, output);
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // RGB colour triplet with option alpha.
@@ -94,9 +92,7 @@ struct RGBMaybeAColour_T {
     }
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_RGBCOLOUR_T_HPP_

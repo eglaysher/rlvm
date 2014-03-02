@@ -71,7 +71,7 @@ class SaveGameListModel : public gcn::ListModel {
   bool getSaveExistsAt(int i);
 
  private:
-  std::vector<std::pair<std::string, bool> > titles_;
+  std::vector<std::pair<std::string, bool>> titles_;
 };
 
 // -----------------------------------------------------------------------
@@ -117,14 +117,11 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
 
 // -----------------------------------------------------------------------
 
-SaveGameListModel::~SaveGameListModel() {
-}
+SaveGameListModel::~SaveGameListModel() {}
 
 // -----------------------------------------------------------------------
 
-int SaveGameListModel::getNumberOfElements() {
-  return titles_.size();
-}
+int SaveGameListModel::getNumberOfElements() { return titles_.size(); }
 
 // -----------------------------------------------------------------------
 
@@ -148,22 +145,23 @@ bool SaveGameListModel::getSaveExistsAt(int i) {
 // -----------------------------------------------------------------------
 // GCNSaveLoadWindow
 // -----------------------------------------------------------------------
-GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
+GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine,
+                                     WindowType type,
                                      GCNPlatform* platform)
-  : GCNWindow(platform),
-    model_(new SaveGameListModel("NO DATA", machine)),
-    type_(type) {
+    : GCNWindow(platform),
+      model_(new SaveGameListModel("NO DATA", machine)),
+      type_(type) {
   setSize(540, 400);
 
   // Either the save/load button
   action_button_ = new GCNButton();
   if (type == DO_SAVE) {
     action_button_->setCaption(
-      platform->syscomString("DLGSAVEMESSAGE_OK_BUTTON_STR"));
+        platform->syscomString("DLGSAVEMESSAGE_OK_BUTTON_STR"));
     action_button_->setActionEventId(EVENT_SAVE);
   } else {
     action_button_->setCaption(
-      platform->syscomString("DLGLOADMESSAGE_OK_BUTTON_STR"));
+        platform->syscomString("DLGLOADMESSAGE_OK_BUTTON_STR"));
     action_button_->setActionEventId(EVENT_LOAD);
   }
   action_button_->addActionListener(this);
@@ -178,14 +176,14 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
   button->setEnabled(true);
 
   int max_size = std::max(action_button_->getWidth(), button->getWidth());
-  action_button_->setWidth(max_size + (2*PADDING));
+  action_button_->setWidth(max_size + (2 * PADDING));
   button->setWidth(max_size);
 
   int button_left = getWidth() - PADDING - action_button_->getWidth();
   int button_top = getHeight() - PADDING - action_button_->getHeight();
   Container::add(action_button_, button_left, button_top);
-  Container::add(button, button_left - PADDING - button->getWidth(),
-                 button_top);
+  Container::add(
+      button, button_left - PADDING - button->getWidth(), button_top);
   widgets_to_delete_.push_back(action_button_);
   widgets_to_delete_.push_back(button);
 
@@ -198,7 +196,7 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
 
   gcn::ScrollArea* area = new GCNScrollArea(listbox_);
   area->setHorizontalScrollPolicy(gcn::ScrollArea::SHOW_NEVER);
-  area->setSize(getWidth() - (2*PADDING), button_top - (2*PADDING));
+  area->setSize(getWidth() - (2 * PADDING), button_top - (2 * PADDING));
 
   Container::add(area, PADDING, PADDING);
   widgets_to_delete_.push_back(area);
@@ -207,7 +205,8 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine, WindowType type,
 // -----------------------------------------------------------------------
 
 GCNSaveLoadWindow::~GCNSaveLoadWindow() {
-  for_each(widgets_to_delete_.begin(), widgets_to_delete_.end(),
+  for_each(widgets_to_delete_.begin(),
+           widgets_to_delete_.end(),
            boost::checked_deleter<gcn::Widget>());
 }
 

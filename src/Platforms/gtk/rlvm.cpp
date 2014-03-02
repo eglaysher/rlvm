@@ -46,33 +46,26 @@ namespace fs = boost::filesystem;
 
 void printVersionInformation() {
   cout
-    << "rlvm (" << rlvm_version() <<  ")" << endl
-    << "Copyright (C) 2006-2011 Elliot Glaysher, et all." << endl
-    << endl
-    << "Contains code that is: " << endl
-    << "  Copyright (C) 2006-2007 Peter \"Haeleth\" Jolly" << endl
-    << "  Copyright (C) 2004-2006 Kazunori \"jagarl\" Ueno" << endl
-    << endl
-    << "This program is free software: you can redistribute it and/or modify"
-    << endl
-    << "it under the terms of the GNU General Public License as published by"
-    << endl
-    << "the Free Software Foundation, either version 3 of the License, or"
-    << endl
-    << "(at your option) any later version."
-    << endl << endl
-    << "This program is distributed in the hope that it will be useful,"
-    << endl
-    << "but WITHOUT ANY WARRANTY; without even the implied warranty of"
-    << endl
-    << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
-    << endl
-    << "GNU General Public License for more details."
-    << endl << endl
-    << "You should have received a copy of the GNU General Public License"
-    << endl
-    << "along with this program.  If not, see <http://www.gnu.org/licenses/>."
-    << endl << endl;
+      << "rlvm (" << rlvm_version() << ")" << endl
+      << "Copyright (C) 2006-2011 Elliot Glaysher, et all." << endl << endl
+      << "Contains code that is: " << endl
+      << "  Copyright (C) 2006-2007 Peter \"Haeleth\" Jolly" << endl
+      << "  Copyright (C) 2004-2006 Kazunori \"jagarl\" Ueno" << endl << endl
+      << "This program is free software: you can redistribute it and/or modify"
+      << endl
+      << "it under the terms of the GNU General Public License as published by"
+      << endl
+      << "the Free Software Foundation, either version 3 of the License, or"
+      << endl << "(at your option) any later version." << endl << endl
+      << "This program is distributed in the hope that it will be useful,"
+      << endl
+      << "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+      << endl << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+      << endl << "GNU General Public License for more details." << endl << endl
+      << "You should have received a copy of the GNU General Public License"
+      << endl
+      << "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+      << endl << endl;
 }
 
 void printUsage(const string& name, po::options_description& opts) {
@@ -88,27 +81,26 @@ int main(int argc, char* argv[]) {
 
   // Declare the supported options.
   po::options_description opts("Options");
-  opts.add_options()
-      ("help", "Produce help message")
-      ("help-debug", "Print help message for people working on rlvm")
-      ("version", "Display version and license information")
-      ("font", po::value<string>(), "Specifies TrueType font to use.");
+  opts.add_options()("help", "Produce help message")(
+      "help-debug", "Print help message for people working on rlvm")(
+      "version", "Display version and license information")(
+      "font", po::value<string>(), "Specifies TrueType font to use.");
 
   po::options_description debugOpts("Debugging Options");
-  debugOpts.add_options()
-      ("start-seen", po::value<int>(), "Force start at SEEN#")
-      ("dump-seen", po::value<int>(), "Dumps rlvm's internal parsing of SEEN#")
-      ("load-save", po::value<int>(), "Load a saved game on start")
-      ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
-      ("undefined-opcodes", "Display a message on undefined opcodes")
-      ("count-undefined",
-       "On exit, present a summary table about how many times each undefined "
-       "opcode was called");
+  debugOpts.add_options()(
+      "start-seen", po::value<int>(), "Force start at SEEN#")(
+      "dump-seen", po::value<int>(), "Dumps rlvm's internal parsing of SEEN#")(
+      "load-save", po::value<int>(), "Load a saved game on start")(
+      "memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")(
+      "undefined-opcodes", "Display a message on undefined opcodes")(
+      "count-undefined",
+      "On exit, present a summary table about how many times each undefined "
+      "opcode was called");
 
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
-  hidden.add_options()
-      ("game-root", po::value<string>(), "Location of game root");
+  hidden.add_options()(
+      "game-root", po::value<string>(), "Location of game root");
 
   po::positional_options_description p;
   p.add("game-root", -1);
@@ -119,18 +111,22 @@ int main(int argc, char* argv[]) {
 
   po::variables_map vm;
   try {
-    po::store(po::basic_command_line_parser<char>(argc, argv).
-              options(commandLineOpts).positional(p).run(),
+    po::store(po::basic_command_line_parser<char>(argc, argv)
+                  .options(commandLineOpts)
+                  .positional(p)
+                  .run(),
               vm);
     po::notify(vm);
-  } catch (boost::program_options::multiple_occurrences& e) {
+  }
+  catch (boost::program_options::multiple_occurrences& e) {
     cerr << "Couldn't parse command line: multiple_occurances." << endl
          << " (Hint: this can happen when your shell doesn't escape properly,"
          << endl
          << "  e.g. \"/path/to/Clannad Full Voice/\" without the quotes.)"
          << endl;
     return -1;
-  } catch (boost::program_options::error& e) {
+  }
+  catch (boost::program_options::error& e) {
     cerr << "Couldn't parse command line: " << e.what() << endl;
     return -1;
   }
@@ -176,11 +172,11 @@ int main(int argc, char* argv[]) {
     // Some games hide data in a lower subdirectory.  A little hack to
     // make these behave as expected...
     if (correctPathCase(gamerootPath / "Gameexe.ini").empty()) {
-      if (!correctPathCase(gamerootPath / "KINETICDATA" /
-                           "Gameexe.ini").empty()) {
+      if (!correctPathCase(gamerootPath / "KINETICDATA" / "Gameexe.ini")
+               .empty()) {
         gamerootPath /= "KINETICDATA/";
-      } else if (!correctPathCase(gamerootPath / "REALLIVEDATA" /
-                                  "Gameexe.ini").empty()) {
+      } else if (!correctPathCase(gamerootPath / "REALLIVEDATA" / "Gameexe.ini")
+                      .empty()) {
         gamerootPath /= "REALLIVEDATA/";
       } else {
         cerr << "WARNING: Path '" << gamerootPath << "' may not contain a "

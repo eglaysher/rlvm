@@ -24,7 +24,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_SYSTEMS_BASE_RLVMINFO_HPP_
 #define SRC_SYSTEMS_BASE_RLVMINFO_HPP_
 

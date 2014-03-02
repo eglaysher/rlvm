@@ -95,8 +95,9 @@ void addShiftJISChar(uint16_t c, std::string& output);
 
 // Feeds each two consecutive pair of characters to |fun|.
 void printTextToFunction(
-  std::function<bool(const std::string& c, const std::string& nextChar)> fun,
-  const std::string& charsToPrint, const std::string& nextCharForFinal);
+    std::function<bool(const std::string& c, const std::string& nextChar)> fun,
+    const std::string& charsToPrint,
+    const std::string& nextCharForFinal);
 
 // Removes quotes from the beginning and end of the string.
 std::string removeQuotes(const std::string& quotedString);

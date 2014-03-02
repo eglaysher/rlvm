@@ -25,7 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_SYSTEMS_BASE_GRAPHICSSTACKFRAME_HPP_
 #define SRC_SYSTEMS_BASE_GRAPHICSSTACKFRAME_HPP_
 
@@ -114,14 +113,12 @@ class GraphicsStackFrame {
   friend class boost::serialization::access;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & command_name_ & has_filename_ & file_name_ & has_source_dc_
-      & source_dc_ & has_source_coordinates_ & source_rect_
-      & has_target_dc_ & target_dc_
-      & has_target_coordinates_ & target_point_
-      & has_rgb_ & r_ & g_ & b_ & has_opacity_
-      & opacity_ & has_mask_ & mask_;
+    ar& command_name_& has_filename_& file_name_& has_source_dc_& source_dc_&
+        has_source_coordinates_& source_rect_& has_target_dc_& target_dc_&
+            has_target_coordinates_& target_point_& has_rgb_& r_& g_& b_&
+                has_opacity_& opacity_& has_mask_& mask_;
   }
 };  // end of class GraphicsStackFrame
 

@@ -44,16 +44,15 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
 
   if (gexe("SEL", selNum).exists()) {
     selEffect = gexe("SEL", selNum).to_intVector();
-    grpToRecCoordinates(selEffect[0], selEffect[1],
-                        selEffect[2], selEffect[3]);
+    grpToRecCoordinates(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
   } else if (gexe("SELR", selNum).exists()) {
     selEffect = gexe("SELR", selNum).to_intVector();
   } else {
     // Can't find the specified #SEL effect. See if there's a #SEL.000 effect:
     if (gexe("SEL", 0).exists()) {
       selEffect = gexe("SEL", 0).to_intVector();
-      grpToRecCoordinates(selEffect[0], selEffect[1],
-                          selEffect[2], selEffect[3]);
+      grpToRecCoordinates(
+          selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
     } else if (gexe("SELR", 0).exists()) {
       selEffect = gexe("SELR", 0).to_intVector();
     } else {
@@ -61,15 +60,17 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
       // a SEL vector that is a screenwide, short fade because we absolutely
       // can't fail here.
       Size screen = getScreenSize(gexe);
-      selEffect = { 0, 0, screen.width(), screen.height(), 0, 0, 1000,
-                    000, 0, 0, 0, 0, 0, 0, 255, 0 };
+      selEffect = {0, 0, screen.width(), screen.height(), 0, 0, 1000, 000,
+                   0, 0, 0,              0,               0, 0, 255,  0};
     }
   }
 
   return selEffect;
 }
 
-void getSELPointAndRect(RLMachine& machine, int selNum, Rect& rect,
+void getSELPointAndRect(RLMachine& machine,
+                        int selNum,
+                        Rect& rect,
                         Point& point) {
   vector<int> selEffect = getSELEffect(machine, selNum);
   rect = Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);

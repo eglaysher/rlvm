@@ -59,18 +59,32 @@ Effect* EffectFactory::buildFromSEL(RLMachine& machine,
                                     int selNum) {
   vector<int> selParams = getSELEffect(machine, selNum);
 
-  return build(machine, src, dst,
-               selParams[6], selParams[7],
-               selParams[8], selParams[9], selParams[10], selParams[11],
-               selParams[12], selParams[13], selParams[15]);
+  return build(machine,
+               src,
+               dst,
+               selParams[6],
+               selParams[7],
+               selParams[8],
+               selParams[9],
+               selParams[10],
+               selParams[11],
+               selParams[12],
+               selParams[13],
+               selParams[15]);
 }
 
-Effect* EffectFactory::build(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    int time, int style,
-    int direction, int interpolation, int xsize, int ysize, int a, int b,
-    int c) {
+Effect* EffectFactory::build(RLMachine& machine,
+                             boost::shared_ptr<Surface> src,
+                             boost::shared_ptr<Surface> dst,
+                             int time,
+                             int style,
+                             int direction,
+                             int interpolation,
+                             int xsize,
+                             int ysize,
+                             int a,
+                             int b,
+                             int c) {
   Size screenSize = machine.system().graphics().screenSize();
 
   // Ensure that both of our images are on the graphics card so we don't
@@ -85,10 +99,10 @@ Effect* EffectFactory::build(
   // confusing and hard to implement!
   switch (style) {
     case 10:
-      return buildWipeEffect(machine, src, dst, screenSize, time,
-                             direction, interpolation);
-      // We have the bunch of similar effects that are all implemented by
-      // ScrollSquashSlideBaseEffect
+      return buildWipeEffect(
+          machine, src, dst, screenSize, time, direction, interpolation);
+    // We have the bunch of similar effects that are all implemented by
+    // ScrollSquashSlideBaseEffect
     case 15:
     case 16:
     case 17:
@@ -98,12 +112,12 @@ Effect* EffectFactory::build(
       ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
       ScrollSquashSlideEffectTypeBase* effect =
           buildScrollSquashSlideTypeBase(style);
-      return new ScrollSquashSlideBaseEffect(machine, src, dst, drawer, effect,
-                                             screenSize, time);
+      return new ScrollSquashSlideBaseEffect(
+          machine, src, dst, drawer, effect, screenSize, time);
     }
     case 120:
-      return buildBlindEffect(machine, src, dst, screenSize, time,
-                              direction, xsize, ysize);
+      return buildBlindEffect(
+          machine, src, dst, screenSize, time, direction, xsize, ysize);
     case 0:
     case 50:
     default:
@@ -123,59 +137,66 @@ enum ScreenDirection {
   RIGHT_TO_LEFT = 3   // From right to left
 };
 
-Effect* EffectFactory::buildWipeEffect(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
-    int direction, int interpolation) {
+Effect* EffectFactory::buildWipeEffect(RLMachine& machine,
+                                       boost::shared_ptr<Surface> src,
+                                       boost::shared_ptr<Surface> dst,
+                                       const Size& screenSize,
+                                       int time,
+                                       int direction,
+                                       int interpolation) {
   switch (direction) {
     case TOP_TO_BOTTOM:
-      return new WipeTopToBottomEffect(machine, src, dst, screenSize,
-                                       time, interpolation);
+      return new WipeTopToBottomEffect(
+          machine, src, dst, screenSize, time, interpolation);
     case BOTTOM_TO_TOP:
-      return new WipeBottomToTopEffect(machine, src, dst, screenSize,
-                                       time, interpolation);
+      return new WipeBottomToTopEffect(
+          machine, src, dst, screenSize, time, interpolation);
     case LEFT_TO_RIGHT:
-      return new WipeLeftToRightEffect(machine, src, dst, screenSize,
-                                       time, interpolation);
+      return new WipeLeftToRightEffect(
+          machine, src, dst, screenSize, time, interpolation);
     case RIGHT_TO_LEFT:
-      return new WipeRightToLeftEffect(machine, src, dst, screenSize,
-                                       time, interpolation);
+      return new WipeRightToLeftEffect(
+          machine, src, dst, screenSize, time, interpolation);
     default:
       cerr << "WARNING! Unsupported direction " << direction
            << " in EffectFactory::buildWipeEffect. Returning Top to"
            << " Bottom effect." << endl;
-      return new WipeTopToBottomEffect(machine, src, dst, screenSize,
-                                       time, interpolation);
+      return new WipeTopToBottomEffect(
+          machine, src, dst, screenSize, time, interpolation);
   };
 }
 
-Effect* EffectFactory::buildBlindEffect(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst, const Size& screenSize, int time,
-    int direction, int xsize, int ysize) {
+Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
+                                        boost::shared_ptr<Surface> src,
+                                        boost::shared_ptr<Surface> dst,
+                                        const Size& screenSize,
+                                        int time,
+                                        int direction,
+                                        int xsize,
+                                        int ysize) {
   // RL does something really weird: if the wrong xsize/ysize was set
   // (the correct one is zero), it uses the other.
   switch (direction) {
     case TOP_TO_BOTTOM:
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
-      return new BlindTopToBottomEffect(machine, src, dst, screenSize,
-                                        time, xsize);
+      return new BlindTopToBottomEffect(
+          machine, src, dst, screenSize, time, xsize);
     case BOTTOM_TO_TOP:
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
-      return new BlindBottomToTopEffect(machine, src, dst, screenSize,
-                                        time, xsize);
+      return new BlindBottomToTopEffect(
+          machine, src, dst, screenSize, time, xsize);
     case LEFT_TO_RIGHT:
       if (ysize == 0 && xsize > 0)
         ysize = xsize;
-      return new BlindLeftToRightEffect(machine, src, dst, screenSize,
-                                        time, ysize);
+      return new BlindLeftToRightEffect(
+          machine, src, dst, screenSize, time, ysize);
     case RIGHT_TO_LEFT:
       if (ysize == 0 && xsize > 0)
         ysize = xsize;
-      return new BlindRightToLeftEffect(machine, src, dst, screenSize,
-                                        time, ysize);
+      return new BlindRightToLeftEffect(
+          machine, src, dst, screenSize, time, ysize);
 
     default:
       cerr << "WARNING! Unsupported direction " << direction
@@ -183,8 +204,8 @@ Effect* EffectFactory::buildBlindEffect(
            << " Bottom effect." << endl;
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
-      return new BlindTopToBottomEffect(machine, src, dst, screenSize,
-                                        time, xsize);
+      return new BlindTopToBottomEffect(
+          machine, src, dst, screenSize, time, xsize);
   };
 }
 
@@ -223,7 +244,8 @@ ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
     case 21:
       return new SlideOff;
     default:
-      throw SystemError("Impossible style number in "
-                        "EffectFactory::buildScrollSquashSlideTypeBase");
+      throw SystemError(
+          "Impossible style number in "
+          "EffectFactory::buildScrollSquashSlideTypeBase");
   };
 }

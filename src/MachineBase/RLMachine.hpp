@@ -40,7 +40,7 @@
 #include <string>
 #include <vector>
 
-namespace  libReallive {
+namespace libReallive {
 class Archive;
 class IntMemRef;
 };
@@ -88,7 +88,7 @@ class RLMachine {
   // be on every farcall, or it may mean \#entrypoint 0. We're not sure.)
   bool shouldSetSeentopSavepoint() const;
 
-  typedef int(libReallive::Scenario::*AttributeFunction)() const;
+  typedef int (libReallive::Scenario::*AttributeFunction)() const;
 
   // Implementation function for should_set*Savepoint().
   //
@@ -341,8 +341,7 @@ class RLMachine {
   // file. This is used both by luaRlvm to trigger actions specified in lua to
   // drive rlvm's playing certain games, but is also used for game specific
   // hacks.
-  void addLineAction(const int seen, const int line,
-                     std::function<void(void)>);
+  void addLineAction(const int seen, const int line, std::function<void(void)>);
 
  private:
   // The Reallive VM's integer and string memory
@@ -401,11 +400,11 @@ class RLMachine {
   bool replaying_graphics_stack_;
 
   // The actions that were delayed when |delay_stack_modifications_| is on.
-  std::vector<std::function<void(void)> > delayed_modifications_;
+  std::vector<std::function<void(void)>> delayed_modifications_;
 
   // An optional set of game specific hacks that run at certain SEEN/line
   // pairs. These run during setLineNumer().
-  typedef std::map<std::pair<int, int>, std::function<void(void)> > ActionMap;
+  typedef std::map<std::pair<int, int>, std::function<void(void)>> ActionMap;
   boost::scoped_ptr<ActionMap> on_line_actions_;
 
   typedef boost::ptr_map<int, RealLiveDLL> DLLMap;
@@ -415,10 +414,10 @@ class RLMachine {
   // boost::serialization support
   friend class boost::serialization::access;
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

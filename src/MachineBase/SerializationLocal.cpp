@@ -80,7 +80,7 @@ const int CURRENT_LOCAL_VERSION = 2;
 
 namespace {
 
-template<typename TYPE>
+template <typename TYPE>
 void checkInFileOpened(TYPE& file, const fs::path& home) {
   if (!file) {
     throw rlvm::Exception(
@@ -112,8 +112,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
 
   try {
     text_oarchive oa(filtered_output);
-    oa << CURRENT_LOCAL_VERSION
-       << header
+    oa << CURRENT_LOCAL_VERSION << header
        << const_cast<const LocalMemory&>(machine.memory().local())
        << const_cast<const RLMachine&>(machine)
        << const_cast<const System&>(machine.system())
@@ -121,7 +120,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
        << const_cast<const TextSystem&>(machine.system().text())
        << const_cast<const SoundSystem&>(machine.system().sound());
   }
-  catch(std::exception& e) {
+  catch (std::exception& e) {
     cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
          << endl;
 
@@ -182,9 +181,7 @@ void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
 
   // Only load the header
   text_iarchive ia(filtered_input);
-  ia >> version
-     >> header
-     >> memory.local();
+  ia >> version >> header >> memory.local();
 }
 
 void loadGameForSlot(RLMachine& machine, int slot) {
@@ -212,20 +209,15 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
     machine.reset();
 
     text_iarchive ia(filtered_input);
-    ia >> version
-       >> header
-       >> machine.memory().local()
-       >> machine
-       >> machine.system()
-       >> machine.system().graphics()
-       >> machine.system().text()
-       >> machine.system().sound();
+    ia >> version >> header >> machine.memory().local() >> machine >>
+        machine.system() >> machine.system().graphics() >>
+        machine.system().text() >> machine.system().sound();
 
     machine.system().graphics().replayGraphicsStack(machine);
 
     machine.system().graphics().forceRefresh();
   }
-  catch(std::exception& e) {
+  catch (std::exception& e) {
     cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what() << " ---"
          << endl;
 

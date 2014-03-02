@@ -35,20 +35,19 @@
 BlindEffect::BlindEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize, int time,
+                         const Size& screenSize,
+                         int time,
                          int blindSize)
-    : Effect(machine, src, dst, screenSize, time),
-      blind_size_(blindSize) {
-}
+    : Effect(machine, src, dst, screenSize, time), blind_size_(blindSize) {}
 
-BlindEffect::~BlindEffect() {
-}
+BlindEffect::~BlindEffect() {}
 
-void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
+void BlindEffect::computeGrowing(RLMachine& machine,
+                                 int maxSize,
                                  int currentTime) {
   int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay = int((float(currentTime) / duration()) *
-                          (blindSize() + numBlinds));
+  int rowsToDisplay =
+      int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for (int currentBlind = 0; currentBlind < numBlinds; ++currentBlind) {
     if (currentBlind <= rowsToDisplay) {
@@ -62,11 +61,12 @@ void BlindEffect::computeGrowing(RLMachine& machine, int maxSize,
   }
 }
 
-void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
+void BlindEffect::computeDecreasing(RLMachine& machine,
+                                    int maxSize,
                                     int currentTime) {
   int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay = int((float(currentTime) / duration()) *
-                          (blindSize() + numBlinds));
+  int rowsToDisplay =
+      int((float(currentTime) / duration()) * (blindSize() + numBlinds));
 
   for (int currentBlind = numBlinds; currentBlind >= 0; --currentBlind) {
     if ((numBlinds - currentBlind) < rowsToDisplay) {
@@ -81,21 +81,19 @@ void BlindEffect::computeDecreasing(RLMachine& machine, int maxSize,
   }
 }
 
-bool BlindEffect::blitOriginalImage() const {
-  return true;
-}
+bool BlindEffect::blitOriginalImage() const { return true; }
 
 // -----------------------------------------------------------------------
 // BlindTopToBottomEffect
 // -----------------------------------------------------------------------
 
-BlindTopToBottomEffect::BlindTopToBottomEffect(
-    RLMachine& machine,
-    boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, int blindSize)
-    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {
-}
+BlindTopToBottomEffect::BlindTopToBottomEffect(RLMachine& machine,
+                                               boost::shared_ptr<Surface> src,
+                                               boost::shared_ptr<Surface> dst,
+                                               const Size& screenSize,
+                                               int time,
+                                               int blindSize)
+    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
 void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime) {
@@ -103,22 +101,22 @@ void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
 }
 
 void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().renderToScreen(
-      Rect::GRP(0, polyStart, width(), polyEnd),
-      Rect::GRP(0, polyStart, width(), polyEnd), 255);
+  srcSurface().renderToScreen(Rect::GRP(0, polyStart, width(), polyEnd),
+                              Rect::GRP(0, polyStart, width(), polyEnd),
+                              255);
 }
 
 // -----------------------------------------------------------------------
 // BlindBottomToTopEffect
 // -----------------------------------------------------------------------
 
-BlindBottomToTopEffect::BlindBottomToTopEffect(
-    RLMachine& machine,
-    boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, int blindSize)
-    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {
-}
+BlindBottomToTopEffect::BlindBottomToTopEffect(RLMachine& machine,
+                                               boost::shared_ptr<Surface> src,
+                                               boost::shared_ptr<Surface> dst,
+                                               const Size& screenSize,
+                                               int time,
+                                               int blindSize)
+    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
 void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime) {
@@ -127,23 +125,22 @@ void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
 
 void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd) {
   // Render polygon
-  srcSurface().
-      renderToScreen(
-          Rect::GRP(0, polyEnd, width(), polyStart),
-          Rect::GRP(0, polyEnd, width(), polyStart), 255);
+  srcSurface().renderToScreen(Rect::GRP(0, polyEnd, width(), polyStart),
+                              Rect::GRP(0, polyEnd, width(), polyStart),
+                              255);
 }
 
 // -----------------------------------------------------------------------
 // BlindLeftToRightEffect
 // -----------------------------------------------------------------------
 
-BlindLeftToRightEffect::BlindLeftToRightEffect(
-    RLMachine& machine,
-    boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, int blindSize)
-    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {
-}
+BlindLeftToRightEffect::BlindLeftToRightEffect(RLMachine& machine,
+                                               boost::shared_ptr<Surface> src,
+                                               boost::shared_ptr<Surface> dst,
+                                               const Size& screenSize,
+                                               int time,
+                                               int blindSize)
+    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
 void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime) {
@@ -151,22 +148,22 @@ void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
 }
 
 void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().renderToScreen(
-      Rect::GRP(polyStart, 0, polyEnd, height()),
-      Rect::GRP(polyStart, 0, polyEnd, height()), 255);
+  srcSurface().renderToScreen(Rect::GRP(polyStart, 0, polyEnd, height()),
+                              Rect::GRP(polyStart, 0, polyEnd, height()),
+                              255);
 }
 
 // -----------------------------------------------------------------------
 // BlindRightToLeftEffect
 // -----------------------------------------------------------------------
 
-BlindRightToLeftEffect::BlindRightToLeftEffect(
-    RLMachine& machine,
-    boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, int blindSize)
-    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {
-}
+BlindRightToLeftEffect::BlindRightToLeftEffect(RLMachine& machine,
+                                               boost::shared_ptr<Surface> src,
+                                               boost::shared_ptr<Surface> dst,
+                                               const Size& screenSize,
+                                               int time,
+                                               int blindSize)
+    : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
 void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
                                                   int currentTime) {
@@ -174,8 +171,7 @@ void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
 }
 
 void BlindRightToLeftEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().
-      renderToScreen(
-          Rect::GRP(polyEnd, 0, polyStart, height()),
-          Rect::GRP(polyEnd, 0, polyStart, height()), 255);
+  srcSurface().renderToScreen(Rect::GRP(polyEnd, 0, polyStart, height()),
+                              Rect::GRP(polyEnd, 0, polyStart, height()),
+                              255);
 }

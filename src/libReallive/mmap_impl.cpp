@@ -33,11 +33,11 @@
  * Copyright (c) 2003-2005, Matthew Wilson and Synesis Software
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
  * - Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer. 
+ *   list of conditions and the following disclaimer.
  * - Redistributions in binary form must reproduce the above copyright notice,
  *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
@@ -70,40 +70,43 @@
  * API functions
  */
 
-static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *mvofFlags) {
-    *cfmFlags   =   0;
-    *mvofFlags  =   0;
+static int win32_flags_from_mmap_(int prot,
+                                  int flags,
+                                  DWORD* cfmFlags,
+                                  DWORD* mvofFlags) {
+  *cfmFlags = 0;
+  *mvofFlags = 0;
 
-    if (PROT_NONE == prot) {
-        *cfmFlags   =   PAGE_NOACCESS;
-        *mvofFlags  =   0;
+  if (PROT_NONE == prot) {
+    *cfmFlags = PAGE_NOACCESS;
+    *mvofFlags = 0;
+  } else {
+    if (prot & PROT_WRITE) {
+      if ((flags & MAP_PRIVATE)) {
+        *mvofFlags |= FILE_MAP_COPY;
+      } else {
+        *mvofFlags |= FILE_MAP_WRITE;
+      }
     } else {
-        if (prot & PROT_WRITE) {
-            if ((flags & MAP_PRIVATE)) {
-                *mvofFlags |= FILE_MAP_COPY;
-            } else {
-                *mvofFlags |= FILE_MAP_WRITE;
-            }
-        } else {
-            *mvofFlags |= FILE_MAP_READ;
-        }
-
-        if (*mvofFlags & FILE_MAP_COPY) {
-            *cfmFlags = PAGE_WRITECOPY;
-        } else if (*mvofFlags & FILE_MAP_WRITE) {
-            *cfmFlags = PAGE_READWRITE;
-        } else {
-            *cfmFlags = PAGE_READONLY;
-        }
+      *mvofFlags |= FILE_MAP_READ;
     }
 
-    if (flags & MAP_ANONYMOUS) {
+    if (*mvofFlags & FILE_MAP_COPY) {
+      *cfmFlags = PAGE_WRITECOPY;
+    } else if (*mvofFlags & FILE_MAP_WRITE) {
+      *cfmFlags = PAGE_READWRITE;
+    } else {
+      *cfmFlags = PAGE_READONLY;
+    }
+  }
+
+  if (flags & MAP_ANONYMOUS) {
 #if 0
         *cfmFlags |= SEC_RESERVE;
 #endif /* 0 */
-    }
+  }
 
-    return 0;
+  return 0;
 }
 
 /** \brief Maps a file into memory, and returns a pointer to it
@@ -113,7 +116,8 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
  * len and offset must not exceed the length of the mapped file
  * \param prot Either PROT_NONE, or a combination of the other PROT_* flags
  * \param flags One of MAP_PRIVATE, MAP_ANONYMOUS or MAP_FIXED.
- * \param fd The file descriptor of the file to map, or -1 to allocate an anonymous map
+ * \param fd The file descriptor of the file to map, or -1 to allocate an
+ *anonymous map
  * \param offset The offset within the file to start the mapped region
  *
  * \retval pointer to mapped region if successful
@@ -124,66 +128,68 @@ static int win32_flags_from_mmap_(int prot, int flags, DWORD *cfmFlags, DWORD *m
  * system paging file.
  */
 
-void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset) {
-    /* Sanity checks first */
-    int     errno_      =   0;
+void* mmap(void* addr,
+           size_t len,
+           int prot,
+           int flags,
+           HANDLE fh,
+           off_t offset) {
+  /* Sanity checks first */
+  int errno_ = 0;
 
-    if ( NULL == addr && 
-        0 != (flags & MAP_FIXED)) {
-        errno_ = ENOMEM;
-    } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
-            INVALID_HANDLE_VALUE != fh) {
-        errno_ = EINVAL;
-    } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
-            (   0 == len ||
-                0 != offset)) {
-        errno_ = EINVAL;
-    } else {
-        if (MAP_ANONYMOUS != (flags & MAP_ANONYMOUS)) {
-            DWORD   fileSize    =   GetFileSize(fh, NULL);
+  if (NULL == addr && 0 != (flags & MAP_FIXED)) {
+    errno_ = ENOMEM;
+  } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+             INVALID_HANDLE_VALUE != fh) {
+    errno_ = EINVAL;
+  } else if (MAP_ANONYMOUS == (flags & MAP_ANONYMOUS) &&
+             (0 == len || 0 != offset)) {
+    errno_ = EINVAL;
+  } else {
+    if (MAP_ANONYMOUS != (flags & MAP_ANONYMOUS)) {
+      DWORD fileSize = GetFileSize(fh, NULL);
 
-            if ( 0xFFFFFFFF == fileSize &&
-                ERROR_SUCCESS != GetLastError()) {
-                errno_ = EBADF;
-            }
-        }
+      if (0xFFFFFFFF == fileSize && ERROR_SUCCESS != GetLastError()) {
+        errno_ = EBADF;
+      }
     }
+  }
+
+  if (0 != errno_) {
+    errno = errno_;
+    return MAP_FAILED;
+  } else {
+    DWORD cfmFlags;
+    DWORD mvofFlags;
+
+    errno_ = win32_flags_from_mmap_(prot, flags, &cfmFlags, &mvofFlags);
 
     if (0 != errno_) {
-        errno = errno_;
-        return MAP_FAILED;
+      return MAP_FAILED;
     } else {
-        DWORD   cfmFlags;
-        DWORD   mvofFlags;
+      HANDLE hMap = CreateFileMapping(fh, NULL, cfmFlags, 0, len, NULL);
 
-        errno_  =   win32_flags_from_mmap_(prot, flags, &cfmFlags, &mvofFlags);
+      if (NULL == hMap) {
+        DWORD dwErr = GetLastError();
 
-        if (0 != errno_) {
-            return MAP_FAILED;
-        } else {
-            HANDLE  hMap    =   CreateFileMapping(fh, NULL, cfmFlags, 0, len, NULL);
-
-            if (NULL == hMap) {
-                DWORD   dwErr   =   GetLastError();
-
-                if (dwErr == ERROR_ACCESS_DENIED) {
-                    errno = EACCES;
-                } else if (dwErr == ERROR_INVALID_PARAMETER) {
-                    errno = EINVAL;
-                } else if (dwErr == ERROR_FILE_INVALID) {
-                    errno = EBADF;
-                }
-
-                return MAP_FAILED;
-            } else {
-                void    *pvMap  =   MapViewOfFileEx(hMap, mvofFlags, 0, offset, len, addr);
-
-                CloseHandle(hMap);
-
-                return pvMap;
-            }
+        if (dwErr == ERROR_ACCESS_DENIED) {
+          errno = EACCES;
+        } else if (dwErr == ERROR_INVALID_PARAMETER) {
+          errno = EINVAL;
+        } else if (dwErr == ERROR_FILE_INVALID) {
+          errno = EBADF;
         }
+
+        return MAP_FAILED;
+      } else {
+        void* pvMap = MapViewOfFileEx(hMap, mvofFlags, 0, offset, len, addr);
+
+        CloseHandle(hMap);
+
+        return pvMap;
+      }
     }
+  }
 }
 
 /** \brief Deletes a mapped region
@@ -193,30 +199,32 @@ void *mmap(void *addr, size_t len, int prot, int flags, HANDLE fh, off_t offset)
  * generate invalid memory references.
  *
  * \param addr The base address of the mapped region to unmap
- * \param len The length of the mapped region. Ignore in the Win32 implementation
+ * \param len The length of the mapped region. Ignore in the Win32
+ *implementation
  *
  * \retval 0 if successful
  * \retval -1 if failed
  */
 
-int munmap(void *addr, size_t len) {
-    ((void)len);
+int munmap(void* addr, size_t len) {
+  ((void)len);
 
-    return UnmapViewOfFile(addr) ? 0 : (errno = EINVAL, -1);
+  return UnmapViewOfFile(addr) ? 0 : (errno = EINVAL, -1);
 }
 
 /** \brief Writes any dirty pages within the given range to disk
  *
  * \param addr The base address of the mapped region
- * \param len The length of the mapped region to flush to disk. Will be rounded up
+ * \param len The length of the mapped region to flush to disk. Will be rounded
+ *up
  * to next page boundary.
  * \param flags Ignored
  */
 
-int msync(void *addr, size_t len, int flags) {
-    ((void)flags);
+int msync(void* addr, size_t len, int flags) {
+  ((void)flags);
 
-    return FlushViewOfFile(addr, len) ? 0 : (errno = EINVAL, -1);
+  return FlushViewOfFile(addr, len) ? 0 : (errno = EINVAL, -1);
 }
 
 #endif

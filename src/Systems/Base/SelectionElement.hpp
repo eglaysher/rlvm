@@ -43,7 +43,8 @@ class SelectionElement {
                    const boost::shared_ptr<Surface>& normal_image,
                    const boost::shared_ptr<Surface>& highlighted_image,
                    const std::function<void(int)>& selection_callback,
-                   int id, const Point& pos);
+                   int id,
+                   const Point& pos);
   ~SelectionElement();
 
   void setSelectionCallback(const std::function<void(int)>& func);

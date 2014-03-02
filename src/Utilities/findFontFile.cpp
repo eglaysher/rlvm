@@ -41,37 +41,35 @@ namespace fs = boost::filesystem;
 
 const char* western_platform_fonts[] = {
 #if defined(__APPLE__)
-  // I would prefer Helvetica except that it is stored as a dfont. :(
-  "/Library/Fonts/Arial.ttf",
+    // I would prefer Helvetica except that it is stored as a dfont. :(
+    "/Library/Fonts/Arial.ttf",
 #else
-  "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf",
 #endif
-  NULL
-};
+    NULL};
 
 const char* ja_platform_fonts[] = {
 #if defined(__APPLE__)
-  // Leopard
-  "/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
-  // Tiger
-  "/System/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
+    // Leopard
+    "/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
+    // Tiger
+    "/System/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
 #else
-  // We should prefer fonts that we've verified work over whatever the default
-  // system font is.
-  "/usr/share/fonts/truetype/mona/mona.ttf",
-  "/usr/share/fonts/truetype/sazanami/sazanami-gothic.ttf",
-  "/usr/share/fonts/truetype/kochi/kochi-gothic-subst.ttf",
-  "/usr/share/fonts/truetype/kochi/kochi-gothic.ttf",
-  // Note that these symlink fallbacks are at the end of the list. The current
-  // fonts-japanese-gothic.ttf alternatives on my system is
-  // TakaoPGothic...which has incorrect font metrics on some Roman characters
-  // (notably 't', which messes up "No data" in the save/load dialog). Have
-  // mona at the top, which will hopefully be used instead.
-  "/usr/share/fonts/truetype/ttf-japanese-gothic.ttf",
-  "/etc/alternatives/fonts-japanese-gothic.ttf",
+    // We should prefer fonts that we've verified work over whatever the default
+    // system font is.
+    "/usr/share/fonts/truetype/mona/mona.ttf",
+    "/usr/share/fonts/truetype/sazanami/sazanami-gothic.ttf",
+    "/usr/share/fonts/truetype/kochi/kochi-gothic-subst.ttf",
+    "/usr/share/fonts/truetype/kochi/kochi-gothic.ttf",
+    // Note that these symlink fallbacks are at the end of the list. The current
+    // fonts-japanese-gothic.ttf alternatives on my system is
+    // TakaoPGothic...which has incorrect font metrics on some Roman characters
+    // (notably 't', which messes up "No data" in the save/load dialog). Have
+    // mona at the top, which will hopefully be used instead.
+    "/usr/share/fonts/truetype/ttf-japanese-gothic.ttf",
+    "/etc/alternatives/fonts-japanese-gothic.ttf",
 #endif
-  NULL
-};
+    NULL};
 
 // -----------------------------------------------------------------------
 

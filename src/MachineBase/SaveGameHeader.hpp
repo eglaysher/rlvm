@@ -46,9 +46,9 @@ struct SaveGameHeader {
   boost::posix_time::ptime save_time;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & title & save_time;
+    ar& title& save_time;
   }
 };
 

@@ -44,7 +44,6 @@
 #include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
 
-
 using namespace std;
 namespace fs = boost::filesystem;
 
@@ -55,25 +54,23 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(System& system)
       filename_(""),
       frame_time_(0),
       current_frame_(0),
-      time_at_last_frame_change_(0) {
-}
+      time_at_last_frame_change_(0) {}
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectOfFile::GraphicsObjectOfFile(
-  const GraphicsObjectOfFile& obj)
-  : GraphicsObjectData(obj),
-    system_(obj.system_),
-    filename_(obj.filename_),
-    surface_(obj.surface_),
-    frame_time_(obj.frame_time_),
-    current_frame_(obj.current_frame_),
-    time_at_last_frame_change_(obj.time_at_last_frame_change_) {}
+GraphicsObjectOfFile::GraphicsObjectOfFile(const GraphicsObjectOfFile& obj)
+    : GraphicsObjectData(obj),
+      system_(obj.system_),
+      filename_(obj.filename_),
+      surface_(obj.surface_),
+      frame_time_(obj.frame_time_),
+      current_frame_(obj.current_frame_),
+      time_at_last_frame_change_(obj.time_at_last_frame_change_) {}
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectOfFile::GraphicsObjectOfFile(
-    System& system, const std::string& filename)
+GraphicsObjectOfFile::GraphicsObjectOfFile(System& system,
+                                           const std::string& filename)
     : system_(system),
       filename_(filename),
       frame_time_(0),
@@ -121,7 +118,7 @@ void GraphicsObjectOfFile::execute(RLMachine& machine) {
   if (currentlyPlaying()) {
     unsigned int current_time = system_.event().getTicks();
     unsigned int time_since_last_frame_change =
-      current_time - time_at_last_frame_change_;
+        current_time - time_at_last_frame_change_;
 
     while (time_since_last_frame_change > frame_time_) {
       current_frame_++;
@@ -145,14 +142,12 @@ bool GraphicsObjectOfFile::isAnimation() const {
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loopAnimation() {
-  current_frame_ = 0;
-}
+void GraphicsObjectOfFile::loopAnimation() { current_frame_ = 0; }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<const Surface> GraphicsObjectOfFile::currentSurface(
-  const GraphicsObject& rp) {
+    const GraphicsObject& rp) {
   return surface_;
 }
 
@@ -183,8 +178,7 @@ void GraphicsObjectOfFile::playSet(int frame_time) {
 
   if (frame_time_ == 0) {
     cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
-         << " this is probably going to cause a graphical glitch..."
-         << endl;
+         << " this is probably going to cause a graphical glitch..." << endl;
     frame_time_ = 10;
   }
 
@@ -194,10 +188,10 @@ void GraphicsObjectOfFile::playSet(int frame_time) {
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_ &
+      frame_time_ & current_frame_ & time_at_last_frame_change_;
 
   loadFile();
 
@@ -212,10 +206,10 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsObjectOfFile::save(Archive& ar, unsigned int version) const {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-    & filename_ & frame_time_ & current_frame_ & time_at_last_frame_change_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_ &
+      frame_time_ & current_frame_ & time_at_last_frame_change_;
 }
 
 // -----------------------------------------------------------------------
@@ -228,7 +222,9 @@ BOOST_CLASS_EXPORT(GraphicsObjectOfFile);
 // implementation)
 
 template void GraphicsObjectOfFile::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void GraphicsObjectOfFile::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

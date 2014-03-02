@@ -46,8 +46,7 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-SDLSystem::SDLSystem(Gameexe& gameexe)
-    : System(), gameexe_(gameexe) {
+SDLSystem::SDLSystem(Gameexe& gameexe) : System(), gameexe_(gameexe) {
   // First, initialize SDL's video subsystem.
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     ostringstream ss;
@@ -124,33 +123,23 @@ void SDLSystem::run(RLMachine& machine) {
 
 // -----------------------------------------------------------------------
 
-GraphicsSystem& SDLSystem::graphics() {
-  return *graphics_system_;
-}
+GraphicsSystem& SDLSystem::graphics() { return *graphics_system_; }
 
 // -----------------------------------------------------------------------
 
-EventSystem& SDLSystem::event() {
-  return *event_system_;
-}
+EventSystem& SDLSystem::event() { return *event_system_; }
 
 // -----------------------------------------------------------------------
 
-Gameexe& SDLSystem::gameexe() {
-  return gameexe_;
-}
+Gameexe& SDLSystem::gameexe() { return gameexe_; }
 
 // -----------------------------------------------------------------------
 
-SDLTextSystem& SDLSystem::text() {
-  return *text_system_;
-}
+SDLTextSystem& SDLSystem::text() { return *text_system_; }
 
 // -----------------------------------------------------------------------
 
-SoundSystem& SDLSystem::sound() {
-  return *sound_system_;
-}
+SoundSystem& SDLSystem::sound() { return *sound_system_; }
 
 SDLGraphicsSystem* getSDLGraphics(System& system) {
   return static_cast<SDLGraphicsSystem*>(&system.graphics());

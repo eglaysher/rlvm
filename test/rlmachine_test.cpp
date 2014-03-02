@@ -48,10 +48,11 @@ using boost::lexical_cast;
 class RLMachineTest : public FullSystemTest {
  protected:
   void setIntMemoryCountingFrom(RLMachine& saveMachine,
-                                const vector<pair<int, char> >& banks,
+                                const vector<pair<int, char>>& banks,
                                 int count) {
-    for (vector<pair<int, char> >::const_iterator it = banks.begin();
-         it != banks.end(); ++it) {
+    for (vector<pair<int, char>>::const_iterator it = banks.begin();
+         it != banks.end();
+         ++it) {
       for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
         saveMachine.setIntValue(IntMemRef(it->second, i), count);
         count++;
@@ -67,10 +68,11 @@ class RLMachineTest : public FullSystemTest {
   }
 
   void verifyIntMemoryCountingFrom(RLMachine& loadMachine,
-                                   const vector<pair<int, char> >& banks,
+                                   const vector<pair<int, char>>& banks,
                                    int count) {
-    for (vector<pair<int, char> >::const_iterator it = banks.begin();
-         it != banks.end(); ++it) {
+    for (vector<pair<int, char>>::const_iterator it = banks.begin();
+         it != banks.end();
+         ++it) {
       for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
         EXPECT_EQ(count, loadMachine.getIntValue(IntMemRef(it->second, i)));
         count++;
@@ -91,18 +93,15 @@ class RLMachineTest : public FullSystemTest {
 
 TEST_F(RLMachineTest, RejectsDoubleAttachs) {
   rlmachine.attachModule(new StrModule);
-  EXPECT_THROW({rlmachine.attachModule(new StrModule); },
-               rlvm::Exception);
+  EXPECT_THROW({ rlmachine.attachModule(new StrModule); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, ReturnFromFarcallMismatch) {
-  EXPECT_THROW({rlmachine.returnFromFarcall(); },
-               rlvm::Exception);
+  EXPECT_THROW({ rlmachine.returnFromFarcall(); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, ReturnFromGosubMismatch) {
-  EXPECT_THROW({rlmachine.returnFromGosub(); },
-               rlvm::Exception);
+  EXPECT_THROW({ rlmachine.returnFromGosub(); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, Halts) {
@@ -120,7 +119,7 @@ TEST_F(RLMachineTest, RegisterStore) {
 
 // Test valid string memory access.
 TEST_F(RLMachineTest, StringMemory) {
-  vector<int> types = { STRK_LOCATION, STRM_LOCATION, STRS_LOCATION };
+  vector<int> types = {STRK_LOCATION, STRM_LOCATION, STRS_LOCATION};
 
   for (vector<int>::const_iterator it = types.begin(); it != types.end();
        ++it) {
@@ -132,13 +131,13 @@ TEST_F(RLMachineTest, StringMemory) {
 
 // Test error-inducing, string memory access.
 TEST_F(RLMachineTest, StringMemoryErrors) {
-  EXPECT_THROW({rlmachine.setStringValue(STRK_LOCATION, 3, "Blah");},
+  EXPECT_THROW({ rlmachine.setStringValue(STRK_LOCATION, 3, "Blah"); },
                rlvm::Exception);
-  EXPECT_THROW({rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah");},
+  EXPECT_THROW({ rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah"); },
                rlvm::Exception);
-  EXPECT_THROW({rlmachine.getStringValue(STRK_LOCATION, 3);},
+  EXPECT_THROW({ rlmachine.getStringValue(STRK_LOCATION, 3); },
                rlvm::Exception);
-  EXPECT_THROW({rlmachine.getStringValue(STRM_LOCATION, 2000);},
+  EXPECT_THROW({ rlmachine.getStringValue(STRM_LOCATION, 2000); },
                rlvm::Exception);
 }
 
@@ -150,9 +149,9 @@ TEST_F(RLMachineTest, StringMemoryErrors) {
 //
 // For    8-bit integers: 38,39,40,41
 TEST_F(RLMachineTest, IntegerMemory) {
-  vector<char> banks = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'L', 'Z' };
+  vector<char> banks = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'L', 'Z'};
 
-  const int in8b[] = {38,  39, 40, 41};
+  const int in8b[] = {38, 39, 40, 41};
   const int base = (in8b[0] << 24) | (in8b[1] << 16) | (in8b[2] << 8) | in8b[3];
 
   const int rc = 8;
@@ -179,10 +178,10 @@ TEST_F(RLMachineTest, IntegerMemory) {
 }
 
 TEST_F(RLMachineTest, IntegerMemoryErrors) {
-  EXPECT_THROW({rlmachine.getIntValue(IntMemRef(10, 0, 0));},
+  EXPECT_THROW({ rlmachine.getIntValue(IntMemRef(10, 0, 0)); },
                rlvm::Exception);
-  EXPECT_NO_THROW({rlmachine.getIntValue(IntMemRef('A', 1999));});  // NOLINT
-  EXPECT_THROW({rlmachine.getIntValue(IntMemRef('A', 2000));},
+  EXPECT_NO_THROW({ rlmachine.getIntValue(IntMemRef('A', 1999)); });  // NOLINT
+  EXPECT_THROW({ rlmachine.getIntValue(IntMemRef('A', 2000)); },
                rlvm::Exception);
 }
 

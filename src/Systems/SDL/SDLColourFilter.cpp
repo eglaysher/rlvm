@@ -35,10 +35,7 @@
 #include "Systems/SDL/Texture.hpp"
 
 SDLColourFilter::SDLColourFilter()
-    : texture_width_(0),
-      texture_height_(0),
-      back_texture_id_(0) {
-}
+    : texture_width_(0), texture_height_(0), back_texture_id_(0) {}
 
 SDLColourFilter::~SDLColourFilter() {
   if (back_texture_id_)
@@ -58,22 +55,26 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
 
       texture_width_ = SafeSize(screen_rect.width());
       texture_height_ = SafeSize(screen_rect.height());
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                   texture_width_, texture_height_,
-                   0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+      glTexImage2D(GL_TEXTURE_2D,
+                   0,
+                   GL_RGBA,
+                   texture_width_,
+                   texture_height_,
+                   0,
+                   GL_RGB,
+                   GL_UNSIGNED_BYTE,
+                   NULL);
       DebugShowGLErrors();
     }
 
     // Copy the current value of the region where we're going to render
     // to a texture for input to the shader
     glBindTexture(GL_TEXTURE_2D, back_texture_id_);
-    int ystart = int(Texture::ScreenHeight() - screen_rect.y() -
-                     screen_rect.height());
+    int ystart =
+        int(Texture::ScreenHeight() - screen_rect.y() - screen_rect.height());
     int idx1 = screen_rect.x();
-    glCopyTexSubImage2D(GL_TEXTURE_2D,
-                        0,
-                        0, 0,
-                        idx1, ystart, texture_width_, texture_height_);
+    glCopyTexSubImage2D(
+        GL_TEXTURE_2D, 0, 0, 0, idx1, ystart, texture_width_, texture_height_);
     DebugShowGLErrors();
 
     // Set up shader
@@ -107,4 +108,3 @@ void SDLColourFilter::Fill(const GraphicsObject& go,
     glUseProgramObjectARB(0);
   }
 }
-

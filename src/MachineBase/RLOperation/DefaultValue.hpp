@@ -28,7 +28,7 @@
 
 #include "libReallive/expression_pieces.h"
 
-template<int DEFAULTVAL>
+template <int DEFAULTVAL>
 struct DefaultIntValue_T {
   // The output type of this type struct
   typedef int type;
@@ -44,10 +44,9 @@ struct DefaultIntValue_T {
     }
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
       IntConstant_T::parseParameters(position, input, output);
     } else {
@@ -56,9 +55,7 @@ struct DefaultIntValue_T {
     }
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // Typestruct that will return an empty string if there isn't a value.
@@ -77,10 +74,9 @@ struct DefaultStrValue_T {
     }
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
       StrConstant_T::parseParameters(position, input, output);
     } else {
@@ -89,9 +85,7 @@ struct DefaultStrValue_T {
     }
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_DEFAULTVALUE_HPP_

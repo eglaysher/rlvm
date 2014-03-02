@@ -27,7 +27,6 @@
 
 #include "Systems/Base/EventSystem.hpp"
 
-
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -40,23 +39,21 @@ using namespace boost;
 // -----------------------------------------------------------------------
 // EventSystemGlobals
 // -----------------------------------------------------------------------
-EventSystemGlobals::EventSystemGlobals()
-  : generic1(false), generic2(false) {}
+EventSystemGlobals::EventSystemGlobals() : generic1(false), generic2(false) {}
 
 EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
-  : generic1(gexe("INIT_ORIGINALSETING1_MOD").to_int(0)),
-    generic2(gexe("INIT_ORIGINALSETING2_MOD").to_int(0)) {}
+    : generic1(gexe("INIT_ORIGINALSETING1_MOD").to_int(0)),
+      generic2(gexe("INIT_ORIGINALSETING2_MOD").to_int(0)) {}
 
 // -----------------------------------------------------------------------
 // EventSystem
 // -----------------------------------------------------------------------
-EventSystem::EventSystem(Gameexe& gexe)
-  : globals_(gexe) {
-}
+EventSystem::EventSystem(Gameexe& gexe) : globals_(gexe) {}
 
 EventSystem::~EventSystem() {}
 
-void EventSystem::setFrameCounter(int layer, int frame_counter,
+void EventSystem::setFrameCounter(int layer,
+                                  int frame_counter,
                                   FrameCounter* counter) {
   checkLayerAndCounter(layer, frame_counter);
   frame_counters_[layer][frame_counter].reset(counter);
@@ -86,8 +83,9 @@ void EventSystem::removeMouseListener(EventListener* listener) {
   event_listeners_.erase(listener);
 }
 
-void EventSystem::dispatchEvent(RLMachine& machine,
-  const std::function<bool(EventListener&)>& event) {
+void EventSystem::dispatchEvent(
+    RLMachine& machine,
+    const std::function<bool(EventListener&)>& event) {
   // In addition to the handled variable, we need to add break statements to
   // the loops since |event| can be any arbitrary code and may modify listeners
   // or handlers. (i.e., System::showSyscomMenu)
@@ -108,8 +106,9 @@ void EventSystem::dispatchEvent(RLMachine& machine,
     event(*current_op);
 }
 
-void EventSystem::broadcastEvent(RLMachine& machine,
-  const std::function<void(EventListener&)>& event) {
+void EventSystem::broadcastEvent(
+    RLMachine& machine,
+    const std::function<void(EventListener&)>& event) {
   EventListeners::iterator listenerIt = listeners_begin();
   for (; listenerIt != listeners_end(); ++listenerIt) {
     event(**listenerIt);
@@ -127,4 +126,3 @@ void EventSystem::checkLayerAndCounter(int layer, int frame_counter) {
   if (frame_counter < 0 || frame_counter > 255)
     throw rlvm::Exception("Frame Counter index out of range!");
 }
-

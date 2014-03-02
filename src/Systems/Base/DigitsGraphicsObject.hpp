@@ -75,10 +75,10 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   // boost::serialization support
   friend class boost::serialization::access;
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -86,12 +86,15 @@ class DigitsGraphicsObject : public GraphicsObjectData {
 
 // We need help creating DigitsGraphicsObject s since they don't have a default
 // constructor:
-namespace boost { namespace serialization {
-template<class Archive>
-inline void load_construct_data(
-  Archive & ar, DigitsGraphicsObject* t, const unsigned int file_version) {
-  ::new(t)DigitsGraphicsObject(Serialization::g_current_machine->system());
+namespace boost {
+namespace serialization {
+template <class Archive>
+inline void load_construct_data(Archive& ar,
+                                DigitsGraphicsObject* t,
+                                const unsigned int file_version) {
+  ::new (t) DigitsGraphicsObject(Serialization::g_current_machine->system());
 }
-  }}
+}
+}
 
 #endif  // SRC_SYSTEMS_BASE_DIGITSGRAPHICSOBJECT_HPP_

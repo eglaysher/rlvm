@@ -37,7 +37,7 @@
 
 namespace {
 
-struct stackNop : public RLOp_Void_1< IntConstant_T > {
+struct stackNop : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int numberOfNops) {
     GraphicsSystem& sys = machine.system().graphics();
 
@@ -47,18 +47,25 @@ struct stackNop : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-struct stackTrunc : public RLOp_Void_1< IntConstant_T > {
+struct stackTrunc : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int count) {
     GraphicsSystem& sys = machine.system().graphics();
     sys.stackPop(sys.stackSize() - count);
   }
 };
 
-struct GetDCPixel : public RLOp_Void_6<
-  IntConstant_T, IntConstant_T, IntConstant_T,
-  IntReference_T, IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, int x, int y, int dc,
-                  IntReferenceIterator r, IntReferenceIterator g,
+struct GetDCPixel : public RLOp_Void_6<IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntReference_T,
+                                       IntReference_T,
+                                       IntReference_T> {
+  void operator()(RLMachine& machine,
+                  int x,
+                  int y,
+                  int dc,
+                  IntReferenceIterator r,
+                  IntReferenceIterator g,
                   IntReferenceIterator b) {
     int rval, gval, bval;
     machine.system().graphics().getDC(dc)->getDCPixel(
@@ -73,21 +80,26 @@ struct GetDCPixel : public RLOp_Void_6<
 
 // -----------------------------------------------------------------------
 
-ScrModule::ScrModule()
-    : RLModule("Scr", 1, 30) {
+ScrModule::ScrModule() : RLModule("Scr", 1, 30) {
   addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
   addOpcode(1, 0, "stackNop", new stackNop);
   addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
   addOpcode(3, 0, "stackSize", returnIntValue(&GraphicsSystem::stackSize));
   addOpcode(4, 0, "stackTrunc", new stackTrunc);
 
-  addOpcode(20, 0, "DrawAuto",
+  addOpcode(20,
+            0,
+            "DrawAuto",
             callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
-  addOpcode(21, 0, "DrawSemiAuto",
+  addOpcode(21,
+            0,
+            "DrawSemiAuto",
             callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
-  addOpcode(22, 0, "DrawManual",
+  addOpcode(22,
+            0,
+            "DrawManual",
             callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 

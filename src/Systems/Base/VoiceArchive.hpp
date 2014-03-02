@@ -68,13 +68,9 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
     int length;
     int offset;
 
-    bool operator<(const Entry& rhs) const {
-      return koe_num < rhs.koe_num;
-    }
+    bool operator<(const Entry& rhs) const { return koe_num < rhs.koe_num; }
 
-    bool operator<(int rhs) const {
-      return koe_num < rhs;
-    }
+    bool operator<(int rhs) const { return koe_num < rhs; }
   };
 
   // Reads and parses' VisualArt's simple audio table format into a

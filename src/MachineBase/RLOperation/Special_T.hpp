@@ -48,11 +48,16 @@ struct DefaultSpecialMapper {
 
 // Type definition that implements the special parameter concept; the
 // way to expect multiple different types in a parameter slot.
-template<typename Mapper,
-         typename A, typename B = Empty_T, typename C = Empty_T,
-         typename D = Empty_T, typename E = Empty_T,
-         typename F = Empty_T, typename G = Empty_T,
-         typename H = Empty_T, typename I = Empty_T>
+template <typename Mapper,
+          typename A,
+          typename B = Empty_T,
+          typename C = Empty_T,
+          typename D = Empty_T,
+          typename E = Empty_T,
+          typename F = Empty_T,
+          typename G = Empty_T,
+          typename H = Empty_T,
+          typename I = Empty_T>
 struct Special_T {
   // Internal unionish structure which we pass in to the
   struct Parameter {
@@ -74,19 +79,19 @@ struct Special_T {
   typedef Parameter type;
 
   // Special<Complex, Complex, ...> requires a special construct...
-  template<typename TYPE>
+  template <typename TYPE>
   static typename TYPE::type getDataFor(
-    RLMachine& machine,
-    const libReallive::ExpressionPiecesVector& p,
-    unsigned int& position,
-    const libReallive::SpecialExpressionPiece& sp) {
+      RLMachine& machine,
+      const libReallive::ExpressionPiecesVector& p,
+      unsigned int& position,
+      const libReallive::SpecialExpressionPiece& sp) {
     if (TYPE::is_complex) {
       return TYPE::getData(machine, p, position);
     } else {
       unsigned int contained_position = 0;
       position++;
-      return TYPE::getData(machine, sp.getContainedPieces(),
-                           contained_position);
+      return TYPE::getData(
+          machine, sp.getContainedPieces(), contained_position);
     }
   }
 
@@ -96,13 +101,13 @@ struct Special_T {
                       unsigned int& position) {
     if (position >= p.size()) {
       std::ostringstream oss;
-      oss << "Illegal position in Special_T: " << position << " (Size of p: "
-          << p.size() << ")";
+      oss << "Illegal position in Special_T: " << position
+          << " (Size of p: " << p.size() << ")";
       throw std::runtime_error(oss.str());
     }
 
     const libReallive::SpecialExpressionPiece& sp =
-      static_cast<const libReallive::SpecialExpressionPiece&>(*p[position]);
+        static_cast<const libReallive::SpecialExpressionPiece&>(*p[position]);
 
     if (sp.getContainedPieces().size() == 0)
       throw rlvm::Exception("Empty special construct in Special_T");
@@ -140,8 +145,7 @@ struct Special_T {
       default: {
         std::ostringstream oss;
         oss << "Illegal overload in Special_T::getData(). Bytecode tag was "
-            << sp.getOverloadTag() << ", Mapped position was "
-            << par.type;
+            << sp.getOverloadTag() << ", Mapped position was " << par.type;
         throw rlvm::Exception(oss.str());
       }
     };
@@ -149,18 +153,15 @@ struct Special_T {
     return par;
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     output.emplace_back(libReallive::get_data(data));
     position++;
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_SPECIAL_T_HPP_

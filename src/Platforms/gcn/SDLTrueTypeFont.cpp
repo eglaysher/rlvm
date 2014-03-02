@@ -60,9 +60,7 @@ SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
                  NotificationService::AllSources());
 }
 
-SDLTrueTypeFont::~SDLTrueTypeFont() {
-  TTF_CloseFont(font_);
-}
+SDLTrueTypeFont::~SDLTrueTypeFont() { TTF_CloseFont(font_); }
 
 int SDLTrueTypeFont::getWidth(const std::string& text) const {
   int w, h;
@@ -77,7 +75,8 @@ int SDLTrueTypeFont::getHeight() const {
 
 void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
                                  const std::string& text,
-                                 const int x, const int y) {
+                                 const int x,
+                                 const int y) {
   if (text == "")
     return;
 
@@ -91,23 +90,25 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
   colstr += static_cast<char>(col.b);
 
   boost::shared_ptr<gcn::OpenGLImage> image =
-    image_cache_.fetch(make_pair(text, colstr));
+      image_cache_.fetch(make_pair(text, colstr));
   if (!image) {
     SDL_Color sdlCol;
     sdlCol.b = col.b;
     sdlCol.r = col.r;
     sdlCol.g = col.g;
 
-    SDL_Surface *textSurface;
+    SDL_Surface* textSurface;
     if (anti_alias_) {
       textSurface = TTF_RenderUTF8_Blended(font_, text.c_str(), sdlCol);
     } else {
       textSurface = TTF_RenderUTF8_Solid(font_, text.c_str(), sdlCol);
     }
 
-    SDL_LockSurface(textSurface); {
+    SDL_LockSurface(textSurface);
+    {
       image.reset(new gcn::OpenGLImage((const unsigned int*)textSurface->pixels,
-                                       textSurface->w, textSurface->h));
+                                       textSurface->w,
+                                       textSurface->h));
     }
     SDL_UnlockSurface(textSurface);
     SDL_FreeSurface(textSurface);
@@ -115,36 +116,23 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
     image_cache_.insert(make_pair(text, colstr), image);
   }
 
-  graphics->drawImage(image.get(),
-                      0, 0,
-                      x, y + yoffset,
-                      image->getWidth(),
-                      image->getHeight());
+  graphics->drawImage(
+      image.get(), 0, 0, x, y + yoffset, image->getWidth(), image->getHeight());
 }
 
-void SDLTrueTypeFont::setRowSpacing(int spacing) {
-  row_spacing_ = spacing;
-}
+void SDLTrueTypeFont::setRowSpacing(int spacing) { row_spacing_ = spacing; }
 
-int SDLTrueTypeFont::getRowSpacing() {
-  return row_spacing_;
-}
+int SDLTrueTypeFont::getRowSpacing() { return row_spacing_; }
 
-void SDLTrueTypeFont::setGlyphSpacing(int spacing) {
-  glyph_spacing_ = spacing;
-}
+void SDLTrueTypeFont::setGlyphSpacing(int spacing) { glyph_spacing_ = spacing; }
 
-int SDLTrueTypeFont::getGlyphSpacing() {
-  return glyph_spacing_;
-}
+int SDLTrueTypeFont::getGlyphSpacing() { return glyph_spacing_; }
 
 void SDLTrueTypeFont::setAntiAlias(bool anti_alias) {
   anti_alias_ = anti_alias;
 }
 
-bool SDLTrueTypeFont::isAntiAlias() {
-  return anti_alias_;
-}
+bool SDLTrueTypeFont::isAntiAlias() { return anti_alias_; }
 
 void SDLTrueTypeFont::Observe(NotificationType type,
                               const NotificationSource& source,

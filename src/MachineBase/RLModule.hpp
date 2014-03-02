@@ -94,11 +94,14 @@ class RLModule : public boost::noncopyable {
 
   // Used in derived Module constructors to declare all the
   // operations the module handles. Takes ownership |op|.
-  virtual void addOpcode(int opcode, unsigned char overload, const char* name,
+  virtual void addOpcode(int opcode,
+                         unsigned char overload,
+                         const char* name,
                          RLOperation* op);
 
   // Adds an UndefinedFunction object to this module.
-  void addUnsupportedOpcode(int opcode, unsigned char overload,
+  void addUnsupportedOpcode(int opcode,
+                            unsigned char overload,
                             const std::string& name);
 
   // Accessor that returns this module's type number
@@ -123,11 +126,13 @@ class RLModule : public boost::noncopyable {
   OpcodeMap::iterator end() { return stored_operations.end(); }
 
   static int packOpcodeNumber(int opcode, unsigned char overload);
-  static void unpackOpcodeNumber(int packed_opcode, int& opcode,
+  static void unpackOpcodeNumber(int packed_opcode,
+                                 int& opcode,
                                  unsigned char& overload);
 
  protected:
-  RLModule(const std::string& in_module_name, int in_module_type,
+  RLModule(const std::string& in_module_name,
+           int in_module_type,
            int in_module_number);
 
  private:

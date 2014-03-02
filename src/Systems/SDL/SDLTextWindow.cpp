@@ -55,12 +55,9 @@ SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
   clearWin();
 }
 
-SDLTextWindow::~SDLTextWindow() {
-}
+SDLTextWindow::~SDLTextWindow() {}
 
-boost::shared_ptr<Surface> SDLTextWindow::textSurface() {
-  return surface_;
-}
+boost::shared_ptr<Surface> SDLTextWindow::textSurface() { return surface_; }
 
 boost::shared_ptr<Surface> SDLTextWindow::nameSurface() {
   return name_surface_;
@@ -93,7 +90,7 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   RGBColourToSDLColor(font_colour_, &colour);
 
   SDL_Surface* normal =
-    TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
+      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
 
   // Copy and invert the surface for whatever.
   SDL_Surface* inverted = AlphaInvert(normal);
@@ -102,13 +99,15 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   Point position = textSurfaceRect().origin() +
                    Size(text_insertion_point_x_, text_insertion_point_y_);
 
-  SelectionElement* element = new SelectionElement(
-      system(),
-      boost::shared_ptr<Surface>(
-          new SDLSurface(getSDLGraphics(system()), normal)),
-      boost::shared_ptr<Surface>(
-          new SDLSurface(getSDLGraphics(system()), inverted)),
-      selectionCallback(), selection_id, position);
+  SelectionElement* element =
+      new SelectionElement(system(),
+                           boost::shared_ptr<Surface>(new SDLSurface(
+                               getSDLGraphics(system()), normal)),
+                           boost::shared_ptr<Surface>(new SDLSurface(
+                               getSDLGraphics(system()), inverted)),
+                           selectionCallback(),
+                           selection_id,
+                           position);
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
   selections_.push_back(element);
@@ -128,20 +127,20 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str) {
     SDL_Color colour;
     RGBColourToSDLColor(font_colour_, &colour);
     SDL_Surface* tmp =
-      TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
+        TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
 
     // Render glyph to surface
     int w = tmp->w;
     int h = tmp->h;
     int height_location = text_insertion_point_y_ - rubyTextSize();
     int width_start =
-      int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
-          (w * 0.5f));
+        int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
+            (w * 0.5f));
     surface_->blitFROMSurface(
-      tmp,
-      Rect(Point(0, 0), Size(w, h)),
-      Rect(Point(width_start, height_location), Size(w, h)),
-      255);
+        tmp,
+        Rect(Point(0, 0), Size(w, h)),
+        Rect(Point(width_start, height_location), Size(w, h)),
+        255);
     SDL_FreeSurface(tmp);
 
     system_.graphics().markScreenAsDirty(GUT_TEXTSYS);

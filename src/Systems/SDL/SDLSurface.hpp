@@ -49,7 +49,6 @@ class GraphicsObject;
  */
 SDL_Surface* buildNewSurface(const Size& size);
 
-
 /**
  * Wrapper around an OpenGL texture; meant to be passed out of the
  * graphics system.
@@ -58,8 +57,7 @@ SDL_Surface* buildNewSurface(const Size& size);
  * example, anything returned from getSurfaceNamedAndMarkViewed(), while others
  * don't own their surfaces (SDLSurfaces returned by getDC()
  */
-class SDLSurface : public Surface,
-                   public NotificationObserver {
+class SDLSurface : public Surface, public NotificationObserver {
  public:
   explicit SDLSurface(SDLGraphicsSystem* system);
 
@@ -68,7 +66,8 @@ class SDLSurface : public Surface,
   SDLSurface(SDLGraphicsSystem* system, SDL_Surface* sruf);
 
   // Surface that takes ownership of an externally created surface.
-  SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
+  SDLSurface(SDLGraphicsSystem* system,
+             SDL_Surface* surf,
              const std::vector<SDLSurface::GrpRect>& region_table);
 
   // Surface created with a specified width and height
@@ -92,28 +91,34 @@ class SDLSurface : public Surface,
   void allocate(const Size& size, bool is_dc0);
   void deallocate();
 
-  operator SDL_Surface*() {
-    return surface_;
-  }
+  operator SDL_Surface*() { return surface_; }
 
   SDL_Surface* rawSurface() { return surface_; }
 
   virtual void blitToSurface(Surface& dest_surface,
-                             const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true) const;
+                             const Rect& src,
+                             const Rect& dst,
+                             int alpha = 255,
+                             bool use_src_alpha = true) const;
 
   void blitFROMSurface(SDL_Surface* src_surface,
-                       const Rect& src, const Rect& dst,
-                       int alpha = 255, bool use_src_alpha = true);
+                       const Rect& src,
+                       const Rect& dst,
+                       int alpha = 255,
+                       bool use_src_alpha = true);
 
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst, int alpha = 255) const;
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
+                              int alpha = 255) const;
 
-  virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const;
+  virtual void renderToScreenAsColorMask(const Rect& src,
+                                         const Rect& dst,
+                                         const RGBAColour& rgba,
+                                         int filter) const;
 
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst, const int opacity[4]) const;
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
+                              const int opacity[4]) const;
 
   // Used internally; not exposed to the general graphics system
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
@@ -139,10 +144,11 @@ class SDLSurface : public Surface,
 
   SDL_Surface* surface() { return surface_; }
 
-
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const;
-  virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clip_rect, int r, int g, int b) const;
+  virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
+                                                     int r,
+                                                     int g,
+                                                     int b) const;
 
   virtual Surface* clone() const;
 
@@ -170,8 +176,13 @@ class SDLSurface : public Surface,
      * Builds the texture and
      */
     TextureRecord(SDL_Surface* surface,
-                  int x, int y, int w, int h, unsigned int bytes_per_pixel,
-                  int byte_order, int byte_type);
+                  int x,
+                  int y,
+                  int w,
+                  int h,
+                  unsigned int bytes_per_pixel,
+                  int byte_order,
+                  int byte_type);
 
     // Reuploads this current piece of surface from the supplied
     // surface without allocating a new texture.
@@ -226,6 +237,5 @@ class SDLSurface : public Surface,
 
   NotificationRegistrar registrar_;
 };
-
 
 #endif  // SRC_SYSTEMS_SDL_SDLSURFACE_HPP_

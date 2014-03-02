@@ -46,7 +46,7 @@ namespace {
 // This probably does some sort of file existance checking, but for now, just
 // always return true to get over this speed bump.
 struct CheckFile
-  : public RLOp_Store_3<StrConstant_T, IntConstant_T, StrConstant_T> {
+    : public RLOp_Store_3<StrConstant_T, IntConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, string one, int two, string three) {
     return 1;
   }
@@ -54,7 +54,6 @@ struct CheckFile
 
 }  // namespace
 
-OsModule::OsModule()
-  : RLModule("Os", 1, 005) {
+OsModule::OsModule() : RLModule("Os", 1, 005) {
   addOpcode(114, 0, "(unknown)", new CheckFile);
 }

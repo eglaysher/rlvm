@@ -30,7 +30,6 @@
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 
-SeModule::SeModule()
-  : RLModule("Se", 1, 22) {
+SeModule::SeModule() : RLModule("Se", 1, 22) {
   addOpcode(0, 0, "sePlay", callFunction(&SoundSystem::playSe));
 }

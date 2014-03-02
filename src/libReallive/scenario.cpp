@@ -48,11 +48,10 @@ namespace libReallive {
 
 Metadata::Metadata() : encoding(0) {}
 
-void
-Metadata::assign(const char* input) {
-  const int meta_len = read_i32(input),
-            id_len   = read_i32(input + 4) + 1;
-  if (meta_len < id_len + 17) return; // malformed metadata
+void Metadata::assign(const char* input) {
+  const int meta_len = read_i32(input), id_len = read_i32(input + 4) + 1;
+  if (meta_len < id_len + 17)
+    return;  // malformed metadata
   as_string.assign(input, meta_len);
   encoding = input[id_len + 16];
 }
@@ -86,7 +85,7 @@ Header::Header(const char* data, const size_t length) {
 
   // Misc settings
   savepoint_message = read_i32(data + 0x1c4);
-  savepoint_selcom  = read_i32(data + 0x1c8);
+  savepoint_selcom = read_i32(data + 0x1c8);
   savepoint_seentop = read_i32(data + 0x1cc);
 
   // Dramatis personae
@@ -119,7 +118,7 @@ Script::Script(const Header& hdr,
   const size_t kidoku_length = read_i32(data + 0x0c);
   ConstructionData cdat(kidoku_length, elts.end());
   for (size_t i = 0; i < kidoku_length; ++i)
-    cdat.kidoku_table[i] =  read_i32(data + kidoku_offs + i * 4);
+    cdat.kidoku_table[i] = read_i32(data + kidoku_offs + i * 4);
 
   // Decompress data
   const size_t dlen = read_i32(data + 0x24);
@@ -163,7 +162,8 @@ Script::Script(const Header& hdr,
 
     // Advance
     size_t l = it->length();
-    if (l <= 0) l = 1; // Failsafe: always advance at least one byte.
+    if (l <= 0)
+      l = 1;  // Failsafe: always advance at least one byte.
     stream += l;
     pos += l;
   }
@@ -173,7 +173,7 @@ Script::Script(const Header& hdr,
     it->set_pointers(cdat);
   }
 
-  delete [] uncompressed;
+  delete[] uncompressed;
 }
 
 const pointer_t Script::getEntrypoint(int entrypoint) const {
@@ -187,5 +187,4 @@ const pointer_t Script::getEntrypoint(int entrypoint) const {
 Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const {
   return script.getEntrypoint(entrypoint);
 }
-
 }

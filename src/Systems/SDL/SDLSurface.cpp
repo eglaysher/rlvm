@@ -55,32 +55,23 @@ class ColourTransformer {
   virtual SDL_Color operator()(const SDL_Color& colour) const = 0;
 };
 
-class ToneCurveColourTransformer : public ColourTransformer{
+class ToneCurveColourTransformer : public ColourTransformer {
  public:
   ToneCurveColourTransformer(const ToneCurveRGBMap m) : colormap(m) {};
   virtual SDL_Color operator()(const SDL_Color& colour) const {
-    SDL_Color out = {
-        colormap[0][colour.r],
-        colormap[1][colour.g],
-        colormap[2][colour.b],
-        0
-    };
+    SDL_Color out = {colormap[0][colour.r], colormap[1][colour.g],
+                     colormap[2][colour.b], 0};
     return out;
   }
 
  private:
-	ToneCurveRGBMap colormap;
+  ToneCurveRGBMap colormap;
 };
 
 class InvertColourTransformer : public ColourTransformer {
  public:
   virtual SDL_Color operator()(const SDL_Color& colour) const {
-    SDL_Color out = {
-        255 - colour.r,
-        255 - colour.g,
-        255 - colour.b,
-        0
-    };
+    SDL_Color out = {255 - colour.r, 255 - colour.g, 255 - colour.b, 0};
     return out;
   }
 };
@@ -90,29 +81,25 @@ class MonoColourTransformer : public ColourTransformer {
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     float grayscale = 0.3 * colour.r + 0.59 * colour.g + 0.11 * colour.b;
     clamp(grayscale, 0, 255);
-    SDL_Color out = {
-        grayscale,
-        grayscale,
-        grayscale,
-        0
-    };
+    SDL_Color out = {grayscale, grayscale, grayscale, 0};
     return out;
   }
 };
 
 class ApplyColourTransformer : public ColourTransformer {
  public:
-  explicit ApplyColourTransformer(const RGBColour& colour) : colour_(colour) {
-  }
+  explicit ApplyColourTransformer(const RGBColour& colour) : colour_(colour) {}
 
   int compose(int in_colour, int surface_colour) const {
     if (in_colour > 0) {
       return 255 -
-          ((static_cast<float>((255 - in_colour) * (255 - surface_colour)) /
-            (255 * 255)) * 255);
+             ((static_cast<float>((255 - in_colour) * (255 - surface_colour)) /
+               (255 * 255)) *
+              255);
     } else if (in_colour < 0) {
       return (static_cast<float>(abs(in_colour) * surface_colour) /
-              (255 * 255)) * 255;
+              (255 * 255)) *
+             255;
     } else {
       return surface_colour;
     }
@@ -120,11 +107,8 @@ class ApplyColourTransformer : public ColourTransformer {
 
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     SDL_Color out = {
-        compose(colour_.r(), colour.r),
-        compose(colour_.g(), colour.g),
-        compose(colour_.b(), colour.b),
-	0
-    };
+        compose(colour_.r(), colour.r), compose(colour_.g(), colour.g),
+        compose(colour_.b(), colour.b), 0};
     return out;
   }
 
@@ -133,7 +117,8 @@ class ApplyColourTransformer : public ColourTransformer {
 };
 
 // Applies a |transformer| to every pixel in |area| in the surface |surface|.
-void TransformSurface(SDLSurface* our_surface, const Rect& area,
+void TransformSurface(SDLSurface* our_surface,
+                      const Rect& area,
                       const ColourTransformer& transformer) {
   SDL_Surface* surface = our_surface->rawSurface();
   SDL_Color colour;
@@ -158,9 +143,11 @@ void TransformSurface(SDLSurface* our_surface, const Rect& area,
         // Before someone tries to simplify the following four lines,
         // remember that sizeof(int) != sizeof(Uint8).
         Uint8 alpha;
-        SDL_GetRGBA(col, surface->format, &colour.r, &colour.g, &colour.b, &alpha);
+        SDL_GetRGBA(
+            col, surface->format, &colour.r, &colour.g, &colour.b, &alpha);
         SDL_Color out = transformer(colour);
-        Uint32 out_colour = SDL_MapRGBA(surface->format, out.r, out.g, out.b, alpha);
+        Uint32 out_colour =
+            SDL_MapRGBA(surface->format, out.r, out.g, out.b, alpha);
 
         memcpy(p_position, &out_colour, surface->format->BytesPerPixel);
 
@@ -192,10 +179,14 @@ void TransformSurface(SDLSurface* our_surface, const Rect& area,
 
 SDL_Surface* buildNewSurface(const Size& size) {
   // Create an empty surface
-  SDL_Surface* tmp =
-    SDL_CreateRGBSurface(
-        SDL_SWSURFACE | SDL_SRCALPHA, size.width(), size.height(),
-        DefaultBpp, DefaultRmask, DefaultGmask, DefaultBmask, DefaultAmask);
+  SDL_Surface* tmp = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
+                                          size.width(),
+                                          size.height(),
+                                          DefaultBpp,
+                                          DefaultRmask,
+                                          DefaultGmask,
+                                          DefaultBmask,
+                                          DefaultAmask);
 
   if (tmp == NULL) {
     ostringstream ss;
@@ -210,14 +201,29 @@ SDL_Surface* buildNewSurface(const Size& size) {
 // -----------------------------------------------------------------------
 // SDLSurface::TextureRecord
 // -----------------------------------------------------------------------
-SDLSurface::TextureRecord::TextureRecord(
-  SDL_Surface* surface,
-  int x, int y, int w, int h, unsigned int bytes_per_pixel,
-  int byte_order, int byte_type)
-  : texture(new Texture(surface, x, y, w, h, bytes_per_pixel, byte_order,
-                        byte_type)),
-    x_(x), y_(y), w_(w), h_(h), bytes_per_pixel_(bytes_per_pixel),
-    byte_order_(byte_order), byte_type_(byte_type) {}
+SDLSurface::TextureRecord::TextureRecord(SDL_Surface* surface,
+                                         int x,
+                                         int y,
+                                         int w,
+                                         int h,
+                                         unsigned int bytes_per_pixel,
+                                         int byte_order,
+                                         int byte_type)
+    : texture(new Texture(surface,
+                          x,
+                          y,
+                          w,
+                          h,
+                          bytes_per_pixel,
+                          byte_order,
+                          byte_type)),
+      x_(x),
+      y_(y),
+      w_(w),
+      h_(h),
+      bytes_per_pixel_(bytes_per_pixel),
+      byte_order_(byte_order),
+      byte_type_(byte_type) {}
 
 // -----------------------------------------------------------------------
 
@@ -227,37 +233,47 @@ void SDLSurface::TextureRecord::reupload(SDL_Surface* surface,
     Rect i = Rect::REC(x_, y_, w_, h_).intersection(dirty);
     if (!i.isEmpty()) {
       texture->reupload(surface,
-                        i.x() - x_, i.y() - y_,
-                        i.x(), i.y(), i.width(), i.height(),
-                        bytes_per_pixel_, byte_order_, byte_type_);
+                        i.x() - x_,
+                        i.y() - y_,
+                        i.x(),
+                        i.y(),
+                        i.width(),
+                        i.height(),
+                        bytes_per_pixel_,
+                        byte_order_,
+                        byte_type_);
     }
   } else {
-    texture.reset(new Texture(surface, x_, y_, w_, h_, bytes_per_pixel_,
-                              byte_order_, byte_type_));
+    texture.reset(new Texture(
+        surface, x_, y_, w_, h_, bytes_per_pixel_, byte_order_, byte_type_));
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::TextureRecord::forceUnload() {
-  texture.reset();
-}
+void SDLSurface::TextureRecord::forceUnload() { texture.reset(); }
 
 // -----------------------------------------------------------------------
 // SDLSurface
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system)
-    : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
-      graphics_system_(system), is_mask_(false) {
+    : surface_(NULL),
+      texture_is_valid_(false),
+      is_dc0_(false),
+      graphics_system_(system),
+      is_mask_(false) {
   registerForNotification(system);
 }
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
-  : surface_(surf), texture_is_valid_(false), is_dc0_(false),
-    graphics_system_(system), is_mask_(false) {
+    : surface_(surf),
+      texture_is_valid_(false),
+      is_dc0_(false),
+      graphics_system_(system),
+      is_mask_(false) {
   buildRegionTable(Size(surf->w, surf->h));
   registerForNotification(system);
 }
@@ -265,19 +281,26 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
 // -----------------------------------------------------------------------
 
 // Surface that takes ownership of an externally created surface.
-SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf,
+SDLSurface::SDLSurface(SDLGraphicsSystem* system,
+                       SDL_Surface* surf,
                        const vector<SDLSurface::GrpRect>& region_table)
-  : surface_(surf), region_table_(region_table),
-    texture_is_valid_(false), is_dc0_(false), graphics_system_(system),
-    is_mask_(false) {
+    : surface_(surf),
+      region_table_(region_table),
+      texture_is_valid_(false),
+      is_dc0_(false),
+      graphics_system_(system),
+      is_mask_(false) {
   registerForNotification(system);
 }
 
 // -----------------------------------------------------------------------
 
 SDLSurface::SDLSurface(SDLGraphicsSystem* system, const Size& size)
-  : surface_(NULL), texture_is_valid_(false), is_dc0_(false),
-    graphics_system_(system), is_mask_(false) {
+    : surface_(NULL),
+      texture_is_valid_(false),
+      is_dc0_(false),
+      graphics_system_(system),
+      is_mask_(false) {
   allocate(size);
   buildRegionTable(size);
   registerForNotification(system);
@@ -315,9 +338,7 @@ void SDLSurface::buildRegionTable(const Size& size) {
 
 // -----------------------------------------------------------------------
 
-SDLSurface::~SDLSurface() {
-  deallocate();
-}
+SDLSurface::~SDLSurface() { deallocate(); }
 
 // -----------------------------------------------------------------------
 
@@ -369,8 +390,10 @@ void SDLSurface::deallocate() {
  * @todo Make this only upload the changed parts of the texture!
  */
 void SDLSurface::blitToSurface(Surface& dest_surface,
-                               const Rect& src, const Rect& dst,
-                               int alpha, bool use_src_alpha) const {
+                               const Rect& src,
+                               const Rect& dst,
+                               int alpha,
+                               bool use_src_alpha) const {
   SDLSurface& sdl_dest_surface = dynamic_cast<SDLSurface&>(dest_surface);
 
   SDL_Rect src_rect, dest_rect;
@@ -408,8 +431,8 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
         reportSDLError("SDL_SetAlpha", "SDLGraphicsSystem::blitSurfaceToDC()");
     }
 
-    if (SDL_BlitSurface(surface_, &src_rect, sdl_dest_surface.surface(),
-                       &dest_rect))
+    if (SDL_BlitSurface(
+            surface_, &src_rect, sdl_dest_surface.surface(), &dest_rect))
       reportSDLError("SDL_BlitSurface", "SDLGraphicsSystem::blitSurfaceToDC()");
   }
   sdl_dest_surface.markWrittenTo(dst);
@@ -422,8 +445,10 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
  * this function later.
  */
 void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
-                                 const Rect& src, const Rect& dst,
-                                 int alpha, bool use_src_alpha) {
+                                 const Rect& src,
+                                 const Rect& dst,
+                                 int alpha,
+                                 bool use_src_alpha) {
   SDL_Rect src_rect, dest_rect;
   RectToSDLRect(src, &src_rect);
   RectToSDLRect(dst, &dest_rect);
@@ -442,10 +467,13 @@ void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
 
 // -----------------------------------------------------------------------
 
-static void determineProperties(
-  SDL_Surface* surface, bool is_mask,
-  GLenum& bytes_per_pixel, GLint& byte_order, GLint& byte_type) {
-  SDL_LockSurface(surface); {
+static void determineProperties(SDL_Surface* surface,
+                                bool is_mask,
+                                GLenum& bytes_per_pixel,
+                                GLint& byte_order,
+                                GLint& byte_type) {
+  SDL_LockSurface(surface);
+  {
     bytes_per_pixel = surface->format->BytesPerPixel;
     byte_order = GL_RGBA;
     byte_type = GL_UNSIGNED_BYTE;
@@ -458,8 +486,8 @@ static void determineProperties(
         byte_order = GL_RGBA;
       // OSX's crazy ARGB pixel format
       else if ((format->Amask == 0x0 || format->Amask == 0xFF000000) &&
-              format->Rmask == 0xFF0000 &&
-              format->Gmask == 0xFF00 && format->Bmask == 0xFF) {
+               format->Rmask == 0xFF0000 && format->Gmask == 0xFF00 &&
+               format->Bmask == 0xFF) {
         // This is an insane hack to get around OSX's crazy byte order
         // for alpha on PowerPC. Since there isn't a GL_ARGB type, we
         // need to specify BGRA and then tell the byte type to be
@@ -502,8 +530,8 @@ void SDLSurface::uploadTextureIfNeeded() const {
     if (textures_.size() == 0) {
       GLenum bytes_per_pixel;
       GLint byte_order, byte_type;
-      determineProperties(surface_, is_mask_, bytes_per_pixel, byte_order,
-                          byte_type);
+      determineProperties(
+          surface_, is_mask_, bytes_per_pixel, byte_order, byte_type);
 
       // ---------------------------------------------------------------------
 
@@ -514,13 +542,20 @@ void SDLSurface::uploadTextureIfNeeded() const {
 
       int x_offset = 0;
       for (vector<int>::const_iterator it = x_pieces.begin();
-          it != x_pieces.end(); ++it) {
+           it != x_pieces.end();
+           ++it) {
         int y_offset = 0;
         for (vector<int>::const_iterator jt = y_pieces.begin();
-            jt != y_pieces.end(); ++jt) {
-          TextureRecord record(
-            surface_, x_offset, y_offset, *it, *jt,  bytes_per_pixel,
-            byte_order, byte_type);
+             jt != y_pieces.end();
+             ++jt) {
+          TextureRecord record(surface_,
+                               x_offset,
+                               y_offset,
+                               *it,
+                               *jt,
+                               bytes_per_pixel,
+                               byte_order,
+                               byte_type);
           textures_.push_back(record);
 
           y_offset += *jt;
@@ -531,8 +566,8 @@ void SDLSurface::uploadTextureIfNeeded() const {
     } else {
       // Reupload the textures without reallocating them.
       for_each(textures_.begin(), textures_.end(), [&](TextureRecord& record) {
-          record.reupload(surface_, dirty_rectangle_);
-        });
+        record.reupload(surface_, dirty_rectangle_);
+      });
     }
 
     dirty_rectangle_ = Rect();
@@ -542,47 +577,58 @@ void SDLSurface::uploadTextureIfNeeded() const {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src, const Rect& dst, int alpha) const {
+void SDLSurface::renderToScreen(const Rect& src,
+                                const Rect& dst,
+                                int alpha) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it) {
+       it != textures_.end();
+       ++it) {
     it->texture->renderToScreen(src, dst, alpha);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsColorMask(
-  const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const {
+void SDLSurface::renderToScreenAsColorMask(const Rect& src,
+                                           const Rect& dst,
+                                           const RGBAColour& rgba,
+                                           int filter) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it) {
+       it != textures_.end();
+       ++it) {
     it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src, const Rect& dst,
+void SDLSurface::renderToScreen(const Rect& src,
+                                const Rect& dst,
                                 const int opacity[4]) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it) {
+       it != textures_.end();
+       ++it) {
     it->texture->renderToScreen(src, dst, opacity);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsObject(
-  const GraphicsObject& rp, const Rect& src, const Rect& dst, int alpha) const {
+void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
+                                        const Rect& src,
+                                        const Rect& dst,
+                                        int alpha) const {
   uploadTextureIfNeeded();
 
   for (vector<TextureRecord>::iterator it = textures_.begin();
-      it != textures_.end(); ++it) {
+       it != textures_.end();
+       ++it) {
     it->texture->renderToScreenAsObject(rp, *this, src, dst, alpha);
   }
 }
@@ -630,14 +676,12 @@ void SDLSurface::mono(const Rect& rect) {
   TransformSurface(this, rect, mono);
 }
 
-
 // -----------------------------------------------------------------------
 
 void SDLSurface::toneCurve(const ToneCurveRGBMap effect, const Rect& area) {
   ToneCurveColourTransformer tc(effect);
   TransformSurface(this, area, tc);
 }
-
 
 // -----------------------------------------------------------------------
 
@@ -648,9 +692,7 @@ void SDLSurface::applyColour(const RGBColour& colour, const Rect& area) {
 
 // -----------------------------------------------------------------------
 
-int SDLSurface::numPatterns() const {
-  return region_table_.size();
-}
+int SDLSurface::numPatterns() const { return region_table_.size(); }
 
 // -----------------------------------------------------------------------
 
@@ -665,10 +707,14 @@ const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const {
 
 Surface* SDLSurface::clone() const {
   SDL_Surface* tmp_surface =
-    SDL_CreateRGBSurface(surface_->flags, surface_->w, surface_->h,
-                         surface_->format->BitsPerPixel,
-                         surface_->format->Rmask, surface_->format->Gmask,
-                         surface_->format->Bmask, surface_->format->Amask);
+      SDL_CreateRGBSurface(surface_->flags,
+                           surface_->w,
+                           surface_->h,
+                           surface_->format->BitsPerPixel,
+                           surface_->format->Rmask,
+                           surface_->format->Gmask,
+                           surface_->format->Bmask,
+                           surface_->format->Amask);
 
   // Disable alpha blending because we're copying onto a blank (and
   // blank alpha!) surface
@@ -741,15 +787,16 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) const {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(
-    const Rect& clip_rect, int r, int g, int b) const {
+boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(const Rect& clip_rect,
+                                                       int r,
+                                                       int g,
+                                                       int b) const {
   const char* function_name = "SDLGraphicsSystem::clipAsColorMask()";
 
   // TODO: This needs to be made exception safe and so does the rest
   // of this file.
-  SDL_Surface* tmp_surface =
-      SDL_CreateRGBSurface(0, surface_->w, surface_->h, 24,
-                           0xFF0000, 0xFF00, 0xFF, 0);
+  SDL_Surface* tmp_surface = SDL_CreateRGBSurface(
+      0, surface_->w, surface_->h, 24, 0xFF0000, 0xFF00, 0xFF, 0);
 
   if (!tmp_surface)
     reportSDLError("SDL_CreateRGBSurface", function_name);
@@ -794,7 +841,8 @@ void SDLSurface::Observe(NotificationType type,
   if (surface_) {
     // Force unloading of all OpenGL resources
     for (std::vector<TextureRecord>::iterator it = textures_.begin();
-         it != textures_.end(); ++it) {
+         it != textures_.end();
+         ++it) {
       it->forceUnload();
     }
 

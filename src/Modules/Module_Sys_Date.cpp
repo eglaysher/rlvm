@@ -36,10 +36,14 @@
 
 namespace {
 
-struct GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
-                                     IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator y,
-                  IntReferenceIterator m, IntReferenceIterator d,
+struct GetDate : public RLOp_Void_4<IntReference_T,
+                                    IntReference_T,
+                                    IntReference_T,
+                                    IntReference_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator y,
+                  IntReferenceIterator m,
+                  IntReferenceIterator d,
                   IntReferenceIterator wd) {
     *y = datetime::getYear();
     *m = datetime::getMonth();
@@ -48,10 +52,14 @@ struct GetDate : public RLOp_Void_4< IntReference_T, IntReference_T,
   }
 };
 
-struct GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
-                                     IntReference_T, IntReference_T> {
-  void operator()(RLMachine& machine, IntReferenceIterator hh,
-                  IntReferenceIterator mm, IntReferenceIterator ss,
+struct GetTime : public RLOp_Void_4<IntReference_T,
+                                    IntReference_T,
+                                    IntReference_T,
+                                    IntReference_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator hh,
+                  IntReferenceIterator mm,
+                  IntReferenceIterator ss,
                   IntReferenceIterator ms) {
     *hh = datetime::getHour();
     *mm = datetime::getMinute();
@@ -60,14 +68,23 @@ struct GetTime : public RLOp_Void_4< IntReference_T, IntReference_T,
   }
 };
 
-struct GetDateTime : public RLOp_Void_8<
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T,
-  IntReference_T, IntReference_T, IntReference_T, IntReference_T> {
+struct GetDateTime : public RLOp_Void_8<IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T,
+                                        IntReference_T> {
   void operator()(RLMachine& machine,
-                  IntReferenceIterator y, IntReferenceIterator m,
-                  IntReferenceIterator d, IntReferenceIterator wd,
-                  IntReferenceIterator hh, IntReferenceIterator mm,
-                  IntReferenceIterator ss, IntReferenceIterator ms) {
+                  IntReferenceIterator y,
+                  IntReferenceIterator m,
+                  IntReferenceIterator d,
+                  IntReferenceIterator wd,
+                  IntReferenceIterator hh,
+                  IntReferenceIterator mm,
+                  IntReferenceIterator ss,
+                  IntReferenceIterator ms) {
     *y = datetime::getYear();
     *m = datetime::getMonth();
     *d = datetime::getDay();

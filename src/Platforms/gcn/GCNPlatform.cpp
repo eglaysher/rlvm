@@ -59,40 +59,23 @@ const char* EVENT_CANCEL = "EVENT_CANCEL";
 // A mapping from the SYSCOM_ integer constants to a string suitable for an
 // event name.
 const char* SYSCOM_EVENTS[] = {
-  "SYSCOM_SAVE",
-  "SYSCOM_LOAD",
-  "SYSCOM_MESSAGE_SPEED",
-  "SYSCOM_WINDOW_ATTRIBUTES",
-  "SYSCOM_VOLUME_SETTINGS",
-  "SYSCOM_DISPLAY_MODE",
-  "SYSCOM_MISCELLANEOUS_SETTINGS",
-  "NONE",
-  "SYSCOM_VOICE_SETTINGS",
-  "SYSCOM_FONT_SELECTION",
-  "SYSCOM_BGM_FADE",
-  "SYSCOM_BGM_SETTINGS",
-  "SYSCOM_WINDOW_DECORATION_STYLE",
-  "SYSCOM_AUTO_MODE_SETTINGS",
-  "SYSCOM_RETURN_TO_PREVIOUS_SELECTION",
-  "SYSCOM_USE_KOE",
-  "SYSCOM_DISPLAY_VERSION",
-  "SYSCOM_SHOW_WEATHER",
-  "SYSCOM_SHOW_OBJECT_1",
-  "SYSCOM_SHOW_OBJECT_2",
-  "SYSCOM_CLASSIFY_TEXT",  // ??????? Unknown function.
-  "SYSCOM_GENERIC_1",
-  "SYSCOM_GENERIC_2",
-  "NONE",
-  "SYSCOM_OPEN_MANUAL_PATH",
-  "SYSCOM_SET_SKIP_MODE",
-  "SYSCOM_AUTO_MODE",
-  "NONE",
-  "SYSCOM_MENU_RETURN",
-  "SYSCOM_EXIT_GAME",
-  "SYSCOM_HIDE_MENU",
-  "SYSCOM_SHOW_BACKGROUND",
-  NULL
-};
+    "SYSCOM_SAVE",                         "SYSCOM_LOAD",
+    "SYSCOM_MESSAGE_SPEED",                "SYSCOM_WINDOW_ATTRIBUTES",
+    "SYSCOM_VOLUME_SETTINGS",              "SYSCOM_DISPLAY_MODE",
+    "SYSCOM_MISCELLANEOUS_SETTINGS",       "NONE",
+    "SYSCOM_VOICE_SETTINGS",               "SYSCOM_FONT_SELECTION",
+    "SYSCOM_BGM_FADE",                     "SYSCOM_BGM_SETTINGS",
+    "SYSCOM_WINDOW_DECORATION_STYLE",      "SYSCOM_AUTO_MODE_SETTINGS",
+    "SYSCOM_RETURN_TO_PREVIOUS_SELECTION", "SYSCOM_USE_KOE",
+    "SYSCOM_DISPLAY_VERSION",              "SYSCOM_SHOW_WEATHER",
+    "SYSCOM_SHOW_OBJECT_1",                "SYSCOM_SHOW_OBJECT_2",
+    "SYSCOM_CLASSIFY_TEXT",  // ??????? Unknown function.
+    "SYSCOM_GENERIC_1",                    "SYSCOM_GENERIC_2",
+    "NONE",                                "SYSCOM_OPEN_MANUAL_PATH",
+    "SYSCOM_SET_SKIP_MODE",                "SYSCOM_AUTO_MODE",
+    "NONE",                                "SYSCOM_MENU_RETURN",
+    "SYSCOM_EXIT_GAME",                    "SYSCOM_HIDE_MENU",
+    "SYSCOM_SHOW_BACKGROUND",              NULL};
 
 const int MENU_END = -1;
 const int MENU_SEPARATOR = -2;
@@ -112,54 +95,48 @@ struct MenuSpec {
 
 const char* MENU_PREFERENCES_EVENT = "MENU_PREFERENCES_EVENT";
 const MenuSpec MENU_PREFERENCES_MENU[] = {
-  {SYSCOM_SCREEN_MODE, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_VOLUME_SETTINGS, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_WINDOW_ATTRIBUTES, NULL, NULL},
-  {SYSCOM_WINDOW_DECORATION_STYLE, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_FONT_SELECTION, NULL, NULL},
-  {SYSCOM_MESSAGE_SPEED, NULL, NULL},
-  {SYSCOM_AUTO_MODE_SETTINGS, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_SHOW_OBJECT_1, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_MISCELLANEOUS_SETTINGS, NULL, NULL},
-  {MENU_END, NULL, NULL}
-};
+    {SYSCOM_SCREEN_MODE, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_VOLUME_SETTINGS, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_WINDOW_ATTRIBUTES, NULL, NULL},
+    {SYSCOM_WINDOW_DECORATION_STYLE, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_FONT_SELECTION, NULL, NULL},
+    {SYSCOM_MESSAGE_SPEED, NULL, NULL},
+    {SYSCOM_AUTO_MODE_SETTINGS, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_SHOW_OBJECT_1, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_MISCELLANEOUS_SETTINGS, NULL, NULL},
+    {MENU_END, NULL, NULL}};
 
 const char* MENU_RETURN_MENU_EVENT = "MENU_RETURN_MENU_EVENT";
 const MenuSpec MENU_RETURN_MENU[] = {
-  {SYSCOM_HIDE_MENU, "028.000", EVENT_CANCEL},
-  {SYSCOM_MENU_RETURN, "028.001", NULL},
-  {MENU_END, NULL, NULL}
-};
+    {SYSCOM_HIDE_MENU, "028.000", EVENT_CANCEL},
+    {SYSCOM_MENU_RETURN, "028.001", NULL}, {MENU_END, NULL, NULL}};
 
 const char* EXIT_GAME_MENU_EVENT = "EXIT_GAME_MENU_EVENT";
-const MenuSpec EXIT_GAME_MENU[] = {
-  {SYSCOM_HIDE_MENU, "029.000", EVENT_CANCEL},
-  {SYSCOM_EXIT_GAME, "029.001", NULL},
-  {MENU_END, NULL, NULL}
-};
+const MenuSpec EXIT_GAME_MENU[] = {{SYSCOM_HIDE_MENU, "029.000", EVENT_CANCEL},
+                                   {SYSCOM_EXIT_GAME, "029.001", NULL},
+                                   {MENU_END, NULL, NULL}};
 
 // TODO: Things like SYSCOM_MENU_RETURN need to be turned into menu pointers in
 // their own right.
 const MenuSpec SYCOM_MAIN_MENU[] = {
-  {SYSCOM_SET_SKIP_MODE, NULL, NULL},
-  {SYSCOM_AUTO_MODE, NULL, NULL},
-  {SYSCOM_SHOW_BACKGROUND, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-  {SYSCOM_SAVE, NULL, NULL},
-  {SYSCOM_LOAD, NULL, NULL},
-  {SYSCOM_RETURN_TO_PREVIOUS_SELECTION, NULL, NULL},
-  {MENU_SEPARATOR, NULL, NULL},
-//  {MENU, "", MENU_PREFERENCES_EVENT},
-//  {MENU_SEPARATOR, 0, 0},
-  {MENU, "028", MENU_RETURN_MENU_EVENT},
-  {MENU, "029", EXIT_GAME_MENU_EVENT},
-  {MENU_END, NULL, NULL}
-};
+    {SYSCOM_SET_SKIP_MODE, NULL, NULL},
+    {SYSCOM_AUTO_MODE, NULL, NULL},
+    {SYSCOM_SHOW_BACKGROUND, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    {SYSCOM_SAVE, NULL, NULL},
+    {SYSCOM_LOAD, NULL, NULL},
+    {SYSCOM_RETURN_TO_PREVIOUS_SELECTION, NULL, NULL},
+    {MENU_SEPARATOR, NULL, NULL},
+    //  {MENU, "", MENU_PREFERENCES_EVENT},
+    //  {MENU_SEPARATOR, 0, 0},
+    {MENU, "028", MENU_RETURN_MENU_EVENT},
+    {MENU, "029", EXIT_GAME_MENU_EVENT},
+    {MENU_END, NULL, NULL}};
 
 // -----------------------------------------------------------------------
 // GCNPlatformBlocker
@@ -171,9 +148,7 @@ class GCNPlatformBlocker : public LongOperation,
   GCNPlatformBlocker(SDLEventSystem& system,
                      GraphicsSystem& graphics,
                      const boost::shared_ptr<GCNPlatform>& platform)
-      : event_system_(system),
-        graphics_system_(graphics),
-        platform_(platform) {
+      : event_system_(system), graphics_system_(graphics), platform_(platform) {
     event_system_.setRawSDLInputHandler(this);
     graphics_system_.addRenderable(this);
     platform_->blocker_ = this;
@@ -211,9 +186,7 @@ class GCNPlatformBlocker : public LongOperation,
   }
 
   // Overridden from Renderable:
-  virtual void render(std::ostream* tree) {
-    platform_->render();
-  }
+  virtual void render(std::ostream* tree) { platform_->render(); }
 
   // Overridden from RawSDLInputHandler:
   virtual void pushInput(SDL_Event event) {
@@ -225,8 +198,8 @@ class GCNPlatformBlocker : public LongOperation,
   GraphicsSystem& graphics_system_;
   boost::shared_ptr<GCNPlatform> platform_;
 
-  std::queue<std::function<void(void)> > delayed_tasks_;
-  std::queue<std::function<void(RLMachine&)> > delayed_rlmachine_tasks_;
+  std::queue<std::function<void(void)>> delayed_tasks_;
+  std::queue<std::function<void(RLMachine&)>> delayed_rlmachine_tasks_;
 };
 
 // -----------------------------------------------------------------------
@@ -234,8 +207,7 @@ class GCNPlatformBlocker : public LongOperation,
 // -----------------------------------------------------------------------
 
 GCNPlatform::GCNPlatform(System& system, const Rect& screen_size)
-  : Platform(system.gameexe()), blocker_(NULL),
-    screen_size_(screen_size) {
+    : Platform(system.gameexe()), blocker_(NULL), screen_size_(screen_size) {
   initializeGuichan(system, screen_size);
 }
 
@@ -250,16 +222,15 @@ GCNPlatform::~GCNPlatform() {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::run(RLMachine& machine) {
-  guichan_gui_->logic();
-}
+void GCNPlatform::run(RLMachine& machine) { guichan_gui_->logic(); }
 
 // -----------------------------------------------------------------------
 
 void GCNPlatform::render() {
   try {
     guichan_gui_->draw();
-  } catch (gcn::Exception& e) {
+  }
+  catch (gcn::Exception& e) {
     ostringstream oss;
     oss << "Guichan Exception at " << e.getFunction() << ": " << e.getMessage();
     throw rlvm::Exception(oss.str());
@@ -269,7 +240,8 @@ void GCNPlatform::render() {
   // drivers in Intrepid Ibex. Probably both. Something guichan is
   // doing/drivers haven't implemented is causing a whole bunch of invalid
   // enumerant errors.
-  while (glGetError() != GL_NO_ERROR);
+  while (glGetError() != GL_NO_ERROR)
+    ;
 }
 
 // -----------------------------------------------------------------------
@@ -293,8 +265,7 @@ void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
 
 void GCNPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
   pushBlocker(machine);
-  pushWindowOntoStack(
-      new GCNInfoWindow(machine, info, this));
+  pushWindowOntoStack(new GCNInfoWindow(machine, info, this));
 }
 
 // -----------------------------------------------------------------------
@@ -319,17 +290,20 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event) {
 
   // Handle our own internal events
   if (event == MENU_PREFERENCES_EVENT) {
-    blocker_->addMachineTask(
-      bind(&GCNPlatform::buildSyscomMenuFor, this,
-           "", MENU_PREFERENCES_MENU, _1));
+    blocker_->addMachineTask(bind(
+        &GCNPlatform::buildSyscomMenuFor, this, "", MENU_PREFERENCES_MENU, _1));
   } else if (event == MENU_RETURN_MENU_EVENT) {
-    blocker_->addMachineTask(
-      bind(&GCNPlatform::buildSyscomMenuFor, this,
-           syscomString("MENU_RETURN_MESS_STR"), MENU_RETURN_MENU, _1));
+    blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
+                                  this,
+                                  syscomString("MENU_RETURN_MESS_STR"),
+                                  MENU_RETURN_MENU,
+                                  _1));
   } else if (event == EXIT_GAME_MENU_EVENT) {
-    blocker_->addMachineTask(
-      bind(&GCNPlatform::buildSyscomMenuFor, this,
-           syscomString("GAME_END_MESS_STR"), EXIT_GAME_MENU, _1));
+    blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
+                                  this,
+                                  syscomString("GAME_END_MESS_STR"),
+                                  EXIT_GAME_MENU,
+                                  _1));
   }
 }
 
@@ -370,11 +344,11 @@ void GCNPlatform::keyReleased(gcn::KeyEvent& keyEvent) {
 void GCNPlatform::pushBlocker(RLMachine& machine) {
   if (blocker_ == NULL) {
     // Block the world!
-    SDLEventSystem& event = dynamic_cast<SDLEventSystem&>(
-        machine.system().event());
+    SDLEventSystem& event =
+        dynamic_cast<SDLEventSystem&>(machine.system().event());
     GraphicsSystem& graphics = machine.system().graphics();
-    machine.pushLongOperation(new GCNPlatformBlocker(event, graphics,
-                                                     shared_from_this()));
+    machine.pushLongOperation(
+        new GCNPlatformBlocker(event, graphics, shared_from_this()));
   }
 }
 
@@ -386,8 +360,8 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
 
   sdl_input_.reset(new gcn::SDLInput());
 
-  opengl_graphics_.reset(new GCNGraphics(screen_size.width(),
-                                         screen_size.height()));
+  opengl_graphics_.reset(
+      new GCNGraphics(screen_size.width(), screen_size.height()));
 
   guichan_gui_.reset(new gcn::Gui);
   guichan_gui_->setTabbingEnabled(false);  // Do I want this on?
@@ -409,8 +383,9 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::buildSyscomMenuFor(
-  const std::string& label, const MenuSpec menu_items[], RLMachine& machine) {
+void GCNPlatform::buildSyscomMenuFor(const std::string& label,
+                                     const MenuSpec menu_items[],
+                                     RLMachine& machine) {
   System& sys = machine.system();
 
   std::vector<GCNMenuButton> buttons;
@@ -482,7 +457,7 @@ void GCNPlatform::pushWindowOntoStack(GCNWindow* window) {
 
 void GCNPlatform::MenuSave(RLMachine& machine) {
   pushWindowOntoStack(
-    new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_SAVE, this));
+      new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_SAVE, this));
 }
 
 // -----------------------------------------------------------------------
@@ -496,7 +471,7 @@ void GCNPlatform::DoSave(RLMachine& machine, int slot) {
 
 void GCNPlatform::MenuLoad(RLMachine& machine) {
   pushWindowOntoStack(
-    new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_LOAD, this));
+      new GCNSaveLoadWindow(machine, GCNSaveLoadWindow::DO_LOAD, this));
 }
 
 // -----------------------------------------------------------------------

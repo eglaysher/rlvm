@@ -31,9 +31,9 @@
 #include <boost/serialization/split_member.hpp>
 
 // Forward declaration
-template<typename T>
+template <typename T>
 class AllocatedLazyArrayIterator;
-template<typename Value>
+template <typename Value>
 class FullLazyArrayIterator;
 
 // Container that implements an array where all objects are lazily
@@ -49,7 +49,7 @@ class FullLazyArrayIterator;
 // allocated. Kanon leaves 10.
 //
 // @todo Think about caching firstEntry for the iterators...
-template<typename T>
+template <typename T>
 class LazyArray {
  public:
   typedef FullLazyArrayIterator<T> full_iterator;
@@ -101,33 +101,35 @@ class LazyArray {
   int size_;
   mutable boost::scoped_array<T*> array_;
 
-  template<class> friend class FullLazyArrayIterator;
-  template<class> friend class AllocatedLazyArrayIterator;
+  template <class>
+  friend class FullLazyArrayIterator;
+  template <class>
+  friend class AllocatedLazyArrayIterator;
 
   T* rawDeref(int pos);
 
   friend class boost::serialization::access;
 
   // boost::serialization loading
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, unsigned int version) {
     // Allocate our new array
-    ar & size_;
-    array_.reset(new T*[size_]);
+    ar& size_;
+    array_.reset(new T* [size_]);
 
     for (int i = 0; i < size_; ++i) {
-      ar & array_[i];
+      ar& array_[i];
     }
   }
 
   // boost::serialization saving
-  template<class Archive>
+  template <class Archive>
   void save(Archive& ar, unsigned int version) const {
     // Place the total allocated size
-    ar & size_;
+    ar& size_;
 
     for (int i = 0; i < size_; ++i) {
-      ar & array_[i];
+      ar& array_[i];
     }
   }
 
@@ -136,51 +138,43 @@ class LazyArray {
 
 // -----------------------------------------------------------------------
 
-template<typename Value>
+template <typename Value>
 class FullLazyArrayIterator
-  : public boost::iterator_facade<
-        FullLazyArrayIterator<Value>
-      , Value
-      , boost::forward_traversal_tag
-    > {
+    : public boost::iterator_facade<FullLazyArrayIterator<Value>,
+                                    Value,
+                                    boost::forward_traversal_tag> {
  public:
-  FullLazyArrayIterator()
-    : current_position_(0), array_(0) {}
+  FullLazyArrayIterator() : current_position_(0), array_(0) {}
 
   FullLazyArrayIterator(int pos, LazyArray<Value>* array)
-    : current_position_(pos), array_(array) {}
+      : current_position_(pos), array_(array) {}
 
-  template<class OtherValue>
+  template <class OtherValue>
   explicit FullLazyArrayIterator(FullLazyArrayIterator<OtherValue> const& other)
-    : current_position_(other.current_position_),
-      array_(other.array_) {}
+      : current_position_(other.current_position_), array_(other.array_) {}
 
   // Test to see if this item has been allocated yet, allowing the
   // user to skip
-  bool valid() const {
-    return array_->rawDeref(current_position_) != NULL;
-  }
+  bool valid() const { return array_->rawDeref(current_position_) != NULL; }
 
   size_t pos() const { return current_position_; }
 
  private:
   friend class boost::iterator_core_access;
-  template<class> friend class FullLazyArrayIterator;
-  template<class> friend class LazyArray;
+  template <class>
+  friend class FullLazyArrayIterator;
+  template <class>
+  friend class LazyArray;
 
-  template<typename OtherValue>
+  template <typename OtherValue>
   bool equal(FullLazyArrayIterator<OtherValue> const& other) const {
     return current_position_ == other.current_position_ &&
-      array_ == other.array_;
+           array_ == other.array_;
   }
 
-  void increment() {
-    current_position_++;
-  }
+  void increment() { current_position_++; }
 
-  Value& dereference() const {
-    return (*array_)[current_position_];
-  }
+  Value& dereference() const { return (*array_)[current_position_]; }
 
   int current_position_;
   LazyArray<Value>* array_;
@@ -188,49 +182,45 @@ class FullLazyArrayIterator
 
 // -----------------------------------------------------------------------
 
-template<typename Value>
+template <typename Value>
 class AllocatedLazyArrayIterator
-  : public boost::iterator_facade<
-        AllocatedLazyArrayIterator<Value>
-      , Value
-      , boost::forward_traversal_tag
-    > {
+    : public boost::iterator_facade<AllocatedLazyArrayIterator<Value>,
+                                    Value,
+                                    boost::forward_traversal_tag> {
  public:
-  AllocatedLazyArrayIterator()
-    : current_position_(0), array_(0) {}
+  AllocatedLazyArrayIterator() : current_position_(0), array_(0) {}
 
   explicit AllocatedLazyArrayIterator(int pos, LazyArray<Value>* array)
-    : current_position_(pos), array_(array) {}
+      : current_position_(pos), array_(array) {}
 
-  template<class OtherValue>
+  template <class OtherValue>
   explicit AllocatedLazyArrayIterator(
       AllocatedLazyArrayIterator<OtherValue> const& other)
-    : current_position_(other.current_position_),
-      array_(other.array_) {}
+      : current_position_(other.current_position_), array_(other.array_) {}
 
   size_t pos() const { return current_position_; }
 
  private:
   friend class boost::iterator_core_access;
-  template<class> friend class AllocatedLazyArrayIterator;
-  template<class> friend class LazyArray;
+  template <class>
+  friend class AllocatedLazyArrayIterator;
+  template <class>
+  friend class LazyArray;
 
-  template<typename OtherValue>
+  template <typename OtherValue>
   bool equal(AllocatedLazyArrayIterator<OtherValue> const& other) const {
     return current_position_ == other.current_position_ &&
-      array_ == other.array_;
+           array_ == other.array_;
   }
 
   void increment() {
     current_position_++;
     while (current_position_ < array_->size() &&
-          array_->rawDeref(current_position_) == NULL)
+           array_->rawDeref(current_position_) == NULL)
       current_position_++;
   }
 
-  Value& dereference() const {
-    return *(array_->rawDeref(current_position_));
-  }
+  Value& dereference() const { return *(array_->rawDeref(current_position_)); }
 
   int current_position_;
   LazyArray<Value>* array_;
@@ -240,25 +230,25 @@ class AllocatedLazyArrayIterator
 // LazyArray<T> Implementation
 // -----------------------------------------------------------------------
 
-template<typename T>
+template <typename T>
 LazyArray<T>::LazyArray(int size)
-  : size_(size), array_(new T*[size]) {
+    : size_(size), array_(new T* [size]) {
   for (int i = 0; i < size_; ++i)
     array_[i] = NULL;
 }
 
-template<typename T>
+template <typename T>
 LazyArray<T>::~LazyArray() {
-  std::for_each(array_.get(), array_.get() + size_,
-                boost::checked_deleter<T>());
+  std::for_each(
+      array_.get(), array_.get() + size_, boost::checked_deleter<T>());
 }
 
-template<typename T>
+template <typename T>
 T* LazyArray<T>::rawDeref(int pos) {
   return array_[pos];
 }
 
-template<typename T>
+template <typename T>
 T& LazyArray<T>::operator[](int pos) {
   if (pos < 0 || pos >= size_)
     throw std::out_of_range("LazyArray::operator[]");
@@ -270,7 +260,7 @@ T& LazyArray<T>::operator[](int pos) {
   return *(array_[pos]);
 }
 
-template<typename T>
+template <typename T>
 const T& LazyArray<T>::operator[](int pos) const {
   if (pos < 0 || pos >= size_)
     throw std::out_of_range("LazyArray::operator[]");
@@ -282,13 +272,13 @@ const T& LazyArray<T>::operator[](int pos) const {
   return *(array_[pos]);
 }
 
-template<typename T>
+template <typename T>
 void LazyArray<T>::deleteAt(int i) {
   boost::checked_delete<T>(array_[i]);
   array_[i] = NULL;
 }
 
-template<typename T>
+template <typename T>
 void LazyArray<T>::clear() {
   for (int i = 0; i < size_; ++i) {
     boost::checked_delete<T>(array_[i]);
@@ -296,11 +286,11 @@ void LazyArray<T>::clear() {
   }
 }
 
-template<typename T>
+template <typename T>
 void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
   if (otherArray.size_ < size_)
     throw std::runtime_error(
-      "Not enough space in target array in LazyArray::copyTo");
+        "Not enough space in target array in LazyArray::copyTo");
 
   otherArray.size_ = size_;
   for (int i = 0; i < size_; ++i) {
@@ -318,7 +308,7 @@ void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
   }
 }
 
-template<typename T>
+template <typename T>
 AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin() {
   // Find the first
   int firstEntry = 0;

@@ -32,8 +32,10 @@
 #include "libReallive/gameexe.h"
 
 // static
-TextWaku* TextWaku::Create(System& system, TextWindow& window,
-                           int setno, int no) {
+TextWaku* TextWaku::Create(System& system,
+                           TextWindow& window,
+                           int setno,
+                           int no) {
   GameexeInterpretObject waku(system.gameexe()("WAKU", setno, "TYPE"));
   if (waku.to_int(5) == 5) {
     return new TextWakuNormal(system, window, setno, no);
@@ -46,7 +48,8 @@ TextWaku::~TextWaku() {}
 
 void TextWaku::setMousePosition(const Point& pos) {}
 
-bool TextWaku::handleMouseClick(RLMachine& machine, const Point& pos,
+bool TextWaku::handleMouseClick(RLMachine& machine,
+                                const Point& pos,
                                 bool pressed) {
   return false;
 }

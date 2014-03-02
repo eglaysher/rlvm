@@ -55,7 +55,9 @@ enum WakuPart {
   BOTTOM_RIGHT_CORNER,  // <region x1="20" y1="20" x2="23" y2="23"/>
 };
 
-TextWakuType4::TextWakuType4(System& system, TextWindow& window, int setno,
+TextWakuType4::TextWakuType4(System& system,
+                             TextWindow& window,
+                             int setno,
                              int no)
     : system_(system),
       window_(window),
@@ -79,13 +81,12 @@ TextWakuType4::TextWakuType4(System& system, TextWindow& window, int setno,
     area_right_ = area[3];
 }
 
-TextWakuType4::~TextWakuType4() {
-}
+TextWakuType4::~TextWakuType4() {}
 
-void TextWakuType4::execute() {
-}
+void TextWakuType4::execute() {}
 
-void TextWakuType4::render(std::ostream* tree, Point box_location,
+void TextWakuType4::render(std::ostream* tree,
+                           Point box_location,
                            Size content_size) {
   if (tree) {
     *tree << "    Window Waku(" << setno_ << ", " << no_ << "):" << endl;
@@ -94,22 +95,20 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
   if (waku_main_) {
     // Calculate the location/area and render the filtered background.
     Point backing_point =
-        box_location +
-        Size(left_side.rect.width(), top_center.rect.height()) -
+        box_location + Size(left_side.rect.width(), top_center.rect.height()) -
         Size(area_left_, area_top_);
-    Size backing_size = content_size + Size(area_left_ + area_right_,
-                                            area_top_ + area_bottom_);
+    Size backing_size =
+        content_size + Size(area_left_ + area_right_, area_top_ + area_bottom_);
     boost::shared_ptr<Surface> backing = getWakuBackingOfSize(backing_size);
-    backing->renderToScreenAsColorMask(
-        backing->rect(),
-        Rect(backing_point, backing_size),
-        window_.colour(), window_.filter());
+    backing->renderToScreenAsColorMask(backing->rect(),
+                                       Rect(backing_point, backing_size),
+                                       window_.colour(),
+                                       window_.filter());
 
     // Calculate the total size of the waku decoration. We need this to get the
     // size of the non-corners correct.
     Size total_size =
-        Size(left_side.rect.width(), top_center.rect.height()) +
-        content_size +
+        Size(left_side.rect.width(), top_center.rect.height()) + content_size +
         Size(right_side.rect.width(), bottom_center.rect.height());
 
     // Top row
@@ -117,8 +116,8 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
                                Rect(box_location, top_left.rect.size()));
 
     const Point top_center_p = box_location + Size(top_left.rect.width(), 0);
-    int top_center_width = total_size.width() - top_left.rect.width() -
-                           top_right.rect.width();
+    int top_center_width =
+        total_size.width() - top_left.rect.width() - top_right.rect.width();
     const Size top_center_s = Size(top_center_width, top_center.rect.height());
     waku_main_->renderToScreen(top_center.rect,
                                Rect(top_center_p, top_center_s));
@@ -131,13 +130,11 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
     const Point left_side_p = box_location + Size(0, top_left.rect.height());
     int left_side_height = content_size.height();
     const Size left_side_s = Size(left_side.rect.width(), left_side_height);
-    waku_main_->renderToScreen(left_side.rect,
-                               Rect(left_side_p, left_side_s));
+    waku_main_->renderToScreen(left_side.rect, Rect(left_side_p, left_side_s));
 
     const Point right_side_p =
-        box_location +
-        Size(total_size.width() - right_side.rect.width(),
-             top_right.rect.height());
+        box_location + Size(total_size.width() - right_side.rect.width(),
+                            top_right.rect.height());
     int right_side_height = content_size.height();
     const Size right_side_s = Size(right_side.rect.width(), right_side_height);
     waku_main_->renderToScreen(right_side.rect,
@@ -150,12 +147,12 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
 
     // Sometimes |top_center_width| != |bottom_center_width| (for example, when
     // the decorations have a larger rounded corner on the top).
-    const Point bottom_center_p = bottom_left_p +
-                                  Size(bottom_left.rect.width(), 0);
+    const Point bottom_center_p =
+        bottom_left_p + Size(bottom_left.rect.width(), 0);
     int bottom_center_width = total_size.width() - bottom_left.rect.width() -
                               bottom_right.rect.width();
-    const Size bottom_center_s = Size(bottom_center_width,
-                                      bottom_center.rect.height());
+    const Size bottom_center_s =
+        Size(bottom_center_width, bottom_center.rect.height());
     waku_main_->renderToScreen(bottom_center.rect,
                                Rect(bottom_center_p, bottom_center_s));
 
@@ -164,8 +161,7 @@ void TextWakuType4::render(std::ostream* tree, Point box_location,
                                Rect(bottom_right_p, bottom_right.rect.size()));
 
     if (tree) {
-      *tree << "      Main Area: " << Rect(box_location, content_size)
-            << endl;
+      *tree << "      Main Area: " << Rect(box_location, content_size) << endl;
     }
   }
 }
@@ -188,8 +184,8 @@ Point TextWakuType4::insertionPoint(const Rect& waku_rect,
     int half_height = (waku_rect.height()) / 2;
     int half_text_height = surface_size.height() / 2;
 
-    insertion_point += Point(half_width - half_text_width,
-                             half_height - half_text_height);
+    insertion_point +=
+        Point(half_width - half_text_width, half_height - half_text_height);
   } else {
     insertion_point += Point(padding.width(), padding.height());
   }
@@ -201,7 +197,8 @@ void TextWakuType4::setMousePosition(const Point& pos) {
   // Noop
 }
 
-bool TextWakuType4::handleMouseClick(RLMachine& machine, const Point& pos,
+bool TextWakuType4::handleMouseClick(RLMachine& machine,
+                                     const Point& pos,
                                      bool pressed) {
   // Noop; this window won't do anything with mouse clicks.
   return false;

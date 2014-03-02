@@ -36,7 +36,7 @@
 
 #include <string>
 
-class RLBabelTest : public FullSystemTest { };
+class RLBabelTest : public FullSystemTest {};
 
 const std::string rlBabel = "rlBabel";
 
@@ -51,7 +51,7 @@ TEST_F(RLBabelTest, Loading) {
   rlmachine.unloadDLL(0);
   EXPECT_FALSE(rlmachine.dllLoaded(rlBabel));
 
-  EXPECT_THROW({rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0);},
+  EXPECT_THROW({ rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0); },
                rlvm::Exception);
 }
 
@@ -62,10 +62,10 @@ TEST_F(RLBabelTest, Initialization) {
   rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0);
 
   // Prime the buffer
-  rlmachine.setStringValue(libReallive::STRS_LOCATION, 0,
-                           "A world, covered in white");
-  rlmachine.callDLL(0, dllTextoutStart, libReallive::STRS_LOCATION << 16,
-                    0, 0, 0);
+  rlmachine.setStringValue(
+      libReallive::STRS_LOCATION, 0, "A world, covered in white");
+  rlmachine.callDLL(
+      0, dllTextoutStart, libReallive::STRS_LOCATION << 16, 0, 0, 0);
 
   // TODO: Doing anything real with RLBabel requires that we have working
   // font metrics in TestSystem...

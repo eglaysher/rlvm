@@ -45,19 +45,18 @@ using libReallive::IntMemRef;
 // -----------------------------------------------------------------------
 // ScriptMachine
 // -----------------------------------------------------------------------
-ScriptMachine::ScriptMachine(
-    ScriptWorld& world, System& in_system, libReallive::Archive& in_archive)
-  : RLMachine(in_system, in_archive),
-    world_(world),
-    current_decision_(0),
-    save_on_decision_slot_(-1),
-    increment_on_save_(false) {
-}
+ScriptMachine::ScriptMachine(ScriptWorld& world,
+                             System& in_system,
+                             libReallive::Archive& in_archive)
+    : RLMachine(in_system, in_archive),
+      world_(world),
+      current_decision_(0),
+      save_on_decision_slot_(-1),
+      increment_on_save_(false) {}
 
-ScriptMachine::~ScriptMachine() { }
+ScriptMachine::~ScriptMachine() {}
 
-void ScriptMachine::setDecisionList(
-  const std::vector<std::string>& decisions) {
+void ScriptMachine::setDecisionList(const std::vector<std::string>& decisions) {
   decisions_ = decisions;
   current_decision_ = 0;
 }
@@ -65,7 +64,7 @@ void ScriptMachine::setDecisionList(
 void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
   if (SelectLongOperation* sel =
-      dynamic_cast<SelectLongOperation*>(long_operation)) {
+          dynamic_cast<SelectLongOperation*>(long_operation)) {
     // Try our optional, script provided matching behaviour.
     std::string choice = world_.makeDecision(sel->options());
     bool optionFound = false;
@@ -121,8 +120,9 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
 
         // Dear C++: I can't wait for the 'auto' keyword:
         std::vector<std::string> options = sel->options();
-        for (std::vector<std::string>::const_iterator it =
-                 options.begin(); it != options.end(); ++it) {
+        for (std::vector<std::string>::const_iterator it = options.begin();
+             it != options.end();
+             ++it) {
           cerr << "- \"" << *it << "\"" << endl;
         }
 
@@ -132,14 +132,14 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
       }
     }
   } else if (ButtonObjectSelectLongOperation* sel =
-             dynamic_cast<ButtonObjectSelectLongOperation*>(long_operation)) {
+                 dynamic_cast<ButtonObjectSelectLongOperation*>(
+                     long_operation)) {
     // We don't deal with these yet. Return 1 for the first option every time,
     // which corresponds with selecting "NO" for battle missions.
     setStoreRegister(1);
     delete sel;
     return;
   }
-
 
   RLMachine::pushLongOperation(long_operation);
 }

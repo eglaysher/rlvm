@@ -36,5 +36,4 @@ class SelModule : public RLModule {
   SelModule();
 };
 
-
 #endif  // SRC_MODULES_MODULE_SEL_HPP_

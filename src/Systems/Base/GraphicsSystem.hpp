@@ -65,7 +65,8 @@ class Surface;
 class System;
 struct ObjectSettings;
 
-template<typename T> class LazyArray;
+template <typename T>
+class LazyArray;
 
 // Variables and configuration data that are global across all save
 // game files in a game.
@@ -91,15 +92,15 @@ struct GraphicsSystemGlobals {
   ToneCurve tone_curves;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & show_object_1 & show_object_2 & show_weather;
+    ar& show_object_1& show_object_2& show_weather;
 
     if (version > 0)
-      ar & cg_table;
+      ar& cg_table;
 
     if (version > 1)
-      ar & screen_mode;
+      ar& screen_mode;
   }
 };
 
@@ -116,10 +117,7 @@ enum GraphicsUpdateType {
 };
 
 // Which type of mutually exclusive background should we display?
-enum GraphicsBackgroundType {
-  BACKGROUND_DC0,
-  BACKGROUND_HIK
-};
+enum GraphicsBackgroundType { BACKGROUND_DC0, BACKGROUND_HIK };
 
 // Abstract interface to a graphics system. Specialize this class for
 // each system you plan on running RLVM on. For now, there's only one
@@ -353,7 +351,8 @@ class GraphicsSystem : public EventListener {
   // Loads an image, optionally marking that this image has been loaded (if it
   // is in the game's CGM table).
   boost::shared_ptr<const Surface> getSurfaceNamedAndMarkViewed(
-      RLMachine& machine, const std::string& short_filename);
+      RLMachine& machine,
+      const std::string& short_filename);
 
   // Just loads an image. This shouldn't be used for images that are destined
   // for one of the DCs, since those can be CGs.
@@ -517,7 +516,7 @@ class GraphicsSystem : public EventListener {
 
   // Queued origin/time pairs. The front of the queue shall be the current
   // screen offset.
-  std::queue<std::pair<Point, int> > screen_shake_queue_;
+  std::queue<std::pair<Point, int>> screen_shake_queue_;
 
   // The last time |screen_shake_queue_| was modified.
   unsigned int time_at_last_queue_change_;
@@ -549,7 +548,7 @@ class GraphicsSystem : public EventListener {
 
   // MouseCursor construction is nontrivial so cache everything we
   // build:
-  typedef std::map<int, boost::shared_ptr<MouseCursor> > MouseCursorCache;
+  typedef std::map<int, boost::shared_ptr<MouseCursor>> MouseCursorCache;
   MouseCursorCache cursor_cache_;
 
   // A set of renderers
@@ -559,13 +558,12 @@ class GraphicsSystem : public EventListener {
   System& system_;
 
   // Preloaded HIKScripts.
-  typedef std::pair<std::string, boost::shared_ptr<HIKScript> > HIKArrayItem;
+  typedef std::pair<std::string, boost::shared_ptr<HIKScript>> HIKArrayItem;
   typedef LazyArray<HIKArrayItem> HIKScriptList;
   HIKScriptList preloaded_hik_scripts_;
 
   // Preloaded G00 images.
-  typedef std::pair<std::string, boost::shared_ptr<const Surface> >
-      G00ArrayItem;
+  typedef std::pair<std::string, boost::shared_ptr<const Surface>> G00ArrayItem;
   typedef LazyArray<G00ArrayItem> G00ScriptList;
   G00ScriptList preloaded_g00_;
 
@@ -574,7 +572,7 @@ class GraphicsSystem : public EventListener {
    *
    * This cache's contents are assumed to be immutable.
    */
-  LRUCache<std::string, boost::shared_ptr<const Surface> > image_cache_;
+  LRUCache<std::string, boost::shared_ptr<const Surface>> image_cache_;
 
   // Possible background script which drives graphics to the screen.
   boost::scoped_ptr<HIKRenderer> hik_renderer_;
@@ -583,11 +581,11 @@ class GraphicsSystem : public EventListener {
   friend class boost::serialization::access;
 
   // boost::serialization forward declaration
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
   // boost::serialization forward declaration
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -596,4 +594,3 @@ class GraphicsSystem : public EventListener {
 BOOST_CLASS_VERSION(GraphicsSystem, 1)
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICSSYSTEM_HPP_
-

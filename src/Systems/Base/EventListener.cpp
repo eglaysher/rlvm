@@ -33,7 +33,7 @@
 
 EventListener::~EventListener() {}
 
-void EventListener::mouseMotion(const Point& new_location) { }
+void EventListener::mouseMotion(const Point& new_location) {}
 
 bool EventListener::mouseButtonStateChanged(MouseButton mouse_button,
                                             bool pressed) {

@@ -87,9 +87,7 @@ bool SDLMusic::isFading() const {
   return fadetime_total_ > 0;
 }
 
-void SDLMusic::play(bool loop) {
-  fadeIn(loop, DEFAULT_FADE_MS);
-}
+void SDLMusic::play(bool loop) { fadeIn(loop, DEFAULT_FADE_MS); }
 
 void SDLMusic::stop() {
   SDLAudioLocker locker;
@@ -145,7 +143,7 @@ int SDLMusic::bgmStatus() const {
 }
 
 // static
-void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
+void SDLMusic::MixMusic(void* udata, Uint8* stream, int len) {
   // Inside an SDL_LockAudio() section set up by SDL_Mixer! Don't lock here!
   SDLMusic* music = s_currently_playing.get();
 
@@ -154,31 +152,31 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
     memset(stream, 0, len);
     return;
   }
-  count = music->file_->Read((char*)stream, 4, len/4);
+  count = music->file_->Read((char*)stream, 4, len / 4);
 
-  if (count != len/4) {
-    memset(stream+count*4, 0, len-count*4);
+  if (count != len / 4) {
+    memset(stream + count * 4, 0, len - count * 4);
     if (music->loop_point_ == STOP_AT_END) {
       music->loop_point_ = STOP_NOW;
       s_currently_playing.reset();
     } else {
       music->file_->Seek(music->loop_point_);
-      music->file_->Read( (char*)(stream+count*4), 4, len/4-count);
+      music->file_->Read((char*)(stream + count * 4), 4, len / 4 - count);
     }
   }
 
   int cur_vol = s_computed_bgm_vol;
   // Compute in fadetime results.
   if (music->fade_in_ms_) {
-    int count_total = music->fade_in_ms_*(WAVFILE::freq/1000);
+    int count_total = music->fade_in_ms_ * (WAVFILE::freq / 1000);
     if (music->fade_count_ > count_total) {
       music->fade_in_ms_ = 0;
     } else {
       cur_vol = cur_vol * (music->fade_count_) / count_total;
-      music->fade_count_ += len/4;
+      music->fade_count_ += len / 4;
     }
   } else if (music->fadetime_total_) {
-    int count_total = music->fadetime_total_*(WAVFILE::freq/1000);
+    int count_total = music->fadetime_total_ * (WAVFILE::freq / 1000);
     if (music->fade_count_ > count_total) {
       music->loop_point_ = STOP_NOW;
       s_currently_playing.reset();
@@ -187,7 +185,7 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
     }
 
     cur_vol = cur_vol * (count_total - music->fade_count_) / count_total;
-    music->fade_count_ += len/4;
+    music->fade_count_ += len / 4;
   }
 
   if (cur_vol != SDL_MIX_MAXVOLUME) {
@@ -198,20 +196,19 @@ void SDLMusic::MixMusic(void *udata, Uint8 *stream, int len) {
   }
 }
 
-template<typename TYPE>
+template <typename TYPE>
 WAVFILE* buildMusicImplementation(FILE* file, int size) {
   return WAVFILE::MakeConverter(new TYPE(file, size));
 }
 
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
-    System& system, const SoundSystem::DSTrack& track) {
-  typedef vector<pair<string, std::function<WAVFILE*(FILE*, int)> > > FileTypes;
-  static FileTypes types = {
-    { "wav", &buildMusicImplementation<WAVFILE_Stream> },
-    { "nwa", &buildMusicImplementation<NWAFILE> },
-    { "mp3", &buildMusicImplementation<MP3FILE> },
-    { "ogg", &buildMusicImplementation<OggFILE> }
-  };
+    System& system,
+    const SoundSystem::DSTrack& track) {
+  typedef vector<pair<string, std::function<WAVFILE*(FILE*, int)>>> FileTypes;
+  static FileTypes types = {{"wav", &buildMusicImplementation<WAVFILE_Stream>},
+                            {"nwa", &buildMusicImplementation<NWAFILE>},
+                            {"mp3", &buildMusicImplementation<MP3FILE>},
+                            {"ogg", &buildMusicImplementation<OggFILE>}};
 
   fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {

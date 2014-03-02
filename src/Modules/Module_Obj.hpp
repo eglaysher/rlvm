@@ -40,10 +40,11 @@ class GraphicsObject;
 
 void ensureIsParentObject(GraphicsObject& parent, int size);
 
-GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
-                                  int obj);
+GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op, int obj);
 
-void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
+void setGraphicsObject(RLMachine& machine,
+                       RLOperation* op,
+                       int obj,
                        GraphicsObject& gobj);
 
 // -----------------------------------------------------------------------
@@ -122,10 +123,10 @@ RLOperation* childRangeMappingFun(RLOperation* op);
 //
 // This template magic saves having to write out 25 - 30 operation
 // structs.
-class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  public:
   // The function signature for the setter function
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef void (GraphicsObject::*Setter)(const int);
 
   explicit Obj_SetOneIntOnObj(Setter s);
   ~Obj_SetOneIntOnObj();
@@ -144,9 +145,9 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 // the Obj* helper templates; since a lot of Object related functions simply
 // call a setter.
 class Obj_SetTwoIntOnObj
-    : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   // The function signature for the setter function
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef void (GraphicsObject::*Setter)(const int);
 
   // The setter functions to call on Op_SetToIncoming::reference when
   // called.
@@ -157,9 +158,10 @@ class Obj_SetTwoIntOnObj
   Obj_SetTwoIntOnObj(Setter one, Setter two);
   ~Obj_SetTwoIntOnObj();
 
-  void operator()(RLMachine& machine, int buf, int incomingOne,
+  void operator()(RLMachine& machine,
+                  int buf,
+                  int incomingOne,
                   int incomingTwo);
 };
-
 
 #endif  // SRC_MODULES_MODULE_OBJ_HPP_

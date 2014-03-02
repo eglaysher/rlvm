@@ -50,26 +50,44 @@ using boost::lexical_cast;
 // SoundSystemGlobals
 // -----------------------------------------------------------------------
 SoundSystemGlobals::SoundSystemGlobals()
-  : sound_quality(5), bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume_mod(255), se_enabled(true), se_volume_mod(255),
-    koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
-    bgm_koe_fade_vol(128) {}
+    : sound_quality(5),
+      bgm_enabled(true),
+      bgm_volume_mod(255),
+      pcm_enabled(true),
+      pcm_volume_mod(255),
+      se_enabled(true),
+      se_volume_mod(255),
+      koe_mode(0),
+      koe_enabled(true),
+      koe_volume_mod(255),
+      bgm_koe_fade(true),
+      bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
-  : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
-    bgm_enabled(true), bgm_volume_mod(255), pcm_enabled(true),
-    pcm_volume_mod(255), se_enabled(true), se_volume_mod(255),
-    koe_mode(0), koe_enabled(true), koe_volume_mod(255), bgm_koe_fade(true),
-    bgm_koe_fade_vol(128) {}
+    : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
+      bgm_enabled(true),
+      bgm_volume_mod(255),
+      pcm_enabled(true),
+      pcm_volume_mod(255),
+      se_enabled(true),
+      se_volume_mod(255),
+      koe_mode(0),
+      koe_enabled(true),
+      koe_volume_mod(255),
+      bgm_koe_fade(true),
+      bgm_koe_fade_vol(128) {}
 
 // -----------------------------------------------------------------------
 // SoundSystem::VolumeAdjustTask
 // -----------------------------------------------------------------------
-SoundSystem::VolumeAdjustTask::VolumeAdjustTask(
-  unsigned int current_time, int in_start_volume, int in_final_volume,
-  int fade_time_in_ms)
-  : start_time(current_time), end_time(current_time + fade_time_in_ms),
-    start_volume(in_start_volume), final_volume(in_final_volume) {}
+SoundSystem::VolumeAdjustTask::VolumeAdjustTask(unsigned int current_time,
+                                                int in_start_volume,
+                                                int in_final_volume,
+                                                int fade_time_in_ms)
+    : start_time(current_time),
+      end_time(current_time + fade_time_in_ms),
+      start_volume(in_start_volume),
+      final_volume(in_final_volume) {}
 
 int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time) {
   int end_offset = end_time - start_time;
@@ -82,26 +100,25 @@ int SoundSystem::VolumeAdjustTask::calculateVolumeFor(unsigned int in_time) {
 // SoundSystem::DSTrack
 // -----------------------------------------------------------------------
 SoundSystem::DSTrack::DSTrack()
-  : name(""), file(""), from(-1), to(-1), loop(-1) {
-}
+    : name(""), file(""), from(-1), to(-1), loop(-1) {}
 
-SoundSystem::DSTrack::DSTrack(
-  const std::string in_name, const std::string in_file, int in_from,
-  int in_to, int in_loop)
-  : name(in_name), file(in_file), from(in_from), to(in_to), loop(in_loop) {
-}
+SoundSystem::DSTrack::DSTrack(const std::string in_name,
+                              const std::string in_file,
+                              int in_from,
+                              int in_to,
+                              int in_loop)
+    : name(in_name), file(in_file), from(in_from), to(in_to), loop(in_loop) {}
 
 // -----------------------------------------------------------------------
 // SoundSystem::CDTrack
 // -----------------------------------------------------------------------
-SoundSystem::CDTrack::CDTrack()
-  : name(""), from(-1), to(-1), loop(-1) {
-}
+SoundSystem::CDTrack::CDTrack() : name(""), from(-1), to(-1), loop(-1) {}
 
-SoundSystem::CDTrack::CDTrack(
-  const std::string in_name, int in_from, int in_to, int in_loop)
-  : name(in_name), from(in_from), to(in_to), loop(in_loop) {
-}
+SoundSystem::CDTrack::CDTrack(const std::string in_name,
+                              int in_from,
+                              int in_to,
+                              int in_loop)
+    : name(in_name), from(in_from), to(in_to), loop(in_loop) {}
 
 // -----------------------------------------------------------------------
 // SoundSystem
@@ -227,22 +244,16 @@ void SoundSystem::restoreFromGlobals() {
   setSeVolumeMod(seVolumeMod());
 }
 
-void SoundSystem::setBgmEnabled(const int in) {
-  globals_.bgm_enabled = in;
-}
+void SoundSystem::setBgmEnabled(const int in) { globals_.bgm_enabled = in; }
 
-int SoundSystem::bgmEnabled() const {
-  return globals_.bgm_enabled;
-}
+int SoundSystem::bgmEnabled() const { return globals_.bgm_enabled; }
 
 void SoundSystem::setBgmVolumeMod(const int in) {
   checkVolume(in, "setBgmVolumeMod");
   globals_.bgm_volume_mod = in;
 }
 
-int SoundSystem::bgmVolumeMod() const {
-  return globals_.bgm_volume_mod;
-}
+int SoundSystem::bgmVolumeMod() const { return globals_.bgm_volume_mod; }
 
 void SoundSystem::setBgmVolumeScript(const int level, const int fade_in_ms) {
   checkVolume(level, "setBgmVolumeScript");
@@ -252,30 +263,22 @@ void SoundSystem::setBgmVolumeScript(const int level, const int fade_in_ms) {
   } else {
     unsigned int cur_time = system().event().getTicks();
 
-    bgm_adjustment_task_.reset(new VolumeAdjustTask(
-        cur_time, bgm_volume_script_, level, fade_in_ms));
+    bgm_adjustment_task_.reset(
+        new VolumeAdjustTask(cur_time, bgm_volume_script_, level, fade_in_ms));
   }
 }
 
-int SoundSystem::bgmVolumeScript() const {
-  return bgm_volume_script_;
-}
+int SoundSystem::bgmVolumeScript() const { return bgm_volume_script_; }
 
-void SoundSystem::setPcmEnabled(const int in) {
-  globals_.pcm_enabled = in;
-}
+void SoundSystem::setPcmEnabled(const int in) { globals_.pcm_enabled = in; }
 
-int SoundSystem::pcmEnabled() const {
-  return globals_.pcm_enabled;
-}
+int SoundSystem::pcmEnabled() const { return globals_.pcm_enabled; }
 
 void SoundSystem::setPcmVolumeMod(const int in) {
   globals_.pcm_volume_mod = in;
 }
 
-int SoundSystem::pcmVolumeMod() const {
-  return globals_.pcm_volume_mod;
-}
+int SoundSystem::pcmVolumeMod() const { return globals_.pcm_volume_mod; }
 
 void SoundSystem::setChannelVolume(const int channel, const int level) {
   checkChannel(channel, "set_channel_volume");
@@ -284,16 +287,18 @@ void SoundSystem::setChannelVolume(const int channel, const int level) {
   channel_volume_[channel] = level;
 }
 
-void SoundSystem::setChannelVolume(const int channel, const int level,
+void SoundSystem::setChannelVolume(const int channel,
+                                   const int level,
                                    const int fade_time_in_ms) {
   checkChannel(channel, "set_channel_volume");
   checkVolume(level, "set_channel_volume");
 
   unsigned int cur_time = system().event().getTicks();
 
-  pcm_adjustment_tasks_.insert(
-    make_pair(channel, VolumeAdjustTask(cur_time, channel_volume_[channel],
-                                        level, fade_time_in_ms)));
+  pcm_adjustment_tasks_.insert(make_pair(
+      channel,
+      VolumeAdjustTask(
+          cur_time, channel_volume_[channel], level, fade_time_in_ms)));
 }
 
 int SoundSystem::channelVolume(const int channel) const {
@@ -301,44 +306,30 @@ int SoundSystem::channelVolume(const int channel) const {
   return channel_volume_[channel];
 }
 
-void SoundSystem::setSeEnabled(const int in) {
-  globals_.se_enabled = in;
-}
+void SoundSystem::setSeEnabled(const int in) { globals_.se_enabled = in; }
 
-int SoundSystem::seEnabled() const {
-  return globals_.se_enabled;
-}
+int SoundSystem::seEnabled() const { return globals_.se_enabled; }
 
 void SoundSystem::setSeVolumeMod(const int level) {
   checkVolume(level, "set_se_volume");
   globals_.se_volume_mod = level;
 }
 
-int SoundSystem::seVolumeMod() const {
-  return globals_.se_volume_mod;
-}
+int SoundSystem::seVolumeMod() const { return globals_.se_volume_mod; }
 
-void SoundSystem::setKoeMode(const int in) {
-  globals_.koe_mode = in;
-}
+void SoundSystem::setKoeMode(const int in) { globals_.koe_mode = in; }
 
-int SoundSystem::koeMode() const {
-  return globals_.koe_mode;
-}
+int SoundSystem::koeMode() const { return globals_.koe_mode; }
 
-void SoundSystem::setKoeEnabled(const int in) {
-  globals_.koe_enabled = in;
-}
+void SoundSystem::setKoeEnabled(const int in) { globals_.koe_enabled = in; }
 
-int SoundSystem::koeEnabled() const {
-  return globals_.koe_enabled;
-}
+int SoundSystem::koeEnabled() const { return globals_.koe_enabled; }
 
 void SoundSystem::setUseKoeForCharacter(const int character,
                                         const int enabled) {
   // Dear C++: I want the auto keyword NOW.
   std::pair<std::multimap<int, int>::iterator,
-      std::multimap<int, int>::iterator> range =
+            std::multimap<int, int>::iterator> range =
       usekoe_to_koeplay_mapping_.equal_range(character);
 
   std::multimap<int, int>::iterator it;
@@ -348,7 +339,7 @@ void SoundSystem::setUseKoeForCharacter(const int character,
 }
 
 int SoundSystem::useKoeForCharacter(const int character) const {
-   std::multimap<int, int>::const_iterator it =
+  std::multimap<int, int>::const_iterator it =
       usekoe_to_koeplay_mapping_.find(character);
   if (it != usekoe_to_koeplay_mapping_.end()) {
     // We can sample only the first id because they should all be equivalent.
@@ -370,9 +361,7 @@ void SoundSystem::setKoeVolumeMod(const int level) {
   globals_.koe_volume_mod = level;
 }
 
-int SoundSystem::koeVolumeMod() const {
-  return globals_.koe_volume_mod;
-}
+int SoundSystem::koeVolumeMod() const { return globals_.koe_volume_mod; }
 
 void SoundSystem::setKoeVolume(const int level, const int fadetime) {
   if (fadetime == 0) {
@@ -382,25 +371,17 @@ void SoundSystem::setKoeVolume(const int level, const int fadetime) {
   }
 }
 
-int SoundSystem::koeVolume() const {
-  return channelVolume(KOE_CHANNEL);
-}
+int SoundSystem::koeVolume() const { return channelVolume(KOE_CHANNEL); }
 
-void SoundSystem::setBgmKoeFade(const int in) {
-  globals_.bgm_koe_fade = in;
-}
+void SoundSystem::setBgmKoeFade(const int in) { globals_.bgm_koe_fade = in; }
 
-int SoundSystem::bgmKoeFade() const {
-  return globals_.bgm_koe_fade;
-}
+int SoundSystem::bgmKoeFade() const { return globals_.bgm_koe_fade; }
 
 void SoundSystem::setBgmKoeFadeVolume(const int level) {
   globals_.bgm_koe_fade_vol = level;
 }
 
-int SoundSystem::bgmKoeFadeVolume() const {
-  return globals_.bgm_koe_fade_vol;
-}
+int SoundSystem::bgmKoeFadeVolume() const { return globals_.bgm_koe_fade_vol; }
 
 void SoundSystem::koePlay(int id) {
   if (!system_.fastForward())
@@ -446,17 +427,17 @@ void SoundSystem::checkVolume(int level, const char* function_name) {
   }
 }
 
-template<class Archive>
+template <class Archive>
 void SoundSystem::load(Archive& ar, unsigned int version) {
   std::string track_name;
   bool looping;
-  ar & track_name & looping;
+  ar& track_name& looping;
 
   if (track_name != "")
     bgmPlay(track_name, looping);
 }
 
-template<class Archive>
+template <class Archive>
 void SoundSystem::save(Archive& ar, unsigned int version) const {
   std::string track_name;
   bool looping = false;
@@ -466,7 +447,7 @@ void SoundSystem::save(Archive& ar, unsigned int version) const {
     looping = bgmLooping();
   }
 
-  ar & track_name & looping;
+  ar& track_name& looping;
 }
 
 // -----------------------------------------------------------------------
@@ -475,8 +456,9 @@ void SoundSystem::save(Archive& ar, unsigned int version) const {
 // implementation)
 
 template void SoundSystem::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void SoundSystem::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
-
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

@@ -49,7 +49,6 @@ class RLMachine;
 // create them, use the EffectFactory instead, which will instantiate
 // the correct Effect subclass based off the parameters
 
-
 // Transition effect on DCs.
 //
 // Effect is the base class from which all transition effects defined
@@ -60,9 +59,11 @@ class Effect : public LongOperation {
  public:
   // Sets up all other variables, adding 1 to both width and height; RL is the
   // only system I know of where ranges are inclusive...
-  Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
+  Effect(RLMachine& machine,
+         boost::shared_ptr<Surface> src,
          boost::shared_ptr<Surface> dst,
-         Size size, int time);
+         Size size,
+         int time);
 
   virtual ~Effect();
 
@@ -85,8 +86,7 @@ class Effect : public LongOperation {
 
   // Implements the effect. Usually, this is all that needs to be
   // overriden, other then the public constructor.
-  virtual void performEffectForTime(RLMachine& machine,
-                                    int currentTime) = 0;
+  virtual void performEffectForTime(RLMachine& machine, int currentTime) = 0;
 
  private:
   // Whether the orriginal dc0 should be blitted onto the target
@@ -114,7 +114,6 @@ class Effect : public LongOperation {
   boost::shared_ptr<Surface> dst_surface_;
 };
 
-
 // LongOperationDecorator used in cases where we need to blit an image
 // to the screen after an Effect finishes. This is most of the cases.
 // This is optional and isn't part of Effect because {rec,grp}OpenBg
@@ -125,7 +124,8 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
   BlitAfterEffectFinishes(LongOperation* in,
                           boost::shared_ptr<Surface> src,
                           boost::shared_ptr<Surface> dst,
-                          const Rect& srcRect, const Rect& destRect);
+                          const Rect& srcRect,
+                          const Rect& destRect);
 
   ~BlitAfterEffectFinishes();
 

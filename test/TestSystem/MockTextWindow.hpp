@@ -75,26 +75,18 @@ class MockTextWindow : public TestTextWindow {
     TestTextWindow::renderNameInBox(utf8str);
   }
 
-  void ConcreteClearWin() {
-    TestTextWindow::clearWin();
-  }
+  void ConcreteClearWin() { TestTextWindow::clearWin(); }
 
   void ConcreteSetName(const std::string& utf8name,
                        const std::string& next_char) {
     TestTextWindow::setName(utf8name, next_char);
   }
 
-  void ConcreteHardBrake() {
-    TestTextWindow::hardBrake();
-  }
+  void ConcreteHardBrake() { TestTextWindow::hardBrake(); }
 
-  void ConcreteResetIndentation() {
-    TestTextWindow::resetIndentation();
-  }
+  void ConcreteResetIndentation() { TestTextWindow::resetIndentation(); }
 
-  void ConcreteMarkRubyBegin() {
-    TestTextWindow::markRubyBegin();
-  }
+  void ConcreteMarkRubyBegin() { TestTextWindow::markRubyBegin(); }
 
   void ConcreteDisplayRubyText(const std::string& utf8str) {
     TestTextWindow::displayRubyText(utf8str);

@@ -75,15 +75,13 @@ namespace fs = boost::filesystem;
 // OVKVoiceArchive
 // -----------------------------------------------------------------------
 OVKVoiceArchive::OVKVoiceArchive(fs::path file, int file_no)
-    : VoiceArchive(file_no),
-      file_(file) {
+    : VoiceArchive(file_no), file_(file) {
   readVisualArtsTable(file, 16, entries_);
 }
 
 // -----------------------------------------------------------------------
 
-OVKVoiceArchive::~OVKVoiceArchive() {
-}
+OVKVoiceArchive::~OVKVoiceArchive() {}
 
 // -----------------------------------------------------------------------
 

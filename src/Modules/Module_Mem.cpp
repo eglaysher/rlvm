@@ -54,9 +54,9 @@ namespace {
 // Sets a block of integers, starting with origin, to the given values. values
 // is an arbitrary number of integer expressions, each of which is assigned in
 // turn to the next variable.
-struct setarray : public RLOp_Void_2<IntReference_T,
-                                         Argc_T<IntConstant_T> > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin,
+struct setarray : public RLOp_Void_2<IntReference_T, Argc_T<IntConstant_T>> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator origin,
                   vector<int> values) {
     copy(values.begin(), values.end(), origin);
   }
@@ -65,8 +65,9 @@ struct setarray : public RLOp_Void_2<IntReference_T,
 // Implement op<1:Mem:00001, 0>, fun setrng(int, int).
 //
 // Set block of integers to zero.
-struct setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator first,
+struct setrng_0 : public RLOp_Void_2<IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator first,
                   IntReferenceIterator last) {
     ++last;  // RealLive ranges are inclusive
     fill(first, last, 0);
@@ -76,10 +77,12 @@ struct setrng_0 : public RLOp_Void_2< IntReference_T, IntReference_T > {
 // Implement op<1:Mem:00001, 1>, fun setrng(int, int, intC).
 //
 // Set block of integers to the constant passed in.
-struct setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
-                                          IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator first,
-                  IntReferenceIterator last, int value) {
+struct setrng_1
+    : public RLOp_Void_3<IntReference_T, IntReference_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator first,
+                  IntReferenceIterator last,
+                  int value) {
     ++last;  // RealLive ranges are inclusive
     fill(first, last, value);
   }
@@ -93,10 +96,12 @@ struct setrng_1 : public RLOp_Void_3< IntReference_T, IntReference_T,
 // @note copy_n is not part of the C++ standard, and while it's part of
 // STL on the machines at work, it doesn't exist on OSX's implementation,
 // so grab a copy that boost includes.
-struct cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
-                                        IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator source,
-                  IntReferenceIterator dest, int count) {
+struct cpyrng
+    : public RLOp_Void_3<IntReference_T, IntReference_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator source,
+                  IntReferenceIterator dest,
+                  int count) {
     vector<int> tmpCopy;
     boost::detail::multi_array::copy_n(source, count, back_inserter(tmpCopy));
     std::copy(tmpCopy.begin(), tmpCopy.end(), dest);
@@ -108,10 +113,11 @@ struct cpyrng : public RLOp_Void_3< IntReference_T, IntReference_T,
 // Sets every stepth memory block starting at origin with the sequence of
 // passed in values.
 struct setarray_stepped
-  : public RLOp_Void_3< IntReference_T, IntConstant_T,
-                        Argc_T<IntConstant_T > > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin,
-                  int step, vector<int> values) {
+    : public RLOp_Void_3<IntReference_T, IntConstant_T, Argc_T<IntConstant_T>> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator origin,
+                  int step,
+                  vector<int> values) {
     // Sigh. No more simple STL statements
     for (vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
       *origin = *it;
@@ -125,9 +131,11 @@ struct setarray_stepped
 // Sets count number of memory locations to zero, starting at origin and going
 // forward step.
 struct setrng_stepped_0
-  : public RLOp_Void_3< IntReference_T, IntConstant_T, IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin,
-                  int step, int count) {
+    : public RLOp_Void_3<IntReference_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator origin,
+                  int step,
+                  int count) {
     for (int i = 0; i < count; ++i) {
       *origin = 0;
       advance(origin, step);
@@ -139,11 +147,15 @@ struct setrng_stepped_0
 //
 // Sets count number of memory locations to the passed in constant, starting at
 // origin and going forward step.
-struct setrng_stepped_1
-  : public RLOp_Void_4< IntReference_T, IntConstant_T, IntConstant_T,
-                        IntConstant_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin,
-                  int step, int count, int value) {
+struct setrng_stepped_1 : public RLOp_Void_4<IntReference_T,
+                                             IntConstant_T,
+                                             IntConstant_T,
+                                             IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator origin,
+                  int step,
+                  int count,
+                  int value) {
     for (int i = 0; i < count; ++i) {
       *origin = value;
       advance(origin, step);
@@ -154,12 +166,16 @@ struct setrng_stepped_1
 // Implement op<1:Mem:00006, 0>, fun cpyvars(int, intC, int+).
 //
 // I'm not even going to try for this one. See RLDev.
-struct cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
-                                         Argc_T< IntReference_T > > {
-  void operator()(RLMachine& machine, IntReferenceIterator origin,
-                  int offset, vector<IntReferenceIterator> values) {
+struct cpyvars : public RLOp_Void_3<IntReference_T,
+                                    IntConstant_T,
+                                    Argc_T<IntReference_T>> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator origin,
+                  int offset,
+                  vector<IntReferenceIterator> values) {
     for (vector<IntReferenceIterator>::iterator it = values.begin();
-        it != values.end(); ++it) {
+         it != values.end();
+         ++it) {
       IntReferenceIterator irIt = *it;
       advance(irIt, offset);
       *origin++ = *irIt;
@@ -170,9 +186,10 @@ struct cpyvars : public RLOp_Void_3< IntReference_T, IntConstant_T,
 // Implement op<1:Mem:00100, 0>, fun sum(int, int).
 //
 // Returns the sum of all the numbers in the given memory range.
-struct sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
-  int operator()(RLMachine& machine, IntReferenceIterator first,
-                  IntReferenceIterator last) {
+struct sum : public RLOp_Store_2<IntReference_T, IntReference_T> {
+  int operator()(RLMachine& machine,
+                 IntReferenceIterator first,
+                 IntReferenceIterator last) {
     last++;
     return accumulate(first, last, 0);
   }
@@ -181,15 +198,17 @@ struct sum : public RLOp_Store_2< IntReference_T, IntReference_T > {
 // Implement op<1:Mem:00101, 0>, fun sums((int, int)+).
 //
 // Returns the sum of all the numbers in all the given memory ranges.
-struct sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
-                                                       IntReference_T > > > {
+struct sums
+    : public RLOp_Store_1<Argc_T<Complex2_T<IntReference_T, IntReference_T>>> {
   int operator()(
       RLMachine& machine,
-      vector<std::tuple<IntReferenceIterator, IntReferenceIterator> > ranges) {
+      vector<std::tuple<IntReferenceIterator, IntReferenceIterator>> ranges) {
     int total = 0;
     for (std::vector<std::tuple<IntReferenceIterator,
-             IntReferenceIterator> >::iterator
-             it = ranges.begin(); it != ranges.end(); ++it) {
+                                IntReferenceIterator>>::iterator it =
+             ranges.begin();
+         it != ranges.end();
+         ++it) {
       IntReferenceIterator last = get<1>(*it);
       ++last;
       total += accumulate(get<0>(*it), last, 0);
@@ -202,8 +221,7 @@ struct sums : public RLOp_Store_1< Argc_T< Complex2_T< IntReference_T,
 
 // -----------------------------------------------------------------------
 
-MemModule::MemModule()
-  : RLModule("Mem", 1, 11) {
+MemModule::MemModule() : RLModule("Mem", 1, 11) {
   addOpcode(0, 0, "setarray", new setarray);
   addOpcode(1, 0, "setrng", new setrng_0);
   addOpcode(1, 1, "setrng", new setrng_1);

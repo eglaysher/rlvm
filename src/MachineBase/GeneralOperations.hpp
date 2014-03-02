@@ -48,44 +48,46 @@ class CGMTable;
 #include "MachineBase/GeneralOperations_impl.hpp"
 
 // callFunction(), the public interface to all the above binder classes.
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)(const int)) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)(const int)) {
   return new binderImpl::Op_CallWithInt<OBJTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)(RLMachine&, const int)) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)(RLMachine&, const int)) {
   return new binderImpl::Op_CallWithMachineInt<OBJTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)(RLMachine&, const int, const int)) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)(RLMachine&,
+                                             const int,
+                                             const int)) {
   return new binderImpl::Op_CallWithMachineIntInt<OBJTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)(const int, const int)) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)(const int, const int)) {
   return new binderImpl::Op_CallWithIntInt<OBJTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)(const std::string&)) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)(const std::string&)) {
   return new binderImpl::Op_CallWithString<OBJTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* callFunction(void(OBJTYPE::*s)()) {
+template <typename OBJTYPE>
+RLOperation* callFunction(void (OBJTYPE::*s)()) {
   return new binderImpl::Op_CallMethod<OBJTYPE>(s);
 }
 
 // Calls the incoming function with value.
-template<typename OBJTYPE, typename VALTYPE>
-RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALTYPE), VALTYPE val) {
+template <typename OBJTYPE, typename VALTYPE>
+RLOperation* callFunctionWith(void (OBJTYPE::*s)(VALTYPE), VALTYPE val) {
   return new binderImpl::Op_CallWithConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
-template<typename OBJTYPE, typename VALONE, typename VALTWO>
-RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALONE, VALTWO),
+template <typename OBJTYPE, typename VALONE, typename VALTWO>
+RLOperation* callFunctionWith(void (OBJTYPE::*s)(VALONE, VALTWO),
                               VALONE one,
                               VALTWO two) {
   return new binderImpl::Op_CallWithConstantConstant<OBJTYPE, VALONE, VALTWO>(
@@ -93,28 +95,29 @@ RLOperation* callFunctionWith(void(OBJTYPE::*s)(VALONE, VALTWO),
 }
 
 // Returns the int value of the passed in function as the store register.
-template<typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE(*s)()) {
+template <typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE (*s)()) {
   return new binderImpl::Op_ReturnFunctionIntValue<RETTYPE>(s);
 }
 
-template<typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)() const) {
+template <typename OBJTYPE, typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)() const) {
   return new binderImpl::Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
 }
 
-template<typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(int) const) {
+template <typename OBJTYPE, typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)(int) const) {
   return new binderImpl::Op_ReturnIntValueWithInt<OBJTYPE, RETTYPE>(s);
 }
 
-template<typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE(OBJTYPE::*s)(const std::string&) const) {
+template <typename OBJTYPE, typename RETTYPE>
+RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)(const std::string&) const) {
   return new binderImpl::Op_ReturnIntValueWithString<OBJTYPE, RETTYPE>(s);
 }
 
-template<typename OBJTYPE>
-RLOperation* returnStringValue(const std::string&(OBJTYPE::*s)() const) { // NOLINT
+template <typename OBJTYPE>
+RLOperation* returnStringValue(const std::string& (OBJTYPE::*s)()
+                               const) {  // NOLINT
   return new binderImpl::Op_ReturnStringValue<OBJTYPE>(s);
 }
 
@@ -137,9 +140,8 @@ class MultiDispatch : public RLOp_SpecialCase {
   explicit MultiDispatch(RLOperation* op);
   ~MultiDispatch();
 
-  void parseParameters(
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output);
+  void parseParameters(const std::vector<std::string>& input,
+                       libReallive::ExpressionPiecesVector& output);
 
   virtual void operator()(RLMachine& machine,
                           const libReallive::CommandElement& ff);
@@ -176,7 +178,10 @@ class InvokeSyscomAsOp : public RLOp_Void_Void {
 class UndefinedFunction : public RLOp_SpecialCase {
  public:
   UndefinedFunction(const std::string& name,
-                    int modtype, int module, int opcode, int overload);
+                    int modtype,
+                    int module,
+                    int opcode,
+                    int overload);
 
   // A note on UGLY HACKS: We need to override RLOp_SpecialCase::dispatch()
   // because that's the entry point when using ChildObjAdapter. So we overload

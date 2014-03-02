@@ -38,17 +38,17 @@ using libReallive::IntMemRef;
 
 namespace {
 
-static int random_dirtable[] = {
-  0, 2, 1, 3, 0, 2, 1, 3,
-  1, 3, 2, 0, 1, 3, 2, 0,
-  0, 0, 0, 0, 3, 1, 2, 0,
-  3, 1, 3, 1, 0, 2, 3, 1
-};
+static int random_dirtable[] = {0, 2, 1, 3, 0, 2, 1, 3, 1, 3, 2, 0, 1, 3, 2, 0,
+                                0, 0, 0, 0, 3, 1, 2, 0, 3, 1, 3, 1, 0, 2, 3, 1};
 
 }  // namespace
 
-int LittleBustersEF00DLL::callDLL(
-    RLMachine& machine, int func, int arg1, int arg2, int arg3, int arg4) {
+int LittleBustersEF00DLL::callDLL(RLMachine& machine,
+                                  int func,
+                                  int arg1,
+                                  int arg2,
+                                  int arg3,
+                                  int arg4) {
   switch (func) {
     case 0:
       configureEffect(arg1, arg2, arg3, arg4);
@@ -64,7 +64,9 @@ int LittleBustersEF00DLL::callDLL(
   return 0;
 }
 
-void LittleBustersEF00DLL::configureEffect(int arg1, int arg2, int arg3,
+void LittleBustersEF00DLL::configureEffect(int arg1,
+                                           int arg2,
+                                           int arg3,
                                            int arg4) {
   if (!lb_ef_param)
     lb_ef_param.reset(new double[sizeof(double) * 0x60 * 8]);
@@ -76,24 +78,28 @@ void LittleBustersEF00DLL::configureEffect(int arg1, int arg2, int arg3,
   } else {
     param_top = arg2;
     param_size = arg3;
-    if (param_top < 0) param_top = 0;
-    if (param_top > 0x20) param_top = 0x20;
-    if (param_size+param_top > 0x20) param_size = 0x20 - param_top;
+    if (param_top < 0)
+      param_top = 0;
+    if (param_top > 0x20)
+      param_top = 0x20;
+    if (param_size + param_top > 0x20)
+      param_size = 0x20 - param_top;
   }
   for (int i = 0; i < 8; i++) {
-    double* param = lb_ef_param.get() + i*0x60 + param_top*3;
+    double* param = lb_ef_param.get() + i * 0x60 + param_top * 3;
     for (int j = 0; j < param_size; j++) {
       *param++ = random() % 800 - 400;
       *param++ = random() % 600 - 300;
       *param++ = random() % 700 - 350;
     }
   }
-  if (arg4 != 1) return;
-  int* dir = &random_dirtable[(random()&3) * 8];
+  if (arg4 != 1)
+    return;
+  int* dir = &random_dirtable[(random() & 3) * 8];
   for (int i = 0; i < 8; i++) {
-    double* param = lb_ef_param.get() + i*0x60;
-    double x = random()%600 - 300;
-    double y = random()%480-240;
+    double* param = lb_ef_param.get() + i * 0x60;
+    double x = random() % 600 - 300;
+    double y = random() % 480 - 240;
     if (x < 0)
       x -= 80;
     else
@@ -146,12 +152,12 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
     throw rlvm::Exception("Effect calculation was called before setting");
   }
 
-  int v5_1154 = machine.getIntValue(IntMemRef(
-      libReallive::INTF_LOCATION, 1154 + index));
+  int v5_1154 =
+      machine.getIntValue(IntMemRef(libReallive::INTF_LOCATION, 1154 + index));
   int j = ((v5_1154) & 0x1f) + index * 0x20;
-  int k = ((v5_1154+1) & 0x1f) + index * 0x20;
-  int l = ((v5_1154+2) & 0x1f) + index * 0x20;
-  int m = ((v5_1154+3) & 0x1f) + index * 0x20;
+  int k = ((v5_1154 + 1) & 0x1f) + index * 0x20;
+  int l = ((v5_1154 + 2) & 0x1f) + index * 0x20;
+  int m = ((v5_1154 + 3) & 0x1f) + index * 0x20;
   j *= 3;
   k *= 3;
   l *= 3;
@@ -159,22 +165,23 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
 
   // 0 < x < 1
   // va - vd は 0-1 の範囲で対称性を持つ３次関数
-  double x = double(machine.getIntValue(IntMemRef(
-      libReallive::INTF_LOCATION, 1162 + index))) * 0.001;
-  double va = (x * x * x)/6;
-  double vb = (-x*x*x + 3*x*x - 3*x + 1) / 6;
-  double vc = (3*x*x*x - 6*x*x + 4) / 6;
-  double vd = (-3*x*x*x+3*x*x+3*x+1) / 6;
+  double x = double(machine.getIntValue(
+                 IntMemRef(libReallive::INTF_LOCATION, 1162 + index))) *
+             0.001;
+  double va = (x * x * x) / 6;
+  double vb = (-x * x * x + 3 * x * x - 3 * x + 1) / 6;
+  double vc = (3 * x * x * x - 6 * x * x + 4) / 6;
+  double vd = (-3 * x * x * x + 3 * x * x + 3 * x + 1) / 6;
 
-  double r1 = va * lb_ef_param[m+3] + vd * lb_ef_param[l+3] +
-              vc * lb_ef_param[k+3] + vb * lb_ef_param[j+3];
-  double r2 = va * lb_ef_param[m+2] + vd * lb_ef_param[l+2] +
-              vc * lb_ef_param[k+2] + vb * lb_ef_param[j+2];
-  double r3 = va * lb_ef_param[m+1] + vd * lb_ef_param[l+1] +
-              vc * lb_ef_param[k+1] + vb * lb_ef_param[j+1];
+  double r1 = va * lb_ef_param[m + 3] + vd * lb_ef_param[l + 3] +
+              vc * lb_ef_param[k + 3] + vb * lb_ef_param[j + 3];
+  double r2 = va * lb_ef_param[m + 2] + vd * lb_ef_param[l + 2] +
+              vc * lb_ef_param[k + 2] + vb * lb_ef_param[j + 2];
+  double r3 = va * lb_ef_param[m + 1] + vd * lb_ef_param[l + 1] +
+              vc * lb_ef_param[k + 1] + vb * lb_ef_param[j + 1];
   if (r1 != 400) {
-    r2 = r2 * 800 / (400-r1);
-    r3 = r3 * 700 / (400-r1);
+    r2 = r2 * 800 / (400 - r1);
+    r3 = r3 * 700 / (400 - r1);
   }
 
   machine.setIntValue(IntMemRef(libReallive::INTF_LOCATION, 1151), r2);
@@ -186,4 +193,3 @@ const std::string& LittleBustersEF00DLL::name() const {
   static std::string n("EF00");
   return n;
 }
-

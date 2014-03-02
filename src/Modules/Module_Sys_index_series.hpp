@@ -38,25 +38,35 @@ class RLModule;
 
 // Defines index_series's input pattern.
 typedef IntConstant_T ValOnly;
-typedef Complex3_T< IntConstant_T, IntConstant_T, IntConstant_T > StartEndval;
-typedef Complex4_T< IntConstant_T, IntConstant_T, IntConstant_T,
-                    IntConstant_T > StartEndvalMode;
-typedef Special_T< DefaultSpecialMapper,
-                   ValOnly, StartEndval, StartEndvalMode > IndexSeriesEntry;
-typedef Argc_T< IndexSeriesEntry > IndexList;
+typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> StartEndval;
+typedef Complex4_T<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+    StartEndvalMode;
+typedef Special_T<DefaultSpecialMapper, ValOnly, StartEndval, StartEndvalMode>
+    IndexSeriesEntry;
+typedef Argc_T<IndexSeriesEntry> IndexList;
 
 // Implementation of the math performing index_series command. Exposed through
 // the header for testing.
-struct Sys_index_series
-    : public RLOp_Store_4<IntConstant_T, IntConstant_T, IntConstant_T,
-                          IndexList> {
+struct Sys_index_series : public RLOp_Store_4<IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IndexList> {
   // Main entrypoint
-  int operator()(RLMachine& machine, int index, int offset, int init,
+  int operator()(RLMachine& machine,
+                 int index,
+                 int offset,
+                 int init,
                  IndexList::type index_list);
 
   // Adds a single term.
-  void adder(int index, int start, int end, int endval, int mod,
-             int& value, int& init, bool& previous_term_finished);
+  void adder(int index,
+             int start,
+             int end,
+             int endval,
+             int mod,
+             int& value,
+             int& init,
+             bool& previous_term_finished);
 };
 
 // index_series has its own file.

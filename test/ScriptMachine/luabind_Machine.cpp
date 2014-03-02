@@ -31,8 +31,7 @@
 using namespace luabind;
 
 scope register_machine() {
-  return
-    class_<ScriptMachine>("Machine").
-    def("getInt", &ScriptMachine::getInt).
-    def("sceneNumber", &RLMachine::sceneNumber);
+  return class_<ScriptMachine>("Machine")
+      .def("getInt", &ScriptMachine::getInt)
+      .def("sceneNumber", &RLMachine::sceneNumber);
 }

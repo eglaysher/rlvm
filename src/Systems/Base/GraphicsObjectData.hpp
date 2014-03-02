@@ -42,11 +42,7 @@ class Surface;
 // GraphicsObject.
 class GraphicsObjectData {
  public:
-  enum AfterAnimation {
-    AFTER_NONE,
-    AFTER_CLEAR,
-    AFTER_LOOP
-  };
+  enum AfterAnimation { AFTER_NONE, AFTER_CLEAR, AFTER_LOOP };
 
  public:
   GraphicsObjectData();
@@ -86,8 +82,7 @@ class GraphicsObjectData {
   // Returns the destination rectangle on the screen to draw srcRect()
   // to. Override to return custom rectangles in the case of a custom animation
   // format.
-  virtual Rect dstRect(const GraphicsObject& go,
-                       const GraphicsObject* parent);
+  virtual Rect dstRect(const GraphicsObject& go, const GraphicsObject* parent);
 
  protected:
   // Function called after animation ends when this object has been
@@ -98,13 +93,12 @@ class GraphicsObjectData {
   // animation.
   void endAnimation();
 
-  void PrintGraphicsObjectToTree(const GraphicsObject& go,
-                                 std::ostream* tree);
+  void PrintGraphicsObjectToTree(const GraphicsObject& go, std::ostream* tree);
 
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.
   virtual boost::shared_ptr<const Surface> currentSurface(
-    const GraphicsObject& rp) = 0;
+      const GraphicsObject& rp) = 0;
 
   // Returns the rectangle in currentSurface() to draw to the screen. Override
   // to return custom rectangles in the case of a custom animation format.
@@ -136,11 +130,11 @@ class GraphicsObjectData {
   friend class boost::serialization::access;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
     // boost::serialization should take care of the swizzling of
     // owned_by_.
-    ar & after_animation_ & owned_by_ & currently_playing_;
+    ar& after_animation_& owned_by_& currently_playing_;
   }
 };
 

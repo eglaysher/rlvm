@@ -77,9 +77,11 @@ class UserPresentableError : public Exception {
 
 class UnimplementedOpcode : public Exception {
  public:
-  UnimplementedOpcode(
-      const std::string& funName,
-      int modtype, int module, int opcode, int overload);
+  UnimplementedOpcode(const std::string& funName,
+                      int modtype,
+                      int module,
+                      int opcode,
+                      int overload);
   UnimplementedOpcode(RLMachine& machine,
                       const std::string& funName,
                       const libReallive::CommandElement& command);

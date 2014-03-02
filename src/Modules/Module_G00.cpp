@@ -30,17 +30,18 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 
-struct g00Preload : public RLOp_Void_2< IntConstant_T, StrConstant_T > {
+struct g00Preload : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     machine.system().graphics().PreloadG00(slot, name);
   }
 };
 
-G00Module::G00Module()
-    : RLModule("G00", 1, 14) {
+G00Module::G00Module() : RLModule("G00", 1, 14) {
   addOpcode(1000, 0, "g00Preload", new g00Preload);
-  addOpcode(1001, 0, "g00Clear",
-            callFunction(&GraphicsSystem::ClearPreloadedG00));
-  addOpcode(1002, 0, "g00ClearAll",
+  addOpcode(
+      1001, 0, "g00Clear", callFunction(&GraphicsSystem::ClearPreloadedG00));
+  addOpcode(1002,
+            0,
+            "g00ClearAll",
             callFunction(&GraphicsSystem::ClearAllPreloadedG00));
 }

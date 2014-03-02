@@ -39,14 +39,13 @@ namespace fs = boost::filesystem;
 
 namespace {
 
-void on_selection_changed(GtkFileChooser *chooser) {
+void on_selection_changed(GtkFileChooser* chooser) {
   gchar* name = gtk_file_chooser_get_filename(chooser);
   if (name) {
-    boost::filesystem::path path = correctPathCase(
-        fs::path(name) / fs::path("Gameexe.ini"));
-    gtk_dialog_set_response_sensitive(GTK_DIALOG(chooser),
-                                      GTK_RESPONSE_ACCEPT,
-                                      fs::exists(path));
+    boost::filesystem::path path =
+        correctPathCase(fs::path(name) / fs::path("Gameexe.ini"));
+    gtk_dialog_set_response_sensitive(
+        GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT, fs::exists(path));
     g_free(name);
   }
 }
@@ -69,20 +68,20 @@ GtkRLVMInstance::GtkRLVMInstance(int* argc, char** argv[]) : RLVMInstance() {
 GtkRLVMInstance::~GtkRLVMInstance() {}
 
 boost::filesystem::path GtkRLVMInstance::SelectGameDirectory() {
-  GtkWidget* dialog = gtk_file_chooser_dialog_new(
-      _("Select Game Directory"),
-      NULL,
-      GTK_FILE_CHOOSER_ACTION_OPEN,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-      NULL);
+  GtkWidget* dialog = gtk_file_chooser_dialog_new(_("Select Game Directory"),
+                                                  NULL,
+                                                  GTK_FILE_CHOOSER_ACTION_OPEN,
+                                                  GTK_STOCK_CANCEL,
+                                                  GTK_RESPONSE_CANCEL,
+                                                  GTK_STOCK_OPEN,
+                                                  GTK_RESPONSE_ACCEPT,
+                                                  NULL);
 
-  gtk_file_chooser_set_action(
-      GTK_FILE_CHOOSER(dialog),
-      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+  gtk_file_chooser_set_action(GTK_FILE_CHOOSER(dialog),
+                              GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
   gtk_file_chooser_set_create_folders(GTK_FILE_CHOOSER(dialog), false);
-  g_signal_connect(dialog, "selection-changed",
-                   G_CALLBACK(on_selection_changed), NULL);
+  g_signal_connect(
+      dialog, "selection-changed", G_CALLBACK(on_selection_changed), NULL);
 
   boost::filesystem::path out_path;
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -101,7 +100,7 @@ boost::filesystem::path GtkRLVMInstance::SelectGameDirectory() {
 
 void GtkRLVMInstance::DoNativeWork() {
   while (gtk_events_pending())
-	  gtk_main_iteration();
+    gtk_main_iteration();
 }
 
 void GtkRLVMInstance::ReportFatalError(const std::string& message_text,
@@ -114,9 +113,8 @@ void GtkRLVMInstance::ReportFatalError(const std::string& message_text,
                                               GTK_BUTTONS_CLOSE,
                                               "%s",
                                               message_text.c_str());
-  gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(message),
-                                           "%s",
-                                           informative_text.c_str());
+  gtk_message_dialog_format_secondary_text(
+      GTK_MESSAGE_DIALOG(message), "%s", informative_text.c_str());
 
   gtk_dialog_run(GTK_DIALOG(message));
   gtk_widget_destroy(message);
@@ -134,9 +132,8 @@ bool GtkRLVMInstance::AskUserPrompt(const std::string& message_text,
                                               GTK_BUTTONS_NONE,
                                               "%s",
                                               message_text.c_str());
-  gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(message),
-                                           "%s",
-                                           informative_text.c_str());
+  gtk_message_dialog_format_secondary_text(
+      GTK_MESSAGE_DIALOG(message), "%s", informative_text.c_str());
 
   gtk_dialog_add_button(GTK_DIALOG(message), false_button.c_str(), 0);
   gtk_dialog_add_button(GTK_DIALOG(message), true_button.c_str(), 1);

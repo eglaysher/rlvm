@@ -33,7 +33,6 @@
 #include "MachineBase/GeneralOperations.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 
-RefreshModule::RefreshModule()
-  : RLModule("Refresh", 1, 31) {
+RefreshModule::RefreshModule() : RLModule("Refresh", 1, 31) {
   addOpcode(0, 0, "refresh", callFunction(&GraphicsSystem::forceRefresh));
 }

@@ -88,9 +88,8 @@ TEST(GameexeUnit, FilteringIterators) {
   GameexeFilteringIterator it = ini.filtering_begin("IMAGINE");
   GameexeFilteringIterator end = ini.filtering_end();
   for (; it != end; ++it) {
-    if (it->key() != "IMAGINE.ONE" &&
-       it->key() != "IMAGINE.TWO" &&
-       it->key() != "IMAGINE.THREE") {
+    if (it->key() != "IMAGINE.ONE" && it->key() != "IMAGINE.TWO" &&
+        it->key() != "IMAGINE.THREE") {
       FAIL() << "Failed to filter keys in GameexeFilteringIterator. Has key "
              << it->key();
     }

@@ -86,7 +86,8 @@ void PrintParameterString(std::ostream& oss,
     try {
       std::unique_ptr<ExpressionPiece> piece(get_data(start));
       oss << piece->getDebugString();
-    } catch (libReallive::Error& e) {
+    }
+    catch (libReallive::Error& e) {
       // Any error throw here is a parse error.
       oss << "{RAW : " << parsableToPrintableString(param) << "}";
     }
@@ -99,7 +100,7 @@ void PrintParameterString(std::ostream& oss,
 // -----------------------------------------------------------------------
 
 ConstructionData::ConstructionData(size_t kt, pointer_t pt)
-  : kidoku_table(kt), null(pt) {}
+    : kidoku_table(kt), null(pt) {}
 
 // -----------------------------------------------------------------------
 
@@ -113,9 +114,7 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 
 // -----------------------------------------------------------------------
 
-const ElementType BytecodeElement::type() const {
-  return Unspecified;
-}
+const ElementType BytecodeElement::type() const { return Unspecified; }
 
 void BytecodeElement::print(std::ostream& oss) const {
   oss << "<unspecified bytecode>" << endl;
@@ -146,32 +145,45 @@ const int BytecodeElement::entrypoint() const { return -999; }
 
 // -----------------------------------------------------------------------
 
-inline BytecodeElement*
-read_function(const char* stream, ConstructionData& cdata) {
+inline BytecodeElement* read_function(const char* stream,
+                                      ConstructionData& cdata) {
   // opcode: 0xttmmoooo (Type, Module, Opcode: e.g. 0x01030101 = 1:03:00257
-  const unsigned long opcode = (stream[1] << 24) | (stream[2] << 16) |
-    (stream[4] << 8) | stream[3];
+  const unsigned long opcode =
+      (stream[1] << 24) | (stream[2] << 16) | (stream[4] << 8) | stream[3];
   switch (opcode) {
-  case 0x00010000: case 0x00010005:
-  case 0x00050001: case 0x00050005:
-    return new GotoElement(stream, cdata);
-  case 0x00010001: case 0x00010002: case 0x00010006: case 0x00010007:
-  case 0x00050002: case 0x00050006: case 0x00050007:
-    return new GotoIfElement(stream, cdata);
-  case 0x00010003: case 0x00010008:
-  case 0x00050003: case 0x00050008:
-    return new GotoOnElement(stream, cdata);
-  case 0x00010004: case 0x00010009:
-  case 0x00050004: case 0x00050009:
-    return new GotoCaseElement(stream, cdata);
-  case 0x00010010:
-    return new GosubWithElement(stream, cdata);
+    case 0x00010000:
+    case 0x00010005:
+    case 0x00050001:
+    case 0x00050005:
+      return new GotoElement(stream, cdata);
+    case 0x00010001:
+    case 0x00010002:
+    case 0x00010006:
+    case 0x00010007:
+    case 0x00050002:
+    case 0x00050006:
+    case 0x00050007:
+      return new GotoIfElement(stream, cdata);
+    case 0x00010003:
+    case 0x00010008:
+    case 0x00050003:
+    case 0x00050008:
+      return new GotoOnElement(stream, cdata);
+    case 0x00010004:
+    case 0x00010009:
+    case 0x00050004:
+    case 0x00050009:
+      return new GotoCaseElement(stream, cdata);
+    case 0x00010010:
+      return new GosubWithElement(stream, cdata);
 
-  // Select elements.
-  case 0x00020000: case 0x00020001:
-  case 0x00020002: case 0x00020003:
-  case 0x00020010:
-    return new SelectElement(stream);
+    // Select elements.
+    case 0x00020000:
+    case 0x00020001:
+    case 0x00020002:
+    case 0x00020003:
+    case 0x00020010:
+      return new SelectElement(stream);
   }
 
   return BuildFunctionElement(stream);
@@ -185,20 +197,27 @@ void BytecodeElement::runOnMachine(RLMachine& machine) const {
 
 // -----------------------------------------------------------------------
 
-BytecodeElement*
-BytecodeElement::read(const char* stream, const char* end,
-                      ConstructionData& cdata) {
+BytecodeElement* BytecodeElement::read(const char* stream,
+                                       const char* end,
+                                       ConstructionData& cdata) {
   const char c = *stream;
-  if (c == '!') entrypoint_marker = '!';
+  if (c == '!')
+    entrypoint_marker = '!';
   switch (c) {
-  case 0:
-  case ',':  return new CommaElement;
-  case '\n': return new MetaElement(0, stream);
-  case '@':  // fall through
-  case '!':  return new MetaElement(&cdata, stream);
-  case '$':  return new ExpressionElement(stream);
-  case '#':  return read_function(stream, cdata);
-  default:   return new TextoutElement(stream, end);
+    case 0:
+    case ',':
+      return new CommaElement;
+    case '\n':
+      return new MetaElement(0, stream);
+    case '@':  // fall through
+    case '!':
+      return new MetaElement(&cdata, stream);
+    case '$':
+      return new ExpressionElement(stream);
+    case '#':
+      return read_function(stream, cdata);
+    default:
+      return new TextoutElement(stream, end);
   }
 }
 
@@ -209,17 +228,13 @@ BytecodeElement::read(const char* stream, const char* end,
 CommaElement::CommaElement() {}
 CommaElement::~CommaElement() {}
 
-const ElementType CommaElement::type() const {
-  return Data;
-}
+const ElementType CommaElement::type() const { return Data; }
 
 void CommaElement::print(std::ostream& oss) const {
   oss << "<CommaElement>" << endl;
 }
 
-const size_t CommaElement::length() const {
-  return 1;
-}
+const size_t CommaElement::length() const { return 1; }
 
 // -----------------------------------------------------------------------
 // MetaElement
@@ -244,9 +259,7 @@ MetaElement::~MetaElement() {}
 // -----------------------------------------------------------------------
 
 const ElementType MetaElement::type() const {
-  return type_ == Line_ ? Line
-    : (type_ == Kidoku_ ? Kidoku
-       : Entrypoint);
+  return type_ == Line_ ? Line : (type_ == Kidoku_ ? Kidoku : Entrypoint);
 }
 
 void MetaElement::print(std::ostream& oss) const {
@@ -289,12 +302,14 @@ TextoutElement::TextoutElement(const char* src, const char* file_end) {
   while (true && end < file_end) {
     if (quoted) {
       quoted = *end != '"';
-      if (*end == '\\' && end[1] == '"') ++end;
+      if (*end == '\\' && end[1] == '"')
+        ++end;
     } else {
-      if (*end == ',') ++end;
+      if (*end == ',')
+        ++end;
       quoted = *end == '"';
-      if (!*end || *end == '#' || *end == '$' || *end == '\n' ||
-          *end == '@' || *end == entrypoint_marker)
+      if (!*end || *end == '#' || *end == '$' || *end == '\n' || *end == '@' ||
+          *end == entrypoint_marker)
         break;
     }
     if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
@@ -321,8 +336,7 @@ const size_t TextoutElement::length() const { return repr.size(); }
 
 // -----------------------------------------------------------------------
 
-const string
-TextoutElement::text() const {
+const string TextoutElement::text() const {
   string rv;
   bool quoted = false;
   string::const_iterator it = repr.begin();
@@ -335,7 +349,8 @@ TextoutElement::text() const {
       if (*it == '"') {
         ++it;
         rv.push_back('"');
-      } else rv.push_back('\\');
+      } else
+        rv.push_back('\\');
     } else {
       if ((*it >= 0x81 && *it <= 0x9f) || (*it >= 0xe0 && *it <= 0xef))
         rv.push_back(*it++);
@@ -377,23 +392,18 @@ ExpressionElement::ExpressionElement(const long val) {
 
 // -----------------------------------------------------------------------
 
-const ElementType ExpressionElement::type() const {
-  return Expression;
-}
+const ElementType ExpressionElement::type() const { return Expression; }
 
 void ExpressionElement::print(std::ostream& oss) const {
   oss << parsedExpression().getDebugString() << endl;
 }
 
-const size_t ExpressionElement::length() const {
-  return repr.size();
-}
+const size_t ExpressionElement::length() const { return repr.size(); }
 
 // -----------------------------------------------------------------------
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(nullptr) {
-}
+    : parsed_expression_(nullptr) {}
 
 // -----------------------------------------------------------------------
 
@@ -424,9 +434,7 @@ void ExpressionElement::runOnMachine(RLMachine& machine) const {
 // CommandElement
 // -----------------------------------------------------------------------
 
-CommandElement::CommandElement(const char* src) {
-  memcpy(command, src, 8);
-}
+CommandElement::CommandElement(const char* src) { memcpy(command, src, 8); }
 
 // -----------------------------------------------------------------------
 
@@ -437,10 +445,8 @@ CommandElement::~CommandElement() {}
 const ElementType CommandElement::type() const { return Command; }
 
 void CommandElement::print(std::ostream& oss) const {
-  oss << "op<" << modtype()
-      << ":" << setw(3) << setfill('0') << module()
-      << ":" << setw(5) << setfill('0') << opcode()
-      << ", " << overload() << ">";
+  oss << "op<" << modtype() << ":" << setw(3) << setfill('0') << module() << ":"
+      << setw(5) << setfill('0') << opcode() << ", " << overload() << ">";
 
   PrintParameterString(oss, getUnparsedParameters());
 
@@ -466,7 +472,7 @@ bool CommandElement::areParametersParsed() const {
 // -----------------------------------------------------------------------
 
 void CommandElement::setParsedParameters(
-  ExpressionPiecesVector& parsedParameters) const {
+    ExpressionPiecesVector& parsedParameters) const {
   parsed_parameters_.clear();
   parsed_parameters_ = std::move(parsedParameters);
 }
@@ -488,7 +494,7 @@ void CommandElement::runOnMachine(RLMachine& machine) const {
 // -----------------------------------------------------------------------
 
 SelectElement::SelectElement(const char* src)
-  : CommandElement(src), uselessjunk(0) {
+    : CommandElement(src), uselessjunk(0) {
   repr.assign(src, 8);
 
   src += 8;
@@ -497,11 +503,17 @@ SelectElement::SelectElement(const char* src)
     repr.append(src, elen);
     src += elen;
   }
-  if (*src++ != '{') throw Error("SelectElement(): expected `{'");
-  if (*src == '\n') { firstline = read_i16(src + 1); src += 3; } else firstline = 0;
+  if (*src++ != '{')
+    throw Error("SelectElement(): expected `{'");
+  if (*src == '\n') {
+    firstline = read_i16(src + 1);
+    src += 3;
+  } else
+    firstline = 0;
   for (int i = 0; i < argc(); ++i) {
     // Skip preliminary metadata.
-    while (*src == ',') ++src;
+    while (*src == ',')
+      ++src;
     // Read condition, if present.
     const char* cond = src;
     std::vector<Condition> cond_parsed;
@@ -524,7 +536,8 @@ SelectElement::SelectElement(const char* src)
         }
         cond_parsed.push_back(c);
       }
-      if (*src++ != ')') throw Error("SelectElement(): expected `)'");
+      if (*src++ != ')')
+        throw Error("SelectElement(): expected `)'");
     }
     size_t clen = src - cond;
     // Read text.
@@ -532,7 +545,8 @@ SelectElement::SelectElement(const char* src)
     src += next_string(src);
     size_t tlen = src - text;
     // Add parameter to list.
-    if (*src != '\n') throw Error("SelectElement(): expected `\\n'");
+    if (*src != '\n')
+      throw Error("SelectElement(): expected `\\n'");
     int lnum = read_i16(src + 1);
     src += 3;
     params.push_back(Param(cond_parsed, cond, clen, text, tlen, lnum));
@@ -551,27 +565,24 @@ SelectElement::SelectElement(const char* src)
     uselessjunk++;
   }
 
-  if (*src++ != '}') throw Error("SelectElement(): expected `}'");
+  if (*src++ != '}')
+    throw Error("SelectElement(): expected `}'");
 }
 
 // -----------------------------------------------------------------------
 
-const ElementType SelectElement::type() const {
-  return Select;
-}
+const ElementType SelectElement::type() const { return Select; }
 
 // -----------------------------------------------------------------------
 
 ExpressionElement SelectElement::window() const {
-  return repr[8] == '('
-    ? ExpressionElement(repr.data() + 9)
-    : ExpressionElement(-1);
+  return repr[8] == '(' ? ExpressionElement(repr.data() + 9)
+                        : ExpressionElement(-1);
 }
 
 // -----------------------------------------------------------------------
 
-const string
-SelectElement::text(const int index) const {
+const string SelectElement::text(const int index) const {
   string rv;
   bool quoted = false;
   const string& s = params.at(index).text;
@@ -600,8 +611,7 @@ SelectElement::text(const int index) const {
 
 // -----------------------------------------------------------------------
 
-const size_t
-SelectElement::length() const {
+const size_t SelectElement::length() const {
   size_t rv = repr.size() + 5;
   for (Param const& param : params)
     rv += param.cond_text.size() + param.text.size() + 3;
@@ -611,9 +621,7 @@ SelectElement::length() const {
 
 // -----------------------------------------------------------------------
 
-const size_t SelectElement::param_count() const {
-  return params.size();
-}
+const size_t SelectElement::param_count() const { return params.size(); }
 
 // -----------------------------------------------------------------------
 
@@ -629,9 +637,7 @@ string SelectElement::get_param(int i) const {
 
 FunctionElement::FunctionElement(const char* src,
                                  const std::vector<string>& params)
-    : CommandElement(src),
-      params(params) {
-}
+    : CommandElement(src), params(params) {}
 
 // -----------------------------------------------------------------------
 
@@ -639,8 +645,7 @@ const ElementType FunctionElement::type() const { return Function; }
 
 // -----------------------------------------------------------------------
 
-const size_t
-FunctionElement::length() const {
+const size_t FunctionElement::length() const {
   if (params.size() > 0) {
     size_t rv(COMMAND_SIZE + 2);
     for (std::string const& param : params)
@@ -692,8 +697,7 @@ string FunctionElement::get_param(int i) const { return params[i]; }
 // -----------------------------------------------------------------------
 
 VoidFunctionElement::VoidFunctionElement(const char* src)
-    : CommandElement(src) {
-}
+    : CommandElement(src) {}
 
 // -----------------------------------------------------------------------
 
@@ -723,9 +727,7 @@ string VoidFunctionElement::get_param(int i) const { return std::string(); }
 
 SingleArgFunctionElement::SingleArgFunctionElement(const char* src,
                                                    const std::string& arg)
-    : CommandElement(src),
-      arg_(arg) {
-}
+    : CommandElement(src), arg_(arg) {}
 
 // -----------------------------------------------------------------------
 
@@ -739,8 +741,8 @@ const size_t SingleArgFunctionElement::length() const {
 
 // -----------------------------------------------------------------------
 
-std::string SingleArgFunctionElement::serializableData(
-    RLMachine& machine) const {
+std::string SingleArgFunctionElement::serializableData(RLMachine& machine)
+    const {
   string rv;
   for (int i = 0; i < COMMAND_SIZE; ++i)
     rv.push_back(command[i]);
@@ -763,9 +765,7 @@ string SingleArgFunctionElement::get_param(int i) const {
 // PointerElement
 // -----------------------------------------------------------------------
 
-PointerElement::PointerElement(const char* src)
-    : CommandElement(src) {
-}
+PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
 // -----------------------------------------------------------------------
 
@@ -777,13 +777,9 @@ void PointerElement::set_pointers(ConstructionData& cdata) {
   targets.set_pointers(cdata);
 }
 
-const size_t PointerElement::pointers_count() const {
-  return targets.size();
-}
+const size_t PointerElement::pointers_count() const { return targets.size(); }
 
-pointer_t PointerElement::get_pointer(int i) const {
-  return targets[i];
-}
+pointer_t PointerElement::get_pointer(int i) const { return targets[i]; }
 
 // -----------------------------------------------------------------------
 // GotoElement
@@ -802,28 +798,19 @@ const ElementType GotoElement::type() const { return Goto; }
 
 // -----------------------------------------------------------------------
 
-const size_t GotoElement::param_count() const {
-  return 0;
-}
+const size_t GotoElement::param_count() const { return 0; }
 
-string GotoElement::get_param(int i) const {
-  return std::string();
-}
+string GotoElement::get_param(int i) const { return std::string(); }
 
-const size_t GotoElement::length() const {
-  return 12;
-}
+const size_t GotoElement::length() const { return 12; }
 
 void GotoElement::set_pointers(ConstructionData& cdata) {
-  ConstructionData::offsets_t::const_iterator it =
-      cdata.offsets.find(id_);
+  ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
 }
 
-const size_t GotoElement::pointers_count() const {
-  return 1;
-}
+const size_t GotoElement::pointers_count() const { return 1; }
 
 pointer_t GotoElement::get_pointer(int i) const {
   assert(i == 0);
@@ -839,13 +826,15 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
   repr.assign(src, 8);
   src += 8;
 
-  if (*src++ != '(') throw Error("GotoIfElement(): expected `('");
+  if (*src++ != '(')
+    throw Error("GotoIfElement(): expected `('");
   int expr = next_expr(src);
   repr.push_back('(');
   repr.append(src, expr);
   repr.push_back(')');
   src += expr;
-  if (*src++ != ')') throw Error("GotoIfElement(): expected `)'");
+  if (*src++ != ')')
+    throw Error("GotoIfElement(): expected `)'");
 
   id_ = read_i32(src);
 }
@@ -861,23 +850,20 @@ const size_t GotoIfElement::param_count() const {
 }
 
 string GotoIfElement::get_param(int i) const {
-  return i == 0 ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10)) : string();
+  return i == 0
+             ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10))
+             : string();
 }
 
-const size_t GotoIfElement::length() const {
-  return repr.size() + 4;
-}
+const size_t GotoIfElement::length() const { return repr.size() + 4; }
 
 void GotoIfElement::set_pointers(ConstructionData& cdata) {
-  ConstructionData::offsets_t::const_iterator it =
-      cdata.offsets.find(id_);
+  ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
 }
 
-const size_t GotoIfElement::pointers_count() const {
-  return 1;
-}
+const size_t GotoIfElement::pointers_count() const { return 1; }
 
 pointer_t GotoIfElement::get_pointer(int i) const {
   assert(i == 0);
@@ -897,12 +883,14 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
   repr.append(src, expr);
   src += expr;
   // Cases
-  if (*src++ != '{') throw Error("GotoCaseElement(): expected `{'");
+  if (*src++ != '{')
+    throw Error("GotoCaseElement(): expected `{'");
   int i = argc();
   cases.reserve(i);
   targets.reserve(i);
   while (i--) {
-    if (src[0] != '(') throw Error("GotoCaseElement(): expected `('");
+    if (src[0] != '(')
+      throw Error("GotoCaseElement(): expected `('");
     if (src[1] == ')') {
       cases.push_back("()");
       src += 2;
@@ -910,12 +898,14 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
       int cexpr = next_expr(src + 1);
       cases.push_back(string(src, cexpr + 2));
       src += cexpr + 1;
-      if (*src++ != ')') throw Error("GotoCaseElement(): expected `)'");
+      if (*src++ != ')')
+        throw Error("GotoCaseElement(): expected `)'");
     }
     targets.push_id(read_i32(src));
     src += 4;
   }
-  if (*src != '}') throw Error("GotoCaseElement(): expected `}'");
+  if (*src != '}')
+    throw Error("GotoCaseElement(): expected `}'");
 }
 
 // -----------------------------------------------------------------------
@@ -924,16 +914,14 @@ const ElementType GotoCaseElement::type() const { return GotoCase; }
 
 // -----------------------------------------------------------------------
 
-const size_t
-GotoCaseElement::length() const {
+const size_t GotoCaseElement::length() const {
   size_t rv = repr.size() + 2;
-  for (unsigned int i = 0; i < cases.size(); ++i) rv += cases[i].size() + 4;
+  for (unsigned int i = 0; i < cases.size(); ++i)
+    rv += cases[i].size() + 4;
   return rv;
 }
 
-const size_t GotoCaseElement::param_count() const {
-  return 1;
-}
+const size_t GotoCaseElement::param_count() const { return 1; }
 
 string GotoCaseElement::get_param(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
@@ -952,14 +940,16 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
   repr.append(src, expr);
   src += expr;
   // Pointers
-  if (*src++ != '{') throw Error("GotoOnElement(): expected `{'");
+  if (*src++ != '{')
+    throw Error("GotoOnElement(): expected `{'");
   int i = argc();
   targets.reserve(i);
   while (i--) {
     targets.push_id(read_i32(src));
     src += 4;
   }
-  if (*src != '}') throw Error("GotoOnElement(): expected `}'");
+  if (*src != '}')
+    throw Error("GotoOnElement(): expected `}'");
 }
 
 // -----------------------------------------------------------------------
@@ -972,24 +962,20 @@ const size_t GotoOnElement::length() const {
   return repr.size() + argc() * 4 + 2;
 }
 
-const size_t GotoOnElement::param_count() const {
-  return 1;
-}
+const size_t GotoOnElement::param_count() const { return 1; }
 
 string GotoOnElement::get_param(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
 
-
 // -----------------------------------------------------------------------
 
-void
-Pointers::set_pointers(ConstructionData& cdata) {
+void Pointers::set_pointers(ConstructionData& cdata) {
   assert(target_ids.size() != 0);
   targets.reserve(target_ids.size());
   for (unsigned int i = 0; i < target_ids.size(); ++i) {
     ConstructionData::offsets_t::const_iterator it =
-      cdata.offsets.find(target_ids[i]);
+        cdata.offsets.find(target_ids[i]);
     assert(it != cdata.offsets.end());
     targets.push_back(it->second);
   }
@@ -1001,8 +987,7 @@ Pointers::set_pointers(ConstructionData& cdata) {
 // -----------------------------------------------------------------------
 
 GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
-    : CommandElement(src),
-      repr_size(8) {
+    : CommandElement(src), repr_size(8) {
   src += 8;
   if (*src == '(') {
     src++;
@@ -1028,32 +1013,22 @@ const ElementType GosubWithElement::type() const { return Goto; }
 
 // -----------------------------------------------------------------------
 
-const size_t GosubWithElement::length() const {
-  return repr_size + 4;
-}
+const size_t GosubWithElement::length() const { return repr_size + 4; }
 
-const size_t GosubWithElement::param_count() const {
-  return params.size();
-}
+const size_t GosubWithElement::param_count() const { return params.size(); }
 
-string GosubWithElement::get_param(int i) const {
-  return params[i];
-}
+string GosubWithElement::get_param(int i) const { return params[i]; }
 
 void GosubWithElement::set_pointers(ConstructionData& cdata) {
-  ConstructionData::offsets_t::const_iterator it =
-      cdata.offsets.find(id_);
+  ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
 }
 
-const size_t GosubWithElement::pointers_count() const {
-  return 1;
-}
+const size_t GosubWithElement::pointers_count() const { return 1; }
 
 pointer_t GosubWithElement::get_pointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
-
 }

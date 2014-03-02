@@ -67,15 +67,20 @@ namespace libReallive {
 // mark boundaries; they do not perform any parsing.
 
 size_t next_token(const char* src) {
-  if (*src++ != '$') return 0;
-  if (*src++ == 0xff) return 6;
-  if (*src++ != '[') return 2;
+  if (*src++ != '$')
+    return 0;
+  if (*src++ == 0xff)
+    return 6;
+  if (*src++ != '[')
+    return 2;
   return 4 + next_expr(src);
 }
 
 size_t next_term(const char* src) {
-  if (*src == '(') return 2 + next_expr(src + 1);
-  if (*src == '\\') return 2 + next_term(src + 2);
+  if (*src == '(')
+    return 2 + next_expr(src + 1);
+  if (*src == '\\')
+    return 2 + next_term(src + 2);
   return next_token(src);
 }
 
@@ -86,20 +91,23 @@ size_t next_arith(const char* src) {
 
 size_t next_cond(const char* src) {
   size_t lhs = next_arith(src);
-  return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d) ?
-    lhs + 2 + next_arith(src + lhs + 2) : lhs;
+  return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d)
+             ? lhs + 2 + next_arith(src + lhs + 2)
+             : lhs;
 }
 
 size_t next_and(const char* src) {
   size_t lhs = next_cond(src);
-  return (src[lhs] == '\\' && src[lhs + 1] == '<') ?
-    lhs + 2 + next_and(src + lhs + 2) : lhs;
+  return (src[lhs] == '\\' && src[lhs + 1] == '<')
+             ? lhs + 2 + next_and(src + lhs + 2)
+             : lhs;
 }
 
 size_t next_expr(const char* src) {
   size_t lhs = next_and(src);
-  return (src[lhs] == '\\' && src[lhs + 1] == '=') ?
-    lhs + 2 + next_expr(src + lhs + 2) : lhs;
+  return (src[lhs] == '\\' && src[lhs + 1] == '=')
+             ? lhs + 2 + next_expr(src + lhs + 2)
+             : lhs;
 }
 
 size_t next_string(const char* src) {
@@ -120,9 +128,10 @@ size_t next_string(const char* src) {
         end += 1 + next_expr(end);
         continue;
       }
-      if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef)
-            || (*end >= 'A'  && *end <= 'Z')  || (*end >= '0'  && *end <= '9')
-            || *end == ' ' || *end == '?' || *end == '_' || *end == '"')) break;
+      if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef) ||
+            (*end >= 'A' && *end <= 'Z') || (*end >= '0' && *end <= '9') ||
+            *end == ' ' || *end == '?' || *end == '_' || *end == '"'))
+        break;
     }
     if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
       end += 2;
@@ -138,10 +147,10 @@ size_t next_data(const char* src) {
     return 1 + next_data(src + 1);
   if (*src == '\n')
     return 3 + next_data(src + 3);
-  if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef)
-      || (*src >= 'A'  && *src <= 'Z')  || (*src >= '0'  && *src <= '9')
-      || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
-      || strcmp(src, "###PRINT(") == 0)
+  if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef) ||
+      (*src >= 'A' && *src <= 'Z') || (*src >= '0' && *src <= '9') ||
+      *src == ' ' || *src == '?' || *src == '_' || *src == '"' ||
+      strcmp(src, "###PRINT(") == 0)
     return next_string(src);
   if (*src == 'a' || *src == '(') {
     const char* end = src;
@@ -155,15 +164,18 @@ size_t next_data(const char* src) {
       if (*end != '(') {
         end += next_data(end);
         return end - src;
-      } else end++;
+      } else
+        end++;
     }
 
-    while (*end != ')') end += next_data(end);
+    while (*end != ')')
+      end += next_data(end);
     end++;
     if (*end == '\\')
       end += next_expr(end);
     return end - src;
-  } else return next_expr(src);
+  } else
+    return next_expr(src);
 }
 
 // -----------------------------------------------------------------------
@@ -247,9 +259,9 @@ std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src) {
   }
 }
 
-static std::unique_ptr<ExpressionPiece>
-get_expr_arith_loop_hi_prec(const char*& src,
-                            std::unique_ptr<ExpressionPiece> tok) {
+static std::unique_ptr<ExpressionPiece> get_expr_arith_loop_hi_prec(
+    const char*& src,
+    std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
     char op = src[1];
     // Advance past this operator
@@ -281,8 +293,8 @@ static std::unique_ptr<ExpressionPiece> get_expr_arith_loop(
 }
 
 std::unique_ptr<ExpressionPiece> get_expr_arith(const char*& src) {
-  return get_expr_arith_loop(src, get_expr_arith_loop_hi_prec(
-      src, get_expr_term(src)));
+  return get_expr_arith_loop(
+      src, get_expr_arith_loop_hi_prec(src, get_expr_term(src)));
 }
 
 static std::unique_ptr<ExpressionPiece> get_expr_cond_loop(
@@ -311,7 +323,8 @@ static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_and(
     src += 2;
     std::unique_ptr<ExpressionPiece> rhs = get_expr_cond(src);
     return get_expr_bool_loop_and(
-        src, std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
+        src,
+        std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
             0x3c, std::move(tok), std::move(rhs))));
   } else {
     return tok;
@@ -327,7 +340,8 @@ static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_or(
     std::unique_ptr<ExpressionPiece> rhs =
         get_expr_bool_loop_and(src, std::move(innerTerm));
     return get_expr_bool_loop_or(
-        src, std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
+        src,
+        std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
             0x3d, std::move(tok), std::move(rhs))));
   } else {
     return tok;
@@ -335,8 +349,8 @@ static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_or(
 }
 
 std::unique_ptr<ExpressionPiece> get_expr_bool(const char*& src) {
-  return get_expr_bool_loop_or(
-      src, get_expr_bool_loop_and(src, get_expr_cond(src)));
+  return get_expr_bool_loop_or(src,
+                               get_expr_bool_loop_and(src, get_expr_cond(src)));
 }
 
 std::unique_ptr<ExpressionPiece> get_expression(const char*& src) {
@@ -386,12 +400,10 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
   } else if (*src == '\n') {
     src += 3;
     return get_data(src);
-  } else if ((*src >= 0x81 && *src <= 0x9f)
-            || (*src >= 0xe0 && *src <= 0xef)
-            || (*src >= 'A'  && *src <= 'Z')
-            || (*src >= '0'  && *src <= '9')
-            || *src == ' ' || *src == '?' || *src == '_' || *src == '"'
-            || strcmp(src, "###PRINT(") == 0) {
+  } else if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef) ||
+             (*src >= 'A' && *src <= 'Z') || (*src >= '0' && *src <= '9') ||
+             *src == ' ' || *src == '?' || *src == '_' || *src == '"' ||
+             strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
   } else if (*src == 'a') {
     // @todo Cleanup below.
@@ -414,7 +426,8 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
         return unique_ptr<ExpressionPiece>(cep.release());
-      } else end++;
+      } else
+        end++;
     } else
       cep.reset(new ComplexExpressionPiece());
 
@@ -493,7 +506,7 @@ std::string parsableToPrintableString(const std::string& src) {
 // -----------------------------------------------------------------------
 
 std::string printableToParsableString(const std::string& src) {
-  typedef boost::tokenizer<boost::char_separator<char> > ttokenizer;
+  typedef boost::tokenizer<boost::char_separator<char>> ttokenizer;
 
   std::string output;
 
@@ -519,10 +532,10 @@ std::string printableToParsableString(const std::string& src) {
 
 // ----------------------------------------------------------------------
 
-ExpressionPiece::~ExpressionPiece()              {}
-bool ExpressionPiece::isMemoryReference() const  { return false; }
-bool ExpressionPiece::isOperator() const         { return false; }
-bool ExpressionPiece::isAssignment() const       { return false; }
+ExpressionPiece::~ExpressionPiece() {}
+bool ExpressionPiece::isMemoryReference() const { return false; }
+bool ExpressionPiece::isOperator() const { return false; }
+bool ExpressionPiece::isAssignment() const { return false; }
 bool ExpressionPiece::isComplexParameter() const { return false; }
 bool ExpressionPiece::isSpecialParamater() const { return false; }
 
@@ -532,8 +545,7 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 
 // A default implementation is provided since not everything will have assign
 // semantics.
-void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {
-}
+void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
 
 int ExpressionPiece::integerValue(RLMachine& machine) const {
   throw libReallive::Error(
@@ -561,9 +573,7 @@ StringReferenceIterator ExpressionPiece::getStringReferenceIterator(
 
 // -----------------------------------------------------------------------
 
-bool StoreRegisterExpressionPiece::isMemoryReference() const {
-  return true;
-}
+bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
 
 void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine,
                                                   int rvalue) {
@@ -574,12 +584,13 @@ int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
   return machine.getStoreRegisterValue();
 }
 
-std::string StoreRegisterExpressionPiece::serializedValue(
-    RLMachine& machine) const {
+std::string StoreRegisterExpressionPiece::serializedValue(RLMachine& machine)
+    const {
   return IntToBytecode(machine.getStoreRegisterValue());
 }
 
-std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine) const {
+std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine)
+    const {
   return boost::lexical_cast<std::string>(machine.getStoreRegisterValue());
 }
 
@@ -599,15 +610,11 @@ unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
 // -----------------------------------------------------------------------
 
 // IntegerConstant
-IntegerConstant::IntegerConstant(const int in) : constant(in) {
-}
+IntegerConstant::IntegerConstant(const int in) : constant(in) {}
 
-IntegerConstant::~IntegerConstant() {
-}
+IntegerConstant::~IntegerConstant() {}
 
-int IntegerConstant::integerValue(RLMachine& machine) const {
-  return constant;
-}
+int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
 
 std::string IntegerConstant::serializedValue(RLMachine& machine) const {
   return IntToBytecode(constant);
@@ -628,8 +635,7 @@ std::unique_ptr<ExpressionPiece> IntegerConstant::clone() const {
 // -----------------------------------------------------------------------
 
 // StringConstant
-StringConstant::StringConstant(const std::string& in) : constant(in) {
-}
+StringConstant::StringConstant(const std::string& in) : constant(in) {}
 
 ExpressionValueType StringConstant::expressionValueType() const {
   return ValueTypeString;
@@ -660,15 +666,11 @@ std::unique_ptr<ExpressionPiece> StringConstant::clone() const {
 // MemoryReference
 MemoryReference::MemoryReference(int inType,
                                  std::unique_ptr<ExpressionPiece> target)
-    : type(inType), location(std::move(target)) {
-}
+    : type(inType), location(std::move(target)) {}
 
-MemoryReference::~MemoryReference() {
-}
+MemoryReference::~MemoryReference() {}
 
-bool MemoryReference::isMemoryReference() const {
-  return true;
-}
+bool MemoryReference::isMemoryReference() const { return true; }
 
 ExpressionValueType MemoryReference::expressionValueType() const {
   if (isStringLocation(type)) {
@@ -744,8 +746,8 @@ IntReferenceIterator MemoryReference::getIntegerReferenceIterator(
         "Request to getIntegerReferenceIterator() on a string reference!");
   }
 
-  return IntReferenceIterator(&machine.memory(), type,
-                              location->integerValue(machine));
+  return IntReferenceIterator(
+      &machine.memory(), type, location->integerValue(machine));
 }
 
 StringReferenceIterator MemoryReference::getStringReferenceIterator(
@@ -756,8 +758,8 @@ StringReferenceIterator MemoryReference::getStringReferenceIterator(
         "Request to getStringReferenceIterator() on an integer reference!");
   }
 
-  return StringReferenceIterator(&machine.memory(), type,
-                                 location->integerValue(machine));
+  return StringReferenceIterator(
+      &machine.memory(), type, location->integerValue(machine));
 }
 
 std::unique_ptr<ExpressionPiece> MemoryReference::clone() const {
@@ -770,20 +772,18 @@ std::unique_ptr<ExpressionPiece> MemoryReference::clone() const {
 UniaryExpressionOperator::UniaryExpressionOperator(
     char inOperation,
     std::unique_ptr<ExpressionPiece> inOperand)
-    : operand(std::move(inOperand)), operation(inOperation) {
-}
+    : operand(std::move(inOperand)), operation(inOperation) {}
 
-UniaryExpressionOperator::~UniaryExpressionOperator() {
-}
+UniaryExpressionOperator::~UniaryExpressionOperator() {}
 
 int UniaryExpressionOperator::performOperationOn(int int_operand) const {
   int result = int_operand;
   switch (operation) {
-  case 0x01:
-    result = - int_operand;
-    break;
-  default:
-    break;
+    case 0x01:
+      result = -int_operand;
+      break;
+    default:
+      break;
   };
 
   return result;
@@ -793,8 +793,8 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
   return performOperationOn(operand->integerValue(machine));
 }
 
-std::string UniaryExpressionOperator::serializedValue(
-    RLMachine& machine) const {
+std::string UniaryExpressionOperator::serializedValue(RLMachine& machine)
+    const {
   return IntToBytecode(integerValue(machine));
 }
 
@@ -813,9 +813,8 @@ std::string UniaryExpressionOperator::getDebugString() const {
 }
 
 std::unique_ptr<ExpressionPiece> UniaryExpressionOperator::clone() const {
-  return std::unique_ptr<ExpressionPiece>(new UniaryExpressionOperator(
-      operation,
-      operand->clone()));
+  return std::unique_ptr<ExpressionPiece>(
+      new UniaryExpressionOperator(operation, operand->clone()));
 }
 
 // ----------------------------------------------------------------------
@@ -826,58 +825,64 @@ BinaryExpressionOperator::BinaryExpressionOperator(
     unique_ptr<ExpressionPiece> rhs)
     : operation(inOperation),
       leftOperand(std::move(lhs)),
-      rightOperand(std::move(rhs)) {
-}
+      rightOperand(std::move(rhs)) {}
 
-BinaryExpressionOperator::~BinaryExpressionOperator() {
-}
+BinaryExpressionOperator::~BinaryExpressionOperator() {}
 
 // Stolen from xclannad
 int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
   switch (operation) {
-  case 0:
-  case 20:
-    return lhs + rhs;
-  case 1:
-  case 21:
-    return lhs - rhs;
-  case 2:
-  case 22:
-    return lhs * rhs;
-  case 3:
-  case 23:
-    return rhs != 0 ? lhs / rhs : lhs;
-  case 4:
-  case 24:
-    return rhs != 0 ? lhs % rhs : lhs;
-  case 5:
-  case 25:
-    return lhs & rhs;
-  case 6:
-  case 26:
-    return lhs | rhs;
-  case 7:
-  case 27:
-    return lhs ^ rhs;
-  case 8:
-  case 28:
-    return lhs << rhs;
-  case 9:
-  case 29:
-    return lhs >> rhs;
-  case 40: return lhs == rhs;
-  case 41: return lhs != rhs;
-  case 42: return lhs <= rhs;
-  case 43: return lhs <  rhs;
-  case 44: return lhs >= rhs;
-  case 45: return lhs >  rhs;
-  case 60: return lhs && rhs;
-  case 61: return lhs || rhs;
-  default: {
-    ostringstream ss;
-    ss << "Invalid operator " << (int)operation << " in expression!";
-    throw Error(ss.str());
-  }
+    case 0:
+    case 20:
+      return lhs + rhs;
+    case 1:
+    case 21:
+      return lhs - rhs;
+    case 2:
+    case 22:
+      return lhs * rhs;
+    case 3:
+    case 23:
+      return rhs != 0 ? lhs / rhs : lhs;
+    case 4:
+    case 24:
+      return rhs != 0 ? lhs % rhs : lhs;
+    case 5:
+    case 25:
+      return lhs & rhs;
+    case 6:
+    case 26:
+      return lhs | rhs;
+    case 7:
+    case 27:
+      return lhs ^ rhs;
+    case 8:
+    case 28:
+      return lhs << rhs;
+    case 9:
+    case 29:
+      return lhs >> rhs;
+    case 40:
+      return lhs == rhs;
+    case 41:
+      return lhs != rhs;
+    case 42:
+      return lhs <= rhs;
+    case 43:
+      return lhs < rhs;
+    case 44:
+      return lhs >= rhs;
+    case 45:
+      return lhs > rhs;
+    case 60:
+      return lhs && rhs;
+    case 61:
+      return lhs || rhs;
+    default: {
+      ostringstream ss;
+      ss << "Invalid operator " << (int)operation << " in expression!";
+      throw Error(ss.str());
+    }
   }
 }
 
@@ -886,8 +891,8 @@ int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
                             rightOperand->integerValue(machine));
 }
 
-std::string BinaryExpressionOperator::serializedValue(
-    RLMachine& machine) const {
+std::string BinaryExpressionOperator::serializedValue(RLMachine& machine)
+    const {
   return IntToBytecode(integerValue(machine));
 }
 
@@ -901,78 +906,78 @@ std::string BinaryExpressionOperator::getDebugString() const {
   str << " ";
 
   switch (operation) {
-  case 0:
-  case 20:
-    str << "+";
-    break;
-  case 1:
-  case 21:
-    str << "-";
-    break;
-  case 2:
-  case 22:
-    str << "*";
-    break;
-  case 3:
-  case 23:
-    str << "/";
-    break;
-  case 4:
-  case 24:
-    str << "%";
-    break;
-  case 5:
-  case 25:
-    str << "&";
-    break;
-  case 6:
-  case 26:
-    str << "|";
-    break;
-  case 7:
-  case 27:
-    str << "^";
-    break;
-  case 8:
-  case 28:
-    str << "<<";
-    break;
-  case 9:
-  case 29:
-    str << ">>";
-    break;
-  case 30:
-    str << "=";
-    break;
-  case 40:
-    str << "==";
-    break;
-  case 41:
-    str << "!=";
-    break;
-  case 42:
-    str << "<=";
-    break;
-  case 43:
-    str << "< ";
-    break;
-  case 44:
-    str << ">=";
-    break;
-  case 45:
-    str << "> ";
-    break;
-  case 60:
-    str << "&&";
-    break;
-  case 61:
-    str << "||";
-    break;
-  default: {
-    ostringstream ss;
-    ss << "Invalid operator " << (int)operation << " in expression!";
-    throw Error(ss.str());
-  }
+    case 0:
+    case 20:
+      str << "+";
+      break;
+    case 1:
+    case 21:
+      str << "-";
+      break;
+    case 2:
+    case 22:
+      str << "*";
+      break;
+    case 3:
+    case 23:
+      str << "/";
+      break;
+    case 4:
+    case 24:
+      str << "%";
+      break;
+    case 5:
+    case 25:
+      str << "&";
+      break;
+    case 6:
+    case 26:
+      str << "|";
+      break;
+    case 7:
+    case 27:
+      str << "^";
+      break;
+    case 8:
+    case 28:
+      str << "<<";
+      break;
+    case 9:
+    case 29:
+      str << ">>";
+      break;
+    case 30:
+      str << "=";
+      break;
+    case 40:
+      str << "==";
+      break;
+    case 41:
+      str << "!=";
+      break;
+    case 42:
+      str << "<=";
+      break;
+    case 43:
+      str << "< ";
+      break;
+    case 44:
+      str << ">=";
+      break;
+    case 45:
+      str << "> ";
+      break;
+    case 60:
+      str << "&&";
+      break;
+    case 61:
+      str << "||";
+      break;
+    default: {
+      ostringstream ss;
+      ss << "Invalid operator " << (int)operation << " in expression!";
+      throw Error(ss.str());
+    }
   }
 
   if (isAssignment() && operation != 30) {
@@ -987,9 +992,7 @@ std::string BinaryExpressionOperator::getDebugString() const {
 
 std::unique_ptr<ExpressionPiece> BinaryExpressionOperator::clone() const {
   return std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
-      operation,
-      leftOperand->clone(),
-      rightOperand->clone()));
+      operation, leftOperand->clone(), rightOperand->clone()));
 }
 
 // ----------------------------------------------------------------------
@@ -998,15 +1001,11 @@ AssignmentExpressionOperator::AssignmentExpressionOperator(
     char op,
     unique_ptr<ExpressionPiece> lhs,
     unique_ptr<ExpressionPiece> rhs)
-    : BinaryExpressionOperator(op, std::move(lhs), std::move(rhs)) {
-}
+    : BinaryExpressionOperator(op, std::move(lhs), std::move(rhs)) {}
 
-AssignmentExpressionOperator::~AssignmentExpressionOperator() {
-}
+AssignmentExpressionOperator::~AssignmentExpressionOperator() {}
 
-bool AssignmentExpressionOperator::isAssignment() const {
-  return true;
-}
+bool AssignmentExpressionOperator::isAssignment() const { return true; }
 
 int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   if (operation == 30) {
@@ -1021,31 +1020,26 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   }
 }
 
-std::string AssignmentExpressionOperator::getDebugValue(
-    RLMachine& machine) const {
+std::string AssignmentExpressionOperator::getDebugValue(RLMachine& machine)
+    const {
   return "<assignment>";
 }
 
 unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
   return unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
-      operation,
-      leftOperand->clone(),
-      rightOperand->clone()));
+      operation, leftOperand->clone(), rightOperand->clone()));
 }
 
 // -----------------------------------------------------------------------
 
-bool ComplexExpressionPiece::isComplexParameter() const {
-  return true;
-}
+bool ComplexExpressionPiece::isComplexParameter() const { return true; }
 
 void ComplexExpressionPiece::addContainedPiece(
     std::unique_ptr<ExpressionPiece> piece) {
   contained_pieces_.push_back(std::move(piece));
 }
 
-std::string ComplexExpressionPiece::serializedValue(
-    RLMachine& machine) const {
+std::string ComplexExpressionPiece::serializedValue(RLMachine& machine) const {
   string s("(");
   for (auto const& piece : contained_pieces_) {
     s += "(";
@@ -1080,13 +1074,9 @@ unique_ptr<ExpressionPiece> ComplexExpressionPiece::clone() const {
 
 // -----------------------------------------------------------------------
 
-SpecialExpressionPiece::SpecialExpressionPiece(int tag)
-    : overloadTag(tag) {
-}
+SpecialExpressionPiece::SpecialExpressionPiece(int tag) : overloadTag(tag) {}
 
-bool SpecialExpressionPiece::isSpecialParamater() const {
-  return true;
-}
+bool SpecialExpressionPiece::isSpecialParamater() const { return true; }
 
 std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
   string s("a");

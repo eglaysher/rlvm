@@ -49,7 +49,9 @@ inline void grpToRecCoordinates(int x1, int y1, int& x2, int& y2) {
 std::vector<int> getSELEffect(RLMachine& machine, int selNum);
 
 // Returns the source rect and destination point from a \#SEL or \#SELR id.
-void getSELPointAndRect(RLMachine& machine, int selNum, Rect& rect,
+void getSELPointAndRect(RLMachine& machine,
+                        int selNum,
+                        Rect& rect,
                         Point& point);
 
 // Gets the size of the screen and sets it in width/height.

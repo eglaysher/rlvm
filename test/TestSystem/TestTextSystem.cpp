@@ -37,15 +37,17 @@
 TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
     : TextSystem(system, gexe) {}
 
-TestTextSystem::~TestTextSystem() { }
+TestTextSystem::~TestTextSystem() {}
 
 boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
   WindowMap::iterator it = text_window_.find(text_window_num);
   if (it == text_window_.end()) {
     it = text_window_.insert(std::make_pair(
-      text_window_num, boost::shared_ptr<TextWindow>(
-          new ::testing::NiceMock<MockTextWindow>(
-              ::testing::ByRef(system()), text_window_num)))).first;
+                                 text_window_num,
+                                 boost::shared_ptr<TextWindow>(
+                                     new ::testing::NiceMock<MockTextWindow>(
+                                         ::testing::ByRef(system()),
+                                         text_window_num)))).first;
   }
 
   return it->second;

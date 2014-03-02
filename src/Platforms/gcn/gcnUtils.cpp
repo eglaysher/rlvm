@@ -39,26 +39,24 @@
 
 // -----------------------------------------------------------------------
 
-#define ARRAYSIZE(a) sizeof(a)/sizeof(a[0])
+#define ARRAYSIZE(a) sizeof(a) / sizeof(a[0])
 struct ImageDefinition {
   unsigned char* data;
   size_t size;
-} IMAGE_TABLE[] = {
-  {button_disabled, ARRAYSIZE(button_disabled)},
-  {buttonhi, ARRAYSIZE(buttonhi)},
-  {button, ARRAYSIZE(button)},
-  {buttonpress, ARRAYSIZE(buttonpress)},
-  {deepbox, ARRAYSIZE(deepbox)},
-  {hscroll_left_default, ARRAYSIZE(hscroll_left_default)},
-  {hscroll_left_pressed, ARRAYSIZE(hscroll_left_pressed)},
-  {hscroll_right_default, ARRAYSIZE(hscroll_right_default)},
-  {hscroll_right_pressed, ARRAYSIZE(hscroll_right_pressed)},
-  {vscroll_down_default, ARRAYSIZE(vscroll_down_default)},
-  {vscroll_down_pressed, ARRAYSIZE(vscroll_down_pressed)},
-  {vscroll_grey, ARRAYSIZE(vscroll_grey)},
-  {vscroll_up_default, ARRAYSIZE(vscroll_up_default)},
-  {vscroll_up_pressed, ARRAYSIZE(vscroll_up_pressed)},
-};
+} IMAGE_TABLE[] = {{button_disabled, ARRAYSIZE(button_disabled)},
+                   {buttonhi, ARRAYSIZE(buttonhi)},
+                   {button, ARRAYSIZE(button)},
+                   {buttonpress, ARRAYSIZE(buttonpress)},
+                   {deepbox, ARRAYSIZE(deepbox)},
+                   {hscroll_left_default, ARRAYSIZE(hscroll_left_default)},
+                   {hscroll_left_pressed, ARRAYSIZE(hscroll_left_pressed)},
+                   {hscroll_right_default, ARRAYSIZE(hscroll_right_default)},
+                   {hscroll_right_pressed, ARRAYSIZE(hscroll_right_pressed)},
+                   {vscroll_down_default, ARRAYSIZE(vscroll_down_default)},
+                   {vscroll_down_pressed, ARRAYSIZE(vscroll_down_pressed)},
+                   {vscroll_grey, ARRAYSIZE(vscroll_grey)},
+                   {vscroll_up_default, ARRAYSIZE(vscroll_up_default)},
+                   {vscroll_up_pressed, ARRAYSIZE(vscroll_up_pressed)}, };
 
 // -----------------------------------------------------------------------
 
@@ -77,21 +75,18 @@ static SDL_Surface* convertToStandardFormat(SDL_Surface* surface) {
   amask = 0xff000000;
 #endif
 
-  SDL_Surface *colourSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                                   0, 0, 32,
-                                                   rmask, gmask, bmask, amask);
+  SDL_Surface* colourSurface =
+      SDL_CreateRGBSurface(SDL_SWSURFACE, 0, 0, 32, rmask, gmask, bmask, amask);
 
-  SDL_Surface *tmp = NULL;
+  SDL_Surface* tmp = NULL;
 
   if (colourSurface != NULL) {
-    tmp = SDL_ConvertSurface(surface, colourSurface->format,
-                             SDL_SWSURFACE);
+    tmp = SDL_ConvertSurface(surface, colourSurface->format, SDL_SWSURFACE);
     SDL_FreeSurface(colourSurface);
   }
 
   return tmp;
 }
-
 
 // -----------------------------------------------------------------------
 
@@ -100,16 +95,14 @@ static gcn::Image* buildThemeGCNImageFrom(SDL_Surface* loadedSurface) {
     throw GCN_EXCEPTION(std::string("Unable to theme image"));
   }
 
-  SDL_Surface *surface = convertToStandardFormat(loadedSurface);
+  SDL_Surface* surface = convertToStandardFormat(loadedSurface);
 
   if (surface == NULL) {
     throw GCN_EXCEPTION(std::string("Not enough memory to load theme image"));
   }
 
-  gcn::OpenGLImage *image = new gcn::OpenGLImage((unsigned int*)surface->pixels,
-                                                 surface->w,
-                                                 surface->h,
-                                                 true);
+  gcn::OpenGLImage* image = new gcn::OpenGLImage(
+      (unsigned int*)surface->pixels, surface->w, surface->h, true);
   SDL_FreeSurface(surface);
 
   return image;
@@ -118,7 +111,7 @@ static gcn::Image* buildThemeGCNImageFrom(SDL_Surface* loadedSurface) {
 // -----------------------------------------------------------------------
 
 gcn::Image* getThemeImage(enum ThemeImage img) {
-  SDL_RWops *rwop = SDL_RWFromMem(IMAGE_TABLE[img].data, IMAGE_TABLE[img].size);
+  SDL_RWops* rwop = SDL_RWFromMem(IMAGE_TABLE[img].data, IMAGE_TABLE[img].size);
   SDL_Surface* loadedSurface = IMG_LoadPNG_RW(rwop);
   gcn::Image* image = buildThemeGCNImageFrom(loadedSurface);
   SDL_FreeSurface(loadedSurface);

@@ -32,7 +32,7 @@
 
 TEST(UtilitiesTest, ClipDestination_Superset) {
   Rect clip(Point(5, 5), Size(5, 5));
-  Rect src(Point(0,0), Size(10, 10));
+  Rect src(Point(0, 0), Size(10, 10));
   Rect dest(Point(0, 0), Size(10, 10));
 
   ClipDestination(clip, src, dest);

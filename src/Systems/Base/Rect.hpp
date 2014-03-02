@@ -81,9 +81,9 @@ class Point {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & x_ & y_;
+    ar& x_& y_;
   }
 };
 
@@ -150,12 +150,11 @@ class Size {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & width_ & height_;
+    ar& width_& height_;
   }
 };
-
 
 class Rect {
  public:
@@ -165,7 +164,7 @@ class Rect {
         size_(point2.x() - point1.x(), point2.y() - point1.y()) {}
   Rect(const Point& origin, const Size& size) : origin_(origin), size_(size) {}
   Rect(const int x, const int y, const Size& size)
-    : origin_(x, y), size_(size) {}
+      : origin_(x, y), size_(size) {}
 
   static Rect GRP(const int x1, const int y1, const int x2, const int y2) {
     return Rect(Point(x1, y1), Point(x2, y2));
@@ -226,9 +225,9 @@ class Rect {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & origin_ & size_;
+    ar& origin_& size_;
   }
 };  // end of class Rect
 

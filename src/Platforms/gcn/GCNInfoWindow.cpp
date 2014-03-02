@@ -43,9 +43,7 @@ namespace {
 
 int max_space(const std::vector<gcn::Label*>& labels) {
   std::vector<gcn::Label*>::const_iterator it = max_element(
-      labels.begin(),
-      labels.end(),
-      [](gcn::Label* one, gcn::Label* two) {
+      labels.begin(), labels.end(), [](gcn::Label* one, gcn::Label* two) {
         return one->getWidth() < two->getWidth();
       });
   if (it != labels.end())
@@ -68,7 +66,8 @@ void set_size_and_align(std::vector<gcn::Label*>& items,
 
 // -----------------------------------------------------------------------
 
-GCNInfoWindow::GCNInfoWindow(RLMachine& machine, const RlvmInfo& info,
+GCNInfoWindow::GCNInfoWindow(RLMachine& machine,
+                             const RlvmInfo& info,
                              GCNPlatform* platform)
     : GCNWindow(platform) {
   int height = PADDING;
@@ -88,8 +87,8 @@ GCNInfoWindow::GCNInfoWindow(RLMachine& machine, const RlvmInfo& info,
   values.push_back(new gcn::Label(info.game_version));
   values.push_back(new gcn::Label(info.game_path));
   values.push_back(new gcn::Label(info.rlvm_version));
-  values.push_back(new gcn::Label(
-                       info.rlbabel_loaded ? "Enabled" : "Disabled"));
+  values.push_back(
+      new gcn::Label(info.rlbabel_loaded ? "Enabled" : "Disabled"));
   values.push_back(
       new gcn::Label(transformationName(info.text_transformation)));
 
@@ -123,8 +122,7 @@ GCNInfoWindow::GCNInfoWindow(RLMachine& machine, const RlvmInfo& info,
 
 // -----------------------------------------------------------------------
 
-GCNInfoWindow::~GCNInfoWindow() {
-}
+GCNInfoWindow::~GCNInfoWindow() {}
 
 // -----------------------------------------------------------------------
 

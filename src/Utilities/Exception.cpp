@@ -42,40 +42,35 @@ namespace rlvm {
 // -----------------------------------------------------------------------
 
 Exception::Exception(const std::string& what)
-  : description(what),
-    operation_(NULL) {
-}
+    : description(what), operation_(NULL) {}
 
 Exception::~Exception() throw() {}
 
-const char* Exception::what() const throw() {
-  return description.c_str();
-}
+const char* Exception::what() const throw() { return description.c_str(); }
 
 // -----------------------------------------------------------------------
 // UserPresentableError
 // -----------------------------------------------------------------------
-UserPresentableError::UserPresentableError(
-    const std::string& message_text,
-    const std::string& informative_text)
+UserPresentableError::UserPresentableError(const std::string& message_text,
+                                           const std::string& informative_text)
     : Exception(message_text + ": " + informative_text),
       message_text_(message_text),
-      informative_text_(informative_text) {
-}
+      informative_text_(informative_text) {}
 
 UserPresentableError::~UserPresentableError() throw() {}
 
 // -----------------------------------------------------------------------
 // UnimplementedOpcode
 // -----------------------------------------------------------------------
-UnimplementedOpcode::UnimplementedOpcode(
-    const std::string& funName,
-    int modtype, int module, int opcode, int overload)
-    : Exception(""),
-      has_parameters_(false) {
+UnimplementedOpcode::UnimplementedOpcode(const std::string& funName,
+                                         int modtype,
+                                         int module,
+                                         int opcode,
+                                         int overload)
+    : Exception(""), has_parameters_(false) {
   std::ostringstream oss;
-  oss << funName << " (opcode<" << modtype << ":" << module << ":"
-      << opcode << ", " << overload << ">)";
+  oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
+      << ", " << overload << ">)";
   name_ = oss.str();
   setSimpleDescription();
 }
@@ -88,9 +83,8 @@ UnimplementedOpcode::UnimplementedOpcode(
       has_parameters_(true),
       parameters_(command.getUnparsedParameters()) {
   std::ostringstream oss;
-  oss << funName << " [opcode<" << command.modtype() << ":"
-      << command.module() << ":" << command.opcode()
-      << ", " << command.overload() << ">]";
+  oss << funName << " [opcode<" << command.modtype() << ":" << command.module()
+      << ":" << command.opcode() << ", " << command.overload() << ">]";
   name_ = oss.str();
   setFullDescription(machine);
 }
@@ -108,8 +102,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   setFullDescription(machine);
 }
 
-UnimplementedOpcode::~UnimplementedOpcode() throw() {
-}
+UnimplementedOpcode::~UnimplementedOpcode() throw() {}
 
 void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
   ostringstream oss;
@@ -120,7 +113,8 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
     bool first = true;
     oss << "(";
     for (std::vector<std::string>::const_iterator it = parameters_.begin();
-         it != parameters_.end(); ++it) {
+         it != parameters_.end();
+         ++it) {
       if (!first) {
         oss << ", ";
       }
@@ -132,7 +126,8 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
         std::unique_ptr<libReallive::ExpressionPiece> piece(
             libReallive::get_data(start));
         oss << piece->getDebugValue(machine);
-      } catch (libReallive::Error& e) {
+      }
+      catch (libReallive::Error& e) {
         // Any error throw here is a parse error.
         oss << "{RAW : " << libReallive::parsableToPrintableString(*it) << "}";
       }
@@ -151,4 +146,3 @@ void UnimplementedOpcode::setSimpleDescription() {
 }
 
 }  // namespace rlvm
-

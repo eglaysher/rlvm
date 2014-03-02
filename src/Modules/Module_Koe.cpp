@@ -128,15 +128,11 @@ struct koeDoPlayExC_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 };
 
 struct koeWait : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    addKoeWait(machine);
-  }
+  void operator()(RLMachine& machine) { addKoeWait(machine); }
 };
 
 struct koeWaitC : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    addKoeWaitC(machine);
-  }
+  void operator()(RLMachine& machine) { addKoeWaitC(machine); }
 };
 
 // Play the voice not taking |character| into account.
@@ -170,8 +166,7 @@ struct koeMute_1 : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-KoeModule::KoeModule()
-  : RLModule("Koe", 1, 23) {
+KoeModule::KoeModule() : RLModule("Koe", 1, 23) {
   addOpcode(0, 0, "koePlay", new koePlay_0);
   addOpcode(0, 1, "koePlay", new koePlay_1);
 
@@ -200,11 +195,11 @@ KoeModule::KoeModule()
   addOpcode(12, 0, "koeSetVolume", new koeSetVolume_0);
   addOpcode(12, 1, "koeSetVolume", callFunction(&SoundSystem::setKoeVolume));
 
-  addOpcode(13, 0, "koeUnMute",
-            callFunctionWith(&SoundSystem::setKoeVolume, 255, 0));
+  addOpcode(
+      13, 0, "koeUnMute", callFunctionWith(&SoundSystem::setKoeVolume, 255, 0));
   addOpcode(13, 1, "koeUnMute", new koeUnMute_1);
 
-  addOpcode(14, 0, "koeMute",
-            callFunctionWith(&SoundSystem::setKoeVolume, 0, 0));
+  addOpcode(
+      14, 0, "koeMute", callFunctionWith(&SoundSystem::setKoeVolume, 0, 0));
   addOpcode(14, 1, "koeMute", new koeMute_1);
 }

@@ -51,30 +51,25 @@ void MockSurface::allocate(const Size& size) {
   size_ = size;
 }
 
-void MockSurface::deallocate() {
-  allocated_ = false;
-}
+void MockSurface::deallocate() { allocated_ = false; }
 
 Size MockSurface::size() const { return size_; }
 
-boost::shared_ptr<Surface> MockSurface::clipAsColorMask(
-  const Rect& rect, int r, int g, int b) {
-  return boost::shared_ptr<Surface>(
-      new ::testing::NiceMock<MockSurface>(
-          "Clip of " + surface_name_, rect.size()));
+boost::shared_ptr<Surface> MockSurface::clipAsColorMask(const Rect& rect,
+                                                        int r,
+                                                        int g,
+                                                        int b) {
+  return boost::shared_ptr<Surface>(new ::testing::NiceMock<MockSurface>(
+      "Clip of " + surface_name_, rect.size()));
 }
 
 Surface* MockSurface::clone() const {
-  return new ::testing::NiceMock<MockSurface>(
-      "Copy of " + surface_name_, size_);
+  return new ::testing::NiceMock<MockSurface>("Copy of " + surface_name_,
+                                              size_);
 }
 
 MockSurface::MockSurface(const std::string& surface_name)
-    : surface_name_(surface_name), allocated_(false), size_(-1, -1) {
-}
+    : surface_name_(surface_name), allocated_(false), size_(-1, -1) {}
 
 MockSurface::MockSurface(const std::string& surface_name, const Size& size)
-    : surface_name_(surface_name), allocated_(true), size_(size) {
-}
-
-
+    : surface_name_(surface_name), allocated_(true), size_(size) {}

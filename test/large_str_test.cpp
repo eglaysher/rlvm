@@ -102,7 +102,6 @@ TEST(LargeModuleStrTest, strclear0) {
   EXPECT_EQ("valid", two) << "strclear_0 script failed to set value";
 }
 
-
 // Tests strclear_1, which should clear out a whole range of values.
 //
 //   strS[0] = "valid"
@@ -251,7 +250,6 @@ TEST(LargeModuleStrTest, strsub1_shiftjis) {
   EXPECT_EQ("\x96\xBC\x91\x4F", rlmachine.getStringValue(STRS_LOCATION, 1))
       << "strsub returned wrong value";
 }
-
 
 // Strrsub test. (We don't need to test this on Shift_JIS since this
 // calls the same code path as strsub, with just a different offset
@@ -696,5 +694,3 @@ TEST(LargeModuleStrTest, strused) {
   EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
       << "strused returned wrong value for intA[1]";
 }
-
-

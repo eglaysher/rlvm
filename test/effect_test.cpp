@@ -46,7 +46,7 @@ using namespace testing;
 // Helper to specify the return value of getTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
  public:
-  EffectEventSystemTest() : ticks(0) { }
+  EffectEventSystemTest() : ticks(0) {}
   void setTicks(unsigned int in) { ticks = in; }
   virtual unsigned int getTicks() const { return ticks; }
 
@@ -56,8 +56,7 @@ class EffectEventSystemTest : public EventSystemMockHandler {
 
 class EffectTest : public FullSystemTest {
  protected:
-  EffectTest()
-      : event_system_impl(new EffectEventSystemTest) {
+  EffectTest() : event_system_impl(new EffectEventSystemTest) {
     dynamic_cast<TestEventSystem&>(system.event())
         .setMockHandler(event_system_impl);
   }
@@ -67,11 +66,12 @@ class EffectTest : public FullSystemTest {
 
 class MockEffect : public Effect {
  public:
-  MockEffect(RLMachine& machine, boost::shared_ptr<Surface> src,
+  MockEffect(RLMachine& machine,
+             boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
-             Size size, int time)
-      : Effect(machine, src, dst, size, time) {
-  }
+             Size size,
+             int time)
+      : Effect(machine, src, dst, size, time) {}
 
   MOCK_METHOD2(performEffectForTime, void(RLMachine& machine, int));
   MOCK_CONST_METHOD0(blitOriginalImage, bool());
@@ -82,7 +82,7 @@ TEST_F(EffectTest, TestBase) {
   boost::shared_ptr<Surface> dst(MockSurface::Create("dst"));
 
   scoped_ptr<MockEffect> effect(
-    new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
+      new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
 
   bool retVal = false;
   for (int i = 0; i < 2; ++i) {
@@ -101,13 +101,19 @@ TEST_F(EffectTest, TestBase) {
 
 class MockBlitTopToBottom : public BlindTopToBottomEffect {
  public:
-  MockBlitTopToBottom(
-      RLMachine& machine, boost::shared_ptr<Surface> src,
-      boost::shared_ptr<Surface> dst,
-      int width, int height, int time, int blindSize)
-      : BlindTopToBottomEffect(machine, src, dst, Size(width, height),
-                               time, blindSize) {
-  }
+  MockBlitTopToBottom(RLMachine& machine,
+                      boost::shared_ptr<Surface> src,
+                      boost::shared_ptr<Surface> dst,
+                      int width,
+                      int height,
+                      int time,
+                      int blindSize)
+      : BlindTopToBottomEffect(machine,
+                               src,
+                               dst,
+                               Size(width, height),
+                               time,
+                               blindSize) {}
 
   MOCK_METHOD2(performEffectForTime, void(const RLMachine& machine, int));
   MOCK_METHOD2(renderPolygon, void(int, int));
@@ -120,8 +126,7 @@ TEST_F(EffectTest, BlindTopToBottomEffect) {
   const int DURATION = 100;
   const int BLIND_SIZE = 50;
   const int HEIGHT = 480;
-  scoped_ptr<MockBlitTopToBottom> effect(
-    new MockBlitTopToBottom(
+  scoped_ptr<MockBlitTopToBottom> effect(new MockBlitTopToBottom(
       rlmachine, src, dst, 640, HEIGHT, DURATION, BLIND_SIZE));
 
   int numBlinds = (HEIGHT / BLIND_SIZE) + 1;

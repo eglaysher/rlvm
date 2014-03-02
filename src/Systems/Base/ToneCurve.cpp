@@ -50,13 +50,13 @@ using boost::scoped_array;
 
 namespace fs = boost::filesystem;
 
-ToneCurve::ToneCurve() {
-}
+ToneCurve::ToneCurve() {}
 
 ToneCurve::ToneCurve(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("TONECURVE_FILENAME");
   if (!filename_key.exists()) {
-    // It is perfectly valid not to have a tone curve key. All operations in this
+    // It is perfectly valid not to have a tone curve key. All operations in
+    // this
     // class become noops.
     return;
   }
@@ -92,7 +92,7 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
     ToneCurveColorMap red;
     ToneCurveColorMap green;
     ToneCurveColorMap blue;
-    ToneCurveRGBMap rgb;	
+    ToneCurveRGBMap rgb;
     unsigned char* ptr = &red[0];
     memcpy(ptr, data.get() + offset, 256);
     offset += 256;
@@ -110,20 +110,17 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   }
 }
 
-int ToneCurve::getEffectCount() const {
-  return effect_count_;
-}
+int ToneCurve::getEffectCount() const { return effect_count_; }
 
 ToneCurveRGBMap ToneCurve::getEffect(int index) {
-  if(index >= getEffectCount() || index < 0) {
+  if (index >= getEffectCount() || index < 0) {
     ostringstream oss;
-    oss << "Requested tone curve index " << index << " exceeds the amount of effects in the tone curve file.";
-    throw rlvm::Exception(oss.str());    		
+    oss << "Requested tone curve index " << index
+        << " exceeds the amount of effects in the tone curve file.";
+    throw rlvm::Exception(oss.str());
   }
-  
+
   return tcc_info_[index];
 }
 
-ToneCurve::~ToneCurve() {
-  tcc_info_.clear();
-}
+ToneCurve::~ToneCurve() { tcc_info_.clear(); }

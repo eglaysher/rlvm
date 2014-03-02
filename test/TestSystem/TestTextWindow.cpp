@@ -37,9 +37,7 @@
 
 using std::ostringstream;
 
-TestTextWindow::TestTextWindow(System& system, int x)
-    : TextWindow(system, x) {
-}
+TestTextWindow::TestTextWindow(System& system, int x) : TextWindow(system, x) {}
 
 TestTextWindow::~TestTextWindow() {}
 
@@ -88,13 +86,8 @@ void TestTextWindow::hardBrake() {
   current_contents_ += "\n";
 }
 
-void TestTextWindow::resetIndentation() {
-  TextWindow::resetIndentation();
-}
+void TestTextWindow::resetIndentation() { TextWindow::resetIndentation(); }
 
-void TestTextWindow::markRubyBegin() {
-  TextWindow::markRubyBegin();
-}
+void TestTextWindow::markRubyBegin() { TextWindow::markRubyBegin(); }
 
-void TestTextWindow::displayRubyText(const std::string& utf8str) {
-}
+void TestTextWindow::displayRubyText(const std::string& utf8str) {}

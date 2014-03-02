@@ -52,23 +52,22 @@ Codepage::~Codepage() {
   // empty virtual destructor
 }
 
-uint16_t Codepage::JisDecode(uint16_t ch) const {
-  return ch;
-}
+uint16_t Codepage::JisDecode(uint16_t ch) const { return ch; }
 
-void Codepage::JisEncodeString(const char* src, char* buf,
+void Codepage::JisEncodeString(const char* src,
+                               char* buf,
                                size_t buflen) const {
-  std::strncpy(static_cast<char*>(buf),
-               static_cast<const char*>(src), buflen);
+  std::strncpy(static_cast<char*>(buf), static_cast<const char*>(src), buflen);
 }
 
-void Codepage::JisDecodeString(const char* src, char* buf,
+void Codepage::JisDecodeString(const char* src,
+                               char* buf,
                                size_t buflen) const {
   size_t srclen = std::strlen(src), i = 0, j = 0;
   while (i < srclen && j < buflen) {
-    unsigned int c1 = (unsigned char) src[i++];
+    unsigned int c1 = (unsigned char)src[i++];
     if ((c1 >= 0x81 && c1 < 0xa0) || (c1 >= 0xe0 && c1 < 0xf0))
-      c1 = (c1 << 8) | (unsigned char) src[i++];
+      c1 = (c1 << 8) | (unsigned char)src[i++];
     unsigned int c2 = JisDecode(c1);
     if (c2 <= 0xff) {
       buf[j++] = c2;
@@ -80,17 +79,11 @@ void Codepage::JisDecodeString(const char* src, char* buf,
   buf[j] = 0;
 }
 
-uint16_t Codepage::Convert(uint16_t ch) const {
-  return ch;
-}
+uint16_t Codepage::Convert(uint16_t ch) const { return ch; }
 
-bool Codepage::DbcsDelim(char* str) const {
-  return false;
-}
+bool Codepage::DbcsDelim(char* str) const { return false; }
 
-bool Codepage::IsItalic(uint16_t ch) const {
-  return false;
-}
+bool Codepage::IsItalic(uint16_t ch) const { return false; }
 
 std::unique_ptr<Codepage> Cp::instance_;
 int Cp::codepage = -1;

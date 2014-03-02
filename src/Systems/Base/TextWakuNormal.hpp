@@ -54,7 +54,8 @@ class TextWakuNormal : public TextWaku {
   ~TextWakuNormal();
 
   virtual void execute();
-  virtual void render(std::ostream* tree, Point box_location,
+  virtual void render(std::ostream* tree,
+                      Point box_location,
                       Size namebox_size);
   virtual Size getSize(const Size& text_surface) const;
   virtual Point insertionPoint(const Rect& waku_rect,
@@ -69,7 +70,8 @@ class TextWakuNormal : public TextWaku {
    *       individual buttons that need to handle events should be listeners.
    */
   virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
+  virtual bool handleMouseClick(RLMachine& machine,
+                                const Point& pos,
                                 bool pressed);
 
  private:

@@ -36,7 +36,7 @@ struct SDL_Surface;
 class SDLSurface;
 class GraphicsObject;
 
-struct render_to_texture { };
+struct render_to_texture {};
 
 /**
  * Contains one or more OpenGL textures, representing a single image,
@@ -53,8 +53,14 @@ class Texture {
   static int ScreenHeight();
 
  public:
-  Texture(SDL_Surface* surface, int x, int y, int w, int h,
-          unsigned int bytes_per_pixel, int byte_order, int byte_type);
+  Texture(SDL_Surface* surface,
+          int x,
+          int y,
+          int w,
+          int h,
+          unsigned int bytes_per_pixel,
+          int byte_order,
+          int byte_type);
   Texture(render_to_texture, int screen_width, int screen_height);
   ~Texture();
 
@@ -62,27 +68,34 @@ class Texture {
   // backend. We work like this so we can cut out dirty rectangles and upload
   // only what has changed.
   void reupload(SDL_Surface* surface,
-                int offset_x, int offset_y,
-                int x, int y, int w, int h,
-                unsigned int bytes_per_pixel, int byte_order, int byte_type);
+                int offset_x,
+                int offset_y,
+                int x,
+                int y,
+                int w,
+                int h,
+                unsigned int bytes_per_pixel,
+                int byte_order,
+                int byte_type);
 
   int width() { return logical_width_; }
   int height() { return logical_height_; }
   GLuint textureId() { return texture_id_; }
 
-  void renderToScreenAsObject(
-    const GraphicsObject& go,
-    const SDLSurface& surface,
-    const Rect& srcRect, const Rect& dstRect,
-    int alpha);
+  void renderToScreenAsObject(const GraphicsObject& go,
+                              const SDLSurface& surface,
+                              const Rect& srcRect,
+                              const Rect& dstRect,
+                              int alpha);
 
   void renderToScreen(const Rect& src, const Rect& dst, int opacity);
 
-  void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter);
+  void renderToScreenAsColorMask(const Rect& src,
+                                 const Rect& dst,
+                                 const RGBAColour& rgba,
+                                 int filter);
 
-  void renderToScreen(const Rect& src, const Rect& dst,
-                      const int opacity[4]);
+  void renderToScreen(const Rect& src, const Rect& dst, const int opacity[4]);
 
  private:
   // Returns a shared buffer of at least size. This is not thread safe
@@ -92,15 +105,25 @@ class Texture {
   // large enough.
   static char* uploadBuffer(unsigned int size);
 
-  void render_to_screen_as_colour_mask_subtractive_glsl(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
+  void render_to_screen_as_colour_mask_subtractive_glsl(const Rect& src,
+                                                        const Rect& dst,
+                                                        const RGBAColour& rgba);
   void render_to_screen_as_colour_mask_subtractive_fallback(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
-  void render_to_screen_as_colour_mask_additive(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba);
+      const Rect& src,
+      const Rect& dst,
+      const RGBAColour& rgba);
+  void render_to_screen_as_colour_mask_additive(const Rect& src,
+                                                const Rect& dst,
+                                                const RGBAColour& rgba);
 
-  bool filterCoords(int& x1, int& y1, int& x2, int& y2,
-                    int& dx1, int& dy1, int& dx2, int& dy2);
+  bool filterCoords(int& x1,
+                    int& y1,
+                    int& x2,
+                    int& y2,
+                    int& dx1,
+                    int& dy1,
+                    int& dx2,
+                    int& dy2);
 
   int x_offset_;
   int y_offset_;

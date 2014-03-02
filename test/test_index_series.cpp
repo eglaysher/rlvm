@@ -38,17 +38,18 @@ class IndexSeriesTest : public FullSystemTest {
   void verifyIndexSeries(IndexList::type index_list,
                          int offset,
                          int init,
-                         const std::vector<std::tuple<int, int> >& tests) {
+                         const std::vector<std::tuple<int, int>>& tests) {
     Sys_index_series fun;
-    for (std::vector<std::tuple<int, int> >::const_iterator it =
-             tests.begin(); it != tests.end(); ++it) {
+    for (std::vector<std::tuple<int, int>>::const_iterator it = tests.begin();
+         it != tests.end();
+         ++it) {
       EXPECT_EQ(get<1>(*it),
                 fun(rlmachine, get<0>(*it), offset, init, index_list));
     }
   }
 
   IndexList::type addValue(IndexList::type orig, int val) {
-    IndexSeriesEntry::type a = { 0, val };
+    IndexSeriesEntry::type a = {0, val};
     orig.push_back(a);
     return orig;
   }
@@ -57,47 +58,34 @@ class IndexSeriesTest : public FullSystemTest {
                            int start,
                            int end,
                            int endval) {
-    IndexSeriesEntry::type a = {
-      1,
-      0,
-      std::tuple<int, int, int>(start, end, endval)
-    };
+    IndexSeriesEntry::type a = {1, 0,
+                                std::tuple<int, int, int>(start, end, endval)};
     orig.push_back(a);
     return orig;
   }
 };
 
 TEST_F(IndexSeriesTest, SimpleMode0Test) {
-  verifyIndexSeries(addMode0(IndexList::type(), 0, 10, 5),
-                    0, 0,
-                    { std::make_tuple(0, 0),
-                      std::make_tuple(1, 0),
-                      std::make_tuple(2, 1),
-                      std::make_tuple(3, 1),
-                      std::make_tuple(4, 2),
-                      std::make_tuple(5, 2),
-                      std::make_tuple(6, 3),
-                      std::make_tuple(7, 3),
-                      std::make_tuple(8, 4),
-                      std::make_tuple(9, 4),
-                      std::make_tuple(10, 5) });
+  verifyIndexSeries(
+      addMode0(IndexList::type(), 0, 10, 5),
+      0,
+      0,
+      {std::make_tuple(0, 0), std::make_tuple(1, 0), std::make_tuple(2, 1),
+       std::make_tuple(3, 1), std::make_tuple(4, 2), std::make_tuple(5, 2),
+       std::make_tuple(6, 3), std::make_tuple(7, 3), std::make_tuple(8, 4),
+       std::make_tuple(9, 4), std::make_tuple(10, 5)});
 }
 
 TEST_F(IndexSeriesTest, RldevExample) {
   // This example is listed in the rldev documentation.
-  verifyIndexSeries(addMode0(addMode0(IndexList::type(), 0, 5, 10), 8, 10, 0),
-                    0, 5,
-                    { std::make_tuple(0, 5),
-                      std::make_tuple(1, 6),
-                      std::make_tuple(2, 7),
-                      std::make_tuple(3, 8),
-                      std::make_tuple(4, 9),
-                      std::make_tuple(5, 10),
-                      std::make_tuple(6, 10),
-                      std::make_tuple(7, 10),
-                      std::make_tuple(8, 10),
-                      std::make_tuple(9, 5),
-                      std::make_tuple(10, 0) });
+  verifyIndexSeries(
+      addMode0(addMode0(IndexList::type(), 0, 5, 10), 8, 10, 0),
+      0,
+      5,
+      {std::make_tuple(0, 5), std::make_tuple(1, 6), std::make_tuple(2, 7),
+       std::make_tuple(3, 8), std::make_tuple(4, 9), std::make_tuple(5, 10),
+       std::make_tuple(6, 10), std::make_tuple(7, 10), std::make_tuple(8, 10),
+       std::make_tuple(9, 5), std::make_tuple(10, 0)});
 }
 
 TEST_F(IndexSeriesTest, RawValueTest) {
@@ -105,16 +93,10 @@ TEST_F(IndexSeriesTest, RawValueTest) {
   // due to rounding error.
   verifyIndexSeries(
       addMode0(addValue(addMode0(IndexList::type(), 0, 5, 10), 40), 8, 10, 0),
-      0, 5,
-      { std::make_tuple(0, 5),
-        std::make_tuple(1, 6),
-        std::make_tuple(2, 7),
-        std::make_tuple(3, 8),
-        std::make_tuple(4, 9),
-        std::make_tuple(5, 40),
-        std::make_tuple(6, 40),
-        std::make_tuple(7, 40),
-        std::make_tuple(8, 40),
-        std::make_tuple(9, 20),
-        std::make_tuple(10, 0) });
+      0,
+      5,
+      {std::make_tuple(0, 5), std::make_tuple(1, 6), std::make_tuple(2, 7),
+       std::make_tuple(3, 8), std::make_tuple(4, 9), std::make_tuple(5, 40),
+       std::make_tuple(6, 40), std::make_tuple(7, 40), std::make_tuple(8, 40),
+       std::make_tuple(9, 20), std::make_tuple(10, 0)});
 }

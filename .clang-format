@@ -1,0 +1,7 @@
+BasedOnStyle:  Chromium
+Language:        Cpp
+AllowShortFunctionsOnASingleLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+Cpp11BracedListStyle: true
+Standard:        Cpp11
+

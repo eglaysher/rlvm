@@ -31,12 +31,14 @@
 
 class GraphicsObject;
 
-class Op_ObjectMutatorInt
-    : public RLOp_Void_5< IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, IntConstant_T > {
+class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
+                                               IntConstant_T,
+                                               IntConstant_T,
+                                               IntConstant_T,
+                                               IntConstant_T> {
  public:
-  typedef int(GraphicsObject::*Getter)() const;
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef int (GraphicsObject::*Getter)() const;
+  typedef void (GraphicsObject::*Setter)(const int);
 
   Op_ObjectMutatorInt(Getter getter, Setter setter, const char* name);
   virtual ~Op_ObjectMutatorInt();
@@ -47,18 +49,22 @@ class Op_ObjectMutatorInt
                           int duration_time,
                           int delay,
                           int type);
+
  private:
   Getter getter_;
   Setter setter_;
   const char* name_;
 };
 
-class Op_ObjectMutatorRepnoInt
-    : public RLOp_Void_6< IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, IntConstant_T, IntConstant_T > {
+class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
+                                                    IntConstant_T,
+                                                    IntConstant_T,
+                                                    IntConstant_T,
+                                                    IntConstant_T,
+                                                    IntConstant_T> {
  public:
-  typedef int(GraphicsObject::*Getter)(const int) const;
-  typedef void(GraphicsObject::*Setter)(const int, const int);
+  typedef int (GraphicsObject::*Getter)(const int) const;
+  typedef void (GraphicsObject::*Setter)(const int, const int);
 
   Op_ObjectMutatorRepnoInt(Getter getter, Setter setter, const char* name);
   virtual ~Op_ObjectMutatorRepnoInt();
@@ -70,21 +76,27 @@ class Op_ObjectMutatorRepnoInt
                           int duration_time,
                           int delay,
                           int type);
+
  private:
   Getter getter_;
   Setter setter_;
   const char* name_;
 };
 
-class Op_ObjectMutatorIntInt
-    : public RLOp_Void_6< IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, IntConstant_T, IntConstant_T > {
+class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
+                                                  IntConstant_T,
+                                                  IntConstant_T,
+                                                  IntConstant_T,
+                                                  IntConstant_T,
+                                                  IntConstant_T> {
  public:
-  typedef int(GraphicsObject::*Getter)() const;
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef int (GraphicsObject::*Getter)() const;
+  typedef void (GraphicsObject::*Setter)(const int);
 
-  Op_ObjectMutatorIntInt(Getter getter_one, Setter setter_one,
-                         Getter getter_two, Setter setter_two,
+  Op_ObjectMutatorIntInt(Getter getter_one,
+                         Setter setter_one,
+                         Getter getter_two,
+                         Setter setter_two,
                          const char* name);
   virtual ~Op_ObjectMutatorIntInt();
 
@@ -95,6 +107,7 @@ class Op_ObjectMutatorIntInt
                           int duration_time,
                           int delay,
                           int type);
+
  private:
   Getter getter_one_;
   Setter setter_one_;
@@ -106,7 +119,7 @@ class Op_ObjectMutatorIntInt
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_Normal
-    : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  public:
   Op_EndObjectMutation_Normal(const char* name);
   virtual ~Op_EndObjectMutation_Normal();
@@ -120,12 +133,14 @@ class Op_EndObjectMutation_Normal
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_RepNo
-    : public RLOp_Void_3< IntConstant_T, IntConstant_T, IntConstant_T > {
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
   Op_EndObjectMutation_RepNo(const char* name);
   virtual ~Op_EndObjectMutation_RepNo();
 
-  virtual void operator()(RLMachine& machine, int object, int repno,
+  virtual void operator()(RLMachine& machine,
+                          int object,
+                          int repno,
                           int speedup);
 
  private:

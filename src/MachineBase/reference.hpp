@@ -31,7 +31,7 @@
 #include <string>
 #include <iterator>
 
-template<typename T>
+template <typename T>
 class MemoryReferenceIterator;
 class Memory;
 
@@ -87,9 +87,9 @@ class StringAccessor {
 // that point to the current state of an MemoryReference. This also
 // solves the problem where some functions in RealLive accept two
 // memory addresses, and do something on that range.
-template<typename ACCESS>
+template <typename ACCESS>
 class MemoryReferenceIterator
-  : public std::iterator<std::random_access_iterator_tag, ACCESS> {
+    : public std::iterator<std::random_access_iterator_tag, ACCESS> {
  public:
   MemoryReferenceIterator();
 
@@ -97,7 +97,8 @@ class MemoryReferenceIterator
   explicit MemoryReferenceIterator(int* store_register);
 
   // Explicit reference creation
-  MemoryReferenceIterator(Memory* in_machine, const int in_type,
+  MemoryReferenceIterator(Memory* in_machine,
+                          const int in_type,
                           const int in_location);
 
   int type() const { return type_; }
@@ -158,7 +159,7 @@ class MemoryReferenceIterator
 
   bool operator==(const MemoryReferenceIterator<ACCESS>& rhs) const {
     return memory_ == rhs.memory_ && type_ == rhs.type_ &&
-      location_ == rhs.location_;
+           location_ == rhs.location_;
   }
 
   bool operator!=(const MemoryReferenceIterator<ACCESS>& rhs) const {
@@ -180,18 +181,21 @@ class MemoryReferenceIterator
   friend class IntAccessor;
 };
 
-template<typename ACCESS>
+template <typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
     : store_register_(NULL), memory_(NULL), type_(-1), location_(0) {}
 
-template<typename ACCESS>
+template <typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(int* store_register)
     : store_register_(store_register), memory_(NULL), type_(-1), location_(0) {}
 
-template<typename ACCESS>
-MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(
-  Memory* memory, const int in_type, const int in_location)
-    : store_register_(NULL), memory_(memory), type_(in_type),
+template <typename ACCESS>
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(Memory* memory,
+                                                         const int in_type,
+                                                         const int in_location)
+    : store_register_(NULL),
+      memory_(memory),
+      type_(in_type),
       location_(in_location) {}
 
 // -----------------------------------------------------------------------

@@ -50,13 +50,11 @@ GraphicsTextObject::GraphicsTextObject(System& system)
       cached_text_size_(-1),
       cached_x_space_(-1),
       cached_y_space_(-1),
-      cached_char_count_(-1) {
-}
+      cached_char_count_(-1) {}
 
 // -----------------------------------------------------------------------
 
-GraphicsTextObject::~GraphicsTextObject() {
-}
+GraphicsTextObject::~GraphicsTextObject() {}
 
 // -----------------------------------------------------------------------
 
@@ -83,29 +81,32 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
   cached_y_space_ = rp.textYSpace();
   cached_char_count_ = rp.textCharCount();
 
-  surface_ = system_.text().renderText(
-      cached_utf8_str_, rp.textSize(), rp.textXSpace(),
-      rp.textYSpace(), colour, shadow, cached_char_count_);
+  surface_ = system_.text().renderText(cached_utf8_str_,
+                                       rp.textSize(),
+                                       rp.textXSpace(),
+                                       rp.textYSpace(),
+                                       colour,
+                                       shadow,
+                                       cached_char_count_);
   surface_->EnsureUploaded();
 }
 
 // -----------------------------------------------------------------------
 
 bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
-  return !surface_ ||
-      rp.textColour() != cached_text_colour_ ||
-      rp.textShadowColour() != cached_shadow_colour_ ||
-      rp.textSize() != cached_text_size_ ||
-      rp.textXSpace() != cached_x_space_ ||
-      rp.textYSpace() != cached_y_space_ ||
-      rp.textCharCount() != cached_char_count_ ||
-      rp.textText() != cached_utf8_str_;
+  return !surface_ || rp.textColour() != cached_text_colour_ ||
+         rp.textShadowColour() != cached_shadow_colour_ ||
+         rp.textSize() != cached_text_size_ ||
+         rp.textXSpace() != cached_x_space_ ||
+         rp.textYSpace() != cached_y_space_ ||
+         rp.textCharCount() != cached_char_count_ ||
+         rp.textText() != cached_utf8_str_;
 }
 
 // -----------------------------------------------------------------------
 
 boost::shared_ptr<const Surface> GraphicsTextObject::currentSurface(
-  const GraphicsObject& go) {
+    const GraphicsObject& go) {
   if (needsUpdate(go))
     updateSurface(go);
 
@@ -144,14 +145,13 @@ GraphicsObjectData* GraphicsTextObject::clone() const {
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::execute(RLMachine& machine) {
-}
+void GraphicsTextObject::execute(RLMachine& machine) {}
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsTextObject::load(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
 
   cached_text_colour_ = -1;
   cached_shadow_colour_ = -1;
@@ -165,9 +165,9 @@ void GraphicsTextObject::load(Archive& ar, unsigned int version) {
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void GraphicsTextObject::save(Archive& ar, unsigned int version) const {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
 }
 
 // -----------------------------------------------------------------------
@@ -180,7 +180,9 @@ BOOST_CLASS_EXPORT(GraphicsTextObject);
 // implementation)
 
 template void GraphicsTextObject::save<boost::archive::text_oarchive>(
-  boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void GraphicsTextObject::load<boost::archive::text_iarchive>(
-  boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

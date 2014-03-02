@@ -59,8 +59,9 @@ TestGraphicsSystem::~TestGraphicsSystem() {}
 
 void TestGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16)
-    throw rlvm::Exception("Invalid DC number in "
-                          "TestGraphicsSystem::allocate_dc");
+    throw rlvm::Exception(
+        "Invalid DC number in "
+        "TestGraphicsSystem::allocate_dc");
 
   // We can't reallocate the screen!
   if (dc == 0)
@@ -91,8 +92,7 @@ void TestGraphicsSystem::freeDC(int dc) {
   }
 }
 
-void TestGraphicsSystem::clearAndPromoteObjects() {
-}
+void TestGraphicsSystem::clearAndPromoteObjects() {}
 
 GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number) {
   static GraphicsObject x;
@@ -108,7 +108,7 @@ void TestGraphicsSystem::injectSurface(
 boost::shared_ptr<const Surface> TestGraphicsSystem::loadSurfaceFromFile(
     const std::string& short_filename) {
   // If we have an injected surface, return it instead of a fresh surface.
-  std::map<std::string, boost::shared_ptr<const Surface> >::iterator it =
+  std::map<std::string, boost::shared_ptr<const Surface>>::iterator it =
       named_surfaces_.find(short_filename);
   if (it != named_surfaces_.end()) {
     return it->second;
@@ -119,9 +119,7 @@ boost::shared_ptr<const Surface> TestGraphicsSystem::loadSurfaceFromFile(
       MockSurface::Create(short_filename, Size(50, 50)));
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() {
-  return haikei_;
-}
+boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() { return haikei_; }
 
 boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc) {
   return display_contexts_[dc];
@@ -139,11 +137,17 @@ ColourFilter* TestGraphicsSystem::BuildColourFiller() {
   return new MockColourFilter;
 }
 
-void TestGraphicsSystem::blitSurfaceToDC(
-  Surface& source_obj, int target_dc,
-  int srcX, int srcY, int src_width, int src_height,
-  int destX, int destY, int dest_width, int dest_height,
-  int alpha) {
+void TestGraphicsSystem::blitSurfaceToDC(Surface& source_obj,
+                                         int target_dc,
+                                         int srcX,
+                                         int srcY,
+                                         int src_width,
+                                         int src_height,
+                                         int destX,
+                                         int destY,
+                                         int dest_width,
+                                         int dest_height,
+                                         int alpha) {
   // TODO
 }
 

@@ -83,7 +83,8 @@ class SDLMusic : public boost::noncopyable,
   // Creates a MusicImpl object from the incoming description of the
   // music.
   static boost::shared_ptr<SDLMusic> CreateMusic(
-    System& system, const SoundSystem::DSTrack& track);
+      System& system,
+      const SoundSystem::DSTrack& track);
 
   // Returns the currently playing SDLMusic object. Returns NULL if no
   // music is currently playing.
@@ -110,7 +111,7 @@ class SDLMusic : public boost::noncopyable,
   //
   // This function was ripped off almost verbatim from xclannad! Specifically
   // the static method WavChunk::callback in music2/music.cc.
-  static void MixMusic(void *udata, Uint8 *stream, int len);
+  static void MixMusic(void* udata, Uint8* stream, int len);
 
   // Strongly coupled because of access to SDLMusic::MixMusic.
   friend class SDLSoundSystem;

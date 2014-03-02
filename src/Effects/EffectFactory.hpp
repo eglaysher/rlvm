@@ -56,32 +56,43 @@ class EffectFactory {
   // to perform a transition. Note: Effect's external interface work on
   // the rec* coordinate system (x, y, width, height) instead of the
   // grp* coordinate system (x1, y1, x2, y2) .
-  static Effect* build(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    int time, int style,
-    int direction, int interpolation, int xsize, int ysize, int a, int b,
-    int c);
+  static Effect* build(RLMachine& machine,
+                       boost::shared_ptr<Surface> src,
+                       boost::shared_ptr<Surface> dst,
+                       int time,
+                       int style,
+                       int direction,
+                       int interpolation,
+                       int xsize,
+                       int ysize,
+                       int a,
+                       int b,
+                       int c);
 
  private:
   // Creates a specific subclass of WipeEffect for \#SEL #10, Wipe.
-  static Effect* buildWipeEffect(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time, int direction, int interpolation);
+  static Effect* buildWipeEffect(RLMachine& machine,
+                                 boost::shared_ptr<Surface> src,
+                                 boost::shared_ptr<Surface> dst,
+                                 const Size& screenSize,
+                                 int time,
+                                 int direction,
+                                 int interpolation);
 
   // Creates a specific subclass of BlindEffect for \#SEL #120, Blind.
-  static Effect* buildBlindEffect(
-    RLMachine& machine, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
-    const Size& screenSize, int time,
-    int direction, int xsize, int ysize);
+  static Effect* buildBlindEffect(RLMachine& machine,
+                                  boost::shared_ptr<Surface> src,
+                                  boost::shared_ptr<Surface> dst,
+                                  const Size& screenSize,
+                                  int time,
+                                  int direction,
+                                  int xsize,
+                                  int ysize);
 
-  static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(
-    int drawerType);
+  static ScrollSquashSlideDrawer* buildScrollSquashSlideDrawer(int drawerType);
 
   static ScrollSquashSlideEffectTypeBase* buildScrollSquashSlideTypeBase(
-    int style);
+      int style);
 };
 
 #endif  // SRC_EFFECTS_EFFECTFACTORY_HPP_

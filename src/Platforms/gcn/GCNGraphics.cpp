@@ -41,9 +41,8 @@ ImageRect::ImageRect(ThemeImage resource_id, const int xpos[], const int ypos[])
   int id = 0;
   for (int y = 0; y < 3; ++y) {
     for (int x = 0; x < 3; ++x) {
-      rect_[id] = Rect::REC(xpos[x], ypos[y],
-                            xpos[x + 1] - xpos[x],
-                            ypos[y + 1] - ypos[y]);
+      rect_[id] = Rect::REC(
+          xpos[x], ypos[y], xpos[x + 1] - xpos[x], ypos[y + 1] - ypos[y]);
       id++;
     }
   }
@@ -70,15 +69,15 @@ void ImageRect::Observe(NotificationType type,
 // GCNGraphics
 // -----------------------------------------------------------------------
 GCNGraphics::GCNGraphics(int width, int height)
-  : gcn::OpenGLGraphics(width, height) { }
+    : gcn::OpenGLGraphics(width, height) {}
 
 // -----------------------------------------------------------------------
 
-GCNGraphics::~GCNGraphics() { }
+GCNGraphics::~GCNGraphics() {}
 
 // -----------------------------------------------------------------------
 
-void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
+void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect& i) {
   pushClipArea(gcn::Rectangle(x, y, w, h));
 
   gcn::Image* image = i.image();
@@ -86,25 +85,34 @@ void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
   // Draw the center area
   drawImageStretched(image,
                      i.center(),
-                     i.topLeft().width(), i.topLeft().height(),
+                     i.topLeft().width(),
+                     i.topLeft().height(),
                      w - i.topLeft().width() - i.topRight().width(),
                      h - i.topLeft().height() - i.bottomLeft().height());
 
   // Draw the sides
-  drawImageStretched(image, i.top(),
-                     i.left().width(), 0,
+  drawImageStretched(image,
+                     i.top(),
+                     i.left().width(),
+                     0,
                      w - i.left().width() - i.right().width(),
                      i.top().height());
-  drawImageStretched(image, i.bottom(),
-                     i.left().width(), h - i.bottom().height(),
+  drawImageStretched(image,
+                     i.bottom(),
+                     i.left().width(),
+                     h - i.bottom().height(),
                      w - i.left().width() - i.right().width(),
                      i.bottom().height());
-  drawImageStretched(image, i.left(),
-                     0, i.top().height(),
+  drawImageStretched(image,
+                     i.left(),
+                     0,
+                     i.top().height(),
                      i.left().width(),
                      h - i.top().height() - i.bottom().height());
-  drawImageStretched(image, i.right(),
-                     w - i.right().width(), i.top().height(),
+  drawImageStretched(image,
+                     i.right(),
+                     w - i.right().width(),
+                     i.top().height(),
                      i.right().width(),
                      h - i.top().height() - i.bottom().height());
 
@@ -112,7 +120,8 @@ void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
   drawImageImpl(image, i.topLeft(), 0, 0);
   drawImageImpl(image, i.topRight(), w - i.topRight().width(), 0);
   drawImageImpl(image, i.bottomLeft(), 0, h - i.bottomLeft().height());
-  drawImageImpl(image, i.bottomRight(),
+  drawImageImpl(image,
+                i.bottomRight(),
                 w - i.bottomRight().width(),
                 h - i.bottomRight().height());
 
@@ -121,20 +130,25 @@ void GCNGraphics::drawImageRect(int x, int y, int w, int h, ImageRect &i) {
 
 // -----------------------------------------------------------------------
 
-void GCNGraphics::drawImageStretched(
-  gcn::Image* image, const Rect& source,
-  int dstX, int dstY, int width, int height) {
+void GCNGraphics::drawImageStretched(gcn::Image* image,
+                                     const Rect& source,
+                                     int dstX,
+                                     int dstY,
+                                     int width,
+                                     int height) {
   const gcn::OpenGLImage* srcImage =
-    dynamic_cast<const gcn::OpenGLImage*>(image);
+      dynamic_cast<const gcn::OpenGLImage*>(image);
 
   if (srcImage == NULL) {
-    throw GCN_EXCEPTION("Trying to draw an image of unknown format, must be "
-                        "an OpenGLImage.");
+    throw GCN_EXCEPTION(
+        "Trying to draw an image of unknown format, must be "
+        "an OpenGLImage.");
   }
 
   if (mClipStack.empty()) {
-    throw GCN_EXCEPTION("Clip stack is empty, perhaps you called a draw "
-                        "function outside of _beginDraw() and _endDraw()?");
+    throw GCN_EXCEPTION(
+        "Clip stack is empty, perhaps you called a draw "
+        "function outside of _beginDraw() and _endDraw()?");
   }
 
   const gcn::ClipRectangle& top = mClipStack.top();
@@ -172,8 +186,15 @@ void GCNGraphics::drawImageStretched(
 
 // -----------------------------------------------------------------------
 
-void GCNGraphics::drawImageImpl(gcn::Image* image, const Rect& source,
-                                int dstX, int dstY) {
-  OpenGLGraphics::drawImage(image, source.x(), source.y(), dstX, dstY,
-                            source.width(), source.height());
+void GCNGraphics::drawImageImpl(gcn::Image* image,
+                                const Rect& source,
+                                int dstX,
+                                int dstY) {
+  OpenGLGraphics::drawImage(image,
+                            source.x(),
+                            source.y(),
+                            dstX,
+                            dstY,
+                            source.width(),
+                            source.height());
 }

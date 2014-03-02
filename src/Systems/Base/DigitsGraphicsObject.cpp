@@ -42,20 +42,16 @@
 using namespace std;
 
 DigitsGraphicsObject::DigitsGraphicsObject(System& system)
-    : system_(system),
-      value_(0) {
-}
+    : system_(system), value_(0) {}
 
 DigitsGraphicsObject::DigitsGraphicsObject(System& system,
                                            const std::string& font)
     : system_(system),
       value_(0),
       font_name_(font),
-      font_(system.graphics().getSurfaceNamed(font)) {
-}
+      font_(system.graphics().getSurfaceNamed(font)) {}
 
-DigitsGraphicsObject::~DigitsGraphicsObject() {
-}
+DigitsGraphicsObject::~DigitsGraphicsObject() {}
 
 int DigitsGraphicsObject::pixelWidth(const GraphicsObject& rp) {
   if (needsUpdate(rp))
@@ -75,8 +71,7 @@ GraphicsObjectData* DigitsGraphicsObject::clone() const {
   return new DigitsGraphicsObject(*this);
 }
 
-void DigitsGraphicsObject::execute(RLMachine& machine) {
-}
+void DigitsGraphicsObject::execute(RLMachine& machine) {}
 
 boost::shared_ptr<const Surface> DigitsGraphicsObject::currentSurface(
     const GraphicsObject& go) {
@@ -94,11 +89,12 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
   value_ = rp.digitValue();
 
   // Calculate the size our canvas will have to be.
-  int digit_pixel_width =
-      rp.digitSpace() ? rp.digitSpace() :
-      font_->getPattern(0).rect.size().width();
+  int digit_pixel_width = rp.digitSpace()
+                              ? rp.digitSpace()
+                              : font_->getPattern(0).rect.size().width();
   int num_chars = 0;
-  for (int a = value_; a > 0; a=a/10, num_chars++) {}
+  for (int a = value_; a > 0; a = a / 10, num_chars++) {
+  }
   num_chars = std::max(num_chars, rp.digitDigits());
 
   int num_extra = 0;
@@ -107,9 +103,8 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
 
   int total_pixel_width = (num_chars + num_extra) * digit_pixel_width;
 
-  surface_ = system_.graphics().buildSurface(Size(
-      total_pixel_width,
-      font_->getPattern(0).rect.size().height()));
+  surface_ = system_.graphics().buildSurface(
+      Size(total_pixel_width, font_->getPattern(0).rect.size().height()));
   surface_->fill(RGBAColour::Clear());
 
   // We draw glyphs onto the canvas from right to left so we can use the
@@ -122,11 +117,10 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
     int digit = i % 10;
     const Surface::GrpRect& grp = font_->getPattern(digit);
 
-    font_->blitToSurface(*surface_,
-                         grp.rect,
-                         Rect(x_offset, 0, grp.rect.size()), 255, false);
+    font_->blitToSurface(
+        *surface_, grp.rect, Rect(x_offset, 0, grp.rect.size()), 255, false);
 
-    i = i/10;
+    i = i / 10;
     printed++;
     x_offset -= digit_pixel_width;
   } while (i > 0);
@@ -137,7 +131,9 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
     if (print_zeros) {
       font_->blitToSurface(*surface_,
                            zero_grp.rect,
-                           Rect(x_offset, 0, zero_grp.rect.size()), 255, false);
+                           Rect(x_offset, 0, zero_grp.rect.size()),
+                           255,
+                           false);
     }
     printed++;
     x_offset -= digit_pixel_width;
@@ -154,20 +150,18 @@ bool DigitsGraphicsObject::needsUpdate(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-template<class Archive>
+template <class Archive>
 void DigitsGraphicsObject::load(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-     & font_name_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & font_name_;
 
   value_ = 0;
   surface_.reset();
   font_ = system_.graphics().getSurfaceNamed(font_name_);
 }
 
-template<class Archive>
+template <class Archive>
 void DigitsGraphicsObject::save(Archive& ar, unsigned int version) const {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this)
-     & font_name_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this) & font_name_;
 }
 
 // -----------------------------------------------------------------------
@@ -180,7 +174,9 @@ BOOST_CLASS_EXPORT(DigitsGraphicsObject);
 // implementation)
 
 template void DigitsGraphicsObject::save<boost::archive::text_oarchive>(
-    boost::archive::text_oarchive & ar, unsigned int version) const;
+    boost::archive::text_oarchive& ar,
+    unsigned int version) const;
 
 template void DigitsGraphicsObject::load<boost::archive::text_iarchive>(
-    boost::archive::text_iarchive & ar, unsigned int version);
+    boost::archive::text_iarchive& ar,
+    unsigned int version);

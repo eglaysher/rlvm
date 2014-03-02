@@ -61,37 +61,31 @@ namespace fs = boost::filesystem;
 
 void printVersionInformation() {
   cout
-    << "rlvm (version 0.3)" << endl
-    << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all."
-    << endl << endl
-    << "This program is free software: you can redistribute it and/or modify"
-    << endl
-    << "it under the terms of the GNU General Public License as published by"
-    << endl
-    << "the Free Software Foundation, either version 3 of the License, or"
-    << endl
-    << "(at your option) any later version."
-    << endl << endl
-    << "This program is distributed in the hope that it will be useful,"
-    << endl
-    << "but WITHOUT ANY WARRANTY; without even the implied warranty of"
-    << endl
-    << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
-    << endl
-    << "GNU General Public License for more details."
-    << endl << endl
-    << "You should have received a copy of the GNU General Public License"
-    << endl
-    << "along with this program.  If not, see <http://www.gnu.org/licenses/>."
-    << endl << endl;
+      << "rlvm (version 0.3)" << endl
+      << "Copyright (C) 2006-2008 Elliot Glaysher, Haeleth, Jagarl, et all."
+      << endl << endl
+      << "This program is free software: you can redistribute it and/or modify"
+      << endl
+      << "it under the terms of the GNU General Public License as published by"
+      << endl
+      << "the Free Software Foundation, either version 3 of the License, or"
+      << endl << "(at your option) any later version." << endl << endl
+      << "This program is distributed in the hope that it will be useful,"
+      << endl
+      << "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+      << endl << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+      << endl << "GNU General Public License for more details." << endl << endl
+      << "You should have received a copy of the GNU General Public License"
+      << endl
+      << "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+      << endl << endl;
 }
 
 // -----------------------------------------------------------------------
 
 void printUsage(const string& name, po::options_description& opts) {
   cout << "Usage: " << name << " [options] <lua script to run> <game root>"
-       << endl
-       << opts << endl;
+       << endl << opts << endl;
 }
 
 // -----------------------------------------------------------------------
@@ -104,27 +98,29 @@ int main(int argc, char* argv[]) {
 
   // Declare the supported options.
   po::options_description opts("Options");
-  opts.add_options()
-    ("help", "Produce help message")
-    ("version", "Display version and license information")
-    ("font", po::value<string>(), "Specifies TrueType font to use.")
-    ("undefined-opcodes", "Display a message on undefined opcodes")
-    ("load-save", po::value<int>(), "Load a saved game on start")
-    ("memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")
-    ("count-undefined",
-     "On exit, present a summary table about how many times each undefined "
-     "opcode was called")
-    ("save-on-decision", po::value<int>(),
-     "Automatically save the game on decision points to the specified save "
-     "game slot. Useful while debugging crashes far into a game.")
-    ("save-on-decision-counting-from", po::value<int>(),
-     "Like --save-on-decision, but will increment the save number every time.");
+  opts.add_options()("help", "Produce help message")(
+      "version", "Display version and license information")(
+      "font", po::value<string>(), "Specifies TrueType font to use.")(
+      "undefined-opcodes", "Display a message on undefined opcodes")(
+      "load-save", po::value<int>(), "Load a saved game on start")(
+      "memory", "Forces debug mode (Sets #MEMORY=1 in the Gameexe.ini file)")(
+      "count-undefined",
+      "On exit, present a summary table about how many times each undefined "
+      "opcode was called")(
+      "save-on-decision",
+      po::value<int>(),
+      "Automatically save the game on decision points to the specified save "
+      "game slot. Useful while debugging crashes far into a game.")(
+      "save-on-decision-counting-from",
+      po::value<int>(),
+      "Like --save-on-decision, but will increment the save number every "
+      "time.");
 
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
-  hidden.add_options()
-    ("script-location", po::value<string>(), "Location of the lua script")
-    ("game-root", po::value<string>(), "Location of game root");
+  hidden.add_options()(
+      "script-location", po::value<string>(), "Location of the lua script")(
+      "game-root", po::value<string>(), "Location of game root");
 
   po::positional_options_description p;
   p.add("script-location", 1);
@@ -135,8 +131,10 @@ int main(int argc, char* argv[]) {
   commandLineOpts.add(opts).add(hidden);
 
   po::variables_map vm;
-  po::store(po::basic_command_line_parser<char>(argc, argv).
-            options(commandLineOpts).positional(p).run(),
+  po::store(po::basic_command_line_parser<char>(argc, argv)
+                .options(commandLineOpts)
+                .positional(p)
+                .run(),
             vm);
   po::notify(vm);
 
@@ -183,11 +181,11 @@ int main(int argc, char* argv[]) {
     // Some games hide data in a lower subdirectory.  A little hack to
     // make these behave as expected...
     if (correctPathCase(gamerootPath / "Gameexe.ini").empty()) {
-      if (!correctPathCase(gamerootPath / "KINETICDATA" /
-                           "Gameexe.ini").empty()) {
+      if (!correctPathCase(gamerootPath / "KINETICDATA" / "Gameexe.ini")
+               .empty()) {
         gamerootPath /= "KINETICDATA/";
-      } else if (!correctPathCase(gamerootPath / "REALLIVEDATA" /
-                                  "Gameexe.ini").empty()) {
+      } else if (!correctPathCase(gamerootPath / "REALLIVEDATA" / "Gameexe.ini")
+                      .empty()) {
         gamerootPath /= "REALLIVEDATA/";
       } else {
         cerr << "WARNING: Path '" << gamerootPath << "' may not contain a "
@@ -268,15 +266,15 @@ int main(int argc, char* argv[]) {
     cerr << "Fatal libReallive error: " << e.what() << endl;
     return 1;
   }
-  catch(SystemError& e) {
+  catch (SystemError& e) {
     cerr << "Fatal local system error: " << e.what() << endl;
     return 1;
   }
-  catch(std::exception& e) {
+  catch (std::exception& e) {
     cout << "Uncaught exception: " << e.what() << endl;
     return 1;
   }
-  catch(const char* e) {
+  catch (const char* e) {
     cout << "Uncaught exception: " << e << endl;
     return 1;
   }

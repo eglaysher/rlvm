@@ -33,8 +33,11 @@ class RLMachine;
 // An object that changes the value of an object parameter over time.
 class ObjectMutator {
  public:
-  ObjectMutator(int repr, const char* name,
-                int creation_time, int duration_time, int delay,
+  ObjectMutator(int repr,
+                const char* name,
+                int creation_time,
+                int duration_time,
+                int delay,
                 int type);
   virtual ~ObjectMutator();
 
@@ -52,8 +55,7 @@ class ObjectMutator {
   int GetValueForTime(RLMachine& machine, int start, int end);
 
   // Template method that actually sets the values.
-  virtual void PerformSetting(RLMachine& machine,
-                              GraphicsObject& object) = 0;
+  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) = 0;
 
  private:
   // An optional paramater to identify object setters that pass additional
@@ -78,11 +80,15 @@ class ObjectMutator {
 // An object mutator that takes a single integer.
 class OneIntObjectMutator : public ObjectMutator {
  public:
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef void (GraphicsObject::*Setter)(const int);
 
   OneIntObjectMutator(const char* name,
-                      int creation_time, int duration_time, int delay,
-                      int type, int start_value, int target_value,
+                      int creation_time,
+                      int duration_time,
+                      int delay,
+                      int type,
+                      int start_value,
+                      int target_value,
                       Setter setter);
   virtual ~OneIntObjectMutator();
 
@@ -100,11 +106,16 @@ class OneIntObjectMutator : public ObjectMutator {
 // An object mutator that takes a repno and an integer.
 class RepnoIntObjectMutator : public ObjectMutator {
  public:
-  typedef void(GraphicsObject::*Setter)(const int, const int);
+  typedef void (GraphicsObject::*Setter)(const int, const int);
 
   RepnoIntObjectMutator(const char* name,
-                        int creation_time, int duration_time, int delay,
-                        int type, int repno, int start_value, int target_value,
+                        int creation_time,
+                        int duration_time,
+                        int delay,
+                        int type,
+                        int repno,
+                        int start_value,
+                        int target_value,
                         Setter setter);
   virtual ~RepnoIntObjectMutator();
 
@@ -123,13 +134,19 @@ class RepnoIntObjectMutator : public ObjectMutator {
 // An object mutator that varies two integers.
 class TwoIntObjectMutator : public ObjectMutator {
  public:
-  typedef void(GraphicsObject::*Setter)(const int);
+  typedef void (GraphicsObject::*Setter)(const int);
 
   TwoIntObjectMutator(const char* name,
-                      int creation_time, int duration_time, int delay,
+                      int creation_time,
+                      int duration_time,
+                      int delay,
                       int type,
-                      int start_one, int target_one, Setter setter_one,
-                      int start_two, int target_two, Setter setter_two);
+                      int start_one,
+                      int target_one,
+                      Setter setter_one,
+                      int start_two,
+                      int target_two,
+                      Setter setter_two);
   virtual ~TwoIntObjectMutator();
 
  private:

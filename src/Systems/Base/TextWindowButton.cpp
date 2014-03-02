@@ -58,10 +58,10 @@ enum ButtonState {
 // -----------------------------------------------------------------------
 
 TextWindowButton::TextWindowButton(System& system)
-    : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
-}
+    : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {}
 
-TextWindowButton::TextWindowButton(System& system, bool use_this_button,
+TextWindowButton::TextWindowButton(System& system,
+                                   bool use_this_button,
                                    GameexeInterpretObject location_box)
     : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
   if (use_this_button && location_box.exists()) {
@@ -71,8 +71,7 @@ TextWindowButton::TextWindowButton(System& system, bool use_this_button,
   }
 }
 
-TextWindowButton::~TextWindowButton() {
-}
+TextWindowButton::~TextWindowButton() {}
 
 Rect TextWindowButton::location(TextWindow& window) {
   int type = location_.at(0);
@@ -111,16 +110,14 @@ Rect TextWindowButton::location(TextWindow& window) {
                           win_rect.size().height() - size.height());
       return Rect(origin, size);
     }
-    default: {
-      throw SystemError("Unsupported coordinate system");
-    }
+    default: { throw SystemError("Unsupported coordinate system"); }
   }
 }
 
 bool TextWindowButton::isValid() const {
   return state_ != BUTTONSTATE_BUTTON_NOT_USED && location_.size() == 5 &&
-    !(location_[0] == 0 && location_[1] == 0 && location_[2] == 0 &&
-      location_[3] == 0 && location_[4] == 0);
+         !(location_[0] == 0 && location_[1] == 0 && location_[2] == 0 &&
+           location_[3] == 0 && location_[4] == 0);
 }
 
 void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
@@ -142,8 +139,10 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
   }
 }
 
-bool TextWindowButton::handleMouseClick(
-    RLMachine& machine, TextWindow& window, const Point& pos, bool pressed) {
+bool TextWindowButton::handleMouseClick(RLMachine& machine,
+                                        TextWindow& window,
+                                        const Point& pos,
+                                        bool pressed) {
   if (state_ == BUTTONSTATE_DISABLED)
     return false;
 
@@ -181,42 +180,38 @@ void TextWindowButton::render(TextWindow& window,
   }
 }
 
-
 // -----------------------------------------------------------------------
 // ActionTextWindowButton
 // -----------------------------------------------------------------------
 
 ActionTextWindowButton::ActionTextWindowButton(
     System& system,
-    bool use, GameexeInterpretObject location_box,
+    bool use,
+    GameexeInterpretObject location_box,
     CallbackFunction action)
-    : TextWindowButton(system, use, location_box), action_(action) {
-}
+    : TextWindowButton(system, use, location_box), action_(action) {}
 
-ActionTextWindowButton::~ActionTextWindowButton() {
-}
+ActionTextWindowButton::~ActionTextWindowButton() {}
 
-void ActionTextWindowButton::buttonReleased(RLMachine& machine) {
-  action_();
-}
+void ActionTextWindowButton::buttonReleased(RLMachine& machine) { action_(); }
 
 // -----------------------------------------------------------------------
 // ActivationTextWindowButton
 // -----------------------------------------------------------------------
 
 ActivationTextWindowButton::ActivationTextWindowButton(
-    System& system, bool use, GameexeInterpretObject location_box,
+    System& system,
+    bool use,
+    GameexeInterpretObject location_box,
     CallbackFunction setter)
     : TextWindowButton(system, use, location_box),
       on_set_(setter),
       on_(false),
       enabled_(true),
       enabled_listener_(static_cast<NotificationType::Type>(-1)),
-      change_listener_(static_cast<NotificationType::Type>(-1)) {
-}
+      change_listener_(static_cast<NotificationType::Type>(-1)) {}
 
-ActivationTextWindowButton::~ActivationTextWindowButton() {
-}
+ActivationTextWindowButton::~ActivationTextWindowButton() {}
 
 void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
   if (enabled_) {
@@ -235,17 +230,13 @@ void ActivationTextWindowButton::setEnabled(bool enabled) {
 void ActivationTextWindowButton::setEnabledNotification(
     NotificationType enabled_listener) {
   enabled_listener_ = enabled_listener;
-  registrar_.Add(this,
-                 enabled_listener_,
-                 NotificationService::AllSources());
+  registrar_.Add(this, enabled_listener_, NotificationService::AllSources());
 }
 
 void ActivationTextWindowButton::setChangeNotification(
     NotificationType change_listener) {
   change_listener_ = change_listener;
-  registrar_.Add(this,
-                 change_listener_,
-                 NotificationService::AllSources());
+  registrar_.Add(this, change_listener_, NotificationService::AllSources());
 }
 
 void ActivationTextWindowButton::setState() {
@@ -274,15 +265,17 @@ void ActivationTextWindowButton::Observe(NotificationType type,
 // -----------------------------------------------------------------------
 
 RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
-  System& system, bool use, GameexeInterpretObject location_box,
-  CallbackFunction callback, unsigned int time_between_invocations)
+    System& system,
+    bool use,
+    GameexeInterpretObject location_box,
+    CallbackFunction callback,
+    unsigned int time_between_invocations)
     : TextWindowButton(system, use, location_box),
-      callback_(callback), held_down_(false),
-      time_between_invocations_(time_between_invocations) {
-}
+      callback_(callback),
+      held_down_(false),
+      time_between_invocations_(time_between_invocations) {}
 
-RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton() {
-}
+RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton() {}
 
 void RepeatActionWhileHoldingWindowButton::buttonPressed() {
   held_down_ = true;
@@ -310,11 +303,13 @@ void RepeatActionWhileHoldingWindowButton::buttonReleased(RLMachine& machine) {
 // ExbtnWindowButton
 // -----------------------------------------------------------------------
 
-ExbtnWindowButton::ExbtnWindowButton(
-    System& system, bool use, GameexeInterpretObject location_box,
-    GameexeInterpretObject to_call)
+ExbtnWindowButton::ExbtnWindowButton(System& system,
+                                     bool use,
+                                     GameexeInterpretObject location_box,
+                                     GameexeInterpretObject to_call)
     : TextWindowButton(system, use, location_box),
-      scenario_(0), entrypoint_(0) {
+      scenario_(0),
+      entrypoint_(0) {
   if (location_box.exists() && to_call.exists()) {
     std::vector<int> farcall = to_call;
     scenario_ = farcall.at(0);
@@ -322,8 +317,7 @@ ExbtnWindowButton::ExbtnWindowButton(
   }
 }
 
-ExbtnWindowButton::~ExbtnWindowButton() {
-}
+ExbtnWindowButton::~ExbtnWindowButton() {}
 
 void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
   // Hide all text boxes when entering an Exbtn

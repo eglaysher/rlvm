@@ -101,17 +101,19 @@ class GCNGraphics : public gcn::OpenGLGraphics {
 
   // Draws a rectangle using images. 4 corner images, 4 side images and 1
   // image for the inside.
-  void drawImageRect(int x, int y, int w, int h, ImageRect &imgRect);
+  void drawImageRect(int x, int y, int w, int h, ImageRect& imgRect);
 
  private:
   // Hack around OpenGLGraphics::drawImage to render the image (stretched)
   // into the target rectangle.
   void drawImageStretched(gcn::Image* image,
                           const Rect& source,
-                          int dstX, int dstY, int height, int width);
+                          int dstX,
+                          int dstY,
+                          int height,
+                          int width);
 
-  void drawImageImpl(gcn::Image* image, const Rect& source,
-                     int dstX, int dstY);
+  void drawImageImpl(gcn::Image* image, const Rect& source, int dstX, int dstY);
 };
 
 #endif  // SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_

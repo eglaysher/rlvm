@@ -50,7 +50,8 @@ void ensureIsParentObject(GraphicsObject& parent, int size) {
   parent.setObjectData(new ParentGraphicsObjectData(size));
 }
 
-GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
+GraphicsObject& getGraphicsObject(RLMachine& machine,
+                                  RLOperation* op,
                                   int obj) {
   GraphicsSystem& graphics = machine.system().graphics();
 
@@ -62,14 +63,16 @@ GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op,
   if (op->getProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     ensureIsParentObject(parent, graphics.objectLayerSize());
-    return static_cast<ParentGraphicsObjectData&>(parent.objectData()).
-        getObject(obj);
+    return static_cast<ParentGraphicsObjectData&>(parent.objectData())
+        .getObject(obj);
   } else {
     return graphics.getObject(fgbg, obj);
   }
 }
 
-void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
+void setGraphicsObject(RLMachine& machine,
+                       RLOperation* op,
+                       int obj,
                        GraphicsObject& gobj) {
   GraphicsSystem& graphics = machine.system().graphics();
 
@@ -81,8 +84,8 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
   if (op->getProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     ensureIsParentObject(parent, graphics.objectLayerSize());
-    static_cast<ParentGraphicsObjectData&>(parent.objectData()).
-        setObject(obj, gobj);
+    static_cast<ParentGraphicsObjectData&>(parent.objectData())
+        .setObject(obj, gobj);
   } else {
     graphics.setObject(fgbg, obj, gobj);
   }
@@ -90,9 +93,7 @@ void setGraphicsObject(RLMachine& machine, RLOperation* op, int obj,
 
 // -----------------------------------------------------------------------
 
-ObjRangeAdapter::ObjRangeAdapter(RLOperation* in)
-    : handler(in) {
-}
+ObjRangeAdapter::ObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ObjRangeAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
@@ -137,8 +138,7 @@ RLOperation* rangeMappingFun(RLOperation* op) {
 // ChildObjAdapter
 // -----------------------------------------------------------------------
 
-ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {
-}
+ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libReallive::CommandElement& ff) {
@@ -173,12 +173,10 @@ RLOperation* childObjMappingFun(RLOperation* op) {
 // ChildObjRangeAdapter
 // -----------------------------------------------------------------------
 
-ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in)
-    : handler(in) {
-}
+ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
-                                 const libReallive::CommandElement& ff) {
+                                      const libReallive::CommandElement& ff) {
   const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
@@ -225,9 +223,7 @@ RLOperation* childRangeMappingFun(RLOperation* op) {
 // Obj_SetOneIntOnObj
 // -----------------------------------------------------------------------
 
-Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s)
-    : setter(s) {
-}
+Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s) : setter(s) {}
 
 Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
 
@@ -243,14 +239,14 @@ void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
 // -----------------------------------------------------------------------
 
 Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(Setter one, Setter two)
-  : setterOne(one), setterTwo(two) {
-}
+    : setterOne(one), setterTwo(two) {}
 
-Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {
-}
+Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {}
 
-void Obj_SetTwoIntOnObj::operator()(RLMachine& machine, int buf,
-                                    int incomingOne, int incomingTwo) {
+void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
+                                    int buf,
+                                    int incomingOne,
+                                    int incomingTwo) {
   GraphicsObject& obj = getGraphicsObject(machine, this, buf);
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);

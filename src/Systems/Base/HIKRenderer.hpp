@@ -38,8 +38,7 @@ class System;
 // Displays a HIKScript at a certain time to the screen.
 class HIKRenderer {
  public:
-  HIKRenderer(System& system,
-              const boost::shared_ptr<const HIKScript>& script);
+  HIKRenderer(System& system, const boost::shared_ptr<const HIKScript>& script);
   ~HIKRenderer();
 
   // Run once per tick.

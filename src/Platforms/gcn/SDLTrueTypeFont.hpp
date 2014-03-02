@@ -64,8 +64,7 @@ class OpenGLImage;
  * @author Walluce Pinkham
  * @author Olof Naessén
  */
-class SDLTrueTypeFont : public gcn::Font,
-                        public NotificationObserver {
+class SDLTrueTypeFont : public gcn::Font, public NotificationObserver {
  public:
   SDLTrueTypeFont(const std::string& filename, int size);
   virtual ~SDLTrueTypeFont();
@@ -93,8 +92,10 @@ class SDLTrueTypeFont : public gcn::Font,
   // Inherited from Font
   virtual int getWidth(const std::string& text) const;
   virtual int getHeight() const;
-  virtual void drawString(gcn::Graphics* graphics, const std::string& text,
-                          int x, int y);
+  virtual void drawString(gcn::Graphics* graphics,
+                          const std::string& text,
+                          int x,
+                          int y);
 
   // NotificationObserver:
   virtual void Observe(NotificationType type,
@@ -102,7 +103,7 @@ class SDLTrueTypeFont : public gcn::Font,
                        const NotificationDetails& details);
 
  private:
-  TTF_Font *font_;
+  TTF_Font* font_;
 
   int glyph_spacing_;
   int row_spacing_;
@@ -111,7 +112,7 @@ class SDLTrueTypeFont : public gcn::Font,
   bool anti_alias_;
 
   LRUCache<std::pair<std::string, std::string>,
-           boost::shared_ptr<gcn::OpenGLImage> > image_cache_;
+           boost::shared_ptr<gcn::OpenGLImage>> image_cache_;
 
   NotificationRegistrar registrar_;
 };

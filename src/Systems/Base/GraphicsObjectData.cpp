@@ -41,18 +41,18 @@ using namespace std;
 // -----------------------------------------------------------------------
 
 GraphicsObjectData::GraphicsObjectData()
-  : after_animation_(AFTER_NONE), owned_by_(NULL), currently_playing_(false),
-    animation_finished_(false) {
-}
+    : after_animation_(AFTER_NONE),
+      owned_by_(NULL),
+      currently_playing_(false),
+      animation_finished_(false) {}
 
 GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
-  : after_animation_(obj.after_animation_), owned_by_(NULL),
-    currently_playing_(obj.currently_playing_),
-    animation_finished_(false) {
-}
+    : after_animation_(obj.after_animation_),
+      owned_by_(NULL),
+      currently_playing_(obj.currently_playing_),
+      animation_finished_(false) {}
 
-GraphicsObjectData::~GraphicsObjectData() {
-}
+GraphicsObjectData::~GraphicsObjectData() {}
 
 void GraphicsObjectData::render(const GraphicsObject& go,
                                 const GraphicsObject* parent,
@@ -107,8 +107,7 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       src = src.applyInset(inset);
 
       if (tree) {
-        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect()
-              << endl
+        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect() << endl
               << "  After clipping: " << src << " to " << dst << endl;
       }
     }
@@ -119,8 +118,7 @@ void GraphicsObjectData::render(const GraphicsObject& go,
 
       if (tree) {
         *tree << "  Internal Clipping Rect: " << go.ownClipRect() << endl
-              << "  After internal clipping: " << src << " to " << dst
-              << endl;
+              << "  After internal clipping: " << src << " to " << dst << endl;
       }
     }
 
@@ -149,27 +147,26 @@ void GraphicsObjectData::render(const GraphicsObject& go,
   }
 }
 
-void GraphicsObjectData::loopAnimation() {
-}
+void GraphicsObjectData::loopAnimation() {}
 
 void GraphicsObjectData::endAnimation() {
   // Set first, because we may deallocate this by one of our actions
   currently_playing_ = false;
 
   switch (afterAnimation()) {
-  case AFTER_NONE:
-    animation_finished_ = true;
-    break;
-  case AFTER_CLEAR:
-    if (ownedBy())
-      ownedBy()->deleteObject();
-    break;
-  case AFTER_LOOP: {
-    // Reset from the beginning
-    currently_playing_ = true;
-    loopAnimation();
-    break;
-  }
+    case AFTER_NONE:
+      animation_finished_ = true;
+      break;
+    case AFTER_CLEAR:
+      if (ownedBy())
+        ownedBy()->deleteObject();
+      break;
+    case AFTER_LOOP: {
+      // Reset from the beginning
+      currently_playing_ = true;
+      loopAnimation();
+      break;
+    }
   }
 }
 
@@ -216,10 +213,10 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
   Point origin = dstOrigin(go);
   Rect src = srcRect(go);
 
-  int center_x = go.x() + go.xAdjustmentSum() - origin.x() +
-                 (src.width() / 2.0f);
-  int center_y = go.y() + go.yAdjustmentSum() - origin.y() +
-                 (src.height() / 2.0f);
+  int center_x =
+      go.x() + go.xAdjustmentSum() - origin.x() + (src.width() / 2.0f);
+  int center_y =
+      go.y() + go.yAdjustmentSum() - origin.y() + (src.height() / 2.0f);
 
   float second_factor_x = 1.0f;
   float second_factor_y = 1.0f;
@@ -231,10 +228,10 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
     second_factor_y = parent->getHeightScaleFactor();
   }
 
-  int half_real_width = (src.width() * second_factor_x *
-                         go.getWidthScaleFactor()) / 2.0f;
-  int half_real_height = (src.height() * second_factor_y *
-                          go.getHeightScaleFactor()) / 2.0f;
+  int half_real_width =
+      (src.width() * second_factor_x * go.getWidthScaleFactor()) / 2.0f;
+  int half_real_height =
+      (src.height() * second_factor_y * go.getHeightScaleFactor()) / 2.0f;
 
   int xPos1 = center_x - half_real_width;
   int yPos1 = center_y - half_real_height;
@@ -254,12 +251,9 @@ int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
   }
 }
 
-bool GraphicsObjectData::isAnimation() const {
-  return false;
-}
+bool GraphicsObjectData::isAnimation() const { return false; }
 
-void GraphicsObjectData::playSet(int set) {
-}
+void GraphicsObjectData::playSet(int set) {}
 
 bool GraphicsObjectData::animationFinished() const {
   return animation_finished_;

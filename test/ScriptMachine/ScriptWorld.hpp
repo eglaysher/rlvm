@@ -35,7 +35,7 @@
 #include <luabind/luabind.hpp>
 
 extern "C" {
-    #include "lua.h"
+#include "lua.h"
 }
 
 class ScriptMachine;
@@ -100,6 +100,5 @@ class ScriptWorld {
 
   lua_State* L;
 };  // end of class ScriptWorld
-
 
 #endif  // TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_

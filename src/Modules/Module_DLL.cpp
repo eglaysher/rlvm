@@ -43,20 +43,26 @@ struct LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   }
 };
 
-struct CallDLL : public RLOp_Store_6<
-  IntConstant_T,
-  DefaultIntValue_T<0>, DefaultIntValue_T<0>, DefaultIntValue_T<0>,
-  DefaultIntValue_T<0>, DefaultIntValue_T<0> > {
-  int operator()(RLMachine& machine, int index, int one, int two, int three,
-                 int four, int five) {
+struct CallDLL : public RLOp_Store_6<IntConstant_T,
+                                     DefaultIntValue_T<0>,
+                                     DefaultIntValue_T<0>,
+                                     DefaultIntValue_T<0>,
+                                     DefaultIntValue_T<0>,
+                                     DefaultIntValue_T<0>> {
+  int operator()(RLMachine& machine,
+                 int index,
+                 int one,
+                 int two,
+                 int three,
+                 int four,
+                 int five) {
     return machine.callDLL(index, one, two, three, four, five);
   }
 };
 
 }  // namespace
 
-DLLModule::DLLModule()
-  : RLModule("DLL", 2, 1) {
+DLLModule::DLLModule() : RLModule("DLL", 2, 1) {
   addOpcode(10, 0, "LoadDLL", new LoadDLL);
   addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::unloadDLL));
 

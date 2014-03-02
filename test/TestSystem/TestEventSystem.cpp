@@ -31,17 +31,14 @@
 // TestEventSystem
 // -----------------------------------------------------------------------
 TestEventSystem::TestEventSystem(Gameexe& gexe)
-  : EventSystem(gexe),
-    event_system_mock_(new EventSystemMockHandler) {
-}
+    : EventSystem(gexe), event_system_mock_(new EventSystemMockHandler) {}
 
 void TestEventSystem::setMockHandler(
-  const boost::shared_ptr<EventSystemMockHandler>& handler) {
+    const boost::shared_ptr<EventSystemMockHandler>& handler) {
   event_system_mock_ = handler;
 }
 
-void TestEventSystem::executeEventSystem(RLMachine& machine) {
-}
+void TestEventSystem::executeEventSystem(RLMachine& machine) {}
 
 bool TestEventSystem::shiftPressed() const {
   return event_system_mock_->shiftPressed();

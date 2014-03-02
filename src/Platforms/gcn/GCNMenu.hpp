@@ -52,8 +52,7 @@ struct GCNMenuButton {
 /**
  * A GCNMenu is a window that just auto-lays out a set of buttons.
  */
-class GCNMenu : public GCNWindow,
-                public gcn::ActionListener {
+class GCNMenu : public GCNWindow, public gcn::ActionListener {
  public:
   /**
    * Creates a menu out of a set of buttons

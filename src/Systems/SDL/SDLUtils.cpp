@@ -58,8 +58,7 @@ void ShowGLErrors(void) {
 // -----------------------------------------------------------------------
 
 bool IsNPOTSafe() {
-  static bool is_safe =
-      GLEW_VERSION_2_0 && GLEW_ARB_texture_non_power_of_two;
+  static bool is_safe = GLEW_VERSION_2_0 && GLEW_ARB_texture_non_power_of_two;
   return is_safe;
 }
 
@@ -89,8 +88,8 @@ int SafeSize(int i) {
   }
 
   for (int p = 0; p < 24; p++) {
-    if (i <= (1<<p))
-      return 1<<p;
+    if (i <= (1 << p))
+      return 1 << p;
   }
 
   return max_texture_size;
@@ -116,15 +115,21 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
     throw SystemError("AlphaInvert requires an alpha channel!");
 
   // Build a copy of the surface
-  SDL_Surface* dst = SDL_AllocSurface(
-    in_surface->flags, in_surface->w, in_surface->h,
-    format->BitsPerPixel, format->Rmask,
-    format->Gmask, format->Bmask, format->Amask);
+  SDL_Surface* dst = SDL_AllocSurface(in_surface->flags,
+                                      in_surface->w,
+                                      in_surface->h,
+                                      format->BitsPerPixel,
+                                      format->Rmask,
+                                      format->Gmask,
+                                      format->Bmask,
+                                      format->Amask);
 
   SDL_BlitSurface(in_surface, NULL, dst, NULL);
 
   // iterate over the copy and make the alpha value = 255 - alpha value.
-  if (SDL_MUSTLOCK(dst)) SDL_LockSurface(dst); {
+  if (SDL_MUSTLOCK(dst))
+    SDL_LockSurface(dst);
+  {
     int num_pixels = dst->h * dst->pitch;
     char* p_data = (char*)dst->pixels;
 
@@ -136,7 +141,8 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
       p_data[i + 3] = 255 - p_data[i + 3];
     }
   }
-  if (SDL_MUSTLOCK(dst)) SDL_UnlockSurface(dst);
+  if (SDL_MUSTLOCK(dst))
+    SDL_UnlockSurface(dst);
 
   return dst;
 }
@@ -160,12 +166,12 @@ void RGBColourToSDLColor(const RGBColour& in, SDL_Color* out) {
 
 // -----------------------------------------------------------------------
 
-Uint32 MapRGBA(SDL_PixelFormat *fmt, const RGBAColour& in) {
+Uint32 MapRGBA(SDL_PixelFormat* fmt, const RGBAColour& in) {
   return SDL_MapRGBA(fmt, in.r(), in.g(), in.b(), in.a());
 }
 
 // -----------------------------------------------------------------------
 
 void glColorRGBA(const RGBAColour& rgba) {
-    glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
+  glColor4ub(rgba.r(), rgba.g(), rgba.b(), rgba.a());
 }

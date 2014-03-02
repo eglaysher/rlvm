@@ -43,7 +43,7 @@ const int SIZE_OF_MEM_BANK = 2000;
 const int SIZE_OF_INT_PASSING_MEM = 40;
 const int SIZE_OF_NAME_BANK = 702;
 
-typedef std::vector<std::pair<int, char> > IntegerBank_t;
+typedef std::vector<std::pair<int, char>> IntegerBank_t;
 extern const IntegerBank_t LOCAL_INTEGER_BANKS;
 extern const IntegerBank_t GLOBAL_INTEGER_BANKS;
 
@@ -65,24 +65,24 @@ struct GlobalMemory {
 
   // A mapping from a scenario number to a dynamic bitset, where each bit
   // represents a specific kidoku bit.
-  std::map<int, boost::dynamic_bitset<> > kidoku_data;
+  std::map<int, boost::dynamic_bitset<>> kidoku_data;
 
   // boost::serialization
-  template<class Archive>
-  void serialize(Archive & ar, unsigned int version) {
-    ar & intG & intZ & strM;
+  template <class Archive>
+  void serialize(Archive& ar, unsigned int version) {
+    ar& intG& intZ& strM;
 
     // Starting in version 1, \#NAME variable storage were added.
     if (version > 0) {
-      ar & global_names;
-      ar & kidoku_data;
+      ar& global_names;
+      ar& kidoku_data;
     }
   }
 };
 
 BOOST_CLASS_VERSION(GlobalMemory, 1)
 
-struct dont_initialize { };
+struct dont_initialize {};
 
 // Struct that represents Local Memory. In any one rlvm process, lots
 // of these things will be created, because there are commands
@@ -123,21 +123,22 @@ struct LocalMemory {
 
   // Combines an array with a log of original values and writes the de-modified
   // array to |ar|.
-  template<class Archive, typename T>
+  template <class Archive, typename T>
   void saveArrayRevertingChanges(Archive& ar,
                                  const T (&a)[SIZE_OF_MEM_BANK],
                                  const std::map<int, T>& original) const {
     T merged[SIZE_OF_MEM_BANK];
     std::copy(a, a + SIZE_OF_MEM_BANK, merged);
     for (typename std::map<int, T>::const_iterator it = original.begin();
-         it != original.end(); ++it) {
+         it != original.end();
+         ++it) {
       merged[it->first] = it->second;
     }
-    ar & merged;
+    ar& merged;
   }
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void save(Archive& ar, unsigned int version) const {
     saveArrayRevertingChanges(ar, intA, original_intA);
     saveArrayRevertingChanges(ar, intB, original_intB);
@@ -148,27 +149,27 @@ struct LocalMemory {
 
     saveArrayRevertingChanges(ar, strS, original_strS);
 
-    ar & local_names;
+    ar& local_names;
   }
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, unsigned int version) {
-    ar & intA & intB & intC & intD & intE & intF & strS;
+    ar& intA& intB& intC& intD& intE& intF& strS;
 
     // Starting in version 2, we no longer have the intL and strK in
     // LocalMemory. They were moved to StackFrame because they're stack
     // local. Throw away old data.
     if (version < 2) {
       int intL[SIZE_OF_INT_PASSING_MEM];
-      ar & intL;
+      ar& intL;
 
       std::string strK[3];
-      ar & strK;
+      ar& strK;
     }
 
     // Starting in version 1, \#LOCALNAME variable storage were added.
     if (version > 0)
-      ar & local_names;
+      ar& local_names;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

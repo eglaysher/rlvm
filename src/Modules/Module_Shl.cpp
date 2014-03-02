@@ -26,8 +26,7 @@
 
 #include "Modules/Module_Shl.hpp"
 
-LayeredShakingModule::LayeredShakingModule()
-  : RLModule("Shl", 1, 12) {
+LayeredShakingModule::LayeredShakingModule() : RLModule("Shl", 1, 12) {
   addUnsupportedOpcode(0, 0, "ShakeLayersStop");
   addUnsupportedOpcode(0, 1, "ShakeLayersStop");
   addUnsupportedOpcode(0, 2, "ShakeLayersStop");
@@ -72,4 +71,3 @@ LayeredShakingModule::LayeredShakingModule()
   addUnsupportedOpcode(3300, 0, "ShakeLayersSpecEx");
   addUnsupportedOpcode(3300, 1, "ShakeLayersSpecEx");
 }
-

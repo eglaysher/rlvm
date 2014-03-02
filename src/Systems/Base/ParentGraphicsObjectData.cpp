@@ -36,12 +36,9 @@
 // -----------------------------------------------------------------------
 // ParentGraphicsObjectData
 // -----------------------------------------------------------------------
-ParentGraphicsObjectData::ParentGraphicsObjectData(int size)
-    : objects_(size) {
-}
+ParentGraphicsObjectData::ParentGraphicsObjectData(int size) : objects_(size) {}
 
-ParentGraphicsObjectData::~ParentGraphicsObjectData() {
-}
+ParentGraphicsObjectData::~ParentGraphicsObjectData() {}
 
 GraphicsObject& ParentGraphicsObjectData::getObject(int obj_number) {
   return objects_[obj_number];
@@ -98,9 +95,7 @@ void ParentGraphicsObjectData::execute(RLMachine& machine) {
   }
 }
 
-bool ParentGraphicsObjectData::isAnimation() const {
-  return false;
-}
+bool ParentGraphicsObjectData::isAnimation() const { return false; }
 
 void ParentGraphicsObjectData::playSet(int set) {
   // Deliberately empty.
@@ -117,10 +112,10 @@ void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
 
 ParentGraphicsObjectData::ParentGraphicsObjectData() : objects_(0) {}
 
-template<class Archive>
+template <class Archive>
 void ParentGraphicsObjectData::serialize(Archive& ar, unsigned int version) {
-  ar & boost::serialization::base_object<GraphicsObjectData>(*this);
-  ar & objects_;
+  ar& boost::serialization::base_object<GraphicsObjectData>(*this);
+  ar& objects_;
 }
 
 // -----------------------------------------------------------------------
@@ -129,11 +124,10 @@ void ParentGraphicsObjectData::serialize(Archive& ar, unsigned int version) {
 // implementation)
 
 template void ParentGraphicsObjectData::serialize<
-  boost::archive::text_iarchive>(
-      boost::archive::text_iarchive& ar, unsigned int version);
+    boost::archive::text_iarchive>(boost::archive::text_iarchive& ar,
+                                   unsigned int version);
 template void ParentGraphicsObjectData::serialize<
-  boost::archive::text_oarchive>(
-      boost::archive::text_oarchive& ar, unsigned int version);
+    boost::archive::text_oarchive>(boost::archive::text_oarchive& ar,
+                                   unsigned int version);
 
 BOOST_CLASS_EXPORT(ParentGraphicsObjectData);
-

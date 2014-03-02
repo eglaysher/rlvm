@@ -41,26 +41,23 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
     : machine_(machine),
       wait_until_target_time_(false),
       target_time_(0),
-      break_on_clicks_(false), button_pressed_(0),
+      break_on_clicks_(false),
+      button_pressed_(0),
       break_on_event_(false),
       has_sleep_time_provider_(false),
       break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
       ctrl_pressed_(false),
       mouse_moved_(false),
-      save_click_location_(false) {
-}
+      save_click_location_(false) {}
 
-WaitLongOperation::~WaitLongOperation() {
-}
+WaitLongOperation::~WaitLongOperation() {}
 
 void WaitLongOperation::waitMilliseconds(unsigned int time) {
   wait_until_target_time_ = true;
   target_time_ = machine_.system().event().getTicks() + time;
 }
 
-void WaitLongOperation::breakOnClicks() {
-  break_on_clicks_ = true;
-}
+void WaitLongOperation::breakOnClicks() { break_on_clicks_ = true; }
 
 void WaitLongOperation::breakOnEvent(const std::function<bool()>& function) {
   break_on_event_ = true;
@@ -81,16 +78,13 @@ void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
   y_ = y;
 }
 
-void WaitLongOperation::mouseMotion(const Point&) {
-  mouse_moved_ = true;
-}
+void WaitLongOperation::mouseMotion(const Point&) { mouse_moved_ = true; }
 
 bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed) {
   if (pressed && break_on_clicks_) {
     if (save_click_location_ &&
-        (mouseButton == MOUSE_LEFT ||
-         mouseButton == MOUSE_RIGHT)) {
+        (mouseButton == MOUSE_LEFT || mouseButton == MOUSE_RIGHT)) {
       recordMouseCursorPosition();
     }
 

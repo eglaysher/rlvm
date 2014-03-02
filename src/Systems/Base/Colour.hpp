@@ -66,9 +66,9 @@ class RGBColour {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & r_ & g_ & b_;
+    ar& r_& g_& b_;
   }
 };  // end of class RGB
 
@@ -82,11 +82,11 @@ class RGBColour {
  */
 class RGBAColour {
  public:
-  RGBAColour() : rgb_(0, 0, 0), alpha_(0) { }
-  RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) { }
-  RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) { }
-  explicit RGBAColour(const RGBColour& colour) : rgb_(colour), alpha_(255) { }
-  RGBAColour(const RGBColour& colour, int a) : rgb_(colour), alpha_(a) { }
+  RGBAColour() : rgb_(0, 0, 0), alpha_(0) {}
+  RGBAColour(int r, int g, int b) : rgb_(r, g, b), alpha_(255) {}
+  RGBAColour(int r, int g, int b, int a) : rgb_(r, g, b), alpha_(a) {}
+  explicit RGBAColour(const RGBColour& colour) : rgb_(colour), alpha_(255) {}
+  RGBAColour(const RGBColour& colour, int a) : rgb_(colour), alpha_(a) {}
 
   // Reads (r,g,b) from (colour[0], colour[1], colour[2]). Alpha is always 255.
   explicit RGBAColour(const std::vector<int>& colour);
@@ -122,9 +122,9 @@ class RGBAColour {
 
   // boost::serialization support
   friend class boost::serialization::access;
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
-    ar & rgb_ & alpha_;
+    ar& rgb_& alpha_;
   }
 };  // end of class RGBA
 

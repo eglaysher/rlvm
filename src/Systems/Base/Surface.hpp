@@ -66,7 +66,7 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   // Fills |area| with |colour|.
   virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
-  
+
   // Apply the given tone curve effect to the surface
   virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& area) = 0;
 
@@ -80,7 +80,7 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   virtual void applyColour(const RGBColour& colour, const Rect& area) = 0;
 
   // ----------------------------------------------------- [ Uncategorized ]
-  virtual void setIsMask(const bool is) { }
+  virtual void setIsMask(const bool is) {}
 
   virtual Size size() const = 0;
   Rect rect() const;
@@ -88,22 +88,24 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   virtual void dump();
 
   // Blits to another surface
-  virtual void blitToSurface(
-      Surface& dest_surface,
-      const Rect& src, const Rect& dst,
-      int alpha = 255, bool use_src_alpha = true) const = 0;
+  virtual void blitToSurface(Surface& dest_surface,
+                             const Rect& src,
+                             const Rect& dst,
+                             int alpha = 255,
+                             bool use_src_alpha = true) const = 0;
 
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst,
-    int alpha = 255) const = 0;
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
+                              int alpha = 255) const = 0;
 
-  virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& colour,
-    int filter) const = 0;
+  virtual void renderToScreenAsColorMask(const Rect& src,
+                                         const Rect& dst,
+                                         const RGBAColour& colour,
+                                         int filter) const = 0;
 
-  virtual void renderToScreen(
-    const Rect& src, const Rect& dst,
-    const int opacity[4]) const = 0;
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
+                              const int opacity[4]) const = 0;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
@@ -115,8 +117,10 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
 
-  virtual boost::shared_ptr<Surface> clipAsColorMask(
-    const Rect& clip_rect, int r, int g, int b) const;
+  virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
+                                                     int r,
+                                                     int g,
+                                                     int b) const;
 
   virtual Surface* clone() const = 0;
 };

@@ -71,8 +71,8 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   LazyArray<GraphicsObject> objects_;
 
   friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int file_version);
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int file_version);
 };  // class ParentGraphicsObjectData
 
 #endif  // SRC_SYSTEMS_BASE_PARENTGRAPHICSOBJECTDATA_HPP_

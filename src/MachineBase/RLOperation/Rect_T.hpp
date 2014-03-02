@@ -51,9 +51,7 @@ struct Point_T {
     IntConstant_T::parseParameters(position, input, output);
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // Tags used to specify how we should construct a Rect.
@@ -71,7 +69,7 @@ struct REC {
 };
 }
 
-template<typename T>
+template <typename T>
 struct Rect_T {
   typedef Rect type;
 
@@ -96,9 +94,7 @@ struct Rect_T {
     IntConstant_T::parseParameters(position, input, output);
   }
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_RECT_T_HPP_

@@ -47,14 +47,11 @@ struct IntReference_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output);
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output);
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // Type struct for a reference into the RLMachine's memory,
@@ -74,14 +71,11 @@ struct StrReference_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output);
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output);
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_REFERENCES_HPP_

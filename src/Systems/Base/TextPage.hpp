@@ -137,7 +137,8 @@ class TextPage {
   // output to the screen, etc.
   bool CharacterImpl(const std::string& c, const std::string& rest);
   void VoidCharacterImpl(const std::string& c, const std::string& rest);
-  void NameImpl(const std::string& name, const std::string& next_char,
+  void NameImpl(const std::string& name,
+                const std::string& next_char,
                 bool is_active_page);
   void KoeMarkerImpl(int id, bool is_active_page);
   void HardBrakeImpl(bool is_active_page);

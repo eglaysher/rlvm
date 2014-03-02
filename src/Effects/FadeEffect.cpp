@@ -37,20 +37,13 @@ FadeEffect::FadeEffect(RLMachine& machine,
                        boost::shared_ptr<Surface> dst,
                        const Size& screenSize,
                        int time)
-    : Effect(machine, src, dst, screenSize, time) {
-}
+    : Effect(machine, src, dst, screenSize, time) {}
 
-void FadeEffect::performEffectForTime(RLMachine& machine,
-                                      int currentTime) {
+void FadeEffect::performEffectForTime(RLMachine& machine, int currentTime) {
   // Blit the source image to the screen with the opacity
   int opacity = int((float(currentTime) / duration()) * 255);
 
-  srcSurface().
-      renderToScreen(Rect(0, 0, size()),
-                     Rect(0, 0, size()),
-                     opacity);
+  srcSurface().renderToScreen(Rect(0, 0, size()), Rect(0, 0, size()), opacity);
 }
 
-bool FadeEffect::blitOriginalImage() const {
-  return true;
-}
+bool FadeEffect::blitOriginalImage() const { return true; }

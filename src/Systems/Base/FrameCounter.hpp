@@ -68,8 +68,8 @@ class FrameCounter {
  protected:
   // Implementation of readFrame(). Called by most subclasses with their own
   // data members.
-  int readNormalFrameWithChangeInterval(
-    float change_interval, float& time_at_last_check);
+  int readNormalFrameWithChangeInterval(float change_interval,
+                                        float& time_at_last_check);
 
   // Called from read_normal_frame_with_change_interval when finished. This
   // method can be overloaded to control what happens when the timer
@@ -87,11 +87,12 @@ class FrameCounter {
   unsigned int total_time_;
 };
 
-
 // Simple frame counter that counts from frame_min to frame_max.
 class SimpleFrameCounter : public FrameCounter {
  public:
-  SimpleFrameCounter(EventSystem& es, int frame_min, int frame_max,
+  SimpleFrameCounter(EventSystem& es,
+                     int frame_min,
+                     int frame_max,
                      int milliseconds);
 
   virtual int readFrame();
@@ -101,12 +102,13 @@ class SimpleFrameCounter : public FrameCounter {
   float time_at_last_check_;
 };
 
-
 // Loop frame counter that counts from frame_min to frame_max, starting over at
 // frame_min.
 class LoopFrameCounter : public FrameCounter {
  public:
-  LoopFrameCounter(EventSystem& es, int frame_min, int frame_max,
+  LoopFrameCounter(EventSystem& es,
+                   int frame_min,
+                   int frame_max,
                    int milliseconds);
 
   virtual int readFrame();
@@ -117,12 +119,13 @@ class LoopFrameCounter : public FrameCounter {
   float time_at_last_check_;
 };
 
-
 // Turn frame counter that counts from frame_min to frame_max and then counts
 // back down to frame_min.
 class TurnFrameCounter : public FrameCounter {
  public:
-  TurnFrameCounter(EventSystem& es, int frame_min, int frame_max,
+  TurnFrameCounter(EventSystem& es,
+                   int frame_min,
+                   int frame_max,
                    int milliseconds);
 
   virtual int readFrame();
@@ -133,12 +136,13 @@ class TurnFrameCounter : public FrameCounter {
   unsigned int time_at_last_check_;
 };
 
-
 // Frame counter that counts from frame_min to frame_max, speeding up as it
 // goes.
 class AcceleratingFrameCounter : public FrameCounter {
  public:
-  AcceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
+  AcceleratingFrameCounter(EventSystem& es,
+                           int frame_min,
+                           int frame_max,
                            int milliseconds);
 
   virtual int readFrame();
@@ -148,12 +152,13 @@ class AcceleratingFrameCounter : public FrameCounter {
   float time_at_last_check_;
 };
 
-
 // Frame counter that counts from frame_min to frame_max, slowing down as it
 // goes.
 class DeceleratingFrameCounter : public FrameCounter {
  public:
-  DeceleratingFrameCounter(EventSystem& es, int frame_min, int frame_max,
+  DeceleratingFrameCounter(EventSystem& es,
+                           int frame_min,
+                           int frame_max,
                            int milliseconds);
 
   virtual int readFrame();

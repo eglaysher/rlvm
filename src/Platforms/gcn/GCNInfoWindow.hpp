@@ -38,10 +38,10 @@ struct RlvmInfo;
 /**
  * Displays information about the currently played game.
  */
-class GCNInfoWindow : public GCNWindow,
-                      public gcn::ActionListener {
+class GCNInfoWindow : public GCNWindow, public gcn::ActionListener {
  public:
-  GCNInfoWindow(RLMachine& machine, const RlvmInfo& info,
+  GCNInfoWindow(RLMachine& machine,
+                const RlvmInfo& info,
                 GCNPlatform* platform);
   ~GCNInfoWindow();
 

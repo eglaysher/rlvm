@@ -42,8 +42,7 @@ using rlvm::Exception;
 using std::make_pair;
 
 TestMachine::TestMachine(System& in_system, libReallive::Archive& in_archive)
-    : RLMachine(in_system, in_archive) {
-}
+    : RLMachine(in_system, in_archive) {}
 
 void TestMachine::attachModule(RLModule* module) {
   for (RLModule::OpcodeMap::iterator it = module->begin(); it != module->end();
@@ -63,7 +62,8 @@ void TestMachine::exe(const std::string& name, unsigned char overload) {
   runOpcode(name, overload, 0, "");
 }
 
-void TestMachine::exe(const std::string& name, unsigned char overload,
+void TestMachine::exe(const std::string& name,
+                      unsigned char overload,
                       const ExeArgument& arguments) {
   runOpcode(name, overload, arguments.first, arguments.second);
 }
@@ -76,7 +76,7 @@ void TestMachine::addEntity(std::string& output, const std::string& arg) {
 }
 
 // static
-void TestMachine::addEntity(std::string& output, const int arg)  {
+void TestMachine::addEntity(std::string& output, const int arg) {
   char buf[6];
   buf[0] = '$';
   buf[1] = 0xff;
@@ -84,13 +84,15 @@ void TestMachine::addEntity(std::string& output, const int arg)  {
   output.append(buf, 6);
 }
 
-void TestMachine::runOpcode(const std::string& name, unsigned char overload,
-                            int argc, const std::string& argument_string) {
+void TestMachine::runOpcode(const std::string& name,
+                            unsigned char overload,
+                            int argc,
+                            const std::string& argument_string) {
   string repr;
   repr.resize(8, 0);
   repr[0] = '#';
-  repr[1] = 0;  // type
-  repr[2] = 0;  // module
+  repr[1] = 0;             // type
+  repr[2] = 0;             // module
   insert_i16(repr, 3, 0);  // opcode
   insert_i16(repr, 5, argc);
   repr[7] = overload;

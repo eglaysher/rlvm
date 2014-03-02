@@ -61,7 +61,7 @@ void replayGraphicsStackCommand(RLMachine& machine,
 // display all the transition effects that happened since the last
 // stackTrunc on load.
 void replayDepricatedGraphicsStackVector(
-  RLMachine& machine,
-  const std::vector<GraphicsStackFrame>& serializedStack);
+    RLMachine& machine,
+    const std::vector<GraphicsStackFrame>& serializedStack);
 
 #endif  // SRC_MODULES_MODULE_GRP_HPP_

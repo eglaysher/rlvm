@@ -38,19 +38,22 @@
 // -----------------------------------------------------------------------
 
 ZoomLongOperation::ZoomLongOperation(
-  RLMachine& machine,
-  const boost::shared_ptr<Surface>& origSurface,
-  const boost::shared_ptr<Surface>& srcSurface,
-  const Rect& frect, const Rect& trect, const Rect& drect,
-  const int time)
-  : orig_surface_(origSurface),
-    src_surface_(srcSurface),
-    frect_(frect), trect_(trect), drect_(drect), duration_(time),
-    start_time_(machine.system().event().getTicks()) {
-}
+    RLMachine& machine,
+    const boost::shared_ptr<Surface>& origSurface,
+    const boost::shared_ptr<Surface>& srcSurface,
+    const Rect& frect,
+    const Rect& trect,
+    const Rect& drect,
+    const int time)
+    : orig_surface_(origSurface),
+      src_surface_(srcSurface),
+      frect_(frect),
+      trect_(trect),
+      drect_(drect),
+      duration_(time),
+      start_time_(machine.system().event().getTicks()) {}
 
-ZoomLongOperation::~ZoomLongOperation() {
-}
+ZoomLongOperation::~ZoomLongOperation() {}
 
 bool ZoomLongOperation::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
@@ -66,8 +69,8 @@ bool ZoomLongOperation::operator()(RLMachine& machine) {
     graphics.beginFrame();
 
     // First blit the original dc0 to the screen
-    orig_surface_->
-      renderToScreen(orig_surface_->rect(), orig_surface_->rect(), 255);
+    orig_surface_->renderToScreen(
+        orig_surface_->rect(), orig_surface_->rect(), 255);
 
     // figure out the new coordinates for the zoom.
     float ratio = currentFrame / float(duration_);

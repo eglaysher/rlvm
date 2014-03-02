@@ -49,11 +49,13 @@ using namespace libReallive;
 
 // -----------------------------------------------------------------------
 
-template<class T>
+template <class T>
 void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
   ExpressionPiecesVector expression_pieces;
   vector<string> binary_strings;
-  transform(input.begin(), input.end(), back_inserter(binary_strings),
+  transform(input.begin(),
+            input.end(),
+            back_inserter(binary_strings),
             bind(&printableToParsableString, _1));
 
   t.parseParameters(binary_strings, expression_pieces);
@@ -62,7 +64,7 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
 
 // -----------------------------------------------------------------------
 
-class RLOperationTest : public FullSystemTest { };
+class RLOperationTest : public FullSystemTest {};
 
 // -----------------------------------------------------------------------
 
@@ -71,9 +73,7 @@ struct IntcIntcCapturer : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int& one_;
   int& two_;
 
-  IntcIntcCapturer(int& one, int& two)
-      : one_(one), two_(two) {
-  }
+  IntcIntcCapturer(int& one, int& two) : one_(one), two_(two) {}
 
   virtual void operator()(RLMachine& machine, int in_one, int in_two) {
     one_ = in_one;
@@ -86,10 +86,7 @@ TEST_F(RLOperationTest, TestIntConstant_T) {
   int two = -1;
   IntcIntcCapturer capturer(one, two);
 
-  vector<string> unparsed = {
-    "$ FF 01 00 00 00",
-    "$ FF 02 00 00 00"
-  };
+  vector<string> unparsed = {"$ FF 01 00 00 00", "$ FF 02 00 00 00"};
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);
@@ -104,11 +101,10 @@ struct IntRefIntRefCapturer
   int& one_;
   int& two_;
 
-  IntRefIntRefCapturer(int& one, int& two)
-      : one_(one), two_(two) {
-  }
+  IntRefIntRefCapturer(int& one, int& two) : one_(one), two_(two) {}
 
-  virtual void operator()(RLMachine& machine, IntReferenceIterator in_one,
+  virtual void operator()(RLMachine& machine,
+                          IntReferenceIterator in_one,
                           IntReferenceIterator in_two) {
     one_ = *in_one;
     two_ = *in_two;
@@ -123,10 +119,8 @@ TEST_F(RLOperationTest, TestIntReference_T) {
   int two = -1;
   IntRefIntRefCapturer capturer(one, two);
 
-  vector<string> unparsed = {
-    "$ 00 [ $ FF 00 00 00 00 ]",
-    "$ 01 [ $ FF 05 00 00 00 ]"
-  };
+  vector<string> unparsed = {"$ 00 [ $ FF 00 00 00 00 ]",
+                             "$ 01 [ $ FF 05 00 00 00 ]"};
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);
@@ -141,10 +135,10 @@ struct StringcStringcCapturer
   std::string& two_;
 
   StringcStringcCapturer(std::string& one, std::string& two)
-      : one_(one), two_(two) {
-  }
+      : one_(one), two_(two) {}
 
-  virtual void operator()(RLMachine& machine, std::string in_one,
+  virtual void operator()(RLMachine& machine,
+                          std::string in_one,
                           std::string in_two) {
     one_ = in_one;
     two_ = in_two;
@@ -156,10 +150,7 @@ TEST_F(RLOperationTest, TestStringConstant_T) {
   std::string two = "empty";
   StringcStringcCapturer capturer(one, two);
 
-  vector<string> unparsed = {
-    "\"string one\"",
-    "\"string two\""
-  };
+  vector<string> unparsed = {"\"string one\"", "\"string two\""};
   ExpressionPiecesVector expression_pieces;
   capturer.parseParameters(unparsed, expression_pieces);
   capturer.dispatch(rlmachine, expression_pieces);
@@ -177,10 +168,10 @@ struct StrRefStrRefCapturer
   std::string& two_;
 
   StrRefStrRefCapturer(std::string& one, std::string& two)
-      : one_(one), two_(two) {
-  }
+      : one_(one), two_(two) {}
 
-  virtual void operator()(RLMachine& machine, StringReferenceIterator in_one,
+  virtual void operator()(RLMachine& machine,
+                          StringReferenceIterator in_one,
                           StringReferenceIterator in_two) {
     one_ = *in_one;
     two_ = *in_two;
@@ -195,10 +186,8 @@ TEST_F(RLOperationTest, TestStringReference_T) {
   std::string two = "empty";
   StrRefStrRefCapturer capturer(one, two);
 
-  vector<string> unparsed = {
-    "$ 0C [ $ FF 00 00 00 00 ]",
-    "$ 12 [ $ FF 05 00 00 00 ]"
-  };
+  vector<string> unparsed = {"$ 0C [ $ FF 00 00 00 00 ]",
+                             "$ 12 [ $ FF 05 00 00 00 ]"};
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ("string one", one);
@@ -207,7 +196,7 @@ TEST_F(RLOperationTest, TestStringReference_T) {
 
 // -----------------------------------------------------------------------
 
-struct ArgcCapturer : public RLOp_Void_1<Argc_T<IntConstant_T> > {
+struct ArgcCapturer : public RLOp_Void_1<Argc_T<IntConstant_T>> {
   std::vector<int>& out_;
   explicit ArgcCapturer(std::vector<int>& out) : out_(out) {}
 
@@ -220,12 +209,8 @@ TEST_F(RLOperationTest, TestArgc_T) {
   vector<int> output;
   ArgcCapturer capturer(output);
 
-  vector<string> unparsed = {
-    "$ FF 09 00 00 00",
-    "$ FF 03 00 00 00",
-    "$ FF 07 00 00 00",
-    "$ FF 00 00 00 00"
-  };
+  vector<string> unparsed = {"$ FF 09 00 00 00", "$ FF 03 00 00 00",
+                             "$ FF 07 00 00 00", "$ FF 00 00 00 00"};
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(4, output.size());
@@ -237,14 +222,11 @@ TEST_F(RLOperationTest, TestArgc_T) {
 
 // -----------------------------------------------------------------------
 
-struct DefaultValueCapturer
-    : public RLOp_Void_1<DefaultIntValue_T<18> > {
+struct DefaultValueCapturer : public RLOp_Void_1<DefaultIntValue_T<18>> {
   int& out_;
   explicit DefaultValueCapturer(int& out) : out_(out) {}
 
-  virtual void operator()(RLMachine& machine, int in) {
-    out_ = in;
-  }
+  virtual void operator()(RLMachine& machine, int in) { out_ = in; }
 };
 
 TEST_F(RLOperationTest, TestDefaultIntValue_T) {
@@ -263,15 +245,14 @@ TEST_F(RLOperationTest, TestDefaultIntValue_T) {
 
 struct ComplexCapturer
     : public RLOp_Void_2<Complex2_T<IntConstant_T, IntConstant_T>,
-                         Complex2_T<IntConstant_T, IntConstant_T> > {
+                         Complex2_T<IntConstant_T, IntConstant_T>> {
   int& one_;
   int& two_;
   int& three_;
   int& four_;
 
   ComplexCapturer(int& one, int& two, int& three, int& four)
-      : one_(one), two_(two), three_(three), four_(four) {
-  }
+      : one_(one), two_(two), three_(three), four_(four) {}
 
   virtual void operator()(RLMachine& machine,
                           Complex2_T<IntConstant_T, IntConstant_T>::type one,
@@ -290,10 +271,8 @@ TEST_F(RLOperationTest, TestComplex2_T) {
   int four = -1;
   ComplexCapturer capturer(one, two, three, four);
 
-  vector<string> unparsed = {
-    "( $ FF 01 00 00 00 $ FF 02 00 00 00 )",
-    "( $ FF 03 00 00 00 $ FF 04 00 00 00 )"
-  };
+  vector<string> unparsed = {"( $ FF 01 00 00 00 $ FF 02 00 00 00 )",
+                             "( $ FF 03 00 00 00 $ FF 04 00 00 00 )"};
   runDataTest(capturer, rlmachine, unparsed);
 
   EXPECT_EQ(1, one);

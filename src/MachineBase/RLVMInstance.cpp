@@ -53,20 +53,12 @@ using namespace std;
 namespace fs = boost::filesystem;
 
 // AVG32 file checks. We can't run AVG32 games.
-const char* avg32_exes[] = {
-  "avg3216m.exe",
-  "avg3217m.exe",
-  NULL
-};
+const char* avg32_exes[] = {"avg3216m.exe", "avg3217m.exe", NULL};
 
 // Siglus engine filenames. We can't run VisualArts' newer engine.
-const char* siglus_exes[] = {
-  "siglus.exe",
-  "siglusengine-ch.exe",
-  "siglusengine.exe",
-  "siglusenginechs.exe",
-  NULL
-};
+const char* siglus_exes[] = {"siglus.exe",       "siglusengine-ch.exe",
+                             "siglusengine.exe", "siglusenginechs.exe",
+                             NULL};
 
 RLVMInstance::RLVMInstance()
     : seen_start_(-1),
@@ -166,17 +158,23 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     }
 
     Serialization::saveGlobalMemory(rlmachine);
-  } catch (rlvm::UserPresentableError& e) {
+  }
+  catch (rlvm::UserPresentableError& e) {
     ReportFatalError(e.message_text(), e.informative_text());
-  } catch (rlvm::Exception& e) {
+  }
+  catch (rlvm::Exception& e) {
     ReportFatalError(_("Fatal RLVM error"), e.what());
-  } catch (libReallive::Error& e) {
+  }
+  catch (libReallive::Error& e) {
     ReportFatalError(_("Fatal libReallive error"), e.what());
-  } catch (SystemError& e) {
+  }
+  catch (SystemError& e) {
     ReportFatalError(_("Fatal local system error"), e.what());
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e) {
     ReportFatalError(_("Uncaught exception"), e.what());
-  } catch (const char* e) {
+  }
+  catch (const char* e) {
     ReportFatalError(_("Uncaught exception"), e);
   }
 }
@@ -202,7 +200,8 @@ void RLVMInstance::DoUserNameCheck(RLMachine& machine) {
     LocalMemory& l = machine.memory().local();
     for (int i = 0; i < SIZE_OF_NAME_BANK; ++i)
       cp932toUTF8(l.local_names[i], encoding);
-  } catch (...) {
+  }
+  catch (...) {
     // We've failed to interpret one of the name strings as a string in the
     // text encoding of the current native encoding. We're going to fail to
     // display any line that refers to the player's name.
@@ -221,24 +220,23 @@ void RLVMInstance::DoUserNameCheck(RLMachine& machine) {
 }
 
 boost::filesystem::path RLVMInstance::FindGameFile(
-      const boost::filesystem::path& gamerootPath,
-      const std::string& filename) {
+    const boost::filesystem::path& gamerootPath,
+    const std::string& filename) {
   fs::path search_for = gamerootPath / filename;
   fs::path corrected_path = correctPathCase(search_for);
   if (corrected_path.empty()) {
     throw rlvm::UserPresentableError(
         _("Could not load game"),
-        str( format(_("Could not open %1%. Please make sure it exists.")) %
-             search_for));
+        str(format(_("Could not open %1%. Please make sure it exists.")) %
+            search_for));
   }
 
   return corrected_path;
 }
 
-void RLVMInstance::CheckBadEngine(
-    const boost::filesystem::path& gamerootPath,
-    const char** filenames,
-    const std::string& message_text) {
+void RLVMInstance::CheckBadEngine(const boost::filesystem::path& gamerootPath,
+                                  const char** filenames,
+                                  const std::string& message_text) {
   for (const char** cur_file = filenames; *cur_file; cur_file++) {
     if (fs::exists(correctPathCase(gamerootPath / *cur_file))) {
       throw rlvm::UserPresentableError(message_text,

@@ -47,7 +47,7 @@ using boost::numeric_cast;
 
 namespace {
 
-struct ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
+struct ResetTimer : public RLOp_Void_1<DefaultIntValue_T<0>> {
   const int layer_;
   explicit ResetTimer(const int in) : layer_(in) {}
 
@@ -57,13 +57,15 @@ struct ResetTimer : public RLOp_Void_1< DefaultIntValue_T< 0 > > {
   }
 };
 
-bool TimerIsDone(RLMachine& machine, int layer, int counter,
+bool TimerIsDone(RLMachine& machine,
+                 int layer,
+                 int counter,
                  unsigned int target_time) {
   EventSystem& es = machine.system().event();
   return es.getTimer(layer, counter).read(es) > target_time;
 }
 
-struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
+struct Sys_time : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   const int layer_;
   const bool in_time_c_;
   Sys_time(const int in, const bool timeC) : layer_(in), in_time_c_(timeC) {}
@@ -76,14 +78,14 @@ struct Sys_time : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T< 0 > > {
       WaitLongOperation* wait_op = new WaitLongOperation(machine);
       if (in_time_c_)
         wait_op->breakOnClicks();
-      wait_op->breakOnEvent(std::bind(
-          TimerIsDone, std::ref(machine), layer_, counter, time));
+      wait_op->breakOnEvent(
+          std::bind(TimerIsDone, std::ref(machine), layer_, counter, time));
       machine.pushLongOperation(wait_op);
     }
   }
 };
 
-struct Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
+struct Timer : public RLOp_Store_1<DefaultIntValue_T<0>> {
   const int layer_;
   explicit Timer(const int in) : layer_(in) {}
 
@@ -93,8 +95,7 @@ struct Timer : public RLOp_Store_1< DefaultIntValue_T<0> > {
   }
 };
 
-struct CmpTimer
-    : public RLOp_Store_2< IntConstant_T, DefaultIntValue_T<0> > {
+struct CmpTimer : public RLOp_Store_2<IntConstant_T, DefaultIntValue_T<0>> {
   const int layer_;
   explicit CmpTimer(const int in) : layer_(in) {}
 
@@ -104,8 +105,7 @@ struct CmpTimer
   }
 };
 
-struct SetTimer
-    : public RLOp_Void_2< IntConstant_T, DefaultIntValue_T<0> > {
+struct SetTimer : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   const int layer_;
   explicit SetTimer(const int in) : layer_(in) {}
 

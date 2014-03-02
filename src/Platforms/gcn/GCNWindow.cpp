@@ -36,13 +36,11 @@ ImageRect GCNWindow::s_border(IMG_VSCROLL_GREY, xpos, ypos);
 // -----------------------------------------------------------------------
 // GCNWindow
 // -----------------------------------------------------------------------
-GCNWindow::GCNWindow(GCNPlatform* platform)
-  : platform_(platform) {
-}
+GCNWindow::GCNWindow(GCNPlatform* platform) : platform_(platform) {}
 
 // -----------------------------------------------------------------------
 
-GCNWindow::~GCNWindow() { }
+GCNWindow::~GCNWindow() {}
 
 // -----------------------------------------------------------------------
 
@@ -54,9 +52,8 @@ void GCNWindow::centerInWindow(const Size& screen_size) {
 // -----------------------------------------------------------------------
 
 void GCNWindow::draw(gcn::Graphics* graphics) {
-  GCNGraphics *g = static_cast<GCNGraphics*>(graphics);
+  GCNGraphics* g = static_cast<GCNGraphics*>(graphics);
   g->drawImageRect(0, 0, getWidth(), getHeight(), s_border);
 
   drawChildren(graphics);
 }
-

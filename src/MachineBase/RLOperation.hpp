@@ -67,8 +67,10 @@ class RLModule;
 // Thus, our sample operation would be implemented with this:
 //
 // @code
-// struct Operation : public RLOp_Store_2<StrReference_T, Argc_T< IntConstant_T > > {
-//   int operator()(RLMachine& machine, StringReferenceIterator x, vector<int> y) {
+// struct Operation : public RLOp_Store_2<StrReference_T, Argc_T< IntConstant_T
+// > > {
+//   int operator()(RLMachine& machine, StringReferenceIterator x, vector<int>
+// y) {
 //     // Do whatever with the input parameters...
 //     return 5;
 //   }
@@ -80,11 +82,7 @@ class RLModule;
 // "Modules and Opcode Definitions".
 
 // Each RLOperation can optionally carry some numeric properties.
-enum OperationProperties {
-  PROP_NAME,
-  PROP_FGBG,
-  PROP_OBJSET
-};
+enum OperationProperties { PROP_NAME, PROP_FGBG, PROP_OBJSET };
 
 // An RLOperation object implements an individual bytecode
 // command. All command bytecodes have a corresponding instance of a
@@ -122,8 +120,8 @@ class RLOperation {
 
   // Parses the parameters in the CommandElement passed in into an
   // output vector that contains parsed ExpressionPieces for each
-  virtual void parseParameters(
-    const std::vector<std::string>& input, libReallive::ExpressionPiecesVector& output) = 0;
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               libReallive::ExpressionPiecesVector& output) = 0;
 
   // The public interface used by the RLModule; how a method is dispatched.
   virtual void dispatchFunction(RLMachine& machine,
@@ -174,9 +172,7 @@ struct IntConstant_T {
                               const std::vector<std::string>& input,
                               libReallive::ExpressionPiecesVector& output);
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // Type definition for a constant string value.
@@ -194,18 +190,15 @@ struct StrConstant_T {
                       const libReallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
-
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libReallive::ExpressionPiecesVector& output);
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
-struct empty_struct { };
+struct empty_struct {};
 
 // Defines a null type for the Special parameter.
 struct Empty_T {
@@ -221,12 +214,9 @@ struct Empty_T {
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
-  }
+                              libReallive::ExpressionPiecesVector& output) {}
 
-  enum {
-    is_complex = false
-  };
+  enum { is_complex = false };
 };
 
 // Implements a special case operation. This should be used with
@@ -276,15 +266,32 @@ class RLOp_SpecialCase : public RLOperation {
 // compile time error now. (While porting from the old system to the
 // new, I discovered and fixed several of these errors.) The vtable
 // isn't hueg liek xbox anymore.
-template<typename A = Empty_T, typename B = Empty_T, typename C = Empty_T,
-         typename D = Empty_T, typename E = Empty_T, typename F = Empty_T,
-         typename G = Empty_T, typename H = Empty_T, typename I = Empty_T,
-         typename J = Empty_T, typename K = Empty_T, typename L = Empty_T,
-         typename M = Empty_T, typename N = Empty_T, typename O = Empty_T,
-         typename P = Empty_T, typename Q = Empty_T, typename R = Empty_T,
-         typename S = Empty_T, typename T = Empty_T, typename U = Empty_T,
-         typename V = Empty_T, typename W = Empty_T, typename X = Empty_T,
-         typename Y = Empty_T, typename Z = Empty_T>
+template <typename A = Empty_T,
+          typename B = Empty_T,
+          typename C = Empty_T,
+          typename D = Empty_T,
+          typename E = Empty_T,
+          typename F = Empty_T,
+          typename G = Empty_T,
+          typename H = Empty_T,
+          typename I = Empty_T,
+          typename J = Empty_T,
+          typename K = Empty_T,
+          typename L = Empty_T,
+          typename M = Empty_T,
+          typename N = Empty_T,
+          typename O = Empty_T,
+          typename P = Empty_T,
+          typename Q = Empty_T,
+          typename R = Empty_T,
+          typename S = Empty_T,
+          typename T = Empty_T,
+          typename U = Empty_T,
+          typename V = Empty_T,
+          typename W = Empty_T,
+          typename X = Empty_T,
+          typename Y = Empty_T,
+          typename Z = Empty_T>
 struct RLOp_NormalOperation : public RLOperation {
  public:
   void parseParameters(const std::vector<std::string>& input,
@@ -293,29 +300,90 @@ struct RLOp_NormalOperation : public RLOperation {
 
 // Partial specialization for RLOp_Normal::check_types for when
 // everything is empty (aka an operation that takes no parameters)
-template<>
+template <>
 inline void RLOp_NormalOperation<
-  Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
-  Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
-  Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T, Empty_T,
-  Empty_T, Empty_T, Empty_T, Empty_T, Empty_T>::
-parseParameters(const std::vector<std::string>& input,
-                libReallive::ExpressionPiecesVector& output) {
-}
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T,
+    Empty_T>::parseParameters(const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {}
 
-template<typename A, typename B, typename C,
-         typename D, typename E, typename F,
-         typename G, typename H, typename I,
-         typename J, typename K, typename L,
-         typename M, typename N, typename O,
-         typename P, typename Q, typename R,
-         typename S, typename T, typename U,
-         typename V, typename W, typename X,
-         typename Y, typename Z>
-void RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
-                          Q, R, S, T, U, V, W, X, Y, Z>::parseParameters(
-                              const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V,
+          typename W,
+          typename X,
+          typename Y,
+          typename Z>
+void RLOp_NormalOperation<
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z>::parseParameters(const std::vector<std::string>& input,
+                        libReallive::ExpressionPiecesVector& output) {
   unsigned int position = 0;
   A::parseParameters(position, input, output);
   B::parseParameters(position, input, output);
@@ -352,8 +420,7 @@ struct RLOp_Void_Void : public RLOp_NormalOperation<> {
   virtual void operator()(RLMachine&) = 0;
 };
 
-
-template<typename A>
+template <typename A>
 struct RLOp_Void_1 : public RLOp_NormalOperation<A> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
@@ -361,15 +428,15 @@ struct RLOp_Void_1 : public RLOp_NormalOperation<A> {
   virtual void operator()(RLMachine&, typename A::type) = 0;
 };
 
-template<typename A>
-void RLOp_Void_1<A>::dispatch(RLMachine& machine,
-                              const libReallive::ExpressionPiecesVector& parameters) {
+template <typename A>
+void RLOp_Void_1<A>::dispatch(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   operator()(machine, A::getData(machine, parameters, position));
 }
 
-
-template<typename A, typename B>
+template <typename A, typename B>
 struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
@@ -377,28 +444,31 @@ struct RLOp_Void_2 : public RLOp_NormalOperation<A, B> {
   virtual void operator()(RLMachine&, typename A::type, typename B::type) = 0;
 };
 
-template<typename A, typename B>
-void RLOp_Void_2<A, B>::dispatch(RLMachine& machine,
-                                 const libReallive::ExpressionPiecesVector& parameters) {
+template <typename A, typename B>
+void RLOp_Void_2<A, B>::dispatch(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
   operator()(machine, a, b);
 }
 
-
-template<typename A, typename B, typename C>
+template <typename A, typename B, typename C>
 struct RLOp_Void_3 : public RLOp_NormalOperation<A, B, C> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
 
-  virtual void operator()(RLMachine&, typename A::type, typename B::type,
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
                           typename C::type) = 0;
 };
 
-template<typename A, typename B, typename C>
-void RLOp_Void_3<A, B, C>::dispatch(RLMachine& machine,
-                                    const libReallive::ExpressionPiecesVector& parameters) {
+template <typename A, typename B, typename C>
+void RLOp_Void_3<A, B, C>::dispatch(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
   unsigned int position = 0;
   typename A::type a = A::getData(machine, parameters, position);
   typename B::type b = B::getData(machine, parameters, position);
@@ -406,17 +476,19 @@ void RLOp_Void_3<A, B, C>::dispatch(RLMachine& machine,
   operator()(machine, a, b, c);
 }
 
-
-template<typename A, typename B, typename C, typename D>
+template <typename A, typename B, typename C, typename D>
 struct RLOp_Void_4 : public RLOp_NormalOperation<A, B, C, D> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
 
-  virtual void operator()(RLMachine&, typename A::type, typename B::type,
-                          typename C::type, typename D::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D>
+template <typename A, typename B, typename C, typename D>
 void RLOp_Void_4<A, B, C, D>::dispatch(
     RLMachine& machine,
     const libReallive::ExpressionPiecesVector& parameters) {
@@ -428,18 +500,20 @@ void RLOp_Void_4<A, B, C, D>::dispatch(
   operator()(machine, a, b, c, d);
 }
 
-
-template<typename A, typename B, typename C, typename D, typename E>
+template <typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Void_5 : public RLOp_NormalOperation<A, B, C, D, E> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
 
-  virtual void operator()(RLMachine&, typename A::type, typename B::type,
-                          typename C::type, typename D::type,
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
                           typename E::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E>
+template <typename A, typename B, typename C, typename D, typename E>
 void RLOp_Void_5<A, B, C, D, E>::dispatch(
     RLMachine& machine,
     const libReallive::ExpressionPiecesVector& parameters) {
@@ -452,19 +526,31 @@ void RLOp_Void_5<A, B, C, D, E>::dispatch(
   operator()(machine, a, b, c, d, e);
 }
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F>
 struct RLOp_Void_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F>
 void RLOp_Void_6<A, B, C, D, E, F>::dispatch(
     RLMachine& machine,
     const libReallive::ExpressionPiecesVector& parameters) {
@@ -478,21 +564,34 @@ void RLOp_Void_6<A, B, C, D, E, F>::dispatch(
   operator()(machine, a, b, c, d, e, f);
 }
 
-
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G>
 struct RLOp_Void_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters);
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type,
-      typename G::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G>
 void RLOp_Void_7<A, B, C, D, E, F, G>::dispatch(
     RLMachine& machine,
     const libReallive::ExpressionPiecesVector& parameters) {
@@ -507,8 +606,14 @@ void RLOp_Void_7<A, B, C, D, E, F, G>::dispatch(
   operator()(machine, a, b, c, d, e, f, g);
 }
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H>
 struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
@@ -524,14 +629,26 @@ struct RLOp_Void_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
     operator()(machine, a, b, c, d, e, f, g, h);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I>
 struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
@@ -548,14 +665,28 @@ struct RLOp_Void_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
     operator()(machine, a, b, c, d, e, f, g, h, i);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J>
 struct RLOp_Void_10
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
   virtual void dispatch(RLMachine& machine,
@@ -574,15 +705,30 @@ struct RLOp_Void_10
     operator()(machine, a, b, c, d, e, f, g, h, i, j);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K>
 struct RLOp_Void_11
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
   virtual void dispatch(RLMachine& machine,
@@ -602,16 +748,32 @@ struct RLOp_Void_11
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type,
-      typename K::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L>
 struct RLOp_Void_12
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
   virtual void dispatch(RLMachine& machine,
@@ -632,16 +794,34 @@ struct RLOp_Void_12
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M>
 struct RLOp_Void_13
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
   virtual void dispatch(RLMachine& machine,
@@ -663,16 +843,36 @@ struct RLOp_Void_13
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N>
 struct RLOp_Void_14
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
   virtual void dispatch(RLMachine& machine,
@@ -695,16 +895,38 @@ struct RLOp_Void_14
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O>
 struct RLOp_Void_15
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
   virtual void dispatch(RLMachine& machine,
@@ -728,21 +950,56 @@ struct RLOp_Void_15
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type,
-      typename O::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P>
-struct RLOp_Void_16
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P>
+struct RLOp_Void_16 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -765,21 +1022,59 @@ struct RLOp_Void_16
     operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q>
-struct RLOp_Void_17
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q>
+struct RLOp_Void_17 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -800,25 +1095,65 @@ struct RLOp_Void_17
     typename O::type o = O::getData(machine, parameters, position);
     typename P::type p = P::getData(machine, parameters, position);
     typename Q::type q = Q::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type,
-      typename O::type, typename P::type, typename Q::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R>
-struct RLOp_Void_18
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R>
+struct RLOp_Void_18 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -840,25 +1175,68 @@ struct RLOp_Void_18
     typename P::type p = P::getData(machine, parameters, position);
     typename Q::type q = Q::getData(machine, parameters, position);
     typename R::type r = R::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r);
+    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S>
-struct RLOp_Void_19
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S>
+struct RLOp_Void_19 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -881,26 +1259,72 @@ struct RLOp_Void_19
     typename Q::type q = Q::getData(machine, parameters, position);
     typename R::type r = R::getData(machine, parameters, position);
     typename S::type s = S::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s);
+    operator()(
+        machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type,
-      typename S::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T>
-struct RLOp_Void_20
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T>
+struct RLOp_Void_20 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -924,27 +1348,75 @@ struct RLOp_Void_20
     typename R::type r = R::getData(machine, parameters, position);
     typename S::type s = S::getData(machine, parameters, position);
     typename T::type t = T::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t);
+    operator()(
+        machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U>
-struct RLOp_Void_21
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U>
+struct RLOp_Void_21 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -969,27 +1441,78 @@ struct RLOp_Void_21
     typename S::type s = S::getData(machine, parameters, position);
     typename T::type t = T::getData(machine, parameters, position);
     typename U::type u = U::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u);
+    operator()(
+        machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U, typename V>
-struct RLOp_Void_22
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U, V> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V>
+struct RLOp_Void_22 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U,
+                                                  V> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1015,27 +1538,102 @@ struct RLOp_Void_22
     typename T::type t = T::getData(machine, parameters, position);
     typename U::type u = U::getData(machine, parameters, position);
     typename V::type v = V::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u, v);
+    operator()(machine,
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type, typename V::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type,
+                          typename V::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U, typename V, typename W>
-struct RLOp_Void_23
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U, V, W> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V,
+          typename W>
+struct RLOp_Void_23 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U,
+                                                  V,
+                                                  W> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1062,28 +1660,106 @@ struct RLOp_Void_23
     typename U::type u = U::getData(machine, parameters, position);
     typename V::type v = V::getData(machine, parameters, position);
     typename W::type w = W::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u, v, w);
+    operator()(machine,
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v,
+               w);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type, typename V::type,
-      typename W::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type,
+                          typename V::type,
+                          typename W::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U, typename V, typename W, typename X>
-struct RLOp_Void_24
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U, V, W, X> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V,
+          typename W,
+          typename X>
+struct RLOp_Void_24 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U,
+                                                  V,
+                                                  W,
+                                                  X> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1111,28 +1787,110 @@ struct RLOp_Void_24
     typename V::type v = V::getData(machine, parameters, position);
     typename W::type w = W::getData(machine, parameters, position);
     typename X::type x = X::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u, v, w, x);
+    operator()(machine,
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v,
+               w,
+               x);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type, typename V::type, typename W::type,
-      typename X::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type,
+                          typename V::type,
+                          typename W::type,
+                          typename X::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U, typename V, typename W, typename X, typename Y>
-struct RLOp_Void_25
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U, V, W, X, Y> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V,
+          typename W,
+          typename X,
+          typename Y>
+struct RLOp_Void_25 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U,
+                                                  V,
+                                                  W,
+                                                  X,
+                                                  Y> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1161,29 +1919,114 @@ struct RLOp_Void_25
     typename W::type w = W::getData(machine, parameters, position);
     typename X::type x = X::getData(machine, parameters, position);
     typename Y::type y = Y::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u, v, w, x, y);
+    operator()(machine,
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v,
+               w,
+               x,
+               y);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type, typename V::type, typename W::type,
-      typename X::type, typename Y::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type,
+                          typename V::type,
+                          typename W::type,
+                          typename X::type,
+                          typename Y::type) = 0;
 };
 
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H, typename I, typename J,
-         typename K, typename L, typename M, typename N, typename O,
-         typename P, typename Q, typename R, typename S, typename T,
-         typename U, typename V, typename W, typename X, typename Y,
-         typename Z>
-struct RLOp_Void_26
-    : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-                                  P, Q, R, S, T, U, V, W, X, Y, Z> {
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H,
+          typename I,
+          typename J,
+          typename K,
+          typename L,
+          typename M,
+          typename N,
+          typename O,
+          typename P,
+          typename Q,
+          typename R,
+          typename S,
+          typename T,
+          typename U,
+          typename V,
+          typename W,
+          typename X,
+          typename Y,
+          typename Z>
+struct RLOp_Void_26 : public RLOp_NormalOperation<A,
+                                                  B,
+                                                  C,
+                                                  D,
+                                                  E,
+                                                  F,
+                                                  G,
+                                                  H,
+                                                  I,
+                                                  J,
+                                                  K,
+                                                  L,
+                                                  M,
+                                                  N,
+                                                  O,
+                                                  P,
+                                                  Q,
+                                                  R,
+                                                  S,
+                                                  T,
+                                                  U,
+                                                  V,
+                                                  W,
+                                                  X,
+                                                  Y,
+                                                  Z> {
   virtual void dispatch(RLMachine& machine,
                         const libReallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
@@ -1213,18 +2056,62 @@ struct RLOp_Void_26
     typename X::type x = X::getData(machine, parameters, position);
     typename Y::type y = Y::getData(machine, parameters, position);
     typename Z::type z = Z::getData(machine, parameters, position);
-    operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p,
-               q, r, s, t, u, v, w, x, y, z);
+    operator()(machine,
+               a,
+               b,
+               c,
+               d,
+               e,
+               f,
+               g,
+               h,
+               i,
+               j,
+               k,
+               l,
+               m,
+               n,
+               o,
+               p,
+               q,
+               r,
+               s,
+               t,
+               u,
+               v,
+               w,
+               x,
+               y,
+               z);
   }
 
-  virtual void operator()(
-      RLMachine&, typename A::type, typename B::type, typename C::type,
-      typename D::type, typename E::type, typename F::type, typename G::type,
-      typename H::type, typename I::type, typename J::type, typename K::type,
-      typename L::type, typename M::type, typename N::type, typename O::type,
-      typename P::type, typename Q::type, typename R::type, typename S::type,
-      typename T::type, typename U::type, typename V::type, typename W::type,
-      typename X::type, typename Y::type, typename Z::type) = 0;
+  virtual void operator()(RLMachine&,
+                          typename A::type,
+                          typename B::type,
+                          typename C::type,
+                          typename D::type,
+                          typename E::type,
+                          typename F::type,
+                          typename G::type,
+                          typename H::type,
+                          typename I::type,
+                          typename J::type,
+                          typename K::type,
+                          typename L::type,
+                          typename M::type,
+                          typename N::type,
+                          typename O::type,
+                          typename P::type,
+                          typename Q::type,
+                          typename R::type,
+                          typename S::type,
+                          typename T::type,
+                          typename U::type,
+                          typename V::type,
+                          typename W::type,
+                          typename X::type,
+                          typename Y::type,
+                          typename Z::type) = 0;
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_HPP_

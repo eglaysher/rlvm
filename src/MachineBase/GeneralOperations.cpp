@@ -42,40 +42,39 @@ using namespace std;
 using namespace boost;
 using namespace libReallive;
 
-
 namespace getSystemObjImpl {
 
-template<>
+template <>
 System& getSystemObj(RLMachine& machine) {
   return machine.system();
 }
 
-template<>
+template <>
 EventSystem& getSystemObj(RLMachine& machine) {
   return machine.system().event();
 }
 
-template<>
+template <>
 GraphicsSystem& getSystemObj(RLMachine& machine) {
   return machine.system().graphics();
 }
 
-template<>
+template <>
 TextSystem& getSystemObj(RLMachine& machine) {
   return machine.system().text();
 }
 
-template<>
+template <>
 SoundSystem& getSystemObj(RLMachine& machine) {
   return machine.system().sound();
 }
 
-template<>
+template <>
 CGMTable& getSystemObj(RLMachine& machine) {
   return machine.system().graphics().cgTable();
 }
 
-template<>
+template <>
 TextPage& getSystemObj(RLMachine& machine) {
   return machine.system().text().currentPage();
 }
@@ -85,12 +84,9 @@ TextPage& getSystemObj(RLMachine& machine) {
 // -----------------------------------------------------------------------
 // MultiDispatch
 // -----------------------------------------------------------------------
-MultiDispatch::MultiDispatch(RLOperation* op)
-    : handler_(op) {
-}
+MultiDispatch::MultiDispatch(RLOperation* op) : handler_(op) {}
 
-MultiDispatch::~MultiDispatch() {
-}
+MultiDispatch::~MultiDispatch() {}
 
 void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
@@ -102,16 +98,15 @@ void MultiDispatch::parseParameters(
 }
 
 /// @todo Port this up to the new expression handling code
-void MultiDispatch::operator()(
-    RLMachine& machine,
-    const libReallive::CommandElement& ff) {
+void MultiDispatch::operator()(RLMachine& machine,
+                               const libReallive::CommandElement& ff) {
   const libReallive::ExpressionPiecesVector& parameter_pieces =
       ff.getParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libReallive::ExpressionPiecesVector& element =
-        dynamic_cast<const ComplexExpressionPiece&>(*parameter_pieces[i]).
-        getContainedPieces();
+        dynamic_cast<const ComplexExpressionPiece&>(*parameter_pieces[i])
+            .getContainedPieces();
 
     handler_->dispatch(machine, element);
   }
@@ -123,8 +118,7 @@ void MultiDispatch::operator()(
 // ReturnGameexeInt
 // -----------------------------------------------------------------------
 ReturnGameexeInt::ReturnGameexeInt(const std::string& full_key, int en)
-    : full_key_name_(full_key), entry_(en) {
-}
+    : full_key_name_(full_key), entry_(en) {}
 
 int ReturnGameexeInt::operator()(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
@@ -139,13 +133,10 @@ int ReturnGameexeInt::operator()(RLMachine& machine) {
   }
 }
 
-
 // -----------------------------------------------------------------------
 // InvokeSyscomAsOp
 // -----------------------------------------------------------------------
-InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom)
-    : syscom_(syscom) {
-}
+InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom) : syscom_(syscom) {}
 
 void InvokeSyscomAsOp::operator()(RLMachine& machine) {
   machine.system().invokeSyscom(machine, syscom_);
@@ -154,15 +145,20 @@ void InvokeSyscomAsOp::operator()(RLMachine& machine) {
 // -----------------------------------------------------------------------
 // UndefinedFunction
 // -----------------------------------------------------------------------
-UndefinedFunction::UndefinedFunction(
-    const std::string& name,
-    int modtype, int module, int opcode, int overload)
-    : name_(name), modtype_(modtype), module_(module), opcode_(opcode),
-      overload_(overload) {
-}
+UndefinedFunction::UndefinedFunction(const std::string& name,
+                                     int modtype,
+                                     int module,
+                                     int opcode,
+                                     int overload)
+    : name_(name),
+      modtype_(modtype),
+      module_(module),
+      opcode_(opcode),
+      overload_(overload) {}
 
-void UndefinedFunction::dispatch(RLMachine& machine,
-                                 const libReallive::ExpressionPiecesVector& parameters) {
+void UndefinedFunction::dispatch(
+    RLMachine& machine,
+    const libReallive::ExpressionPiecesVector& parameters) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
@@ -171,8 +167,9 @@ void UndefinedFunction::dispatchFunction(RLMachine& machine,
   throw rlvm::UnimplementedOpcode(machine, name_, f);
 }
 
-void UndefinedFunction::parseParameters(const std::vector<std::string>& input,
-                                        libReallive::ExpressionPiecesVector& output) {
+void UndefinedFunction::parseParameters(
+    const std::vector<std::string>& input,
+    libReallive::ExpressionPiecesVector& output) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 

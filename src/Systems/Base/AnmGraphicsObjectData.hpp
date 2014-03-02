@@ -63,10 +63,10 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   virtual void playSet(int set);
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(const GraphicsObject& go);
+  virtual boost::shared_ptr<const Surface> currentSurface(
+      const GraphicsObject& go);
   virtual Rect srcRect(const GraphicsObject& go);
-  virtual Rect dstRect(const GraphicsObject& go,
-                       const GraphicsObject* parent);
+  virtual Rect dstRect(const GraphicsObject& go, const GraphicsObject* parent);
 
   virtual void objectInfo(std::ostream& tree);
 
@@ -82,11 +82,11 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   };
 
   bool testFileMagic(boost::scoped_array<char>& anm_data);
-  void readIntegerList(
-    const char* start, int offset, int iterations,
-    std::vector< std::vector<int> >& dest);
-  void loadAnmFileFromData(
-      boost::scoped_array<char>& anm_data);
+  void readIntegerList(const char* start,
+                       int offset,
+                       int iterations,
+                       std::vector<std::vector<int>>& dest);
+  void loadAnmFileFromData(boost::scoped_array<char>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
 
   // The system we are a part of.
@@ -97,8 +97,8 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
 
   // Animation Data (This structure was stolen from xkanon.)
   std::vector<Frame> frames;
-  std::vector< std::vector<int> > framelist;
-  std::vector< std::vector<int> > animation_set;
+  std::vector<std::vector<int>> framelist;
+  std::vector<std::vector<int>> animation_set;
 
   // The image the above coordinates map into.
   boost::shared_ptr<const Surface> image_;
@@ -118,10 +118,10 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   unsigned int time_at_last_frame_change_;
 
   friend class boost::serialization::access;
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -129,12 +129,15 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
 
 // We need help creating AnmGraphicsObjectData s since they don't have a
 // default constructor:
-namespace boost { namespace serialization {
-template<class Archive>
-inline void load_construct_data(
-  Archive & ar, AnmGraphicsObjectData* t, const unsigned int file_version) {
-  ::new(t)AnmGraphicsObjectData(Serialization::g_current_machine->system());
+namespace boost {
+namespace serialization {
+template <class Archive>
+inline void load_construct_data(Archive& ar,
+                                AnmGraphicsObjectData* t,
+                                const unsigned int file_version) {
+  ::new (t) AnmGraphicsObjectData(Serialization::g_current_machine->system());
 }
-}}  // namespace boost::serialization
+}
+}  // namespace boost::serialization
 
 #endif  // SRC_SYSTEMS_BASE_ANMGRAPHICSOBJECTDATA_HPP_

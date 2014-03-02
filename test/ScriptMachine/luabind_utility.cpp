@@ -32,48 +32,45 @@
 using namespace luabind;
 
 scope register_utility() {
-  return
-    class_<Point>("Point")
-    .def(constructor<>())
-    .def(constructor<int, int>())
-    .def("x", &Point::x)
-    .def("y", &Point::y)
-    .def("isEmpty", &Point::isEmpty)
-    .def(const_self + other<Point>())
-    .def(const_self + other<Size>())
-    .def(const_self - other<Size>())
-    .def(const_self - other<Point>())
-    // TODO: Figure out how to bind == and !=
-    .def(tostring(self)),
-
-    class_<Size>("Size")
-    .def(constructor<>())
-    .def(constructor<int, int>())
-    .def("width", &Size::width)
-    .def("height", &Size::height)
-    .def("setWidth", &Size::setWidth)
-    .def("setHeight", &Size::setHeight)
-    .def("isEmpty", &Size::isEmpty)
-    .def(const_self + other<Size>())
-    .def(const_self - other<Size>())
-    .def(const_self * float())
-    // TODO: Figure out how to bind == and !=
-    .def(tostring(self)),
-
-    class_<Rect>("Rect")
-    .def(constructor<>())
-    .def(constructor<const Point, const Point>())
-    .def(constructor<const Point, const Size>())
-    .def(constructor<const int, const int, const Size>())
-    .def("x", &Rect::x)
-    .def("y", &Rect::y)
-    .def("origin", &Rect::origin)
-    .def("x2", &Rect::x2)
-    .def("y2", &Rect::y2)
-    .def("width", &Rect::width)
-    .def("height", &Rect::height)
-    .def("size", &Rect::size)
-    .def("isEmpty", &Rect::isEmpty)
-    .def("contains", &Rect::contains)
-    .def(tostring(self));
+  return class_<Point>("Point")
+             .def(constructor<>())
+             .def(constructor<int, int>())
+             .def("x", &Point::x)
+             .def("y", &Point::y)
+             .def("isEmpty", &Point::isEmpty)
+             .def(const_self + other<Point>())
+             .def(const_self + other<Size>())
+             .def(const_self - other<Size>())
+             .def(const_self - other<Point>())
+         // TODO: Figure out how to bind == and !=
+             .def(tostring(self)),
+         class_<Size>("Size")
+             .def(constructor<>())
+             .def(constructor<int, int>())
+             .def("width", &Size::width)
+             .def("height", &Size::height)
+             .def("setWidth", &Size::setWidth)
+             .def("setHeight", &Size::setHeight)
+             .def("isEmpty", &Size::isEmpty)
+             .def(const_self + other<Size>())
+             .def(const_self - other<Size>())
+             .def(const_self * float())
+         // TODO: Figure out how to bind == and !=
+             .def(tostring(self)),
+         class_<Rect>("Rect")
+             .def(constructor<>())
+             .def(constructor<const Point, const Point>())
+             .def(constructor<const Point, const Size>())
+             .def(constructor<const int, const int, const Size>())
+             .def("x", &Rect::x)
+             .def("y", &Rect::y)
+             .def("origin", &Rect::origin)
+             .def("x2", &Rect::x2)
+             .def("y2", &Rect::y2)
+             .def("width", &Rect::width)
+             .def("height", &Rect::height)
+             .def("size", &Rect::size)
+             .def("isEmpty", &Rect::isEmpty)
+             .def("contains", &Rect::contains)
+             .def(tostring(self));
 }

@@ -37,12 +37,17 @@
 // Effect
 // -----------------------------------------------------------------------
 
-Effect::Effect(RLMachine& machine, boost::shared_ptr<Surface> src,
+Effect::Effect(RLMachine& machine,
+               boost::shared_ptr<Surface> src,
                boost::shared_ptr<Surface> dst,
-               Size size, int time)
-    : screen_size_(size), duration_(time),
+               Size size,
+               int time)
+    : screen_size_(size),
+      duration_(time),
       start_time_(machine.system().event().getTicks()),
-      machine_(machine), src_surface_(src), dst_surface_(dst) {
+      machine_(machine),
+      src_surface_(src),
+      dst_surface_(dst) {
   machine.system().graphics().setIsResponsibleForUpdate(false);
 }
 
@@ -63,10 +68,8 @@ bool Effect::operator()(RLMachine& machine) {
     graphics.beginFrame();
 
     if (blitOriginalImage()) {
-      dstSurface().
-          renderToScreen(Rect(Point(0, 0), size()),
-                         Rect(Point(0, 0), size()),
-                         255);
+      dstSurface().renderToScreen(
+          Rect(Point(0, 0), size()), Rect(Point(0, 0), size()), 255);
     }
 
     performEffectForTime(machine, currentFrame);
@@ -80,20 +83,22 @@ bool Effect::operator()(RLMachine& machine) {
 // BlitAfterEffectFinishes
 // -----------------------------------------------------------------------
 
-BlitAfterEffectFinishes::BlitAfterEffectFinishes(
-    LongOperation* in, boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst, const Rect& srcRect, const Rect& destRect)
+BlitAfterEffectFinishes::BlitAfterEffectFinishes(LongOperation* in,
+                                                 boost::shared_ptr<Surface> src,
+                                                 boost::shared_ptr<Surface> dst,
+                                                 const Rect& srcRect,
+                                                 const Rect& destRect)
     : PerformAfterLongOperationDecorator(in),
-      src_surface_(src), dst_surface_(dst), src_rect_(srcRect),
-      dest_rect_(destRect) {
-      }
+      src_surface_(src),
+      dst_surface_(dst),
+      src_rect_(srcRect),
+      dest_rect_(destRect) {}
 
 BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
 void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
-  src_surface_->blitToSurface(*dst_surface_,
-                              src_rect_, dest_rect_, 255);
+  src_surface_->blitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
 
   // Now force a screen refresh
   machine.system().graphics().forceRefresh();

@@ -45,7 +45,7 @@
 // TextoutLongOperations. rlBabel compiled games will always display one
 // character per TextoutLongOperation.
 unsigned int TextoutLongOperation::time_at_last_pass_ = 0;
-int TextoutLongOperation::next_character_countdown_  = 0;
+int TextoutLongOperation::next_character_countdown_ = 0;
 
 // -----------------------------------------------------------------------
 // TextoutLongOperation
@@ -73,8 +73,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
     no_wait_ = true;
 }
 
-TextoutLongOperation::~TextoutLongOperation() {
-}
+TextoutLongOperation::~TextoutLongOperation() {}
 
 bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed) {
@@ -122,8 +121,9 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
   }
 
   if (codepoint != 0x3011 && it == strend) {
-    throw SystemError("Malformed string code. Opening bracket in \\{name}"
-                      " construct,  but missing closing bracket.");
+    throw SystemError(
+        "Malformed string code. Opening bracket in \\{name}"
+        " construct,  but missing closing bracket.");
   }
 
   // Grab the name

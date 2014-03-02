@@ -110,22 +110,25 @@ class DriftGraphicsObject : public GraphicsObjectData {
   // boost::serialization support
   friend class boost::serialization::access;
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 // DriftGraphicsObject doesn't have a default constructor:
-namespace boost { namespace serialization {
-template<class Archive>
-inline void load_construct_data(
-  Archive & ar, DriftGraphicsObject* t, const unsigned int file_version) {
-  ::new(t)DriftGraphicsObject(Serialization::g_current_machine->system());
+namespace boost {
+namespace serialization {
+template <class Archive>
+inline void load_construct_data(Archive& ar,
+                                DriftGraphicsObject* t,
+                                const unsigned int file_version) {
+  ::new (t) DriftGraphicsObject(Serialization::g_current_machine->system());
 }
-  }}
+}
+}
 
 #endif  // SRC_SYSTEMS_BASE_DRIFTGRAPHICSOBJECT_HPP_

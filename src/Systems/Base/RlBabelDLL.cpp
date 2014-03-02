@@ -65,14 +65,9 @@ using std::endl;
 namespace {
 
 const int kCodeMapSize = 6;
-const getcReturn codemap[] = {
-  getcEndOfString,
-  getcEndOfString,
-  getcEndOfString,
-  getcNewLine,
-  getcSetIndent,
-  getcClearIndent
-};
+const getcReturn codemap[] = {getcEndOfString, getcEndOfString,
+                              getcEndOfString, getcNewLine,
+                              getcSetIndent,   getcClearIndent};
 
 inline bool token_delimiter(char val) {
   return val < 6 || (val > 7 && val <= 32) || val == '-';
@@ -85,13 +80,16 @@ inline bool token_delimiter(char val) {
 // -----------------------------------------------------------------------
 Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
              const std::string& cp932_src,
-             int x1, int y1, int x2, int y2)
+             int x1,
+             int y1,
+             int x2,
+             int y2)
     : text_(cp932_src) {
   int line_height = window->lineHeight();
   while (y1 < y2) {
     // Special case for multi-line links.  Hopefully these will be rare...
-    link_areas_.push_back(Rect::GRP(x1, y1, window->textWindowSize().width(),
-                                    y1 + line_height));
+    link_areas_.push_back(
+        Rect::GRP(x1, y1, window->textWindowSize().width(), y1 + line_height));
 
     y1 += line_height;
     x1 = window->currentIndentation();
@@ -101,22 +99,28 @@ Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
 }
 
 bool Gloss::contains(const Point& point) {
-  return std::find_if(link_areas_.begin(), link_areas_.end(),
-                      [&](Rect& r) { return r.contains(point); }) !=
-      link_areas_.end();
+  return std::find_if(link_areas_.begin(), link_areas_.end(), [&](Rect& r) {
+           return r.contains(point);
+         }) != link_areas_.end();
 }
 
 // -----------------------------------------------------------------------
 // RlBabelDLL
 // -----------------------------------------------------------------------
 RlBabelDLL::RlBabelDLL(RLMachine& machine)
-    : add_is_italic(false), gloss_start_x_(0), gloss_start_y_(0),
+    : add_is_italic(false),
+      gloss_start_x_(0),
+      gloss_start_y_(0),
       machine_(machine) {}
 
 RlBabelDLL::~RlBabelDLL() {}
 
-int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
-                        int arg3, int arg4) {
+int RlBabelDLL::callDLL(RLMachine& machine,
+                        int func,
+                        int arg1,
+                        int arg2,
+                        int arg3,
+                        int arg4) {
   switch (func) {
     case dllInitialise:
       return initialize(arg1, arg2);
@@ -165,7 +169,7 @@ int RlBabelDLL::callDLL(RLMachine& machine, int func, int arg1, int arg2,
       return machine.system().gameexe()("WINDOW")(window)("R_COMMAND_MOD");
     }
     case dllMessageBox:
-      //      return rlMsgBox(arg1, arg2);
+    //      return rlMsgBox(arg1, arg2);
     default:
       return -1;
   }
@@ -186,8 +190,8 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
   const char* string = str.c_str();
 
   while (*string) {
-    if (string[0] == 0x81 && (string[1] == 0x93 || string[1] == 0x96)
-        && string[2] == 0x82 && (string[3] >= 0x60 && string[3] <= 0x79)) {
+    if (string[0] == 0x81 && (string[1] == 0x93 || string[1] == 0x96) &&
+        string[2] == 0x82 && (string[3] >= 0x60 && string[3] <= 0x79)) {
       // Name reference: expand it.
       bool global = string[1] == 0x96;
       // Get index.
@@ -198,11 +202,11 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
         string += 2;
       }
       Memory& memory = machine_.memory();
-      const char* namestr = global ? memory.getName(idx).c_str() :
-        memory.getLocalName(idx).c_str();
+      const char* namestr = global ? memory.getName(idx).c_str()
+                                   : memory.getLocalName(idx).c_str();
 
       // Copy to string.
-      if (string[0] == 0x82 &&(string[1] >= 0x4f && string[1] <= 0x58)) {
+      if (string[0] == 0x82 && (string[1] >= 0x4f && string[1] <= 0x58)) {
         // Just one character
         int offset = string[1] - 0x4f;
         string += 2;
@@ -223,7 +227,7 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
       }
     } else if (string[0] == 0x08) {
       // Quotation mark
-//      string[0] = '"';
+      //      string[0] = '"';
       const char* quote_mark = "\"";
       ++string;
       AppendChar(quote_mark);
@@ -243,17 +247,17 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
 }
 
 void RlBabelDLL::AppendChar(const char*& ch) {
-//   if (add_is_italic) {
-//     short uc = *ch++;
-//     if (shiftjis_lead_byte(uc))
-//       uc = (uc << 8) | *ch++;
-//     uc = Italicise(uc);
-//     if (uc > 0xff)
-//       cp932_text_buffer += uc >> 8;
-//     cp932_text_buffer += uc & 0xff;
-//   } else {
-    copyOneShiftJisCharacter(ch, cp932_text_buffer);
-//  }
+  //   if (add_is_italic) {
+  //     short uc = *ch++;
+  //     if (shiftjis_lead_byte(uc))
+  //       uc = (uc << 8) | *ch++;
+  //     uc = Italicise(uc);
+  //     if (uc > 0xff)
+  //       cp932_text_buffer += uc >> 8;
+  //     cp932_text_buffer += uc & 0xff;
+  //   } else {
+  copyOneShiftJisCharacter(ch, cp932_text_buffer);
+  //  }
 }
 
 void RlBabelDLL::textoutClear() {
@@ -278,10 +282,10 @@ int RlBabelDLL::textoutLineBreak(StringReferenceIterator buf) {
     // - Need to record the cp932 name.
     // - Need accessors (none written)
     // - Pipe to here.
-//     const char* const cnam = (const char*) interpreter->getCurrentName();
-//     if (cnam)
-//       *buf =
-//     else
+    //     const char* const cnam = (const char*) interpreter->getCurrentName();
+    //     if (cnam)
+    //       *buf =
+    //     else
     *buf = "";
     return getcNewScreen;
   }
@@ -330,8 +334,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         while (endToken() && endToken() != 2)
           ++end_token_index;
         if (!endToken()) {
-//           MessageBox(NULL, "Error: mismatched name delimiters",
-//                      "RLdev.Textout", MB_OK | MB_ICONERROR);
+          //           MessageBox(NULL, "Error: mismatched name delimiters",
+          //                      "RLdev.Textout", MB_OK | MB_ICONERROR);
           // For now, just bail out on this.
           return getcEndOfString;
         }
@@ -341,8 +345,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         // hooking the text out function so he made a whole bunch of name moji
         // tiles and rendered into those. This is silly and unneccessary since
         // I control the rlvm code...
-        *buffer = cp932_text_buffer.substr(text_index,
-                                           end_token_index - text_index);
+        *buffer =
+            cp932_text_buffer.substr(text_index, end_token_index - text_index);
 
         // If name display is not inline, skip the token to avoid
         // rendering it inline.
@@ -433,7 +437,7 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
       }
       case 0x1f:  // Begin gloss marker.  Treat as text.
         ++end_token_index;
-        // Fall through!
+      // Fall through!
       default: {
         // We tokenise text and break lines appropriately.
         // TODO(erg): Haeleth appears to be caching horizontal width. Should do
@@ -446,8 +450,8 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         while (endToken() == ' ')
           ++end_token_index;
         while (!token_delimiter(endToken()))
-          end_token_index += 1 + shiftjis_lead_byte(endToken())
-                             + (endToken() == 6 || endToken() == 7 ? 2 : 0);
+          end_token_index += 1 + shiftjis_lead_byte(endToken()) +
+                             (endToken() == 6 || endToken() == 7 ? 2 : 0);
         if (endToken() == '-')
           ++end_token_index;
         // If the token will not fit on the current line, insert a
@@ -535,13 +539,17 @@ int RlBabelDLL::newGloss() {
 int RlBabelDLL::addGloss(const std::string& cp932_gloss_text) {
   boost::shared_ptr<TextWindow> window = getWindow(-1);
   glosses_.push_back(Gloss(window,
-                           cp932_gloss_text, gloss_start_x_, gloss_start_y_,
+                           cp932_gloss_text,
+                           gloss_start_x_,
+                           gloss_start_y_,
                            window->insertionPointX(),
                            window->insertionPointY()));
   return 1;
 }
 
-int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
+int RlBabelDLL::testGlosses(int x,
+                            int y,
+                            StringReferenceIterator text,
                             int globalwaku) {
   // Does this handle all cases?
   boost::shared_ptr<TextWindow> window = getWindow(-1);
@@ -549,10 +557,10 @@ int RlBabelDLL::testGlosses(int x, int y, StringReferenceIterator text,
   x -= textOrigin.x();
   y -= textOrigin.y();
 
-  std::vector<Gloss>::const_iterator it = std::find_if(
-      glosses_.begin(),
-      glosses_.end(),
-      [&](Gloss& gloss) { return gloss.contains(Point(x, y)); });
+  std::vector<Gloss>::const_iterator it =
+      std::find_if(glosses_.begin(), glosses_.end(), [&](Gloss& gloss) {
+        return gloss.contains(Point(x, y));
+      });
   if (it == glosses_.end())
     return 0;
 

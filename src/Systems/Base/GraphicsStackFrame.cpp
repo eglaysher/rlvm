@@ -34,18 +34,28 @@
 // GraphicsStackFrame
 // -----------------------------------------------------------------------
 GraphicsStackFrame::GraphicsStackFrame()
-  : command_name_(""), has_filename_(false), has_source_dc_(false),
-    has_source_coordinates_(false), has_target_dc_(false),
-    has_target_coordinates_(false), has_rgb_(false), has_opacity_(false),
-    has_mask_(false) {}
+    : command_name_(""),
+      has_filename_(false),
+      has_source_dc_(false),
+      has_source_coordinates_(false),
+      has_target_dc_(false),
+      has_target_coordinates_(false),
+      has_rgb_(false),
+      has_opacity_(false),
+      has_mask_(false) {}
 
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame::GraphicsStackFrame(const std::string& name)
-  : command_name_(name), has_filename_(false), has_source_dc_(false),
-    has_source_coordinates_(false), has_target_dc_(false),
-    has_target_coordinates_(false), has_rgb_(false), has_opacity_(false),
-    has_mask_(false) {}
+    : command_name_(name),
+      has_filename_(false),
+      has_source_dc_(false),
+      has_source_coordinates_(false),
+      has_target_dc_(false),
+      has_target_coordinates_(false),
+      has_rgb_(false),
+      has_opacity_(false),
+      has_mask_(false) {}
 
 // -----------------------------------------------------------------------
 
@@ -71,7 +81,7 @@ GraphicsStackFrame& GraphicsStackFrame::setSourceDC(int in) {
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame& GraphicsStackFrame::setSourceCoordinates(
-  const Rect& src_rect) {
+    const Rect& src_rect) {
   has_source_coordinates_ = true;
   source_rect_ = src_rect;
   return *this;
@@ -88,7 +98,7 @@ GraphicsStackFrame& GraphicsStackFrame::setTargetDC(int in) {
 // -----------------------------------------------------------------------
 
 GraphicsStackFrame& GraphicsStackFrame::setTargetCoordinates(
-  const Point& target_point) {
+    const Point& target_point) {
   has_target_coordinates_ = true;
   target_point_ = target_point;
   return *this;

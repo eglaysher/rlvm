@@ -48,7 +48,8 @@ class TextWindow;
 class TextWindowButton : public boost::noncopyable {
  public:
   explicit TextWindowButton(System& system);
-  TextWindowButton(System& system, bool use,
+  TextWindowButton(System& system,
+                   bool use,
                    GameexeInterpretObject location_box);
   virtual ~TextWindowButton();
 
@@ -61,8 +62,10 @@ class TextWindowButton : public boost::noncopyable {
   // Track the mouse position to see if we need to alter our state
   void setMousePosition(TextWindow& window, const Point& pos);
 
-  bool handleMouseClick(RLMachine& machine, TextWindow& window,
-                        const Point& pos, bool pressed);
+  bool handleMouseClick(RLMachine& machine,
+                        TextWindow& window,
+                        const Point& pos,
+                        bool pressed);
 
   //
   void render(TextWindow& window,
@@ -93,7 +96,8 @@ class ActionTextWindowButton : public TextWindowButton {
   typedef std::function<void(void)> CallbackFunction;
 
  public:
-  ActionTextWindowButton(System& system, bool use,
+  ActionTextWindowButton(System& system,
+                         bool use,
                          GameexeInterpretObject location_box,
                          CallbackFunction action);
   virtual ~ActionTextWindowButton();
@@ -112,7 +116,8 @@ class ActivationTextWindowButton : public TextWindowButton,
   typedef std::function<void(int)> CallbackFunction;
 
  public:
-  ActivationTextWindowButton(System& system, bool use,
+  ActivationTextWindowButton(System& system,
+                             bool use,
                              GameexeInterpretObject location_box,
                              CallbackFunction setter);
   virtual ~ActivationTextWindowButton();
@@ -149,12 +154,11 @@ class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
   typedef std::function<void(void)> CallbackFunction;
 
  public:
-  RepeatActionWhileHoldingWindowButton(
-      System& system,
-      bool use,
-      GameexeInterpretObject location_box,
-      CallbackFunction callback,
-      unsigned int time_between_invocations);
+  RepeatActionWhileHoldingWindowButton(System& system,
+                                       bool use,
+                                       GameexeInterpretObject location_box,
+                                       CallbackFunction callback,
+                                       unsigned int time_between_invocations);
   virtual ~RepeatActionWhileHoldingWindowButton();
 
   virtual void buttonPressed();
@@ -172,7 +176,8 @@ class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
 
 class ExbtnWindowButton : public TextWindowButton {
  public:
-  ExbtnWindowButton(System& system, bool use,
+  ExbtnWindowButton(System& system,
+                    bool use,
                     GameexeInterpretObject location_box,
                     GameexeInterpretObject to_call);
   virtual ~ExbtnWindowButton();

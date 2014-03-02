@@ -36,15 +36,14 @@ class FadeEffect : public Effect {
   FadeEffect(RLMachine& machine,
              boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
-             const Size& screenSize, int time);
+             const Size& screenSize,
+             int time);
 
  protected:
-  virtual void performEffectForTime(RLMachine& machine,
-                                    int currentTime);
+  virtual void performEffectForTime(RLMachine& machine, int currentTime);
 
  private:
   virtual bool blitOriginalImage() const;
 };
-
 
 #endif  // SRC_EFFECTS_FADEEFFECT_HPP_

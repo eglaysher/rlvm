@@ -35,7 +35,7 @@
 //
 // It really should have been called tuple, but the name's stuck
 // now. Takes two other type structs as template parameters.
-template<typename A, typename B>
+template <typename A, typename B>
 struct Complex2_T {
   // The output type of this type struct
   typedef std::tuple<typename A::type, typename B::type> type;
@@ -46,7 +46,7 @@ struct Complex2_T {
                       unsigned int& position) {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
+        static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
         A::getData(machine, sp.getContainedPieces(), pos_in_expression);
     typename B::type b =
@@ -54,10 +54,9 @@ struct Complex2_T {
     return type(a, b);
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
@@ -65,20 +64,17 @@ struct Complex2_T {
     position++;
   }
 
-  enum {
-    is_complex = true
-  };
+  enum { is_complex = true };
 };
 
 // Type definition that implements the complex parameter concept.
 //
 // It really should have been called tuple, but the name's stuck
 // now. Takes two other type structs as template parameters.
-template<typename A, typename B, typename C>
+template <typename A, typename B, typename C>
 struct Complex3_T {
   // The output type of this type struct
-  typedef std::tuple<typename A::type, typename B::type,
-                     typename C::type> type;
+  typedef std::tuple<typename A::type, typename B::type, typename C::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -86,7 +82,7 @@ struct Complex3_T {
                       unsigned int& position) {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
+        static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
         A::getData(machine, sp.getContainedPieces(), pos_in_expression);
     typename B::type b =
@@ -96,10 +92,9 @@ struct Complex3_T {
     return type(a, b, c);
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
@@ -107,20 +102,20 @@ struct Complex3_T {
     position++;
   }
 
-  enum {
-    is_complex = true
-  };
+  enum { is_complex = true };
 };
 
 // Type definition that implements the complex parameter concept.
 //
 // It really should have been called tuple, but the name's stuck
 // now. Takes two other type structs as template parameters.
-template<typename A, typename B, typename C, typename D>
+template <typename A, typename B, typename C, typename D>
 struct Complex4_T {
   // The output type of this type struct
-  typedef std::tuple<typename A::type, typename B::type,
-                     typename C::type, typename D::type> type;
+  typedef std::tuple<typename A::type,
+                     typename B::type,
+                     typename C::type,
+                     typename D::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -129,7 +124,7 @@ struct Complex4_T {
     unsigned int pos_in_expression = 0;
 
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
+        static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
         A::getData(machine, sp.getContainedPieces(), pos_in_expression);
     typename B::type b =
@@ -141,10 +136,9 @@ struct Complex4_T {
     return type(a, b, c, d);
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
@@ -152,22 +146,28 @@ struct Complex4_T {
     position++;
   }
 
-  enum {
-    is_complex = true
-  };
+  enum { is_complex = true };
 };
 
 // Type definition that implements the complex parameter concept.
 //
 // It really should have been called tuple, but the name's stuck
 // now. Takes two other type structs as template parameters.
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G>
 struct Complex7_T {
   // The output type of this type struct
-  typedef std::tuple<typename A::type, typename B::type,
-                     typename C::type, typename D::type,
-                     typename E::type, typename F::type,
+  typedef std::tuple<typename A::type,
+                     typename B::type,
+                     typename C::type,
+                     typename D::type,
+                     typename E::type,
+                     typename F::type,
                      typename G::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
@@ -177,7 +177,7 @@ struct Complex7_T {
     unsigned int pos_in_expression = 0;
 
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
+        static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
         A::getData(machine, sp.getContainedPieces(), pos_in_expression);
     typename B::type b =
@@ -195,10 +195,9 @@ struct Complex7_T {
     return type(a, b, c, d, e, f, g);
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
@@ -206,23 +205,31 @@ struct Complex7_T {
     position++;
   }
 
-  enum {
-    is_complex = true
-  };
+  enum { is_complex = true };
 };
 
 // Type definition that implements the complex parameter concept.
 //
 // It really should have been called tuple, but the name's stuck
 // now. Takes two other type structs as template parameters.
-template<typename A, typename B, typename C, typename D, typename E,
-         typename F, typename G, typename H>
+template <typename A,
+          typename B,
+          typename C,
+          typename D,
+          typename E,
+          typename F,
+          typename G,
+          typename H>
 struct Complex8_T {
   // The output type of this type struct
-  typedef std::tuple<typename A::type, typename B::type,
-                     typename C::type, typename D::type,
-                     typename E::type, typename F::type,
-                     typename G::type, typename H::type> type;
+  typedef std::tuple<typename A::type,
+                     typename B::type,
+                     typename C::type,
+                     typename D::type,
+                     typename E::type,
+                     typename F::type,
+                     typename G::type,
+                     typename H::type> type;
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
@@ -230,7 +237,7 @@ struct Complex8_T {
                       unsigned int& position) {
     unsigned int pos_in_expression = 0;
     const libReallive::ComplexExpressionPiece& sp =
-      static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
+        static_cast<const libReallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
         A::getData(machine, sp.getContainedPieces(), pos_in_expression);
     typename B::type b =
@@ -250,10 +257,9 @@ struct Complex8_T {
     return type(a, b, c, d, e, f, g, h);
   }
 
-  static void parseParameters(
-      unsigned int& position,
-      const std::vector<std::string>& input,
-      libReallive::ExpressionPiecesVector& output) {
+  static void parseParameters(unsigned int& position,
+                              const std::vector<std::string>& input,
+                              libReallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libReallive::ExpressionPiece> ep(
         libReallive::get_complex_param(data));
@@ -261,9 +267,7 @@ struct Complex8_T {
     position++;
   }
 
-  enum {
-    is_complex = true
-  };
+  enum { is_complex = true };
 };
 
 #endif  // SRC_MACHINEBASE_RLOPERATION_COMPLEX_T_HPP_

@@ -35,24 +35,24 @@
 // TestSystem
 // -----------------------------------------------------------------------
 TestSystem::TestSystem(const std::string& path_to_gameexe)
-  : gameexe_(path_to_gameexe),
-    null_graphics_system(*this, gameexe_),
-    null_event_system(gameexe_),
-    null_text_system(*this, gameexe_),
-    null_sound_system(*this
-) {}
+    : gameexe_(path_to_gameexe),
+      null_graphics_system(*this, gameexe_),
+      null_event_system(gameexe_),
+      null_text_system(*this, gameexe_),
+      null_sound_system(*this) {}
 
 TestSystem::TestSystem()
-  : gameexe_(),
-    null_graphics_system(*this, gameexe_),
-    null_event_system(gameexe_),
-    null_text_system(*this, gameexe_),
-    null_sound_system(*this) {
+    : gameexe_(),
+      null_graphics_system(*this, gameexe_),
+      null_event_system(gameexe_),
+      null_text_system(*this, gameexe_),
+      null_sound_system(*this) {
   gameexe_("__GAMEPATH") = locateTestCase("Gameroot") + "/";
   gameexe_("FOLDNAME.G00") = "G00";
 }
 
-void TestSystem::run(RLMachine& machine) { /* do nothing */ }
+void TestSystem::run(RLMachine& machine) { /* do nothing */
+}
 
 TestGraphicsSystem& TestSystem::graphics() { return null_graphics_system; }
 EventSystem& TestSystem::event() { return null_event_system; }

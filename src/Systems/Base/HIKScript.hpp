@@ -103,7 +103,6 @@ class HIKScript {
     std::vector<Animation> animations;
   };
 
-
   // Returns the HIK layer data.
   const std::vector<Layer>& layers() const { return layers_; }
   const Size& size() const { return size_of_hik_; }

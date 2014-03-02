@@ -55,21 +55,22 @@ struct RealLiveSoundQualities {
 // A maping between SoundQualities() and the values need to be passed
 // to Mix_OpenAudio()
 static RealLiveSoundQualities s_real_live_sound_qualities[] = {
-  {11025, AUDIO_S8},    // 11 k_hz, 8 bit stereo
-  {11025, AUDIO_S16},   // 11 k_hz, 16 bit stereo
-  {22050, AUDIO_S8},    // 22 k_hz, 8 bit stereo
-  {22050, AUDIO_S16},   // 22 k_hz, 16 bit stereo
-  {44100, AUDIO_S8},    // 44 k_hz, 8 bit stereo
-  {44100, AUDIO_S16},   // 44 k_hz, 16 bit stereo
-  {48000, AUDIO_S8},    // 48 k_hz, 8 bit stereo
-  {48000, AUDIO_S16}    // 48 h_kz, 16 bit stereo
+    {11025, AUDIO_S8},   // 11 k_hz, 8 bit stereo
+    {11025, AUDIO_S16},  // 11 k_hz, 16 bit stereo
+    {22050, AUDIO_S8},   // 22 k_hz, 8 bit stereo
+    {22050, AUDIO_S16},  // 22 k_hz, 16 bit stereo
+    {44100, AUDIO_S8},   // 44 k_hz, 8 bit stereo
+    {44100, AUDIO_S16},  // 44 k_hz, 16 bit stereo
+    {48000, AUDIO_S8},   // 48 k_hz, 8 bit stereo
+    {48000, AUDIO_S16}   // 48 h_kz, 16 bit stereo
 };
 
 // -----------------------------------------------------------------------
 // SDLSoundSystem (private)
 // -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
-    const std::string& file_name, SoundChunkCache& cache) {
+    const std::string& file_name,
+    SoundChunkCache& cache) {
   SDLSoundChunkPtr sample = cache.fetch(file_name);
   if (sample == NULL) {
     fs::path file_path = system().findFile(file_name, SOUND_FILETYPES);
@@ -86,13 +87,14 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   return sample;
 }
 
-SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(
-    char* data, int length) {
+SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(char* data,
+                                                               int length) {
   return SDLSoundChunkPtr(new SDLSoundChunk(data, length));
 }
 
 void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
-                                 const int channel, bool loop) {
+                                 const int channel,
+                                 bool loop) {
   if (pcmEnabled()) {
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
     setChannelVolumeImpl(channel);
@@ -118,8 +120,8 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
   CDTable::const_iterator cd_it = cd_table.find(boost::to_lower_copy(bgm_name));
   if (cd_it != cd_table.end()) {
     ostringstream oss;
-    oss << "CD music not supported yet. Could not play track \""
-        << bgm_name << "\"";
+    oss << "CD music not supported yet. Could not play track \"" << bgm_name
+        << "\"";
     throw std::runtime_error(oss.str());
   }
 
@@ -132,7 +134,7 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
 // SDLSoundSystem
 // -----------------------------------------------------------------------
 SDLSoundSystem::SDLSoundSystem(System& system)
-  : SoundSystem(system), se_cache_(5), wav_cache_(5) {
+    : SoundSystem(system), se_cache_(5), wav_cache_(5) {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
   /* We're going to be requesting certain things from our audio
@@ -152,7 +154,8 @@ SDLSoundSystem::SDLSoundSystem(System& system)
   }
 
   // Jagarl's sound system wants information on the audio settings.
-  int freq, channels; Uint16 format;
+  int freq, channels;
+  Uint16 format;
   if (Mix_QuerySpec(&freq, &format, &channels)) {
     WAVFILE::freq = freq;
     WAVFILE::format = format;
@@ -219,13 +222,16 @@ void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop) {
 }
 
 void SDLSoundSystem::wavPlay(const std::string& wav_file,
-                             bool loop, const int channel) {
+                             bool loop,
+                             const int channel) {
   checkChannel(channel, "SDLSoundSystem::wav_play");
   wavPlayImpl(wav_file, channel, loop);
 }
 
-void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop,
-                             const int channel, const int fadein_ms) {
+void SDLSoundSystem::wavPlay(const std::string& wav_file,
+                             bool loop,
+                             const int channel,
+                             const int fadein_ms) {
   checkChannel(channel, "SDLSoundSystem::wav_play");
 
   if (pcmEnabled()) {
@@ -305,8 +311,7 @@ int SDLSoundSystem::bgmStatus() const {
   }
 }
 
-void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
-                             bool loop) {
+void SDLSoundSystem::bgmPlay(const std::string& bgm_name, bool loop) {
   if (!boost::iequals(bgmName(), bgm_name)) {
     boost::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
     bgm->play(loop);
@@ -314,7 +319,8 @@ void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
 }
 
 void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
-                             bool loop, int fade_in_ms) {
+                             bool loop,
+                             int fade_in_ms) {
   if (!boost::iequals(bgmName(), bgm_name)) {
     boost::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
     bgm->fadeIn(loop, fade_in_ms);
@@ -322,7 +328,9 @@ void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
 }
 
 void SDLSoundSystem::bgmPlay(const std::string& bgm_name,
-                             bool loop, int fade_in_ms, int fade_out_ms) {
+                             bool loop,
+                             int fade_in_ms,
+                             int fade_out_ms) {
   if (!boost::iequals(bgmName(), bgm_name)) {
     queued_music_ = LoadMusic(bgm_name);
     queued_music_loop_ = loop;
@@ -372,13 +380,9 @@ bool SDLSoundSystem::bgmLooping() const {
     return false;
 }
 
-bool SDLSoundSystem::koePlaying() const {
-  return Mix_Playing(KOE_CHANNEL);
-}
+bool SDLSoundSystem::koePlaying() const { return Mix_Playing(KOE_CHANNEL); }
 
-void SDLSoundSystem::koeStop() {
-  SDLSoundChunk::StopChannel(KOE_CHANNEL);
-}
+void SDLSoundSystem::koeStop() { SDLSoundChunk::StopChannel(KOE_CHANNEL); }
 
 void SDLSoundSystem::koePlayImpl(int id) {
   if (!koeEnabled()) {
@@ -408,8 +412,9 @@ void SDLSoundSystem::reset() {
   SoundSystem::reset();
 }
 
-void SDLSoundSystem::setMusicHook(
-  void (*mix_func)(void *udata, Uint8 *stream, int len)) {
+void SDLSoundSystem::setMusicHook(void (*mix_func)(void* udata,
+                                                   Uint8* stream,
+                                                   int len)) {
   if (!mix_func)
     mix_func = &SDLMusic::MixMusic;
 

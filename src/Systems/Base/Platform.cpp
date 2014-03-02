@@ -35,25 +35,15 @@
 using std::string;
 
 const char* ADDTIONAL_STRINGS_TO_LOAD[] = {
-  "SAVE_NODATA",
-  "SYSTEM_SAVELOADMESSAGE_STR",
-  "SAVEMESSAGE_TITLE_STR",
-  "SAVEMESSAGE_MESS_STR",
-  "SAVEMESSAGE_MESS2_STR",
-  "LOADMESSAGE_TITLE_STR",
-  "LOADMESSAGE_MESS_STR",
-  "LOADMESSAGE_MESS2_STR",
-  "DLGSAVEMESSAGE_TITLE_STR",
-  "DLGSAVEMESSAGE_OK_BUTTON_STR",
-  "DLGLOADMESSAGE_TITLE_STR",
-  "DLGLOADMESSAGE_OK_BUTTON_STR",
-  "SYSTEM_ANIME_STR",
-  "SELPOINT_RETURN_MESS_STR",
-  "VERSION_STR",
-  "MENU_RETURN_MESS_STR",
-  "GAME_END_MESS_STR",
-  NULL
-};
+    "SAVE_NODATA",              "SYSTEM_SAVELOADMESSAGE_STR",
+    "SAVEMESSAGE_TITLE_STR",    "SAVEMESSAGE_MESS_STR",
+    "SAVEMESSAGE_MESS2_STR",    "LOADMESSAGE_TITLE_STR",
+    "LOADMESSAGE_MESS_STR",     "LOADMESSAGE_MESS2_STR",
+    "DLGSAVEMESSAGE_TITLE_STR", "DLGSAVEMESSAGE_OK_BUTTON_STR",
+    "DLGLOADMESSAGE_TITLE_STR", "DLGLOADMESSAGE_OK_BUTTON_STR",
+    "SYSTEM_ANIME_STR",         "SELPOINT_RETURN_MESS_STR",
+    "VERSION_STR",              "MENU_RETURN_MESS_STR",
+    "GAME_END_MESS_STR",        NULL};
 
 // -----------------------------------------------------------------------
 // Platform
@@ -62,7 +52,8 @@ Platform::Platform(Gameexe& gameexe) {
   // Parse the Gameexe.ini syscom entries.
   GameexeFilteringIterator end = gameexe.filtering_end();
   for (GameexeFilteringIterator it = gameexe.filtering_begin("SYSCOM.");
-       it != end; ++it) {
+       it != end;
+       ++it) {
     string key = it->key().substr(7);
     if (key.size() == 3 && isdigit(key[0]) && isdigit(key[1]) &&
         isdigit(key[2])) {
@@ -81,11 +72,11 @@ Platform::Platform(Gameexe& gameexe) {
   }
 }
 
-Platform::~Platform() { }
+Platform::~Platform() {}
 
 std::string Platform::syscomString(const std::string& key) const {
   std::map<std::string, std::string>::const_iterator it =
-    utf8_syscom_strings_.find(key);
+      utf8_syscom_strings_.find(key);
   if (it != utf8_syscom_strings_.end())
     return it->second;
   else

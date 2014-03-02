@@ -72,8 +72,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
 
     // Check for bytecode wellformedness. All cases should be
     // surrounded by parens
-    if (caseUnparsed[0] != '(' ||
-       caseUnparsed[caseUnparsed.size() - 1] != ')')
+    if (caseUnparsed[0] != '(' || caseUnparsed[caseUnparsed.size() - 1] != ')')
       throw rlvm::Exception("Malformed bytecode in goto_case statment");
 
     // In the case of an empty set of parens, always accept. It is
@@ -98,31 +97,32 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
 // -----------------------------------------------------------------------
 
 // Type of the parameter data in the _with functions
-typedef Argc_T< Special_T< DefaultSpecialMapper,
-                           IntConstant_T,
-                           StrConstant_T> >::type ParamVector;
+typedef Argc_T<
+    Special_T<DefaultSpecialMapper, IntConstant_T, StrConstant_T>>::type
+    ParamVector;
 
 // Stores the incoming parameter format into the local variables used for
 // parameters in gosub_with and farcall_with calls, and return them to the
 // caller. We read the data before pushing the stack frame because intL[] and
 // strK[]'s values change after the gosub_with/farcall_with.
-void readWithData(RLMachine& machine, const ParamVector& f,
+void readWithData(RLMachine& machine,
+                  const ParamVector& f,
                   std::vector<int>& integers,
                   std::vector<std::string>& strings) {
   for (auto const& param : f) {
     switch (param.type) {
-    case 0:
-      integers.push_back(param.first);
-      break;
-    case 1:
-      strings.push_back(param.second);
-      break;
-    default: {
-      ostringstream ss;
-      ss << "Unknown type tag " << param.type
-         << " during a *_with function call";
-      throw rlvm::Exception(ss.str());
-    }
+      case 0:
+        integers.push_back(param.first);
+        break;
+      case 1:
+        strings.push_back(param.second);
+        break;
+      default: {
+        ostringstream ss;
+        ss << "Unknown type tag " << param.type
+           << " during a *_with function call";
+        throw rlvm::Exception(ss.str());
+      }
     }
   }
 }
@@ -300,15 +300,13 @@ struct gosub_case : public RLOp_SpecialCase {
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
 struct ret : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.returnFromGosub();
-  }
+  void operator()(RLMachine& machine) { machine.returnFromGosub(); }
 };
 
 // Implements op<0:Jmp:00011, 0>, fun jump(intC).
 //
 // Jumps the instruction pointer to the begining of the |scenario|.
-struct jump_0 : public RLOp_Void_1< IntConstant_T > {
+struct jump_0 : public RLOp_Void_1<IntConstant_T> {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -319,7 +317,7 @@ struct jump_0 : public RLOp_Void_1< IntConstant_T > {
 // Implements op<0:Jmp:00011, 1>, fun jump(intC, intC).
 //
 // Jumps the instruction pointer to |entrypoint| of |scenario|.
-struct jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+struct jump_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -330,7 +328,7 @@ struct jump_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 // Implements op<0:Jmp:00012, 0>, fun farcall(intC).
 //
 // Farcalls the instruction pointer to the begining of the |scenario|.
-struct farcall_0 : public RLOp_Void_1< IntConstant_T > {
+struct farcall_0 : public RLOp_Void_1<IntConstant_T> {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -341,7 +339,7 @@ struct farcall_0 : public RLOp_Void_1< IntConstant_T > {
 // Implements op<0:Jmp:00012, 1>, fun farcall(intC, intC).
 //
 // Farcalls the instruction pointer to |entrypoint| of |scenario|.
-struct farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
+struct farcall_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   virtual bool advanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -357,9 +355,7 @@ struct farcall_1 : public RLOp_Void_2< IntConstant_T, IntConstant_T > {
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
 struct rtl : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.returnFromFarcall();
-  }
+  void operator()(RLMachine& machine) { machine.returnFromFarcall(); }
 };
 
 // Implements op<0:Jmp:16,0>, fun gosub_with(params...) @label.
@@ -374,8 +370,9 @@ struct rtl : public RLOp_Void_Void {
 // the static methods on the type checking structs directly to reuse code.
 struct gosub_with : public RLOp_SpecialCase {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    typedef Argc_T<Special_T<DefaultSpecialMapper,
-                             IntConstant_T, StrConstant_T> > ParamFormat;
+    typedef Argc_T<
+        Special_T<DefaultSpecialMapper, IntConstant_T, StrConstant_T>>
+        ParamFormat;
 
     const ExpressionPiecesVector& parameterPieces = gotoElement.getParameters();
     unsigned int position = 0;
@@ -395,7 +392,7 @@ struct gosub_with : public RLOp_SpecialCase {
 // Implements op<0:Jmp:00017, 0>, fun ret_with('value').
 //
 // Returns from a goto_with call, storing the value in the store register.
-struct ret_with_0 : public RLOp_Void_1< IntConstant_T > {
+struct ret_with_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
     machine.returnFromGosub();
@@ -407,9 +404,7 @@ struct ret_with_0 : public RLOp_Void_1< IntConstant_T > {
 // Returns from a goto_with call. But it doesn't return a value. What gets
 // dumped in the store register?
 struct ret_with_1 : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.returnFromGosub();
-  }
+  void operator()(RLMachine& machine) { machine.returnFromGosub(); }
 };
 
 // Implements op<0:Jmp:00018, 0>, fun farcall_with().
@@ -417,13 +412,16 @@ struct ret_with_1 : public RLOp_Void_Void {
 // Performs a call into a target scenario/entrypoint pair, passing along all
 // values passed in to the first avaiable intL[] and strK[] memory blocks.
 struct farcall_with
-  : public RLOp_Void_3< IntConstant_T, IntConstant_T,
-                        Argc_T< Special_T< DefaultSpecialMapper,
-                                           IntConstant_T,
-                                           StrConstant_T > > > {
+    : public RLOp_Void_3<
+          IntConstant_T,
+          IntConstant_T,
+          Argc_T<
+              Special_T<DefaultSpecialMapper, IntConstant_T, StrConstant_T>>> {
   virtual bool advanceInstructionPointer() { return false; }
 
-  void operator()(RLMachine& machine, int scenario, int entrypoint,
+  void operator()(RLMachine& machine,
+                  int scenario,
+                  int entrypoint,
                   ParamVector withStuff) {
     std::vector<int> integers;
     std::vector<std::string> strings;
@@ -442,7 +440,7 @@ struct farcall_with
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
+struct rtl_with_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int retVal) {
     machine.setStoreRegister(retVal);
     machine.returnFromFarcall();
@@ -457,9 +455,7 @@ struct rtl_with_0 : public RLOp_Void_1< IntConstant_T > {
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
 struct rtl_with_1 : public RLOp_Void_Void {
-  void operator()(RLMachine& machine) {
-    machine.returnFromFarcall();
-  }
+  void operator()(RLMachine& machine) { machine.returnFromFarcall(); }
 };
 
 // Pushes a string value into strK[index] one stack frame above the current
@@ -475,8 +471,7 @@ struct push_string_value_up : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-JmpModule::JmpModule()
-    : RLModule("Jmp", 0, 1) {
+JmpModule::JmpModule() : RLModule("Jmp", 0, 1) {
   addOpcode(0, 0, "goto", new Jmp_goto);
   addOpcode(1, 0, "goto_if", new goto_if);
   addOpcode(2, 0, "goto_unless", new goto_unless);

@@ -54,14 +54,13 @@ class Texture;
  *
  * @todo This public interface really needs to be rethought out.
  */
-class SDLGraphicsSystem : public GraphicsSystem,
-                          public NotificationObserver {
+class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
  public:
   // SDL should be initialized before you create an SDLGraphicsSystem.
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
 
-//  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+  //  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
 
   /**
    * When the cursor is changed, also make sure that it exists so that we can
@@ -173,6 +172,5 @@ class SDLGraphicsSystem : public GraphicsSystem,
 
   NotificationRegistrar registrar_;
 };
-
 
 #endif  // SRC_SYSTEMS_SDL_SDLGRAPHICSSYSTEM_HPP_

@@ -42,16 +42,17 @@ SelectionElement::SelectionElement(
     const boost::shared_ptr<Surface>& normal_image,
     const boost::shared_ptr<Surface>& highlighted_image,
     const std::function<void(int)>& selection_callback,
-    int id, const Point& pos)
-    : is_highlighted_(false), id_(id), pos_(pos),
+    int id,
+    const Point& pos)
+    : is_highlighted_(false),
+      id_(id),
+      pos_(pos),
       normal_image_(normal_image),
       highlighted_image_(highlighted_image),
       selection_callback_(selection_callback),
-      system_(system) {
-}
+      system_(system) {}
 
-SelectionElement::~SelectionElement() {
-}
+SelectionElement::~SelectionElement() {}
 
 void SelectionElement::setSelectionCallback(
     const std::function<void(int)>& func) {

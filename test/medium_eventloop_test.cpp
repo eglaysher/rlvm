@@ -33,9 +33,7 @@
 
 class MediumEventLoopTest : public FullSystemTest {
  protected:
-  MediumEventLoopTest() {
-    rlmachine.attachModule(new EventLoopModule);
-  }
+  MediumEventLoopTest() { rlmachine.attachModule(new EventLoopModule); }
 };
 
 TEST_F(MediumEventLoopTest, TestSkipMode) {

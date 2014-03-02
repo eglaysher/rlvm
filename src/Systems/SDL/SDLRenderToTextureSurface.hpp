@@ -39,8 +39,7 @@ class Texture;
 
 // Fake SDLSurface that holds on to an OpenGL screenshot. Used for composing
 // the screenstate with another.
-class SDLRenderToTextureSurface : public Surface,
-                                  public NotificationObserver {
+class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
  public:
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();
@@ -49,17 +48,23 @@ class SDLRenderToTextureSurface : public Surface,
 
   // Blits to another surface
   virtual void blitToSurface(Surface& surface,
-                             const Rect& src, const Rect& dst,
-                             int alpha = 255, bool use_src_alpha = true) const;
+                             const Rect& src,
+                             const Rect& dst,
+                             int alpha = 255,
+                             bool use_src_alpha = true) const;
 
-  virtual void renderToScreen(const Rect& src, const Rect& dst,
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
                               int alpha = 255) const;
 
-  virtual void renderToScreen(const Rect& src, const Rect& dst,
+  virtual void renderToScreen(const Rect& src,
+                              const Rect& dst,
                               const int opacity[4]) const;
 
-  virtual void renderToScreenAsColorMask(
-    const Rect& src, const Rect& dst, const RGBAColour& rgba, int filter) const;
+  virtual void renderToScreenAsColorMask(const Rect& src,
+                                         const Rect& dst,
+                                         const RGBAColour& rgba,
+                                         int filter) const;
 
   virtual void renderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
@@ -90,6 +95,5 @@ class SDLRenderToTextureSurface : public Surface,
 
   NotificationRegistrar registrar_;
 };
-
 
 #endif  // SRC_SYSTEMS_SDL_SDLRENDERTOTEXTURESURFACE_HPP_

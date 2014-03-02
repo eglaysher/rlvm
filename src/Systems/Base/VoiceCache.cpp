@@ -49,12 +49,9 @@ using std::string;
 namespace fs = boost::filesystem;
 
 VoiceCache::VoiceCache(SoundSystem& sound_system)
-    : sound_system_(sound_system),
-      file_cache_(7) {
-}
+    : sound_system_(sound_system), file_cache_(7) {}
 
-VoiceCache::~VoiceCache() {
-}
+VoiceCache::~VoiceCache() {}
 
 boost::shared_ptr<VoiceSample> VoiceCache::find(int id) {
   int file_no = id / ID_RADIX;
@@ -106,14 +103,13 @@ boost::shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   return boost::shared_ptr<VoiceArchive>();
 }
 
-boost::shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(
-    int file_no, int index) const {
+boost::shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(int file_no,
+                                                              int index) const {
   // Loose voice files are packed into directories, like:
   // /KOE/0008/z000800073.ogg. We only need to search for the filename though.
   std::ostringstream oss;
-  oss << "z"
-      << std::setw(4) << std::setfill('0') << file_no
-      << std::setw(5) << std::setfill('0') << index;
+  oss << "z" << std::setw(4) << std::setfill('0') << file_no << std::setw(5)
+      << std::setfill('0') << index;
 
   fs::path file =
       sound_system_.system().findFile(oss.str(), KOE_LOOSE_FILETYPES);

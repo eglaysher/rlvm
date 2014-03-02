@@ -74,7 +74,6 @@ const std::string GRP_LOAD = "grpLoad";
 const std::string GRP_OPEN = "grpOpen";
 const std::string GRP_OPENBG = "grpOpenBg";
 
-
 void blitDC1toDC0(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
@@ -102,7 +101,8 @@ void loadImageToDC1(RLMachine& machine,
                     std::string name,
                     const Rect& srcRect,
                     const Point& dest,
-                    int opacity, bool useAlpha) {
+                    int opacity,
+                    bool useAlpha) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   if (name != "?") {
@@ -123,7 +123,8 @@ void loadImageToDC1(RLMachine& machine,
     surface->blitToSurface(*graphics.getDC(1),
                            Rect(srcRect.origin(), size),
                            Rect(dest, size),
-                           opacity, useAlpha);
+                           opacity,
+                           useAlpha);
   }
 }
 
@@ -139,10 +140,8 @@ void loadDCToDC1(RLMachine& machine,
   // Inclusive ranges are a monstrosity to computer people
   Size size = srcRect.size() + Size(1, 1);
 
-  src->blitToSurface(*dc1,
-                     Rect(srcRect.origin(), size),
-                     Rect(dest, size),
-                     opacity, false);
+  src->blitToSurface(
+      *dc1, Rect(srcRect.origin(), size), Rect(dest, size), opacity, false);
 }
 
 void performEffect(RLMachine& machine,
@@ -150,8 +149,7 @@ void performEffect(RLMachine& machine,
                    const boost::shared_ptr<Surface>& dst,
                    int selnum) {
   if (!machine.replaying_graphics_stack()) {
-    LongOperation* lop =
-        EffectFactory::buildFromSEL(machine, src, dst, selnum);
+    LongOperation* lop = EffectFactory::buildFromSEL(machine, src, dst, selnum);
     machine.pushLongOperation(lop);
   }
 }
@@ -159,12 +157,28 @@ void performEffect(RLMachine& machine,
 void performEffect(RLMachine& machine,
                    const boost::shared_ptr<Surface>& src,
                    const boost::shared_ptr<Surface>& dst,
-                   int time, int style, int direction, int interpolation,
-                   int xsize, int ysize, int a, int b, int c) {
+                   int time,
+                   int style,
+                   int direction,
+                   int interpolation,
+                   int xsize,
+                   int ysize,
+                   int a,
+                   int b,
+                   int c) {
   if (!machine.replaying_graphics_stack()) {
-    LongOperation* lop =
-        EffectFactory::build(machine, src, dst, time, style, direction,
-                             interpolation, xsize, ysize, a, b, c);
+    LongOperation* lop = EffectFactory::build(machine,
+                                              src,
+                                              dst,
+                                              time,
+                                              style,
+                                              direction,
+                                              interpolation,
+                                              xsize,
+                                              ysize,
+                                              a,
+                                              b,
+                                              c);
     machine.pushLongOperation(lop);
   }
 }
@@ -193,8 +207,8 @@ void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
 // Allocates a blank width × height bitmap in dc. Any DC apart from DC 0 may be
 // allocated thus, although DC 1 is never given a size smaller than the screen
 // resolution. Any previous contents of dc are erased.
-struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
-                                    IntConstant_T> {
+struct allocDC
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int width, int height) {
     machine.system().graphics().allocateDC(dc, Size(width, height));
   }
@@ -203,8 +217,10 @@ struct allocDC : public RLOp_Void_3<IntConstant_T, IntConstant_T,
 // Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
 //
 // Fills dc with the colour indicated by the given RGB triplet.
-struct wipe : public RLOp_Void_4<IntConstant_T, IntConstant_T,
-                                 IntConstant_T, IntConstant_T> {
+struct wipe : public RLOp_Void_4<IntConstant_T,
+                                 IntConstant_T,
+                                 IntConstant_T,
+                                 IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
     machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b));
   }
@@ -240,8 +256,8 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
 // Since this function deals with the entire screen (and therefore doesn't need
 // to worry about the difference between grp/rec coordinate space), we write
 // one function for both versions.
-struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                   DefaultIntValue_T<255> > {
+struct load_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit load_1(bool in) : use_alpha_(in) {}
 
@@ -256,8 +272,10 @@ struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
     }
 
     surface->blitToSurface(*graphics.getDC(dc),
-                           surface->rect(), surface->rect(),
-                           opacity, use_alpha_);
+                           surface->rect(),
+                           surface->rect(),
+                           opacity,
+                           use_alpha_);
   }
 };
 
@@ -266,15 +284,21 @@ struct load_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
 //
 // Loads filename into dc; note that filename may not be '???'. Using this
 // form, the given area of the bitmap is loaded at the given location.
-template<typename SPACE>
-struct load_3 : public RLOp_Void_5<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
-  DefaultIntValue_T<255> > {
+template <typename SPACE>
+struct load_3 : public RLOp_Void_5<StrConstant_T,
+                                   IntConstant_T,
+                                   Rect_T<SPACE>,
+                                   Point_T,
+                                   DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit load_3(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string filename, int dc,
-                  Rect srcRect, Point dest, int opacity) {
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int dc,
+                  Rect srcRect,
+                  Point dest,
+                  int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, filename));
@@ -285,8 +309,8 @@ struct load_3 : public RLOp_Void_5<
       graphics.setMinimumSizeForDC(dc, surface->size());
     }
 
-    surface->blitToSurface(*graphics.getDC(dc), srcRect, destRect,
-                           opacity, use_alpha_);
+    surface->blitToSurface(
+        *graphics.getDC(dc), srcRect, destRect, opacity, use_alpha_);
   }
 };
 
@@ -295,7 +319,7 @@ struct load_3 : public RLOp_Void_5<
 // -----------------------------------------------------------------------
 
 struct display_1
-  : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
     Rect src;
     Point dest;
@@ -322,12 +346,18 @@ struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-template<typename SPACE>
-struct display_3
-    : public RLOp_Void_5<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T,
-                         IntConstant_T> {
-  void operator()(RLMachine& machine, int dc, int effectNum,
-                  Rect srcRect, Point dest, int opacity) {
+template <typename SPACE>
+struct display_3 : public RLOp_Void_5<IntConstant_T,
+                                      IntConstant_T,
+                                      Rect_T<SPACE>,
+                                      Point_T,
+                                      IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  int dc,
+                  int effectNum,
+                  Rect srcRect,
+                  Point dest,
+                  int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -340,26 +370,47 @@ struct display_3
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct display_2
     : public RLOp_Void_4<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
-  void operator()(RLMachine& machine, int dc, int effectNum,
-                  Rect src_rect, Point dest) {
+  void operator()(RLMachine& machine,
+                  int dc,
+                  int effectNum,
+                  Rect src_rect,
+                  Point dest) {
     int opacity = getSELEffect(machine, effectNum).at(14);
     display_3<SPACE>()(machine, dc, effectNum, src_rect, dest, opacity);
   }
 };
 
-template<typename SPACE>
-struct display_4
-    : public RLOp_Void_13<IntConstant_T, Rect_T<SPACE>, Point_T,
-                          IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T, IntConstant_T, IntConstant_T,
-                          IntConstant_T> {
-  void operator()(RLMachine& machine, int dc, Rect srcRect, Point dest,
-                  int time, int style, int direction, int interpolation,
-                  int xsize, int ysize, int a, int b, int opacity, int c) {
+template <typename SPACE>
+struct display_4 : public RLOp_Void_13<IntConstant_T,
+                                       Rect_T<SPACE>,
+                                       Point_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  int dc,
+                  Rect srcRect,
+                  Point dest,
+                  int time,
+                  int style,
+                  int direction,
+                  int interpolation,
+                  int xsize,
+                  int ysize,
+                  int a,
+                  int b,
+                  int opacity,
+                  int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -368,8 +419,18 @@ struct display_4
     blitDC1toDC0(machine);
 
     boost::shared_ptr<Surface> after = graphics.renderToSurface();
-    performEffect(machine, after, before, time, style, direction,
-                  interpolation, xsize, ysize, a, b, c);
+    performEffect(machine,
+                  after,
+                  before,
+                  time,
+                  style,
+                  direction,
+                  interpolation,
+                  xsize,
+                  ysize,
+                  a,
+                  b,
+                  c);
   }
 };
 
@@ -377,19 +438,22 @@ struct display_4
 // {grp,rec}Open
 // -----------------------------------------------------------------------
 
-// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL', 'opacity').
+// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '#SEL',
+// 'opacity').
 //
 // Load and display a bitmap. |filename| is loaded into DC1 with opacity
 // |opacity|, and then is passed off to whatever transition effect, which will
 // perform some intermediary steps and then render DC1 to DC0.
 //
 // TODO(erg): factor out the common code between grpOpens!
-struct open_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                   IntConstant_T > {
+struct open_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
   bool use_alpha_;
   explicit open_1(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum,
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effectNum,
                   int opacity) {
     Rect src;
     Point dest;
@@ -422,14 +486,21 @@ struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   }
 };
 
-template<typename SPACE>
-struct open_3 : public RLOp_Void_5<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
+template <typename SPACE>
+struct open_3 : public RLOp_Void_5<StrConstant_T,
+                                   IntConstant_T,
+                                   Rect_T<SPACE>,
+                                   Point_T,
+                                   IntConstant_T> {
   bool use_alpha_;
   explicit open_3(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum,
-                  Rect srcRect, Point dest, int opacity) {
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effectNum,
+                  Rect srcRect,
+                  Point dest,
+                  int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -445,37 +516,59 @@ struct open_3 : public RLOp_Void_5<
   }
 };
 
-// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL', 'opacity').
+// Implements op<1:Grp:00076, 1>, fun grpOpen(strC 'filename', '\#SEL',
+// 'opacity').
 //
 // Load and display a bitmap. |filename| is loaded into DC1 with opacity
 // |opacity|, and then is passed off to whatever transition effect, which will
 // perform some intermediary steps and then render DC1 to DC0.
-template<typename SPACE>
-struct open_2 : public RLOp_Void_4<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
+template <typename SPACE>
+struct open_2
+    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   open_3<SPACE> delegate_;
   explicit open_2(bool in) : delegate_(in) {}
 
-  void operator()(RLMachine& machine, string filename, int effectNum,
-                  Rect src, Point dest) {
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effectNum,
+                  Rect src,
+                  Point dest) {
     int opacity = getSELEffect(machine, effectNum).at(14);
     delegate_(machine, filename, effectNum, src, dest, opacity);
   }
 };
 
-template<typename SPACE>
-struct open_4 : public RLOp_Void_13<
-  StrConstant_T, Rect_T<SPACE>,
-  Point_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T> {
+template <typename SPACE>
+struct open_4 : public RLOp_Void_13<StrConstant_T,
+                                    Rect_T<SPACE>,
+                                    Point_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T> {
   bool use_alpha_;
   explicit open_4(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string fileName,
-                  Rect srcRect, Point dest,
-                  int time, int style, int direction, int interpolation,
-                  int xsize, int ysize, int a, int b, int opacity, int c) {
+  void operator()(RLMachine& machine,
+                  string fileName,
+                  Rect srcRect,
+                  Point dest,
+                  int time,
+                  int style,
+                  int direction,
+                  int interpolation,
+                  int xsize,
+                  int ysize,
+                  int a,
+                  int b,
+                  int opacity,
+                  int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -486,15 +579,27 @@ struct open_4 : public RLOp_Void_13<
     blitDC1toDC0(machine);
 
     boost::shared_ptr<Surface> after = graphics.renderToSurface();
-    performEffect(machine, after, before, time, style, direction,
-                  interpolation, xsize, ysize, a, b, c);
+    performEffect(machine,
+                  after,
+                  before,
+                  time,
+                  style,
+                  direction,
+                  interpolation,
+                  xsize,
+                  ysize,
+                  a,
+                  b,
+                  c);
     performHideAllTextWindows(machine);
   }
 };
 
-struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                     IntConstant_T > {
-  void operator()(RLMachine& machine, string fileName, int effectNum,
+struct openBg_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  string fileName,
+                  int effectNum,
                   int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     Rect srcRect;
@@ -514,7 +619,7 @@ struct openBg_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
   }
 };
 
-struct openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
+struct openBg_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   openBg_1 delegate_;
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
@@ -523,14 +628,21 @@ struct openBg_0 : public RLOp_Void_2< StrConstant_T, IntConstant_T > {
   }
 };
 
-template<typename SPACE>
-struct openBg_3 : public RLOp_Void_5<
-  StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T, IntConstant_T> {
+template <typename SPACE>
+struct openBg_3 : public RLOp_Void_5<StrConstant_T,
+                                     IntConstant_T,
+                                     Rect_T<SPACE>,
+                                     Point_T,
+                                     IntConstant_T> {
   bool use_alpha_;
   explicit openBg_3(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string fileName, int effectNum,
-                  Rect srcRect, Point destPt, int opacity) {
+  void operator()(RLMachine& machine,
+                  string fileName,
+                  int effectNum,
+                  Rect srcRect,
+                  Point destPt,
+                  int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     OpenBgPrelude(machine, fileName);
 
@@ -546,32 +658,53 @@ struct openBg_3 : public RLOp_Void_5<
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct openBg_2
     : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   openBg_3<SPACE> delegate_;
   explicit openBg_2(bool in) : delegate_(in) {}
 
-  void operator()(RLMachine& machine, string fileName, int effectNum,
-                  Rect srcRect, Point destPt) {
+  void operator()(RLMachine& machine,
+                  string fileName,
+                  int effectNum,
+                  Rect srcRect,
+                  Point destPt) {
     vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, fileName, effectNum, srcRect, destPt, selEffect[14]);
   }
 };
 
-template<typename SPACE>
-struct openBg_4 : public RLOp_Void_13<
-  StrConstant_T, Rect_T<SPACE>, Point_T,
-  IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-  IntConstant_T, IntConstant_T> {
+template <typename SPACE>
+struct openBg_4 : public RLOp_Void_13<StrConstant_T,
+                                      Rect_T<SPACE>,
+                                      Point_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T,
+                                      IntConstant_T> {
   bool use_alpha_;
   explicit openBg_4(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, string fileName,
-                  Rect srcRect, Point destPt,
-                  int time, int style, int direction, int interpolation,
-                  int xsize, int ysize, int a, int b, int opacity, int c) {
+  void operator()(RLMachine& machine,
+                  string fileName,
+                  Rect srcRect,
+                  Point destPt,
+                  int time,
+                  int style,
+                  int direction,
+                  int interpolation,
+                  int xsize,
+                  int ysize,
+                  int a,
+                  int b,
+                  int opacity,
+                  int c) {
     GraphicsSystem& graphics = machine.system().graphics();
     OpenBgPrelude(machine, fileName);
 
@@ -583,8 +716,18 @@ struct openBg_4 : public RLOp_Void_13<
 
     // Render the screen to a temporary
     boost::shared_ptr<Surface> after = graphics.renderToSurface();
-    performEffect(machine, after, before, time, style, direction,
-                  interpolation, xsize, ysize, a, b, c);
+    performEffect(machine,
+                  after,
+                  before,
+                  time,
+                  style,
+                  direction,
+                  interpolation,
+                  xsize,
+                  ysize,
+                  a,
+                  b,
+                  c);
     performHideAllTextWindows(machine);
   }
 };
@@ -592,15 +735,21 @@ struct openBg_4 : public RLOp_Void_13<
 // -----------------------------------------------------------------------
 // {grp,rec}Copy
 // -----------------------------------------------------------------------
-template<typename SPACE>
-struct copy_3
-    : public RLOp_Void_5<Rect_T<SPACE>, IntConstant_T, Point_T, IntConstant_T,
-                         DefaultIntValue_T<255> > {
+template <typename SPACE>
+struct copy_3 : public RLOp_Void_5<Rect_T<SPACE>,
+                                   IntConstant_T,
+                                   Point_T,
+                                   IntConstant_T,
+                                   DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit copy_3(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, Rect srcRect,
-                  int src, Point destPoint, int dst, int opacity) {
+  void operator()(RLMachine& machine,
+                  Rect srcRect,
+                  int src,
+                  Point destPoint,
+                  int dst,
+                  int opacity) {
     // Copying to self is a noop
     if (src == dst)
       return;
@@ -613,14 +762,16 @@ struct copy_3
       graphics.setMinimumSizeForDC(dst, srcRect.size());
     }
 
-    sourceSurface->blitToSurface(
-      *graphics.getDC(dst),
-      srcRect, Rect(destPoint, srcRect.size()), opacity, use_alpha_);
+    sourceSurface->blitToSurface(*graphics.getDC(dst),
+                                 srcRect,
+                                 Rect(destPoint, srcRect.size()),
+                                 opacity,
+                                 use_alpha_);
   }
 };
 
-struct copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
-                                   DefaultIntValue_T<255> > {
+struct copy_1
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit copy_1(bool in) : use_alpha_(in) {}
 
@@ -637,9 +788,11 @@ struct copy_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
       graphics.setMinimumSizeForDC(dst, sourceSurface->size());
     }
 
-    sourceSurface->blitToSurface(
-      *graphics.getDC(dst), sourceSurface->rect(), sourceSurface->rect(),
-      opacity, use_alpha_);
+    sourceSurface->blitToSurface(*graphics.getDC(dst),
+                                 sourceSurface->rect(),
+                                 sourceSurface->rect(),
+                                 opacity,
+                                 use_alpha_);
   }
 };
 
@@ -664,10 +817,12 @@ struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
   }
 };
 
-template<typename SPACE>
-struct fill_3 : public RLOp_Void_3<
-  Rect_T<SPACE>, IntConstant_T, RGBMaybeAColour_T> {
-  void operator()(RLMachine& machine, Rect destRect, int dc,
+template <typename SPACE>
+struct fill_3
+    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBMaybeAColour_T> {
+  void operator()(RLMachine& machine,
+                  Rect destRect,
+                  int dc,
                   RGBAColour colour) {
     machine.system().graphics().getDC(dc)->fill(colour, destRect);
   }
@@ -680,7 +835,7 @@ struct invert_1 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct invert_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
     machine.system().graphics().getDC(dc)->invert(rect);
@@ -694,7 +849,7 @@ struct mono_1 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct mono_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
     machine.system().graphics().getDC(dc)->mono(rect);
@@ -708,9 +863,9 @@ struct colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
   }
 };
 
-template<typename SPACE>
-struct colour_2 : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T,
-                                         RGBColour_T> {
+template <typename SPACE>
+struct colour_2
+    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, RGBAColour colour) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
     surface->applyColour(colour.rgb(), rect);
@@ -724,9 +879,9 @@ struct light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-template<typename SPACE>
-struct light_2 : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T,
-                                         IntConstant_T> {
+template <typename SPACE>
+struct light_2
+    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, int level) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
     surface->applyColour(RGBColour(level, level, level), rect);
@@ -737,11 +892,10 @@ struct light_2 : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T,
 // {grp,rec}Fade
 // -----------------------------------------------------------------------
 
-template<typename SPACE>
-struct fade_7 : public RLOp_Void_3<
-  Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0> > {
-  void operator()(RLMachine& machine, Rect rect,
-                  RGBAColour colour, int time) {
+template <typename SPACE>
+struct fade_7
+    : public RLOp_Void_3<Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0>> {
+  void operator()(RLMachine& machine, Rect rect, RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
     graphics.getDC(0)->fill(colour, rect);
@@ -753,9 +907,9 @@ struct fade_7 : public RLOp_Void_3<
   }
 };
 
-template<typename SPACE>
-struct fade_5 : public RLOp_Void_3<
-  Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0> > {
+template <typename SPACE>
+struct fade_5
+    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0>> {
   fade_7<SPACE> delegate_;
 
   void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
@@ -765,7 +919,7 @@ struct fade_5 : public RLOp_Void_3<
   }
 };
 
-struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0> > {
+struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, RGBAColour colour, int time) {
@@ -774,7 +928,7 @@ struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0> > {
   }
 };
 
-struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0> > {
+struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int colour_num, int time) {
@@ -785,20 +939,24 @@ struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0> > {
   }
 };
 
-
 // -----------------------------------------------------------------------
 // {grp,rec}StretchBlit
 // -----------------------------------------------------------------------
-template<typename SPACE>
-struct stretchBlit_1
-    : public RLOp_Void_5<Rect_T<SPACE>, IntConstant_T,
-                         Rect_T<SPACE>, IntConstant_T,
-                         DefaultIntValue_T<255> > {
+template <typename SPACE>
+struct stretchBlit_1 : public RLOp_Void_5<Rect_T<SPACE>,
+                                          IntConstant_T,
+                                          Rect_T<SPACE>,
+                                          IntConstant_T,
+                                          DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit stretchBlit_1(bool in) : use_alpha_(in) {}
 
-  void operator()(RLMachine& machine, Rect src_rect, int src,
-                  Rect dst_rect, int dst, int opacity) {
+  void operator()(RLMachine& machine,
+                  Rect src_rect,
+                  int src,
+                  Rect dst_rect,
+                  int dst,
+                  int opacity) {
     // Copying to self is a noop
     if (src == dst)
       return;
@@ -811,27 +969,29 @@ struct stretchBlit_1
     }
 
     sourceSurface->blitToSurface(
-      *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
+        *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
   }
 };
 
-template<typename SPACE>
-struct zoom : public RLOp_Void_5<
-  Rect_T<SPACE>, Rect_T<SPACE>, IntConstant_T, Rect_T<SPACE>, IntConstant_T> {
-  void operator()(RLMachine& machine, Rect frect, Rect trect, int srcDC,
-                  Rect drect, int time) {
+template <typename SPACE>
+struct zoom : public RLOp_Void_5<Rect_T<SPACE>,
+                                 Rect_T<SPACE>,
+                                 IntConstant_T,
+                                 Rect_T<SPACE>,
+                                 IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  Rect frect,
+                  Rect trect,
+                  int srcDC,
+                  Rect drect,
+                  int time) {
     GraphicsSystem& gs = machine.system().graphics();
     gs.setGraphicsBackground(BACKGROUND_DC0);
 
-    LongOperation* zoomOp =
-      new ZoomLongOperation(
-        machine, gs.getDC(0), gs.getDC(srcDC),
-        frect, trect, drect, time);
-    BlitAfterEffectFinishes* blitOp =
-      new BlitAfterEffectFinishes(
-        zoomOp,
-        gs.getDC(srcDC), gs.getDC(0),
-        trect, drect);
+    LongOperation* zoomOp = new ZoomLongOperation(
+        machine, gs.getDC(0), gs.getDC(srcDC), frect, trect, drect, time);
+    BlitAfterEffectFinishes* blitOp = new BlitAfterEffectFinishes(
+        zoomOp, gs.getDC(srcDC), gs.getDC(0), trect, drect);
     machine.pushLongOperation(blitOp);
   }
 };
@@ -842,8 +1002,7 @@ struct zoom : public RLOp_Void_5<
 
 // Defines the fairly complex parameter definition for the list of functions to
 // call in a {grp,rec}Multi command.
-typedef Argc_T<
-  Special_T<
+typedef Argc_T<Special_T<
     DefaultSpecialMapper,
     // 0:copy(strC 'filename')
     StrConstant_T,
@@ -852,14 +1011,22 @@ typedef Argc_T<
     // 2:copy(strC 'filename', 'effect', 'alpha')
     Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>,
     // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
-    Complex7_T<StrConstant_T, IntConstant_T, IntConstant_T,
-               IntConstant_T, IntConstant_T, IntConstant_T,
+    Complex7_T<StrConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
                IntConstant_T>,
     // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
-    Complex8_T<StrConstant_T, IntConstant_T, IntConstant_T,
-               IntConstant_T, IntConstant_T, IntConstant_T,
-               IntConstant_T, IntConstant_T>
-    > >  MultiCommand;
+    Complex8_T<StrConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T,
+               IntConstant_T>>> MultiCommand;
 
 // -----------------------------------------------------------------------
 
@@ -876,73 +1043,89 @@ typedef Argc_T<
 // All work is applied to DC 1.
 const int MULTI_TARGET_DC = 1;
 
-template<typename SPACE>
+template <typename SPACE>
 struct multi_command {
-  void handleMultiCommands(
-      RLMachine& machine, const MultiCommand::type& commands);
+  void handleMultiCommands(RLMachine& machine,
+                           const MultiCommand::type& commands);
 };
 
-template<typename SPACE>
+template <typename SPACE>
 void multi_command<SPACE>::handleMultiCommands(
-    RLMachine& machine, const MultiCommand::type& commands) {
+    RLMachine& machine,
+    const MultiCommand::type& commands) {
   for (MultiCommand::type::const_iterator it = commands.begin();
-       it != commands.end(); it++) {
+       it != commands.end();
+       it++) {
     switch (it->type) {
-    case 0:
-      // 0:copy(strC 'filename')
-      load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
-      break;
-    case 1: {
-      // 1:copy(strC 'filename', 'effect')
-      Rect src;
-      Point dest;
-      getSELPointAndRect(machine, get<1>(it->second), src, dest);
+      case 0:
+        // 0:copy(strC 'filename')
+        load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
+        break;
+      case 1: {
+        // 1:copy(strC 'filename', 'effect')
+        Rect src;
+        Point dest;
+        getSELPointAndRect(machine, get<1>(it->second), src, dest);
 
-      load_3<SPACE>(true)
-        (machine, get<0>(it->second), MULTI_TARGET_DC,
-         src, dest, 255);
-      break;
-    }
-    case 2: {
-      // 2:copy(strC 'filename', 'effect', 'alpha')
-      Rect src;
-      Point dest;
-      getSELPointAndRect(machine, get<1>(it->third), src, dest);
+        load_3<SPACE>(true)(
+            machine, get<0>(it->second), MULTI_TARGET_DC, src, dest, 255);
+        break;
+      }
+      case 2: {
+        // 2:copy(strC 'filename', 'effect', 'alpha')
+        Rect src;
+        Point dest;
+        getSELPointAndRect(machine, get<1>(it->third), src, dest);
 
-      load_3<SPACE>(true)
-        (machine, get<0>(it->third), MULTI_TARGET_DC,
-         src, dest, get<2>(it->third));
-      break;
-    }
-    case 3: {
-      // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
-      load_3<SPACE>(true)
-        (machine, get<0>(it->fourth), MULTI_TARGET_DC,
-         SPACE::makeRect(get<1>(it->fourth), get<2>(it->fourth),
-                         get<3>(it->fourth), get<4>(it->fourth)),
-         Point(get<5>(it->fourth), get<6>(it->fourth)), 255);
-      break;
-    }
-    case 4: {
-      // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
-      load_3<SPACE>(true)
-        (machine, get<0>(it->fifth), MULTI_TARGET_DC,
-         SPACE::makeRect(get<1>(it->fifth), get<2>(it->fifth),
-                         get<3>(it->fifth), get<4>(it->fifth)),
-         Point(get<5>(it->fifth), get<6>(it->fifth)), get<7>(it->fifth));
-      break;
-    }
+        load_3<SPACE>(true)(machine,
+                            get<0>(it->third),
+                            MULTI_TARGET_DC,
+                            src,
+                            dest,
+                            get<2>(it->third));
+        break;
+      }
+      case 3: {
+        // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
+        load_3<SPACE>(true)(machine,
+                            get<0>(it->fourth),
+                            MULTI_TARGET_DC,
+                            SPACE::makeRect(get<1>(it->fourth),
+                                            get<2>(it->fourth),
+                                            get<3>(it->fourth),
+                                            get<4>(it->fourth)),
+                            Point(get<5>(it->fourth), get<6>(it->fourth)),
+                            255);
+        break;
+      }
+      case 4: {
+        // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
+        load_3<SPACE>(true)(machine,
+                            get<0>(it->fifth),
+                            MULTI_TARGET_DC,
+                            SPACE::makeRect(get<1>(it->fifth),
+                                            get<2>(it->fifth),
+                                            get<3>(it->fifth),
+                                            get<4>(it->fifth)),
+                            Point(get<5>(it->fifth), get<6>(it->fifth)),
+                            get<7>(it->fifth));
+        break;
+      }
     }
   }
 }
 
 // fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
-template<typename SPACE>
-struct multi_str_1
-    : public RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T,
-                         MultiCommand>,
-      public multi_command<SPACE> {
-  void operator()(RLMachine& machine, string filename, int effect, int alpha,
+template <typename SPACE>
+struct multi_str_1 : public RLOp_Void_4<StrConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        MultiCommand>,
+                     public multi_command<SPACE> {
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effect,
+                  int alpha,
                   MultiCommand::type commands) {
     load_1(false)(machine, filename, MULTI_TARGET_DC, 255);
     multi_command<SPACE>::handleMultiCommands(machine, commands);
@@ -950,23 +1133,29 @@ struct multi_str_1
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct multi_str_0
     : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
   multi_str_1<SPACE> delegate_;
 
-  void operator()(RLMachine& machine, string filename, int effect,
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effect,
                   MultiCommand::type commands) {
     delegate_(machine, filename, effect, 255, commands);
   }
 };
 
-template<typename SPACE>
-struct multi_dc_1
-    : public RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T,
-                         MultiCommand>,
-      public multi_command<SPACE> {
-  void operator()(RLMachine& machine, int dc, int effect, int alpha,
+template <typename SPACE>
+struct multi_dc_1 : public RLOp_Void_4<IntConstant_T,
+                                       IntConstant_T,
+                                       IntConstant_T,
+                                       MultiCommand>,
+                    public multi_command<SPACE> {
+  void operator()(RLMachine& machine,
+                  int dc,
+                  int effect,
+                  int alpha,
                   MultiCommand::type commands) {
     copy_1(false)(machine, dc, MULTI_TARGET_DC, 255);
     multi_command<SPACE>::handleMultiCommands(machine, commands);
@@ -974,12 +1163,14 @@ struct multi_dc_1
   }
 };
 
-template<typename SPACE>
+template <typename SPACE>
 struct multi_dc_0
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
   multi_dc_1<SPACE> delegate_;
 
-  void operator()(RLMachine& machine, int dc, int effect,
+  void operator()(RLMachine& machine,
+                  int dc,
+                  int effect,
                   MultiCommand::type commands) {
     delegate_(machine, dc, effect, 255, commands);
   }
@@ -989,7 +1180,7 @@ struct multi_dc_0
 // stack"
 class GrpStackAdapter : public RLOp_SpecialCase {
  public:
-  explicit GrpStackAdapter(RLOperation* in) : operation(in) { }
+  explicit GrpStackAdapter(RLOperation* in) : operation(in) {}
 
   void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
     operation->dispatchFunction(machine, ff);
@@ -1009,8 +1200,7 @@ RLOperation* graphicsStackMappingFun(RLOperation* op) {
   return new GrpStackAdapter(op);
 }
 
-GrpModule::GrpModule()
-    : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
+GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
   using namespace rect_impl;
 
   addOpcode(15, 0, "allocDC", new allocDC);
@@ -1265,7 +1455,8 @@ void replayGraphicsStackCommand(RLMachine& machine,
         }
       }
     }
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e) {
     cerr << "Error while replaying graphics stack: " << e.what() << endl;
     return;
   }
@@ -1280,10 +1471,12 @@ void replayDepricatedGraphicsStackVector(
     try {
       if (frame.name() == GRP_LOAD) {
         if (frame.hasTargetCoordinates()) {
-          load_3<rect_impl::REC>(frame.mask())(
-              machine, frame.filename(), frame.targetDC(),
-              frame.sourceRect(), frame.targetPoint(),
-              frame.opacity());
+          load_3<rect_impl::REC>(frame.mask())(machine,
+                                               frame.filename(),
+                                               frame.targetDC(),
+                                               frame.sourceRect(),
+                                               frame.targetPoint(),
+                                               frame.opacity());
         } else {
           // Older versions of rlvm didn't record the mask bit, so make sure we
           // check for that since we don't want to break old save games.
@@ -1293,28 +1486,39 @@ void replayDepricatedGraphicsStackVector(
         }
       } else if (frame.name() == GRP_OPEN) {
         // open is just a load + an animation.
-        loadImageToDC1(machine, frame.filename(), frame.sourceRect(),
-                       frame.targetPoint(), frame.opacity(), frame.mask());
+        loadImageToDC1(machine,
+                       frame.filename(),
+                       frame.sourceRect(),
+                       frame.targetPoint(),
+                       frame.opacity(),
+                       frame.mask());
         blitDC1toDC0(machine);
       } else if (frame.name() == GRP_COPY) {
         if (frame.hasSourceCoordinates()) {
-          copy_3<rect_impl::REC>(frame.mask())(
-              machine,
-              frame.sourceRect(), frame.sourceDC(),
-              frame.targetPoint(), frame.targetDC(),
-              frame.opacity());
+          copy_3<rect_impl::REC>(frame.mask())(machine,
+                                               frame.sourceRect(),
+                                               frame.sourceDC(),
+                                               frame.targetPoint(),
+                                               frame.targetDC(),
+                                               frame.opacity());
         } else {
           copy_1(frame.mask())(
               machine, frame.sourceDC(), frame.targetDC(), frame.opacity());
         }
       } else if (frame.name() == GRP_DISPLAY) {
         loadDCToDC1(machine,
-                    frame.sourceDC(), frame.sourceRect(),
-                    frame.targetPoint(), frame.opacity());
+                    frame.sourceDC(),
+                    frame.sourceRect(),
+                    frame.targetPoint(),
+                    frame.opacity());
         blitDC1toDC0(machine);
       } else if (frame.name() == GRP_OPENBG) {
-        loadImageToDC1(machine, frame.filename(), frame.sourceRect(),
-                       frame.targetPoint(), frame.opacity(), false);
+        loadImageToDC1(machine,
+                       frame.filename(),
+                       frame.sourceRect(),
+                       frame.targetPoint(),
+                       frame.opacity(),
+                       false);
         blitDC1toDC0(machine);
       } else if (frame.name() == GRP_ALLOC) {
         Point target = frame.targetPoint();
@@ -1322,7 +1526,8 @@ void replayDepricatedGraphicsStackVector(
       } else if (frame.name() == GRP_WIPE) {
         wipe()(machine, frame.targetDC(), frame.r(), frame.g(), frame.b());
       }
-    } catch(rlvm::Exception& e) {
+    }
+    catch (rlvm::Exception& e) {
       cerr << "WARNING: Error while thawing graphics stack: " << e.what()
            << endl;
     }

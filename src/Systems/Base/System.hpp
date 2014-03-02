@@ -101,7 +101,6 @@ extern const std::vector<std::string> SOUND_FILETYPES;
 extern const std::vector<std::string> KOE_ARCHIVE_FILETYPES;
 extern const std::vector<std::string> KOE_LOOSE_FILETYPES;
 
-
 // Struct containing the global memory to get serialized to disk with
 // global memory.
 struct SystemGlobals {
@@ -115,17 +114,16 @@ struct SystemGlobals {
   bool low_priority_;
 
   // boost::serialization support
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version) {
-    ar & confirm_save_load_;
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar& confirm_save_load_;
 
     if (version > 0)
-      ar & low_priority_;
+      ar& low_priority_;
   }
 };
 
 BOOST_CLASS_VERSION(SystemGlobals, 1)
-
 
 // The system class provides a generalized interface to all the
 // components that make up a local system that may need to be
@@ -212,9 +210,8 @@ class System {
 
   // Finds a file on disk based on its basename with a list of possible
   // extensions, or empty() if file not found.
-  boost::filesystem::path findFile(
-      const std::string& fileName,
-      const std::vector<std::string>& extensions);
+  boost::filesystem::path findFile(const std::string& fileName,
+                                   const std::vector<std::string>& extensions);
 
   // Resets the present values of the system; this doesn't clear user settings,
   // but clears things like the current graphics state and the status of all
@@ -283,10 +280,9 @@ class System {
   boost::shared_ptr<Platform> platform_;
 
  private:
-  typedef std::multimap<
-   std::string,
-   std::pair<std::string, boost::filesystem::path> > FileSystemCache;
-
+  typedef std::multimap<std::string,
+                        std::pair<std::string, boost::filesystem::path>>
+      FileSystemCache;
 
   boost::filesystem::path getHomeDirectory();
 
@@ -340,7 +336,7 @@ class System {
   friend class boost::serialization::access;
 
   // boost::serialization
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
     // For now, does nothing
   }

@@ -50,10 +50,7 @@ class GCNSaveLoadWindow : public GCNWindow,
                           public gcn::ActionListener,
                           public gcn::SelectionListener {
  public:
-  enum WindowType {
-    DO_SAVE,
-    DO_LOAD
-  };
+  enum WindowType { DO_SAVE, DO_LOAD };
 
  public:
   GCNSaveLoadWindow(RLMachine& machine,

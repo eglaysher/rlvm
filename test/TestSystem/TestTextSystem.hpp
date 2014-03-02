@@ -44,33 +44,33 @@ class TestTextSystem : public TextSystem {
   TestTextSystem(System& system, Gameexe& gexe);
   ~TestTextSystem();
 
-  void executeTextSystem(RLMachine& machine) { }
-  void render(RLMachine& machine) { }
+  void executeTextSystem(RLMachine& machine) {}
+  void render(RLMachine& machine) {}
 
   MockTextWindow& getMockTextWindowAt(int text_window_number);
   virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
 
   // We can safely ignore mouse clicks...for now.
-  void setMousePosition(RLMachine& machine, const Point& pos) { }
-  bool handleMouseClick(RLMachine& machine, const Point& pos,
-                        bool pressed) { return false; }
+  void setMousePosition(RLMachine& machine, const Point& pos) {}
+  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed) {
+    return false;
+  }
 
-  virtual Size renderGlyphOnto(
-      const std::string& current,
-      int font_size,
-      const RGBColour& font_colour,
-      const RGBColour* shadow_colour,
-      int insertion_point_x,
-      int insertion_point_y,
-      const boost::shared_ptr<Surface>& destination);
+  virtual Size renderGlyphOnto(const std::string& current,
+                               int font_size,
+                               const RGBColour& font_colour,
+                               const RGBColour* shadow_colour,
+                               int insertion_point_x,
+                               int insertion_point_y,
+                               const boost::shared_ptr<Surface>& destination);
   int charWidth(int size, uint16_t codepoint) { return 20; }
 
-  const std::vector<std::tuple<std::string, int, int> >& glyphs() {
+  const std::vector<std::tuple<std::string, int, int>>& glyphs() {
     return rendered_glyps_;
   }
 
  private:
-  std::vector<std::tuple<std::string, int, int> > rendered_glyps_;
+  std::vector<std::tuple<std::string, int, int>> rendered_glyps_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_

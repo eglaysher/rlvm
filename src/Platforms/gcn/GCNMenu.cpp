@@ -43,11 +43,10 @@ const int MENU_PADDING = 10;
 // GCNMenu
 // -----------------------------------------------------------------------
 
-GCNMenu::GCNMenu(
-  const std::string& title,
-  const vector<GCNMenuButton>& buttons_to_display,
+GCNMenu::GCNMenu(const std::string& title,
+                 const vector<GCNMenuButton>& buttons_to_display,
                  GCNPlatform* platform)
-  : GCNWindow(platform) {
+    : GCNWindow(platform) {
   int top_offset = MENU_PADDING;
   int max_button_size = 0;
 
@@ -63,7 +62,8 @@ GCNMenu::GCNMenu(
 
   vector<gcn::Button*> buttons;
   for (vector<GCNMenuButton>::const_iterator it = buttons_to_display.begin();
-       it != buttons_to_display.end(); ++it) {
+       it != buttons_to_display.end();
+       ++it) {
     if (it->separator) {
       top_offset += MENU_PADDING;
     } else {
@@ -90,20 +90,21 @@ GCNMenu::GCNMenu(
     menu_title->setAlignment(gcn::Graphics::CENTER);
   }
 
-  for (vector<gcn::Button*>::iterator it = buttons.begin();
-       it != buttons.end(); ++it) {
+  for (vector<gcn::Button*>::iterator it = buttons.begin(); it != buttons.end();
+       ++it) {
     (*it)->setWidth(max_button_size);
     (*it)->setAlignment(gcn::Graphics::CENTER);
     // TODO: Leak
   }
 
-  setSize((MENU_PADDING*2) + max_button_size, top_offset);
+  setSize((MENU_PADDING * 2) + max_button_size, top_offset);
 }
 
 // -----------------------------------------------------------------------
 
 GCNMenu::~GCNMenu() {
-  for_each(widgets_to_delete_.begin(), widgets_to_delete_.end(),
+  for_each(widgets_to_delete_.begin(),
+           widgets_to_delete_.end(),
            boost::checked_deleter<gcn::Widget>());
 }
 

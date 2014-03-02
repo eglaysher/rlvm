@@ -53,7 +53,6 @@ class TextWindowButton;
 
 const int kNumFaceSlots = 8;
 
-
 // Abstract representation of a TextWindow. Aggrigated by TextSystem, and
 // rendered in conjunction with GraphicsSystem.
 //
@@ -135,7 +134,8 @@ class TextWindow {
 
   // TODO: What's setMousePosition and how does it differ from mouse listeners?
   virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine, const Point& pos,
+  virtual bool handleMouseClick(RLMachine& machine,
+                                const Point& pos,
                                 bool pressed);
 
   // Sets how the name is displayed
@@ -241,7 +241,6 @@ class TextWindow {
   virtual void resetIndentation();
   virtual void markRubyBegin();
   virtual void displayRubyText(const std::string& utf8str) = 0;
-
 
   // Text Windows are responsible for presenting the questions from
   // select() and select_s() calls. (select_w() is not done here.)
@@ -409,7 +408,7 @@ class TextWindow {
 
   // A list of visible koe replay buttons. The Point is the top left corner of
   // the button and int is the corresponding id number.
-  std::vector<std::pair<Point, int> > koe_replay_button_;
+  std::vector<std::pair<Point, int>> koe_replay_button_;
 
   // We lazily parse and load data about displaying the koe icon on demand.
   struct KoeReplayInfo {

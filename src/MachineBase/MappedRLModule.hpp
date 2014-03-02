@@ -40,13 +40,17 @@ class MappedRLModule : public RLModule {
   typedef std::function<RLOperation*(RLOperation* op)> MappingFunction;
 
  protected:
-  MappedRLModule(const MappingFunction& fun, const std::string& in_module_name,
-                 int in_module_type, int in_module_number);
+  MappedRLModule(const MappingFunction& fun,
+                 const std::string& in_module_name,
+                 int in_module_type,
+                 int in_module_number);
   ~MappedRLModule();
 
   // Adds a map_function_(op) to this modules set of opcodes. Takes ownership
   // of |op|.
-  virtual void addOpcode(int opcode, unsigned char overload, const char* name,
+  virtual void addOpcode(int opcode,
+                         unsigned char overload,
+                         const char* name,
                          RLOperation* op);
 
  private:

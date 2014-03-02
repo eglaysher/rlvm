@@ -24,7 +24,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-
 #ifndef SRC_SYSTEMS_BASE_PLATFORM_HPP_
 #define SRC_SYSTEMS_BASE_PLATFORM_HPP_
 

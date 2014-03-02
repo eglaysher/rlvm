@@ -44,8 +44,7 @@ bool NoLongerPlaying(RLMachine& machine, int channel) {
 
 void addPcmWait(RLMachine& machine, int channel) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(std::bind(
-      NoLongerPlaying, std::ref(machine), channel));
+  wait_op->breakOnEvent(std::bind(NoLongerPlaying, std::ref(machine), channel));
   machine.pushLongOperation(wait_op);
 }
 
@@ -61,9 +60,11 @@ struct wavPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   }
 };
 
-struct wavPlay_2 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                      IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel,
+struct wavPlay_2
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  std::string fileName,
+                  int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, false, channel, fadein);
   }
@@ -76,9 +77,11 @@ struct wavPlayEx_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   }
 };
 
-struct wavPlayEx_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                        IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel,
+struct wavPlayEx_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  std::string fileName,
+                  int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, false, channel, fadein);
     addPcmWait(machine, channel);
@@ -91,9 +94,11 @@ struct wavLoop_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   }
 };
 
-struct wavLoop_1 : public RLOp_Void_3<StrConstant_T, IntConstant_T,
-                                      IntConstant_T> {
-  void operator()(RLMachine& machine, std::string fileName, int channel,
+struct wavLoop_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  std::string fileName,
+                  int channel,
                   int fadein) {
     machine.system().sound().wavPlay(fileName, true, channel, fadein);
   }
@@ -126,8 +131,8 @@ struct wavSetVolume_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // We ignore fadein because we'll never get that effect with the
 // current mixing library.
-struct wavSetVolume_1 : public RLOp_Void_3<IntConstant_T, IntConstant_T,
-                                           IntConstant_T> {
+struct wavSetVolume_1
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int channel, int level, int fadeInMs) {
     machine.system().sound().setChannelVolume(channel, level, fadeInMs);
   }
@@ -161,8 +166,7 @@ struct wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-PcmModule::PcmModule()
-    : RLModule("Pcm", 1, 21) {
+PcmModule::PcmModule() : RLModule("Pcm", 1, 21) {
   addOpcode(0, 0, "wavPlay", new wavPlay_0);
   addOpcode(0, 1, "wavPlay", new wavPlay_1);
   addOpcode(0, 2, "wavPlay", new wavPlay_2);

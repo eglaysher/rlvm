@@ -34,7 +34,7 @@
 
 // -----------------------------------------------------------------------
 
-struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
+struct Sys_wait : public RLOp_Void_1<IntConstant_T> {
   const bool cancelable_;
 
   explicit Sys_wait(bool cancelable) : cancelable_(cancelable) {}
@@ -52,8 +52,9 @@ struct Sys_wait : public RLOp_Void_1< IntConstant_T > {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetClick : public RLOp_Void_2< IntReference_T, IntReference_T > {
-  void operator()(RLMachine& machine, IntReferenceIterator x,
+struct Sys_GetClick : public RLOp_Void_2<IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine,
+                  IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->saveClickLocation(x, y);
@@ -65,8 +66,10 @@ struct Sys_GetClick : public RLOp_Void_2< IntReference_T, IntReference_T > {
 
 // fun WaitClick (store) <1:Sys:00132, 0> ('time', int 'X', int 'Y')
 struct Sys_WaitClick
-  : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T > {
-  void operator()(RLMachine& machine, int time, IntReferenceIterator x,
+    : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine,
+                  int time,
+                  IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->waitMilliseconds(time);

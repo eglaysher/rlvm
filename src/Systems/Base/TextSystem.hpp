@@ -75,13 +75,12 @@ struct TextSystemGlobals {
   std::vector<int> window_attr;
 
   // boost::serialization support
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & auto_mode_base_time & auto_mode_char_time & message_speed
-      & window_attr;
+    ar& auto_mode_base_time& auto_mode_char_time& message_speed& window_attr;
 
     if (version > 0)
-      ar & font_weight & font_shadow;
+      ar& font_weight& font_shadow;
   }
 };
 
@@ -220,10 +219,13 @@ class TextSystem : public EventListener {
   // Returns a surface with |utf8str| rendered with the other specified
   // properties. Will search |utf8str| for object text syntax and will change
   // various properties based on that syntax.
-  boost::shared_ptr<Surface> renderText(
-      const std::string& utf8str, int size, int xspace,
-      int yspace, const RGBColour& colour, RGBColour* shadow_colour,
-      int max_chars_in_line);
+  boost::shared_ptr<Surface> renderText(const std::string& utf8str,
+                                        int size,
+                                        int xspace,
+                                        int yspace,
+                                        const RGBColour& colour,
+                                        RGBColour* shadow_colour,
+                                        int max_chars_in_line);
 
   // Renders a glyph onto destination. Returns the size of the glyph blitted.
   virtual Size renderGlyphOnto(
@@ -286,7 +288,7 @@ class TextSystem : public EventListener {
   int active_window_;
 
   // Type of the Window storage
-  typedef std::map<int, boost::shared_ptr<TextWindow> > WindowMap;
+  typedef std::map<int, boost::shared_ptr<TextWindow>> WindowMap;
 
   // Storage of active windows
   WindowMap text_window_;
@@ -313,7 +315,7 @@ class TextSystem : public EventListener {
   boost::shared_ptr<TextKeyCursor> text_key_cursor_;
 
   bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
-    msgbkleft_use_, msgbkright_use_, exbtn_use_;
+      msgbkleft_use_, msgbkright_use_, exbtn_use_;
 
   void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
 
@@ -348,10 +350,10 @@ class TextSystem : public EventListener {
   // boost::serialization support
   friend class boost::serialization::access;
 
-  template<class Archive>
-  void save(Archive & ar, const unsigned int file_version) const;
+  template <class Archive>
+  void save(Archive& ar, const unsigned int file_version) const;
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive& ar, const unsigned int file_version);
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -361,7 +363,8 @@ class TextSystem : public EventListener {
 // variable placeholders with the names from Memory. This function assumes that
 // text is in CP932 encoding, and will need to be generalized when we try to
 // support other hacks on top of cp932.
-void parseNames(const Memory& memory, const std::string& input,
+void parseNames(const Memory& memory,
+                const std::string& input,
                 std::string& output);
 
 // LongOperation which just calls text().setSystemVisible(true) and removes

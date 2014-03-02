@@ -58,5 +58,4 @@ RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
   }
 }
 
-RealLiveDLL::~RealLiveDLL() {
-}
+RealLiveDLL::~RealLiveDLL() {}

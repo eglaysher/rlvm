@@ -39,8 +39,12 @@ class LittleBustersPT00DLL : public RealLiveDLL {
   virtual ~LittleBustersPT00DLL();
 
   // Overridden from RealLiveDLL:
-  virtual int callDLL(RLMachine& machine, int func, int arg1, int arg2,
-                      int arg3, int arg4);
+  virtual int callDLL(RLMachine& machine,
+                      int func,
+                      int arg1,
+                      int arg2,
+                      int arg3,
+                      int arg4);
   virtual const std::string& name() const;
 };
 

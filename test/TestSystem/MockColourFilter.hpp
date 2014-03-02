@@ -33,10 +33,8 @@
 
 class MockColourFilter : public ColourFilter {
  public:
-  MOCK_METHOD3(Fill, void(const GraphicsObject&,
-                          const Rect&,
-                          const RGBAColour&));
+  MOCK_METHOD3(Fill,
+               void(const GraphicsObject&, const Rect&, const RGBAColour&));
 };
-
 
 #endif  // TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_

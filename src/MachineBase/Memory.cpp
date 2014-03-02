@@ -41,18 +41,12 @@ using namespace std;
 using namespace libReallive;
 
 const IntegerBank_t LOCAL_INTEGER_BANKS = {
-  make_pair(INTB_LOCATION, 'A'),
-  make_pair(INTB_LOCATION, 'B'),
-  make_pair(INTC_LOCATION, 'C'),
-  make_pair(INTD_LOCATION, 'D'),
-  make_pair(INTE_LOCATION, 'E'),
-  make_pair(INTF_LOCATION, 'F')
-};
+    make_pair(INTB_LOCATION, 'A'), make_pair(INTB_LOCATION, 'B'),
+    make_pair(INTC_LOCATION, 'C'), make_pair(INTD_LOCATION, 'D'),
+    make_pair(INTE_LOCATION, 'E'), make_pair(INTF_LOCATION, 'F')};
 
-const IntegerBank_t GLOBAL_INTEGER_BANKS = {
-  make_pair(INTG_LOCATION, 'G'),
-  make_pair(INTZ_LOCATION, 'Z')
-};
+const IntegerBank_t GLOBAL_INTEGER_BANKS = {make_pair(INTG_LOCATION, 'G'),
+                                            make_pair(INTZ_LOCATION, 'Z')};
 
 // -----------------------------------------------------------------------
 // GlobalMemory
@@ -65,12 +59,9 @@ GlobalMemory::GlobalMemory() {
 // -----------------------------------------------------------------------
 // LocalMemory
 // -----------------------------------------------------------------------
-LocalMemory::LocalMemory() {
-  reset();
-}
+LocalMemory::LocalMemory() { reset(); }
 
-LocalMemory::LocalMemory(dont_initialize) {
-}
+LocalMemory::LocalMemory(dont_initialize) {}
 
 void LocalMemory::reset() {
   memset(intA, 0, sizeof(intA));
@@ -90,23 +81,20 @@ void LocalMemory::reset() {
 // Memory
 // -----------------------------------------------------------------------
 Memory::Memory(RLMachine& machine, Gameexe& gameexe)
-  : global_(new GlobalMemory),
-    local_(),
-    machine_(machine) {
+    : global_(new GlobalMemory), local_(), machine_(machine) {
   connectIntVarPointers();
 
   initializeDefaultValues(gameexe);
 }
 
 Memory::Memory(RLMachine& machine, int slot)
-  : global_(machine.memory().global_),
-    local_(dont_initialize()),
-    machine_(machine) {
+    : global_(machine.memory().global_),
+      local_(dont_initialize()),
+      machine_(machine) {
   connectIntVarPointers();
 }
 
-Memory::~Memory() {
-}
+Memory::~Memory() {}
 
 void Memory::connectIntVarPointers() {
   int_var[0] = local_.intA;
@@ -129,57 +117,61 @@ void Memory::connectIntVarPointers() {
 }
 
 const std::string& Memory::getStringValue(int type, int location) {
-  if (location > (SIZE_OF_MEM_BANK -1))
+  if (location > (SIZE_OF_MEM_BANK - 1))
     throw rlvm::Exception(
         "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
-  case STRK_LOCATION:
-    if (location > 2) {
-      throw rlvm::Exception(
-          "Invalid range access on strK in RLMachine::set_string_value");
-    } else if (!machine_.currentStrKBank()) {
-      throw rlvm::Exception("No string bank connected yet!");
-    } else {
-      return machine_.currentStrKBank()[location];
-    }
-  case STRM_LOCATION: return global_->strM[location];
-  case STRS_LOCATION: return local_.strS[location];
-  default:
-    throw rlvm::Exception("Invalid type in RLMachine::get_string_value");
+    case STRK_LOCATION:
+      if (location > 2) {
+        throw rlvm::Exception(
+            "Invalid range access on strK in RLMachine::set_string_value");
+      } else if (!machine_.currentStrKBank()) {
+        throw rlvm::Exception("No string bank connected yet!");
+      } else {
+        return machine_.currentStrKBank()[location];
+      }
+    case STRM_LOCATION:
+      return global_->strM[location];
+    case STRS_LOCATION:
+      return local_.strS[location];
+    default:
+      throw rlvm::Exception("Invalid type in RLMachine::get_string_value");
   }
 }
 
 void Memory::setStringValue(int type, int number, const std::string& value) {
-  if (number > (SIZE_OF_MEM_BANK -1))
-      throw rlvm::Exception(
-          "Invalid range access in RLMachine::set_string_value");
+  if (number > (SIZE_OF_MEM_BANK - 1))
+    throw rlvm::Exception(
+        "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
-  case STRK_LOCATION:
-    if (number > 2) {
-      throw rlvm::Exception(
-          "Invalid range access on strK in RLMachine::set_string_value");
-    } else if (!machine_.currentStrKBank()) {
-      throw rlvm::Exception("No string bank connected yet!");
-    } else {
-      machine_.currentStrKBank()[number] = value;
+    case STRK_LOCATION:
+      if (number > 2) {
+        throw rlvm::Exception(
+            "Invalid range access on strK in RLMachine::set_string_value");
+      } else if (!machine_.currentStrKBank()) {
+        throw rlvm::Exception("No string bank connected yet!");
+      } else {
+        machine_.currentStrKBank()[number] = value;
+      }
+      break;
+    case STRM_LOCATION:
+      global_->strM[number] = value;
+      break;
+    case STRS_LOCATION: {
+      // Possibly record the orriginal value for a piece of local memory.
+      std::map<int, std::string>::iterator it =
+          local_.original_strS.find(number);
+      if (it == local_.original_strS.end()) {
+        local_.original_strS.insert(
+            std::make_pair(number, local_.strS[number]));
+      }
+      local_.strS[number] = value;
+      break;
     }
-    break;
-  case STRM_LOCATION:
-    global_->strM[number] = value;
-    break;
-  case STRS_LOCATION: {
-    // Possibly record the orriginal value for a piece of local memory.
-    std::map<int, std::string>::iterator it = local_.original_strS.find(number);
-    if (it == local_.original_strS.end()) {
-      local_.original_strS.insert(std::make_pair(number, local_.strS[number]));
-    }
-    local_.strS[number] = value;
-    break;
-  }
-  default:
-    throw rlvm::Exception("Invalid type in RLMachine::set_string_value");
+    default:
+      throw rlvm::Exception("Invalid type in RLMachine::set_string_value");
   }
 }
 
@@ -212,8 +204,8 @@ const std::string& Memory::getLocalName(int index) const {
 }
 
 bool Memory::hasBeenRead(int scenario, int kidoku) const {
-  std::map<int, boost::dynamic_bitset<> >::const_iterator it =
-    global_->kidoku_data.find(scenario);
+  std::map<int, boost::dynamic_bitset<>>::const_iterator it =
+      global_->kidoku_data.find(scenario);
 
   if ((it != global_->kidoku_data.end()) &&
       (static_cast<size_t>(kidoku) < it->second.size()))
@@ -261,21 +253,25 @@ void Memory::initializeDefaultValues(Gameexe& gameexe) {
   // error prone and for losers.
   GameexeFilteringIterator end = gameexe.filtering_end();
   for (GameexeFilteringIterator it = gameexe.filtering_begin("NAME.");
-      it != end; ++it) {
+       it != end;
+       ++it) {
     try {
       setName(ConvertLetterIndexToInt(it->key_parts().at(1)),
               removeQuotes(it->to_string()));
-    } catch(...) {
+    }
+    catch (...) {
       cerr << "WARNING: Invalid format for key " << it->key() << endl;
     }
   }
 
   for (GameexeFilteringIterator it = gameexe.filtering_begin("LOCALNAME.");
-      it != end; ++it) {
+       it != end;
+       ++it) {
     try {
       setLocalName(ConvertLetterIndexToInt(it->key_parts().at(1)),
                    removeQuotes(it->to_string()));
-    } catch(...) {
+    }
+    catch (...) {
       cerr << "WARNING: Invalid format for key " << it->key() << endl;
     }
   }

@@ -59,5 +59,4 @@ MockTextWindow::MockTextWindow(System& system, int win)
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteDisplayRubyText));
 }
 
-MockTextWindow::~MockTextWindow() {
-}
+MockTextWindow::~MockTextWindow() {}

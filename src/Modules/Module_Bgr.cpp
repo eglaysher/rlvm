@@ -98,8 +98,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
         graphics.clearAndPromoteObjects();
 
       graphics.setHikRenderer(new HIKRenderer(
-          system,
-          graphics.GetHIKScript(system, filename, path)));
+          system, graphics.GetHIKScript(system, filename, path)));
     } else {
       boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
@@ -107,10 +106,8 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
         boost::shared_ptr<const Surface> source(
             graphics.getSurfaceNamedAndMarkViewed(machine, filename));
         boost::shared_ptr<Surface> haikei = graphics.getHaikei();
-        source->blitToSurface(*haikei,
-                              source->rect(),
-                              source->rect(),
-                              255, true);
+        source->blitToSurface(
+            *haikei, source->rect(), source->rect(), 255, true);
       }
 
       // Promote the objects if we're in normal mode. If we're restoring the
@@ -136,13 +133,22 @@ struct bgrLoadHaikei_wtf
   }
 };
 
-struct bgrLoadHaikei_wtf2
-    : RLOp_Void_6<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T,
-                  IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, string filename, int sel, int a, int b,
-                  int c, int d) {
+struct bgrLoadHaikei_wtf2 : RLOp_Void_6<StrConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T> {
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int sel,
+                  int a,
+                  int b,
+                  int c,
+                  int d) {
     // cerr << "Filename: " << filename
-    //      << "(a: " << a << ", b: " << b << ", c: " << c << ", d: " << d << ")"
+    //      << "(a: " << a << ", b: " << b << ", c: " << c << ", d: " << d <<
+    // ")"
     //      << endl;
     bgrLoadHaikei_main()(machine, filename, sel);
   }
@@ -150,8 +156,7 @@ struct bgrLoadHaikei_wtf2
 
 // -----------------------------------------------------------------------
 
-typedef Argc_T<
-  Special_T<
+typedef Argc_T<Special_T<
     DefaultSpecialMapper,
     // 0:copy(strC 'filename')
     StrConstant_T,
@@ -162,13 +167,14 @@ typedef Argc_T<
     // 3:DUMMY. Unknown.
     Complex2_T<StrConstant_T, IntConstant_T>,
     // 4:copy(strC, '?', '?')
-    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>
-    > > BgrMultiCommand;
+    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>>> BgrMultiCommand;
 
-struct bgrMulti_1 : public RLOp_Void_3<
-  StrConstant_T, IntConstant_T, BgrMultiCommand> {
+struct bgrMulti_1
+    : public RLOp_Void_3<StrConstant_T, IntConstant_T, BgrMultiCommand> {
  public:
-  void operator()(RLMachine& machine, string filename, int effectNum,
+  void operator()(RLMachine& machine,
+                  string filename,
+                  int effectNum,
                   BgrMultiCommand::type commands) {
     GraphicsSystem& graphics = machine.system().graphics();
 
@@ -184,20 +190,22 @@ struct bgrMulti_1 : public RLOp_Void_3<
     // Load "filename" as the background.
     boost::shared_ptr<const Surface> surface(
         graphics.getSurfaceNamedAndMarkViewed(machine, filename));
-    surface->blitToSurface(*graphics.getHaikei(),
-                           surface->rect(), surface->rect(),
-                           255, true);
+    surface->blitToSurface(
+        *graphics.getHaikei(), surface->rect(), surface->rect(), 255, true);
 
     // TODO(erg): Unsure about the alpha in these implementation.
     for (BgrMultiCommand::type::const_iterator it = commands.begin();
-         it != commands.end(); it++) {
+         it != commands.end();
+         it++) {
       switch (it->type) {
         case 0: {
           // 0:copy(strC 'filename')
           surface = graphics.getSurfaceNamedAndMarkViewed(machine, it->first);
           surface->blitToSurface(*graphics.getHaikei(),
-                                 surface->rect(), surface->rect(),
-                                 255, true);
+                                 surface->rect(),
+                                 surface->rect(),
+                                 255,
+                                 true);
           break;
         }
         case 2: {
@@ -206,16 +214,16 @@ struct bgrMulti_1 : public RLOp_Void_3<
           Point dest;
           getSELPointAndRect(machine, get<1>(it->third), srcRect, dest);
 
-          surface = graphics.getSurfaceNamedAndMarkViewed(machine, get<0>(it->third));
+          surface =
+              graphics.getSurfaceNamedAndMarkViewed(machine, get<0>(it->third));
           Rect destRect = Rect(dest, srcRect.size());
-          surface->blitToSurface(*graphics.getHaikei(), srcRect, destRect,
-                                 255, true);
+          surface->blitToSurface(
+              *graphics.getHaikei(), srcRect, destRect, 255, true);
           break;
         }
         default: {
           cerr << "Don't know what to do with a type " << it->type
-               << " in bgrMulti_1"
-               << endl;
+               << " in bgrMulti_1" << endl;
           break;
         }
       }
@@ -242,7 +250,7 @@ struct bgrNext : public RLOp_Void_Void {
   }
 };
 
-struct bgrSetXOffset : public RLOp_Void_1< IntConstant_T > {
+struct bgrSetXOffset : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
     HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
     if (renderer) {
@@ -251,7 +259,7 @@ struct bgrSetXOffset : public RLOp_Void_1< IntConstant_T > {
   }
 };
 
-struct bgrSetYOffset : public RLOp_Void_1< IntConstant_T > {
+struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
     HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
     if (renderer) {
@@ -274,8 +282,7 @@ struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-BgrModule::BgrModule()
-    : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
+BgrModule::BgrModule() : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
   addOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
   addOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
   addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
@@ -290,8 +297,12 @@ BgrModule::BgrModule()
   addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
 
   addOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
-  addOpcode(2001, 0, "bgrClearPreloadedScript",
+  addOpcode(2001,
+            0,
+            "bgrClearPreloadedScript",
             callFunction(&GraphicsSystem::ClearPreloadedHIKScript));
-  addOpcode(2002, 0, "bgrClearAllPreloadedScripts",
+  addOpcode(2002,
+            0,
+            "bgrClearAllPreloadedScripts",
             callFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
 }

@@ -47,8 +47,7 @@ ObjectMutator::ObjectMutator(int repr,
       name_(name),
       creation_time_(creation_time),
       duration_time_(duration_time),
-      delay_(delay) {
-}
+      delay_(delay) {}
 
 ObjectMutator::~ObjectMutator() {}
 
@@ -82,21 +81,22 @@ int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
 
 // -----------------------------------------------------------------------
 
-OneIntObjectMutator::OneIntObjectMutator(
-    const char* name,
-    int creation_time, int duration_time, int delay,
-    int type, int start_value, int target_value, Setter setter)
+OneIntObjectMutator::OneIntObjectMutator(const char* name,
+                                         int creation_time,
+                                         int duration_time,
+                                         int delay,
+                                         int type,
+                                         int start_value,
+                                         int target_value,
+                                         Setter setter)
     : ObjectMutator(-1, name, creation_time, duration_time, delay, type),
       startval_(start_value),
       endval_(target_value),
-      setter_(setter) {
-}
+      setter_(setter) {}
 
-OneIntObjectMutator::~OneIntObjectMutator() {
-}
+OneIntObjectMutator::~OneIntObjectMutator() {}
 
-void OneIntObjectMutator::SetToEnd(RLMachine& machine,
-                                   GraphicsObject& object) {
+void OneIntObjectMutator::SetToEnd(RLMachine& machine, GraphicsObject& object) {
   (object.*setter_)(endval_);
 }
 
@@ -108,52 +108,58 @@ void OneIntObjectMutator::PerformSetting(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-RepnoIntObjectMutator::RepnoIntObjectMutator(
-    const char* name,
-    int creation_time, int duration_time, int delay,
-    int type, int repno, int start_value, int target_value, Setter setter)
+RepnoIntObjectMutator::RepnoIntObjectMutator(const char* name,
+                                             int creation_time,
+                                             int duration_time,
+                                             int delay,
+                                             int type,
+                                             int repno,
+                                             int start_value,
+                                             int target_value,
+                                             Setter setter)
     : ObjectMutator(repno, name, creation_time, duration_time, delay, type),
       repno_(repno),
       startval_(start_value),
       endval_(target_value),
-      setter_(setter) {
-}
+      setter_(setter) {}
 
-RepnoIntObjectMutator::~RepnoIntObjectMutator() {
-}
+RepnoIntObjectMutator::~RepnoIntObjectMutator() {}
 
 void RepnoIntObjectMutator::SetToEnd(RLMachine& machine,
-                                   GraphicsObject& object) {
+                                     GraphicsObject& object) {
   (object.*setter_)(repno_, endval_);
 }
 
 void RepnoIntObjectMutator::PerformSetting(RLMachine& machine,
-                                         GraphicsObject& object) {
+                                           GraphicsObject& object) {
   int value = GetValueForTime(machine, startval_, endval_);
   (object.*setter_)(repno_, value);
 }
 
 // -----------------------------------------------------------------------
 
-TwoIntObjectMutator::TwoIntObjectMutator(
-    const char* name,
-    int creation_time, int duration_time, int delay, int type,
-    int start_one, int target_one, Setter setter_one,
-    int start_two, int target_two, Setter setter_two)
+TwoIntObjectMutator::TwoIntObjectMutator(const char* name,
+                                         int creation_time,
+                                         int duration_time,
+                                         int delay,
+                                         int type,
+                                         int start_one,
+                                         int target_one,
+                                         Setter setter_one,
+                                         int start_two,
+                                         int target_two,
+                                         Setter setter_two)
     : ObjectMutator(-1, name, creation_time, duration_time, delay, type),
       startval_one_(start_one),
       endval_one_(target_one),
       setter_one_(setter_one),
       startval_two_(start_two),
       endval_two_(target_two),
-      setter_two_(setter_two) {
-}
+      setter_two_(setter_two) {}
 
-TwoIntObjectMutator::~TwoIntObjectMutator() {
-}
+TwoIntObjectMutator::~TwoIntObjectMutator() {}
 
-void TwoIntObjectMutator::SetToEnd(RLMachine& machine,
-                                   GraphicsObject& object) {
+void TwoIntObjectMutator::SetToEnd(RLMachine& machine, GraphicsObject& object) {
   (object.*setter_one_)(endval_one_);
   (object.*setter_two_)(endval_two_);
 }

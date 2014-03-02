@@ -57,7 +57,8 @@ class TestGraphicsSystem : public GraphicsSystem {
 
   virtual Size screenSize() const { return Size(640, 480); }
   virtual void allocateDC(int dc, Size s);
-  virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */ }
+  virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */
+  }
   virtual void freeDC(int dc);
 
   virtual void clearAndPromoteObjects();
@@ -72,11 +73,17 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
   virtual ColourFilter* BuildColourFiller();
 
-  virtual void blitSurfaceToDC(
-      Surface& source_obj, int target_dc,
-      int srcX, int srcY, int src_width, int src_height,
-      int destX, int destY, int dest_width, int dest_height,
-      int alpha = 255);
+  virtual void blitSurfaceToDC(Surface& source_obj,
+                               int target_dc,
+                               int srcX,
+                               int srcY,
+                               int src_width,
+                               int src_height,
+                               int destX,
+                               int destY,
+                               int dest_width,
+                               int dest_height,
+                               int alpha = 255);
 
   virtual void beginFrame() {}
   virtual void endFrame() {}
@@ -94,7 +101,7 @@ class TestGraphicsSystem : public GraphicsSystem {
   boost::shared_ptr<MockSurface> display_contexts_[16];
 
   // A list of user injected surfaces to hand back for named files.
-  std::map<std::string, boost::shared_ptr<const Surface> > named_surfaces_;
+  std::map<std::string, boost::shared_ptr<const Surface>> named_surfaces_;
 };
 
 #endif  // TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_

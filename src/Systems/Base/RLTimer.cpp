@@ -29,9 +29,7 @@
 
 #include "Systems/Base/RLTimer.hpp"
 
-RLTimer::RLTimer()
-  : time_at_last_set_(0) {
-}
+RLTimer::RLTimer() : time_at_last_set_(0) {}
 
 // -----------------------------------------------------------------------
 

@@ -42,10 +42,11 @@ class TestSoundSystem : public SoundSystem {
   virtual int bgmStatus() const;
 
   virtual void bgmPlay(const std::string& bgm_name, bool loop);
-  virtual void bgmPlay(const std::string& bgm_name, bool loop,
-                       int fade_in_ms);
-  virtual void bgmPlay(const std::string& bgm_name, bool loop,
-                       int fade_in_ms, int fade_out_ms);
+  virtual void bgmPlay(const std::string& bgm_name, bool loop, int fade_in_ms);
+  virtual void bgmPlay(const std::string& bgm_name,
+                       bool loop,
+                       int fade_in_ms,
+                       int fade_out_ms);
   virtual void bgmStop();
   virtual void bgmPause();
   virtual void bgmUnPause();
@@ -55,9 +56,12 @@ class TestSoundSystem : public SoundSystem {
 
   virtual void wavPlay(const std::string& wav_file, bool loop);
   virtual void wavPlay(const std::string& wav_file,
-                       bool loop, const int channel);
+                       bool loop,
+                       const int channel);
   virtual void wavPlay(const std::string& wav_file,
-                       bool loop, const int channel, const int fadein_ms);
+                       bool loop,
+                       const int channel,
+                       const int fadein_ms);
   virtual bool wavPlaying(const int channel);
   virtual void wavStop(const int channel);
   virtual void wavStopAll();
@@ -70,7 +74,6 @@ class TestSoundSystem : public SoundSystem {
   virtual void koeStop();
 
  private:
-
   virtual void koePlayImpl(int id);
 
   std::string bgm_name_;

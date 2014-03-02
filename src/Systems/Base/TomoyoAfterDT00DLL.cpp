@@ -36,8 +36,12 @@ TomoyoAfterDT00DLL::TomoyoAfterDT00DLL() {
 
 TomoyoAfterDT00DLL::~TomoyoAfterDT00DLL() {}
 
-int TomoyoAfterDT00DLL::callDLL(RLMachine& machine, int func, int arg1,
-                                  int arg2, int arg3, int arg4) {
+int TomoyoAfterDT00DLL::callDLL(RLMachine& machine,
+                                int func,
+                                int arg1,
+                                int arg2,
+                                int arg3,
+                                int arg4) {
   // Perform no spew.
   return 0;
 }

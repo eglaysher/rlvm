@@ -37,10 +37,9 @@
 /**
  * Copy of TMW's ScrollArea class, adapted to my system.
  */
-class GCNScrollArea : public gcn::ScrollArea,
-                      public NotificationObserver {
+class GCNScrollArea : public gcn::ScrollArea, public NotificationObserver {
  public:
-  explicit GCNScrollArea(gcn::Widget *widget);
+  explicit GCNScrollArea(gcn::Widget* widget);
   ~GCNScrollArea();
 
   /**
@@ -52,33 +51,28 @@ class GCNScrollArea : public gcn::ScrollArea,
   /**
    * Draws the scroll area.
    */
-  void draw(gcn::Graphics *graphics);
+  void draw(gcn::Graphics* graphics);
 
   /**
    * Draws the background and border of the scroll area.
    */
-  void drawFrame(gcn::Graphics *graphics);
+  void drawFrame(gcn::Graphics* graphics);
 
  protected:
-  enum BUTTON_DIR {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-  };
+  enum BUTTON_DIR { UP, DOWN, LEFT, RIGHT };
 
   // Initializes object and shared data.
   void init();
 
-  void drawButton(gcn::Graphics *graphics, BUTTON_DIR dir);
-  void drawUpButton(gcn::Graphics *graphics);
-  void drawDownButton(gcn::Graphics *graphics);
-  void drawLeftButton(gcn::Graphics *graphics);
-  void drawRightButton(gcn::Graphics *graphics);
-  void drawVBar(gcn::Graphics *graphics);
-  void drawHBar(gcn::Graphics *graphics);
-  void drawVMarker(gcn::Graphics *graphics);
-  void drawHMarker(gcn::Graphics *graphics);
+  void drawButton(gcn::Graphics* graphics, BUTTON_DIR dir);
+  void drawUpButton(gcn::Graphics* graphics);
+  void drawDownButton(gcn::Graphics* graphics);
+  void drawLeftButton(gcn::Graphics* graphics);
+  void drawRightButton(gcn::Graphics* graphics);
+  void drawVBar(gcn::Graphics* graphics);
+  void drawHBar(gcn::Graphics* graphics);
+  void drawVMarker(gcn::Graphics* graphics);
+  void drawHMarker(gcn::Graphics* graphics);
 
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,

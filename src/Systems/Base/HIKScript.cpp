@@ -65,13 +65,11 @@ std::string consume_string(const char*& curpointer) {
 
 }  // namespace
 
-
 HIKScript::HIKScript(System& system, const fs::path& file) {
   loadHikFile(system, file);
 }
 
-HIKScript::~HIKScript() {
-}
+HIKScript::~HIKScript() {}
 
 void HIKScript::loadHikFile(System& system, const fs::path& file) {
   // This is dumb. This all needs to rewritten as either FILE or stream.
@@ -242,8 +240,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
       case 40100: {
         Frame& frame = currentFrame();
         frame.image = consume_string(curpointer);
-        frame.surface = system.graphics().getSurfaceNamed(
-            frame.image);
+        frame.surface = system.graphics().getSurfaceNamed(frame.image);
         if (!frame.surface) {
           ostringstream oss;
           oss << "Could not load image " << frame.image << " for HIK";

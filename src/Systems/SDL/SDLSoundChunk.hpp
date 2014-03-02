@@ -82,7 +82,7 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
   // to make sure that SDLSoundChunk object isn't deallocated. The
   // SDL_mixer callback, SoundChunkFinishedPlayback(), will reset the
   // associate smart pointer.
-  typedef std::map<int, boost::shared_ptr<SDLSoundChunk> > PlayingTable;
+  typedef std::map<int, boost::shared_ptr<SDLSoundChunk>> PlayingTable;
   static PlayingTable s_playing_table;
 
   // Wrapped chunk
@@ -97,8 +97,6 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
 
 // Changes an incoming RealLive volume (0-256) to the range SDL_Mixer expects
 // (0-128).
-inline int realLiveVolumeToSDLMixerVolume(int in_vol) {
-  return in_vol / 2;
-}
+inline int realLiveVolumeToSDLMixerVolume(int in_vol) { return in_vol / 2; }
 
 #endif  // SRC_SYSTEMS_SDL_SDLSOUNDCHUNK_HPP_

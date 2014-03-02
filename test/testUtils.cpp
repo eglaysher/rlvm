@@ -40,15 +40,12 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string> testPaths = {
-  "./",
-  "./test/",
-  "./build/test/"
-};
+const std::vector<std::string> testPaths = {"./", "./test/", "./build/test/"};
 
 string locateTestCase(const string& baseName) {
   for (vector<string>::const_iterator it = testPaths.begin();
-      it != testPaths.end(); ++it) {
+       it != testPaths.end();
+       ++it) {
     string testName = *it + baseName;
     if (fs::exists(testName))
       return testName;
@@ -64,8 +61,6 @@ string locateTestCase(const string& baseName) {
 FullSystemTest::FullSystemTest()
     : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
       system(locateTestCase("Gameexe_data/Gameexe.ini")),
-      rlmachine(system, arc) {
-}
+      rlmachine(system, arc) {}
 
-FullSystemTest::~FullSystemTest() {
-}
+FullSystemTest::~FullSystemTest() {}

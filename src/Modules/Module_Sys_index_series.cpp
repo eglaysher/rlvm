@@ -47,7 +47,8 @@ int Sys_index_series::operator()(RLMachine& machine,
   bool previous_term_finished = false;
 
   for (IndexList::type::iterator it = index_list.begin();
-       it != index_list.end(); ++it) {
+       it != index_list.end();
+       ++it) {
     switch (it->type) {
       case 0: {
         if (previous_term_finished) {
@@ -61,8 +62,8 @@ int Sys_index_series::operator()(RLMachine& machine,
         int start = get<0>(it->second) + offset;
         int end = get<1>(it->second) + offset;
         int endval = get<2>(it->second);
-        adder(index, start, end, endval, 0,
-              value, init, previous_term_finished);
+        adder(
+            index, start, end, endval, 0, value, init, previous_term_finished);
         break;
       }
       case 2: {
@@ -70,8 +71,14 @@ int Sys_index_series::operator()(RLMachine& machine,
         int end = get<1>(it->third) + offset;
         int endval = get<2>(it->third);
         int mod = get<3>(it->third);
-        adder(index, start, end, endval, mod,
-              value, init, previous_term_finished);
+        adder(index,
+              start,
+              end,
+              endval,
+              mod,
+              value,
+              init,
+              previous_term_finished);
         break;
       }
     }

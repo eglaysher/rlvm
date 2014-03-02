@@ -111,7 +111,7 @@ struct objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct setWipeCopyTo_0 : public RLOp_Void_1< IntConstant_T > {
+struct setWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
   int val_;
   explicit setWipeCopyTo_0(int value) : val_(value) {}
 
@@ -173,8 +173,7 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-ObjCopyFgToBg::ObjCopyFgToBg()
-  : RLModule("ObjCopyFgToBg", 1, 60) {
+ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
   addOpcode(0, 0, "objFree", callFunction(&GraphicsSystem::clearObject));
 
   addOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
@@ -184,21 +183,22 @@ ObjCopyFgToBg::ObjCopyFgToBg()
   addOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
   addOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
-  addOpcode(100, 0, "objClearAll",
-            callFunction(&GraphicsSystem::clearAllObjects));
-  addOpcode(110, 0, "objResetPropertiesAll",
+  addOpcode(
+      100, 0, "objClearAll", callFunction(&GraphicsSystem::clearAllObjects));
+  addOpcode(110,
+            0,
+            "objResetPropertiesAll",
             callFunction(&GraphicsSystem::resetAllObjectsProperties));
 
   // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
   // op<1:60:100, 0>. May have differences?
-  addOpcode(111, 0, "objClearAll2",
-            callFunction(&GraphicsSystem::clearAllObjects));
+  addOpcode(
+      111, 0, "objClearAll2", callFunction(&GraphicsSystem::clearAllObjects));
 }
 
 // -----------------------------------------------------------------------
 
-ObjFgManagement::ObjFgManagement()
-  : RLModule("ObjFgManagement", 1, 61) {
+ObjFgManagement::ObjFgManagement() : RLModule("ObjFgManagement", 1, 61) {
   addOpcode(2, 0, "objCopy", new objCopy(OBJ_FG, OBJ_FG));
   addOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
@@ -208,8 +208,7 @@ ObjFgManagement::ObjFgManagement()
 
 // -----------------------------------------------------------------------
 
-ObjBgManagement::ObjBgManagement()
-  : RLModule("ObjBgManagement", 1, 62) {
+ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
   addOpcode(2, 0, "objBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
   addOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
@@ -244,4 +243,3 @@ ChildObjBgManagement::ChildObjBgManagement()
 }
 
 // -----------------------------------------------------------------------
-
