@@ -5,6 +5,13 @@ root_env.Append(LIBS=["GL", "GLU"])
 root_env.ParseConfig('sdl-config --cflags --libs')
 root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
 
+root_env.Append(
+  CXXFLAGS = [
+    "--ansi",
+    "-std=c++11"
+  ]
+)
+
 gtkrlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
   "src/MachineBase/RLVMInstance.cpp",

@@ -158,24 +158,24 @@ TEST_P(AccessorTest, TestReferenceCount) {
 
 typedef vector<TupleT> SetterVec;
 SetterVec graphics_object_setters = {
-  { &GraphicsObject::setVisible, &GraphicsObject::visible },
-  { &GraphicsObject::setX, &GraphicsObject::x },
-  { &GraphicsObject::setY, &GraphicsObject::y },
-  { &GraphicsObject::setVert, &GraphicsObject::vert },
-  { &GraphicsObject::setXOrigin, &GraphicsObject::xOrigin },
-  { &GraphicsObject::setYOrigin, &GraphicsObject::yOrigin },
-  { &GraphicsObject::setWidth, &GraphicsObject::width },
-  { &GraphicsObject::setHeight, &GraphicsObject::height },
-  { &GraphicsObject::setRotation, &GraphicsObject::rotation },
-  { &GraphicsObject::setPattNo, &GraphicsObject::pattNo },
-  { &GraphicsObject::setMono, &GraphicsObject::mono },
-  { &GraphicsObject::setInvert, &GraphicsObject::invert },
-  { &GraphicsObject::setLight, &GraphicsObject::light },
-  { &GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode },
-  { &GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX },
-  { &GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY },
-  { &GraphicsObject::setAlpha, &GraphicsObject::rawAlpha },
-  { &GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy }
+  std::make_tuple(&GraphicsObject::setVisible, &GraphicsObject::visible),
+  std::make_tuple(&GraphicsObject::setX, &GraphicsObject::x),
+  std::make_tuple(&GraphicsObject::setY, &GraphicsObject::y),
+  std::make_tuple(&GraphicsObject::setVert, &GraphicsObject::vert),
+  std::make_tuple(&GraphicsObject::setXOrigin, &GraphicsObject::xOrigin),
+  std::make_tuple(&GraphicsObject::setYOrigin, &GraphicsObject::yOrigin),
+  std::make_tuple(&GraphicsObject::setWidth, &GraphicsObject::width),
+  std::make_tuple(&GraphicsObject::setHeight, &GraphicsObject::height),
+  std::make_tuple(&GraphicsObject::setRotation, &GraphicsObject::rotation),
+  std::make_tuple(&GraphicsObject::setPattNo, &GraphicsObject::pattNo),
+  std::make_tuple(&GraphicsObject::setMono, &GraphicsObject::mono),
+  std::make_tuple(&GraphicsObject::setInvert, &GraphicsObject::invert),
+  std::make_tuple(&GraphicsObject::setLight, &GraphicsObject::light),
+  std::make_tuple(&GraphicsObject::setCompositeMode, &GraphicsObject::compositeMode),
+  std::make_tuple(&GraphicsObject::setScrollRateX, &GraphicsObject::scrollRateX),
+  std::make_tuple(&GraphicsObject::setScrollRateY, &GraphicsObject::scrollRateY),
+  std::make_tuple(&GraphicsObject::setAlpha, &GraphicsObject::rawAlpha),
+  std::make_tuple(&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy)
 };
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,
@@ -194,13 +194,13 @@ int getColourLevel(const GraphicsObject& obj) { return obj.colour().a(); }
 
 typedef vector<TupleT> SetterVec;
 SetterVec graphics_object_colour_setters = {
-  { &GraphicsObject::setTintR, getTintR },
-  { &GraphicsObject::setTintG, getTintG },
-  { &GraphicsObject::setTintB, getTintB },
-  { &GraphicsObject::setColourR, getColourR },
-  { &GraphicsObject::setColourG, getColourG },
-  { &GraphicsObject::setColourB, getColourB },
-  { &GraphicsObject::setColourLevel, getColourLevel }
+  std::make_tuple(&GraphicsObject::setTintR, getTintR),
+  std::make_tuple(&GraphicsObject::setTintG, getTintG),
+  std::make_tuple(&GraphicsObject::setTintB, getTintB),
+  std::make_tuple(&GraphicsObject::setColourR, getColourR),
+  std::make_tuple(&GraphicsObject::setColourG, getColourG),
+  std::make_tuple(&GraphicsObject::setColourB, getColourB),
+  std::make_tuple(&GraphicsObject::setColourLevel, getColourLevel)
 };
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
