@@ -34,6 +34,7 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
+#include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libReallive/gameexe.h"
 #include "utf8cpp/utf8.h"
@@ -42,75 +43,251 @@ using std::bind;
 using std::ref;
 using namespace std::placeholders;
 
-// -----------------------------------------------------------------------
-// TextPageElement
-// -----------------------------------------------------------------------
-
-class TextPageElement {
- public:
-  virtual ~TextPageElement() {}
-  virtual bool isTextElement() { return false; }
-  virtual void replayElement(TextPage& ts, bool is_active_page) = 0;
-  virtual TextPageElement* clone() const = 0;
+// Represents the various commands.
+enum CommandType {
+  TYPE_CHARACTERS,
+  TYPE_NAME,
+  TYPE_KOE_MARKER,
+  TYPE_HARD_BREAK,
+  TYPE_SET_INDENTATION,
+  TYPE_RESET_INDENTATION,
+  TYPE_FONT_COLOUR,
+  TYPE_DEFAULT_FONT_SIZE,
+  TYPE_FONT_SIZE,
+  TYPE_RUBY_BEGIN,
+  TYPE_RUBY_END,
+  TYPE_SET_INSERTION_X,
+  TYPE_SET_INSERTION_Y,
+  TYPE_OFFSET_INSERTION_X,
+  TYPE_OFFSET_INSERTION_Y,
+  TYPE_FACE_OPEN,
+  TYPE_FACE_CLOSE,
 };
 
-inline TextPageElement* new_clone(const TextPageElement& in) {
-  return in.clone();
-}
+// Storage for each command.
+struct TextPage::Command {
+  Command(CommandType type);
+  Command(CommandType type, int one);
+  Command(CommandType type, const std::string& one);
+  Command(CommandType type, const std::string& one, const std::string& two);
+  Command(CommandType type, const std::string& one, int two);
+  Command(const Command& rhs);
+  ~Command();
 
-// -----------------------------------------------------------------------
-// TextTextPageElement
-// -----------------------------------------------------------------------
+  enum CommandType command;
+  union {
+    // TYPE_CHARACTERS
+    std::string characters;
 
-class TextTextPageElement : public TextPageElement {
- public:
-  TextTextPageElement();
-  virtual bool isTextElement() { return true; }
-  virtual void replayElement(TextPage& page, bool is_active_page);
-  void append(const string& c);
+    // TYPE_NAME
+    struct {
+      std::string name;
+      std::string next_char;
+    } name;
 
-  virtual TextPageElement* clone() const {
-    return new TextTextPageElement(*this);
-  }
+    // TYPE_KOE_MARKER
+    int koe_id;
 
- private:
-  // A list of UTF-8 characters to print.
-  string list_of_chars_to_print_;
+    // TYPE_FONT_COLOUR
+    int font_colour;
+
+    // TYPE_FONT_SIZE
+    int font_size;
+
+    // TYPE_RUBY_END
+    std::string ruby_text;
+
+    // TYPE_SET_INSERTION_X
+    int set_insertion_x;
+
+    // TYPE_SET_INSERTION_Y
+    int set_insertion_y;
+
+    // TYPE_OFFSET_INSERTION_X
+    int offset_insertion_x;
+
+    // TYPE_OFFSET_INSERTION_Y
+    int offset_insertion_y;
+
+    // TYPE_FACE_OPEN
+    struct {
+      std::string filename;
+      int index;
+    } face_open;
+
+    // TYPE_FACE_CLOSE
+    int face_close;
+
+    // For the empty types:
+    // TYPE_HARD_BREAK
+    // TYPE_SET_INDENTATION
+    // TYPE_RESET_INDENTATION
+    // TYPE_DEFAULT_FONT_SIZE
+    // TYPE_RUBY_BEGIN
+    int empty;
+  };
 };
 
-TextTextPageElement::TextTextPageElement() {}
+TextPage::Command::Command(CommandType type)
+    : command(type) {
+  switch (type) {
+    case TYPE_HARD_BREAK:
+    case TYPE_SET_INDENTATION:
+    case TYPE_RESET_INDENTATION:
+    case TYPE_DEFAULT_FONT_SIZE:
+    case TYPE_RUBY_BEGIN:
+      empty = 0;
+      break;
+    case TYPE_CHARACTERS:
+      new (&characters) std::string;
+      break;
+    default:
+      throw rlvm::Exception("Incorrect arrity");
+  };
+}
 
-void TextTextPageElement::replayElement(TextPage& page, bool is_active_page) {
-  // Sometimes there are empty TextTextPageElements. I hypothesize these happen
-  // because of empty strings which just set the speaker's name.
-  if (list_of_chars_to_print_.size()) {
-    printTextToFunction(bind(&TextPage::CharacterImpl, ref(page), _1, _2),
-                        list_of_chars_to_print_,
-                        "");
+TextPage::Command::Command(CommandType type, int one)
+    : command(type) {
+  switch (type) {
+    case TYPE_KOE_MARKER:
+      koe_id = one;
+      break;
+    case TYPE_FONT_COLOUR:
+      font_colour = one;
+      break;
+    case TYPE_FONT_SIZE:
+      font_size = one;
+      break;
+    case TYPE_SET_INSERTION_X:
+      set_insertion_x = one;
+      break;
+    case TYPE_SET_INSERTION_Y:
+      set_insertion_y = one;
+      break;
+    case TYPE_OFFSET_INSERTION_X:
+      offset_insertion_x = one;
+    case TYPE_OFFSET_INSERTION_Y:
+      offset_insertion_y = one;
+    case TYPE_FACE_CLOSE:
+      face_close = one;
+    default:
+      throw rlvm::Exception("Incorrect arrity");
   }
 }
 
-void TextTextPageElement::append(const string& c) {
-  list_of_chars_to_print_.append(c);
+TextPage::Command::Command(CommandType type, const std::string& one)
+    : command(type) {
+  switch (type) {
+    case TYPE_RUBY_END:
+      new (&ruby_text) std::string(one);
+      break;
+    default:
+      throw rlvm::Exception("Incorrect arrity");
+  }
 }
 
-// -----------------------------------------------------------------------
-// ActionElement
-// -----------------------------------------------------------------------
-class ActionElement : public TextPageElement {
- public:
-  ActionElement(const std::function<void(TextPage&, bool)>& action)
-      : action_(action) {}
-
-  virtual void replayElement(TextPage& page, bool is_active_page) {
-    action_(page, is_active_page);
+TextPage::Command::Command(CommandType type,
+                           const std::string& one,
+                           const std::string& two)
+    : command(type) {
+  switch (type) {
+    case TYPE_NAME:
+      new (&name.name) std::string(one);
+      new (&name.next_char) std::string(two);
+      break;
+    default:
+      throw rlvm::Exception("Incorrect arrity");
   }
+}
 
-  virtual TextPageElement* clone() const { return new ActionElement(*this); }
+TextPage::Command::Command(CommandType type,
+                           const std::string& one,
+                           int two)
+    : command(type) {
+  switch (type) {
+    case TYPE_FACE_OPEN:
+      new (&face_open.filename) std::string(one);
+      face_open.index = two;
+      break;
+    default:
+      throw rlvm::Exception("Incorrect arrity");
+  }
+}
 
- private:
-  std::function<void(TextPage&, bool)> action_;
-};
+TextPage::Command::Command(const Command& rhs)
+    : command(rhs.command) {
+  switch (rhs.command) {
+    case TYPE_HARD_BREAK:
+    case TYPE_SET_INDENTATION:
+    case TYPE_RESET_INDENTATION:
+    case TYPE_DEFAULT_FONT_SIZE:
+    case TYPE_RUBY_BEGIN:
+      empty = 0;
+      break;
+    case TYPE_KOE_MARKER:
+      koe_id = rhs.koe_id;
+      break;
+    case TYPE_FONT_COLOUR:
+      font_colour = rhs.font_colour;
+      break;
+    case TYPE_FONT_SIZE:
+      font_size = rhs.font_size;
+      break;
+    case TYPE_SET_INSERTION_X:
+      set_insertion_x = rhs.set_insertion_x;
+      break;
+    case TYPE_SET_INSERTION_Y:
+      set_insertion_y = rhs.set_insertion_y;
+      break;
+    case TYPE_OFFSET_INSERTION_X:
+      offset_insertion_x = rhs.offset_insertion_x;
+      break;
+    case TYPE_OFFSET_INSERTION_Y:
+      offset_insertion_y = rhs.offset_insertion_y;
+      break;
+    case TYPE_FACE_CLOSE:
+      face_close = rhs.face_close;
+      break;
+    case TYPE_CHARACTERS:
+      new (&characters) std::string(rhs.characters);
+      break;
+    case TYPE_RUBY_END:
+      new (&ruby_text) std::string(rhs.ruby_text);
+      break;
+    case TYPE_NAME:
+      new (&name.name) std::string(rhs.name.name);
+      new (&name.next_char) std::string(rhs.name.next_char);
+      break;
+    case TYPE_FACE_OPEN:
+      command = TYPE_FACE_OPEN;
+      new (&face_open.filename) std::string(rhs.face_open.filename);
+      face_open.index = rhs.face_open.index;
+      break;
+  }
+}
+
+TextPage::Command::~Command() {
+  // Needed to get around a quirk of the language
+  using string_type = std::string;
+
+  switch (command) {
+    case TYPE_CHARACTERS:
+      characters.~string_type();
+      break;
+    case TYPE_RUBY_END:
+      ruby_text.~string_type();
+      break;
+    case TYPE_NAME:
+      name.name.~string_type();
+      name.next_char.~string_type();
+      break;
+    case TYPE_FACE_OPEN:
+      face_open.filename.~string_type();
+      break;
+    default:
+      break;
+  }
+}
 
 // -----------------------------------------------------------------------
 // TextPage
@@ -121,17 +298,14 @@ TextPage::TextPage(System& system, int window_num)
       window_num_(window_num),
       number_of_chars_on_page_(0),
       in_ruby_gloss_(false) {
-  addSetToRightStartingColorElement();
 }
 
 TextPage::TextPage(const TextPage& rhs)
     : system_(rhs.system_),
       window_num_(rhs.window_num_),
       number_of_chars_on_page_(rhs.number_of_chars_on_page_),
-      in_ruby_gloss_(rhs.in_ruby_gloss_) {
-  elements_to_replay_.insert(elements_to_replay_.end(),
-                             rhs.elements_to_replay_.begin(),
-                             rhs.elements_to_replay_.end());
+      in_ruby_gloss_(rhs.in_ruby_gloss_),
+      elements_to_replay_(rhs.elements_to_replay_) {
 }
 
 TextPage::~TextPage() {}
@@ -151,10 +325,18 @@ void TextPage::swap(TextPage& rhs) {
 }
 
 void TextPage::replay(bool is_active_page) {
-  for_each(
-      elements_to_replay_.begin(),
-      elements_to_replay_.end(),
-      bind(&TextPageElement::replayElement, _1, ref(*this), is_active_page));
+  // Reset the font color.
+  if (!is_active_page) {
+    Gameexe& gexe = system_->gameexe();
+    GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
+    if (colour.exists()) {
+      system_->text().textWindow(window_num_)->setFontColor(colour);
+    }
+  }
+
+  for_each(elements_to_replay_.begin(),
+           elements_to_replay_.end(),
+           [&](Command& c) { RunTextPageCommand(c, is_active_page); });
 }
 
 // ------------------------------------------------- [ Public operations ]
@@ -164,11 +346,11 @@ bool TextPage::character(const string& current, const string& rest) {
 
   if (rendered) {
     if (elements_to_replay_.size() == 0 ||
-        !elements_to_replay_.back().isTextElement())
-      elements_to_replay_.push_back(new TextTextPageElement);
+        elements_to_replay_.back().command != TYPE_CHARACTERS) {
+      elements_to_replay_.push_back(Command(TYPE_CHARACTERS));
+    }
 
-    dynamic_cast<TextTextPageElement&>(elements_to_replay_.back())
-        .append(current);
+    elements_to_replay_.back().characters.append(current);
 
     number_of_chars_on_page_++;
   }
@@ -177,171 +359,150 @@ bool TextPage::character(const string& current, const string& rest) {
 }
 
 void TextPage::name(const string& name, const string& next_char) {
-  addAction(bind(&TextPage::NameImpl, _1, name, next_char, _2));
+  AddAction(Command(TYPE_NAME, name, next_char));
   number_of_chars_on_page_++;
 }
 
 void TextPage::koeMarker(int id) {
-  addAction(bind(&TextPage::KoeMarkerImpl, _1, id, _2));
+  AddAction(Command(TYPE_KOE_MARKER, id));
 }
 
 void TextPage::hardBrake() {
-  addAction(bind(&TextPage::HardBrakeImpl, _1, _2));
+  AddAction(Command(TYPE_HARD_BREAK));
 }
 
 void TextPage::setIndentation() {
-  addAction(bind(&TextPage::SetIndentationImpl, _1, _2));
+  AddAction(Command(TYPE_SET_INDENTATION));
 }
 
 void TextPage::resetIndentation() {
-  addAction(bind(&TextPage::ResetIndentationImpl, _1, _2));
+  AddAction(Command(TYPE_RESET_INDENTATION));
 }
 
 void TextPage::fontColour(int colour) {
-  addAction(bind(&TextPage::FontColourImpl, _1, colour, _2));
+  AddAction(Command(TYPE_FONT_COLOUR, colour));
 }
 
 void TextPage::defaultFontSize() {
-  addAction(bind(&TextPage::DefaultFontSizeImpl, _1, _2));
+  AddAction(Command(TYPE_DEFAULT_FONT_SIZE));
 }
 
 void TextPage::fontSize(const int size) {
-  addAction(bind(&TextPage::FontSizeImpl, _1, size, _2));
+  AddAction(Command(TYPE_FONT_SIZE, size));
 }
 
 void TextPage::markRubyBegin() {
-  addAction(bind(&TextPage::MarkRubyBeginImpl, _1, _2));
+  AddAction(Command(TYPE_RUBY_BEGIN));
 }
 
 void TextPage::displayRubyText(const std::string& utf8str) {
-  addAction(bind(&TextPage::DisplayRubyTextImpl, _1, utf8str, _2));
+  AddAction(Command(TYPE_RUBY_END, utf8str));
 }
 
 void TextPage::setInsertionPointX(int x) {
-  addAction(bind(&TextPage::SetInsertionPointXImpl, _1, x, _2));
+  AddAction(Command(TYPE_SET_INSERTION_X, x));
 }
 
 void TextPage::setInsertionPointY(int y) {
-  addAction(bind(&TextPage::SetInsertionPointYImpl, _1, y, _2));
+  AddAction(Command(TYPE_SET_INSERTION_Y, y));
 }
 
 void TextPage::offsetInsertionPointX(int offset) {
-  addAction(bind(&TextPage::OffsetInsertionPointXImpl, _1, offset, _2));
+  AddAction(Command(TYPE_OFFSET_INSERTION_X, offset));
 }
 
 void TextPage::offsetInsertionPointY(int offset) {
-  addAction(bind(&TextPage::OffsetInsertionPointYImpl, _1, offset, _2));
+  AddAction(Command(TYPE_OFFSET_INSERTION_Y, offset));
 }
 
 void TextPage::faceOpen(const std::string& filename, int index) {
-  addAction(bind(&TextPage::FaceOpenImpl, _1, filename, index, _2));
+  AddAction(Command(TYPE_FACE_OPEN, filename, index));
 }
 
 void TextPage::faceClose(int index) {
-  addAction(bind(&TextPage::FaceCloseImpl, _1, index, _2));
-}
-
-void TextPage::addSetToRightStartingColorElement() {
-  elements_to_replay_.push_back(
-      new ActionElement(bind(&TextPage::SetToRightStartingColourImpl, _1, _2)));
+  AddAction(Command(TYPE_FACE_CLOSE, index));
 }
 
 bool TextPage::isFull() const {
   return system_->text().textWindow(window_num_)->isFull();
 }
 
-void TextPage::addAction(const std::function<void(TextPage&, bool)>& action) {
-  action(*this, true);
-  elements_to_replay_.push_back(new ActionElement(action));
+void TextPage::AddAction(const Command& command) {
+  RunTextPageCommand(command, true);
+  elements_to_replay_.push_back(command);
 }
 
 bool TextPage::CharacterImpl(const string& c, const string& rest) {
   return system_->text().textWindow(window_num_)->character(c, rest);
 }
 
-void TextPage::NameImpl(const string& name,
-                        const string& next_char,
-                        bool is_active_page) {
-  system_->text().textWindow(window_num_)->setName(name, next_char);
-}
-
-void TextPage::KoeMarkerImpl(int id, bool is_active_page) {
-  if (!is_active_page) {
-    system_->text().textWindow(window_num_)->koeMarker(id);
-  }
-}
-
-void TextPage::HardBrakeImpl(bool is_active_page) {
-  system_->text().textWindow(window_num_)->hardBrake();
-}
-
-void TextPage::SetIndentationImpl(bool is_active_page) {
-  system_->text().textWindow(window_num_)->setIndentation();
-}
-
-void TextPage::ResetIndentationImpl(bool is_active_page) {
-  system_->text().textWindow(window_num_)->resetIndentation();
-}
-
-void TextPage::FontColourImpl(int colour, bool is_active_page) {
-  if (is_active_page) {
-    system_->text().textWindow(window_num_)->setFontColor(
-        system_->gameexe()("COLOR_TABLE", colour));
-  }
-}
-
-void TextPage::DefaultFontSizeImpl(bool is_active_page) {
-  system_->text().textWindow(window_num_)->setFontSizeToDefault();
-}
-
-void TextPage::FontSizeImpl(int size, bool is_active_page) {
-  system_->text().textWindow(window_num_)->setFontSizeInPixels(size);
-}
-
-void TextPage::MarkRubyBeginImpl(bool is_active_page) {
-  system_->text().textWindow(window_num_)->markRubyBegin();
-  in_ruby_gloss_ = true;
-}
-
-void TextPage::DisplayRubyTextImpl(const std::string& utf8str,
-                                   bool is_active_page) {
-  system_->text().textWindow(window_num_)->displayRubyText(utf8str);
-  in_ruby_gloss_ = false;
-}
-
-void TextPage::SetInsertionPointXImpl(int x, bool is_active_page) {
-  system_->text().textWindow(window_num_)->setInsertionPointX(x);
-}
-
-void TextPage::SetInsertionPointYImpl(int y, bool is_active_page) {
-  system_->text().textWindow(window_num_)->setInsertionPointY(y);
-}
-
-void TextPage::OffsetInsertionPointXImpl(int offset, bool is_active_page) {
-  system_->text().textWindow(window_num_)->offsetInsertionPointX(offset);
-}
-
-void TextPage::OffsetInsertionPointYImpl(int offset, bool is_active_page) {
-  system_->text().textWindow(window_num_)->offsetInsertionPointY(offset);
-}
-
-void TextPage::FaceOpenImpl(std::string filename,
-                            int index,
-                            bool is_active_page) {
-  system_->text().textWindow(window_num_)->faceOpen(filename, index);
-}
-
-void TextPage::FaceCloseImpl(int index, bool is_active_page) {
-  system_->text().textWindow(window_num_)->faceClose(index);
-}
-
-void TextPage::SetToRightStartingColourImpl(bool is_active_page) {
-  Gameexe& gexe = system_->gameexe();
+void TextPage::RunTextPageCommand(const Command& command,
+                                  bool is_active_page) {
   boost::shared_ptr<TextWindow> window =
       system_->text().textWindow(window_num_);
-  if (!is_active_page) {
-    GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
-    if (colour.exists())
-      window->setFontColor(colour);
+
+  switch (command.command) {
+    case TYPE_CHARACTERS:
+      if (command.characters.size()) {
+        printTextToFunction(
+            bind(&TextPage::CharacterImpl, ref(*this), _1, _2),
+            command.characters,
+            "");
+      }
+      break;
+    case TYPE_NAME:
+      window->setName(command.name.name, command.name.next_char);
+      break;
+    case TYPE_KOE_MARKER:
+      if (!is_active_page)
+        window->koeMarker(command.koe_id);
+      break;
+    case TYPE_HARD_BREAK:
+      window->hardBrake();
+      break;
+    case TYPE_SET_INDENTATION:
+      window->setIndentation();
+      break;
+    case TYPE_RESET_INDENTATION:
+      window->resetIndentation();
+      break;
+    case TYPE_FONT_COLOUR:
+      if (is_active_page) {
+        window->setFontColor(
+            system_->gameexe()("COLOR_TABLE", command.font_colour));
+      }
+      break;
+    case TYPE_DEFAULT_FONT_SIZE:
+      window->setFontSizeToDefault();
+      break;
+    case TYPE_FONT_SIZE:
+      window->setFontSizeInPixels(command.font_size);
+      break;
+    case TYPE_RUBY_BEGIN:
+      window->markRubyBegin();
+      in_ruby_gloss_ = true;
+      break;
+    case TYPE_RUBY_END:
+      window->displayRubyText(command.ruby_text);
+      in_ruby_gloss_ = false;
+      break;
+    case TYPE_SET_INSERTION_X:
+      window->setInsertionPointX(command.set_insertion_x);
+      break;
+    case TYPE_SET_INSERTION_Y:
+      window->setInsertionPointY(command.set_insertion_y);
+      break;
+    case TYPE_OFFSET_INSERTION_X:
+      window->offsetInsertionPointX(command.offset_insertion_x);
+      break;
+    case TYPE_OFFSET_INSERTION_Y:
+      window->offsetInsertionPointY(command.offset_insertion_y);
+      break;
+    case TYPE_FACE_OPEN:
+      window->faceOpen(command.face_open.filename, command.face_open.index);
+      break;
+    case TYPE_FACE_CLOSE:
+      window->faceClose(command.face_close);
+      break;
   }
 }

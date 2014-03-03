@@ -28,8 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
 #define SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include <algorithm>
 #include <functional>
 #include <string>
@@ -125,39 +123,18 @@ class TextPage {
   bool inRubyGloss() const { return in_ruby_gloss_; }
 
  private:
-  // All subclasses of TextPageElement are friends of TextPage for
-  // tight coupling.
-  friend class TextPageElement;
-  friend class TextTextPageElement;
+  // Storage for an individual command.
+  struct Command;
 
-  // Performs the passed in action and then adds it to |elements_to_replay_|.
-  void addAction(const std::function<void(TextPage&, bool)>& action);
+  // Executes |command| and then adds it to |elements_to_replay_|.
+  void AddAction(const Command& command);
 
-  // Private implementations; These methods are what actually does things. They
-  // output to the screen, etc.
+  // Performs textout.
   bool CharacterImpl(const std::string& c, const std::string& rest);
-  void VoidCharacterImpl(const std::string& c, const std::string& rest);
-  void NameImpl(const std::string& name,
-                const std::string& next_char,
-                bool is_active_page);
-  void KoeMarkerImpl(int id, bool is_active_page);
-  void HardBrakeImpl(bool is_active_page);
-  void SetIndentationImpl(bool is_active_page);
-  void ResetIndentationImpl(bool is_active_page);
-  void FontColourImpl(const int colour, bool is_active_page);
-  void DefaultFontSizeImpl(bool is_active_page);
-  void FontSizeImpl(int size, bool is_active_page);
-  void MarkRubyBeginImpl(bool is_active_page);
-  void DisplayRubyTextImpl(const std::string& utf8str, bool is_active_page);
-  void SetInsertionPointXImpl(int x, bool is_active_page);
-  void SetInsertionPointYImpl(int y, bool is_active_page);
-  void OffsetInsertionPointXImpl(int offset, bool is_active_page);
-  void OffsetInsertionPointYImpl(int offset, bool is_active_page);
-  void FaceOpenImpl(std::string filename, int index, bool is_active_page);
-  void FaceCloseImpl(int index, bool is_active_page);
-  void SetToRightStartingColourImpl(bool is_active_page);
 
-  boost::ptr_vector<TextPageElement> elements_to_replay_;
+  // Actually performs the command in most cases.
+  void RunTextPageCommand(const Command& command,
+                          bool is_active_page);
 
   System* system_;
 
@@ -170,6 +147,9 @@ class TextPage {
   // Whether markRubyBegin() was called but displayRubyText() hasn't yet been
   // called.
   bool in_ruby_gloss_;
+
+  // A list of the text elements to replay on this page.
+  std::vector<Command> elements_to_replay_;
 };
 
 #endif  // SRC_SYSTEMS_BASE_TEXTPAGE_HPP_
