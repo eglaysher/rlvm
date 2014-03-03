@@ -118,13 +118,8 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
         cerr << "WARNING! Couldn't call option " << current_decision_
              << ". Options are: " << endl;
 
-        // Dear C++: I can't wait for the 'auto' keyword:
-        std::vector<std::string> options = sel->options();
-        for (std::vector<std::string>::const_iterator it = options.begin();
-             it != options.end();
-             ++it) {
-          cerr << "- \"" << *it << "\"" << endl;
-        }
+        for (const std::string& option : sel->options())
+          cerr << "- \"" << option << "\"" << endl;
 
         current_decision_++;
       } else {
