@@ -58,11 +58,8 @@ namespace {
 
 // Finds which case should be used in the *_case functions.
 int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
-  string tmpval = gotoElement.get_param(0);
-  const char* location = tmpval.c_str();
-
-  unique_ptr<ExpressionPiece> condition(get_expression(location));
-  int value = condition->integerValue(machine);
+  const ExpressionPiecesVector& conditions = gotoElement.getParameters();
+  int value = conditions[0]->integerValue(machine);
 
   // Walk linearly through the output cases, executing the first
   // match against value.
@@ -150,11 +147,23 @@ struct Jmp_goto : public RLOp_SpecialCase {
   }
 };
 
+// The rest of the goto statements must parse their expressions before use. By
+// default, special cases treat this as data instead of expressions.
+struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
+  virtual void parseParameters(const std::vector<std::string>& input,
+                               libReallive::ExpressionPiecesVector& output) {
+    for (auto const& parameter : input) {
+      const char* src = parameter.c_str();
+      output.push_back(get_expression(src));
+    }
+  }
+};
+
 // Implements op<0:Jmp:00001, 0>, fun goto_if (<'condition').
 //
 // Conditional equivalents of goto; goto_if () jumps to @label if the value of
 // condition is non-zero
-struct goto_if : public RLOp_SpecialCase {
+struct goto_if : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
@@ -167,7 +176,7 @@ struct goto_if : public RLOp_SpecialCase {
 };
 
 // Implements op<0:Jmp:00002, 0>, fun goto_unless (<'condition').
-struct goto_unless : public RLOp_SpecialCase {
+struct goto_unless : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
@@ -185,15 +194,10 @@ struct goto_unless : public RLOp_SpecialCase {
 // corresponding label in the list, counting from 0. If expr falls
 // outside the valid range, no jump takes place, and execution
 // continues from the next statement instead.
-//
-// TODO(erg): Figure out why I couldn't use cached expressions here.
-struct goto_on : public RLOp_SpecialCase {
+struct goto_on : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    // use a temporary object so that it is only destroyed at end of scope! --RT
-    string tmpval = gotoElement.get_param(0);
-    const char* location = tmpval.c_str();
-    unique_ptr<ExpressionPiece> condition(get_expression(location));
-    int value = condition->integerValue(machine);
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
+    int value = conditions[0]->integerValue(machine);
 
     if (value >= 0 && value < int(gotoElement.pointers_count())) {
       machine.gotoLocation(gotoElement.get_pointer(value));
@@ -209,7 +213,7 @@ struct goto_on : public RLOp_SpecialCase {
 // Conditional table jumps. expr is evaluated, and
 // compared to val1, val2, etc. in turn, and control passes to the
 // label associated with the first matching value.
-struct goto_case : public RLOp_SpecialCase {
+struct goto_case : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
     machine.gotoLocation(gotoElement.get_pointer(i));
@@ -231,13 +235,11 @@ struct gosub : public RLOp_SpecialCase {
 // Pushes the current location onto the call stack, then jumps to the
 // label @label in the current scenario, if the passed in condition is
 // true.
-struct gosub_if : public RLOp_SpecialCase {
+struct gosub_if : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    string tmpval = gotoElement.get_param(0);
-    const char* location = tmpval.c_str();
-    unique_ptr<ExpressionPiece> condition(get_expression(location));
+    const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
-    if (condition->integerValue(machine)) {
+    if (conditions[0]->integerValue(machine)) {
       machine.gosub(gotoElement.get_pointer(0));
     } else {
       machine.advanceInstructionPointer();
@@ -249,7 +251,7 @@ struct gosub_if : public RLOp_SpecialCase {
 //
 // Pushes the current location onto the call stack, then jumps to the label
 // @label in the current scenario, if the passed in condition is false.
-struct gosub_unless : public RLOp_SpecialCase {
+struct gosub_unless : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions = gotoElement.getParameters();
 
@@ -267,7 +269,7 @@ struct gosub_unless : public RLOp_SpecialCase {
 // label in the list, counting from 0. If expr falls outside the valid range,
 // no gosub takes place, and execution continues from the next statement
 // instead.
-struct gosub_on : public RLOp_SpecialCase {
+struct gosub_on : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions = gotoElement.getParameters();
     int value = conditions[0]->integerValue(machine);
@@ -285,7 +287,7 @@ struct gosub_on : public RLOp_SpecialCase {
 // Conditional table gosub. expr is evaluated, and compared to val1, val2,
 // etc. in turn, and control passes to the label associated with the first
 // matching value.
-struct gosub_case : public RLOp_SpecialCase {
+struct gosub_case : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     int i = evaluateCase(machine, gotoElement);
     machine.gosub(gotoElement.get_pointer(i));
