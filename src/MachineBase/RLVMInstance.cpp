@@ -36,6 +36,7 @@
 #include "Modules/Modules.hpp"
 #include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
+#include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SystemError.hpp"
 #include "Systems/SDL/SDLSystem.hpp"
@@ -153,8 +154,15 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       // etc.
       sdlSystem.run(rlmachine);
 
-      // Run the rlmachine through another instruction
-      rlmachine.executeNextInstruction();
+      // Run the rlmachine through as many instructions as we can in a 3ms time
+      // slice. Bail out if we switch to long operation mode, or if the screen
+      // is marked as dirty.
+      unsigned int start_ticks = sdlSystem.event().getTicks();
+      do {
+        rlmachine.executeNextInstruction();
+      } while (!rlmachine.currentLongOperation() &&
+               !sdlSystem.graphics().screenNeedsRefresh() &&
+               (sdlSystem.event().getTicks() - start_ticks < 3));
     }
 
     Serialization::saveGlobalMemory(rlmachine);
