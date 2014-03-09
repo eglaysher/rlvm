@@ -169,10 +169,13 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
       // Sleep to be nice to the processor and to give the GPU a chance to
       // catch up.
-      int real_sleep_time = 10 - (end_ticks - start_ticks);
-      if (real_sleep_time < 1)
-        real_sleep_time = 1;
-      sdlSystem.event().wait(real_sleep_time);
+      if (!sdlSystem.fastForward()) {
+        int real_sleep_time = 10 - (end_ticks - start_ticks);
+        if (real_sleep_time < 1)
+          real_sleep_time = 1;
+        sdlSystem.event().wait(real_sleep_time);
+      }
+
       sdlSystem.setForceWait(false);
     }
 

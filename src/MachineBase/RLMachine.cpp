@@ -581,7 +581,11 @@ void RLMachine::performTextout(const std::string& cp932str) {
   if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
     ptr->setNoWait();
 
-  pushLongOperation(ptr.release());
+  // Run the textout operation once. If it doesn't fully succeed, push it onto
+  // the stack.
+  if (!(*ptr)(*this)) {
+    pushLongOperation(ptr.release());
+  }
 }
 
 void RLMachine::setKidokuMarker(int kidoku_number) {
