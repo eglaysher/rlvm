@@ -154,15 +154,26 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       // etc.
       sdlSystem.run(rlmachine);
 
-      // Run the rlmachine through as many instructions as we can in a 3ms time
+      // Run the rlmachine through as many instructions as we can in a 10ms time
       // slice. Bail out if we switch to long operation mode, or if the screen
       // is marked as dirty.
       unsigned int start_ticks = sdlSystem.event().getTicks();
+      unsigned int end_ticks = start_ticks;
       do {
         rlmachine.executeNextInstruction();
+        end_ticks = sdlSystem.event().getTicks();
       } while (!rlmachine.currentLongOperation() &&
                !sdlSystem.graphics().screenNeedsRefresh() &&
-               (sdlSystem.event().getTicks() - start_ticks < 3));
+               !sdlSystem.forceWait() &&
+               (end_ticks - start_ticks < 10));
+
+      // Sleep to be nice to the processor and to give the GPU a chance to
+      // catch up.
+      int real_sleep_time = 10 - (end_ticks - start_ticks);
+      if (real_sleep_time < 1)
+        real_sleep_time = 1;
+      sdlSystem.event().wait(real_sleep_time);
+      sdlSystem.setForceWait(false);
     }
 
     Serialization::saveGlobalMemory(rlmachine);

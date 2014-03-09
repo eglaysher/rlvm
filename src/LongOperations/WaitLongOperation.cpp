@@ -64,12 +64,6 @@ void WaitLongOperation::breakOnEvent(const std::function<bool()>& function) {
   event_function_ = function;
 }
 
-void WaitLongOperation::setSleepTimeProvider(
-    const std::function<int()>& function) {
-  has_sleep_time_provider_ = true;
-  sleep_time_provider_ = function;
-}
-
 void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
                                           IntReferenceIterator y) {
   break_on_clicks_ = true;
@@ -148,11 +142,4 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
   }
 
   return done;
-}
-
-int WaitLongOperation::sleepTime() {
-  if (has_sleep_time_provider_)
-    return sleep_time_provider_();
-
-  return LongOperation::sleepTime();
 }

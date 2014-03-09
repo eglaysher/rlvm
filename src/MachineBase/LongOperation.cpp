@@ -39,8 +39,6 @@ LongOperation::LongOperation() : EventListener() {}
 
 LongOperation::~LongOperation() {}
 
-int LongOperation::sleepTime() { return 10; }
-
 // -----------------------------------------------------------------------
 // PerformAfterLongOperationDecorator
 // -----------------------------------------------------------------------

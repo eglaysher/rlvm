@@ -232,16 +232,11 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
 
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(std::bind(StopShaking, std::ref(machine)));
-    wait_op->setSleepTimeProvider(std::bind(SleepTime, std::ref(machine)));
     machine.pushLongOperation(wait_op);
   }
 
   static bool StopShaking(RLMachine& machine) {
     return machine.system().graphics().IsShaking() == false;
-  }
-
-  static int SleepTime(RLMachine& machine) {
-    return machine.system().graphics().CurrentShakingFrameTime();
   }
 };
 

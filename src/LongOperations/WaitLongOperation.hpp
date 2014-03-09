@@ -50,9 +50,6 @@ class WaitLongOperation : public LongOperation {
   // finished. |function| should return true if we are done.
   void breakOnEvent(const std::function<bool()>& function);
 
-  // Provides |function| which is called as the implementation of sleepTime().
-  void setSleepTimeProvider(const std::function<int()>& function);
-
   // Whether we write out the location of a mouse click. Implies that we're
   // breaking on mouse click.
   void saveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
@@ -67,7 +64,6 @@ class WaitLongOperation : public LongOperation {
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
-  virtual int sleepTime();
 
  private:
   RLMachine& machine_;

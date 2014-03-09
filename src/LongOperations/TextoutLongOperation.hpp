@@ -48,7 +48,6 @@ class TextoutLongOperation : public LongOperation {
 
   // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);
-  virtual int sleepTime();
 
  private:
   bool displayAsMuchAsWeCanThenPause(RLMachine& machine);

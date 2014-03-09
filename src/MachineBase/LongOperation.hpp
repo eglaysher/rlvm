@@ -55,10 +55,6 @@ class LongOperation : public EventListener {
   // Executes the current LongOperation. Returns true if the command has
   // completed, and normal interpretation should be resumed, false otherwise.
   virtual bool operator()(RLMachine& machine) = 0;
-
-  // How long this operation should sleep between invocations so that we don't
-  // busyloop too much. Defaults to 10ms.
-  virtual int sleepTime();
 };
 
 // LongOperator decorator that simply invokes the included

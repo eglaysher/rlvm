@@ -216,15 +216,3 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
     }
   }
 }
-
-int TextoutLongOperation::sleepTime() {
-  if (no_wait_) {
-    return 0;
-  } else {
-    // Subtract one from when we're due next to sleep so we don't overshoot too
-    // often (we can just busyloop for the last ms). We need to make sure we
-    // don't ask the OS to sleep a negative number though because it'll
-    // interpret the int as unsigned.
-    return std::max(next_character_countdown_ - 1, 0);
-  }
-}
