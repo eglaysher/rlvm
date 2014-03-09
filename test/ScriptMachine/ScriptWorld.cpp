@@ -33,7 +33,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include "Modules/Module_Sel.hpp"
+#include "modules/module_sel.h"
 #include "ScriptMachine/ScriptMachine.hpp"
 #include "ScriptMachine/luabind_EventSystem.hpp"
 #include "ScriptMachine/luabind_GraphicsObject.hpp"

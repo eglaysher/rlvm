@@ -33,7 +33,7 @@
 #include <vector>
 
 #include "machine/rlmachine.h"
-#include "Modules/Module_Grp.hpp"
+#include "modules/module_grp.h"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"
 #include "TestSystem/TestMachine.hpp"

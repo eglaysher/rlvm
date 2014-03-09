@@ -29,7 +29,7 @@
 #include <tuple>
 
 #include "testUtils.hpp"
-#include "Modules/Module_Sys_index_series.hpp"
+#include "modules/module_sys_index_series.h"
 
 using std::get;
 

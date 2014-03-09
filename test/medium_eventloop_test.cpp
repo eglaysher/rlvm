@@ -27,7 +27,7 @@
 #include "gtest/gtest.h"
 
 #include "machine/rlmachine.h"
-#include "Modules/Module_EventLoop.hpp"
+#include "modules/module_event_loop.h"
 
 #include "testUtils.hpp"
 

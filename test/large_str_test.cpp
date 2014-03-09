@@ -27,7 +27,7 @@
 
 #include "gtest/gtest.h"
 
-#include "Modules/Module_Str.hpp"
+#include "modules/module_str.h"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 

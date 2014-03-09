@@ -42,7 +42,7 @@
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "Modules/Module_Sys.hpp"
+#include "modules/module_sys.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Platform.hpp"

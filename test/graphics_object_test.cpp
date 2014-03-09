@@ -39,7 +39,7 @@
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "Modules/Module_Str.hpp"
+#include "modules/module_str.h"
 #include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/TestGraphicsSystem.hpp"
 #include "TestSystem/TestSystem.hpp"

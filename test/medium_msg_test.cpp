@@ -27,7 +27,7 @@
 #include "gtest/gtest.h"
 
 #include "machine/rlmachine.h"
-#include "Modules/Module_Msg.hpp"
+#include "modules/module_msg.h"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"

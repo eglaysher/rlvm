@@ -36,7 +36,7 @@
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "Modules/Module_Sys_Save.hpp"
+#include "modules/module_sys_save.h"
 #include "Platforms/gcn/GCNGraphics.hpp"
 #include "Platforms/gcn/GCNInfoWindow.hpp"
 #include "Platforms/gcn/SDLTrueTypeFont.hpp"

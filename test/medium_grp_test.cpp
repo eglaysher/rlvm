@@ -27,7 +27,7 @@
 #include "gtest/gtest.h"
 
 #include "machine/rlmachine.h"
-#include "Modules/Module_Grp.hpp"
+#include "modules/module_grp.h"
 #include "Systems/Base/Colour.hpp"
 #include "TestSystem/MockSurface.hpp"
 

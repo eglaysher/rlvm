@@ -27,12 +27,12 @@
 
 #include "gtest/gtest.h"
 
-#include "Modules/Module_Jmp.hpp"
-#include "Modules/Module_Str.hpp"
-#include "Modules/Module_Msg.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
+#include "modules/module_jmp.h"
+#include "modules/module_msg.h"
+#include "modules/module_str.h"
 
 #include "TestSystem/TestSystem.hpp"
 

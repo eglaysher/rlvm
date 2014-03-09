@@ -50,7 +50,7 @@
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
 #include "machine/stack_frame.h"
-#include "Modules/Module_Grp.hpp"
+#include "modules/module_grp.h"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/EventSystem.hpp"

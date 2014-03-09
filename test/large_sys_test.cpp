@@ -27,11 +27,11 @@
 
 #include "gtest/gtest.h"
 
-#include "Modules/Module_Sys.hpp"
-#include "Modules/Module_Jmp.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
+#include "modules/module_jmp.h"
+#include "modules/module_sys.h"
 
 #include "TestSystem/TestSystem.hpp"
 

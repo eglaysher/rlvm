@@ -27,10 +27,10 @@
 
 #include "gtest/gtest.h"
 
-#include "Modules/Module_Mem.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
+#include "modules/module_mem.h"
 
 #include "TestSystem/TestSystem.hpp"
 
