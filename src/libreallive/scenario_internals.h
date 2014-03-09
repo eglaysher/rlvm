@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //

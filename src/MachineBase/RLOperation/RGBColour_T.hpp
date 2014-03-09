@@ -37,7 +37,7 @@ struct RGBColour_T {
   typedef RGBAColour type;
 
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     int r = IntConstant_T::getData(machine, p, position);
     int g = IntConstant_T::getData(machine, p, position);
@@ -47,7 +47,7 @@ struct RGBColour_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
@@ -61,7 +61,7 @@ struct RGBMaybeAColour_T {
   typedef RGBAColour type;
 
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     int r = IntConstant_T::getData(machine, p, position);
     int g = IntConstant_T::getData(machine, p, position);
@@ -79,7 +79,7 @@ struct RGBMaybeAColour_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
@@ -87,7 +87,7 @@ struct RGBMaybeAColour_T {
     if (position < input.size()) {
       IntConstant_T::parseParameters(position, input, output);
     } else {
-      output.emplace_back(new libReallive::IntegerConstant(255));
+      output.emplace_back(new libreallive::IntegerConstant(255));
       position++;
     }
   }

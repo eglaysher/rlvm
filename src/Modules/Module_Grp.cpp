@@ -54,9 +54,9 @@
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Graphics.hpp"
-#include "libReallive/bytecode.h"
-#include "libReallive/gameexe.h"
-#include "libReallive/expression.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/expression.h"
 
 using namespace std;
 using namespace boost;
@@ -1177,7 +1177,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
  public:
   explicit GrpStackAdapter(RLOperation* in) : operation(in) {}
 
-  void operator()(RLMachine& machine, const libReallive::CommandElement& ff) {
+  void operator()(RLMachine& machine, const libreallive::CommandElement& ff) {
     operation->dispatchFunction(machine, ff);
 
     // Record this command's reallive bytecode form onto the graphics stack.
@@ -1439,12 +1439,12 @@ void replayGraphicsStackCommand(RLMachine& machine,
     for (auto const& command : stack) {
       if (command != "") {
         // Parse the string as a chunk of Reallive bytecode.
-        libReallive::ConstructionData cdata(0, libReallive::pointer_t());
-        libReallive::BytecodeElement* element =
-            libReallive::BytecodeElement::read(
+        libreallive::ConstructionData cdata(0, libreallive::pointer_t());
+        libreallive::BytecodeElement* element =
+            libreallive::BytecodeElement::read(
                 command.c_str(), command.c_str() + command.size(), cdata);
-        libReallive::CommandElement* command =
-            dynamic_cast<libReallive::CommandElement*>(element);
+        libreallive::CommandElement* command =
+            dynamic_cast<libreallive::CommandElement*>(element);
         if (command) {
           machine.executeCommand(*command);
         }

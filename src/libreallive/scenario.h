@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -37,7 +37,7 @@
 #include "defs.h"
 #include "bytecode.h"
 
-namespace libReallive {
+namespace libreallive {
 
 namespace Compression {
 struct XorKey;

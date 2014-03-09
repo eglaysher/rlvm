@@ -52,7 +52,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 using boost::replace_all;

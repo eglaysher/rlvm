@@ -41,7 +41,7 @@
 class RLMachine;
 class TextWindow;
 
-namespace libReallive {
+namespace libreallive {
 class SelectElement;
 }
 
@@ -66,7 +66,7 @@ class SelectLongOperation : public LongOperation {
   };
 
   SelectLongOperation(RLMachine& machine,
-                      const libReallive::SelectElement& commandElement);
+                      const libreallive::SelectElement& commandElement);
 
   // Selects by index among options.
   void selected(int num);
@@ -98,7 +98,7 @@ class SelectLongOperation : public LongOperation {
 class NormalSelectLongOperation : public SelectLongOperation {
  public:
   NormalSelectLongOperation(RLMachine& machine,
-                            const libReallive::SelectElement& commandElement);
+                            const libreallive::SelectElement& commandElement);
   virtual ~NormalSelectLongOperation();
 
   // Overridden from EventListener:
@@ -118,7 +118,7 @@ class ButtonSelectLongOperation : public SelectLongOperation,
                                   public Renderable {
  public:
   ButtonSelectLongOperation(RLMachine& machine,
-                            const libReallive::SelectElement& commandElement,
+                            const libreallive::SelectElement& commandElement,
                             int selbtn_set);
   virtual ~ButtonSelectLongOperation();
 

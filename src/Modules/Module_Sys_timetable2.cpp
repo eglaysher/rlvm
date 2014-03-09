@@ -37,7 +37,7 @@ using namespace std;
 
 // static
 int TimeTableMapper::GetTypeForTag(
-    const libReallive::SpecialExpressionPiece& sp) {
+    const libreallive::SpecialExpressionPiece& sp) {
   switch (sp.getOverloadTag()) {
     case 48:
       return 0;

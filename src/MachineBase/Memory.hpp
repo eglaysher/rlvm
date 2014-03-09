@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 
 const int NUMBER_OF_INT_LOCATIONS = 8;
 const int SIZE_OF_MEM_BANK = 2000;
@@ -211,10 +211,10 @@ class Memory {
   ~Memory();
 
   // Returns the integer value of a certain memory location
-  int getIntValue(const libReallive::IntMemRef& ref);
+  int getIntValue(const libreallive::IntMemRef& ref);
 
   // Sets the value of a certain memory location
-  void setIntValue(const libReallive::IntMemRef& ref, int value);
+  void setIntValue(const libreallive::IntMemRef& ref, int value);
 
   // Returns the string value of a string memory bank
   const std::string& getStringValue(int type, int location);
@@ -293,11 +293,11 @@ class Memory {
 // Implementation of getting an integer out of an array. Global because we need
 // share this implementation with RLMachine which passes in the local stack
 // frames bank for intL[] access.
-int GetIntValue(const libReallive::IntMemRef& ref, int* bank);
+int GetIntValue(const libreallive::IntMemRef& ref, int* bank);
 
 // Implementation of setting an integer out of an array. Global because we need
 // share this implementation with RLMachine which passes in the local stack
 // frames bank for intL[] access.
-void SetIntValue(const libReallive::IntMemRef& ref, int* bank, int value);
+void SetIntValue(const libreallive::IntMemRef& ref, int* bank, int value);
 
 #endif  // SRC_MACHINEBASE_MEMORY_HPP_

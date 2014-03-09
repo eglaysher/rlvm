@@ -31,7 +31,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 

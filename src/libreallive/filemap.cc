@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -48,7 +48,7 @@ const HANDLE INVALID_HANDLE_VALUE = -1;
 #include <sys/types.h>
 #include <sys/stat.h>
 
-namespace libReallive {
+namespace libreallive {
 
 #ifdef WIN32
 const int O_BINARY = 0;

@@ -36,7 +36,7 @@
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
 #include "base/notification_type.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 class Point;
 class RLMachine;

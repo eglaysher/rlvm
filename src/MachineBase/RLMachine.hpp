@@ -33,14 +33,14 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "libReallive/bytecode_fwd.h"
-#include "libReallive/scenario.h"
+#include "libreallive/bytecode_fwd.h"
+#include "libreallive/scenario.h"
 
 #include <functional>
 #include <string>
 #include <vector>
 
-namespace libReallive {
+namespace libreallive {
 class Archive;
 class IntMemRef;
 };
@@ -58,7 +58,7 @@ struct StackFrame;
 // control, and other execution issues.
 class RLMachine {
  public:
-  RLMachine(System& in_system, libReallive::Archive& in_archive);
+  RLMachine(System& in_system, libreallive::Archive& in_archive);
   virtual ~RLMachine();
 
   // Registers a given module with this RLMachine instance. A module is a set
@@ -88,7 +88,7 @@ class RLMachine {
   // be on every farcall, or it may mean \#entrypoint 0. We're not sure.)
   bool shouldSetSeentopSavepoint() const;
 
-  typedef int (libReallive::Scenario::*AttributeFunction)() const;
+  typedef int (libreallive::Scenario::*AttributeFunction)() const;
 
   // Implementation function for should_set*Savepoint().
   //
@@ -109,10 +109,10 @@ class RLMachine {
   // ------------------------------------- [ Memory manipulation functions ]
 
   // Returns the integer value of a certain memory location
-  int getIntValue(const libReallive::IntMemRef& ref);
+  int getIntValue(const libreallive::IntMemRef& ref);
 
   // Sets the value of a certain memory location
-  void setIntValue(const libReallive::IntMemRef& ref, int value);
+  void setIntValue(const libreallive::IntMemRef& ref, int value);
 
   // Returns the string value of a string memory bank
   const std::string& getStringValue(int type, int location);
@@ -154,12 +154,12 @@ class RLMachine {
 
   // Permanently moves the instruction pointer to the passed in
   // iterator in the current stack frame.
-  void gotoLocation(libReallive::BytecodeList::iterator new_location);
+  void gotoLocation(libreallive::BytecodeList::iterator new_location);
 
   // Pushes a new stack frame onto the call stack, saving the current
   // location. The new frame contains the current SEEN with
   // new_location as the instruction pointer.
-  void gosub(libReallive::BytecodeList::iterator new_location);
+  void gosub(libreallive::BytecodeList::iterator new_location);
 
   // Returns from the most recent gosub call. Throws if there's a mismatch
   // between farcall()/rtl() gosub()/ret() pairs.
@@ -187,14 +187,14 @@ class RLMachine {
   int sceneNumber() const;
 
   // Returns the actual Scenario on the top top of the call stack.
-  const libReallive::Scenario& scenario() const;
+  const libreallive::Scenario& scenario() const;
 
   // Returns the value of the most recent line MetadataElement, which
   // should correspond with the line in the source file.
   int lineNumber() const { return line_; }
 
   // Returns the current Archive we are attached to.
-  libReallive::Archive& archive() { return archive_; }
+  libreallive::Archive& archive() { return archive_; }
 
   void set_replaying_graphics_stack(bool in) { replaying_graphics_stack_ = in; }
   bool replaying_graphics_stack() { return replaying_graphics_stack_; }
@@ -224,9 +224,9 @@ class RLMachine {
   // that hasn't been patched at the time this method is called.)
   int getProbableEncodingType() const;
 
-  void executeCommand(const libReallive::CommandElement& f);
-  void executeExpression(const libReallive::ExpressionElement& e);
-  void performTextout(const libReallive::TextoutElement& e);
+  void executeCommand(const libreallive::CommandElement& f);
+  void executeExpression(const libreallive::ExpressionElement& e);
+  void performTextout(const libreallive::TextoutElement& e);
   void performTextout(const std::string& cp932str);
 
   // Marks a kidoku marker as visited.
@@ -367,7 +367,7 @@ class RLMachine {
   bool halt_on_exception_;
 
   // The SEEN.TXT the machine is currently executing.
-  libReallive::Archive& archive_;
+  libreallive::Archive& archive_;
 
   // The actual call stack.
   std::vector<StackFrame> call_stack_;

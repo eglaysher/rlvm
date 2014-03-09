@@ -34,7 +34,7 @@
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/MockTextWindow.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
+#include "libreallive/archive.h"
 
 #include "testUtils.hpp"
 

@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -30,7 +30,7 @@
 
 #include <boost/ptr_container/ptr_list.hpp>
 
-namespace libReallive {
+namespace libreallive {
 
 // A nasty-hacky (but simple and efficient) form of RTTI.
 enum ElementType {

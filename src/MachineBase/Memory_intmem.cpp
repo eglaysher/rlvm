@@ -47,10 +47,10 @@
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
-using libReallive::IntMemRef;
+using libreallive::IntMemRef;
 
 namespace {
 

@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -32,8 +32,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "gameexe.h"
-#include "defs.h"
+#include "libreallive/gameexe.h"
 
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
@@ -43,6 +42,8 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+
+#include "libreallive/defs.h"
 
 using namespace boost;
 using namespace std;
@@ -124,7 +125,7 @@ Gameexe::Gameexe(const fs::path& gameexefile) : data_(), cdata_() {
     ostringstream oss;
     oss << "Could not find Gameexe.ini file! (Looking in " << gameexefile
         << ")";
-    throw libReallive::Error(oss.str());
+    throw libreallive::Error(oss.str());
   }
 
   string line;
@@ -251,7 +252,7 @@ void Gameexe::addToStream(const int& x, std::ostringstream& ss) {
 void Gameexe::throwUnknownKey(const std::string& key) {
   std::ostringstream ss;
   ss << "Unknown Gameexe key '" << key << "'";
-  throw libReallive::Error(ss.str());
+  throw libreallive::Error(ss.str());
 }
 
 // -----------------------------------------------------------------------

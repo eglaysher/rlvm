@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -32,11 +32,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "libReallive/expression.h"
-#include "libReallive/expression_pieces.h"
-#include "libReallive/intmemref.h"
-#include "MachineBase/reference.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "libreallive/expression.h"
 
 #include <iomanip>
 #include <sstream>
@@ -44,7 +40,12 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
-#include "defs.h"
+
+#include "libreallive/defs.h"
+#include "libreallive/expression_pieces.h"
+#include "libreallive/intmemref.h"
+#include "MachineBase/reference.hpp"
+#include "MachineBase/RLMachine.hpp"
 
 using namespace std;
 
@@ -52,13 +53,13 @@ namespace {
 
 std::string IntToBytecode(int val) {
   std::string prefix("$\xFF");
-  libReallive::append_i32(prefix, val);
+  libreallive::append_i32(prefix, val);
   return prefix;
 }
 
 }  // namespace
 
-namespace libReallive {
+namespace libreallive {
 
 // Expression Tokenization
 //
@@ -514,7 +515,7 @@ std::string printableToParsableString(const std::string& src) {
   ttokenizer tokens(src, sep);
   for (string const& tok : tokens) {
     if (tok.size() > 2)
-      throw libReallive::Error(
+      throw libreallive::Error(
           "Invalid string given to printableToParsableString");
 
     if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
@@ -548,26 +549,26 @@ ExpressionValueType ExpressionPiece::expressionValueType() const {
 void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
 
 int ExpressionPiece::integerValue(RLMachine& machine) const {
-  throw libReallive::Error(
+  throw libreallive::Error(
       "ExpressionPiece::getStringValue() invalid on this object");
 }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine,
                                         const std::string&) {}
 const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {
-  throw libReallive::Error(
+  throw libreallive::Error(
       "ExpressionPiece::getStringValue() invalid on this object");
 }
 
 IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
-  throw libReallive::Error(
+  throw libreallive::Error(
       "ExpressionPiece::getIntegerReferenceIterator() invalid on this object");
 }
 
 StringReferenceIterator ExpressionPiece::getStringReferenceIterator(
     RLMachine& machine) const {
-  throw libReallive::Error(
+  throw libreallive::Error(
       "ExpressionPiece::getStringReferenceIterator() invalid on this object");
 }
 
@@ -1141,4 +1142,4 @@ unique_ptr<ExpressionPiece> SpecialExpressionPiece::clone() const {
   return unique_ptr<ExpressionPiece>(cep);
 }
 
-}  // namespace libReallive
+}  // namespace libreallive

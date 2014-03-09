@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -30,10 +30,10 @@
 #ifndef EXPRESSION_PIECES_H
 #define EXPRESSION_PIECES_H
 
-#include "libReallive/expression.h"
+#include "libreallive/expression.h"
 #include "MachineBase/reference.hpp"
 
-namespace libReallive {
+namespace libreallive {
 
 // Represents the store register in an Expression (both as an lvalue
 // and rvlaue).
@@ -273,6 +273,6 @@ class SpecialExpressionPiece : public ComplexExpressionPiece {
   int overloadTag;
 };
 
-}  // namespace libReallive
+}  // namespace libreallive
 
 #endif

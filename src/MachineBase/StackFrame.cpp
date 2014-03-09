@@ -36,7 +36,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/archive.h"
+#include "libreallive/archive.h"
 
 using namespace std;
 
@@ -47,15 +47,15 @@ StackFrame::StackFrame() : scenario(NULL), ip(), frame_type() {
   memset(intL, 0, sizeof(intL));
 }
 
-StackFrame::StackFrame(libReallive::Scenario const* s,
-                       const libReallive::Scenario::const_iterator& i,
+StackFrame::StackFrame(libreallive::Scenario const* s,
+                       const libreallive::Scenario::const_iterator& i,
                        FrameType t)
     : scenario(s), ip(i), frame_type(t) {
   memset(intL, 0, sizeof(intL));
 }
 
-StackFrame::StackFrame(libReallive::Scenario const* s,
-                       const libReallive::Scenario::const_iterator& i,
+StackFrame::StackFrame(libreallive::Scenario const* s,
+                       const libreallive::Scenario::const_iterator& i,
                        LongOperation* op)
     : scenario(s), ip(i), long_op(op), frame_type(TYPE_LONGOP) {
   memset(intL, 0, sizeof(intL));
@@ -88,7 +88,7 @@ void StackFrame::load(Archive& ar, unsigned int version) {
   FrameType type;
   ar& scene_number& offset& type;
 
-  libReallive::Scenario const* scenario =
+  libreallive::Scenario const* scenario =
       Serialization::g_current_machine->archive().scenario(scene_number);
   if (scenario == NULL) {
     ostringstream oss;
@@ -103,7 +103,7 @@ void StackFrame::load(Archive& ar, unsigned int version) {
     throw rlvm::Exception(oss.str());
   }
 
-  libReallive::Scenario::const_iterator position_it = scenario->begin();
+  libreallive::Scenario::const_iterator position_it = scenario->begin();
   advance(position_it, offset);
 
   *this = StackFrame(scenario, position_it, type);

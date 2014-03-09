@@ -61,7 +61,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 const float PI = 3.14159265;
 

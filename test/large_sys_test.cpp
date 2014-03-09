@@ -29,8 +29,8 @@
 
 #include "Modules/Module_Sys.hpp"
 #include "Modules/Module_Jmp.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "TestSystem/TestSystem.hpp"
@@ -40,13 +40,13 @@
 #include <iostream>
 using namespace std;
 
-using libReallive::IntMemRef;
+using libreallive::IntMemRef;
 
 // Tests SceneNum, which should return the current scene number. Calls
 // a SEEN.TXT made out of three SEENS, which just call SceneNum() and
 // jump to the next scenario.
 TEST(LargeModuleSysTest, SceneNum) {
-  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule);
@@ -64,7 +64,7 @@ TEST(LargeModuleSysTest, SceneNum) {
 
 // Tests integer built-in functions.
 TEST(LargeModuleSysTest, BuiltIns) {
-  libReallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new SysModule);

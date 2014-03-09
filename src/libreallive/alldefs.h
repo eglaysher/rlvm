@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -36,7 +36,7 @@
 
 using std::string;
 
-namespace libReallive {
+namespace libreallive {
 
 inline void
 insert_i16(string& dest, int dpos, const int i16)

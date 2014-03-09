@@ -54,14 +54,14 @@
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 #include "utf8cpp/utf8.h"
 
 // For copy_n, which isn't part of the C++ standard and doesn't come on
 // OSX.
 #include <boost/multi_array/algorithm.hpp>
 
-using namespace libReallive;
+using namespace libreallive;
 using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;

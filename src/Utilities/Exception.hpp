@@ -35,7 +35,7 @@
 class RLMachine;
 class RLOperation;
 
-namespace libReallive {
+namespace libreallive {
 class CommandElement;
 }
 
@@ -84,9 +84,9 @@ class UnimplementedOpcode : public Exception {
                       int overload);
   UnimplementedOpcode(RLMachine& machine,
                       const std::string& funName,
-                      const libReallive::CommandElement& command);
+                      const libreallive::CommandElement& command);
   UnimplementedOpcode(RLMachine& machine,
-                      const libReallive::CommandElement& command);
+                      const libreallive::CommandElement& command);
   ~UnimplementedOpcode() throw();
 
   // Returns the name of the function that wasn't implemented.

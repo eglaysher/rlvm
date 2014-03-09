@@ -44,7 +44,7 @@
 #include "Systems/SDL/SDLUtils.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
 
 using namespace std;

@@ -39,7 +39,7 @@
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 // -----------------------------------------------------------------------
 

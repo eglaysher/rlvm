@@ -38,8 +38,8 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
 

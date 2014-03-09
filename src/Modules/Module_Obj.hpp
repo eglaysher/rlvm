@@ -66,7 +66,7 @@ class ObjRangeAdapter : public RLOp_SpecialCase {
   explicit ObjRangeAdapter(RLOperation* in);
 
   virtual void operator()(RLMachine& machine,
-                          const libReallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff);
 
  private:
   boost::scoped_ptr<RLOperation> handler;
@@ -88,7 +88,7 @@ class ChildObjAdapter : public RLOp_SpecialCase {
   explicit ChildObjAdapter(RLOperation* in);
 
   virtual void operator()(RLMachine& machine,
-                          const libReallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff);
 
  private:
   boost::scoped_ptr<RLOperation> handler;
@@ -104,7 +104,7 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
   explicit ChildObjRangeAdapter(RLOperation* in);
 
   virtual void operator()(RLMachine& machine,
-                          const libReallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff);
 
  private:
   boost::scoped_ptr<RLOperation> handler;

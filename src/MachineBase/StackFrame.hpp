@@ -28,7 +28,7 @@
 #ifndef SRC_MACHINEBASE_STACKFRAME_HPP_
 #define SRC_MACHINEBASE_STACKFRAME_HPP_
 
-#include "libReallive/scenario.h"
+#include "libreallive/scenario.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
@@ -49,10 +49,10 @@ class LongOperation;
 // StackFrames can also be added to represent LongOperations.
 struct StackFrame {
   // The scenario in the SEEN file for this stack frame.
-  libReallive::Scenario const* scenario;
+  libreallive::Scenario const* scenario;
 
   // The instruction pointer in the stack frame.
-  libReallive::Scenario::const_iterator ip;
+  libreallive::Scenario::const_iterator ip;
 
   // Pointer to the owned LongOperation if this is of TYPE_LONGOP.
   boost::shared_ptr<LongOperation> long_op;
@@ -76,13 +76,13 @@ struct StackFrame {
   StackFrame();
 
   // Constructor for normal stack frames added by RealLive code.
-  StackFrame(libReallive::Scenario const* s,
-             const libReallive::Scenario::const_iterator& i,
+  StackFrame(libreallive::Scenario const* s,
+             const libreallive::Scenario::const_iterator& i,
              FrameType t);
 
   // Constructor for frames that are just LongOperations.
-  StackFrame(libReallive::Scenario const* s,
-             const libReallive::Scenario::const_iterator& i,
+  StackFrame(libreallive::Scenario const* s,
+             const libreallive::Scenario::const_iterator& i,
              LongOperation* op);
 
   ~StackFrame();

@@ -38,11 +38,11 @@
 #include "Systems/SDL/SDLGraphicsSystem.hpp"
 #include "Systems/SDL/SDLSoundSystem.hpp"
 #include "Systems/SDL/SDLTextSystem.hpp"
-#include "libReallive/defs.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/defs.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 // -----------------------------------------------------------------------
 

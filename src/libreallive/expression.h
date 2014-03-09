@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -42,7 +42,7 @@
 
 class RLMachine;
 
-namespace libReallive {
+namespace libreallive {
 
 // Size of expression functions
 size_t next_token(const char* src);
@@ -143,7 +143,7 @@ public:
   virtual std::unique_ptr<ExpressionPiece> clone() const = 0;
 };
 
-typedef std::vector<std::unique_ptr<libReallive::ExpressionPiece> >
+typedef std::vector<std::unique_ptr<libreallive::ExpressionPiece> >
     ExpressionPiecesVector;
 
 // -----------------------------------------------------------------------
@@ -154,6 +154,6 @@ typedef std::vector<std::unique_ptr<libReallive::ExpressionPiece> >
 std::string changeToConstantData(RLMachine& machine,
                                  const std::string& bytecode);
 
-}  // namespace libReallive
+}  // namespace libreallive
 
 #endif

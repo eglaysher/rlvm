@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -26,8 +26,38 @@
 //
 // -----------------------------------------------------------------------
 
-// Workaround for precompiled header bug in GCC
-#ifndef DEFS_H
-#define DEFS_H
-#include "alldefs.h"
+#ifndef COMPRESSION_H
+#define COMPRESSION_H
+
+#include "defs.h"
+#include "lzcomp.h"
+
+namespace libreallive {
+namespace Compression {
+
+typedef AVG32Comp::Compress<AVG32Comp::CInfoRealLive, AVG32Comp::Container::RLDataContainer> RealliveCompressor;
+
+// An individual xor key; some games use multiple ones.
+struct XorKey {
+  char xor_key[16];
+  int xor_offset;
+  int xor_length;
+};
+
+// Per game xor keys to be passed to decompress, terminated with -1 offset
+// entries.
+extern const XorKey little_busters_xor_mask[];
+extern const XorKey clannad_full_voice_xor_mask[];
+extern const XorKey little_busters_ex_xor_mask[];
+extern const XorKey snow_standard_edition_xor_mask[];
+
+void decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
+                const XorKey* per_game_xor_key);
+string* compress(char* arr, size_t len);
+void apply_mask(char* array, size_t len);
+void apply_mask(string& array, size_t start = 0);
+
+}
+}
+
 #endif

@@ -42,7 +42,7 @@ class ScriptMachine : public RLMachine {
  public:
   ScriptMachine(ScriptWorld& world,
                 System& in_system,
-                libReallive::Archive& in_archive);
+                libreallive::Archive& in_archive);
   virtual ~ScriptMachine();
 
   // Sets the decisions to take.

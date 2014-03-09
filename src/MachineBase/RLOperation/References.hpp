@@ -27,8 +27,8 @@
 #include <vector>
 
 #include "MachineBase/reference.hpp"
-#include "libReallive/expression.h"
-#include "libReallive/expression_pieces.h"
+#include "libreallive/expression.h"
+#include "libreallive/expression_pieces.h"
 
 // Type definition for a reference into the RLMachine's memory,
 // referencing an integer value.
@@ -43,13 +43,13 @@ struct IntReference_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output);
+                              libreallive::ExpressionPiecesVector& output);
 
   enum { is_complex = false };
 };
@@ -67,13 +67,13 @@ struct StrReference_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output);
+                              libreallive::ExpressionPiecesVector& output);
 
   enum { is_complex = false };
 };

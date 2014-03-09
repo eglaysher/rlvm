@@ -30,19 +30,19 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Modules/Module_Jmp.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/expression.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/expression.h"
+#include "libreallive/intmemref.h"
 
 #include "testUtils.hpp"
 
 #include <iostream>
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 TEST(ExpressionTest, BasicArithmatic) {
   TestSystem system;
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/basicOperators.TXT"));
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
@@ -65,7 +65,7 @@ TEST(ExpressionTest, BasicArithmatic) {
 
 TEST(ExpressionTest, ComparisonOperators) {
   TestSystem system;
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/comparisonOperators.TXT"));
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
@@ -92,7 +92,7 @@ TEST(ExpressionTest, ComparisonOperators) {
 
 TEST(ExpressionTest, LogicalOperators) {
   TestSystem system;
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/logicalOperators.TXT"));
   RLMachine rlmachine(system, arc);
   rlmachine.executeUntilHalted();
@@ -112,7 +112,7 @@ TEST(ExpressionTest, LogicalOperators) {
 
 TEST(ExpressionTest, PreviousErrors) {
   TestSystem system;
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/previousErrors.TXT"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -133,14 +133,14 @@ TEST(ExpressionTest, PreviousErrors) {
 // In later games, you found newline metadata inside special parameters. Make
 // sure that the expression parser can deal with that.
 TEST(ExpressionTest, ParseWithNewlineInIt) {
-  string parsable = libReallive::printableToParsableString(
+  string parsable = libreallive::printableToParsableString(
       "0a 77 02 61 37 61 00 ( $ ff ) 00 00 00 5c 02 $ ff 8d 01 00 00 "
       "$ ff ff 00 00 00 )");
 
   // This shouldn't throw.
   const char* start = parsable.c_str();
-  std::unique_ptr<libReallive::ExpressionPiece> piece(
-      libReallive::get_data(start));
+  std::unique_ptr<libreallive::ExpressionPiece> piece(
+      libreallive::get_data(start));
 
   ASSERT_TRUE(piece->isSpecialParamater());
 }

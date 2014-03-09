@@ -30,8 +30,8 @@
 #include "Modules/Module_Jmp.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Modules/Module_Msg.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 #include "MachineBase/RLMachine.hpp"
 
 #include "TestSystem/TestSystem.hpp"
@@ -40,7 +40,7 @@
 
 #include <iostream>
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 /**
  * Tests goto.
@@ -55,7 +55,7 @@ using namespace libReallive;
  * @endcode
  */
 TEST(LargeJmpTest, goto) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -85,7 +85,7 @@ TEST(LargeJmpTest, goto) {
  * @endcode
  */
 TEST(LargeJmpTest, goto_if_false) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -115,7 +115,7 @@ TEST(LargeJmpTest, goto_if_false) {
  * @endcode
  */
 TEST(LargeJmpTest, goto_if_true) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -147,7 +147,7 @@ TEST(LargeJmpTest, goto_if_true) {
  * @endcode
  */
 TEST(LargeJmpTest, goto_unless_false) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -191,7 +191,7 @@ TEST(LargeJmpTest, goto_unless_false) {
 TEST(LargeJmpTest, goto_on) {
   // Repeat this test to hit each label
   for (int i = 0; i < 3; ++i) {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
+    libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -230,7 +230,7 @@ TEST(LargeJmpTest, goto_on) {
  * @endcode
  */
 TEST(LargeJmpTest, goto_on_illegal) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
   TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -270,7 +270,7 @@ TEST(LargeJmpTest, goto_on_illegal) {
  */
 TEST(LargeJmpTest, goto_case) {
   for (int i = 0; i < 3; ++i) {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
+    libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -282,7 +282,7 @@ TEST(LargeJmpTest, goto_case) {
   }
 
   // Now test the default value
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -315,7 +315,7 @@ TEST(LargeJmpTest, goto_case) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_0) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -339,7 +339,7 @@ TEST(LargeJmpTest, gosub_0) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_if_false) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -363,7 +363,7 @@ TEST(LargeJmpTest, gosub_if_false) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_if_true) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -401,7 +401,7 @@ TEST(LargeJmpTest, gosub_if_true) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_unless_false) {
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
@@ -438,7 +438,7 @@ TEST(LargeJmpTest, gosub_unless_false) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_unless_true) {
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
@@ -484,7 +484,7 @@ TEST(LargeJmpTest, gosub_unless_true) {
  */
 TEST(LargeJmpTest, gosub_case) {
   for (int i = 0; i < 3; ++i) {
-    libReallive::Archive arc(
+    libreallive::Archive arc(
         locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
     TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
@@ -497,7 +497,7 @@ TEST(LargeJmpTest, gosub_case) {
   }
 
   // Now test the default value
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
   TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -535,7 +535,7 @@ TEST(LargeJmpTest, gosub_case) {
  */
 TEST(LargeJmpTest, jump) {
   for (int i = 1; i < 4; ++i) {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
+    libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -573,7 +573,7 @@ TEST(LargeJmpTest, jump) {
  */
 TEST(LargeJmpTest, jumpTest) {
   for (int i = 1; i < 4; ++i) {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
+    libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -611,7 +611,7 @@ TEST(LargeJmpTest, jumpTest) {
  */
 TEST(LargeJmpTest, farcall) {
   for (int i = 1; i < 4; ++i) {
-    libReallive::Archive arc(
+    libreallive::Archive arc(
         locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
@@ -658,7 +658,7 @@ TEST(LargeJmpTest, farcall) {
  * @endcode
  */
 TEST(LargeJmpTest, gosub_with) {
-  libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
   rlmachine.attachModule(new JmpModule);
@@ -755,7 +755,7 @@ static int recFib(int input) {
  */
 TEST(LargeJmpTest, fibonacci) {
   for (int i = 0; i < 10; ++i) {
-    libReallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
+    libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
     rlmachine.attachModule(new JmpModule);
@@ -799,7 +799,7 @@ TEST(LargeJmpTest, fibonacci) {
 TEST(LargeJmpTest, farcall_with) {
   for (int offset = 0; offset < 2; ++offset) {
     for (int entrypoint = 1; entrypoint < 4; ++entrypoint) {
-      libReallive::Archive arc(
+      libreallive::Archive arc(
           locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
       TestSystem system;
       RLMachine rlmachine(system, arc);
@@ -820,7 +820,7 @@ TEST(LargeJmpTest, farcall_with) {
 
 // Tests the new pushStringValue that Little Busters depends on.
 TEST(LargeJmpTest, pushStringValueUp) {
-  libReallive::Archive arc(
+  libreallive::Archive arc(
       locateTestCase("Module_Jmp_SEEN/pushStringValueUp.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);

@@ -37,12 +37,12 @@
 #include "MachineBase/RLOperation/Argc_T.hpp"
 #include "MachineBase/RLOperation/Special_T.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/bytecode.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
+using namespace libreallive;
 
 // The Flow Control (Jump) Module (mod<0:1>).
 //
@@ -151,7 +151,7 @@ struct Jmp_goto : public RLOp_SpecialCase {
 // default, special cases treat this as data instead of expressions.
 struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
   virtual void parseParameters(const std::vector<std::string>& input,
-                               libReallive::ExpressionPiecesVector& output) {
+                               libreallive::ExpressionPiecesVector& output) {
     for (auto const& parameter : input) {
       const char* src = parameter.c_str();
       output.push_back(get_expression(src));

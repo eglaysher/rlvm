@@ -27,9 +27,9 @@
 #include <vector>
 
 #include "Utilities/Exception.hpp"
-#include "libReallive/bytecode_fwd.h"
-#include "libReallive/expression.h"
-#include "libReallive/expression_pieces.h"
+#include "libreallive/bytecode_fwd.h"
+#include "libreallive/expression.h"
+#include "libreallive/expression_pieces.h"
 
 #include <sstream>
 
@@ -41,7 +41,7 @@
 // This default mapper is used by most Special_Ts, and returns the tag as the
 // type.
 struct DefaultSpecialMapper {
-  static int GetTypeForTag(const libReallive::SpecialExpressionPiece& sp) {
+  static int GetTypeForTag(const libreallive::SpecialExpressionPiece& sp) {
     return sp.getOverloadTag();
   }
 };
@@ -82,9 +82,9 @@ struct Special_T {
   template <typename TYPE>
   static typename TYPE::type getDataFor(
       RLMachine& machine,
-      const libReallive::ExpressionPiecesVector& p,
+      const libreallive::ExpressionPiecesVector& p,
       unsigned int& position,
-      const libReallive::SpecialExpressionPiece& sp) {
+      const libreallive::SpecialExpressionPiece& sp) {
     if (TYPE::is_complex) {
       return TYPE::getData(machine, p, position);
     } else {
@@ -97,7 +97,7 @@ struct Special_T {
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     if (position >= p.size()) {
       std::ostringstream oss;
@@ -106,8 +106,8 @@ struct Special_T {
       throw std::runtime_error(oss.str());
     }
 
-    const libReallive::SpecialExpressionPiece& sp =
-        static_cast<const libReallive::SpecialExpressionPiece&>(*p[position]);
+    const libreallive::SpecialExpressionPiece& sp =
+        static_cast<const libreallive::SpecialExpressionPiece&>(*p[position]);
 
     if (sp.getContainedPieces().size() == 0)
       throw rlvm::Exception("Empty special construct in Special_T");
@@ -155,9 +155,9 @@ struct Special_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
-    output.emplace_back(libReallive::get_data(data));
+    output.emplace_back(libreallive::get_data(data));
     position++;
   }
 

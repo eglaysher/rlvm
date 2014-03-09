@@ -34,11 +34,11 @@
 #include "Systems/Base/ParentGraphicsObjectData.hpp"
 #include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/bytecode.h"
-#include "libReallive/expression_pieces.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression_pieces.h"
 
-using libReallive::IntegerConstant;
-using libReallive::ExpressionPiece;
+using libreallive::IntegerConstant;
+using libreallive::ExpressionPiece;
 
 void ensureIsParentObject(GraphicsObject& parent, int size) {
   if (parent.hasObjectData()) {
@@ -96,8 +96,8 @@ void setGraphicsObject(RLMachine& machine,
 ObjRangeAdapter::ObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ObjRangeAdapter::operator()(RLMachine& machine,
-                                 const libReallive::CommandElement& ff) {
-  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+                                 const libreallive::CommandElement& ff) {
+  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 2)
@@ -112,11 +112,11 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
-    libReallive::ExpressionPiecesVector currentInstantiation;
+    libreallive::ExpressionPiecesVector currentInstantiation;
     currentInstantiation.emplace_back(new IntegerConstant(i));
 
     // Copy everything after the first two items
-    libReallive::ExpressionPiecesVector::const_iterator it =
+    libreallive::ExpressionPiecesVector::const_iterator it =
         allParameters.begin();
     std::advance(it, 2);
     for (; it != allParameters.end(); ++it) {
@@ -141,8 +141,8 @@ RLOperation* rangeMappingFun(RLOperation* op) {
 ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjAdapter::operator()(RLMachine& machine,
-                                 const libReallive::CommandElement& ff) {
-  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+                                 const libreallive::CommandElement& ff) {
+  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 1)
@@ -151,8 +151,8 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   int objset = allParameters[0]->integerValue(machine);
 
   // Copy everything after the first item
-  libReallive::ExpressionPiecesVector currentInstantiation;
-  libReallive::ExpressionPiecesVector::const_iterator it =
+  libreallive::ExpressionPiecesVector currentInstantiation;
+  libreallive::ExpressionPiecesVector::const_iterator it =
       allParameters.begin();
   ++it;
   for (; it != allParameters.end(); ++it) {
@@ -176,8 +176,8 @@ RLOperation* childObjMappingFun(RLOperation* op) {
 ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
-                                      const libReallive::CommandElement& ff) {
-  const libReallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+                                      const libreallive::CommandElement& ff) {
+  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
 
   // Range check the data
   if (allParameters.size() < 3) {
@@ -196,11 +196,11 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
-    libReallive::ExpressionPiecesVector currentInstantiation;
+    libreallive::ExpressionPiecesVector currentInstantiation;
     currentInstantiation.emplace_back(new IntegerConstant(i));
 
     // Copy everything after the first three items
-    libReallive::ExpressionPiecesVector::const_iterator it =
+    libreallive::ExpressionPiecesVector::const_iterator it =
         allParameters.begin();
     std::advance(it, 3);
     for (; it != allParameters.end(); ++it) {

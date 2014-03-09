@@ -45,8 +45,8 @@
 #include "Utilities/findFontFile.h"
 #include "Utilities/gettext.h"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/reallive.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/reallive.h"
 #include "utf8cpp/utf8.h"
 
 using namespace std;
@@ -103,9 +103,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       gameexe("__GAMEFONT") = custom_font_;
     }
 
-    libReallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
+    libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
     if (dump_seen_ != -1) {
-      libReallive::Scenario* scenario = arc.scenario(dump_seen_);
+      libreallive::Scenario* scenario = arc.scenario(dump_seen_);
       DumpScenario(scenario);
       return;
     }
@@ -186,8 +186,8 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
   catch (rlvm::Exception& e) {
     ReportFatalError(_("Fatal RLVM error"), e.what());
   }
-  catch (libReallive::Error& e) {
-    ReportFatalError(_("Fatal libReallive error"), e.what());
+  catch (libreallive::Error& e) {
+    ReportFatalError(_("Fatal libreallive error"), e.what());
   }
   catch (SystemError& e) {
     ReportFatalError(_("Fatal local system error"), e.what());

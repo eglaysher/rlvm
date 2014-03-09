@@ -38,11 +38,11 @@
 #include "MachineBase/Serialization.hpp"
 #include "Modules/Module_Str.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 #include "testUtils.hpp"
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 using boost::lexical_cast;
 
 class RLMachineTest : public FullSystemTest {
@@ -202,7 +202,7 @@ TEST_F(RLMachineTest, NameStorage) {
 
 TEST_F(RLMachineTest, Serialization) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
   // Save data
   {
     RLMachine saveMachine(system, arc);
@@ -224,7 +224,7 @@ TEST_F(RLMachineTest, Serialization) {
 // Tests serialization of the kidoku table.
 TEST_F(RLMachineTest, SerializationOfKidoku) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
 
   // Save data
   {
@@ -251,7 +251,7 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
 
 TEST_F(RLMachineTest, SerializationOfSavepointValues) {
   stringstream ss;
-  libReallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
+  libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
   // Save data
   {
     RLMachine saveMachine(system, arc);

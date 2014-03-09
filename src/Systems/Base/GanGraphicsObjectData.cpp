@@ -48,9 +48,9 @@
 #include "Systems/Base/System.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
-#include "libReallive/defs.h"
+#include "libreallive/defs.h"
 
-using libReallive::read_i32;
+using libreallive::read_i32;
 using boost::scoped_array;
 using std::string;
 using std::ifstream;

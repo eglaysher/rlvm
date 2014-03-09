@@ -42,10 +42,10 @@
 #include "Systems/Base/SystemError.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 const int SEL_SIZE = 16;
 

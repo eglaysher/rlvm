@@ -38,7 +38,7 @@
 #include "Systems/Base/GraphicsTextObject.hpp"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
+#include "libreallive/archive.h"
 
 #include "testUtils.hpp"
 
@@ -62,7 +62,7 @@ class PromotionTest : public ::testing::TestWithParam<PromotionData> {
   }
 
   // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
+  libreallive::Archive arc;
   TestSystem system;
   TestMachine rlmachine;
 };

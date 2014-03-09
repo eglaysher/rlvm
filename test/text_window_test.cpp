@@ -31,9 +31,9 @@
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "TestSystem/TestTextWindow.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/expression.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/expression.h"
+#include "libreallive/intmemref.h"
 #include "Utilities/StringUtilities.hpp"
 
 #include "testUtils.hpp"
@@ -121,7 +121,7 @@ class TextWindowTest : public ::testing::Test {
   }
 
   // Use any old test case; it isn't getting executed
-  libReallive::Archive arc;
+  libreallive::Archive arc;
   TestSystem system;
   RLMachine rlmachine;
 };

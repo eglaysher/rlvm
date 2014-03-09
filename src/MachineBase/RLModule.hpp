@@ -35,7 +35,7 @@
 #include <vector>
 #include <string>
 
-namespace libReallive {
+namespace libreallive {
 class CommandElement;
 };
 
@@ -120,7 +120,7 @@ class RLModule : public boost::noncopyable {
   // RLOperation implementation of the instruction in this module, and
   // execute it.
   void dispatchFunction(RLMachine& machine,
-                        const libReallive::CommandElement& f);
+                        const libreallive::CommandElement& f);
 
   OpcodeMap::iterator begin() { return stored_operations.begin(); }
   OpcodeMap::iterator end() { return stored_operations.end(); }

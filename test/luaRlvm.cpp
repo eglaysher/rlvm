@@ -49,8 +49,8 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "Utilities/findFontFile.h"
-#include "libReallive/gameexe.h"
-#include "libReallive/reallive.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/reallive.h"
 
 using namespace std;
 
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
     ScriptWorld world;
 
     SDLSystem sdlSystem(gameexe);
-    libReallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
+    libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
 
     ScriptMachine rlmachine(world, sdlSystem, arc);
     addAllModules(rlmachine);
@@ -262,8 +262,8 @@ int main(int argc, char* argv[]) {
     cerr << "Fatal RLVM error: " << e.what() << endl;
     return 1;
   }
-  catch (libReallive::Error& e) {
-    cerr << "Fatal libReallive error: " << e.what() << endl;
+  catch (libreallive::Error& e) {
+    cerr << "Fatal libreallive error: " << e.what() << endl;
     return 1;
   }
   catch (SystemError& e) {

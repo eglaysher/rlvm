@@ -38,7 +38,7 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/findFontFile.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 #include <SDL/SDL_ttf.h>
 #include <iostream>

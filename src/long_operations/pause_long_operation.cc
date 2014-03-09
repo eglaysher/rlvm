@@ -37,7 +37,7 @@
 #include "Systems/Base/TextPage.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 

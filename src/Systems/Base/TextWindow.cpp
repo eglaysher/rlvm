@@ -46,8 +46,8 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/Graphics.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/defs.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/defs.h"
+#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
 
 using std::bind;

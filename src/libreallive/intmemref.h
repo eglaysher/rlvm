@@ -30,7 +30,7 @@
 
 #include <iosfwd>
 
-namespace libReallive {
+namespace libreallive {
 
 const int INTA_LOCATION = 0;
 const int INTB_LOCATION = 1;
@@ -93,6 +93,6 @@ class IntMemRef {
 
 }
 
-std::ostream& operator<<(std::ostream& oss, const libReallive::IntMemRef& memref);
+std::ostream& operator<<(std::ostream& oss, const libreallive::IntMemRef& memref);
 
 #endif

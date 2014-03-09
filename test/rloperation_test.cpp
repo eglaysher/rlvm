@@ -33,9 +33,9 @@
 #include "MachineBase/RLOperation/DefaultValue.hpp"
 #include "MachineBase/RLOperation/References.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/expression.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/expression.h"
+#include "libreallive/intmemref.h"
 
 #include "testUtils.hpp"
 
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace std::placeholders;
-using namespace libReallive;
+using namespace libreallive;
 
 // -----------------------------------------------------------------------
 

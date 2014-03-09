@@ -34,7 +34,7 @@
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 

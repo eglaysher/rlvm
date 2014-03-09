@@ -56,8 +56,8 @@
 #include "Systems/Base/TextWindow.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
 #include "Utilities/StringUtilities.hpp"
 
 using std::cerr;
@@ -670,10 +670,10 @@ StringReferenceIterator RlBabelDLL::getSvar(int addr) {
   int bank = addr >> 16;
 
   switch (bank) {
-    case libReallive::STRS_LOCATION:
-    case libReallive::STRM_LOCATION:
+    case libreallive::STRS_LOCATION:
+    case libreallive::STRM_LOCATION:
       return StringReferenceIterator(m, bank, addr & 0xfff);
-    case libReallive::STRK_LOCATION:
+    case libreallive::STRK_LOCATION:
       // To be bug for bug compatible with the real rlBabel so people don't
       // start targetting rlvm.
       cerr << "strK[] support is not implemented: falling back on strS[0]"
@@ -686,7 +686,7 @@ StringReferenceIterator RlBabelDLL::getSvar(int addr) {
   }
 
   // Error.
-  return StringReferenceIterator(m, libReallive::STRS_LOCATION, 0);
+  return StringReferenceIterator(m, libreallive::STRS_LOCATION, 0);
 }
 
 boost::shared_ptr<TextWindow> RlBabelDLL::getWindow(int id) {

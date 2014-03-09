@@ -55,11 +55,11 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
-#include "libReallive/defs.h"
+#include "libreallive/defs.h"
 
 using boost::scoped_array;
 
-using libReallive::read_i32;
+using libreallive::read_i32;
 
 namespace fs = boost::filesystem;
 

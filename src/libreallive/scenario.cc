@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -31,20 +31,20 @@
 //
 // -----------------------------------------------------------------------
 
-#include "scenario.h"
-#include "compression.h"
-#include <cassert>
+#include "libreallive/scenario.h"
 
 #include <algorithm>
+#include <cassert>
 #include <sstream>
 
+#include "libreallive/compression.h"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "Utilities/gettext.h"
 
 using namespace std;
 
-namespace libReallive {
+namespace libreallive {
 
 Metadata::Metadata() : encoding(0) {}
 

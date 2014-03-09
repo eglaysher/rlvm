@@ -47,8 +47,8 @@
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectOfFile.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 
 #include "testUtils.hpp"
 #include <boost/scoped_ptr.hpp>
@@ -57,7 +57,7 @@
 
 using namespace boost;
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 using namespace Serialization;
 
 using ::testing::_;

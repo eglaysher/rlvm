@@ -62,17 +62,17 @@
 #include "Utilities/StringUtilities.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/dateUtil.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/bytecode.h"
-#include "libReallive/expression.h"
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
-#include "libReallive/scenario.h"
+#include "libreallive/archive.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
+#include "libreallive/scenario.h"
 
 namespace fs = boost::filesystem;
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 using boost::lexical_cast;
 
@@ -116,7 +116,7 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
       replaying_graphics_stack_(false) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
-  libReallive::Scenario* scenario = NULL;
+  libreallive::Scenario* scenario = NULL;
   if (gameexe.exists("SEEN_START")) {
     int first_seen = gameexe("SEEN_START").to_int();
     scenario = in_archive.scenario(first_seen);
@@ -181,11 +181,11 @@ void RLMachine::attachModule(RLModule* module) {
   modules_.insert(packed_module, module);
 }
 
-int RLMachine::getIntValue(const libReallive::IntMemRef& ref) {
+int RLMachine::getIntValue(const libreallive::IntMemRef& ref) {
   return memory_->getIntValue(ref);
 }
 
-void RLMachine::setIntValue(const libReallive::IntMemRef& ref, int value) {
+void RLMachine::setIntValue(const libreallive::IntMemRef& ref, int value) {
   memory_->setIntValue(ref, value);
 }
 
@@ -348,7 +348,7 @@ void RLMachine::executeCommand(const CommandElement& f) {
 
 void RLMachine::jump(int scenario_num, int entrypoint) {
   // Check to make sure it's a valid scenario
-  libReallive::Scenario* scenario = archive_.scenario(scenario_num);
+  libreallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {
     ostringstream oss;
     oss << "Invalid scenario number in jump (" << scenario_num << ", "
@@ -376,7 +376,7 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
 }
 
 void RLMachine::farcall(int scenario_num, int entrypoint) {
-  libReallive::Scenario* scenario = archive_.scenario(scenario_num);
+  libreallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {
     ostringstream oss;
     oss << "Invalid scenario number in farcall (" << scenario_num << ", "
@@ -384,7 +384,7 @@ void RLMachine::farcall(int scenario_num, int entrypoint) {
     throw rlvm::Exception(oss.str());
   }
 
-  libReallive::Scenario::const_iterator it =
+  libreallive::Scenario::const_iterator it =
       scenario->findEntrypoint(entrypoint);
 
   if (entrypoint == 0 && shouldSetSeentopSavepoint())
@@ -402,12 +402,12 @@ void RLMachine::returnFromFarcall() {
   popStackFrame();
 }
 
-void RLMachine::gotoLocation(libReallive::BytecodeList::iterator new_location) {
+void RLMachine::gotoLocation(libreallive::BytecodeList::iterator new_location) {
   // Modify the current frame of the call stack so that it's
   call_stack_.back().ip = new_location;
 }
 
-void RLMachine::gosub(libReallive::BytecodeList::iterator new_location) {
+void RLMachine::gosub(libreallive::BytecodeList::iterator new_location) {
   pushStackFrame(StackFrame(
       call_stack_.back().scenario, new_location, StackFrame::TYPE_GOSUB));
 }

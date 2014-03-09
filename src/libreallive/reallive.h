@@ -1,4 +1,4 @@
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -30,11 +30,11 @@
 #define LIBREALLIVE_H
 
 /**
- * @namespace libReallive
- * @brief libReallive, a library for manipulating Reallive bytecode
+ * @namespace libreallive
+ * @brief libreallive, a library for manipulating Reallive bytecode
  * @author Haeleth
  *
- * libReallive is a library for manipulating Reallive bytecode. It was
+ * libreallive is a library for manipulating Reallive bytecode. It was
  * orriginally written by Haeleth, and was copy/pasted into
  * RLVM. While I've modified it to suit my needs (for example, adding
  * support for RLv1.3 goto_with constructs, parameter parsing code in
@@ -44,7 +44,7 @@
  * @section Archive The Archive and Scenario access
  *
  * We start with the main class that represents the SEEN.TXT file,
- * libReallive::Archive. A SEEN.TXT file contains all of the executed
+ * libreallive::Archive. A SEEN.TXT file contains all of the executed
  * code in a Reallive game (barring DLL extensions to the Reallive
  * system). A SEEN.TXT file contains number identified Scenarios,
  * which represents small pieces of bytecode which are executed in our
@@ -53,17 +53,17 @@
  * startup is the parsing of the TOC, which defines which Scenarios
  * are in the SEEN.TXT archive.
  *
- * From the Archive, we can access libReallive::Scenarios using the
- * libReallive::Archive::scenario() member. This method will return
+ * From the Archive, we can access libreallive::Scenarios using the
+ * libreallive::Archive::scenario() member. This method will return
  * the Scenario relating to the passed in number. Archive has other
  * members for manipulating and rewriting the data, but these aren't
  * used in RLVM.
  *
  * @section Scenario The Scenario
  *
- * The libReallive::Scenario class represents a Scenario, a sequence
+ * The libreallive::Scenario class represents a Scenario, a sequence
  * of commands and other metadata. It is divided into the
- * libReallive::Header and libReallive::Script. The header contains:
+ * libreallive::Header and libreallive::Script. The header contains:
  *
  * - Debug information
  * - "Misc settings"

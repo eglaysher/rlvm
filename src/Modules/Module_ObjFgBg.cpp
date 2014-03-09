@@ -63,12 +63,12 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "libReallive/bytecode.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
+using namespace libreallive;
 
 namespace {
 

@@ -53,7 +53,7 @@
 #include "Utilities/StringUtilities.hpp"
 
 using namespace boost;
-using namespace libReallive;
+using namespace libreallive;
 
 // -----------------------------------------------------------------------
 

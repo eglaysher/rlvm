@@ -41,11 +41,11 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/bytecode.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/gameexe.h"
 
-using libReallive::SelectElement;
-using libReallive::CommandElement;
+using libreallive::SelectElement;
+using libreallive::CommandElement;
 
 namespace {
 
@@ -53,7 +53,7 @@ struct Sel_select : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
   virtual void parseParameters(const std::vector<std::string>& input,
-                               libReallive::ExpressionPiecesVector& output) {}
+                               libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -69,7 +69,7 @@ struct Sel_select_s : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
   virtual void parseParameters(const std::vector<std::string>& input,
-                               libReallive::ExpressionPiecesVector& output) {}
+                               libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -97,7 +97,7 @@ struct Sel_select_w : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
   virtual void parseParameters(const std::vector<std::string>& input,
-                               libReallive::ExpressionPiecesVector& output) {}
+                               libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.shouldSetSelcomSavepoint())
@@ -107,7 +107,7 @@ struct Sel_select_w : public RLOp_SpecialCase {
 
     // Sometimes the RL bytecode will override DEFAULT_SEL_WINDOW.
     int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").to_int(-1);
-    libReallive::ExpressionElement window_exp = element.window();
+    libreallive::ExpressionElement window_exp = element.window();
     int computed = window_exp.valueOnly(machine);
     if (computed != -1)
       window = computed;

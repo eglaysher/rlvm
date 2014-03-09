@@ -34,13 +34,13 @@
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "MachineBase/RLMachine.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/bytecode.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/bytecode.h"
 #include "Utilities/Exception.hpp"
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
+using namespace libreallive;
 
 namespace getSystemObjImpl {
 
@@ -90,7 +90,7 @@ MultiDispatch::~MultiDispatch() {}
 
 void MultiDispatch::parseParameters(
     const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {
+    libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
     output.push_back(get_complex_param(src));
@@ -99,12 +99,12 @@ void MultiDispatch::parseParameters(
 
 /// @todo Port this up to the new expression handling code
 void MultiDispatch::operator()(RLMachine& machine,
-                               const libReallive::CommandElement& ff) {
-  const libReallive::ExpressionPiecesVector& parameter_pieces =
+                               const libreallive::CommandElement& ff) {
+  const libreallive::ExpressionPiecesVector& parameter_pieces =
       ff.getParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
-    const libReallive::ExpressionPiecesVector& element =
+    const libreallive::ExpressionPiecesVector& element =
         dynamic_cast<const ComplexExpressionPiece&>(*parameter_pieces[i])
             .getContainedPieces();
 
@@ -158,22 +158,22 @@ UndefinedFunction::UndefinedFunction(const std::string& name,
 
 void UndefinedFunction::dispatch(
     RLMachine& machine,
-    const libReallive::ExpressionPiecesVector& parameters) {
+    const libreallive::ExpressionPiecesVector& parameters) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::dispatchFunction(RLMachine& machine,
-                                         const libReallive::CommandElement& f) {
+                                         const libreallive::CommandElement& f) {
   throw rlvm::UnimplementedOpcode(machine, name_, f);
 }
 
 void UndefinedFunction::parseParameters(
     const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {
+    libreallive::ExpressionPiecesVector& output) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::operator()(RLMachine& machine,
-                                   const libReallive::CommandElement& f) {
+                                   const libreallive::CommandElement& f) {
   throw rlvm::UnimplementedOpcode(machine, name_, f);
 }

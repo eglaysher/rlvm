@@ -38,7 +38,7 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Systems/Base/TextWindowButton.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using std::endl;
 using std::ostringstream;

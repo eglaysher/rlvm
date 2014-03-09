@@ -27,11 +27,11 @@
 #ifndef SRC_MACHINEBASE_DUMPSCENARIO_HPP_
 #define SRC_MACHINEBASE_DUMPSCENARIO_HPP_
 
-namespace libReallive {
+namespace libreallive {
 class Scenario;
 }
 
 // A really cheap disassembler now that kprl can't be compiled anymore.
-void DumpScenario(libReallive::Scenario* scenario);
+void DumpScenario(libreallive::Scenario* scenario);
 
 #endif  // SRC_MACHINEBASE_DUMPSCENARIO_HPP_

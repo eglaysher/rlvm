@@ -30,7 +30,7 @@
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/bytecode.h"
+#include "libreallive/bytecode.h"
 
 #include <sstream>
 #include <string>
@@ -38,7 +38,7 @@
 #include <vector>
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 // -----------------------------------------------------------------------
 // RLOperation
@@ -122,7 +122,7 @@ void RLOperation::throw_unimplemented() {
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
+    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
   return p[position++]->integerValue(machine);
 }
@@ -131,11 +131,11 @@ IntConstant_T::type IntConstant_T::getData(
 void IntConstant_T::parseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
-  if (ep->expressionValueType() != libReallive::ValueTypeInteger) {
+  if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntConstant_T parse err.");
   }
 
@@ -145,20 +145,20 @@ void IntConstant_T::parseParameters(
 
 IntReference_T::type IntReference_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
+    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(*p[position++])
+  return static_cast<const libreallive::MemoryReference&>(*p[position++])
       .getIntegerReferenceIterator(machine);
 }
 
 void IntReference_T::parseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
-  if (ep->expressionValueType() != libReallive::ValueTypeInteger) {
+  if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntReference_T parse err.");
   }
 
@@ -168,7 +168,7 @@ void IntReference_T::parseParameters(
 
 StrConstant_T::type StrConstant_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
+    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
   // When I was trying to get P_BRIDE running in rlvm, I noticed that when
   // loading a game, I would often crash with invalid iterators in the LRUCache
@@ -212,11 +212,11 @@ StrConstant_T::type StrConstant_T::getData(
 void StrConstant_T::parseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
-  if (ep->expressionValueType() != libReallive::ValueTypeString) {
+  if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrConstant_T parse err.");
   }
 
@@ -226,20 +226,20 @@ void StrConstant_T::parseParameters(
 
 StrReference_T::type StrReference_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& p,
+    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return static_cast<const libReallive::MemoryReference&>(*p[position++])
+  return static_cast<const libreallive::MemoryReference&>(*p[position++])
       .getStringReferenceIterator(machine);
 }
 
 void StrReference_T::parseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libReallive::ExpressionPiece>>& output) {
+    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
   unique_ptr<ExpressionPiece> ep(get_data(data));
 
-  if (ep->expressionValueType() != libReallive::ValueTypeString) {
+  if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrReference_T parse err.");
   }
 
@@ -249,13 +249,13 @@ void StrReference_T::parseParameters(
 
 void RLOp_SpecialCase::dispatch(
     RLMachine& machine,
-    const libReallive::ExpressionPiecesVector& parameters) {
+    const libreallive::ExpressionPiecesVector& parameters) {
   throw rlvm::Exception("Tried to call empty RLOp_SpecialCase::dispatch().");
 }
 
 void RLOp_SpecialCase::parseParameters(
     const std::vector<std::string>& input,
-    libReallive::ExpressionPiecesVector& output) {
+    libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
     output.push_back(get_data(src));
@@ -263,11 +263,11 @@ void RLOp_SpecialCase::parseParameters(
 }
 
 void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
-                                        const libReallive::CommandElement& ff) {
+                                        const libreallive::CommandElement& ff) {
   // First try to run the default parse_parameters if we can.
   if (!ff.areParametersParsed()) {
     vector<string> unparsed = ff.getUnparsedParameters();
-    libReallive::ExpressionPiecesVector output;
+    libreallive::ExpressionPiecesVector output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
@@ -278,6 +278,6 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
 
 void RLOp_Void_Void::dispatch(
     RLMachine& machine,
-    const libReallive::ExpressionPiecesVector& parameters) {
+    const libreallive::ExpressionPiecesVector& parameters) {
   operator()(machine);
 }

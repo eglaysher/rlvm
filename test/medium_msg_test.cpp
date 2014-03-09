@@ -30,7 +30,7 @@
 #include "Modules/Module_Msg.hpp"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
+#include "libreallive/archive.h"
 
 #include "testUtils.hpp"
 

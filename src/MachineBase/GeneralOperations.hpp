@@ -141,10 +141,10 @@ class MultiDispatch : public RLOp_SpecialCase {
   ~MultiDispatch();
 
   void parseParameters(const std::vector<std::string>& input,
-                       libReallive::ExpressionPiecesVector& output);
+                       libreallive::ExpressionPiecesVector& output);
 
   virtual void operator()(RLMachine& machine,
-                          const libReallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff);
 
  private:
   std::unique_ptr<RLOperation> handler_;
@@ -190,12 +190,12 @@ class UndefinedFunction : public RLOp_SpecialCase {
 
   // RLOp_SpecialCase:
   virtual void dispatch(RLMachine& machine,
-                        const libReallive::ExpressionPiecesVector& parameters);
+                        const libreallive::ExpressionPiecesVector& parameters);
   virtual void dispatchFunction(RLMachine& machine,
-                                const libReallive::CommandElement& f);
+                                const libreallive::CommandElement& f);
   virtual void parseParameters(const std::vector<std::string>& input,
-                               libReallive::ExpressionPiecesVector& output);
-  virtual void operator()(RLMachine&, const libReallive::CommandElement&);
+                               libreallive::ExpressionPiecesVector& output);
+  virtual void operator()(RLMachine&, const libreallive::CommandElement&);
 
  private:
   std::string name_;

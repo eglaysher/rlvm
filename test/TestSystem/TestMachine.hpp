@@ -38,7 +38,7 @@
 class System;
 class RLModule;
 class RLOperation;
-namespace libReallive {
+namespace libreallive {
 class Archive;
 }
 
@@ -207,7 +207,7 @@ class TestMachine : public RLMachine {
     return ExeArgument(9, output);
   }
 
-  TestMachine(System& in_system, libReallive::Archive& in_archive);
+  TestMachine(System& in_system, libreallive::Archive& in_archive);
 
   // Index all the RLOperations before passing to parent.
   virtual void attachModule(RLModule* module);

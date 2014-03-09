@@ -37,7 +37,7 @@ struct Point_T {
   typedef Point type;
 
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     int x = IntConstant_T::getData(machine, p, position);
     int y = IntConstant_T::getData(machine, p, position);
@@ -46,7 +46,7 @@ struct Point_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
   }
@@ -75,7 +75,7 @@ struct Rect_T {
 
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     int one = IntConstant_T::getData(machine, p, position);
     int two = IntConstant_T::getData(machine, p, position);
@@ -87,7 +87,7 @@ struct Rect_T {
   // Parse the raw parameter string and put the results in ExpressionPiece
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);
     IntConstant_T::parseParameters(position, input, output);

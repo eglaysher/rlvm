@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -31,22 +31,21 @@
 //
 // -----------------------------------------------------------------------
 
-/* Bytecode class structure. */
+#include "libreallive/bytecode.h"
 
 #include <iomanip>
 #include <exception>
 #include <utility>
 #include <sstream>
 
-#include "bytecode.h"
-#include "scenario.h"
-#include "expression.h"
+#include "libreallive/scenario.h"
+#include "libreallive/expression.h"
 
 #include "MachineBase/RLMachine.hpp"
 
 using namespace std;
 
-namespace libReallive {
+namespace libreallive {
 
 char BytecodeElement::entrypoint_marker = '@';
 
@@ -87,7 +86,7 @@ void PrintParameterString(std::ostream& oss,
       std::unique_ptr<ExpressionPiece> piece(get_data(start));
       oss << piece->getDebugString();
     }
-    catch (libReallive::Error& e) {
+    catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
       oss << "{RAW : " << parsableToPrintableString(param) << "}";
     }

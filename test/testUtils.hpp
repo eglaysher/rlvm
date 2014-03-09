@@ -33,7 +33,7 @@
 #include "gtest/gtest.h"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"
-#include "libReallive/archive.h"
+#include "libreallive/archive.h"
 
 /**
  * Locates a test file in the test/ directory.
@@ -51,7 +51,7 @@ class FullSystemTest : public ::testing::Test {
   FullSystemTest();
   ~FullSystemTest();
 
-  libReallive::Archive arc;
+  libreallive::Archive arc;
   TestSystem system;
   TestMachine rlmachine;
 };

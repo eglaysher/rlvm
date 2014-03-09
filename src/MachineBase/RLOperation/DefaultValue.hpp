@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include "libReallive/expression_pieces.h"
+#include "libreallive/expression_pieces.h"
 
 template <int DEFAULTVAL>
 struct DefaultIntValue_T {
@@ -35,7 +35,7 @@ struct DefaultIntValue_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     if (position < p.size()) {
       return IntConstant_T::getData(machine, p, position);
@@ -46,11 +46,11 @@ struct DefaultIntValue_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
       IntConstant_T::parseParameters(position, input, output);
     } else {
-      output.emplace_back(new libReallive::IntegerConstant(DEFAULTVAL));
+      output.emplace_back(new libreallive::IntegerConstant(DEFAULTVAL));
       position++;
     }
   }
@@ -65,7 +65,7 @@ struct DefaultStrValue_T {
 
   // Convert the incoming parameter objects into the resulting type
   static type getData(RLMachine& machine,
-                      const libReallive::ExpressionPiecesVector& p,
+                      const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     if (position < p.size()) {
       return StrConstant_T::getData(machine, p, position);
@@ -76,11 +76,11 @@ struct DefaultStrValue_T {
 
   static void parseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libReallive::ExpressionPiecesVector& output) {
+                              libreallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
       StrConstant_T::parseParameters(position, input, output);
     } else {
-      output.emplace_back(new libReallive::StringConstant(std::string()));
+      output.emplace_back(new libreallive::StringConstant(std::string()));
       position++;
     }
   }

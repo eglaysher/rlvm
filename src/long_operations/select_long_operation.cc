@@ -42,18 +42,18 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/bytecode.h"
-#include "libReallive/expression.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression.h"
+#include "libreallive/gameexe.h"
 
 using std::cerr;
 using std::endl;
 using std::string;
 using std::vector;
 using std::distance;
-using libReallive::SelectElement;
-using libReallive::ExpressionPiece;
-using libReallive::CommandElement;
+using libreallive::SelectElement;
+using libreallive::ExpressionPiece;
+using libreallive::CommandElement;
 
 using namespace std::placeholders;
 
@@ -70,7 +70,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
     o.use_colour = false;
 
     std::string evaluated_native =
-        libReallive::evaluatePRINT(machine, param.text);
+        libreallive::evaluatePRINT(machine, param.text);
     o.str = cp932toUTF8(evaluated_native, machine.getTextEncoding());
 
     for (auto const& condition : param.cond_parsed) {
@@ -82,7 +82,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (condition.condition != "") {
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
-                libReallive::get_expression(location));
+                libreallive::get_expression(location));
             value = !condition->integerValue(machine);
           }
 
@@ -94,7 +94,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (condition.condition != "") {
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
-                libReallive::get_expression(location));
+                libreallive::get_expression(location));
             enabled = !condition->integerValue(machine);
           }
 
@@ -103,7 +103,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (!enabled && condition.effect_argument != "") {
             const char* location = condition.effect_argument.c_str();
             std::unique_ptr<ExpressionPiece> effect_argument(
-                libReallive::get_expression(location));
+                libreallive::get_expression(location));
             colour_index = !effect_argument->integerValue(machine);
             use_colour = true;
           }
@@ -116,9 +116,9 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
         default:
           cerr << "Unsupported option in select statement "
                << "(condition: "
-               << libReallive::parsableToPrintableString(condition.condition)
+               << libreallive::parsableToPrintableString(condition.condition)
                << ", effect: " << condition.effect << ", effect_argument: "
-               << libReallive::parsableToPrintableString(
+               << libreallive::parsableToPrintableString(
                       condition.effect_argument) << ")" << endl;
           break;
       }
@@ -172,7 +172,7 @@ bool SelectLongOperation::operator()(RLMachine& machine) {
 // -----------------------------------------------------------------------
 NormalSelectLongOperation::NormalSelectLongOperation(
     RLMachine& machine,
-    const libReallive::SelectElement& commandElement)
+    const libreallive::SelectElement& commandElement)
     : SelectLongOperation(machine, commandElement),
       text_window_(machine.system().text().currentWindow()) {
   machine.system().text().setInSelectionMode(true);
@@ -236,7 +236,7 @@ bool NormalSelectLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 // -----------------------------------------------------------------------
 ButtonSelectLongOperation::ButtonSelectLongOperation(
     RLMachine& machine,
-    const libReallive::SelectElement& commandElement,
+    const libreallive::SelectElement& commandElement,
     int selbtn_set)
     : SelectLongOperation(machine, commandElement),
       highlighted_item_(-1),

@@ -38,8 +38,8 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
 
@@ -173,7 +173,7 @@ void CGMTable::setViewed(RLMachine& machine, const std::string& filename) {
   if (flag != -1) {
     // Set the intZ[] flag
     machine.memory().setIntValue(
-        libReallive::IntMemRef(libReallive::INTZ_LOCATION, 0, flag), 1);
+        libreallive::IntMemRef(libreallive::INTZ_LOCATION, 0, flag), 1);
 
     cgm_data_.insert(flag);
   }

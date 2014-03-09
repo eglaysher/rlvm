@@ -30,8 +30,8 @@
 #include "TestSystem/TestSystem.hpp"
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/archive.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 #include "testUtils.hpp"
 
 #include <string>
@@ -63,9 +63,9 @@ TEST_F(RLBabelTest, Initialization) {
 
   // Prime the buffer
   rlmachine.setStringValue(
-      libReallive::STRS_LOCATION, 0, "A world, covered in white");
+      libreallive::STRS_LOCATION, 0, "A world, covered in white");
   rlmachine.callDLL(
-      0, dllTextoutStart, libReallive::STRS_LOCATION << 16, 0, 0, 0);
+      0, dllTextoutStart, libreallive::STRS_LOCATION << 16, 0, 0, 0);
 
   // TODO: Doing anything real with RLBabel requires that we have working
   // font metrics in TestSystem...

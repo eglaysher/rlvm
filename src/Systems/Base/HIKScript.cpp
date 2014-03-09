@@ -39,14 +39,14 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "Utilities/Graphics.hpp"
-#include "libReallive/defs.h"
+#include "libreallive/defs.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
 using boost::scoped_array;
 
 // TODO(erg): Move everything to a common reader.
-using libReallive::read_i32;
+using libreallive::read_i32;
 
 namespace {
 

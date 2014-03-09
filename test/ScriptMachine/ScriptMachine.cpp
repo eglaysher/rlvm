@@ -37,17 +37,17 @@
 #include "long_operations/select_long_operation.h"
 #include "MachineBase/Serialization.hpp"
 #include "ScriptMachine/ScriptWorld.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
-using libReallive::IntMemRef;
+using libreallive::IntMemRef;
 
 // -----------------------------------------------------------------------
 // ScriptMachine
 // -----------------------------------------------------------------------
 ScriptMachine::ScriptMachine(ScriptWorld& world,
                              System& in_system,
-                             libReallive::Archive& in_archive)
+                             libreallive::Archive& in_archive)
     : RLMachine(in_system, in_archive),
       world_(world),
       current_decision_(0),

@@ -29,9 +29,9 @@
 
 #include "MachineBase/reference.hpp"
 #include "MachineBase/Memory.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 
-using libReallive::IntMemRef;
+using libreallive::IntMemRef;
 
 // -----------------------------------------------------------------------
 // IntAccessor

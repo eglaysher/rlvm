@@ -28,12 +28,12 @@
 
 #include <iostream>
 
-#include "libReallive/bytecode.h"
-#include "libReallive/scenario.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/scenario.h"
 
 using namespace std;
 
-void DumpScenario(libReallive::Scenario* scenario) {
+void DumpScenario(libreallive::Scenario* scenario) {
   if (!scenario) {
     cout << "Invalid scenario number." << endl;
     return;

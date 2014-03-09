@@ -33,7 +33,7 @@
 
 #include <string>
 
-using namespace libReallive;
+using namespace libreallive;
 
 namespace {
 

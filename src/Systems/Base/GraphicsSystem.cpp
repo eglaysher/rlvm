@@ -69,8 +69,8 @@
 #include "Systems/Base/TextSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/LazyArray.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/expression.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/expression.h"
 
 using boost::iends_with;
 using boost::lexical_cast;

@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -31,13 +31,14 @@
 //
 // -----------------------------------------------------------------------
 
-#include "archive.h"
-#include "compression.h"
-#include "string.h"
+#include "libreallive/archive.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cstring>
+
+#include "libreallive/compression.h"
 
 using namespace std;
 using boost::istarts_with;
@@ -45,7 +46,7 @@ using boost::iends_with;
 using boost::lexical_cast;
 namespace fs = boost::filesystem;
 
-namespace libReallive {
+namespace libreallive {
 
 Archive::Archive(const string& filename)
     : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
@@ -63,21 +64,21 @@ Archive::Archive(const string& filename, const std::string& regname)
 
   if (regname == "KEY\\CLANNAD_FV") {
     second_level_xor_key_ =
-        libReallive::Compression::clannad_full_voice_xor_mask;
+        libreallive::Compression::clannad_full_voice_xor_mask;
   } else if (regname ==
              "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
              "\x6f\x83\x58\x83\x5e\x81\x5b\x83\x59\x81\x49") {
-    second_level_xor_key_ = libReallive::Compression::little_busters_xor_mask;
+    second_level_xor_key_ = libreallive::Compression::little_busters_xor_mask;
   } else if (regname ==
              "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83\x6f\x83\x58\x83\x5e"
              "\x81\x5b\x83\x59\x81\x49\x82\x64\x82\x77") {
     // "KEY\<little busters in katakana>!EX", with all fullwidth latin
     // characters.
     second_level_xor_key_ =
-        libReallive::Compression::little_busters_ex_xor_mask;
+        libreallive::Compression::little_busters_ex_xor_mask;
   } else if (regname == "StudioMebius\\SNOWSE") {
     second_level_xor_key_ =
-        libReallive::Compression::snow_standard_edition_xor_mask;
+        libreallive::Compression::snow_standard_edition_xor_mask;
   }
 }
 

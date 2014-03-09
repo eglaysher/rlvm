@@ -48,7 +48,7 @@
 #include "Systems/SDL/SDLEventSystem.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/findFontFile.h"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace std;
 using namespace std::placeholders;

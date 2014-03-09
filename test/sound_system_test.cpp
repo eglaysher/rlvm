@@ -33,7 +33,7 @@
 
 #include "TestSystem/TestSystem.hpp"
 #include "TestSystem/TestSoundSystem.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 #include <string>
 #include <sstream>

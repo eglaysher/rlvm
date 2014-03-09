@@ -69,12 +69,12 @@
 #include "Utilities/Graphics.hpp"
 #include "Utilities/LazyArray.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 #include "xclannad/file.h"
 
 using namespace boost;
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 // -----------------------------------------------------------------------
 // Private Interface

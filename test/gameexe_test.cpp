@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 #include "gtest/gtest.h"
 

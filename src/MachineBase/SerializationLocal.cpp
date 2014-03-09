@@ -62,11 +62,11 @@
 #include "Utilities/Exception.hpp"
 #include "Utilities/algoplus.hpp"
 #include "Utilities/gettext.h"
-#include "libReallive/archive.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 using namespace boost::archive;
 namespace fs = boost::filesystem;
 

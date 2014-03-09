@@ -30,7 +30,7 @@
 #include "TestSystem/TestEventSystem.hpp"
 #include "TestSystem/TestTextSystem.hpp"
 #include "TestSystem/TestSoundSystem.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 // System subclass used for testing.
 class TestSystem : public System {

@@ -25,15 +25,13 @@
 //
 // -----------------------------------------------------------------------
 
-#include "intmemref.h"
+#include "libreallive/intmemref.h"
 
 #include <cstring>
 #include <ostream>
 #include <stdexcept>
 
-using namespace std;
-
-namespace libReallive {
+namespace libreallive {
 
 // -----------------------------------------------------------------------
 
@@ -101,8 +99,8 @@ IntMemRef::~IntMemRef() {}
 // -----------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& oss,
-                         const libReallive::IntMemRef& memref) {
-  using namespace libReallive;
+                         const libreallive::IntMemRef& memref) {
+  using namespace libreallive;
 
   oss << "int";
 

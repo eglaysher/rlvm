@@ -34,14 +34,14 @@
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/defs.h"
+#include "libreallive/defs.h"
 #include "xclannad/endian.hpp"
 
-using libReallive::insert_i16;
+using libreallive::insert_i16;
 using rlvm::Exception;
 using std::make_pair;
 
-TestMachine::TestMachine(System& in_system, libReallive::Archive& in_archive)
+TestMachine::TestMachine(System& in_system, libreallive::Archive& in_archive)
     : RLMachine(in_system, in_archive) {}
 
 void TestMachine::attachModule(RLModule* module) {
@@ -98,8 +98,8 @@ void TestMachine::runOpcode(const std::string& name,
   repr[7] = overload;
 
   string full = repr + '(' + argument_string + ')';
-  boost::scoped_ptr<libReallive::CommandElement> element(
-      libReallive::BuildFunctionElement(full.c_str()));
+  boost::scoped_ptr<libreallive::CommandElement> element(
+      libreallive::BuildFunctionElement(full.c_str()));
 
   RLOperation* op = registry_[make_pair(name, overload)];
   if (op) {

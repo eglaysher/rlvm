@@ -30,8 +30,8 @@
 #include <sstream>
 #include <string>
 
-#include "libReallive/bytecode.h"
-#include "libReallive/expression.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression.h"
 
 using std::ostringstream;
 
@@ -78,7 +78,7 @@ UnimplementedOpcode::UnimplementedOpcode(const std::string& funName,
 UnimplementedOpcode::UnimplementedOpcode(
     RLMachine& machine,
     const std::string& funName,
-    const libReallive::CommandElement& command)
+    const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
       parameters_(command.getUnparsedParameters()) {
@@ -91,7 +91,7 @@ UnimplementedOpcode::UnimplementedOpcode(
 
 UnimplementedOpcode::UnimplementedOpcode(
     RLMachine& machine,
-    const libReallive::CommandElement& command)
+    const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
       parameters_(command.getUnparsedParameters()) {
@@ -123,13 +123,13 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       // Take the binary stuff and try to get usefull, printable values.
       const char* start = it->c_str();
       try {
-        std::unique_ptr<libReallive::ExpressionPiece> piece(
-            libReallive::get_data(start));
+        std::unique_ptr<libreallive::ExpressionPiece> piece(
+            libreallive::get_data(start));
         oss << piece->getDebugValue(machine);
       }
-      catch (libReallive::Error& e) {
+      catch (libreallive::Error& e) {
         // Any error throw here is a parse error.
-        oss << "{RAW : " << libReallive::parsableToPrintableString(*it) << "}";
+        oss << "{RAW : " << libreallive::parsableToPrintableString(*it) << "}";
       }
     }
     oss << ")";

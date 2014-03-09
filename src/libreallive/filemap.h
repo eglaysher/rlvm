@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -43,7 +43,7 @@
 typedef int HANDLE;
 #endif
 
-namespace libReallive {
+namespace libreallive {
 
 enum Mode { Read, Write };
 

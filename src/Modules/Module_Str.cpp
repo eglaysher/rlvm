@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace boost;
-using namespace libReallive;
+using namespace libreallive;
 
 namespace {
 

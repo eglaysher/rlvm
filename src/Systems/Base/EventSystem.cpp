@@ -32,7 +32,7 @@
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 using namespace boost;
 

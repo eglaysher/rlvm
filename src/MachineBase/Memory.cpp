@@ -34,11 +34,11 @@
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
-#include "libReallive/gameexe.h"
-#include "libReallive/intmemref.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
-using namespace libReallive;
+using namespace libreallive;
 
 const IntegerBank_t LOCAL_INTEGER_BANKS = {
     make_pair(INTB_LOCATION, 'A'), make_pair(INTB_LOCATION, 'B'),

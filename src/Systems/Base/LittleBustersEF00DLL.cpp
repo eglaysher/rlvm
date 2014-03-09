@@ -31,10 +31,10 @@
 
 #include "MachineBase/RLMachine.hpp"
 #include "Utilities/Exception.hpp"
-#include "libReallive/intmemref.h"
+#include "libreallive/intmemref.h"
 
 using namespace std;
-using libReallive::IntMemRef;
+using libreallive::IntMemRef;
 
 namespace {
 
@@ -153,7 +153,7 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
   }
 
   int v5_1154 =
-      machine.getIntValue(IntMemRef(libReallive::INTF_LOCATION, 1154 + index));
+      machine.getIntValue(IntMemRef(libreallive::INTF_LOCATION, 1154 + index));
   int j = ((v5_1154) & 0x1f) + index * 0x20;
   int k = ((v5_1154 + 1) & 0x1f) + index * 0x20;
   int l = ((v5_1154 + 2) & 0x1f) + index * 0x20;
@@ -166,7 +166,7 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
   // 0 < x < 1
   // va - vd は 0-1 の範囲で対称性を持つ３次関数
   double x = double(machine.getIntValue(
-                 IntMemRef(libReallive::INTF_LOCATION, 1162 + index))) *
+                 IntMemRef(libreallive::INTF_LOCATION, 1162 + index))) *
              0.001;
   double va = (x * x * x) / 6;
   double vb = (-x * x * x + 3 * x * x - 3 * x + 1) / 6;
@@ -184,9 +184,9 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
     r3 = r3 * 700 / (400 - r1);
   }
 
-  machine.setIntValue(IntMemRef(libReallive::INTF_LOCATION, 1151), r2);
-  machine.setIntValue(IntMemRef(libReallive::INTF_LOCATION, 1152), r3);
-  machine.setIntValue(IntMemRef(libReallive::INTF_LOCATION, 1153), r1);
+  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1151), r2);
+  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1152), r3);
+  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1153), r1);
 }
 
 const std::string& LittleBustersEF00DLL::name() const {

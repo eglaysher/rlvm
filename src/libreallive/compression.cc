@@ -3,7 +3,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// This file is part of libReallive, a dependency of RLVM.
+// This file is part of libreallive, a dependency of RLVM.
 //
 // -----------------------------------------------------------------------
 //
@@ -31,9 +31,9 @@
 //
 // -----------------------------------------------------------------------
 
-#include "compression.h"
+#include "libreallive/compression.h"
 
-namespace libReallive {
+namespace libreallive {
 namespace Compression {
 
 /* RealLive uses a rather basic XOR encryption scheme, to which this

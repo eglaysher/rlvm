@@ -28,7 +28,7 @@
 
 #include "Systems/Base/Rect.hpp"
 #include "Utilities/Graphics.hpp"
-#include "libReallive/gameexe.h"
+#include "libreallive/gameexe.h"
 
 TEST(UtilitiesTest, ClipDestination_Superset) {
   Rect clip(Point(5, 5), Size(5, 5));
