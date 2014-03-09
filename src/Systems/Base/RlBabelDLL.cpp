@@ -49,8 +49,8 @@
 #include <string>
 #include <vector>
 
-#include "Encodings/codepage.h"
-#include "Encodings/western.h"
+#include "encodings/codepage.h"
+#include "encodings/western.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"

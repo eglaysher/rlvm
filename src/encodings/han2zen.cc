@@ -24,9 +24,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
+#include "encodings/han2zen.h"
+
 #include <string>
 
-#include "Encodings/han2zen.hpp"
 #include "Utilities/StringUtilities.hpp"
 
 using std::string;

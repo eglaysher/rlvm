@@ -68,7 +68,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Encodings/cp932.h"
+#include "encodings/cp932.h"
 
 #include <stdint.h>
 #include <string>

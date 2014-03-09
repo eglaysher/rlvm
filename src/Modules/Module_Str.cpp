@@ -34,9 +34,9 @@
 #include <sstream>
 #include <string>
 
-#include "Encodings/codepage.h"
-#include "Encodings/han2zen.hpp"
-#include "Encodings/western.h"
+#include "encodings/codepage.h"
+#include "encodings/han2zen.h"
+#include "encodings/western.h"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"

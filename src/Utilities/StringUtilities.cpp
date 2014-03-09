@@ -29,7 +29,7 @@
 
 #include <string>
 
-#include "Encodings/codepage.h"
+#include "encodings/codepage.h"
 #include "Utilities/Exception.hpp"
 #include "utf8cpp/utf8.h"
 

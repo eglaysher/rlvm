@@ -35,7 +35,7 @@
   the work might be covered by the LGPL.
 */
 
-#include "Encodings/cp936.h"
+#include "encodings/cp936.h"
 
 #include <stdint.h>
 #include <cstring>

@@ -35,7 +35,7 @@
   the work might be covered by the LGPL.
 */
 
-#include "Encodings/western.h"
+#include "encodings/western.h"
 
 #include <stdint.h>
 #include <string>

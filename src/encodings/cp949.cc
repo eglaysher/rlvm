@@ -36,7 +36,7 @@
 
 #define DEBUG_ONLY
 
-#include "Encodings/cp949.h"
+#include "encodings/cp949.h"
 
 #include <stdint.h>
 #include <algorithm>  // for lower_bound()

@@ -34,16 +34,16 @@
   the work might be covered by the LGPL.
 */
 
-#include "Encodings/codepage.h"
+#include "encodings/codepage.h"
 
 #include <stdint.h>
 #include <cstring>
 
 // Supported codepages
-#include "Encodings/cp932.h"
-#include "Encodings/cp936.h"
-#include "Encodings/cp949.h"
-#include "Encodings/western.h"
+#include "encodings/cp932.h"
+#include "encodings/cp936.h"
+#include "encodings/cp949.h"
+#include "encodings/western.h"
 
 // -----------------------------------------------------------------------
 // Codepage
