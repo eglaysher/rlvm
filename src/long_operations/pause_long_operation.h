@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_
 
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -89,4 +89,4 @@ class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
   virtual void performAfterLongOperation(RLMachine& machine);
 };
 
-#endif  // SRC_LONGOPERATIONS_PAUSELONGOPERATION_HPP_
+#endif  // SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_

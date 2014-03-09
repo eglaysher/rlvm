@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-#include "LongOperations/PauseLongOperation.hpp"
+#include "long_operations/pause_long_operation.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"

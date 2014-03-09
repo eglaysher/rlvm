@@ -28,12 +28,12 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "long_operations/textout_long_operation.h"
 #include "MachineBase/RLMachine.hpp"
-#include "LongOperations/TextoutLongOperation.hpp"
-#include "TestSystem/TestSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/MockTextWindow.hpp"
-#include "Systems/Base/TextPage.hpp"
+#include "TestSystem/TestSystem.hpp"
 #include "libReallive/archive.h"
 
 #include "testUtils.hpp"

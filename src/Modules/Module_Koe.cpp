@@ -29,7 +29,7 @@
 
 #include <functional>
 
-#include "LongOperations/WaitLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"

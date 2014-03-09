@@ -26,7 +26,7 @@
 
 #include "Modules/Module_Sys_Wait.hpp"
 
-#include "LongOperations/WaitLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLModule.hpp"
 #include "MachineBase/RLOperation.hpp"

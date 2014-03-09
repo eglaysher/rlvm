@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "LongOperations/WaitLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventListener.hpp"

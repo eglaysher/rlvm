@@ -30,7 +30,7 @@
 #include <functional>
 #include <string>
 
-#include "LongOperations/WaitLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "MachineBase/LongOperation.hpp"

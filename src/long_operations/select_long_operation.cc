@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "LongOperations/SelectLongOperation.hpp"
+#include "long_operations/select_long_operation.h"
 
 #include <iostream>
 #include <vector>

@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_BUTTONOBJECTSELECTLONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_BUTTONOBJECTSELECTLONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_
 
 #include "libReallive/gameexe.h"
 #include "MachineBase/LongOperation.hpp"
@@ -86,4 +86,4 @@ class ButtonObjectSelectLongOperation : public LongOperation {
   GraphicsObject* currently_pressed_button_;
 };
 
-#endif  //  SRC_LONGOPERATIONS_BUTTONOBJECTSELECTLONGOPERATION_HPP_
+#endif  //  SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_

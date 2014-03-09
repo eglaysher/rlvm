@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "LongOperations/PauseLongOperation.hpp"
+#include "long_operations/pause_long_operation.h"
 
 #include <vector>
 

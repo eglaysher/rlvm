@@ -25,12 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "LongOperations/TextoutLongOperation.hpp"
+#include "long_operations/textout_long_operation.h"
 
 #include <string>
 #include <algorithm>
 
-#include "LongOperations/PauseLongOperation.hpp"
+#include "long_operations/pause_long_operation.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

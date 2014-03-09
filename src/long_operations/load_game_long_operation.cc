@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "LongOperations/LoadGameLongOperation.hpp"
+#include "long_operations/load_game_long_operation.h"
 
 #include <boost/shared_ptr.hpp>
 

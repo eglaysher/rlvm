@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_TEXTOUT_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_TEXTOUT_LONG_OPERATION_H_
 
 #include "MachineBase/LongOperation.hpp"
 #include "Systems/Base/EventListener.hpp"
@@ -73,4 +73,4 @@ class TextoutLongOperation : public LongOperation {
   static int next_character_countdown_;
 };
 
-#endif  // SRC_LONGOPERATIONS_TEXTOUTLONGOPERATION_HPP_
+#endif  // SRC_LONG_OPERATIONS_TEXTOUT_LONG_OPERATION_H_

@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
 
 #include <vector>
 #include <string>
@@ -189,4 +189,4 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   std::vector<ButtonOption> buttons_;
 };
 
-#endif  // SRC_LONGOPERATIONS_SELECTLONGOPERATION_HPP_
+#endif  // SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_

@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "LongOperations/ButtonObjectSelectLongOperation.hpp"
+#include "long_operations/button_object_select_long_operation.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsObject.hpp"

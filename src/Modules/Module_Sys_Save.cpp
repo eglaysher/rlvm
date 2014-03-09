@@ -37,7 +37,7 @@
 #include <limits>
 #include <string>
 
-#include "LongOperations/LoadGameLongOperation.hpp"
+#include "long_operations/load_game_long_operation.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Memory.hpp"

@@ -43,8 +43,8 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "LongOperations/PauseLongOperation.hpp"
-#include "LongOperations/TextoutLongOperation.hpp"
+#include "long_operations/pause_long_operation.h"
+#include "long_operations/textout_long_operation.h"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/Memory.hpp"
 #include "MachineBase/OpcodeLog.hpp"

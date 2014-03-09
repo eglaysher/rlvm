@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "LongOperations/ZoomLongOperation.hpp"
+#include "long_operations/zoom_long_operation.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"

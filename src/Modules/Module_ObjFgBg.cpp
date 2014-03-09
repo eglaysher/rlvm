@@ -33,7 +33,7 @@
 
 #include <string>
 
-#include "LongOperations/WaitLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"

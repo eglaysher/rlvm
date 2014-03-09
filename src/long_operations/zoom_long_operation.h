@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_ZOOM_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_ZOOM_LONG_OPERATION_H_
 
 #include <boost/shared_ptr.hpp>
 
@@ -61,4 +61,4 @@ class ZoomLongOperation : public LongOperation {
   unsigned int start_time_;
 };
 
-#endif  // SRC_LONGOPERATIONS_ZOOMLONGOPERATION_HPP_
+#endif  // SRC_LONG_OPERATIONS_ZOOM_LONG_OPERATION_H_

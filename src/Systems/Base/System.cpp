@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-#include "LongOperations/LoadGameLongOperation.hpp"
+#include "long_operations/load_game_long_operation.h"
 #include "MachineBase/LongOperation.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/Serialization.hpp"

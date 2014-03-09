@@ -36,8 +36,8 @@
 
 #include "effects/effect.h"
 #include "effects/effect_factory.h"
-#include "LongOperations/WaitLongOperation.hpp"
-#include "LongOperations/ZoomLongOperation.hpp"
+#include "long_operations/wait_long_operation.h"
+#include "long_operations/zoom_long_operation.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"

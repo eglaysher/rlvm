@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_LONGOPERATIONS_LOADGAMELONGOPERATION_HPP_
-#define SRC_LONGOPERATIONS_LOADGAMELONGOPERATION_HPP_
+#ifndef SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_
+#define SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_
 
 #include "MachineBase/LongOperation.hpp"
 
@@ -58,4 +58,4 @@ struct LoadGameLongOperation : public LongOperation {
   virtual void load(RLMachine& machine) = 0;
 };
 
-#endif  // SRC_LONGOPERATIONS_LOADGAMELONGOPERATION_HPP_
+#endif  // SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_
