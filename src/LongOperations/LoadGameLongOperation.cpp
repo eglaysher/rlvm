@@ -28,7 +28,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "Effects/FadeEffect.hpp"
+#include "effects/fade_effect.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

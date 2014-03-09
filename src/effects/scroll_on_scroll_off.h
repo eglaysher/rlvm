@@ -25,10 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_
-#define SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_
+#ifndef SRC_EFFECTS_SCROLL_ON_SCROLL_OFF_H_
+#define SRC_EFFECTS_SCROLL_ON_SCROLL_OFF_H_
 
-#include "Effects/Effect.hpp"
+#include "effects/effect.h"
 
 class GraphicsSystem;
 class ScrollSquashSlideDrawer;
@@ -289,4 +289,4 @@ class SlideOff : public ScrollSquashSlideEffectTypeBase {
                                  int amountVisible);
 };
 
-#endif  // SRC_EFFECTS_SCROLLONSCROLLOFF_HPP_
+#endif  // SRC_EFFECTS_SCROLL_ON_SCROLL_OFF_H_

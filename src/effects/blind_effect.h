@@ -25,10 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_BLINDEFFECT_HPP_
-#define SRC_EFFECTS_BLINDEFFECT_HPP_
+#ifndef SRC_EFFECTS_BLIND_EFFECT_H_
+#define SRC_EFFECTS_BLIND_EFFECT_H_
 
-#include "Effects/Effect.hpp"
+#include "effects/effect.h"
 
 // Base class for implementing \#SEL transition style \#10, Blind.
 class BlindEffect : public Effect {
@@ -114,4 +114,4 @@ class BlindRightToLeftEffect : public BlindEffect {
   virtual void renderPolygon(int polyStart, int polyEnd);
 };
 
-#endif  // SRC_EFFECTS_BLINDEFFECT_HPP_
+#endif  // SRC_EFFECTS_BLIND_EFFECT_H_

@@ -25,13 +25,14 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Effects/ScrollOnScrollOff.hpp"
+#include "effects/scroll_on_scroll_off.h"
+
+#include <cmath>
+
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
-
-#include <cmath>
 
 // -----------------------------------------------------------------------
 // ScrollOnScrollOff base class

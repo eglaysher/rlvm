@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_EFFECT_HPP_
-#define SRC_EFFECTS_EFFECT_HPP_
+#ifndef SRC_EFFECTS_EFFECT_H_
+#define SRC_EFFECTS_EFFECT_H_
 
 #include <boost/shared_ptr.hpp>
 
@@ -142,4 +142,4 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
   Rect src_rect_, dest_rect_;
 };
 
-#endif  // SRC_EFFECTS_EFFECT_HPP_
+#endif  // SRC_EFFECTS_EFFECT_H_

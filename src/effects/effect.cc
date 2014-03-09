@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Effects/Effect.hpp"
+#include "effects/effect.h"
 
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/EventSystem.hpp"

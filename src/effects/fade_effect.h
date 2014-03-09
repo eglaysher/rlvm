@@ -25,10 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_FADEEFFECT_HPP_
-#define SRC_EFFECTS_FADEEFFECT_HPP_
+#ifndef SRC_EFFECTS_FADE_EFFECT_H_
+#define SRC_EFFECTS_FADE_EFFECT_H_
 
-#include "Effects/Effect.hpp"
+#include "effects/effect.h"
 
 // Simple fade in.
 class FadeEffect : public Effect {
@@ -46,4 +46,4 @@ class FadeEffect : public Effect {
   virtual bool blitOriginalImage() const;
 };
 
-#endif  // SRC_EFFECTS_FADEEFFECT_HPP_
+#endif  // SRC_EFFECTS_FADE_EFFECT_H_

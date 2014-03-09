@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Effects/WipeEffect.hpp"
+#include "effects/wipe_effect.h"
 
 #include <boost/shared_ptr.hpp>
 #include <cmath>

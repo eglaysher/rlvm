@@ -31,8 +31,8 @@
 #include <iostream>
 #include <string>
 
-#include "Effects/Effect.hpp"
-#include "Effects/EffectFactory.hpp"
+#include "effects/effect.h"
+#include "effects/effect_factory.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLMachine.hpp"
 #include "MachineBase/RLOperation.hpp"

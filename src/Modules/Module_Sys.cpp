@@ -39,7 +39,7 @@
 #include <string>
 #include <vector>
 
-#include "Effects/FadeEffect.hpp"
+#include "effects/fade_effect.h"
 #include "MachineBase/GeneralOperations.hpp"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/DefaultValue.hpp"

@@ -25,16 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Effects/EffectFactory.hpp"
+#include "effects/effect_factory.h"
 
 #include <iostream>
 #include <sstream>
 #include <vector>
 
-#include "Effects/BlindEffect.hpp"
-#include "Effects/FadeEffect.hpp"
-#include "Effects/ScrollOnScrollOff.hpp"
-#include "Effects/WipeEffect.hpp"
+#include "effects/blind_effect.h"
+#include "effects/fade_effect.h"
+#include "effects/scroll_on_scroll_off.h"
+#include "effects/wipe_effect.h"
 #include "MachineBase/RLMachine.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"

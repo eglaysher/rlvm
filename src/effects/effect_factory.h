@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_EFFECTFACTORY_HPP_
-#define SRC_EFFECTS_EFFECTFACTORY_HPP_
+#ifndef SRC_EFFECTS_EFFECT_FACTORY_H_
+#define SRC_EFFECTS_EFFECT_FACTORY_H_
 
 #include <boost/shared_ptr.hpp>
 
@@ -95,4 +95,4 @@ class EffectFactory {
       int style);
 };
 
-#endif  // SRC_EFFECTS_EFFECTFACTORY_HPP_
+#endif  // SRC_EFFECTS_EFFECT_FACTORY_H_

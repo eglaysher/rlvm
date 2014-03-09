@@ -25,10 +25,10 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_EFFECTS_WIPEEFFECT_HPP_
-#define SRC_EFFECTS_WIPEEFFECT_HPP_
+#ifndef SRC_EFFECTS_WIPE_EFFECT_H_
+#define SRC_EFFECTS_WIPE_EFFECT_H_
 
-#include "Effects/Effect.hpp"
+#include "effects/effect.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -115,4 +115,4 @@ class WipeRightToLeftEffect : public WipeEffect {
   virtual void performEffectForTime(RLMachine& machine, int currentTime);
 };
 
-#endif  // SRC_EFFECTS_WIPEEFFECT_HPP_
+#endif  // SRC_EFFECTS_WIPE_EFFECT_H_

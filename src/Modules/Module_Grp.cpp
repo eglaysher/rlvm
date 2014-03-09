@@ -34,8 +34,8 @@
 #include <string>
 #include <vector>
 
-#include "Effects/Effect.hpp"
-#include "Effects/EffectFactory.hpp"
+#include "effects/effect.h"
+#include "effects/effect_factory.h"
 #include "LongOperations/WaitLongOperation.hpp"
 #include "LongOperations/ZoomLongOperation.hpp"
 #include "MachineBase/GeneralOperations.hpp"
