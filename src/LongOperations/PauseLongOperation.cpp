@@ -52,7 +52,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
 
   // Initialize Auto Mode (in case it's activated, or in case it gets
   // activated)
-  int numChars = text.currentPage().numberOfCharsOnPage();
+  int numChars = text.currentPage().number_of_chars_on_page();
   automode_time_ = text.getAutoTime(numChars);
   time_at_last_pass_ = event.getTicks();
   total_time_ = 0;
@@ -231,6 +231,6 @@ NewParagraphAfterLongop::~NewParagraphAfterLongop() {}
 
 void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine) {
   TextPage& page = machine.system().text().currentPage();
-  page.resetIndentation();
-  page.hardBrake();
+  page.ResetIndentation();
+  page.HardBrake();
 }

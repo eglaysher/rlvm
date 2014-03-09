@@ -350,7 +350,7 @@ void TextSystem::forwardPage() {
 void TextSystem::replayPageSet(PageSet& set, bool is_current_page) {
   for (PageSet::iterator it = set.begin(); it != set.end(); ++it) {
     try {
-      it->second->replay(is_current_page);
+      it->second->Replay(is_current_page);
     }
     catch (rlvm::Exception& e) {
       // Currently, the text system can throw on a few unimplemented situations,

@@ -172,7 +172,7 @@ TEST_F(TextSystemTest, RepeatsTextPageName) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
   EXPECT_CALL(win, setName("Bob", "")).Times(1);
-  currentPage().name("Bob", "");
+  currentPage().Name("Bob", "");
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
@@ -189,7 +189,7 @@ TEST_F(TextSystemTest, TextPageHardBreakRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
   EXPECT_CALL(win, hardBrake()).Times(1);
-  currentPage().hardBrake();
+  currentPage().HardBrake();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
@@ -208,7 +208,7 @@ TEST_F(TextSystemTest, TextPageResetIndentationRepeats) {
   writeString("test", true);
 
   EXPECT_CALL(win, resetIndentation()).Times(1);
-  currentPage().resetIndentation();
+  currentPage().ResetIndentation();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
@@ -226,7 +226,7 @@ TEST_F(TextSystemTest, TextPageFontColorRepeats) {
   MockTextWindow& win = getTextWindow(0);
 
   EXPECT_CALL(win, setFontColor(_)).Times(1);
-  currentPage().fontColour(0);
+  currentPage().FontColour(0);
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
@@ -245,9 +245,9 @@ TEST_F(TextSystemTest, RubyRepeats) {
 
   EXPECT_CALL(win, markRubyBegin()).Times(1);
   EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
-  currentPage().markRubyBegin();
+  currentPage().MarkRubyBegin();
   writeString("With Ruby", true);
-  currentPage().displayRubyText("ruby");
+  currentPage().DisplayRubyText("ruby");
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 

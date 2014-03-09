@@ -50,75 +50,72 @@ class TextPage {
   TextPage(const TextPage& rhs);
   ~TextPage();
 
-  TextPage& operator=(const TextPage& rhs);
-  void swap(TextPage& rhs);
+  // Returns the number of characters printed with character() and name().
+  int number_of_chars_on_page() const { return number_of_chars_on_page_; }
+
+  // Queries to see if there has been an invocation of
+  // markRubyBegin(), but not the closing displayRubyText().
+  bool in_ruby_gloss() const { return in_ruby_gloss_; }
 
   // Replays every recordable action called on this TextPage.
-  void replay(bool is_active_page);
-
-  // Returns the number of characters printed with character() and name().
-  int numberOfCharsOnPage() const { return number_of_chars_on_page_; }
+  void Replay(bool is_active_page);
 
   // Add this character to the most recent text render operation on
   // this page's backlog, and then render it, minding the kinsoku
   // spacing rules.
-  bool character(const std::string& current, const std::string& rest);
+  bool Character(const std::string& current, const std::string& rest);
 
   // Displays a name. This function will be called by the
   // TextoutLongOperation.
-  void name(const std::string& name, const std::string& next_char);
+  void Name(const std::string& name, const std::string& next_char);
 
   // Puts a koe marker in the TextPage. This is only displayed during
   // scrollback.
-  void koeMarker(int id);
+  void KoeMarker(int id);
 
   // Forces a hard line brake.
-  void hardBrake();
+  void HardBrake();
 
   // Sets the indentation to the x part of the current insertion point.
-  void setIndentation();
+  void SetIndentation();
 
   // Resets the indentation.
-  void resetIndentation();
+  void ResetIndentation();
 
   // Sets the text foreground to the colour passed in, up until the
   // next pause().
-  void fontColour(const int colour);
+  void FontColour(const int colour);
 
   // Changes the size of text.
-  void defaultFontSize();
-  void fontSize(const int size);
+  void DefaultFontSize();
+  void FontSize(const int size);
 
   // Marks the current character as the beginning of a phrase that has
   // rubytext over it.
-  void markRubyBegin();
+  void MarkRubyBegin();
 
   // Display the incoming phrase as the rubytext for the text since
   // markRubyBegin() was called.
-  void displayRubyText(const std::string& utf8str);
+  void DisplayRubyText(const std::string& utf8str);
 
-  void setInsertionPointX(int x);
-  void setInsertionPointY(int y);
-  void offsetInsertionPointX(int offset);
-  void offsetInsertionPointY(int offset);
+  void SetInsertionPointX(int x);
+  void SetInsertionPointY(int y);
+  void OffsetInsertionPointX(int offset);
+  void OffsetInsertionPointY(int offset);
 
   // Sets the face in slot |index| to filename.
-  void faceOpen(const std::string& filename, int index);
+  void FaceOpen(const std::string& filename, int index);
 
   // Removes the face in slot |index|.
-  void faceClose(int index);
+  void FaceClose(int index);
 
   // Mark that the next character will be printed in italics (rlBabel
   // extension).
-  void nextCharIsItalic();
+  void NextCharIsItalic();
 
   // Queries the corresponding TextWindow to see if it is full. Used
   // to implement implicit pauses when a page is full.
-  bool isFull() const;
-
-  // Queries to see if there has been an invocation of
-  // markRubyBegin(), but not the closing displayRubyText().
-  bool inRubyGloss() const { return in_ruby_gloss_; }
+  bool IsFull() const;
 
  private:
   // Storage for an individual command.

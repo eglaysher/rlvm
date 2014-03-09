@@ -69,7 +69,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
-  if (machine.system().text().currentPage().inRubyGloss())
+  if (machine.system().text().currentPage().in_ruby_gloss())
     no_wait_ = true;
 }
 
@@ -139,7 +139,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
   }
 
   TextPage& page = machine.system().text().currentPage();
-  page.name(name, current_char_);
+  page.Name(name, current_char_);
 
   // Stop if this was the end of input
   return it == strend;
@@ -161,7 +161,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       TextPage& page = machine.system().text().currentPage();
       if (codepoint) {
         string rest(current_position_, strend);
-        bool rendered = page.character(current_char_, rest);
+        bool rendered = page.Character(current_char_, rest);
 
         // Check to see if this character was rendered to the screen. If
         // this is false, then the page is probably full and the check
@@ -177,7 +177,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       }
 
       // Call the pause operation if we've filled up the current page.
-      if (page.isFull()) {
+      if (page.IsFull()) {
         paused = true;
         machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
         machine.pushLongOperation(
@@ -186,7 +186,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
 
       return false;
     } else {
-      machine.system().text().currentPage().character(current_char_, "");
+      machine.system().text().currentPage().Character(current_char_, "");
 
       return true;
     }

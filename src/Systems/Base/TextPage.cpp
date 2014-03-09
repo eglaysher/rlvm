@@ -303,31 +303,11 @@ TextPage::TextPage(System& system, int window_num)
       in_ruby_gloss_(false) {
 }
 
-TextPage::TextPage(const TextPage& rhs)
-    : system_(rhs.system_),
-      window_num_(rhs.window_num_),
-      number_of_chars_on_page_(rhs.number_of_chars_on_page_),
-      in_ruby_gloss_(rhs.in_ruby_gloss_),
-      elements_to_replay_(rhs.elements_to_replay_) {
-}
+TextPage::TextPage(const TextPage& rhs) = default;
 
 TextPage::~TextPage() {}
 
-TextPage& TextPage::operator=(const TextPage& rhs) {
-  TextPage tmp(rhs);
-  swap(tmp);
-  return *this;
-}
-
-void TextPage::swap(TextPage& rhs) {
-  elements_to_replay_.swap(rhs.elements_to_replay_);
-  std::swap(system_, rhs.system_);
-  std::swap(window_num_, rhs.window_num_);
-  std::swap(number_of_chars_on_page_, rhs.number_of_chars_on_page_);
-  std::swap(in_ruby_gloss_, rhs.in_ruby_gloss_);
-}
-
-void TextPage::replay(bool is_active_page) {
+void TextPage::Replay(bool is_active_page) {
   // Reset the font color.
   if (!is_active_page) {
     Gameexe& gexe = system_->gameexe();
@@ -344,7 +324,7 @@ void TextPage::replay(bool is_active_page) {
 
 // ------------------------------------------------- [ Public operations ]
 
-bool TextPage::character(const string& current, const string& rest) {
+bool TextPage::Character(const string& current, const string& rest) {
   bool rendered = CharacterImpl(current, rest);
 
   if (rendered) {
@@ -361,76 +341,76 @@ bool TextPage::character(const string& current, const string& rest) {
   return rendered;
 }
 
-void TextPage::name(const string& name, const string& next_char) {
+void TextPage::Name(const string& name, const string& next_char) {
   AddAction(Command(TYPE_NAME, name, next_char));
   number_of_chars_on_page_++;
 }
 
-void TextPage::koeMarker(int id) {
+void TextPage::KoeMarker(int id) {
   AddAction(Command(TYPE_KOE_MARKER, id));
 }
 
-void TextPage::hardBrake() {
+void TextPage::HardBrake() {
   AddAction(Command(TYPE_HARD_BREAK));
 }
 
-void TextPage::setIndentation() {
+void TextPage::SetIndentation() {
   AddAction(Command(TYPE_SET_INDENTATION));
 }
 
-void TextPage::resetIndentation() {
+void TextPage::ResetIndentation() {
   AddAction(Command(TYPE_RESET_INDENTATION));
 }
 
-void TextPage::fontColour(int colour) {
+void TextPage::FontColour(int colour) {
   AddAction(Command(TYPE_FONT_COLOUR, colour));
 }
 
-void TextPage::defaultFontSize() {
+void TextPage::DefaultFontSize() {
   AddAction(Command(TYPE_DEFAULT_FONT_SIZE));
 }
 
-void TextPage::fontSize(const int size) {
+void TextPage::FontSize(const int size) {
   AddAction(Command(TYPE_FONT_SIZE, size));
 }
 
-void TextPage::markRubyBegin() {
+void TextPage::MarkRubyBegin() {
   AddAction(Command(TYPE_RUBY_BEGIN));
 }
 
-void TextPage::displayRubyText(const std::string& utf8str) {
+void TextPage::DisplayRubyText(const std::string& utf8str) {
   AddAction(Command(TYPE_RUBY_END, utf8str));
 }
 
-void TextPage::setInsertionPointX(int x) {
+void TextPage::SetInsertionPointX(int x) {
   AddAction(Command(TYPE_SET_INSERTION_X, x));
 }
 
-void TextPage::setInsertionPointY(int y) {
+void TextPage::SetInsertionPointY(int y) {
   AddAction(Command(TYPE_SET_INSERTION_Y, y));
 }
 
-void TextPage::offsetInsertionPointX(int offset) {
+void TextPage::OffsetInsertionPointX(int offset) {
   AddAction(Command(TYPE_OFFSET_INSERTION_X, offset));
 }
 
-void TextPage::offsetInsertionPointY(int offset) {
+void TextPage::OffsetInsertionPointY(int offset) {
   AddAction(Command(TYPE_OFFSET_INSERTION_Y, offset));
 }
 
-void TextPage::faceOpen(const std::string& filename, int index) {
+void TextPage::FaceOpen(const std::string& filename, int index) {
   AddAction(Command(TYPE_FACE_OPEN, filename, index));
 }
 
-void TextPage::faceClose(int index) {
+void TextPage::FaceClose(int index) {
   AddAction(Command(TYPE_FACE_CLOSE, index));
 }
 
-void TextPage::nextCharIsItalic() {
+void TextPage::NextCharIsItalic() {
   AddAction(Command(TYPE_NEXT_CHAR_IS_ITALIC));
 }
 
-bool TextPage::isFull() const {
+bool TextPage::IsFull() const {
   return system_->text().textWindow(window_num_)->isFull();
 }
 

@@ -587,7 +587,7 @@ void RLMachine::performTextout(const std::string& cp932str) {
 void RLMachine::setKidokuMarker(int kidoku_number) {
   // Check to see if we mark savepoints on textout
   if (shouldSetMessageSavepoint() &&
-      system_.text().currentPage().numberOfCharsOnPage() == 0)
+      system_.text().currentPage().number_of_chars_on_page() == 0)
     markSavepoint();
 
   // Mark if we've previously read this piece of text.
