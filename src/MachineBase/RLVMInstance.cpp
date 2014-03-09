@@ -163,7 +163,6 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
         rlmachine.executeNextInstruction();
         end_ticks = sdlSystem.event().getTicks();
       } while (!rlmachine.currentLongOperation() &&
-               !sdlSystem.graphics().screenNeedsRefresh() &&
                !sdlSystem.forceWait() &&
                (end_ticks - start_ticks < 10));
 
