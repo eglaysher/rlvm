@@ -36,9 +36,9 @@
 #include <tuple>
 #include <vector>
 
-#include "MachineBase/Memory.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/memory.h"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Modules/Module_Str.hpp"
 #include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/TestGraphicsSystem.hpp"

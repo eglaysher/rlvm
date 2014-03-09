@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_MSG_HPP_
 #define SRC_MODULES_MODULE_MSG_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<0:3>, Msg.
 class MsgModule : public RLModule {

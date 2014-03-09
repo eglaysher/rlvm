@@ -30,12 +30,12 @@
 #include <boost/numeric/conversion/cast.hpp>
 
 #include "long_operations/wait_long_operation.h"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "machine/long_operation.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
+#include "machine/rloperation/rlop_store.h"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"

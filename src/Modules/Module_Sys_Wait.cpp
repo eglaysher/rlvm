@@ -27,10 +27,10 @@
 #include "Modules/Module_Sys_Wait.hpp"
 
 #include "long_operations/wait_long_operation.h"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/References.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/references.h"
 
 // -----------------------------------------------------------------------
 

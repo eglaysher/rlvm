@@ -38,7 +38,7 @@
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 
-#include "MachineBase/Serialization.hpp"
+#include "machine/serialization.h"
 #include "Systems/Base/AnmGraphicsObjectData.hpp"
 
 #include <iterator>

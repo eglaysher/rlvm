@@ -32,10 +32,10 @@
 #include <string>
 #include <vector>
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Special_T.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/argc_t.h"
+#include "machine/rloperation/special_t.h"
 #include "Utilities/Exception.hpp"
 #include "libreallive/bytecode.h"
 #include "libreallive/intmemref.h"

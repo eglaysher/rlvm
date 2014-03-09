@@ -27,7 +27,7 @@
 
 #include "Systems/Base/SelectionElement.hpp"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/Surface.hpp"

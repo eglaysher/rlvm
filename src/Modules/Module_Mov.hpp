@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_MOV_HPP_
 #define SRC_MODULES_MODULE_MOV_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:26>, Mov.
 class MovModule : public RLModule {

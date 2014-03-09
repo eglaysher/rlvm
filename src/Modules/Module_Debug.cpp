@@ -26,8 +26,8 @@
 // -----------------------------------------------------------------------
 
 #include "Modules/Module_Debug.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
 #include "Systems/Base/System.hpp"
 #include "Utilities/StringUtilities.hpp"
 #include "libreallive/gameexe.h"

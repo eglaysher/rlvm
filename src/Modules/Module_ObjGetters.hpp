@@ -28,8 +28,8 @@
 #ifndef SRC_MODULES_MODULE_OBJGETTERS_HPP_
 #define SRC_MODULES_MODULE_OBJGETTERS_HPP_
 
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/MappedRLModule.hpp"
+#include "machine/rlmodule.h"
+#include "machine/mapped_rlmodule.h"
 
 class ObjFgGettersModule : public RLModule {
  public:

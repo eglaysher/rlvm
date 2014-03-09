@@ -27,8 +27,8 @@
 
 #include "Modules/Module_Obj.hpp"
 
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/properties.h"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/ParentGraphicsObjectData.hpp"

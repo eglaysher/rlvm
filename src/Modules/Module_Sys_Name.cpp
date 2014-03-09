@@ -29,11 +29,11 @@
 
 #include <string>
 
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/Memory.hpp"
+#include "machine/rloperation.h"
+#include "machine/rloperation/references.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/memory.h"
 
 // -----------------------------------------------------------------------
 

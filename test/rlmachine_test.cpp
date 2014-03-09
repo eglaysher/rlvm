@@ -33,9 +33,9 @@
 #include <string>
 #include <vector>
 
-#include "MachineBase/Memory.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/memory.h"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Modules/Module_Str.hpp"
 #include "Utilities/Exception.hpp"
 #include "libreallive/intmemref.h"

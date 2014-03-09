@@ -27,7 +27,7 @@
 #ifndef SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_
 
-#include "MachineBase/LongOperation.hpp"
+#include "machine/long_operation.h"
 
 class RLMachine;
 

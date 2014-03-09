@@ -28,7 +28,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "effects/effect.h"
 #include "effects/blind_effect.h"
 #include "TestSystem/MockSurface.hpp"

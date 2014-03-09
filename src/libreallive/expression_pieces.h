@@ -31,7 +31,7 @@
 #define EXPRESSION_PIECES_H
 
 #include "libreallive/expression.h"
-#include "MachineBase/reference.hpp"
+#include "machine/reference.h"
 
 namespace libreallive {
 

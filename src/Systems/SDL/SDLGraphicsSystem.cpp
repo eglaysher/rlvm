@@ -47,7 +47,7 @@
 #endif
 
 #include "base/notification_source.h"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/CGMTable.hpp"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/EventSystem.hpp"

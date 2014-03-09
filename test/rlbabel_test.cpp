@@ -26,7 +26,7 @@
 
 #include "gtest/gtest.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "TestSystem/TestSystem.hpp"
 #include "Systems/Base/RlBabelDLL.hpp"
 #include "Utilities/Exception.hpp"

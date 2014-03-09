@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_OS_HPP_
 #define SRC_MODULES_MODULE_OS_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:5>, Os.
 class OsModule : public RLModule {

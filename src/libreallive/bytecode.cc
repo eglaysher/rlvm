@@ -41,7 +41,7 @@
 #include "libreallive/scenario.h"
 #include "libreallive/expression.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 
 using namespace std;
 

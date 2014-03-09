@@ -27,7 +27,7 @@
 #ifndef SRC_MODULES_MODULE_G00_HPP_
 #define SRC_MODULES_MODULE_G00_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:14>, G00.
 class G00Module : public RLModule {

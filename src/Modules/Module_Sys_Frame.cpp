@@ -30,12 +30,12 @@
 
 #include <vector>
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/argc_t.h"
+#include "machine/rloperation/complex_t.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/FrameCounter.hpp"
 #include "Systems/Base/System.hpp"

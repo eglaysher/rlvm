@@ -28,8 +28,8 @@
 #ifndef SRC_MODULES_MODULE_GRP_HPP_
 #define SRC_MODULES_MODULE_GRP_HPP_
 
-#include "MachineBase/MappedRLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
+#include "machine/mapped_rlmodule.h"
+#include "machine/rloperation.h"
 
 #include <deque>
 #include <string>

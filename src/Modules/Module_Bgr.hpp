@@ -27,7 +27,7 @@
 #ifndef SRC_MODULES_MODULE_BGR_HPP_
 #define SRC_MODULES_MODULE_BGR_HPP_
 
-#include "MachineBase/MappedRLModule.hpp"
+#include "machine/mapped_rlmodule.h"
 
 // Contains functions for mod<1:40>, Bgr.
 class BgrModule : public MappedRLModule {

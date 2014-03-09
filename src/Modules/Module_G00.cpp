@@ -26,7 +26,7 @@
 
 #include "Modules/Module_G00.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
+#include "machine/general_operations.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 

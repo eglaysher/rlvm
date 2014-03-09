@@ -32,7 +32,7 @@
 #include <tuple>
 #include <vector>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Modules/Module_Grp.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsTextObject.hpp"

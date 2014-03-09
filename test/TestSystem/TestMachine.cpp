@@ -31,8 +31,8 @@
 #include <string>
 #include <vector>
 
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
 #include "Utilities/Exception.hpp"
 #include "libreallive/defs.h"
 #include "xclannad/endian.hpp"

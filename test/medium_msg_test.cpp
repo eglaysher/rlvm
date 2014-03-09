@@ -26,7 +26,7 @@
 
 #include "gtest/gtest.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Modules/Module_Msg.hpp"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"

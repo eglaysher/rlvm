@@ -30,7 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include <cmath>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"

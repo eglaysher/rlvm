@@ -22,7 +22,7 @@ static_env.ParseConfig("sdl-config --static-libs", MergeEverythingButSDLMain)
 
 cocoarlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
-  "src/MachineBase/RLVMInstance.cpp",
+  "src/machine/rlvm_instance.cc",
 
   "src/Platforms/osx/CocoaRLVMInstance.mm",
   "src/Platforms/osx/SDLMain.mm"

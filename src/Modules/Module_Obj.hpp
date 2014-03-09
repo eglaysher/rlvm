@@ -32,7 +32,7 @@
 
 // Reusable function objects for the GraphicsObject system.
 
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rloperation.h"
 
 class GraphicsObject;
 

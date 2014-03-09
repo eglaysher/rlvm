@@ -28,7 +28,7 @@
 #ifndef SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_
 
-#include "MachineBase/LongOperation.hpp"
+#include "machine/long_operation.h"
 #include "Systems/Base/EventListener.hpp"
 
 // Main pause function. Exported for TextoutLongOperation to abuse.

@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_SYS_SAVE_HPP_
 #define SRC_MODULES_MODULE_SYS_SAVE_HPP_
 
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rloperation.h"
 
 class RLMachine;
 class RLModule;

@@ -30,11 +30,11 @@
 #include <functional>
 
 #include "long_operations/wait_long_operation.h"
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "machine/general_operations.h"
+#include "machine/long_operation.h"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
 #include "Systems/Base/SoundSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextPage.hpp"

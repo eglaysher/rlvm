@@ -27,7 +27,7 @@
 
 #include "Modules/Module_Se.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
+#include "machine/general_operations.h"
 #include "Systems/Base/SoundSystem.hpp"
 
 SeModule::SeModule() : RLModule("Se", 1, 22) {

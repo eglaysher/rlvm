@@ -27,7 +27,7 @@
 
 #include "long_operations/zoom_long_operation.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"

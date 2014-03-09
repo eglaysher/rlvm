@@ -30,7 +30,7 @@
 #include <functional>
 #include <SDL/SDL.h>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/SDL/SDLSystem.hpp"

@@ -26,7 +26,7 @@
 
 #include "long_operations/button_object_select_long_operation.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/ParentGraphicsObjectData.hpp"

@@ -35,7 +35,7 @@
 
 #include "long_operations/button_object_select_long_operation.h"
 #include "long_operations/select_long_operation.h"
-#include "MachineBase/Serialization.hpp"
+#include "machine/serialization.h"
 #include "ScriptMachine/ScriptWorld.hpp"
 #include "libreallive/intmemref.h"
 

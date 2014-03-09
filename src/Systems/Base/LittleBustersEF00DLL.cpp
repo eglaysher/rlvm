@@ -29,7 +29,7 @@
 #include <iostream>
 #include <string>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Utilities/Exception.hpp"
 #include "libreallive/intmemref.h"
 

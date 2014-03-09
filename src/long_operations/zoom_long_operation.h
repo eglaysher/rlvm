@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "MachineBase/LongOperation.hpp"
+#include "machine/long_operation.h"
 #include "Systems/Base/Rect.hpp"
 
 class RLMachine;

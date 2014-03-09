@@ -27,7 +27,7 @@
 #ifndef SRC_SYSTEMS_BASE_TOMOYOAFTERDT00DLL_HPP_
 #define SRC_SYSTEMS_BASE_TOMOYOAFTERDT00DLL_HPP_
 
-#include "MachineBase/RealLiveDLL.hpp"
+#include "machine/reallive_dll.h"
 
 #include <string>
 

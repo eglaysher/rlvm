@@ -35,7 +35,7 @@
 #include "effects/fade_effect.h"
 #include "effects/scroll_on_scroll_off.h"
 #include "effects/wipe_effect.h"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"
 #include "Systems/Base/System.hpp"

@@ -30,8 +30,8 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>

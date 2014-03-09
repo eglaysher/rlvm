@@ -35,9 +35,9 @@
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
-#include "MachineBase/GameHacks.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/game_hacks.h"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Modules/Modules.hpp"
 #include "Modules/Module_Sys_Save.hpp"
 #include "ScriptMachine/ScriptMachine.hpp"

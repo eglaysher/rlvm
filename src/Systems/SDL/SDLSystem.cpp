@@ -30,7 +30,7 @@
 #include <sstream>
 #include <SDL/SDL.h>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/Platform.hpp"

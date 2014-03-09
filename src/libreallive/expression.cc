@@ -44,8 +44,8 @@
 #include "libreallive/defs.h"
 #include "libreallive/expression_pieces.h"
 #include "libreallive/intmemref.h"
-#include "MachineBase/reference.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/reference.h"
+#include "machine/rlmachine.h"
 
 using namespace std;
 

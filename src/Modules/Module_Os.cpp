@@ -29,8 +29,8 @@
 
 #include <string>
 
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
 
 using namespace std;
 

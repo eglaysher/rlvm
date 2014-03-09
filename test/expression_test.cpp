@@ -27,7 +27,7 @@
 
 #include "gtest/gtest.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Modules/Module_Jmp.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"

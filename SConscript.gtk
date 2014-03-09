@@ -14,7 +14,7 @@ root_env.Append(
 
 gtkrlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
-  "src/MachineBase/RLVMInstance.cpp",
+  "src/machine/rlvm_instance.cc",
 
   "src/Platforms/gtk/rlvm.cpp",
   "src/Platforms/gtk/GtkRLVMInstance.cpp",

@@ -30,7 +30,7 @@
 
 #include "Systems/Base/EventListener.hpp"
 
-#include "MachineBase/LongOperation.hpp"
+#include "machine/long_operation.h"
 
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_map.hpp>

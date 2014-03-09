@@ -29,7 +29,7 @@
 
 #include <cmath>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"

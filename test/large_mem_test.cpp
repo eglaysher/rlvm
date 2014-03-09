@@ -30,7 +30,7 @@
 #include "Modules/Module_Mem.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 
 #include "TestSystem/TestSystem.hpp"
 

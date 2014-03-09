@@ -32,8 +32,8 @@
 
 #include "base/notification_details.h"
 #include "base/notification_service.h"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/long_operation.h"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"

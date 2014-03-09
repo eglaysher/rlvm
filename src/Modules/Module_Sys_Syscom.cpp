@@ -29,12 +29,12 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/References.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
+#include "machine/rloperation/references.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
 

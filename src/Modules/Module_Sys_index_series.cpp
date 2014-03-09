@@ -30,8 +30,8 @@
 #include <sstream>
 #include <tuple>
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
 #include "Utilities/math_util.hpp"
 
 using std::get;

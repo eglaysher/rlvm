@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <string>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"

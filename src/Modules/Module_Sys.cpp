@@ -40,9 +40,9 @@
 #include <vector>
 
 #include "effects/fade_effect.h"
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "machine/general_operations.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
 #include "Modules/Module_Sys_Date.hpp"
 #include "Modules/Module_Sys_Frame.hpp"
 #include "Modules/Module_Sys_Name.hpp"

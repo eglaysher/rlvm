@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_MEM_HPP_
 #define SRC_MODULES_MODULE_MEM_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:11>, Mem.
 class MemModule : public RLModule {

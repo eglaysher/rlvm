@@ -39,9 +39,9 @@
 #include <vector>
 
 #include "long_operations/load_game_long_operation.h"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/long_operation.h"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Modules/Module_Sys.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

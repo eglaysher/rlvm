@@ -31,7 +31,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-#include "MachineBase/LongOperation.hpp"
+#include "machine/long_operation.h"
 #include "Systems/Base/Colour.hpp"
 #include "Systems/Base/EventListener.hpp"
 #include "Systems/Base/Rect.hpp"

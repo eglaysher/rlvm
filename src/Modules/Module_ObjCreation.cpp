@@ -32,12 +32,12 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/Rect_T.hpp"
+#include "machine/properties.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
+#include "machine/rloperation/rect_t.h"
 #include "Modules/Module_Obj.hpp"
 #include "Systems/Base/ColourFilterObjectData.hpp"
 #include "Systems/Base/DigitsGraphicsObject.hpp"

@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_EVENTLOOP_HPP_
 #define SRC_MODULES_MODULE_EVENTLOOP_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<0:1>, EventLoop.
 class EventLoopModule : public RLModule {

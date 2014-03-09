@@ -28,8 +28,8 @@
 
 #include <cmath>
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
 #include "Utilities/Exception.hpp"
 #include "Utilities/math_util.hpp"
 

@@ -26,12 +26,12 @@
 
 #include "gtest/gtest.h"
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/References.hpp"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/argc_t.h"
+#include "machine/rloperation/complex_t.h"
+#include "machine/rloperation/default_value.h"
+#include "machine/rloperation/references.h"
 #include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/expression.h"

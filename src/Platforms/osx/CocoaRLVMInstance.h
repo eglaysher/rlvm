@@ -30,7 +30,7 @@
 #include <string>
 #include <Foundation/Foundation.h>
 
-#include "MachineBase/RLVMInstance.hpp"
+#include "machine/rlvm_instance.h"
 
 @class FileValidator;
 

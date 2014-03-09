@@ -28,8 +28,8 @@
 #ifndef SRC_MODULES_MODULE_OBJFGBG_HPP_
 #define SRC_MODULES_MODULE_OBJFGBG_HPP_
 
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/MappedRLModule.hpp"
+#include "machine/rlmodule.h"
+#include "machine/mapped_rlmodule.h"
 
 // Contains functions for mod<1:10>, Obj.
 class ObjFgModule : public RLModule {

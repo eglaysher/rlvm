@@ -36,8 +36,8 @@
 #include <utility>
 #include <vector>
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Platforms/gcn/GCNButton.hpp"
 #include "Platforms/gcn/GCNPlatform.hpp"
 #include "Platforms/gcn/GCNScrollArea.hpp"

@@ -28,8 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_RLBABELDLL_HPP_
 #define SRC_SYSTEMS_BASE_RLBABELDLL_HPP_
 
-#include "MachineBase/RealLiveDLL.hpp"
-#include "MachineBase/reference.hpp"
+#include "machine/reallive_dll.h"
+#include "machine/reference.h"
 #include "Systems/Base/Rect.hpp"
 
 #include <boost/shared_ptr.hpp>

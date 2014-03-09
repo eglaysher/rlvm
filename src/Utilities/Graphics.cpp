@@ -30,7 +30,7 @@
 #include <sstream>
 #include <vector>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SystemError.hpp"

@@ -27,8 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_DIGITSGRAPHICSOBJECT_HPP_
 #define SRC_SYSTEMS_BASE_DIGITSGRAPHICSOBJECT_HPP_
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Systems/Base/GraphicsObjectData.hpp"
 
 #include <string>

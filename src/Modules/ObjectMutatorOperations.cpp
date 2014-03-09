@@ -26,8 +26,8 @@
 
 #include "Modules/ObjectMutatorOperations.hpp"
 
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/properties.h"
+#include "machine/rlmachine.h"
 #include "Modules/Module_Obj.hpp"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"

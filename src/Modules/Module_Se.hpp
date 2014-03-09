@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_SE_HPP_
 #define SRC_MODULES_MODULE_SE_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:22>, Se.
 class SeModule : public RLModule {

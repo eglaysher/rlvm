@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_SCR_HPP_
 #define SRC_MODULES_MODULE_SCR_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:30>, Scr.
 class ScrModule : public RLModule {

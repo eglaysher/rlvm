@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_SEL_HPP_
 #define SRC_MODULES_MODULE_SEL_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<0:2>, Sel.
 class SelModule : public RLModule {

@@ -27,9 +27,9 @@
 
 #include "Modules/Module_Scr.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
 #include "Systems/Base/GraphicsStackFrame.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Surface.hpp"

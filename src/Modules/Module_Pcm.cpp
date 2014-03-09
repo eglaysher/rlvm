@@ -33,8 +33,8 @@
 #include "long_operations/wait_long_operation.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/SoundSystem.hpp"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/GeneralOperations.hpp"
+#include "machine/long_operation.h"
+#include "machine/general_operations.h"
 
 namespace {
 

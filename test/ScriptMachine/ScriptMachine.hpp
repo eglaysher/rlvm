@@ -27,7 +27,7 @@
 #ifndef TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
 #define TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 
 #include <luabind/luabind.hpp>
 #include <map>

@@ -29,7 +29,7 @@
 #include <iostream>
 using namespace std;
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsObjectData.hpp"

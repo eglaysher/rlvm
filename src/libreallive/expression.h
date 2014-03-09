@@ -35,7 +35,7 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
-#include "MachineBase/reference.hpp"
+#include "machine/reference.h"
 
 #include <memory>
 #include <vector>

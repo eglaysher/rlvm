@@ -27,7 +27,7 @@
 #ifndef SRC_MACHINEBASE_OBJECTMUTATOROPERATIONS_HPP_
 #define SRC_MACHINEBASE_OBJECTMUTATOROPERATIONS_HPP_
 
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rloperation.h"
 
 class GraphicsObject;
 

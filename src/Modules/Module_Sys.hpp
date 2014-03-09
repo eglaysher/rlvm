@@ -28,8 +28,8 @@
 #ifndef SRC_MODULES_MODULE_SYS_HPP_
 #define SRC_MODULES_MODULE_SYS_HPP_
 
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
 
 class RLMachine;
 

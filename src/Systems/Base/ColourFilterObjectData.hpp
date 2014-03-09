@@ -32,8 +32,8 @@
 
 #include "Systems/Base/GraphicsObjectData.hpp"
 #include "Systems/Base/Rect.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 
 class ColourFilter;
 class GraphicsObject;

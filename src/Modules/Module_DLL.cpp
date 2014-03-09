@@ -26,10 +26,10 @@
 
 #include "Modules/Module_DLL.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmachine.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
 
 #include <string>
 

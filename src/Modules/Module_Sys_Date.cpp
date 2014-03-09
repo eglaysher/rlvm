@@ -27,11 +27,11 @@
 
 #include "Module_Sys_Date.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/References.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
+#include "machine/rloperation/references.h"
 #include "Utilities/dateUtil.hpp"
 
 namespace {

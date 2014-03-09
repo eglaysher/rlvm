@@ -27,8 +27,8 @@
 
 #include "Modules/Module_EventLoop.hpp"
 
-#include "MachineBase/GeneralOperations.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/general_operations.h"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"

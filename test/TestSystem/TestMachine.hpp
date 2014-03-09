@@ -27,7 +27,7 @@
 #ifndef TEST_TESTSYSTEM_TESTMACHINE_HPP_
 #define TEST_TESTSYSTEM_TESTMACHINE_HPP_
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 
 #include <boost/variant.hpp>
 

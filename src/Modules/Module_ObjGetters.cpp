@@ -28,11 +28,11 @@
 #include "Module_Obj.hpp"
 #include "Module_ObjGetters.hpp"
 
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/DefaultValue.hpp"
-#include "MachineBase/RLOperation/References.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "machine/properties.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
+#include "machine/rloperation/references.h"
+#include "machine/rloperation/rlop_store.h"
 
 #include "Systems/Base/GraphicsObject.hpp"
 

@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SoundSystem.hpp"

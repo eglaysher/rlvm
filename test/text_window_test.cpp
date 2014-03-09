@@ -27,7 +27,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "TestSystem/TestTextWindow.hpp"

@@ -40,7 +40,7 @@
 #include <string>
 #include <vector>
 
-#include "MachineBase/Serialization.hpp"
+#include "machine/serialization.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsObject.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"

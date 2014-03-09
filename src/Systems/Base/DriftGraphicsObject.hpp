@@ -32,9 +32,9 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/GraphicsObjectData.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/serialization.h"
 
 class GraphicsObject;
 class Surface;

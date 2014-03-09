@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 
 #include "Modules/Module_Bgm.hpp"
 #include "Modules/Module_Bgr.hpp"

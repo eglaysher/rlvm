@@ -28,11 +28,11 @@
 #include <vector>
 
 #include "Modules/Module_Mem.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/Argc_T.hpp"
-#include "MachineBase/RLOperation/Complex_T.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
-#include "MachineBase/RLOperation/References.hpp"
+#include "machine/rloperation.h"
+#include "machine/rloperation/argc_t.h"
+#include "machine/rloperation/complex_t.h"
+#include "machine/rloperation/rlop_store.h"
+#include "machine/rloperation/references.h"
 
 #include <cmath>
 #include <algorithm>

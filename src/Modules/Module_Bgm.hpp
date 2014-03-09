@@ -28,7 +28,7 @@
 #ifndef SRC_MODULES_MODULE_BGM_HPP_
 #define SRC_MODULES_MODULE_BGM_HPP_
 
-#include "MachineBase/RLModule.hpp"
+#include "machine/rlmodule.h"
 
 // Contains functions for mod<1:20>, Bgm.
 class BgmModule : public RLModule {

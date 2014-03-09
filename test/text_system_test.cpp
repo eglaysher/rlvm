@@ -29,7 +29,7 @@
 #include "gmock/gmock.h"
 
 #include "long_operations/textout_long_operation.h"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/TextPage.hpp"
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/MockTextWindow.hpp"

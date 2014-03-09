@@ -38,7 +38,7 @@
 #include <utility>
 #include <vector>
 
-#include "MachineBase/Serialization.hpp"
+#include "machine/serialization.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/System.hpp"
 #include "libreallive/gameexe.h"

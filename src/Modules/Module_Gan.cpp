@@ -30,12 +30,12 @@
 #include <boost/shared_ptr.hpp>
 
 #include "long_operations/wait_long_operation.h"
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/Properties.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/RLModule.hpp"
-#include "MachineBase/RLOperation.hpp"
-#include "MachineBase/RLOperation/RLOp_Store.hpp"
+#include "machine/long_operation.h"
+#include "machine/properties.h"
+#include "machine/rlmachine.h"
+#include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
 #include "Modules/Module_Obj.hpp"
 #include "Systems/Base/GanGraphicsObjectData.hpp"
 #include "Systems/Base/GraphicsObject.hpp"

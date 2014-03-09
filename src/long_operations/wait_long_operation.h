@@ -29,8 +29,8 @@
 
 #include <functional>
 
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/reference.hpp"
+#include "machine/long_operation.h"
+#include "machine/reference.h"
 
 class Point;
 

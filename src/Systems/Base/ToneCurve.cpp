@@ -34,8 +34,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-#include "MachineBase/Memory.hpp"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/memory.h"
+#include "machine/rlmachine.h"
 #include "Utilities/Exception.hpp"
 #include "Utilities/File.hpp"
 #include "libreallive/gameexe.h"

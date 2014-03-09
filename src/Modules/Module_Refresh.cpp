@@ -29,8 +29,8 @@
 
 #include "Modules/Module_Refresh.hpp"
 
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/GeneralOperations.hpp"
+#include "machine/rlmachine.h"
+#include "machine/general_operations.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 
 RefreshModule::RefreshModule() : RLModule("Refresh", 1, 31) {

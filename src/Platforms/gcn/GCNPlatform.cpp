@@ -33,9 +33,9 @@
 #include <string>
 #include <vector>
 
-#include "MachineBase/LongOperation.hpp"
-#include "MachineBase/RLMachine.hpp"
-#include "MachineBase/Serialization.hpp"
+#include "machine/long_operation.h"
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
 #include "Modules/Module_Sys_Save.hpp"
 #include "Platforms/gcn/GCNGraphics.hpp"
 #include "Platforms/gcn/GCNInfoWindow.hpp"

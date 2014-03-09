@@ -31,7 +31,7 @@
 #include <algorithm>
 
 #include "long_operations/pause_long_operation.h"
-#include "MachineBase/RLMachine.hpp"
+#include "machine/rlmachine.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/System.hpp"
