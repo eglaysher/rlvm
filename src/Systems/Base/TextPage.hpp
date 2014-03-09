@@ -108,11 +108,9 @@ class TextPage {
   // Removes the face in slot |index|.
   void faceClose(int index);
 
-  // This is a hack to get the backlog colour working. This adds a
-  // SetToRightStartingColorElement element to the TextPage, which, on
-  // replay, simply checks to see if we're redisplaying a backlog
-  // page and sets the colour to the backlog colour if we are.
-  void addSetToRightStartingColorElement();
+  // Mark that the next character will be printed in italics (rlBabel
+  // extension).
+  void nextCharIsItalic();
 
   // Queries the corresponding TextWindow to see if it is full. Used
   // to implement implicit pauses when a page is full.

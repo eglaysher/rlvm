@@ -50,6 +50,7 @@
 #include <vector>
 
 #include "Encodings/codepage.h"
+#include "Encodings/western.h"
 #include "Systems/Base/System.hpp"
 #include "Systems/Base/TextSystem.hpp"
 #include "Systems/Base/TextWindow.hpp"
@@ -247,17 +248,17 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
 }
 
 void RlBabelDLL::AppendChar(const char*& ch) {
-  //   if (add_is_italic) {
-  //     short uc = *ch++;
-  //     if (shiftjis_lead_byte(uc))
-  //       uc = (uc << 8) | *ch++;
-  //     uc = Italicise(uc);
-  //     if (uc > 0xff)
-  //       cp932_text_buffer += uc >> 8;
-  //     cp932_text_buffer += uc & 0xff;
-  //   } else {
-  copyOneShiftJisCharacter(ch, cp932_text_buffer);
-  //  }
+  if (add_is_italic) {
+    uint16_t uc = *ch++;
+    if (shiftjis_lead_byte(uc))
+      uc = (uc << 8) | *ch++;
+    uc = Italicise(uc);
+    if (uc > 0xff)
+      cp932_text_buffer += uc >> 8;
+    cp932_text_buffer += uc & 0xff;
+  } else {
+    copyOneShiftJisCharacter(ch, cp932_text_buffer);
+  }
 }
 
 void RlBabelDLL::textoutClear() {

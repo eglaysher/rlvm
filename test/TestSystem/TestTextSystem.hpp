@@ -58,6 +58,7 @@ class TestTextSystem : public TextSystem {
 
   virtual Size renderGlyphOnto(const std::string& current,
                                int font_size,
+                               bool italic,
                                const RGBColour& font_colour,
                                const RGBColour* shadow_colour,
                                int insertion_point_x,

@@ -79,6 +79,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
 Size SDLTextSystem::renderGlyphOnto(
     const std::string& current,
     int font_size,
+    bool italic,
     const RGBColour& font_colour,
     const RGBColour* shadow_colour,
     int insertion_point_x,
@@ -88,7 +89,10 @@ Size SDLTextSystem::renderGlyphOnto(
 
   boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
 
-  // TODO: Glyphs go in a cache?
+  if (italic) {
+    TTF_SetFontStyle(font.get(), TTF_STYLE_ITALIC);
+  }
+
   SDL_Color sdl_colour;
   RGBColourToSDLColor(font_colour, &sdl_colour);
   boost::shared_ptr<SDL_Surface> character(
@@ -110,6 +114,10 @@ Size SDLTextSystem::renderGlyphOnto(
     shadow.reset(
         TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_shadow_colour),
         SDL_FreeSurface);
+  }
+
+  if (italic) {
+    TTF_SetFontStyle(font.get(), TTF_STYLE_NORMAL);
   }
 
   Point insertion(insertion_point_x, insertion_point_y);

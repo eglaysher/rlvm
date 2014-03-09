@@ -62,6 +62,7 @@ enum CommandType {
   TYPE_OFFSET_INSERTION_Y,
   TYPE_FACE_OPEN,
   TYPE_FACE_CLOSE,
+  TYPE_NEXT_CHAR_IS_ITALIC,
 };
 
 // Storage for each command.
@@ -136,6 +137,7 @@ TextPage::Command::Command(CommandType type)
     case TYPE_RESET_INDENTATION:
     case TYPE_DEFAULT_FONT_SIZE:
     case TYPE_RUBY_BEGIN:
+    case TYPE_NEXT_CHAR_IS_ITALIC:
       empty = 0;
       break;
     case TYPE_CHARACTERS:
@@ -222,6 +224,7 @@ TextPage::Command::Command(const Command& rhs)
     case TYPE_RESET_INDENTATION:
     case TYPE_DEFAULT_FONT_SIZE:
     case TYPE_RUBY_BEGIN:
+    case TYPE_NEXT_CHAR_IS_ITALIC:
       empty = 0;
       break;
     case TYPE_KOE_MARKER:
@@ -423,6 +426,10 @@ void TextPage::faceClose(int index) {
   AddAction(Command(TYPE_FACE_CLOSE, index));
 }
 
+void TextPage::nextCharIsItalic() {
+  AddAction(Command(TYPE_NEXT_CHAR_IS_ITALIC));
+}
+
 bool TextPage::isFull() const {
   return system_->text().textWindow(window_num_)->isFull();
 }
@@ -504,5 +511,7 @@ void TextPage::RunTextPageCommand(const Command& command,
     case TYPE_FACE_CLOSE:
       window->faceClose(command.face_close);
       break;
+    case TYPE_NEXT_CHAR_IS_ITALIC:
+      window->NextCharIsItalic();
   }
 }

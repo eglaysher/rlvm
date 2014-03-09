@@ -203,6 +203,9 @@ class TextWindow {
   // Clears face slot |index|.
   void faceClose(int index);
 
+  // Marks that the next character rendered in the window should be italic.
+  void NextCharIsItalic();
+
   // ------------------------------------------------ [ Abstract interface ]
   void render(std::ostream* tree);
 
@@ -398,6 +401,8 @@ class TextWindow {
   // Text boxes can be in selection mode, in which case a Select_LongOperation
   // is on the top of the RLMachine's call stack.
   bool in_selection_mode_;
+
+  bool next_char_italic_;
 
   // Callback function for when item is selected; usually will call a
   // specific method on Select_LongOperation

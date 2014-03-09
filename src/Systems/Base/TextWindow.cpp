@@ -101,6 +101,7 @@ TextWindow::TextWindow(System& system, int window_num)
       filter_(0),
       is_visible_(0),
       in_selection_mode_(0),
+      next_char_italic_(false),
       system_(system),
       text_system_(system.text()) {
   Gameexe& gexe = system.gameexe();
@@ -405,6 +406,10 @@ void TextWindow::faceClose(int index) {
   }
 }
 
+void TextWindow::NextCharIsItalic() {
+  next_char_italic_ = true;
+}
+
 // TODO(erg): Make this pass the #WINDOW_ATTR colour off wile rendering the
 // waku_backing.
 void TextWindow::render(std::ostream* tree) {
@@ -561,11 +566,13 @@ bool TextWindow::character(const std::string& current,
     RGBColour shadow = RGBAColour::Black().rgb();
     text_system_.renderGlyphOnto(current,
                                  fontSizeInPixels(),
+                                 next_char_italic_,
                                  font_colour_,
                                  &shadow,
                                  text_insertion_point_x_,
                                  text_insertion_point_y_,
                                  textSurface());
+    next_char_italic_ = false;
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;

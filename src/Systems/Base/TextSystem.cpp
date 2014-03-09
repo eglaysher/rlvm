@@ -729,6 +729,7 @@ boost::shared_ptr<Surface> TextSystem::renderText(const std::string& utf8str,
     if (add_char) {
       Size s = renderGlyphOnto(character,
                                current_size,
+                               false,
                                current_colour,
                                shadow_colour,
                                currentX,

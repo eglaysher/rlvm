@@ -34,10 +34,15 @@
 #include <sstream>
 #include <string>
 
+#include "Encodings/codepage.h"
 #include "Encodings/han2zen.hpp"
+#include "Encodings/western.h"
 #include "MachineBase/RLOperation.hpp"
 #include "MachineBase/RLOperation/RLOp_Store.hpp"
 #include "MachineBase/RLOperation/References.hpp"
+#include "Systems/Base/System.hpp"
+#include "Systems/Base/TextSystem.hpp"
+#include "Systems/Base/TextPage.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 
@@ -564,7 +569,33 @@ struct Str_strlpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
 // Prints a string.
 struct Str_strout : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string value) {
-    // Assumption: Text is in whatever native encoding for getTextEncoding().
+    // We collaborate with rlBabel here.
+    //
+    // This is the point right before we are about to switch from cp932 to
+    // unicode. If the character is supposed to be italic, the incoming values
+    // may have been munged to be valid cp932 character.
+    int encoding = machine.getTextEncoding();
+    size_t size = value.size();
+    if (encoding != 0 && (size == 1 || size == 2)) {
+      // Look at the first character in the
+      uint16_t cp932_char = value[0];
+      if (size == 2 && shiftjis_lead_byte(cp932_char))
+        cp932_char = (cp932_char << 8) | value[1];
+
+      if (Cp::instance(encoding).IsItalic(cp932_char)) {
+        // We must make take this character and turn it into its unitalicized
+        // form.
+        uint16_t decoded = GetItalic(cp932_char);
+        value.clear();
+        addShiftJISChar(decoded, value);
+
+        // Notify the TextSystem that the next character that will be printed
+        // should be printed in italics.
+        TextPage& page = machine.system().text().currentPage();
+        page.nextCharIsItalic();
+      }
+    }
+
     machine.performTextout(value);
   }
 };

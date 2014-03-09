@@ -56,6 +56,7 @@ boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
 Size TestTextSystem::renderGlyphOnto(
     const std::string& current,
     int font_size,
+    bool italic,
     const RGBColour& font_colour,
     const RGBColour* shadow_colour,
     int insertion_point_x,
