@@ -24,42 +24,41 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/luabind_System.hpp"
-#include "ScriptMachine/ScriptMachine.hpp"
-#include "systems/base/event_system.h"
+#include "script_machine/luabind_system.h"
+
 #include <luabind/luabind.hpp>
-#include <luabind/raw_policy.hpp>
+
+#include "systems/base/graphics_system.h"
+#include "systems/base/graphics_object.h"
+#include "systems/base/parent_graphics_object_data.h"
+
+#include <iostream>
 
 using namespace luabind;
+using namespace std;
 
 namespace {
 
-// For convenience, we don't force script users to manually specify the
-// RLMachine argument, and fetch it ourselves from the globals.
-
-void injectMouseMovement(lua_State* L, EventSystem& sys, const Point& loc) {
-  ScriptMachine* machine =
-      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseMovement(*machine, loc);
+GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
+  return sys.getObject(0, obj_number);
 }
 
-void injectMouseDown(lua_State* L, EventSystem& sys) {
-  ScriptMachine* machine =
-      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseDown(*machine);
-}
+GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
+  GraphicsObject& obj = sys.getObject(0, parent);
+  if (obj.hasObjectData() && obj.objectData().isParentLayer()) {
+    return static_cast<ParentGraphicsObjectData&>(obj.objectData())
+        .getObject(child);
+  }
 
-void injectMouseUp(lua_State* L, EventSystem& sys) {
-  ScriptMachine* machine =
-      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseUp(*machine);
+  cerr << "WARNING: Couldn't get child object (" << parent << ", " << child
+       << "). Returning just the parent object instead." << endl;
+  return obj;
 }
 
 }  // namespace
 
-scope register_event_system() {
-  return class_<EventSystem>("EventSystem")
-      .def("injectMouseMovement", &injectMouseMovement, raw(_1))
-      .def("injectMouseDown", &injectMouseDown, raw(_1))
-      .def("injectMouseUp", &injectMouseUp, raw(_1));
+scope register_graphics_system() {
+  return class_<GraphicsSystem>("GraphicsSystem")
+      .def("getFgObject", getFgObject)
+      .def("getChildFgObject", getChildFgObject);
 }

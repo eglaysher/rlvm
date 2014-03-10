@@ -35,8 +35,6 @@
 // main(inat argc, char* agrv[]). Loosers.
 #include <SDL/SDL.h>
 
-#include "ScriptMachine/ScriptMachine.hpp"
-#include "ScriptMachine/ScriptWorld.hpp"
 #include "libreallive/gameexe.h"
 #include "libreallive/reallive.h"
 #include "machine/game_hacks.h"
@@ -44,6 +42,8 @@
 #include "machine/serialization.h"
 #include "modules/module_sys_save.h"
 #include "modules/modules.h"
+#include "script_machine/script_machine.h"
+#include "script_machine/script_world.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/sound_system.h"
 #include "systems/base/system_error.h"

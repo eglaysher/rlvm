@@ -24,11 +24,16 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_SCRIPTMACHINE_LUABIND_UTILITY_HPP_
-#define TEST_SCRIPTMACHINE_LUABIND_UTILITY_HPP_
+#include "script_machine/luabind_machine.h"
 
 #include <luabind/luabind.hpp>
 
-luabind::scope register_utility();
+#include "script_machine/script_machine.h"
 
-#endif  // TEST_SCRIPTMACHINE_LUABIND_UTILITY_HPP_
+using namespace luabind;
+
+scope register_machine() {
+  return class_<ScriptMachine>("Machine")
+      .def("getInt", &ScriptMachine::getInt)
+      .def("sceneNumber", &RLMachine::sceneNumber);
+}

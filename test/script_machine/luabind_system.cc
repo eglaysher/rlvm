@@ -24,14 +24,17 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/luabind_Machine.hpp"
-#include "ScriptMachine/ScriptMachine.hpp"
+#include "script_machine/luabind_system.h"
+
 #include <luabind/luabind.hpp>
+
+#include "systems/base/system.h"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
 
 using namespace luabind;
 
-scope register_machine() {
-  return class_<ScriptMachine>("Machine")
-      .def("getInt", &ScriptMachine::getInt)
-      .def("sceneNumber", &RLMachine::sceneNumber);
+scope register_system() {
+  return class_<System>("System").def("graphics", &System::graphics).def(
+      "event", &System::event);
 }

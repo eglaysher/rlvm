@@ -24,11 +24,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_
-#define TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_
+#ifndef TEST_SCRIPT_MACHINE_LUABIND_SYSTEM_H_
+#define TEST_SCRIPT_MACHINE_LUABIND_SYSTEM_H_
 
 #include <luabind/luabind.hpp>
 
-luabind::scope register_graphics_object();
+luabind::scope register_system();
 
-#endif  // TEST_SCRIPTMACHINE_LUABIND_GRAPHICSOBJECT_HPP_
+#endif  // TEST_SCRIPT_MACHINE_LUABIND_SYSTEM_H_

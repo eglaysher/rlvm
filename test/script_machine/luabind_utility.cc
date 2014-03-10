@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/luabind_utility.hpp"
+#include "script_machine/luabind_utility.h"
 
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>

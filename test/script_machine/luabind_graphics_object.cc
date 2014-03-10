@@ -24,11 +24,32 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_
-#define TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_
+#include "script_machine/luabind_system.h"
 
 #include <luabind/luabind.hpp>
+#include <luabind/out_value_policy.hpp>
 
-luabind::scope register_system();
+#include "systems/base/graphics_object.h"
 
-#endif  // TEST_SCRIPTMACHINE_LUABIND_SYSTEM_HPP_
+using namespace luabind;
+
+namespace {
+
+Point getClickPointHack(const GraphicsObject& obj) {
+  // WARNING! THIS WILL BE REALLY WRONG WHEN THEY USE ADJUSTMENTS, OVERRIDES,
+  // ET CETERA.
+  //
+  // The real solution is to make a GraphicsObject:center() method, but that
+  // would involve some scary pulling code out of Texture... Math is hard,
+  // let's go coding!
+  return Point(obj.x() + 5, obj.y() + 5);
+}
+
+}  // namespace
+
+scope register_graphics_object() {
+  return class_<GraphicsObject>("GraphicsObject")
+      .def("getClickPointHack", &getClickPointHack)
+      .def("text", &GraphicsObject::textText)
+      .def("visible", &GraphicsObject::visible);
+}

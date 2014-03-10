@@ -39,14 +39,14 @@ else:
 test_env = config.Finish()
 
 script_machine_files = [
-  "test/ScriptMachine/ScriptMachine.cpp",
-  "test/ScriptMachine/ScriptWorld.cpp",
-  "test/ScriptMachine/luabind_EventSystem.cpp",
-  "test/ScriptMachine/luabind_GraphicsObject.cpp",
-  "test/ScriptMachine/luabind_GraphicsSystem.cpp",
-  "test/ScriptMachine/luabind_Machine.cpp",
-  "test/ScriptMachine/luabind_System.cpp",
-  "test/ScriptMachine/luabind_utility.cpp"
+  "test/script_machine/script_machine.cc",
+  "test/script_machine/script_world.cc",
+  "test/script_machine/luabind_event_system.cc",
+  "test/script_machine/luabind_graphics_object.cc",
+  "test/script_machine/luabind_graphics_system.cc",
+  "test/script_machine/luabind_machine.cc",
+  "test/script_machine/luabind_system.cc",
+  "test/script_machine/luabind_utility.cc"
 ]
 
 if env['BUILD_LUA_TESTS'] == True:

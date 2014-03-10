@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
-#define TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
+#ifndef TEST_SCRIPT_MACHINE_SCRIPT_MACHINE_H_
+#define TEST_SCRIPT_MACHINE_SCRIPT_MACHINE_H_
 
 #include "machine/rlmachine.h"
 
@@ -75,4 +75,4 @@ class ScriptMachine : public RLMachine {
   bool increment_on_save_;
 };  // end of class ScriptMachine
 
-#endif  // TEST_SCRIPTMACHINE_SCRIPTMACHINE_HPP_
+#endif  // TEST_SCRIPT_MACHINE_SCRIPT_MACHINE_H_

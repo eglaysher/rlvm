@@ -24,15 +24,44 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/luabind_System.hpp"
-#include "systems/base/system.h"
-#include "systems/base/event_system.h"
-#include "systems/base/graphics_system.h"
+#include "script_machine/luabind_system.h"
+
 #include <luabind/luabind.hpp>
+#include <luabind/raw_policy.hpp>
+
+#include "script_machine/script_machine.h"
+#include "systems/base/event_system.h"
 
 using namespace luabind;
 
-scope register_system() {
-  return class_<System>("System").def("graphics", &System::graphics).def(
-      "event", &System::event);
+namespace {
+
+// For convenience, we don't force script users to manually specify the
+// RLMachine argument, and fetch it ourselves from the globals.
+
+void injectMouseMovement(lua_State* L, EventSystem& sys, const Point& loc) {
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
+  sys.injectMouseMovement(*machine, loc);
+}
+
+void injectMouseDown(lua_State* L, EventSystem& sys) {
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
+  sys.injectMouseDown(*machine);
+}
+
+void injectMouseUp(lua_State* L, EventSystem& sys) {
+  ScriptMachine* machine =
+      luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
+  sys.injectMouseUp(*machine);
+}
+
+}  // namespace
+
+scope register_event_system() {
+  return class_<EventSystem>("EventSystem")
+      .def("injectMouseMovement", &injectMouseMovement, raw(_1))
+      .def("injectMouseDown", &injectMouseDown, raw(_1))
+      .def("injectMouseUp", &injectMouseUp, raw(_1));
 }

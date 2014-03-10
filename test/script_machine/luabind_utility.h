@@ -24,39 +24,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/luabind_System.hpp"
-#include "systems/base/graphics_system.h"
-#include "systems/base/graphics_object.h"
-#include "systems/base/parent_graphics_object_data.h"
+#ifndef TEST_SCRIPT_MACHINE_LUABIND_UTILITY_H_
+#define TEST_SCRIPT_MACHINE_LUABIND_UTILITY_H_
+
 #include <luabind/luabind.hpp>
 
-#include <iostream>
+luabind::scope register_utility();
 
-using namespace luabind;
-using namespace std;
-
-namespace {
-
-GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
-  return sys.getObject(0, obj_number);
-}
-
-GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
-  GraphicsObject& obj = sys.getObject(0, parent);
-  if (obj.hasObjectData() && obj.objectData().isParentLayer()) {
-    return static_cast<ParentGraphicsObjectData&>(obj.objectData())
-        .getObject(child);
-  }
-
-  cerr << "WARNING: Couldn't get child object (" << parent << ", " << child
-       << "). Returning just the parent object instead." << endl;
-  return obj;
-}
-
-}  // namespace
-
-scope register_graphics_system() {
-  return class_<GraphicsSystem>("GraphicsSystem")
-      .def("getFgObject", getFgObject)
-      .def("getChildFgObject", getChildFgObject);
-}
+#endif  // TEST_SCRIPT_MACHINE_LUABIND_UTILITY_H_

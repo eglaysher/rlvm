@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/ScriptWorld.hpp"
+#include "script_machine/script_world.h"
 
 #include <iostream>
 #include <typeinfo>
@@ -34,13 +34,13 @@
 #include <boost/filesystem/path.hpp>
 
 #include "modules/module_sel.h"
-#include "ScriptMachine/ScriptMachine.hpp"
-#include "ScriptMachine/luabind_EventSystem.hpp"
-#include "ScriptMachine/luabind_GraphicsObject.hpp"
-#include "ScriptMachine/luabind_GraphicsSystem.hpp"
-#include "ScriptMachine/luabind_Machine.hpp"
-#include "ScriptMachine/luabind_System.hpp"
-#include "ScriptMachine/luabind_utility.hpp"
+#include "script_machine/luabind_event_system.h"
+#include "script_machine/luabind_graphics_object.h"
+#include "script_machine/luabind_graphics_system.h"
+#include "script_machine/luabind_machine.h"
+#include "script_machine/luabind_system.h"
+#include "script_machine/luabind_utility.h"
+#include "script_machine/script_machine.h"
 #include "systems/base/system.h"
 
 extern "C" {

@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "ScriptMachine/ScriptMachine.hpp"
+#include "script_machine/script_machine.h"
 
 #include <iostream>
 #include <map>
@@ -33,11 +33,11 @@
 #include <utility>
 #include <vector>
 
+#include "libreallive/intmemref.h"
 #include "long_operations/button_object_select_long_operation.h"
 #include "long_operations/select_long_operation.h"
 #include "machine/serialization.h"
-#include "ScriptMachine/ScriptWorld.hpp"
-#include "libreallive/intmemref.h"
+#include "script_machine/script_world.h"
 
 using namespace std;
 using libreallive::IntMemRef;

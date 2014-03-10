@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_
-#define TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_
+#ifndef TEST_SCRIPT_MACHINE_SCRIPT_WORLD_H_
+#define TEST_SCRIPT_MACHINE_SCRIPT_WORLD_H_
 
 #include <utility>
 #include <map>
@@ -101,4 +101,4 @@ class ScriptWorld {
   lua_State* L;
 };  // end of class ScriptWorld
 
-#endif  // TEST_SCRIPTMACHINE_SCRIPTWORLD_HPP_
+#endif  // TEST_SCRIPT_MACHINE_SCRIPT_WORLD_H_
