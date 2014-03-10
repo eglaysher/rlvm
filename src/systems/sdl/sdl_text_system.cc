@@ -36,7 +36,6 @@
 #include "systems/sdl/sdl_text_window.h"
 #include "systems/sdl/sdl_utils.h"
 #include "Utilities/Exception.hpp"
-#include "Utilities/algoplus.hpp"
 #include "Utilities/findFontFile.h"
 #include "libreallive/gameexe.h"
 

@@ -60,7 +60,6 @@
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
 #include "Utilities/Exception.hpp"
-#include "Utilities/algoplus.hpp"
 #include "Utilities/gettext.h"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
