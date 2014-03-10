@@ -47,7 +47,7 @@ struct LoadGameLongOperation : public LongOperation {
   // WARNING: This constructor adds itself to the machine's stack. If I come
   // back, trying to clean this up, make sure that fadeout on selecting a game
   // to load still works.
-  LoadGameLongOperation(RLMachine& machine);
+  explicit LoadGameLongOperation(RLMachine& machine);
 
   // Actually loads the data and sets up a LongOperation to fade into our new
   // screen. By the time this method returns, the game state has been thawed

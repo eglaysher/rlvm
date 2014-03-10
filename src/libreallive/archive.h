@@ -31,20 +31,22 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef ARCHIVE_H
-#define ARCHIVE_H
+#ifndef SRC_LIBREALLIVE_ARCHIVE_H_
+#define SRC_LIBREALLIVE_ARCHIVE_H_
 
-#include "defs.h"
-#include "scenario.h"
-#include "filemap.h"
+#include "libreallive/defs.h"
+#include "libreallive/scenario.h"
+#include "libreallive/filemap.h"
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <map>
+#include <string>
 
 namespace libreallive {
 
-namespace Compression {
+namespace compression {
 struct XorKey;
-}  // namespace Compression
+}  // namespace compression
 
 /**
  * Interface to a loaded SEEN.TXT file.
@@ -63,7 +65,7 @@ class Archive {
 
   // Now that VisualArts is using per game xor keys, this is equivalent to the
   // game's second level xor key.
-  const Compression::XorKey* second_level_xor_key_;
+  const compression::XorKey* second_level_xor_key_;
 
   // The #REGNAME key from the Gameexe.ini file. Passed down to Scenario for
   // prettier error messages.
@@ -73,9 +75,9 @@ class Archive {
 
   void readOverrides();
 
-public:
+ public:
   // Read an archive, assuming no per-game xor key. (Used in unit testing).
-  Archive(const string& filename);
+  explicit Archive(const string& filename);
 
   /**
    * Creates an interface to a SEEN.TXT file.
@@ -106,6 +108,6 @@ public:
   void reset();
 };
 
-}
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_ARCHIVE_H_

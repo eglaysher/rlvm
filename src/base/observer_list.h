@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef BASE_OBSERVER_LIST_H__
-#define BASE_OBSERVER_LIST_H__
-#pragma once
+#ifndef SRC_BASE_OBSERVER_LIST_H_
+#define SRC_BASE_OBSERVER_LIST_H_
 
 #include <algorithm>
 #include <limits>
@@ -75,7 +74,7 @@ class ObserverListBase {
   // also the FOR_EACH_OBSERVER macro defined below.
   class Iterator {
    public:
-    Iterator(ObserverListBase<ObserverType>& list)
+    explicit Iterator(ObserverListBase<ObserverType>& list)
         : list_(list),
           index_(0),
           max_index_(list.type_ == NOTIFY_ALL ?
@@ -197,4 +196,4 @@ class ObserverList : public ObserverListBase<ObserverType> {
       obs->func;                                              \
   } while (0)
 
-#endif  // BASE_OBSERVER_LIST_H__
+#endif  // SRC_BASE_OBSERVER_LIST_H_

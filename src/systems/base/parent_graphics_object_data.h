@@ -40,7 +40,7 @@ class GraphicsObject;
 // objects which inherit some(?) of its parent properties.
 class ParentGraphicsObjectData : public GraphicsObjectData {
  public:
-  ParentGraphicsObjectData(int size);
+  explicit ParentGraphicsObjectData(int size);
   virtual ~ParentGraphicsObjectData();
 
   GraphicsObject& getObject(int obj_number);

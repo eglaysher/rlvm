@@ -27,6 +27,7 @@
 #include "machine/game_hacks.h"
 
 #include <functional>
+#include <string>
 
 #include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"

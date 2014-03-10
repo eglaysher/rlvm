@@ -146,7 +146,7 @@ void addObjManagementFunctions(RLModule& m) {
 
 struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int fgbg_;
-  objChildCopy(int fgbg) : fgbg_(fgbg) {}
+  explicit objChildCopy(int fgbg) : fgbg_(fgbg) {}
 
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
     GraphicsSystem& sys = machine.system().graphics();

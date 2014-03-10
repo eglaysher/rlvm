@@ -71,7 +71,6 @@ class ToneCurve {
   // Array of tone curve effects
   ToneCurveEffects tcc_info_;
   int effect_count_;
-
 };  // end of class ToneCurve
 
 #endif  // SRC_SYSTEMS_BASE_TONE_CURVE_H_

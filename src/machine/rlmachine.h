@@ -37,7 +37,9 @@
 #include "libreallive/scenario.h"
 
 #include <functional>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace libreallive {

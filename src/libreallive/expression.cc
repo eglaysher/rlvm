@@ -36,6 +36,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <string>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
@@ -164,8 +165,9 @@ size_t next_data(const char* src) {
       if (*end != '(') {
         end += next_data(end);
         return end - src;
-      } else
+      } else {
         end++;
+      }
     }
 
     while (*end != ')')
@@ -174,8 +176,9 @@ size_t next_data(const char* src) {
     if (*end == '\\')
       end += next_expr(end);
     return end - src;
-  } else
+  } else {
     return next_expr(src);
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -426,18 +429,21 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
         return unique_ptr<ExpressionPiece>(cep.release());
-      } else
+      } else {
         end++;
-    } else
+      }
+    } else {
       cep.reset(new ComplexExpressionPiece());
+    }
 
     while (*end != ')') {
       cep->addContainedPiece(get_data(end));
     }
 
     return unique_ptr<ExpressionPiece>(cep.release());
-  } else
+  } else {
     return get_expression(src);
+  }
 }
 
 std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src) {
@@ -484,16 +490,16 @@ std::string parsableToPrintableString(const std::string& src) {
 
   bool firstToken = true;
   for (string::const_iterator it = src.begin(); it != src.end(); ++it) {
-    if (firstToken)
+    if (firstToken) {
       firstToken = false;
-    else {
+    } else {
       output += " ";
     }
 
     char tok = *it;
-    if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']')
+    if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']') {
       output.push_back(tok);
-    else {
+    } else {
       ostringstream ss;
       ss << std::hex << std::setw(2) << std::setfill('0') << int(tok);
       output += ss.str();
@@ -517,9 +523,9 @@ std::string printableToParsableString(const std::string& src) {
       throw libreallive::Error(
           "Invalid string given to printableToParsableString");
 
-    if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]")
+    if (tok == "(" || tok == ")" || tok == "$" || tok == "[" || tok == "]") {
       output.push_back(tok[0]);
-    else {
+    } else {
       int charToAdd;
       istringstream ss(tok);
       ss >> std::hex >> charToAdd;
@@ -717,17 +723,17 @@ std::string MemoryReference::getDebugValue(RLMachine& machine) const {
 std::string MemoryReference::getDebugString() const {
   ostringstream ret;
 
-  if (type == STRS_LOCATION)
+  if (type == STRS_LOCATION) {
     ret << "strS[";
-  else if (type == STRK_LOCATION)
+  } else if (type == STRK_LOCATION) {
     ret << "strK[";
-  else if (type == STRM_LOCATION)
+  } else if (type == STRM_LOCATION) {
     ret << "strM[";
-  else if (type == INTZ_LOCATION_IN_BYTECODE)
+  } else if (type == INTZ_LOCATION_IN_BYTECODE) {
     ret << "intZ[";
-  else if (type == INTL_LOCATION_IN_BYTECODE)
+  } else if (type == INTL_LOCATION_IN_BYTECODE) {
     ret << "intL[";
-  else {
+  } else {
     char bank = 'A' + (type % 26);
     ret << "int" << bank << "[";
   }
@@ -784,7 +790,7 @@ int UniaryExpressionOperator::performOperationOn(int int_operand) const {
       break;
     default:
       break;
-  };
+  }
 
   return result;
 }

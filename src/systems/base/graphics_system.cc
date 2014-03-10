@@ -177,7 +177,7 @@ GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
 // GraphicsObjectImpl
 // -----------------------------------------------------------------------
 struct GraphicsSystem::GraphicsObjectImpl {
-  GraphicsObjectImpl(int objects_in_layer);
+  explicit GraphicsObjectImpl(int objects_in_layer);
 
   // Foreground objects
   LazyArray<GraphicsObject> foreground_objects;

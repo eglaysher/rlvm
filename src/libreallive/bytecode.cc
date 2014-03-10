@@ -33,10 +33,12 @@
 
 #include "libreallive/bytecode.h"
 
-#include <iomanip>
 #include <exception>
-#include <utility>
+#include <iomanip>
 #include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "libreallive/scenario.h"
 #include "libreallive/expression.h"
@@ -348,8 +350,9 @@ const string TextoutElement::text() const {
       if (*it == '"') {
         ++it;
         rv.push_back('"');
-      } else
+      } else {
         rv.push_back('\\');
+      }
     } else {
       if ((*it >= 0x81 && *it <= 0x9f) || (*it >= 0xe0 && *it <= 0xef))
         rv.push_back(*it++);
@@ -502,13 +505,17 @@ SelectElement::SelectElement(const char* src)
     repr.append(src, elen);
     src += elen;
   }
+
   if (*src++ != '{')
     throw Error("SelectElement(): expected `{'");
+
   if (*src == '\n') {
     firstline = read_i16(src + 1);
     src += 3;
-  } else
+  } else {
     firstline = 0;
+  }
+
   for (int i = 0; i < argc(); ++i) {
     // Skip preliminary metadata.
     while (*src == ',')
@@ -1030,4 +1037,5 @@ pointer_t GosubWithElement::get_pointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
-}
+
+}  // namespace libreallive

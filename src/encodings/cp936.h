@@ -34,10 +34,12 @@
   the work might be covered by the LGPL.
 */
 
-#ifndef CP936_H
-#define CP936_H
+#ifndef SRC_ENCODINGS_CP936_H_
+#define SRC_ENCODINGS_CP936_H_
 
-#include "codepage.h"
+#include <string>
+
+#include "encodings/codepage.h"
 
 struct Cp936 : public Codepage {
   unsigned short JisDecode(unsigned short ch) const;
@@ -47,4 +49,4 @@ struct Cp936 : public Codepage {
   Cp936();
 };
 
-#endif
+#endif  // SRC_ENCODINGS_CP936_H_

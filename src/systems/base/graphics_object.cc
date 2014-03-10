@@ -37,6 +37,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <string>
 #include <algorithm>
+#include <vector>
 
 #include "systems/base/graphics_object_data.h"
 #include "systems/base/object_mutator.h"

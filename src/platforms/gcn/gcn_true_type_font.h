@@ -29,6 +29,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
 #include <SDL/SDL_ttf.h>
 #include <boost/shared_ptr.hpp>

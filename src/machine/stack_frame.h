@@ -32,6 +32,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
+#include <string>
 
 class LongOperation;
 

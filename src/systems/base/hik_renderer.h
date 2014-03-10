@@ -69,7 +69,7 @@ class HIKRenderer {
   int y_offset_;
 
   struct LayerData {
-    LayerData(int time);
+    explicit LayerData(int time);
     int animation_num_;
     int animation_start_time_;
   };

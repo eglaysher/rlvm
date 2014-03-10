@@ -31,6 +31,7 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
+#include <vector>
 
 #include "machine/rlmachine.h"
 #include "systems/base/graphics_object_data.h"

@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <cassert>
 #include <sstream>
+#include <string>
 
 #include "libreallive/compression.h"
 #include "utilities/exception.h"
@@ -63,13 +64,13 @@ Header::Header(const char* data, const size_t length) {
   string compiler = string(data, 4);
 
   // Check the version of the compiler.
-  if (read_i32(data + 4) == 10002)
+  if (read_i32(data + 4) == 10002) {
     use_xor_2 = false;
-  else if (read_i32(data + 4) == 110002)
+  } else if (read_i32(data + 4) == 110002) {
     use_xor_2 = true;
-  else if (read_i32(data + 4) == 1110002)
+  } else if (read_i32(data + 4) == 1110002) {
     use_xor_2 = true;
-  else {
+  } else {
     // New xor key?
     ostringstream oss;
     oss << "Unsupported compiler version: " << read_i32(data + 4);
@@ -112,7 +113,7 @@ Script::Script(const Header& hdr,
                const size_t length,
                const std::string& regname,
                bool use_xor_2,
-               const Compression::XorKey* second_level_xor_key) {
+               const compression::XorKey* second_level_xor_key) {
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
@@ -123,7 +124,7 @@ Script::Script(const Header& hdr,
   // Decompress data
   const size_t dlen = read_i32(data + 0x24);
 
-  const Compression::XorKey* key = NULL;
+  const compression::XorKey* key = NULL;
   if (use_xor_2) {
     if (second_level_xor_key) {
       key = second_level_xor_key;
@@ -140,7 +141,7 @@ Script::Script(const Header& hdr,
   }
 
   char* uncompressed = new char[dlen];
-  Compression::decompress(data + read_i32(data + 0x20),
+  compression::decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
                           uncompressed,
                           dlen,
@@ -187,4 +188,5 @@ const pointer_t Script::getEntrypoint(int entrypoint) const {
 Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const {
   return script.getEntrypoint(entrypoint);
 }
-}
+
+}  // namespace libreallive

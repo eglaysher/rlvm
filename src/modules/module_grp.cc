@@ -204,7 +204,7 @@ void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
 
 // Implements op<1:Grp:00015, 0>, fun allocDC('DC', 'width', 'height').
 //
-// Allocates a blank width × height bitmap in dc. Any DC apart from DC 0 may be
+// Allocates a blank width * height bitmap in dc. Any DC apart from DC 0 may be
 // allocated thus, although DC 1 is never given a size smaller than the screen
 // resolution. Any previous contents of dc are erased.
 struct allocDC

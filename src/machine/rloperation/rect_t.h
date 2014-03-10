@@ -67,7 +67,8 @@ struct REC {
     return Rect::REC(one, two, three, four);
   }
 };
-}
+
+}  // namespace rect_impl
 
 template <typename T>
 struct Rect_T {

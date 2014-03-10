@@ -31,22 +31,19 @@
 //
 // -----------------------------------------------------------------------
 
-#include "filemap.h"
-#include "mman.h"
-#ifdef WIN32
-#include <windows.h>
-#else
+#include "libreallive/filemap.h"
 #include <fcntl.h>
 #ifndef O_BINARY
 const int O_BINARY = 0;
 #endif
 const HANDLE INVALID_HANDLE_VALUE = -1;
-#endif
 
 #include <algorithm>
 #include <errno.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <string>
 
 namespace libreallive {
 
@@ -110,8 +107,9 @@ void Mapping::mopen() {
       fread(mem, 1, len, fh);
       fclose(fh);
     }
-  } else
+  } else {
     mapped = true;
+  }
 }
 
 Mapping::Mapping(string filename, Mode mode, off_t min_size)
@@ -133,4 +131,5 @@ void Mapping::replace(string newfilename) {
   }
   mopen();
 }
-}
+
+}  // namespace libreallive

@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CONTENT_COMMON_NOTIFICATION_REGISTRAR_H_
-#define CONTENT_COMMON_NOTIFICATION_REGISTRAR_H_
-#pragma once
+#ifndef SRC_BASE_NOTIFICATION_REGISTRAR_H_
+#define SRC_BASE_NOTIFICATION_REGISTRAR_H_
 
 #include <stdint.h>
 #include <vector>
@@ -61,4 +60,4 @@ class NotificationRegistrar {
   RecordVector registered_;
 };
 
-#endif  // CONTENT_COMMON_NOTIFICATION_REGISTRAR_H_
+#endif  // SRC_BASE_NOTIFICATION_REGISTRAR_H_

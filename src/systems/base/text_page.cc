@@ -67,7 +67,7 @@ enum CommandType {
 
 // Storage for each command.
 struct TextPage::Command {
-  Command(CommandType type);
+  explicit Command(CommandType type);
   Command(CommandType type, int one);
   Command(CommandType type, const std::string& one);
   Command(CommandType type, const std::string& one, const std::string& two);
@@ -145,7 +145,7 @@ TextPage::Command::Command(CommandType type)
       break;
     default:
       throw rlvm::Exception("Incorrect arrity");
-  };
+  }
 }
 
 TextPage::Command::Command(CommandType type, int one)

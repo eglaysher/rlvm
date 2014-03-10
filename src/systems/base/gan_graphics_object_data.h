@@ -141,7 +141,7 @@ inline void load_construct_data(Archive& ar,
                                 const unsigned int file_version) {
   ::new (t) GanGraphicsObjectData(Serialization::g_current_machine->system());
 }
-}
-}  // namespace boost::serialization
+}  // namespace serialization
+}  // namespace boost
 
 #endif  // SRC_SYSTEMS_BASE_GAN_GRAPHICS_OBJECT_DATA_H_

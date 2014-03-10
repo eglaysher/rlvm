@@ -24,10 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_UTILITIES_MATH_UTIL_HPP_
-#define SRC_UTILITIES_MATH_UTIL_HPP_
+#ifndef SRC_UTILITIES_MATH_UTIL_H_
+#define SRC_UTILITIES_MATH_UTIL_H_
 
 // Interpolates between start and end. Returns a percentage of amount.
 int Interpolate(int start, int current, int end, int amount, int mod);
 
-#endif  // SRC_UTILITIES_MATH_UTIL_HPP_
+#endif  // SRC_UTILITIES_MATH_UTIL_H_

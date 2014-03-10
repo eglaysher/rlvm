@@ -34,10 +34,12 @@
   the work might be covered by the LGPL.
 */
 
-#ifndef CP932_H
-#define CP932_H
+#ifndef SRC_ENCODINGS_CP932_H_
+#define SRC_ENCODINGS_CP932_H_
 
-#include "codepage.h"
+#include <string>
+
+#include "encodings/codepage.h"
 
 struct Cp932 : public Codepage {
   virtual unsigned short Convert(unsigned short ch) const;
@@ -45,4 +47,4 @@ struct Cp932 : public Codepage {
   Cp932();
 };
 
-#endif
+#endif  // SRC_ENCODINGS_CP932_H_

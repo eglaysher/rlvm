@@ -31,6 +31,7 @@
 
 #include "systems/base/digits_graphics_object.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "systems/base/colour.h"
@@ -93,8 +94,7 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
                               ? rp.digitSpace()
                               : font_->getPattern(0).rect.size().width();
   int num_chars = 0;
-  for (int a = value_; a > 0; a = a / 10, num_chars++) {
-  }
+  for (int a = value_; a > 0; a = a / 10, num_chars++) {}
   num_chars = std::max(num_chars, rp.digitDigits());
 
   int num_extra = 0;

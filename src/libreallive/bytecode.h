@@ -31,14 +31,17 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef BYTECODE_H
-#define BYTECODE_H
+#ifndef SRC_LIBREALLIVE_BYTECODE_H_
+#define SRC_LIBREALLIVE_BYTECODE_H_
 
-#include "defs.h"
 #include <stdint.h>
+#include <map>
+#include <string>
+#include <vector>
 
-#include "bytecode_fwd.h"
-#include "expression.h"
+#include "libreallive/bytecode_fwd.h"
+#include "libreallive/defs.h"
+#include "libreallive/expression.h"
 
 class RLMachine;
 
@@ -64,9 +67,7 @@ struct ConstructionData {
 };
 
 class Pointers {
-  std::vector<unsigned long> target_ids;
-  std::vector<pointer_t> targets;
-public:
+ public:
   typedef std::vector<pointer_t> t;
   typedef t::iterator iterator;
   iterator begin() { return targets.begin(); }
@@ -80,16 +81,16 @@ public:
   const size_t idSize() const { return target_ids.size(); }
 
   void set_pointers(ConstructionData& cdata);
+
+ private:
+  std::vector<unsigned long> target_ids;
+  std::vector<pointer_t> targets;
 };
 
 // Base classes for bytecode elements.
 
 class BytecodeElement {
-  friend class Script;
-protected:
-  static char entrypoint_marker;
-  BytecodeElement(const BytecodeElement& c);
-public:
+ public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
 
@@ -115,6 +116,13 @@ public:
   // Read the next element from a stream.
   static BytecodeElement* read(const char* stream, const char* end,
                                ConstructionData& cdata);
+
+ protected:
+  static char entrypoint_marker;
+  BytecodeElement(const BytecodeElement& c);
+
+ private:
+  friend class Script;
 };
 
 class CommaElement : public BytecodeElement {
@@ -130,11 +138,7 @@ class CommaElement : public BytecodeElement {
 // Metadata elements: source line, kidoku, and entrypoint markers.
 
 class MetaElement : public BytecodeElement {
-  enum MetaElementType { Line_ = '\n', Kidoku_ = '@', Entrypoint_ };
-  MetaElementType type_;
-  int value_;
-  int entrypoint_index;
-public:
+ public:
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
@@ -148,6 +152,12 @@ public:
 
   MetaElement(const ConstructionData* cv, const char* src);
   ~MetaElement();
+
+ private:
+  enum MetaElementType { Line_ = '\n', Kidoku_ = '@', Entrypoint_ };
+  MetaElementType type_;
+  int value_;
+  int entrypoint_index;
 };
 
 // Display-text elements.
@@ -179,8 +189,8 @@ class ExpressionElement : public BytecodeElement {
   virtual const ElementType type() const;
   virtual void print(std::ostream& oss) const;
   virtual const size_t length() const;
-  ExpressionElement(const long val);
-  ExpressionElement(const char* src);
+  explicit ExpressionElement(const long val);
+  explicit ExpressionElement(const char* src);
   ExpressionElement(const ExpressionElement& rhs);
 
   // Assumes the expression isn't an assignment and returns the integer value.
@@ -220,7 +230,7 @@ class CommandElement : public BytecodeElement {
   const int overload() const { return command[7]; }
 
   virtual const size_t param_count() const = 0;
-  virtual string get_param(int) const = 0;
+  virtual string get_param(int index) const = 0;
 
   std::vector<string> getUnparsedParameters() const;
   bool areParametersParsed() const;
@@ -236,7 +246,7 @@ class CommandElement : public BytecodeElement {
   virtual const size_t case_count() const { return 0; }
   virtual const string get_case(int i) const { return ""; }
 
-  CommandElement(const char* src);
+  explicit CommandElement(const char* src);
   ~CommandElement();
 
   virtual void runOnMachine(RLMachine& machine) const;
@@ -249,9 +259,7 @@ class CommandElement : public BytecodeElement {
 };
 
 class SelectElement : public CommandElement {
-public:
-  string repr;
-
+ public:
   static const int OPTION_COLOUR = 0x30;
   static const int OPTION_TITLE = 0x31;
   static const int OPTION_HIDE = 0x32;
@@ -279,11 +287,7 @@ public:
           line(lnum) {}
   };
   typedef std::vector<Param> params_t;
-private:
-  params_t params;
-  int firstline;
-  int uselessjunk;
-public:
+
   virtual const ElementType type() const;
   ExpressionElement window() const;
   const string text(const int index) const;
@@ -295,7 +299,13 @@ public:
 
   const params_t& getRawParams() const { return params; }
 
-  SelectElement(const char* src);
+  explicit SelectElement(const char* src);
+
+ private:
+  string repr;
+  params_t params;
+  int firstline;
+  int uselessjunk;
 };
 
 class FunctionElement : public CommandElement {
@@ -315,8 +325,9 @@ class FunctionElement : public CommandElement {
 
 class VoidFunctionElement : public CommandElement {
  public:
+  explicit VoidFunctionElement(const char* src);
+
   virtual const ElementType type() const;
-  VoidFunctionElement(const char* src);
 
   virtual const size_t length() const;
   virtual string serializableData(RLMachine& machine) const;
@@ -343,7 +354,7 @@ class SingleArgFunctionElement : public CommandElement {
 
 class PointerElement : public CommandElement {
  public:
-  PointerElement(const char* src);
+  explicit PointerElement(const char* src);
   ~PointerElement();
 
   virtual void set_pointers(ConstructionData& cdata);
@@ -450,6 +461,6 @@ class GosubWithElement : public CommandElement {
   std::vector<string> params;
 };
 
-}
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_BYTECODE_H_

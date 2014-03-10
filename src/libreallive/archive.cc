@@ -63,21 +63,21 @@ Archive::Archive(const string& filename, const std::string& regname)
 
   if (regname == "KEY\\CLANNAD_FV") {
     second_level_xor_key_ =
-        libreallive::Compression::clannad_full_voice_xor_mask;
+        libreallive::compression::clannad_full_voice_xor_mask;
   } else if (regname ==
              "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83"
              "\x6f\x83\x58\x83\x5e\x81\x5b\x83\x59\x81\x49") {
-    second_level_xor_key_ = libreallive::Compression::little_busters_xor_mask;
+    second_level_xor_key_ = libreallive::compression::little_busters_xor_mask;
   } else if (regname ==
              "\x4b\x45\x59\x5c\x83\x8a\x83\x67\x83\x8b\x83\x6f\x83\x58\x83\x5e"
              "\x81\x5b\x83\x59\x81\x49\x82\x64\x82\x77") {
     // "KEY\<little busters in katakana>!EX", with all fullwidth latin
     // characters.
     second_level_xor_key_ =
-        libreallive::Compression::little_busters_ex_xor_mask;
+        libreallive::compression::little_busters_ex_xor_mask;
   } else if (regname == "StudioMebius\\SNOWSE") {
     second_level_xor_key_ =
-        libreallive::Compression::snow_standard_edition_xor_mask;
+        libreallive::compression::snow_standard_edition_xor_mask;
   }
 }
 
@@ -142,4 +142,5 @@ void Archive::reset() {
     delete it->second;
   accessed.clear();
 }
-}
+
+}  // namespace libreallive

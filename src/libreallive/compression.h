@@ -26,16 +26,20 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef COMPRESSION_H
-#define COMPRESSION_H
+#ifndef SRC_LIBREALLIVE_COMPRESSION_H_
+#define SRC_LIBREALLIVE_COMPRESSION_H_
 
-#include "defs.h"
-#include "lzcomp.h"
+#include <string>
+
+#include "libreallive/defs.h"
+#include "libreallive/lzcomp.h"
 
 namespace libreallive {
-namespace Compression {
+namespace compression {
 
-typedef AVG32Comp::Compress<AVG32Comp::CInfoRealLive, AVG32Comp::Container::RLDataContainer> RealliveCompressor;
+typedef AVG32Comp::Compress<
+  AVG32Comp::CInfoRealLive,
+  AVG32Comp::Container::RLDataContainer> RealliveCompressor;
 
 // An individual xor key; some games use multiple ones.
 struct XorKey {
@@ -57,7 +61,7 @@ string* compress(char* arr, size_t len);
 void apply_mask(char* array, size_t len);
 void apply_mask(string& array, size_t start = 0);
 
-}
-}
+}  // namespace compression
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_COMPRESSION_H_

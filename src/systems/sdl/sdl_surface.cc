@@ -57,7 +57,7 @@ class ColourTransformer {
 
 class ToneCurveColourTransformer : public ColourTransformer {
  public:
-  ToneCurveColourTransformer(const ToneCurveRGBMap m) : colormap(m) {};
+  explicit ToneCurveColourTransformer(const ToneCurveRGBMap m) : colormap(m) {}
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     SDL_Color out = {colormap[0][colour.r], colormap[1][colour.g],
                      colormap[2][colour.b], 0};

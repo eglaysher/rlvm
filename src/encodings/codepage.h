@@ -34,8 +34,8 @@
   the work might be covered by the LGPL.
 */
 
-#ifndef CODEPAGE_H
-#define CODEPAGE_H
+#ifndef SRC_ENCODINGS_CODEPAGE_H_
+#define SRC_ENCODINGS_CODEPAGE_H_
 
 #include <memory>
 #include <string>
@@ -65,4 +65,4 @@ class Cp {
   static int scenario;
 };
 
-#endif
+#endif  // SRC_ENCODINGS_CODEPAGE_H_

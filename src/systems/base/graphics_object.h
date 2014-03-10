@@ -1,4 +1,3 @@
-
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 // vi:tw=80:et:ts=2:sts=2
 //
@@ -33,6 +32,7 @@
 #include "systems/base/rect.h"
 
 #include <string>
+#include <vector>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>

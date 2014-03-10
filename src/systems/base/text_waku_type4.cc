@@ -28,6 +28,7 @@
 
 #include <ostream>
 #include <string>
+#include <vector>
 
 #include "systems/base/colour.h"
 #include "systems/base/graphics_system.h"

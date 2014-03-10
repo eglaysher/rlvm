@@ -27,6 +27,7 @@
 #include "machine/rlvm_instance.h"
 
 #include <iostream>
+#include <string>
 
 #include "libreallive/gameexe.h"
 #include "libreallive/reallive.h"

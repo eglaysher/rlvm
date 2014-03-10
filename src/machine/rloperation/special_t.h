@@ -148,7 +148,7 @@ struct Special_T {
             << sp.getOverloadTag() << ", Mapped position was " << par.type;
         throw rlvm::Exception(oss.str());
       }
-    };
+    }
 
     return par;
   }

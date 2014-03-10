@@ -121,7 +121,7 @@ class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
 class Op_EndObjectMutation_Normal
     : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  public:
-  Op_EndObjectMutation_Normal(const char* name);
+  explicit Op_EndObjectMutation_Normal(const char* name);
   virtual ~Op_EndObjectMutation_Normal();
 
   virtual void operator()(RLMachine& machine, int object, int speedup);
@@ -135,7 +135,7 @@ class Op_EndObjectMutation_Normal
 class Op_EndObjectMutation_RepNo
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
-  Op_EndObjectMutation_RepNo(const char* name);
+  explicit Op_EndObjectMutation_RepNo(const char* name);
   virtual ~Op_EndObjectMutation_RepNo();
 
   virtual void operator()(RLMachine& machine,

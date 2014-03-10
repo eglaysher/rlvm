@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CONTENT_COMMON_NOTIFICATION_OBSERVER_H_
-#define CONTENT_COMMON_NOTIFICATION_OBSERVER_H_
-#pragma once
+#ifndef SRC_BASE_NOTIFICATION_OBSERVER_H_
+#define SRC_BASE_NOTIFICATION_OBSERVER_H_
 
 class NotificationDetails;
 class NotificationSource;
@@ -22,4 +21,4 @@ class NotificationObserver {
                        const NotificationDetails& details) = 0;
 };
 
-#endif  // CONTENT_COMMON_NOTIFICATION_OBSERVER_H_
+#endif  // SRC_BASE_NOTIFICATION_OBSERVER_H_

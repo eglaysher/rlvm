@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_UTILITIES_LAZYARRAY_HPP_
-#define SRC_UTILITIES_LAZYARRAY_HPP_
+#ifndef SRC_UTILITIES_LAZY_ARRAY_H_
+#define SRC_UTILITIES_LAZY_ARRAY_H_
 
 #include <algorithm>
 #include <ostream>
@@ -318,4 +318,4 @@ AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin() {
   return AllocatedLazyArrayIterator<T>(firstEntry, this);
 }
 
-#endif  // SRC_UTILITIES_LAZYARRAY_HPP_
+#endif  // SRC_UTILITIES_LAZY_ARRAY_H_

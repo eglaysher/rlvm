@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_MACHINE_RLOPERATION_RGBCOLOUR_T_H_
-#define SRC_MACHINE_RLOPERATION_RGBCOLOUR_T_H_
+#ifndef SRC_MACHINE_RLOPERATION_RGB_COLOUR_T_H_
+#define SRC_MACHINE_RLOPERATION_RGB_COLOUR_T_H_
 
 #include "machine/rloperation.h"
 #include "systems/base/colour.h"
@@ -95,4 +95,4 @@ struct RGBMaybeAColour_T {
   enum { is_complex = false };
 };
 
-#endif  // SRC_MACHINE_RLOPERATION_RGBCOLOUR_T_H_
+#endif  // SRC_MACHINE_RLOPERATION_RGB_COLOUR_T_H_

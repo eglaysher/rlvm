@@ -36,6 +36,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "libreallive/gameexe.h"
@@ -285,7 +286,7 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
     case SYSCOM_WINDOW_DECORATION_STYLE:
       cerr << "No idea what to do!" << endl;
       break;
-  };
+  }
 }
 
 void System::showSystemInfo(RLMachine& machine) {

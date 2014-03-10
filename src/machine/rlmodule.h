@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_MACHINE_RLMODULE_HPP_
-#define SRC_MACHINE_RLMODULE_HPP_
+#ifndef SRC_MACHINE_RLMODULE_H_
+#define SRC_MACHINE_RLMODULE_H_
 
 #include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
@@ -34,6 +34,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <utility>
 
 namespace libreallive {
 class CommandElement;
@@ -153,4 +154,4 @@ class RLModule : public boost::noncopyable {
 
 std::ostream& operator<<(std::ostream&, const RLModule& module);
 
-#endif  // SRC_MACHINE_RLMODULE_HPP_
+#endif  // SRC_MACHINE_RLMODULE_H_

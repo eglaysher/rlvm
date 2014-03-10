@@ -26,6 +26,8 @@
 
 #include "modules/module_g00.h"
 
+#include <string>
+
 #include "machine/general_operations.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/system.h"

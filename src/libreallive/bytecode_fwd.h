@@ -25,8 +25,9 @@
 // SOFTWARE.
 //
 // -----------------------------------------------------------------------
-#ifndef BYTECODE_FWD_H
-#define BYTECODE_FWD_H
+
+#ifndef SRC_LIBREALLIVE_BYTECODE_FWD_H_
+#define SRC_LIBREALLIVE_BYTECODE_FWD_H_
 
 #include <boost/ptr_container/ptr_list.hpp>
 
@@ -65,6 +66,6 @@ class GotoCaseElement;
 class GotoOnElement;
 class GosubWithElement;
 
-}
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_BYTECODE_FWD_H_

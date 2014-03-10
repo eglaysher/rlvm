@@ -36,10 +36,11 @@
 #include <boost/shared_ptr.hpp>
 #include <iosfwd>
 #include <map>
+#include <queue>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
-#include <queue>
 
 #include "systems/base/cgm_table.h"
 #include "systems/base/event_listener.h"

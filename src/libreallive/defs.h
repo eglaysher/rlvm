@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 
 // Workaround for precompiled header bug in GCC
-#ifndef DEFS_H
-#define DEFS_H
-#include "alldefs.h"
-#endif
+#ifndef SRC_LIBREALLIVE_DEFS_H_
+#define SRC_LIBREALLIVE_DEFS_H_
+#include "libreallive/alldefs.h"
+#endif  // SRC_LIBREALLIVE_DEFS_H_

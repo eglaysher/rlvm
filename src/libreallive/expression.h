@@ -32,12 +32,13 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef EXPRESSION_H
-#define EXPRESSION_H
+#ifndef SRC_LIBREALLIVE_EXPRESSION_H_
+#define SRC_LIBREALLIVE_EXPRESSION_H_
 
 #include "machine/reference.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 class RLMachine;
@@ -78,7 +79,7 @@ enum ExpressionValueType {
 };
 
 class ExpressionPiece {
-public:
+ public:
   virtual ~ExpressionPiece();
 
   // Capability method; returns false by default. Override when
@@ -156,4 +157,4 @@ std::string changeToConstantData(RLMachine& machine,
 
 }  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_EXPRESSION_H_

@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <libintl.h>
+#include <string>
 
 #include "utilities/file.h"
 #include "utilities/gettext.h"

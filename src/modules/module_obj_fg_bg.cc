@@ -30,13 +30,14 @@
 
 #include "modules/module_obj_fg_bg.h"
 
-#include <string>
+#include <boost/shared_ptr.hpp>
 #include <cmath>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <boost/shared_ptr.hpp>
+#include <string>
+#include <vector>
 
 #include "libreallive/bytecode.h"
 #include "libreallive/gameexe.h"
@@ -714,7 +715,7 @@ bool MutatorIsDone(RLMachine& machine,
 
 class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
  public:
-  Op_MutatorWaitNormal(const char* name) : name_(name) {}
+  explicit Op_MutatorWaitNormal(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
@@ -729,7 +730,7 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
 
 class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  public:
-  Op_MutatorWaitRepNo(const char* name) : name_(name) {}
+  explicit Op_MutatorWaitRepNo(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
@@ -753,7 +754,7 @@ bool objectMutatorIsWorking(RLMachine& machine,
 
 class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
  public:
-  Op_MutatorWaitCNormal(const char* name) : name_(name) {}
+  explicit Op_MutatorWaitCNormal(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
@@ -769,7 +770,7 @@ class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
 
 class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
  public:
-  Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
+  explicit Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);

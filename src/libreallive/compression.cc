@@ -33,8 +33,10 @@
 
 #include "libreallive/compression.h"
 
+#include <string>
+
 namespace libreallive {
-namespace Compression {
+namespace compression {
 
 /* RealLive uses a rather basic XOR encryption scheme, to which this
  * is the key. */
@@ -134,9 +136,9 @@ void decompress(const char* src,
       bit = 1;
       flag = *src++ ^ xor_mask[mask++];
     }
-    if (flag & bit)
+    if (flag & bit) {
       *dst++ = *src++ ^ xor_mask[mask++];
-    else {
+    } else {
       char* repeat;
       int count = *src++ ^ xor_mask[mask++];
       count += (*src++ ^ xor_mask[mask++]) << 8;
@@ -178,6 +180,5 @@ string* compress(char* arr, size_t len) {
   return rv;
 }
 
-// -----------------------------------------------------------------------
-}
-}
+}  // namespace compression
+}  // namespace libreallive

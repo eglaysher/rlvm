@@ -163,7 +163,7 @@ Effect* EffectFactory::buildWipeEffect(RLMachine& machine,
            << " Bottom effect." << endl;
       return new WipeTopToBottomEffect(
           machine, src, dst, screenSize, time, interpolation);
-  };
+  }
 }
 
 Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
@@ -206,7 +206,7 @@ Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
         xsize = ysize;
       return new BlindTopToBottomEffect(
           machine, src, dst, screenSize, time, xsize);
-  };
+  }
 }
 
 ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
@@ -225,7 +225,7 @@ ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
            << " in EffectFactory::buildWipeEffect. Returning Top to"
            << " Bottom effect." << endl;
       return new TopToBottomDrawer;
-  };
+  }
 }
 
 ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
@@ -247,5 +247,5 @@ ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
       throw SystemError(
           "Impossible style number in "
           "EffectFactory::buildScrollSquashSlideTypeBase");
-  };
+  }
 }

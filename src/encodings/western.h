@@ -30,10 +30,12 @@
   GNU Lesser General Public License.
 */
 
-#ifndef WESTERN_H
-#define WESTERN_H
+#ifndef SRC_ENCODINGS_WESTERN_H_
+#define SRC_ENCODINGS_WESTERN_H_
 
-#include "codepage.h"
+#include <string>
+
+#include "encodings/codepage.h"
 
 struct Cp1252 : public Codepage {
   unsigned short JisDecode(unsigned short ch) const;
@@ -48,4 +50,4 @@ struct Cp1252 : public Codepage {
 unsigned short GetItalic(unsigned short ch);
 unsigned short Italicise(unsigned short ch);
 
-#endif
+#endif  // SRC_ENCODINGS_WESTERN_H_

@@ -27,8 +27,11 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef EXPRESSION_PIECES_H
-#define EXPRESSION_PIECES_H
+#ifndef SRC_LIBREALLIVE_EXPRESSION_PIECES_H_
+#define SRC_LIBREALLIVE_EXPRESSION_PIECES_H_
+
+#include <string>
+#include <vector>
 
 #include "libreallive/expression.h"
 #include "machine/reference.h"
@@ -63,7 +66,7 @@ class StoreRegisterExpressionPiece : public ExpressionPiece {
 // Represents a constant integer in an Expression.
 class IntegerConstant : public ExpressionPiece {
  public:
-  IntegerConstant(const int in);
+  explicit IntegerConstant(const int in);
   ~IntegerConstant();
 
   // Returns the constant value
@@ -82,7 +85,7 @@ class IntegerConstant : public ExpressionPiece {
 
 class StringConstant : public ExpressionPiece {
  public:
-  StringConstant(const std::string& inStr);
+  explicit StringConstant(const std::string& inStr);
 
   virtual ExpressionValueType expressionValueType() const;
   virtual const std::string& getStringValue(RLMachine& machine) const;
@@ -204,7 +207,7 @@ class BinaryExpressionOperator : public ExpressionPiece {
 // Operation that modies a given memory location, sucha as +=, -=, /=,
 // et cetera.
 class AssignmentExpressionOperator : public BinaryExpressionOperator {
-public:
+ public:
   AssignmentExpressionOperator(char operation,
                                std::unique_ptr<ExpressionPiece> lhs,
                                std::unique_ptr<ExpressionPiece> rhs);
@@ -260,7 +263,7 @@ class ComplexExpressionPiece : public ExpressionPiece {
 // work.
 class SpecialExpressionPiece : public ComplexExpressionPiece {
  public:
-  SpecialExpressionPiece(int tag);
+  explicit SpecialExpressionPiece(int tag);
   virtual bool isSpecialParamater() const;
 
   int getOverloadTag() const { return overloadTag; }
@@ -275,4 +278,4 @@ class SpecialExpressionPiece : public ComplexExpressionPiece {
 
 }  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_EXPRESSION_PIECES_H_

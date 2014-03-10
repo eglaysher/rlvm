@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef __findFontFile_h__
-#define __findFontFile_h__
+#ifndef SRC_UTILITIES_FIND_FONT_FILE_H_
+#define SRC_UTILITIES_FIND_FONT_FILE_H_
 
 // This file is seperated out from Utilities because of compile errors
 // under OSX, where all of my Point/Size/Rect classes clash with a
@@ -42,4 +42,4 @@ class System;
 // arbitrary fonts, this method and the other findFontFile need to go away.
 boost::filesystem::path findFontFile(System& system);
 
-#endif
+#endif  // SRC_UTILITIES_FIND_FONT_FILE_H_

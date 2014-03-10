@@ -26,6 +26,7 @@
 
 #include "systems/base/voice_archive.h"
 
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <sstream>
@@ -105,7 +106,8 @@ void VoiceArchive::readVisualArtsTable(boost::filesystem::path file,
     int koe_num = read_little_endian_int(head + 8);
     entries.push_back(Entry(koe_num, length, offset));
   }
-  sort(entries.begin(), entries.end());
+
+  std::sort(entries.begin(), entries.end());
 }
 
 VoiceArchive::Entry::Entry(int ikoe_num, int ilength, int ioffset)

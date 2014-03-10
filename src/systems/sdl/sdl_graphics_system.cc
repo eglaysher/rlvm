@@ -566,7 +566,7 @@ static SDL_Surface* newSurfaceFromRGBAData(int w,
   SDL_Surface* surf = SDL_ConvertSurface(tmp, tmp->format, flags);
   SDL_FreeSurface(tmp);
   return surf;
-};
+}
 
 // Helper function for load_surface_from_file; invoked in a stl loop.
 static SDLSurface::GrpRect xclannadRegionToGrpRect(

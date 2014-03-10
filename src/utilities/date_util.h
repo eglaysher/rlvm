@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_UTILITIES_DATEUTIL_HPP_
-#define SRC_UTILITIES_DATEUTIL_HPP_
+#ifndef SRC_UTILITIES_DATE_UTIL_H_
+#define SRC_UTILITIES_DATE_UTIL_H_
 
 namespace datetime {
 
@@ -36,4 +36,4 @@ int getMs();
 
 }  // namespace datetime
 
-#endif  // SRC_UTILITIES_DATEUTIL_HPP_
+#endif  // SRC_UTILITIES_DATE_UTIL_H_

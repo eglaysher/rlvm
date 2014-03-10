@@ -28,6 +28,7 @@
 #define SRC_MACHINE_RLVM_INSTANCE_H_
 
 #include <boost/filesystem/operations.hpp>
+#include <string>
 
 class Platform;
 class RLMachine;

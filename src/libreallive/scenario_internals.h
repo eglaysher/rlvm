@@ -26,6 +26,13 @@
 //
 // -----------------------------------------------------------------------
 
+#ifndef SRC_LIBREALLIVE_SCENARIO_INTERNALS_H_
+#define SRC_LIBREALLIVE_SCENARIO_INTERNALS_H_
+
+#include <map>
+#include <string>
+#include <vector>
+
 class Scenario;
 
 struct FilePos {
@@ -49,7 +56,7 @@ class Metadata {
 };
 
 class Header {
-public:
+ public:
   Header(const char* data, const size_t length);
 
   // Starting around the release of Little Busters!, scenario files has a
@@ -63,15 +70,15 @@ public:
 };
 
 class Script {
-public:
+ public:
   const pointer_t getEntrypoint(int entrypoint) const;
 
-private:
+ private:
   friend class Scenario;
 
   Script(const Header& hdr, const char* data, const size_t length,
          const std::string& regname,
-         bool use_xor_2, const Compression::XorKey* second_level_xor_key);
+         bool use_xor_2, const compression::XorKey* second_level_xor_key);
 
   BytecodeList elts;
 
@@ -79,3 +86,5 @@ private:
   typedef std::map<int, pointer_t> pointernumber;
   pointernumber entrypointAssociations;
 };
+
+#endif  // SRC_LIBREALLIVE_SCENARIO_INTERNALS_H_

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_UTILITIES_STRINGUTILITIES_HPP_
-#define SRC_UTILITIES_STRINGUTILITIES_HPP_
+#ifndef SRC_UTILITIES_STRING_UTILITIES_H_
+#define SRC_UTILITIES_STRING_UTILITIES_H_
 
 #include <cstdint>
 #include <functional>
@@ -102,4 +102,4 @@ void printTextToFunction(
 // Removes quotes from the beginning and end of the string.
 std::string removeQuotes(const std::string& quotedString);
 
-#endif  // SRC_UTILITIES_STRINGUTILITIES_HPP_
+#endif  // SRC_UTILITIES_STRING_UTILITIES_H_

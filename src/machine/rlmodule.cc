@@ -77,7 +77,7 @@ void RLModule::addOpcode(int opcode,
   op->module_ = this;
 #ifndef NDEBUG
   OpcodeMap::iterator it = stored_operations.find(packed_opcode);
-  ;
+
   if (it != stored_operations.end()) {
     ostringstream oss;
     oss << "Duplicate opcode in " << *this << ": opcode " << opcode << ", "

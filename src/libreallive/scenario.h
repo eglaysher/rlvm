@@ -31,31 +31,30 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SCENARIO_H
-#define SCENARIO_H
+#ifndef SRC_LIBREALLIVE_SCENARIO_H_
+#define SRC_LIBREALLIVE_SCENARIO_H_
 
-#include "defs.h"
-#include "bytecode.h"
+#include <string>
+
+#include "libreallive/defs.h"
+#include "libreallive/bytecode.h"
 
 namespace libreallive {
 
-namespace Compression {
+namespace compression {
 struct XorKey;
-}  // namespace Compression
+}  // namespace compression
 
-#include "scenario_internals.h"
+#include "libreallive/scenario_internals.h"
 
 class Scenario {
-  Header header;
-  Script script;
-  int scenarioNum;
-public:
+ public:
   Scenario(const char* data, const size_t length, int scenarioNum,
            const std::string& regname,
-           const Compression::XorKey* second_level_xor_key);
+           const compression::XorKey* second_level_xor_key);
   Scenario(const FilePos& fp, int scenarioNum,
            const std::string& regname,
-           const Compression::XorKey* second_level_xor_key);
+           const compression::XorKey* second_level_xor_key);
 
   // Get the scenario number
   int sceneNumber() const { return scenarioNum; }
@@ -81,6 +80,11 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
   const size_t size() const;
+
+ private:
+  Header header;
+  Script script;
+  int scenarioNum;
 };
 
 // Inline definitions for Scenario
@@ -88,55 +92,43 @@ public:
 inline
 Scenario::Scenario(const char* data, const size_t length, int sn,
                    const std::string& regname,
-                   const Compression::XorKey* second_level_xor_key)
+                   const compression::XorKey* second_level_xor_key)
   : header(data, length),
     script(header, data, length, regname,
            header.use_xor_2, second_level_xor_key),
-    scenarioNum(sn)
-{
+    scenarioNum(sn) {
 }
 
 inline
 Scenario::Scenario(const FilePos& fp, int sn,
                    const std::string& regname,
-                   const Compression::XorKey* second_level_xor_key)
+                   const compression::XorKey* second_level_xor_key)
   : header(fp.data, fp.length),
     script(header, fp.data, fp.length, regname,
            header.use_xor_2, second_level_xor_key),
-    scenarioNum(sn)
-{
+    scenarioNum(sn) {
 }
 
-inline Scenario::iterator
-Scenario::begin()
-{
+inline Scenario::iterator Scenario::begin() {
   return script.elts.begin();
 }
 
-inline Scenario::iterator
-Scenario::end()
-{
+inline Scenario::iterator Scenario::end() {
   return script.elts.end();
 }
 
-inline Scenario::const_iterator
-Scenario::begin() const
-{
+inline Scenario::const_iterator Scenario::begin() const {
   return script.elts.begin();
 }
 
-inline Scenario::const_iterator
-Scenario::end() const
-{
+inline Scenario::const_iterator Scenario::end() const {
   return script.elts.end();
 }
 
-inline const size_t
-Scenario::size() const
-{
+inline const size_t Scenario::size() const {
   return script.elts.size();
 }
 
-}
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_SCENARIO_H_

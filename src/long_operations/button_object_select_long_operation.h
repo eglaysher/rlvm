@@ -30,6 +30,7 @@
 #include "libreallive/gameexe.h"
 #include "machine/long_operation.h"
 
+#include <utility>
 #include <vector>
 
 class GraphicsObject;
@@ -86,4 +87,4 @@ class ButtonObjectSelectLongOperation : public LongOperation {
   GraphicsObject* currently_pressed_button_;
 };
 
-#endif  //  SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_
+#endif  // SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_

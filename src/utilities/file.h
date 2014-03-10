@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef SRC_UTILITIES_FILE_HPP_
-#define SRC_UTILITIES_FILE_HPP_
+#ifndef SRC_UTILITIES_FILE_H_
+#define SRC_UTILITIES_FILE_H_
 
 #include <string>
 #include <vector>
@@ -50,4 +50,4 @@ bool loadFileData(const boost::filesystem::path& path,
                   boost::scoped_array<char>& fileData,
                   int& fileSize);
 
-#endif  // SRC_UTILITIES_FILE_HPP_
+#endif  // SRC_UTILITIES_FILE_H_

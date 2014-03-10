@@ -5,9 +5,8 @@
 // This file defines the type used to provide sources for NotificationService
 // notifications.
 
-#ifndef CONTENT_COMMON_NOTIFICATION_SOURCE_H_
-#define CONTENT_COMMON_NOTIFICATION_SOURCE_H_
-#pragma once
+#ifndef SRC_BASE_NOTIFICATION_SOURCE_H_
+#define SRC_BASE_NOTIFICATION_SOURCE_H_
 
 #include <stdint.h>
 
@@ -52,4 +51,4 @@ class Source : public NotificationSource {
   T* ptr() const { return static_cast<T*>(const_cast<void*>(ptr_)); }
 };
 
-#endif  // CONTENT_COMMON_NOTIFICATION_SOURCE_H_
+#endif  // SRC_BASE_NOTIFICATION_SOURCE_H_

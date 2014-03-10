@@ -64,8 +64,7 @@ class gameexe_token_extractor {
   bool operator()(InputIterator& next, InputIterator end, Token& tok) {
     tok = Token();
     // Advance to the next data character
-    for (; next != end && (!is_data(*next)); ++next)
-      ;
+    for (; next != end && (!is_data(*next)); ++next) {}
 
     if (next == end)
       return false;

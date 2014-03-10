@@ -26,8 +26,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef LIBREALLIVE_H
-#define LIBREALLIVE_H
+#ifndef SRC_LIBREALLIVE_REALLIVE_H_
+#define SRC_LIBREALLIVE_REALLIVE_H_
 
 /**
  * @namespace libreallive
@@ -80,9 +80,9 @@
  * - A list of pointers (for goto, et cetera)
  */
 
-#include "defs.h"
-#include "bytecode.h"
-#include "scenario.h"
-#include "archive.h"
+#include "libreallive/archive.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/defs.h"
+#include "libreallive/scenario.h"
 
-#endif
+#endif  // SRC_LIBREALLIVE_REALLIVE_H_

@@ -27,6 +27,8 @@
 #ifndef SRC_PLATFORMS_GTK_GTK_RLVM_INSTANCE_H_
 #define SRC_PLATFORMS_GTK_GTK_RLVM_INSTANCE_H_
 
+#include <string>
+
 #include "machine/rlvm_instance.h"
 
 // A GTK subclass of RLVMInstance that displays GTK dialogs.

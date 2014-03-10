@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef INTMEMREF_H
-#define INTMEMREF_H
+#ifndef SRC_LIBREALLIVE_INTMEMREF_H_
+#define SRC_LIBREALLIVE_INTMEMREF_H_
 
 #include <iosfwd>
 
@@ -56,10 +56,9 @@ const int STRS_LOCATION = 0x12;
 
 // -----------------------------------------------------------------------
 
-inline bool isStringLocation(const int type)
-{
+inline bool isStringLocation(const int type) {
   return type == STRS_LOCATION || type == STRK_LOCATION ||
-	type == STRM_LOCATION;
+      type == STRM_LOCATION;
 }
 
 // -----------------------------------------------------------------------
@@ -91,8 +90,9 @@ class IntMemRef {
   int loc;
 };
 
-}
+}  // namespace libreallive
 
-std::ostream& operator<<(std::ostream& oss, const libreallive::IntMemRef& memref);
+std::ostream& operator<<(std::ostream& oss,
+                         const libreallive::IntMemRef& memref);
 
-#endif
+#endif  // SRC_LIBREALLIVE_INTMEMREF_H_

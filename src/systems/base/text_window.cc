@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "libreallive/defs.h"
@@ -287,7 +288,7 @@ Rect TextWindow::windowRect() const {
       break;
     default:
       throw SystemError("Invalid origin");
-  };
+  }
 
   switch (origin_) {
     case 0:  // Top and left

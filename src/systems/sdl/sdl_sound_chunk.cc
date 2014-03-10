@@ -29,6 +29,7 @@
 
 #include <SDL/SDL_mixer.h>
 #include <boost/algorithm/string.hpp>
+#include <string>
 
 #include "systems/base/sound_system.h"
 #include "systems/sdl/sdl_audio_locker.h"

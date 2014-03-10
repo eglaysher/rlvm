@@ -84,7 +84,7 @@ struct Sel_select_s : public RLOp_SpecialCase {
 
 struct ClearAndRestoreWindow : public LongOperation {
   int to_restore_;
-  ClearAndRestoreWindow(int in) : to_restore_(in) {}
+  explicit ClearAndRestoreWindow(int in) : to_restore_(in) {}
 
   bool operator()(RLMachine& machine) {
     machine.system().text().hideAllTextWindows();

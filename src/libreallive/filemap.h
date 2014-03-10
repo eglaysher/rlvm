@@ -31,11 +31,13 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef MMAP_H
-#define MMAP_H
+#ifndef SRC_LIBREALLIVE_FILEMAP_H_
+#define SRC_LIBREALLIVE_FILEMAP_H_
 
-#include "defs.h"
+#include "libreallive/defs.h"
+
 #include <stdio.h>
+#include <string>
 
 #ifdef WIN32
 #include <windows.h>
@@ -48,31 +50,31 @@ namespace libreallive {
 enum Mode { Read, Write };
 
 class Mapping {
-	HANDLE fp;
-	void* mem;
-	bool mapped;
-	size_t len;
+  HANDLE fp;
+  void* mem;
+  bool mapped;
+  size_t len;
 
-	string fn_;
-	Mode mode_;
-	off_t msz_;
+  string fn_;
+  Mode mode_;
+  off_t msz_;
 
-	void mopen();
-	void mclose();
-public:
-	// Return a pointer to the internal memory.
-	char* get() { return (char*)mem; }
+  void mopen();
+  void mclose();
+ public:
+  // Return a pointer to the internal memory.
+  char* get() { return (char*)mem; }
 
   size_t size() const { return len; }
 
-	// Close the file, delete it, rename a new file to the old
-	// file's name, and reopen it.
-	void replace(string newfilename);
+  // Close the file, delete it, rename a new file to the old
+  // file's name, and reopen it.
+  void replace(string newfilename);
 
-	Mapping(string filename, Mode mode, off_t min_size = 0);
-	~Mapping();
+  Mapping(string filename, Mode mode, off_t min_size = 0);
+  ~Mapping();
 };
 
-}
+}  // namespace libreallive
 
-#endif
+#endif  // SRC_LIBREALLIVE_FILEMAP_H_

@@ -240,8 +240,7 @@ void GCNPlatform::render() {
   // drivers in Intrepid Ibex. Probably both. Something guichan is
   // doing/drivers haven't implemented is causing a whole bunch of invalid
   // enumerant errors.
-  while (glGetError() != GL_NO_ERROR)
-    ;
+  while (glGetError() != GL_NO_ERROR) {}
 }
 
 // -----------------------------------------------------------------------

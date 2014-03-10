@@ -32,8 +32,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef GAMEEXE_H
-#define GAMEEXE_H
+#ifndef SRC_LIBREALLIVE_GAMEEXE_H_
+#define SRC_LIBREALLIVE_GAMEEXE_H_
 
 #include <vector>
 #include <string>
@@ -85,8 +85,7 @@ class GameexeInterpretObject {
    * Extend a key by one key piece
    */
   template<typename A>
-  GameexeInterpretObject operator()(const A& nextKey)
-  {
+  GameexeInterpretObject operator()(const A& nextKey) {
     return object_to_lookup_on_(key_, nextKey);
   }
 
@@ -212,7 +211,7 @@ class Gameexe {
    * Create a Gameexe based off the configuration data in the incoming
    * file.
    */
-  Gameexe(const boost::filesystem::path& filename);
+  explicit Gameexe(const boost::filesystem::path& filename);
 
   /**
    * Destructor
@@ -335,8 +334,7 @@ class Gameexe {
 // -----------------------------------------------------------------------
 
 template<typename A>
-GameexeInterpretObject Gameexe::operator()(const A& firstKey)
-{
+GameexeInterpretObject Gameexe::operator()(const A& firstKey) {
   std::ostringstream ss;
   addToStream(firstKey, ss);
   return GameexeInterpretObject(ss.str(), *this);
@@ -345,16 +343,15 @@ GameexeInterpretObject Gameexe::operator()(const A& firstKey)
 // -----------------------------------------------------------------------
 
 template<>
-inline GameexeInterpretObject Gameexe::operator()(const std::string& firstKey)
-{
+inline GameexeInterpretObject Gameexe::operator()(const std::string& firstKey) {
   return GameexeInterpretObject(firstKey, *this);
 }
 
 // -----------------------------------------------------------------------
 
 template<typename A, typename B>
-GameexeInterpretObject Gameexe::operator()(const A& firstKey, const B& secondKey)
-{
+GameexeInterpretObject Gameexe::operator()(const A& firstKey,
+                                           const B& secondKey) {
   std::ostringstream ss;
   addToStream(firstKey, ss);
   ss << ".";
@@ -365,10 +362,9 @@ GameexeInterpretObject Gameexe::operator()(const A& firstKey, const B& secondKey
 // -----------------------------------------------------------------------
 
 template<typename A, typename B, typename C>
-GameexeInterpretObject Gameexe::operator()(
-  const A& firstKey, const B& secondKey,
-  const C& thirdKey)
-{
+GameexeInterpretObject Gameexe::operator()(const A& firstKey,
+                                           const B& secondKey,
+                                           const C& thirdKey) {
   std::ostringstream ss;
   addToStream(firstKey, ss);
   ss << ".";
@@ -426,4 +422,4 @@ class GameexeFilteringIterator
 
 // -----------------------------------------------------------------------
 
-#endif
+#endif  // SRC_LIBREALLIVE_GAMEEXE_H_

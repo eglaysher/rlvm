@@ -43,7 +43,7 @@ class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
 
-  Obj_GetInt(Getter getter) : getter_(getter) {}
+  explicit Obj_GetInt(Getter getter) : getter_(getter) {}
   virtual ~Obj_GetInt() {}
 
   virtual int operator()(RLMachine& machine, int buf) {

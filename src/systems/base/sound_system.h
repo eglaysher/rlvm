@@ -35,6 +35,7 @@
 #include <boost/serialization/version.hpp>
 #include <map>
 #include <string>
+#include <utility>
 
 #include "systems/base/voice_cache.h"
 
@@ -60,14 +61,14 @@ struct SoundSystemGlobals {
   // sound system to do. Right now is fairly securely set to 5 since I
   // have no idea how to change this property at runtime.
   //
-  // 0 	          	11 k_hz 	          	8 bit
-  // 1 	          	11 k_hz 	          	16 bit
-  // 2 	          	22 k_hz 	          	8 bit
-  // 3 	          	22 k_hz 	          	16 bit
-  // 4 	          	44 k_hz 	          	8 bit
-  // 5 	          	44 k_hz 	          	16 bit
-  // 6 	          	48 k_hz 	          	8 bit
-  // 7 	          	48 h_kz 	          	16 bit
+  // 0              11 k_hz               8 bit
+  // 1              11 k_hz               16 bit
+  // 2              22 k_hz               8 bit
+  // 3              22 k_hz               16 bit
+  // 4              44 k_hz               8 bit
+  // 5              44 k_hz               16 bit
+  // 6              48 k_hz               8 bit
+  // 7              48 h_kz               16 bit
   int sound_quality;
 
   // Whether music playback is enabled
