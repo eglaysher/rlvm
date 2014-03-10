@@ -39,7 +39,7 @@
 #include "systems/base/voice_archive.h"
 #include "systems/sdl/sdl_music.h"
 #include "systems/sdl/sdl_sound_chunk.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 namespace fs = boost::filesystem;

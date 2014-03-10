@@ -41,7 +41,7 @@
 #include "platforms/gcn/gcn_button.h"
 #include "platforms/gcn/gcn_platform.h"
 #include "platforms/gcn/gcn_scroll_area.h"
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 namespace fs = boost::filesystem;
 

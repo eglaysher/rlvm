@@ -34,21 +34,21 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/defs.h"
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/selection_element.h"
-#include "systems/base/surface.h"
 #include "systems/base/sound_system.h"
+#include "systems/base/surface.h"
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_waku.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/Graphics.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/defs.h"
-#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
+#include "utilities/exception.h"
+#include "utilities/graphics.h"
+#include "utilities/string_utilities.h"
 
 using std::bind;
 using std::endl;

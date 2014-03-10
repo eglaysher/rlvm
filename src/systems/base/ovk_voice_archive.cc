@@ -66,7 +66,7 @@
 #include <boost/filesystem/fstream.hpp>
 
 #include "systems/base/ovk_voice_sample.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
 namespace fs = boost::filesystem;

@@ -26,10 +26,10 @@
 #include <string>
 #include <vector>
 
-#include "Utilities/Exception.hpp"
 #include "libreallive/bytecode_fwd.h"
 #include "libreallive/expression.h"
 #include "libreallive/expression_pieces.h"
+#include "utilities/exception.h"
 
 #include <sstream>
 

@@ -46,7 +46,7 @@
 #include "systems/base/rect.h"
 #include "systems/base/tone_curve.h"
 
-#include "Utilities/LazyArray.hpp"
+#include "utilities/lazy_array.h"
 #include "lru_cache.hpp"
 
 class ColourFilter;

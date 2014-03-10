@@ -28,7 +28,7 @@
 
 #include <cstdio>
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/wavfile.h"
 

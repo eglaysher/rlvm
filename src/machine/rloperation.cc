@@ -36,7 +36,7 @@
 #include "machine/rloperation/references.h"
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 using namespace libreallive;

@@ -49,8 +49,8 @@
 #include "systems/base/parent_graphics_object_data.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
-#include "Utilities/Graphics.hpp"
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/graphics.h"
+#include "utilities/string_utilities.h"
 
 using namespace boost;
 using namespace libreallive;

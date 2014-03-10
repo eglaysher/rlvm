@@ -35,14 +35,14 @@
 #include "effects/fade_effect.h"
 #include "effects/scroll_on_scroll_off.h"
 #include "effects/wipe_effect.h"
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/Graphics.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/exception.h"
+#include "utilities/graphics.h"
 
 using namespace std;
 using namespace libreallive;

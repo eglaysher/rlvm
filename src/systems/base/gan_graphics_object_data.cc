@@ -40,15 +40,15 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/defs.h"
 #include "machine/serialization.h"
 #include "systems/base/event_system.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
-#include "libreallive/defs.h"
+#include "utilities/exception.h"
+#include "utilities/file.h"
 
 using libreallive::read_i32;
 using boost::scoped_array;

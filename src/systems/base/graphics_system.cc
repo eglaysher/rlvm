@@ -44,9 +44,11 @@
 #include <utility>
 #include <vector>
 
+#include "base/notification_details.h"
 #include "base/notification_service.h"
 #include "base/notification_source.h"
-#include "base/notification_details.h"
+#include "libreallive/expression.h"
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
 #include "machine/stack_frame.h"
@@ -67,10 +69,9 @@
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/LazyArray.hpp"
-#include "libreallive/gameexe.h"
-#include "libreallive/expression.h"
+#include "utilities/exception.h"
+#include "utilities/lazy_array.h"
+
 
 using boost::iends_with;
 using boost::lexical_cast;

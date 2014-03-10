@@ -42,7 +42,7 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
-#include "Utilities/File.hpp"
+#include "utilities/file.h"
 
 using namespace std;
 namespace fs = boost::filesystem;

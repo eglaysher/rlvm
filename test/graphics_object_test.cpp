@@ -46,7 +46,7 @@
 #include "systems/base/colour_filter_object_data.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_of_file.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 

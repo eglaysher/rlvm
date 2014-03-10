@@ -33,6 +33,7 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
 
+#include "libreallive/gameexe.h"
 #include "systems/base/colour.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/selection_element.h"
@@ -42,10 +43,9 @@
 #include "systems/sdl/sdl_system.h"
 #include "systems/sdl/sdl_text_system.h"
 #include "systems/sdl/sdl_utils.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 using namespace boost;

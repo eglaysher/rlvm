@@ -28,26 +28,26 @@
 
 #include <iostream>
 
+#include "libreallive/gameexe.h"
+#include "libreallive/reallive.h"
 #include "machine/dump_scenario.h"
 #include "machine/game_hacks.h"
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "modules/modules.h"
 #include "modules/module_sys_save.h"
+#include "modules/modules.h"
 #include "platforms/gcn/gcn_platform.h"
 #include "systems/base/event_system.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/system_error.h"
 #include "systems/sdl/sdl_system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
-#include "Utilities/findFontFile.h"
-#include "Utilities/gettext.h"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
-#include "libreallive/reallive.h"
 #include "utf8cpp/utf8.h"
+#include "utilities/exception.h"
+#include "utilities/file.h"
+#include "utilities/find_font_file.h"
+#include "utilities/gettext.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 

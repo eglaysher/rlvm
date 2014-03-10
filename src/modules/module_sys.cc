@@ -40,18 +40,19 @@
 #include <vector>
 
 #include "effects/fade_effect.h"
+#include "libreallive/gameexe.h"
 #include "machine/general_operations.h"
 #include "machine/rloperation.h"
 #include "machine/rloperation/default_value.h"
 #include "modules/module_sys_date.h"
 #include "modules/module_sys_frame.h"
+#include "modules/module_sys_index_series.h"
 #include "modules/module_sys_name.h"
 #include "modules/module_sys_save.h"
 #include "modules/module_sys_syscom.h"
 #include "modules/module_sys_timer.h"
-#include "modules/module_sys_wait.h"
-#include "modules/module_sys_index_series.h"
 #include "modules/module_sys_timetable2.h"
+#include "modules/module_sys_wait.h"
 #include "systems/base/cgm_table.h"
 #include "systems/base/event_system.h"
 #include "systems/base/graphics_system.h"
@@ -60,8 +61,7 @@
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_window.h"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/string_utilities.h"
 
 const float PI = 3.14159265;
 

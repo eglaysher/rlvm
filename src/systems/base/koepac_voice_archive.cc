@@ -66,7 +66,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/scoped_array.hpp>
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
 using namespace std;

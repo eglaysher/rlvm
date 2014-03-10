@@ -30,7 +30,7 @@
 #include <string>
 
 #include "libreallive/gameexe.h"
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 using std::string;
 

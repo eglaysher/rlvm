@@ -26,7 +26,7 @@
 
 #include "gtest/gtest.h"
 
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 // Regression that came up when I switched my tables onto Haeleth's rlBabel
 // interface.

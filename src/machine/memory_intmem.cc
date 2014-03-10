@@ -46,7 +46,7 @@
 
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "libreallive/intmemref.h"
 
 using namespace std;

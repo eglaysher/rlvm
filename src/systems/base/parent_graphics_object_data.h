@@ -30,7 +30,7 @@
 #include <boost/serialization/access.hpp>
 
 #include "systems/base/graphics_object_data.h"
-#include "Utilities/LazyArray.hpp"
+#include "utilities/lazy_array.h"
 
 #include <iosfwd>
 

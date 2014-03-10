@@ -33,6 +33,7 @@
 #include <vector>
 
 #include "base/notification_source.h"
+#include "pygame/alphablit.h"
 #include "systems/base/colour.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_data.h"
@@ -40,8 +41,7 @@
 #include "systems/sdl/sdl_graphics_system.h"
 #include "systems/sdl/sdl_utils.h"
 #include "systems/sdl/texture.h"
-#include "Utilities/Graphics.hpp"
-#include "pygame/alphablit.h"
+#include "utilities/graphics.h"
 
 using namespace std;
 using boost::ptr_vector;

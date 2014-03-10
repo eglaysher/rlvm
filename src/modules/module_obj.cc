@@ -33,7 +33,7 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/parent_graphics_object_data.h"
 #include "systems/base/system.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "libreallive/bytecode.h"
 #include "libreallive/expression_pieces.h"
 

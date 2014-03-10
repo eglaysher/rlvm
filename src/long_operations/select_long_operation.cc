@@ -41,7 +41,7 @@
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_window.h"
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 #include "libreallive/bytecode.h"
 #include "libreallive/expression.h"
 #include "libreallive/gameexe.h"

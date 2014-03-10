@@ -47,15 +47,15 @@
 #include <sstream>
 #include <vector>
 
+#include "libreallive/defs.h"
 #include "systems/base/event_system.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
-#include "Utilities/Graphics.hpp"
-#include "libreallive/defs.h"
+#include "utilities/exception.h"
+#include "utilities/file.h"
+#include "utilities/graphics.h"
 
 using boost::scoped_array;
 

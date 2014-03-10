@@ -32,7 +32,7 @@
 
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
-#include "Utilities/math_util.hpp"
+#include "utilities/math_util.h"
 
 using std::get;
 

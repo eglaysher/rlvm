@@ -34,12 +34,12 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-#include "machine/memory.h"
-#include "machine/rlmachine.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/File.hpp"
 #include "libreallive/gameexe.h"
 #include "libreallive/intmemref.h"
+#include "machine/memory.h"
+#include "machine/rlmachine.h"
+#include "utilities/exception.h"
+#include "utilities/file.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
 

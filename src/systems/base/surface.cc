@@ -27,7 +27,7 @@
 
 #include "systems/base/surface.h"
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 // -----------------------------------------------------------------------
 

@@ -35,8 +35,8 @@
 #include "systems/sdl/sdl_system.h"
 #include "systems/sdl/sdl_text_window.h"
 #include "systems/sdl/sdl_utils.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/findFontFile.h"
+#include "utilities/exception.h"
+#include "utilities/find_font_file.h"
 #include "libreallive/gameexe.h"
 
 #include <SDL/SDL_ttf.h>

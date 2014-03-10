@@ -27,16 +27,16 @@
 
 #include "TestSystem/TestGraphicsSystem.hpp"
 
+#include <map>
+#include <string>
+#include <sstream>
+
 #include "systems/base/colour.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_system.h"
 #include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/MockSurface.hpp"
-#include "Utilities/Exception.hpp"
-
-#include <map>
-#include <string>
-#include <sstream>
+#include "utilities/exception.h"
 
 using namespace std;
 

@@ -32,11 +32,11 @@
 
 #include <typeinfo>
 
+#include "libreallive/archive.h"
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "Utilities/Exception.hpp"
-#include "libreallive/archive.h"
+#include "utilities/exception.h"
 
 using namespace std;
 

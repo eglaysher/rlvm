@@ -39,7 +39,7 @@
 #include "systems/base/sound_system.h"
 #include "systems/base/system.h"
 #include "systems/base/voice_archive.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 const int ID_RADIX = 100000;
 

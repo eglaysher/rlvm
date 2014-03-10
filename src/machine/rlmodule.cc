@@ -32,10 +32,10 @@
 #include <string>
 #include <vector>
 
-#include "machine/rloperation.h"
-#include "machine/general_operations.h"
-#include "Utilities/Exception.hpp"
 #include "libreallive/bytecode.h"
+#include "machine/general_operations.h"
+#include "machine/rloperation.h"
+#include "utilities/exception.h"
 
 using namespace std;
 using namespace libreallive;

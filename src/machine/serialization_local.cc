@@ -44,6 +44,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/save_game_header.h"
@@ -59,10 +61,8 @@
 #include "systems/base/sound_system.h"
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/gettext.h"
-#include "libreallive/archive.h"
-#include "libreallive/intmemref.h"
+#include "utilities/exception.h"
+#include "utilities/gettext.h"
 
 using namespace std;
 using namespace libreallive;

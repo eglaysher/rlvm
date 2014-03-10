@@ -43,14 +43,20 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "libreallive/archive.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression.h"
+#include "libreallive/gameexe.h"
+#include "libreallive/intmemref.h"
+#include "libreallive/scenario.h"
 #include "long_operations/pause_long_operation.h"
 #include "long_operations/textout_long_operation.h"
 #include "machine/long_operation.h"
 #include "machine/memory.h"
 #include "machine/opcode_log.h"
+#include "machine/reallive_dll.h"
 #include "machine/rlmodule.h"
 #include "machine/rloperation.h"
-#include "machine/reallive_dll.h"
 #include "machine/serialization.h"
 #include "machine/stack_frame.h"
 #include "systems/base/graphics_system.h"
@@ -58,15 +64,9 @@
 #include "systems/base/system_error.h"
 #include "systems/base/text_page.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "Utilities/dateUtil.hpp"
-#include "libreallive/archive.h"
-#include "libreallive/bytecode.h"
-#include "libreallive/expression.h"
-#include "libreallive/gameexe.h"
-#include "libreallive/intmemref.h"
-#include "libreallive/scenario.h"
+#include "utilities/date_util.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 namespace fs = boost::filesystem;
 

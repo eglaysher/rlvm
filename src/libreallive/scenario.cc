@@ -38,9 +38,9 @@
 #include <sstream>
 
 #include "libreallive/compression.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "Utilities/gettext.h"
+#include "utilities/exception.h"
+#include "utilities/gettext.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 

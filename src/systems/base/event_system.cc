@@ -27,12 +27,12 @@
 
 #include "systems/base/event_system.h"
 
+#include "libreallive/gameexe.h"
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
 #include "systems/base/event_listener.h"
 #include "systems/base/frame_counter.h"
-#include "Utilities/Exception.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/exception.h"
 
 using namespace boost;
 

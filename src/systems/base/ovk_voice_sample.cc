@@ -63,7 +63,7 @@
 #include <sstream>
 #include <vorbis/vorbisfile.h>
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
 using std::ifstream;

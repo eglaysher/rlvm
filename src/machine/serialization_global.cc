@@ -43,17 +43,17 @@
 #include <sstream>
 #include <iostream>
 
-#include "Utilities/Exception.hpp"
-#include "Utilities/dynamic_bitset_serialize.hpp"
-#include "machine/rlmachine.h"
-#include "machine/memory.h"
-#include "systems/base/system.h"
-#include "systems/base/graphics_system.h"
-#include "systems/base/event_system.h"
-#include "systems/base/text_system.h"
-#include "systems/base/sound_system.h"
-#include "Utilities/gettext.h"
 #include "libreallive/intmemref.h"
+#include "machine/memory.h"
+#include "machine/rlmachine.h"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/sound_system.h"
+#include "systems/base/system.h"
+#include "systems/base/text_system.h"
+#include "utilities/dynamic_bitset_serialize.h"
+#include "utilities/exception.h"
+#include "utilities/gettext.h"
 
 using namespace std;
 using namespace libreallive;

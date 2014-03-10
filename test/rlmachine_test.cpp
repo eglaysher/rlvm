@@ -37,7 +37,7 @@
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
 #include "modules/module_str.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "libreallive/intmemref.h"
 #include "testUtils.hpp"
 

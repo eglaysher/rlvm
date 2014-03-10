@@ -36,7 +36,7 @@
 #include "machine/rlmachine.h"
 #include "libreallive/gameexe.h"
 #include "libreallive/bytecode.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 using namespace boost;

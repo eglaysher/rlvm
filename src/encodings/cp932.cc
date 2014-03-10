@@ -73,7 +73,7 @@
 #include <stdint.h>
 #include <string>
 
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 Cp932::Cp932() { NoTransforms = true; }
 

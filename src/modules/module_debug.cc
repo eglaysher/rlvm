@@ -30,11 +30,11 @@
 #include <string>
 #include <iostream>
 
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
 #include "systems/base/system.h"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 

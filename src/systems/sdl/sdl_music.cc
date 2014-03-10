@@ -39,7 +39,7 @@
 
 #include "systems/base/system.h"
 #include "systems/sdl/sdl_audio_locker.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 using namespace boost;

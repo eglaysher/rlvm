@@ -30,14 +30,14 @@
 #include <algorithm>
 #include <string>
 
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_window.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using std::bind;
 using std::ref;

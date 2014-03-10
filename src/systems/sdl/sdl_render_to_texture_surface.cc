@@ -37,7 +37,7 @@
 #include "systems/sdl/sdl_graphics_system.h"
 #include "systems/sdl/sdl_utils.h"
 #include "systems/sdl/texture.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 

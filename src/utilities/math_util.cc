@@ -24,11 +24,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Utilities/math_util.hpp"
+#include "utilities/math_util.h"
 
 #include <cmath>
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 int Interpolate(int start, int current, int end, int amount, int mod) {
   double percentage = double(current - start) / double(end - start);

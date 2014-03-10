@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/gameexe.h"
 #include "long_operations/pause_long_operation.h"
 #include "machine/general_operations.h"
 #include "machine/rlmachine.h"
@@ -41,8 +42,7 @@
 #include "systems/base/text_page.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_window.h"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 

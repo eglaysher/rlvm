@@ -31,10 +31,10 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/defs.h"
 #include "machine/rlmodule.h"
 #include "machine/rloperation.h"
-#include "Utilities/Exception.hpp"
-#include "libreallive/defs.h"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
 using libreallive::insert_i16;

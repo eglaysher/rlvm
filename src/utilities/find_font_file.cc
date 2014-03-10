@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Utilities/findFontFile.h"
+#include "utilities/find_font_file.h"
 
 #include <string>
 

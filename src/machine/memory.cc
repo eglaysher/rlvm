@@ -31,11 +31,11 @@
 #include <map>
 #include <string>
 
-#include "machine/rlmachine.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
 #include "libreallive/gameexe.h"
 #include "libreallive/intmemref.h"
+#include "machine/rlmachine.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 using namespace libreallive;

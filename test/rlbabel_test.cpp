@@ -29,7 +29,7 @@
 #include "machine/rlmachine.h"
 #include "TestSystem/TestSystem.hpp"
 #include "systems/base/rlbabel_dll.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
 #include "testUtils.hpp"

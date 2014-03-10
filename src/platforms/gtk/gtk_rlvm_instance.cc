@@ -29,8 +29,8 @@
 #include <gtk/gtk.h>
 #include <libintl.h>
 
-#include "Utilities/File.hpp"
-#include "Utilities/gettext.h"
+#include "utilities/file.h"
+#include "utilities/gettext.h"
 
 #include <iostream>
 using namespace std;

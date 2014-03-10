@@ -40,7 +40,7 @@
 
 #include "systems/base/graphics_object_data.h"
 #include "systems/base/object_mutator.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using namespace std;
 

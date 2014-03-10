@@ -32,13 +32,13 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/bytecode.h"
+#include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
 #include "machine/rloperation/argc_t.h"
 #include "machine/rloperation/special_t.h"
-#include "Utilities/Exception.hpp"
-#include "libreallive/bytecode.h"
-#include "libreallive/intmemref.h"
+#include "utilities/exception.h"
 
 using namespace std;
 using namespace boost;

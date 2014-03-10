@@ -31,15 +31,24 @@
 #include "modules/module_obj_fg_bg.h"
 
 #include <string>
+#include <cmath>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include "libreallive/bytecode.h"
+#include "libreallive/gameexe.h"
 #include "long_operations/wait_long_operation.h"
 #include "machine/long_operation.h"
-#include "machine/rloperation.h"
-#include "machine/rloperation/default_value.h"
-#include "machine/rloperation/rect_t.h"
 #include "machine/properties.h"
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/default_value.h"
+#include "machine/rloperation/rect_t.h"
 #include "modules/module_obj.h"
 #include "modules/object_mutator_operations.h"
 #include "systems/base/colour_filter_object_data.h"
@@ -50,21 +59,9 @@
 #include "systems/base/graphics_text_object.h"
 #include "systems/base/object_mutator.h"
 #include "systems/base/system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/Graphics.hpp"
-#include "Utilities/StringUtilities.hpp"
-
-#include <cmath>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-
-#include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
-
-#include "libreallive/bytecode.h"
-#include "libreallive/gameexe.h"
+#include "utilities/exception.h"
+#include "utilities/graphics.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 using namespace boost;

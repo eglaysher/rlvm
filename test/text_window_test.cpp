@@ -34,7 +34,7 @@
 #include "libreallive/archive.h"
 #include "libreallive/expression.h"
 #include "libreallive/intmemref.h"
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 #include "testUtils.hpp"
 

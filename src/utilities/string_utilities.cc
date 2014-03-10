@@ -25,12 +25,12 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Utilities/StringUtilities.hpp"
+#include "utilities/string_utilities.h"
 
 #include <string>
 
 #include "encodings/codepage.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "utf8cpp/utf8.h"
 
 using std::string;

@@ -30,7 +30,7 @@
 #include "systems/base/little_busters_pt00dll.h"
 #include "systems/base/tomoyo_after_dt00dll.h"
 #include "systems/base/rlbabel_dll.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 #include <string>
 #include <sstream>

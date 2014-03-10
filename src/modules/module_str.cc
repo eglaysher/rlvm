@@ -38,13 +38,13 @@
 #include "encodings/han2zen.h"
 #include "encodings/western.h"
 #include "machine/rloperation.h"
-#include "machine/rloperation/rlop_store.h"
 #include "machine/rloperation/references.h"
+#include "machine/rloperation/rlop_store.h"
 #include "systems/base/system.h"
-#include "systems/base/text_system.h"
 #include "systems/base/text_page.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
+#include "systems/base/text_system.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 using namespace boost;

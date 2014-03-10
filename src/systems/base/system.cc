@@ -38,6 +38,7 @@
 #include <string>
 #include <vector>
 
+#include "libreallive/gameexe.h"
 #include "long_operations/load_game_long_operation.h"
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
@@ -50,9 +51,8 @@
 #include "systems/base/sound_system.h"
 #include "systems/base/system_error.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using namespace std;
 using boost::replace_all;

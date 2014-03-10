@@ -31,7 +31,7 @@
 #include <sstream>
 #include <boost/filesystem/fstream.hpp>
 
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
 namespace fs = boost::filesystem;

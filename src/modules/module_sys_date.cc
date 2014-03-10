@@ -32,7 +32,7 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/rlop_store.h"
 #include "machine/rloperation/references.h"
-#include "Utilities/dateUtil.hpp"
+#include "utilities/date_util.h"
 
 namespace {
 

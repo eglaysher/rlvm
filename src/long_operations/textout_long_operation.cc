@@ -38,7 +38,7 @@
 #include "systems/base/system_error.h"
 #include "systems/base/text_page.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 #include "utf8cpp/utf8.h"
 
 // Timing information must stay the same between individual

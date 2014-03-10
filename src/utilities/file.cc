@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "Utilities/File.hpp"
+#include "utilities/file.h"
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -41,7 +41,7 @@
 
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 using boost::to_upper;
 using boost::scoped_array;

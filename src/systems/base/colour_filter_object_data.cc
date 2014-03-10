@@ -39,7 +39,7 @@ using namespace std;
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/system.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 ColourFilterObjectData::ColourFilterObjectData(GraphicsSystem& system,
                                                const Rect& screen_rect)

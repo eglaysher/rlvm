@@ -37,9 +37,10 @@
 #include <string>
 #include <vector>
 
+#include "base/notification_details.h"
 #include "base/notification_service.h"
 #include "base/notification_source.h"
-#include "base/notification_details.h"
+#include "libreallive/gameexe.h"
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
@@ -49,10 +50,9 @@
 #include "systems/base/text_key_cursor.h"
 #include "systems/base/text_page.h"
 #include "systems/base/text_window.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
 #include "utf8cpp/utf8.h"
+#include "utilities/exception.h"
+#include "utilities/string_utilities.h"
 
 using std::back_inserter;
 using std::endl;

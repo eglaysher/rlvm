@@ -36,6 +36,9 @@
 
 #include "effects/effect.h"
 #include "effects/effect_factory.h"
+#include "libreallive/bytecode.h"
+#include "libreallive/expression.h"
+#include "libreallive/gameexe.h"
 #include "long_operations/wait_long_operation.h"
 #include "long_operations/zoom_long_operation.h"
 #include "machine/general_operations.h"
@@ -44,8 +47,8 @@
 #include "machine/rloperation/argc_t.h"
 #include "machine/rloperation/complex_t.h"
 #include "machine/rloperation/default_value.h"
-#include "machine/rloperation/rgb_colour_t.h"
 #include "machine/rloperation/rect_t.h"
+#include "machine/rloperation/rgb_colour_t.h"
 #include "machine/rloperation/special_t.h"
 #include "systems/base/colour.h"
 #include "systems/base/graphics_stack_frame.h"
@@ -53,10 +56,7 @@
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
-#include "Utilities/Graphics.hpp"
-#include "libreallive/bytecode.h"
-#include "libreallive/gameexe.h"
-#include "libreallive/expression.h"
+#include "utilities/graphics.h"
 
 using namespace std;
 using namespace boost;

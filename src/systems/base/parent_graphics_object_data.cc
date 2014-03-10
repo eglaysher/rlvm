@@ -31,7 +31,7 @@
 #include "systems/base/parent_graphics_object_data.h"
 
 #include "systems/base/graphics_object.h"
-#include "Utilities/Exception.hpp"
+#include "utilities/exception.h"
 
 // -----------------------------------------------------------------------
 // ParentGraphicsObjectData

@@ -47,6 +47,7 @@
 #endif
 
 #include "base/notification_source.h"
+#include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
 #include "systems/base/cgm_table.h"
 #include "systems/base/colour.h"
@@ -65,12 +66,12 @@
 #include "systems/sdl/sdl_utils.h"
 #include "systems/sdl/shaders.h"
 #include "systems/sdl/texture.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/Graphics.hpp"
-#include "Utilities/LazyArray.hpp"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/gameexe.h"
+#include "utilities/exception.h"
+#include "utilities/graphics.h"
+#include "utilities/lazy_array.h"
+#include "utilities/string_utilities.h"
 #include "xclannad/file.h"
+
 
 using namespace boost;
 using namespace std;

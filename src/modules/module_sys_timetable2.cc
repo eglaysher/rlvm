@@ -30,8 +30,8 @@
 
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
-#include "Utilities/Exception.hpp"
-#include "Utilities/math_util.hpp"
+#include "utilities/exception.h"
+#include "utilities/math_util.h"
 
 using namespace std;
 

@@ -31,6 +31,8 @@
 #include <iterator>
 #include <string>
 
+#include "libreallive/bytecode.h"
+#include "libreallive/gameexe.h"
 #include "long_operations/button_object_select_long_operation.h"
 #include "long_operations/select_long_operation.h"
 #include "machine/rlmachine.h"
@@ -40,9 +42,7 @@
 #include "systems/base/system.h"
 #include "systems/base/text_system.h"
 #include "systems/base/text_window.h"
-#include "Utilities/StringUtilities.hpp"
-#include "libreallive/bytecode.h"
-#include "libreallive/gameexe.h"
+#include "utilities/string_utilities.h"
 
 using libreallive::SelectElement;
 using libreallive::CommandElement;

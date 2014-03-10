@@ -46,7 +46,7 @@
 #include "systems/base/hik_script.h"
 #include "systems/base/surface.h"
 #include "systems/base/system.h"
-#include "Utilities/Graphics.hpp"
+#include "utilities/graphics.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
