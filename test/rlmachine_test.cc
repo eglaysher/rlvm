@@ -27,7 +27,6 @@
 
 #include "gtest/gtest.h"
 
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <utility>
 #include <string>
@@ -43,7 +42,6 @@
 
 using namespace std;
 using namespace libreallive;
-using boost::lexical_cast;
 
 class RLMachineTest : public FullSystemTest {
  protected:
@@ -62,7 +60,7 @@ class RLMachineTest : public FullSystemTest {
 
   void setStrMemoryCountingFrom(RLMachine& saveMachine, int type, int count) {
     for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-      saveMachine.setStringValue(type, i, lexical_cast<string>(count));
+      saveMachine.setStringValue(type, i, std::to_string(count));
       count++;
     }
   }
@@ -84,8 +82,7 @@ class RLMachineTest : public FullSystemTest {
                                    int type,
                                    int count) {
     for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-      EXPECT_EQ(lexical_cast<string>(count),
-                loadMachine.getStringValue(type, i));
+      EXPECT_EQ(std::to_string(count), loadMachine.getStringValue(type, i));
       count++;
     }
   }
@@ -123,7 +120,7 @@ TEST_F(RLMachineTest, StringMemory) {
 
   for (vector<int>::const_iterator it = types.begin(); it != types.end();
        ++it) {
-    const string str = "Stored at " + lexical_cast<string>(*it);
+    const string str = "Stored at " + std::to_string(*it);
     rlmachine.setStringValue(*it, 0, str);
     EXPECT_EQ(str, rlmachine.getStringValue(*it, 0));
   }

@@ -32,7 +32,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <limits>
 #include <string>
@@ -62,7 +61,6 @@
 #include <boost/multi_array/algorithm.hpp>
 
 using namespace libreallive;
-using boost::lexical_cast;
 using boost::starts_with;
 using boost::ends_with;
 namespace fs = boost::filesystem;
@@ -289,7 +287,7 @@ struct LatestSave : public RLOp_Store_Void {
 
           if (mtime > latestTime) {
             latestTime = mtime;
-            latestSlot = lexical_cast<int>(filename.substr(4, 3));
+            latestSlot = std::stoi(filename.substr(4, 3));
           }
         }
       }

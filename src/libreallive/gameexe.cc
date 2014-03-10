@@ -35,7 +35,6 @@
 #include "libreallive/gameexe.h"
 
 #include <boost/tokenizer.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/fstream.hpp>
 
@@ -164,9 +163,9 @@ void Gameexe::parseLine(const std::string& line) {
         vec.push_back(cdata_.size() - 1);
       } else if (tok != "-") {
         try {
-          vec.push_back(lexical_cast<int>(tok));
+          vec.push_back(std::stoi(tok));
         }
-        catch (boost::bad_lexical_cast& e) {
+        catch (...) {
           cerr << "Couldn't int-ify '" << tok << "'" << endl;
           vec.push_back(0);
         }

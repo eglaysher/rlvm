@@ -35,15 +35,14 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 #include <cstring>
+#include <string>
 
 #include "libreallive/compression.h"
 
 using namespace std;
 using boost::istarts_with;
 using boost::iends_with;
-using boost::lexical_cast;
 namespace fs = boost::filesystem;
 
 namespace libreallive {
@@ -109,7 +108,7 @@ void Archive::readOverrides() {
       Mapping* mapping = new Mapping((seen_dir / filename).string(), Read);
       maps_to_delete_.push_back(mapping);
 
-      int index = lexical_cast<int>(filename.substr(4, 4));
+      int index = std::stoi(filename.substr(4, 4));
       scenarios[index] = FilePos(mapping->get(), mapping->size());
     }
   }

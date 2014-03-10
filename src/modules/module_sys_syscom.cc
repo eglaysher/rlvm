@@ -27,8 +27,6 @@
 
 #include "modules/module_sys_syscom.h"
 
-#include <boost/lexical_cast.hpp>
-
 #include "machine/general_operations.h"
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
@@ -39,7 +37,6 @@
 #include "systems/base/system.h"
 
 using namespace std;
-using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 

@@ -28,7 +28,6 @@
 #include "systems/base/text_window.h"
 
 #include <algorithm>
-#include <boost/lexical_cast.hpp>
 #include <iomanip>
 #include <ostream>
 #include <string>
@@ -167,7 +166,7 @@ TextWindow::TextWindow(System& system, int window_num)
     std::vector<std::string> key_parts = it->key_parts();
 
     try {
-      int slot = boost::lexical_cast<int>(key_parts.at(3));
+      int slot = std::stoi(key_parts.at(3));
       if (slot < kNumFaceSlots) {
         face_slot_[slot].reset(new FaceSlot(it->to_intVector()));
       }

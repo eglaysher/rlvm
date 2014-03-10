@@ -38,7 +38,6 @@
 #include <sstream>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 #include "libreallive/defs.h"
@@ -592,7 +591,7 @@ std::string StoreRegisterExpressionPiece::serializedValue(RLMachine& machine)
 
 std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine)
     const {
-  return boost::lexical_cast<std::string>(machine.getStoreRegisterValue());
+  return std::to_string(machine.getStoreRegisterValue());
 }
 
 std::string StoreRegisterExpressionPiece::getDebugString() const {
@@ -622,11 +621,11 @@ std::string IntegerConstant::serializedValue(RLMachine& machine) const {
 }
 
 std::string IntegerConstant::getDebugValue(RLMachine& machine) const {
-  return boost::lexical_cast<std::string>(constant);
+  return std::to_string(constant);
 }
 
 std::string IntegerConstant::getDebugString() const {
-  return boost::lexical_cast<std::string>(constant);
+  return std::to_string(constant);
 }
 
 std::unique_ptr<ExpressionPiece> IntegerConstant::clone() const {
@@ -711,7 +710,7 @@ std::string MemoryReference::getDebugValue(RLMachine& machine) const {
   if (isStringLocation(type)) {
     return string("\"") + getStringValue(machine) + string("\"");
   } else {
-    return boost::lexical_cast<std::string>(integerValue(machine));
+    return std::to_string(integerValue(machine));
   }
 }
 
@@ -800,7 +799,7 @@ std::string UniaryExpressionOperator::serializedValue(RLMachine& machine)
 }
 
 std::string UniaryExpressionOperator::getDebugValue(RLMachine& machine) const {
-  return boost::lexical_cast<std::string>(integerValue(machine));
+  return std::to_string(integerValue(machine));
 }
 
 std::string UniaryExpressionOperator::getDebugString() const {
@@ -898,7 +897,7 @@ std::string BinaryExpressionOperator::serializedValue(RLMachine& machine)
 }
 
 std::string BinaryExpressionOperator::getDebugValue(RLMachine& machine) const {
-  return boost::lexical_cast<std::string>(integerValue(machine));
+  return std::to_string(integerValue(machine));
 }
 
 std::string BinaryExpressionOperator::getDebugString() const {

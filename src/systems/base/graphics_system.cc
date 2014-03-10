@@ -32,7 +32,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
@@ -72,9 +71,7 @@
 #include "utilities/exception.h"
 #include "utilities/lazy_array.h"
 
-
 using boost::iends_with;
-using boost::lexical_cast;
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -130,13 +127,13 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     std::list<int> object_nums;
     string::size_type poscolon = s.find_first_of(":");
     if (poscolon != string::npos) {
-      int obj_num_first = lexical_cast<int>(s.substr(0, poscolon));
-      int obj_num_last = lexical_cast<int>(s.substr(poscolon + 1));
+      int obj_num_first = std::stoi(s.substr(0, poscolon));
+      int obj_num_last = std::stoi(s.substr(poscolon + 1));
       while (obj_num_first <= obj_num_last) {
         object_nums.push_back(obj_num_first++);
       }
     } else {
-      object_nums.push_back(lexical_cast<int>(s));
+      object_nums.push_back(std::stoi(s));
     }
 
     for (int obj_num : object_nums) {

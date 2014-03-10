@@ -41,7 +41,6 @@
 #include <boost/assign.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "libreallive/archive.h"
 #include "libreallive/bytecode.h"
@@ -72,8 +71,6 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 using namespace libreallive;
-
-using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 
@@ -141,10 +138,10 @@ RLMachine::RLMachine(System& in_system, Archive& in_archive)
   GameexeFilteringIterator it = gameexe.filtering_begin("DLL.");
   GameexeFilteringIterator end = gameexe.filtering_end();
   for (; it != end; ++it) {
-    string index_str = it->key().substr(it->key().find_first_of(".") + 1);
-    int index = lexical_cast<int>(index_str);
     const string& name = it->to_string("");
     try {
+      string index_str = it->key().substr(it->key().find_first_of(".") + 1);
+      int index = std::stoi(index_str);
       loadDLL(index, name);
     }
     catch (rlvm::Exception& e) {

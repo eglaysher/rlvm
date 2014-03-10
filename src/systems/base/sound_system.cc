@@ -31,7 +31,6 @@
 #include "systems/base/sound_system.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 #include <map>
 #include <sstream>
 #include <string>
@@ -44,7 +43,6 @@
 #include "libreallive/gameexe.h"
 
 using namespace std;
-using boost::lexical_cast;
 
 // -----------------------------------------------------------------------
 // SoundSystemGlobals
@@ -137,7 +135,7 @@ SoundSystem::SoundSystem(System& system)
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; se != end; ++se) {
     string raw_number = se->key_parts().at(1);
-    int entry_number = lexical_cast<int>(raw_number);
+    int entry_number = std::stoi(raw_number);
 
     string file_name = se->getStringAt(0);
     int target_channel = se->getIntAt(1);
@@ -174,7 +172,7 @@ SoundSystem::SoundSystem(System& system)
   GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
   for (; koeonoff != end; ++koeonoff) {
     std::vector<string> keyparts = koeonoff->key_parts();
-    int usekoe_id = lexical_cast<int>(keyparts.at(1));
+    int usekoe_id = std::stoi(keyparts.at(1));
 
     // Find the corresponding koeplay ids.
     vector<int> koeplay_ids;
@@ -188,10 +186,10 @@ SoundSystem::SoundSystem(System& system)
       boost::split(string_koeplay_ids, no_parens, boost::is_any_of(","));
 
       for (std::string const& string_id : string_koeplay_ids) {
-        koeplay_ids.push_back(lexical_cast<int>(string_id));
+        koeplay_ids.push_back(std::stoi(string_id));
       }
     } else {
-      koeplay_ids.push_back(lexical_cast<int>(unprocessed_koeids));
+      koeplay_ids.push_back(std::stoi(unprocessed_koeids));
     }
 
     int onoff = (keyparts.at(3) == "ON") ? 1 : 0;

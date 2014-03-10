@@ -31,7 +31,6 @@
 #include "systems/base/text_system.h"
 
 #include <algorithm>
-#include <boost/lexical_cast.hpp>
 #include <map>
 #include <sstream>
 #include <string>
@@ -495,7 +494,7 @@ bool parseInteger(std::string::const_iterator& begin,
   if (str_begin == begin)
     return false;
 
-  out_value = boost::lexical_cast<int>(std::string(str_begin, begin));
+  out_value = std::stoi(std::string(str_begin, begin));
   return true;
 }
 

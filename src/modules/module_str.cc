@@ -28,7 +28,6 @@
 #include "modules/module_str.h"
 
 #include <algorithm>
-#include <boost/lexical_cast.hpp>
 #include <cmath>
 #include <iomanip>
 #include <sstream>
@@ -483,10 +482,6 @@ struct itoa_1
 // Returns the value of the integer represented by string, or 0 if string does
 // not represent an integer. Leading whitespace is ignored, as is anything
 // following the last decimal digit.
-//
-// I used to implement this as a call to boost::lexical_cast, until I started
-// testing and I failed most of them because lexical_cast has different
-// semantics about consuming *all* of the input string.
 struct Str_atoi : public RLOp_Store_1<StrConstant_T> {
   int operator()(RLMachine& machine, string word) {
     stringstream ss(word);
@@ -606,8 +601,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
 struct Str_intout : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
     // Assumption: Text is in whatever native encoding for getTextEncoding().
-    string converted = lexical_cast<string>(value);
-    machine.performTextout(converted);
+    machine.performTextout(std::to_string(value));
   }
 };
 
