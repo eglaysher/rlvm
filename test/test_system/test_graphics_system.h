@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
-#define TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_GRAPHICS_SYSTEM_H_
+#define TEST_TEST_SYSTEM_TEST_GRAPHICS_SYSTEM_H_
 
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
@@ -104,4 +104,4 @@ class TestGraphicsSystem : public GraphicsSystem {
   std::map<std::string, boost::shared_ptr<const Surface>> named_surfaces_;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_GRAPHICS_SYSTEM_H_

@@ -33,8 +33,7 @@
 #include "modules/module_jmp.h"
 #include "modules/module_msg.h"
 #include "modules/module_str.h"
-
-#include "TestSystem/TestSystem.hpp"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

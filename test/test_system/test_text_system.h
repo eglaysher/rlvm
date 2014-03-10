@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
-#define TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_TEXT_SYSTEM_H_
+#define TEST_TEST_SYSTEM_TEST_TEXT_SYSTEM_H_
 
 #include "systems/base/rect.h"
 #include "systems/base/text_system.h"
@@ -74,4 +74,4 @@ class TestTextSystem : public TextSystem {
   std::vector<std::tuple<std::string, int, int>> rendered_glyps_;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTTEXTSYSTEM_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_TEXT_SYSTEM_H_

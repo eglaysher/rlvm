@@ -25,15 +25,14 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestTextWindow.hpp"
-
-#include "systems/base/rect.h"
-#include "TestSystem/MockSurface.hpp"
+#include "test_system/test_text_window.h"
 
 #include <boost/shared_ptr.hpp>
 #include <sstream>
-
 #include <string>
+
+#include "systems/base/rect.h"
+#include "test_system/mock_surface.h"
 
 using std::ostringstream;
 

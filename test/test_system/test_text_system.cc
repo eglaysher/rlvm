@@ -25,14 +25,15 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestTextSystem.hpp"
-#include "TestSystem/TestTextWindow.hpp"
-#include "TestSystem/MockTextWindow.hpp"
-#include "TestSystem/MockSurface.hpp"
-#include "utf8cpp/utf8.h"
+#include "test_system/test_text_system.h"
 
 #include <string>
 #include <boost/shared_ptr.hpp>
+
+#include "test_system/mock_surface.h"
+#include "test_system/mock_text_window.h"
+#include "test_system/test_text_window.h"
+#include "utf8cpp/utf8.h"
 
 TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
     : TextSystem(system, gexe) {}

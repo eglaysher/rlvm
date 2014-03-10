@@ -20,8 +20,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
-#define TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_
+#define TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_
 
 #include <stdint.h>
 #include <string>
@@ -67,4 +67,4 @@ class TestTextWindow : public TextWindow {
   boost::shared_ptr<Surface> name_surface_;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTTEXTWINDOW_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_

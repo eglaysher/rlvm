@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestSoundSystem.hpp"
+#include "test_system/test_sound_system.h"
 
 #include <string>
 

@@ -20,17 +20,17 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTSYSTEM_HPP_
-#define TEST_TESTSYSTEM_TESTSYSTEM_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_SYSTEM_H_
+#define TEST_TEST_SYSTEM_TEST_SYSTEM_H_
 
 #include <string>
 
-#include "systems/base/system.h"
-#include "TestSystem/TestGraphicsSystem.hpp"
-#include "TestSystem/TestEventSystem.hpp"
-#include "TestSystem/TestTextSystem.hpp"
-#include "TestSystem/TestSoundSystem.hpp"
 #include "libreallive/gameexe.h"
+#include "systems/base/system.h"
+#include "test_system/test_event_system.h"
+#include "test_system/test_graphics_system.h"
+#include "test_system/test_sound_system.h"
+#include "test_system/test_text_system.h"
 
 // System subclass used for testing.
 class TestSystem : public System {
@@ -55,4 +55,4 @@ class TestSystem : public System {
   TestSoundSystem null_sound_system;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTSYSTEM_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_SYSTEM_H_

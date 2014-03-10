@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestEventSystem.hpp"
+#include "test_system/test_event_system.h"
 
 // -----------------------------------------------------------------------
 // TestEventSystem

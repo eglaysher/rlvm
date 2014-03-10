@@ -27,13 +27,13 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "machine/rlmachine.h"
-#include "TestSystem/MockSurface.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "TestSystem/TestTextWindow.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/expression.h"
 #include "libreallive/intmemref.h"
+#include "machine/rlmachine.h"
+#include "test_system/mock_surface.h"
+#include "test_system/test_system.h"
+#include "test_system/test_text_window.h"
 #include "utilities/string_utilities.h"
 
 #include "testUtils.hpp"

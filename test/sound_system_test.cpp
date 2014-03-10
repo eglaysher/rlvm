@@ -31,8 +31,8 @@
 
 #include "testUtils.hpp"
 
-#include "TestSystem/TestSystem.hpp"
-#include "TestSystem/TestSoundSystem.hpp"
+#include "test_system/test_system.h"
+#include "test_system/test_sound_system.h"
 #include "libreallive/gameexe.h"
 
 #include <string>

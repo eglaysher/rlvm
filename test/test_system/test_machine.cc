@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestMachine.hpp"
+#include "test_system/test_machine.h"
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/variant/static_visitor.hpp>

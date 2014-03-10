@@ -29,7 +29,7 @@
 #include "machine/rlmachine.h"
 #include "modules/module_grp.h"
 #include "systems/base/colour.h"
-#include "TestSystem/MockSurface.hpp"
+#include "test_system/mock_surface.h"
 
 #include "testUtils.hpp"
 

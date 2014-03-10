@@ -28,13 +28,13 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "libreallive/archive.h"
 #include "long_operations/textout_long_operation.h"
 #include "machine/rlmachine.h"
 #include "systems/base/text_page.h"
-#include "TestSystem/MockSurface.hpp"
-#include "TestSystem/MockTextWindow.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "libreallive/archive.h"
+#include "test_system/mock_surface.h"
+#include "test_system/mock_text_window.h"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

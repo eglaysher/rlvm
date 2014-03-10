@@ -31,9 +31,9 @@
 #include <string>
 
 #include "gtest/gtest.h"
-#include "TestSystem/TestMachine.hpp"
-#include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"
+#include "test_system/test_machine.h"
+#include "test_system/test_system.h"
 
 /**
  * Locates a test file in the test/ directory.

@@ -26,11 +26,11 @@
 
 #include "gtest/gtest.h"
 
+#include "libreallive/archive.h"
 #include "machine/rlmachine.h"
 #include "modules/module_msg.h"
-#include "TestSystem/TestMachine.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "libreallive/archive.h"
+#include "test_system/test_machine.h"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

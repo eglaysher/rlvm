@@ -32,27 +32,28 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 
+#include <boost/scoped_ptr.hpp>
+#include <functional>
+#include <iostream>
 #include <string>
 #include <tuple>
 #include <vector>
 
+#include "libreallive/archive.h"
+#include "libreallive/intmemref.h"
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
 #include "modules/module_str.h"
-#include "TestSystem/MockColourFilter.hpp"
-#include "TestSystem/TestGraphicsSystem.hpp"
-#include "TestSystem/TestSystem.hpp"
 #include "systems/base/colour_filter_object_data.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_of_file.h"
+#include "test_system/mock_colour_filter.h"
+#include "test_system/test_graphics_system.h"
+#include "test_system/test_system.h"
 #include "utilities/exception.h"
-#include "libreallive/archive.h"
-#include "libreallive/intmemref.h"
 
 #include "testUtils.hpp"
-#include <boost/scoped_ptr.hpp>
-#include <functional>
 #include <iostream>
 
 using namespace boost;

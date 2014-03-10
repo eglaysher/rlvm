@@ -33,7 +33,7 @@
 
 #include "machine/rlmachine.h"
 
-#include "TestSystem/TestSystem.hpp"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

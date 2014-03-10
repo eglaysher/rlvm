@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
-#define TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_SOUND_SYSTEM_H_
+#define TEST_TEST_SYSTEM_TEST_SOUND_SYSTEM_H_
 
 #include "systems/base/sound_system.h"
 #include <string>
@@ -79,4 +79,4 @@ class TestSoundSystem : public SoundSystem {
   std::string bgm_name_;
 };  // end of class TestSoundSystem
 
-#endif  // TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_SOUND_SYSTEM_H_

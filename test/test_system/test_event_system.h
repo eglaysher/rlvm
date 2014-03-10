@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
-#define TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_EVENT_SYSTEM_H_
+#define TEST_TEST_SYSTEM_TEST_EVENT_SYSTEM_H_
 
 #include "systems/base/event_system.h"
 
@@ -72,4 +72,4 @@ class TestEventSystem : public EventSystem {
   boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_EVENT_SYSTEM_H_

@@ -32,8 +32,7 @@
 #include "machine/rlmachine.h"
 #include "modules/module_jmp.h"
 #include "modules/module_sys.h"
-
-#include "TestSystem/TestSystem.hpp"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

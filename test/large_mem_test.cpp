@@ -32,7 +32,7 @@
 #include "machine/rlmachine.h"
 #include "modules/module_mem.h"
 
-#include "TestSystem/TestSystem.hpp"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

@@ -27,16 +27,15 @@
 
 #include "gtest/gtest.h"
 
-#include "machine/rlmachine.h"
-#include "modules/module_jmp.h"
-#include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"
 #include "libreallive/expression.h"
 #include "libreallive/intmemref.h"
+#include "machine/rlmachine.h"
+#include "modules/module_jmp.h"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 
-#include <iostream>
 using namespace std;
 using namespace libreallive;
 

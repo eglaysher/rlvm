@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_
-#define TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_
+#ifndef TEST_TEST_SYSTEM_MOCK_COLOUR_FILTER_H_
+#define TEST_TEST_SYSTEM_MOCK_COLOUR_FILTER_H_
 
 #include "gmock/gmock.h"
 
@@ -37,4 +37,4 @@ class MockColourFilter : public ColourFilter {
                void(const GraphicsObject&, const Rect&, const RGBAColour&));
 };
 
-#endif  // TEST_TESTSYSTEM_MOCKCOLOURFILTER_HPP_
+#endif  // TEST_TEST_SYSTEM_MOCK_COLOUR_FILTER_H_

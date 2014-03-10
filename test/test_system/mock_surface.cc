@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/MockSurface.hpp"
+#include "test_system/mock_surface.h"
 
 #include <string>
 

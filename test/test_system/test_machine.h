@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_TESTMACHINE_HPP_
-#define TEST_TESTSYSTEM_TESTMACHINE_HPP_
+#ifndef TEST_TEST_SYSTEM_TEST_MACHINE_H_
+#define TEST_TEST_SYSTEM_TEST_MACHINE_H_
 
 #include "machine/rlmachine.h"
 
@@ -236,4 +236,4 @@ class TestMachine : public RLMachine {
   OpcodeRegistry registry_;
 };
 
-#endif  // TEST_TESTSYSTEM_TESTMACHINE_HPP_
+#endif  // TEST_TEST_SYSTEM_TEST_MACHINE_H_

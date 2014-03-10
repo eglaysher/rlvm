@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef TEST_TESTSYSTEM_MOCKSURFACE_HPP_
-#define TEST_TESTSYSTEM_MOCKSURFACE_HPP_
+#ifndef TEST_TEST_SYSTEM_MOCK_SURFACE_H_
+#define TEST_TEST_SYSTEM_MOCK_SURFACE_H_
 
 #include "gmock/gmock.h"
 
@@ -97,4 +97,4 @@ class MockSurface : public Surface {
   std::vector<GrpRect> region_table_;
 };
 
-#endif  // TEST_TESTSYSTEM_MOCKSURFACE_HPP_
+#endif  // TEST_TEST_SYSTEM_MOCK_SURFACE_H_

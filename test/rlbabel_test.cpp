@@ -26,15 +26,15 @@
 
 #include "gtest/gtest.h"
 
-#include "machine/rlmachine.h"
-#include "TestSystem/TestSystem.hpp"
-#include "systems/base/rlbabel_dll.h"
-#include "utilities/exception.h"
+#include <string>
+
 #include "libreallive/archive.h"
 #include "libreallive/intmemref.h"
+#include "machine/rlmachine.h"
+#include "systems/base/rlbabel_dll.h"
 #include "testUtils.hpp"
-
-#include <string>
+#include "test_system/test_system.h"
+#include "utilities/exception.h"
 
 class RLBabelTest : public FullSystemTest {};
 

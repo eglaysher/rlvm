@@ -26,22 +26,22 @@
 
 #include "gtest/gtest.h"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include "libreallive/archive.h"
+#include "libreallive/expression.h"
+#include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
 #include "machine/rloperation/argc_t.h"
 #include "machine/rloperation/complex_t.h"
 #include "machine/rloperation/default_value.h"
 #include "machine/rloperation/references.h"
-#include "TestSystem/TestSystem.hpp"
-#include "libreallive/archive.h"
-#include "libreallive/expression.h"
-#include "libreallive/intmemref.h"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
-
-#include <algorithm>
-#include <string>
-#include <vector>
 
 using namespace std;
 using namespace std::placeholders;

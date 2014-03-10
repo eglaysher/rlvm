@@ -27,7 +27,7 @@ test_env.BuildSubcomponent("gtest")
 test_env.BuildSubcomponent("gmock")
 
 test_case_files = [
-  "test/TestSystem/TestMachine.cpp",
+  "test/test_system/test_machine.cc",
 
   "test/notification_service_unittest.cc",
   "test/testUtils.cpp",
@@ -61,14 +61,14 @@ test_case_files = [
 ]
 
 null_system_files = [
-  "test/TestSystem/TestEventSystem.cpp",
-  "test/TestSystem/TestGraphicsSystem.cpp",
-  "test/TestSystem/TestSoundSystem.cpp",
-  "test/TestSystem/TestSystem.cpp",
-  "test/TestSystem/TestTextSystem.cpp",
-  "test/TestSystem/TestTextWindow.cpp",
-  "test/TestSystem/MockSurface.cpp",
-  "test/TestSystem/MockTextWindow.cpp"
+  "test/test_system/test_event_system.cc",
+  "test/test_system/test_graphics_system.cc",
+  "test/test_system/test_sound_system.cc",
+  "test/test_system/test_system.cc",
+  "test/test_system/test_text_system.cc",
+  "test/test_system/test_text_window.cc",
+  "test/test_system/mock_surface.cc",
+  "test/test_system/mock_text_window.cc"
 ]
 
 test_env.RlvmProgram('rlvmTests', ["test/rlvmTest.cpp", null_system_files,

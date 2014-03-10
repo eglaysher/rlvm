@@ -28,12 +28,12 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "machine/rlmachine.h"
-#include "effects/effect.h"
 #include "effects/blind_effect.h"
-#include "TestSystem/MockSurface.hpp"
-#include "TestSystem/TestSystem.hpp"
-#include "TestSystem/TestEventSystem.hpp"
+#include "effects/effect.h"
+#include "machine/rlmachine.h"
+#include "test_system/mock_surface.h"
+#include "test_system/test_event_system.h"
+#include "test_system/test_system.h"
 
 #include "testUtils.hpp"
 

@@ -25,7 +25,7 @@
 //
 // -----------------------------------------------------------------------
 
-#include "TestSystem/TestGraphicsSystem.hpp"
+#include "test_system/test_graphics_system.h"
 
 #include <map>
 #include <string>
@@ -34,8 +34,8 @@
 #include "systems/base/colour.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_system.h"
-#include "TestSystem/MockColourFilter.hpp"
-#include "TestSystem/MockSurface.hpp"
+#include "test_system/mock_colour_filter.h"
+#include "test_system/mock_surface.h"
 #include "utilities/exception.h"
 
 using namespace std;
