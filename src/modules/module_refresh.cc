@@ -31,7 +31,7 @@
 
 #include "machine/rlmachine.h"
 #include "machine/general_operations.h"
-#include "Systems/Base/GraphicsSystem.hpp"
+#include "systems/base/graphics_system.h"
 
 RefreshModule::RefreshModule() : RLModule("Refresh", 1, 31) {
   addOpcode(0, 0, "refresh", callFunction(&GraphicsSystem::forceRefresh));

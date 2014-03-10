@@ -34,7 +34,7 @@
 #include <string>
 
 #include "platforms/gtk/gtk_rlvm_instance.h"
-#include "Systems/Base/System.hpp"
+#include "systems/base/system.h"
 #include "Utilities/File.hpp"
 
 using namespace std;

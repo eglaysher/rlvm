@@ -30,8 +30,8 @@
 
 #include "libreallive/gameexe.h"
 #include "machine/rlmachine.h"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/system.h"
 
 using namespace std;
 

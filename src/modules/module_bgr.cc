@@ -40,12 +40,12 @@
 #include "machine/rloperation/complex_t.h"
 #include "machine/rloperation/special_t.h"
 #include "modules/module_grp.h"
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/HIKRenderer.hpp"
-#include "Systems/Base/HIKScript.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/colour.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/hik_renderer.h"
+#include "systems/base/hik_script.h"
+#include "systems/base/surface.h"
+#include "systems/base/system.h"
 #include "Utilities/Graphics.hpp"
 
 using namespace std;

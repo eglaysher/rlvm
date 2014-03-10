@@ -29,7 +29,7 @@
 #include "testUtils.hpp"
 #include <string>
 
-#include "Systems/Base/SystemError.hpp"
+#include "systems/base/system_error.h"
 
 // -----------------------------------------------------------------------
 // TestSystem

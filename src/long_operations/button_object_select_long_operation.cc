@@ -27,10 +27,10 @@
 #include "long_operations/button_object_select_long_operation.h"
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/ParentGraphicsObjectData.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/graphics_object.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/parent_graphics_object_data.h"
+#include "systems/base/system.h"
 
 ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
     RLMachine& machine,

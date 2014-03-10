@@ -35,8 +35,8 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/rlop_store.h"
 #include "machine/rloperation/references.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/system.h"
 
 using namespace std;
 using boost::lexical_cast;

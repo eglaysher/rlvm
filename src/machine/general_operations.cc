@@ -30,9 +30,9 @@
 #include <string>
 #include <vector>
 
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/TextSystem.hpp"
+#include "systems/base/system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/text_system.h"
 #include "machine/rlmachine.h"
 #include "libreallive/gameexe.h"
 #include "libreallive/bytecode.h"

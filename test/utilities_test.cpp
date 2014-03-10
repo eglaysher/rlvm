@@ -26,7 +26,7 @@
 
 #include "gtest/gtest.h"
 
-#include "Systems/Base/Rect.hpp"
+#include "systems/base/rect.h"
 #include "Utilities/Graphics.hpp"
 #include "libreallive/gameexe.h"
 

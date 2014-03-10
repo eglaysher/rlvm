@@ -54,8 +54,8 @@
 #include "modules/module_shl.h"
 #include "modules/module_str.h"
 #include "modules/module_sys.h"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/system.h"
 
 void addAllModules(RLMachine& rlmachine) {
   // Attatch the modules for some commands

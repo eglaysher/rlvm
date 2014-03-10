@@ -40,9 +40,9 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/rlop_store.h"
 #include "machine/rloperation/references.h"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextPage.hpp"
+#include "systems/base/system.h"
+#include "systems/base/text_system.h"
+#include "systems/base/text_page.h"
 #include "Utilities/Exception.hpp"
 #include "Utilities/StringUtilities.hpp"
 

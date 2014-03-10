@@ -25,9 +25,9 @@
 // -----------------------------------------------------------------------
 
 #include "ScriptMachine/luabind_System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/ParentGraphicsObjectData.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/graphics_object.h"
+#include "systems/base/parent_graphics_object_data.h"
 #include <luabind/luabind.hpp>
 
 #include <iostream>

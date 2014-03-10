@@ -30,10 +30,10 @@
 
 #include "effects/fade_effect.h"
 #include "machine/rlmachine.h"
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/colour.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/surface.h"
+#include "systems/base/system.h"
 
 LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   // Render the current state of the screen

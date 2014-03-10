@@ -29,7 +29,7 @@
 
 #include <string>
 
-#include "Systems/Base/System.hpp"
+#include "systems/base/system.h"
 #include "libreallive/gameexe.h"
 
 #include "boost/filesystem/operations.hpp"

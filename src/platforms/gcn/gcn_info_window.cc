@@ -30,7 +30,7 @@
 
 #include "platforms/gcn/gcn_button.h"
 #include "platforms/gcn/gcn_platform.h"
-#include "Systems/Base/RlvmInfo.hpp"
+#include "systems/base/rlvm_info.h"
 #include "Utilities/StringUtilities.hpp"
 
 using std::vector;

@@ -28,7 +28,7 @@
 
 #include "machine/rlmachine.h"
 #include "modules/module_grp.h"
-#include "Systems/Base/Colour.hpp"
+#include "systems/base/colour.h"
 #include "TestSystem/MockSurface.hpp"
 
 #include "testUtils.hpp"

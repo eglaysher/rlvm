@@ -30,11 +30,11 @@
 #include <sstream>
 #include <vector>
 
-#include "machine/rlmachine.h"
-#include "Systems/Base/Rect.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SystemError.hpp"
 #include "libreallive/gameexe.h"
+#include "machine/rlmachine.h"
+#include "systems/base/rect.h"
+#include "systems/base/system.h"
+#include "systems/base/system_error.h"
 
 using namespace std;
 

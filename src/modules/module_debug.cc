@@ -32,7 +32,7 @@
 
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
-#include "Systems/Base/System.hpp"
+#include "systems/base/system.h"
 #include "Utilities/StringUtilities.hpp"
 #include "libreallive/gameexe.h"
 

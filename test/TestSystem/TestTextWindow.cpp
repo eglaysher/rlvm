@@ -27,7 +27,7 @@
 
 #include "TestSystem/TestTextWindow.hpp"
 
-#include "Systems/Base/Rect.hpp"
+#include "systems/base/rect.h"
 #include "TestSystem/MockSurface.hpp"
 
 #include <boost/shared_ptr.hpp>

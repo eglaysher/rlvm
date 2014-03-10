@@ -27,7 +27,7 @@
 
 #include "effects/blind_effect.h"
 
-#include "Systems/Base/Surface.hpp"
+#include "systems/base/surface.h"
 
 // -----------------------------------------------------------------------
 // BlindEffect

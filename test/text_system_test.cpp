@@ -30,7 +30,7 @@
 
 #include "long_operations/textout_long_operation.h"
 #include "machine/rlmachine.h"
-#include "Systems/Base/TextPage.hpp"
+#include "systems/base/text_page.h"
 #include "TestSystem/MockSurface.hpp"
 #include "TestSystem/MockTextWindow.hpp"
 #include "TestSystem/TestSystem.hpp"

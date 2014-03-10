@@ -51,9 +51,9 @@
 #include "machine/rloperation/special_t.h"
 #include "machine/save_game_header.h"
 #include "machine/serialization.h"
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/colour.h"
+#include "systems/base/surface.h"
+#include "systems/base/system.h"
 #include "libreallive/intmemref.h"
 #include "utf8cpp/utf8.h"
 

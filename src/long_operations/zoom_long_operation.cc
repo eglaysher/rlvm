@@ -28,10 +28,10 @@
 #include "long_operations/zoom_long_operation.h"
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/surface.h"
+#include "systems/base/system.h"
 
 // -----------------------------------------------------------------------
 // ZoomLongOperation

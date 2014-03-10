@@ -29,7 +29,7 @@
 
 #include "gmock/gmock.h"
 
-#include "Systems/Base/ColourFilter.hpp"
+#include "systems/base/colour_filter.h"
 
 class MockColourFilter : public ColourFilter {
  public:

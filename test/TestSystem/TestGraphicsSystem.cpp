@@ -27,9 +27,9 @@
 
 #include "TestSystem/TestGraphicsSystem.hpp"
 
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
+#include "systems/base/colour.h"
+#include "systems/base/graphics_object.h"
+#include "systems/base/graphics_system.h"
 #include "TestSystem/MockColourFilter.hpp"
 #include "TestSystem/MockSurface.hpp"
 #include "Utilities/Exception.hpp"

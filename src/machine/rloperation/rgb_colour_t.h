@@ -28,7 +28,7 @@
 #define SRC_MACHINE_RLOPERATION_RGBCOLOUR_T_H_
 
 #include "machine/rloperation.h"
-#include "Systems/Base/Colour.hpp"
+#include "systems/base/colour.h"
 
 #include <string>
 #include <vector>

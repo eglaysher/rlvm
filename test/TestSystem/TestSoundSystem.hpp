@@ -28,7 +28,7 @@
 #ifndef TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
 #define TEST_TESTSYSTEM_TESTSOUNDSYSTEM_HPP_
 
-#include "Systems/Base/SoundSystem.hpp"
+#include "systems/base/sound_system.h"
 #include <string>
 
 class Gameexe;

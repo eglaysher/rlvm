@@ -31,7 +31,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "machine/long_operation.h"
-#include "Systems/Base/Rect.hpp"
+#include "systems/base/rect.h"
 
 class RLMachine;
 class Surface;

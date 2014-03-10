@@ -27,8 +27,8 @@
 #include "modules/module_g00.h"
 
 #include "machine/general_operations.h"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/system.h"
 
 struct g00Preload : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {

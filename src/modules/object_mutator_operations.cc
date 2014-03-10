@@ -29,11 +29,11 @@
 #include "machine/properties.h"
 #include "machine/rlmachine.h"
 #include "modules/module_obj.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/ObjectMutator.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_object.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/object_mutator.h"
+#include "systems/base/system.h"
 
 // -----------------------------------------------------------------------
 

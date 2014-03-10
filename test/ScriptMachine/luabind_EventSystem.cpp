@@ -26,7 +26,7 @@
 
 #include "ScriptMachine/luabind_System.hpp"
 #include "ScriptMachine/ScriptMachine.hpp"
-#include "Systems/Base/EventSystem.hpp"
+#include "systems/base/event_system.h"
 #include <luabind/luabind.hpp>
 #include <luabind/raw_policy.hpp>
 

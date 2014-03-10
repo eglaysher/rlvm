@@ -32,11 +32,11 @@
 #include <boost/shared_ptr.hpp>
 
 #include "machine/long_operation.h"
-#include "Systems/Base/Colour.hpp"
-#include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/Rect.hpp"
-#include "Systems/Base/Renderable.hpp"
-#include "Systems/Base/Surface.hpp"
+#include "systems/base/colour.h"
+#include "systems/base/event_listener.h"
+#include "systems/base/rect.h"
+#include "systems/base/renderable.h"
+#include "systems/base/surface.h"
 
 class RLMachine;
 class TextWindow;

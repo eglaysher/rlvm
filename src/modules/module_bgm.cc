@@ -37,8 +37,8 @@
 #include "machine/general_operations.h"
 #include "machine/rloperation/default_value.h"
 #include "machine/rloperation/rlop_store.h"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SoundSystem.hpp"
+#include "systems/base/system.h"
+#include "systems/base/sound_system.h"
 
 namespace {
 

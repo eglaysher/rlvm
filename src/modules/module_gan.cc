@@ -37,11 +37,11 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/rlop_store.h"
 #include "modules/module_obj.h"
-#include "Systems/Base/GanGraphicsObjectData.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/ParentGraphicsObjectData.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/gan_graphics_object_data.h"
+#include "systems/base/graphics_object.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/parent_graphics_object_data.h"
+#include "systems/base/system.h"
 
 using namespace std;
 using namespace boost;

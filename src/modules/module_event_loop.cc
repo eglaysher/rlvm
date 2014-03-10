@@ -29,9 +29,9 @@
 
 #include "machine/general_operations.h"
 #include "machine/rlmachine.h"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/system.h"
+#include "systems/base/text_system.h"
 
 namespace {
 

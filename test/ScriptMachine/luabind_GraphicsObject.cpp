@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------
 
 #include "ScriptMachine/luabind_System.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
+#include "systems/base/graphics_object.h"
 #include <luabind/luabind.hpp>
 #include <luabind/out_value_policy.hpp>
 

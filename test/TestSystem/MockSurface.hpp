@@ -29,8 +29,8 @@
 
 #include "gmock/gmock.h"
 
-#include "Systems/Base/Surface.hpp"
-#include "Systems/Base/GraphicsObject.hpp"
+#include "systems/base/surface.h"
+#include "systems/base/graphics_object.h"
 
 #include <string>
 #include <vector>

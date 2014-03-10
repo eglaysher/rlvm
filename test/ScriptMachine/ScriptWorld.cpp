@@ -41,7 +41,7 @@
 #include "ScriptMachine/luabind_Machine.hpp"
 #include "ScriptMachine/luabind_System.hpp"
 #include "ScriptMachine/luabind_utility.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/system.h"
 
 extern "C" {
 #include "lua.h"

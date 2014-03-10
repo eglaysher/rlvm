@@ -25,9 +25,9 @@
 // -----------------------------------------------------------------------
 
 #include "ScriptMachine/luabind_System.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
+#include "systems/base/system.h"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
 #include <luabind/luabind.hpp>
 
 using namespace luabind;

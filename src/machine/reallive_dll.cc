@@ -26,10 +26,10 @@
 
 #include "machine/reallive_dll.h"
 
-#include "Systems/Base/LittleBustersEF00DLL.hpp"
-#include "Systems/Base/LittleBustersPT00DLL.hpp"
-#include "Systems/Base/TomoyoAfterDT00DLL.hpp"
-#include "Systems/Base/RlBabelDLL.hpp"
+#include "systems/base/little_busters_ef00dll.h"
+#include "systems/base/little_busters_pt00dll.h"
+#include "systems/base/tomoyo_after_dt00dll.h"
+#include "systems/base/rlbabel_dll.h"
 #include "Utilities/Exception.hpp"
 
 #include <string>

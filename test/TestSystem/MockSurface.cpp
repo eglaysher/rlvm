@@ -26,11 +26,11 @@
 // -----------------------------------------------------------------------
 
 #include "TestSystem/MockSurface.hpp"
-#include "Systems/Base/Colour.hpp"
 
 #include <string>
 
 #include "gmock/gmock.h"
+#include "systems/base/colour.h"
 
 // -----------------------------------------------------------------------
 // MockSurface

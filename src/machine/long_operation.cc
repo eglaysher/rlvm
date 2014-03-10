@@ -28,8 +28,8 @@
 #include "machine/long_operation.h"
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/system.h"
 
 // -----------------------------------------------------------------------
 // LongOperation

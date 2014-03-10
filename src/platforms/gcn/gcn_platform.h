@@ -27,8 +27,8 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 #define SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 
-#include "Systems/Base/Platform.hpp"
-#include "Systems/Base/Renderable.hpp"
+#include "systems/base/platform.h"
+#include "systems/base/renderable.h"
 #include "platforms/gcn/gcn_menu.h"
 #include "platforms/gcn/gcn_window.h"
 #include "platforms/gcn/gcn_save_load_window.h"

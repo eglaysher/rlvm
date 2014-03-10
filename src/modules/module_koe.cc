@@ -35,10 +35,10 @@
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
 #include "machine/rloperation/default_value.h"
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/TextSystem.hpp"
+#include "systems/base/sound_system.h"
+#include "systems/base/system.h"
+#include "systems/base/text_page.h"
+#include "systems/base/text_system.h"
 
 namespace {
 

@@ -29,7 +29,7 @@
 #define SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_
 
 #include "machine/long_operation.h"
-#include "Systems/Base/EventListener.hpp"
+#include "systems/base/event_listener.h"
 
 // Main pause function. Exported for TextoutLongOperation to abuse.
 class PauseLongOperation : public LongOperation {

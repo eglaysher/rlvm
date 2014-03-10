@@ -33,7 +33,7 @@
 #include "machine/rloperation/references.h"
 #include "machine/rloperation/rlop_store.h"
 #include "modules/module_obj.h"
-#include "Systems/Base/GraphicsObject.hpp"
+#include "systems/base/graphics_object.h"
 
 // -----------------------------------------------------------------------
 

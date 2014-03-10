@@ -27,12 +27,12 @@
 #include "long_operations/wait_long_operation.h"
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Rect.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextSystem.hpp"
+#include "systems/base/event_listener.h"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/rect.h"
+#include "systems/base/system.h"
+#include "systems/base/text_system.h"
 
 // -----------------------------------------------------------------------
 // WaitLongOperation

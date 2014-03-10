@@ -34,8 +34,8 @@
 #include <string>
 
 #include "base/notification_service.h"
-#include "Systems/Base/Rect.hpp"
-#include "Systems/SDL/SDLSurface.hpp"
+#include "systems/base/rect.h"
+#include "systems/sdl/sdl_surface.h"
 
 // -----------------------------------------------------------------------
 // GCNTrueTypeFont

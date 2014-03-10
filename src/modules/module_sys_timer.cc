@@ -36,11 +36,11 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/default_value.h"
 #include "machine/rloperation/rlop_store.h"
-#include "Systems/Base/EventListener.hpp"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/FrameCounter.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_listener.h"
+#include "systems/base/event_system.h"
+#include "systems/base/frame_counter.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/system.h"
 
 using namespace std;
 using boost::numeric_cast;

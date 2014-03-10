@@ -25,9 +25,11 @@
 // -----------------------------------------------------------------------
 
 #include "ScriptMachine/luabind_utility.hpp"
-#include "Systems/Base/Rect.hpp"
+
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
+
+#include "systems/base/rect.h"
 
 using namespace luabind;
 

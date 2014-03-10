@@ -30,9 +30,9 @@
 #include <cmath>
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Surface.hpp"
+#include "systems/base/system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/surface.h"
 
 // -----------------------------------------------------------------------
 // ScrollOnScrollOff base class

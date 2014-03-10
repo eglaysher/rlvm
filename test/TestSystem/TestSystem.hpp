@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include "Systems/Base/System.hpp"
+#include "systems/base/system.h"
 #include "TestSystem/TestGraphicsSystem.hpp"
 #include "TestSystem/TestEventSystem.hpp"
 #include "TestSystem/TestTextSystem.hpp"

@@ -36,9 +36,9 @@
 #include "machine/rloperation/argc_t.h"
 #include "machine/rloperation/complex_t.h"
 #include "modules/module_sys.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/FrameCounter.hpp"
-#include "Systems/Base/System.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/frame_counter.h"
+#include "systems/base/system.h"
 
 using namespace std;
 

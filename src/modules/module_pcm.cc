@@ -31,10 +31,10 @@
 #include <string>
 
 #include "long_operations/wait_long_operation.h"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/SoundSystem.hpp"
-#include "machine/long_operation.h"
 #include "machine/general_operations.h"
+#include "machine/long_operation.h"
+#include "systems/base/sound_system.h"
+#include "systems/base/system.h"
 
 namespace {
 

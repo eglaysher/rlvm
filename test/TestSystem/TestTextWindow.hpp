@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include "Systems/Base/TextWindow.hpp"
+#include "systems/base/text_window.h"
 
 #include <vector>
 

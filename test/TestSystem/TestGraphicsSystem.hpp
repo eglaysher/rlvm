@@ -28,8 +28,8 @@
 #ifndef TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
 #define TEST_TESTSYSTEM_TESTGRAPHICSSYSTEM_HPP_
 
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/Surface.hpp"
+#include "systems/base/graphics_system.h"
+#include "systems/base/surface.h"
 
 #include <map>
 #include <string>

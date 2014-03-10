@@ -28,7 +28,7 @@
 #ifndef TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
 #define TEST_TESTSYSTEM_TESTEVENTSYSTEM_HPP_
 
-#include "Systems/Base/EventSystem.hpp"
+#include "systems/base/event_system.h"
 
 #include <boost/shared_ptr.hpp>
 

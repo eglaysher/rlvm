@@ -30,13 +30,13 @@
 #include <vector>
 
 #include "machine/rlmachine.h"
-#include "Systems/Base/EventSystem.hpp"
-#include "Systems/Base/GraphicsSystem.hpp"
-#include "Systems/Base/SoundSystem.hpp"
-#include "Systems/Base/System.hpp"
-#include "Systems/Base/TextPage.hpp"
-#include "Systems/Base/TextSystem.hpp"
-#include "Systems/Base/TextWindow.hpp"
+#include "systems/base/event_system.h"
+#include "systems/base/graphics_system.h"
+#include "systems/base/sound_system.h"
+#include "systems/base/system.h"
+#include "systems/base/text_page.h"
+#include "systems/base/text_system.h"
+#include "systems/base/text_window.h"
 #include "libreallive/gameexe.h"
 
 using namespace std;

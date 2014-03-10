@@ -28,7 +28,7 @@
 #include "modules/module_se.h"
 
 #include "machine/general_operations.h"
-#include "Systems/Base/SoundSystem.hpp"
+#include "systems/base/sound_system.h"
 
 SeModule::SeModule() : RLModule("Se", 1, 22) {
   addOpcode(0, 0, "sePlay", callFunction(&SoundSystem::playSe));

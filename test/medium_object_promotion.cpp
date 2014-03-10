@@ -34,8 +34,8 @@
 
 #include "machine/rlmachine.h"
 #include "modules/module_grp.h"
-#include "Systems/Base/GraphicsObject.hpp"
-#include "Systems/Base/GraphicsTextObject.hpp"
+#include "systems/base/graphics_object.h"
+#include "systems/base/graphics_text_object.h"
 #include "TestSystem/TestMachine.hpp"
 #include "TestSystem/TestSystem.hpp"
 #include "libreallive/archive.h"
