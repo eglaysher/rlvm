@@ -28,7 +28,7 @@
 
 #include <tuple>
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 #include "modules/module_sys_index_series.h"
 
 using std::get;

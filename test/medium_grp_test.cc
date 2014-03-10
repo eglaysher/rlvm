@@ -31,7 +31,7 @@
 #include "systems/base/colour.h"
 #include "test_system/mock_surface.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 class MediumGrpTest : public FullSystemTest {
  protected:

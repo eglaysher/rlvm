@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2007 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,45 +22,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
-//
 // -----------------------------------------------------------------------
 
-#include "testUtils.hpp"
-#include <vector>
-#include <boost/filesystem/operations.hpp>
-#include <stdexcept>
-#include <sstream>
-#include <string>
+#include "gtest/gtest.h"
 
-using std::string;
-using std::vector;
-using std::ostringstream;
+#include "machine/rlmachine.h"
+#include "modules/module_event_loop.h"
 
-namespace fs = boost::filesystem;
+#include "test_utils.h"
 
-// -----------------------------------------------------------------------
+class MediumEventLoopTest : public FullSystemTest {
+ protected:
+  MediumEventLoopTest() { rlmachine.attachModule(new EventLoopModule); }
+};
 
-const std::vector<std::string> testPaths = {"./", "./test/", "./build/test/"};
+TEST_F(MediumEventLoopTest, TestSkipMode) {
+  rlmachine.setStoreRegister(20);
 
-string locateTestCase(const string& baseName) {
-  for (vector<string>::const_iterator it = testPaths.begin();
-       it != testPaths.end();
-       ++it) {
-    string testName = *it + baseName;
-    if (fs::exists(testName))
-      return testName;
-  }
+  rlmachine.exe("SetSkipMode", 0);
+  EXPECT_TRUE(system.text().skipMode());
+  rlmachine.exe("SkipMode", 0);
+  EXPECT_EQ(1, rlmachine.getStoreRegisterValue());
 
-  ostringstream oss;
-  oss << "Could not locate data file '" << baseName << "' in locateTestCase.";
-  throw std::runtime_error(oss.str());
+  rlmachine.exe("ClearSkipMode", 0);
+  EXPECT_FALSE(system.text().skipMode());
+  rlmachine.exe("SkipMode", 0);
+  EXPECT_EQ(0, rlmachine.getStoreRegisterValue());
 }
-
-// -----------------------------------------------------------------------
-
-FullSystemTest::FullSystemTest()
-    : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
-      system(locateTestCase("Gameexe_data/Gameexe.ini")),
-      rlmachine(system, arc) {}
-
-FullSystemTest::~FullSystemTest() {}

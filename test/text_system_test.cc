@@ -36,7 +36,7 @@
 #include "test_system/mock_text_window.h"
 #include "test_system/test_system.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <string>
 #include <memory>

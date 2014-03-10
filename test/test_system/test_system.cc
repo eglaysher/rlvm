@@ -30,7 +30,7 @@
 #include <string>
 
 #include "systems/base/system_error.h"
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 // -----------------------------------------------------------------------
 // TestSystem

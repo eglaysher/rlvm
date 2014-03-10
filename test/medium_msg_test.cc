@@ -32,7 +32,7 @@
 #include "test_system/test_machine.h"
 #include "test_system/test_system.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 class MediumMsgLoopTest : public FullSystemTest {
  protected:

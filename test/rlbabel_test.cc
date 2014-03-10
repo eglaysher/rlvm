@@ -32,7 +32,7 @@
 #include "libreallive/intmemref.h"
 #include "machine/rlmachine.h"
 #include "systems/base/rlbabel_dll.h"
-#include "testUtils.hpp"
+#include "test_utils.h"
 #include "test_system/test_system.h"
 #include "utilities/exception.h"
 

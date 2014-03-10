@@ -30,34 +30,34 @@ test_case_files = [
   "test/test_system/test_machine.cc",
 
   "test/notification_service_unittest.cc",
-  "test/testUtils.cpp",
-  "test/gameexe_test.cpp",
-  "test/rlmachine_test.cpp",
-  "test/lazy_array_test.cpp",
-  "test/graphics_object_test.cpp",
-  "test/rloperation_test.cpp",
-  "test/regressions_test.cpp",
-  "test/text_system_test.cpp",
-  "test/expression_test.cpp",
-  "test/sound_system_test.cpp",
-  "test/text_window_test.cpp",
-  "test/effect_test.cpp",
-  "test/rlbabel_test.cpp",
-  "test/utilities_test.cpp",
-  "test/test_index_series.cpp",
-  "test/rect_test.cpp",
+  "test/test_utils.cc",
+  "test/gameexe_test.cc",
+  "test/rlmachine_test.cc",
+  "test/lazy_array_test.cc",
+  "test/graphics_object_test.cc",
+  "test/rloperation_test.cc",
+  "test/regressions_test.cc",
+  "test/text_system_test.cc",
+  "test/expression_test.cc",
+  "test/sound_system_test.cc",
+  "test/text_window_test.cc",
+  "test/effect_test.cc",
+  "test/rlbabel_test.cc",
+  "test/utilities_test.cc",
+  "test/test_index_series.cc",
+  "test/rect_test.cc",
 
   # medium tests
-  "test/medium_eventloop_test.cpp",
-  "test/medium_msg_test.cpp",
-  "test/medium_object_promotion.cpp",
-  "test/medium_grp_test.cpp",
+  "test/medium_eventloop_test.cc",
+  "test/medium_msg_test.cc",
+  "test/medium_object_promotion.cc",
+  "test/medium_grp_test.cc",
 
   # large tests
-  "test/large_sys_test.cpp",
-  "test/large_str_test.cpp",
-  "test/large_mem_test.cpp",
-  "test/large_jmp_test.cpp"
+  "test/large_sys_test.cc",
+  "test/large_str_test.cc",
+  "test/large_mem_test.cc",
+  "test/large_jmp_test.cc"
 ]
 
 null_system_files = [
@@ -71,8 +71,9 @@ null_system_files = [
   "test/test_system/mock_text_window.cc"
 ]
 
-test_env.RlvmProgram('rlvmTests', ["test/rlvmTest.cpp", null_system_files,
-                                   test_case_files],
+test_env.RlvmProgram('rlvm_unittests',
+                     ["test/rlvm_unittests.cc", null_system_files,
+                      test_case_files],
                      use_lib_set = ["TEST"],
                      rlvm_libs = ["rlvm"])
-test_env.Install('$OUTPUT_DIR', 'rlvmTests')
+test_env.Install('$OUTPUT_DIR', 'rlvm_unittests')

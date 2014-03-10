@@ -35,7 +35,7 @@
 
 #include "test_system/test_system.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <string>
 #include <iostream>

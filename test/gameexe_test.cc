@@ -29,7 +29,7 @@
 
 #include "gtest/gtest.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <string>
 #include <vector>

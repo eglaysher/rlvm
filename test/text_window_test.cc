@@ -36,7 +36,7 @@
 #include "test_system/test_text_window.h"
 #include "utilities/string_utilities.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <boost/algorithm/string.hpp>
 

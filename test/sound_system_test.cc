@@ -29,7 +29,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include "test_system/test_system.h"
 #include "test_system/test_sound_system.h"

@@ -34,7 +34,7 @@
 #include "modules/module_jmp.h"
 #include "test_system/test_system.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 using namespace std;
 using namespace libreallive;

@@ -34,7 +34,7 @@
 
 #include "utilities/lazy_array.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <iostream>
 #include <algorithm>

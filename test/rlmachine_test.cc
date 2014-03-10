@@ -39,7 +39,7 @@
 #include "modules/module_str.h"
 #include "utilities/exception.h"
 #include "libreallive/intmemref.h"
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 using namespace std;
 using namespace libreallive;

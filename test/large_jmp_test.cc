@@ -35,7 +35,7 @@
 #include "modules/module_str.h"
 #include "test_system/test_system.h"
 
-#include "testUtils.hpp"
+#include "test_utils.h"
 
 #include <iostream>
 using namespace std;
