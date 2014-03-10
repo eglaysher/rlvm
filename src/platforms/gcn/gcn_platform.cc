@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/GCNPlatform.hpp"
+#include "platforms/gcn/gcn_platform.h"
 
 #include <boost/filesystem.hpp>
 #include <functional>
@@ -37,10 +37,10 @@
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
 #include "modules/module_sys_save.h"
-#include "Platforms/gcn/GCNGraphics.hpp"
-#include "Platforms/gcn/GCNInfoWindow.hpp"
-#include "Platforms/gcn/SDLTrueTypeFont.hpp"
-#include "Platforms/gcn/gcnUtils.hpp"
+#include "platforms/gcn/gcn_graphics.h"
+#include "platforms/gcn/gcn_info_window.h"
+#include "platforms/gcn/gcn_true_type_font.h"
+#include "platforms/gcn/gcn_utils.h"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/Rect.hpp"
 #include "Systems/Base/System.hpp"
@@ -377,7 +377,7 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
   guichan_gui_->setTop(toplevel_container_.get());
 
   fs::path font_file = findFontFile(system);
-  global_font_.reset(new SDLTrueTypeFont(font_file.string().c_str(), 12));
+  global_font_.reset(new GCNTrueTypeFont(font_file.string().c_str(), 12));
   gcn::Widget::setGlobalFont(global_font_.get());
 }
 

@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/SDLTrueTypeFont.hpp"
+#include "platforms/gcn/gcn_true_type_font.h"
 
 #include <boost/shared_ptr.hpp>
 #include <guichan/color.hpp>
@@ -38,9 +38,9 @@
 #include "Systems/SDL/SDLSurface.hpp"
 
 // -----------------------------------------------------------------------
-// SDLTrueTypeFont
+// GCNTrueTypeFont
 // -----------------------------------------------------------------------
-SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
+GCNTrueTypeFont::GCNTrueTypeFont(const std::string& filename, int size)
     : image_cache_(125) {
   row_spacing_ = 0;
   glyph_spacing_ = 0;
@@ -51,7 +51,7 @@ SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
   font_ = TTF_OpenFont(filename.c_str(), size);
 
   if (font_ == NULL) {
-    throw GCN_EXCEPTION("SDLTrueTypeFont::SDLTrueTypeFont. " +
+    throw GCN_EXCEPTION("GCNTrueTypeFont::GCNTrueTypeFont. " +
                         std::string(TTF_GetError()));
   }
 
@@ -60,20 +60,20 @@ SDLTrueTypeFont::SDLTrueTypeFont(const std::string& filename, int size)
                  NotificationService::AllSources());
 }
 
-SDLTrueTypeFont::~SDLTrueTypeFont() { TTF_CloseFont(font_); }
+GCNTrueTypeFont::~GCNTrueTypeFont() { TTF_CloseFont(font_); }
 
-int SDLTrueTypeFont::getWidth(const std::string& text) const {
+int GCNTrueTypeFont::getWidth(const std::string& text) const {
   int w, h;
   TTF_SizeUTF8(font_, text.c_str(), &w, &h);
 
   return w;
 }
 
-int SDLTrueTypeFont::getHeight() const {
+int GCNTrueTypeFont::getHeight() const {
   return TTF_FontHeight(font_) + row_spacing_;
 }
 
-void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
+void GCNTrueTypeFont::drawString(gcn::Graphics* graphics,
                                  const std::string& text,
                                  const int x,
                                  const int y) {
@@ -120,21 +120,21 @@ void SDLTrueTypeFont::drawString(gcn::Graphics* graphics,
       image.get(), 0, 0, x, y + yoffset, image->getWidth(), image->getHeight());
 }
 
-void SDLTrueTypeFont::setRowSpacing(int spacing) { row_spacing_ = spacing; }
+void GCNTrueTypeFont::setRowSpacing(int spacing) { row_spacing_ = spacing; }
 
-int SDLTrueTypeFont::getRowSpacing() { return row_spacing_; }
+int GCNTrueTypeFont::getRowSpacing() { return row_spacing_; }
 
-void SDLTrueTypeFont::setGlyphSpacing(int spacing) { glyph_spacing_ = spacing; }
+void GCNTrueTypeFont::setGlyphSpacing(int spacing) { glyph_spacing_ = spacing; }
 
-int SDLTrueTypeFont::getGlyphSpacing() { return glyph_spacing_; }
+int GCNTrueTypeFont::getGlyphSpacing() { return glyph_spacing_; }
 
-void SDLTrueTypeFont::setAntiAlias(bool anti_alias) {
+void GCNTrueTypeFont::setAntiAlias(bool anti_alias) {
   anti_alias_ = anti_alias;
 }
 
-bool SDLTrueTypeFont::isAntiAlias() { return anti_alias_; }
+bool GCNTrueTypeFont::isAntiAlias() { return anti_alias_; }
 
-void SDLTrueTypeFont::Observe(NotificationType type,
+void GCNTrueTypeFont::Observe(NotificationType type,
                               const NotificationSource& source,
                               const NotificationDetails& details) {
   image_cache_.clear();

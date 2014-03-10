@@ -32,20 +32,20 @@ root_env.ParseConfig("sdl-config --libs")
 
 # All the PNG files taken from The Mana World that we want to compile in
 guichan_resources = [
-  "src/Platforms/gcn/button_disabled.png",
-  "src/Platforms/gcn/buttonhi.png",
-  "src/Platforms/gcn/button.png",
-  "src/Platforms/gcn/buttonpress.png",
-  "src/Platforms/gcn/deepbox.png",
-  "src/Platforms/gcn/hscroll_left_default.png",
-  "src/Platforms/gcn/hscroll_left_pressed.png",
-  "src/Platforms/gcn/hscroll_right_default.png",
-  "src/Platforms/gcn/hscroll_right_pressed.png",
-  "src/Platforms/gcn/vscroll_down_default.png",
-  "src/Platforms/gcn/vscroll_down_pressed.png",
-  "src/Platforms/gcn/vscroll_grey.png",
-  "src/Platforms/gcn/vscroll_up_default.png",
-  "src/Platforms/gcn/vscroll_up_pressed.png"
+  "src/platforms/gcn/button_disabled.png",
+  "src/platforms/gcn/buttonhi.png",
+  "src/platforms/gcn/button.png",
+  "src/platforms/gcn/buttonpress.png",
+  "src/platforms/gcn/deepbox.png",
+  "src/platforms/gcn/hscroll_left_default.png",
+  "src/platforms/gcn/hscroll_left_pressed.png",
+  "src/platforms/gcn/hscroll_right_default.png",
+  "src/platforms/gcn/hscroll_right_pressed.png",
+  "src/platforms/gcn/vscroll_down_default.png",
+  "src/platforms/gcn/vscroll_down_pressed.png",
+  "src/platforms/gcn/vscroll_grey.png",
+  "src/platforms/gcn/vscroll_up_default.png",
+  "src/platforms/gcn/vscroll_up_pressed.png"
 ]
 
 # Build the resource compiler and then use it to make the inline header file.
@@ -237,16 +237,16 @@ libsystemsdl_files = [
 root_env.StaticLibrary('system_sdl', libsystemsdl_files)
 
 guichan_platform = [
-  "src/Platforms/gcn/GCNButton.cpp",
-  "src/Platforms/gcn/GCNGraphics.cpp",
-  "src/Platforms/gcn/GCNInfoWindow.cpp",
-  "src/Platforms/gcn/GCNMenu.cpp",
-  "src/Platforms/gcn/GCNPlatform.cpp",
-  "src/Platforms/gcn/GCNSaveLoadWindow.cpp",
-  "src/Platforms/gcn/GCNScrollArea.cpp",
-  "src/Platforms/gcn/GCNWindow.cpp",
-  "src/Platforms/gcn/SDLTrueTypeFont.cpp",
-  "src/Platforms/gcn/gcnUtils.cpp"
+  "src/platforms/gcn/gcn_button.cc",
+  "src/platforms/gcn/gcn_graphics.cc",
+  "src/platforms/gcn/gcn_info_window.cc",
+  "src/platforms/gcn/gcn_menu.cc",
+  "src/platforms/gcn/gcn_platform.cc",
+  "src/platforms/gcn/gcn_save_load_window.cc",
+  "src/platforms/gcn/gcn_scroll_area.cc",
+  "src/platforms/gcn/gcn_true_type_font.cc",
+  "src/platforms/gcn/gcn_utils.cc",
+  "src/platforms/gcn/gcn_window.cc",
 ]
 
 root_env.StaticLibrary('guichan_platform', guichan_platform)

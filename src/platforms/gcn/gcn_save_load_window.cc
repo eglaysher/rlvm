@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/GCNSaveLoadWindow.hpp"
+#include "platforms/gcn/gcn_save_load_window.h"
 
 #include <algorithm>
 #include <boost/date_time/posix_time/time_formatters_limited.hpp>
@@ -38,9 +38,9 @@
 
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
-#include "Platforms/gcn/GCNButton.hpp"
-#include "Platforms/gcn/GCNPlatform.hpp"
-#include "Platforms/gcn/GCNScrollArea.hpp"
+#include "platforms/gcn/gcn_button.h"
+#include "platforms/gcn/gcn_platform.h"
+#include "platforms/gcn/gcn_scroll_area.h"
 #include "Utilities/StringUtilities.hpp"
 
 namespace fs = boost::filesystem;

@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
-#define SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
+#define SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 
 #include <map>
 #include <string>
@@ -64,10 +64,10 @@ class OpenGLImage;
  * @author Walluce Pinkham
  * @author Olof Naessén
  */
-class SDLTrueTypeFont : public gcn::Font, public NotificationObserver {
+class GCNTrueTypeFont : public gcn::Font, public NotificationObserver {
  public:
-  SDLTrueTypeFont(const std::string& filename, int size);
-  virtual ~SDLTrueTypeFont();
+  GCNTrueTypeFont(const std::string& filename, int size);
+  virtual ~GCNTrueTypeFont();
 
   // Sets the spacing between rows in pixels. Default is 0 pixels. The spacing
   // can be negative.
@@ -117,4 +117,4 @@ class SDLTrueTypeFont : public gcn::Font, public NotificationObserver {
   NotificationRegistrar registrar_;
 };
 
-#endif  // SRC_PLATFORMS_GCN_SDLTRUETYPEFONT_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_

@@ -16,8 +16,8 @@ gtkrlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
   "src/machine/rlvm_instance.cc",
 
-  "src/Platforms/gtk/rlvm.cpp",
-  "src/Platforms/gtk/GtkRLVMInstance.cpp",
+  "src/platforms/gtk/rlvm.cc",
+  "src/platforms/gtk/gtk_rlvm_instance.cc",
 ]
 
 root_env.RlvmProgram('rlvm', gtkrlvm_files,

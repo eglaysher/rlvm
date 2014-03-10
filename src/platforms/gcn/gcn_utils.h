@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2011 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,32 +21,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GTK_GTKRLVMINSTANCE_HPP_
-#define SRC_PLATFORMS_GTK_GTKRLVMINSTANCE_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_UTILS_H_
+#define SRC_PLATFORMS_GCN_GCN_UTILS_H_
 
-#include "machine/rlvm_instance.h"
+#include "Systems/Base/Rect.hpp"
 
-// A GTK subclass of RLVMInstance that displays GTK dialogs.
-class GtkRLVMInstance : public RLVMInstance {
- public:
-  GtkRLVMInstance(int* argc, char** argv[]);
-  virtual ~GtkRLVMInstance();
+#include <guichan/image.hpp>
+#include <guichan/rectangle.hpp>
 
-  virtual boost::filesystem::path SelectGameDirectory();
-
- protected:
-  void DoNativeWork();
-
-  virtual void ReportFatalError(const std::string& message_text,
-                                const std::string& informative_text);
-
-  virtual bool AskUserPrompt(const std::string& message_text,
-                             const std::string& informative_text,
-                             const std::string& true_button,
-                             const std::string& false_button);
+enum ThemeImage {
+  IMG_BUTTON_DISABLED = 0,
+  IMG_BUTTONHI,
+  IMG_BUTTON,
+  IMG_BUTTONPRESS,
+  IMG_DEEPBOX,
+  IMG_HSCROLL_LEFT_DEFAULT,
+  IMG_HSCROLL_LEFT_PRESSED,
+  IMG_HSCROLL_RIGHT_DEFAULT,
+  IMG_HSCROLL_RIGHT_PRESSED,
+  IMG_VSCROLL_DOWN_DEFAULT,
+  IMG_VSCROLL_DOWN_PRESSED,
+  IMG_VSCROLL_GREY,
+  IMG_VSCROLL_UP_DEFAULT,
+  IMG_VSCROLL_UP_PRESSED
 };
 
-#endif  // SRC_PLATFORMS_GTK_GTKRLVMINSTANCE_HPP_
+gcn::Image* getThemeImage(enum ThemeImage img);
+
+inline gcn::Rectangle rectConvert(const Rect& obj) {
+  return gcn::Rectangle(obj.x(), obj.y(), obj.x2(), obj.y2());
+}
+
+#endif  // SRC_PLATFORMS_GCN_GCN_UTILS_H_

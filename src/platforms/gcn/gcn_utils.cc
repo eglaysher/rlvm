@@ -24,7 +24,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/gcnUtils.hpp"
+#include "platforms/gcn/gcn_utils.h"
 
 #include <guichan/opengl/openglimage.hpp>
 #include <guichan/exception.hpp>

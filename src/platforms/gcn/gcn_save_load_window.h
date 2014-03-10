@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2009 Elliot Glaysher
+// Copyright (C) 2008 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,32 +24,59 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNINFOWINDOW_HPP_
-#define SRC_PLATFORMS_GCN_GCNINFOWINDOW_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
+#define SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
 
-#include "Platforms/gcn/GCNWindow.hpp"
+#include <boost/scoped_ptr.hpp>
+#include <vector>
 
 #include <guichan/actionlistener.hpp>
+#include <guichan/widgets/listbox.hpp>
+#include <guichan/selectionlistener.hpp>
+#include <guichan/listmodel.hpp>
 #include <guichan/widgets/button.hpp>
 
+#include "platforms/gcn/gcn_window.h"
+
 class RLMachine;
-struct RlvmInfo;
+class SaveGameListModel;
+
+// -----------------------------------------------------------------------
 
 /**
- * Displays information about the currently played game.
+ *
  */
-class GCNInfoWindow : public GCNWindow, public gcn::ActionListener {
+class GCNSaveLoadWindow : public GCNWindow,
+                          public gcn::ActionListener,
+                          public gcn::SelectionListener {
  public:
-  GCNInfoWindow(RLMachine& machine,
-                const RlvmInfo& info,
-                GCNPlatform* platform);
-  ~GCNInfoWindow();
+  enum WindowType { DO_SAVE, DO_LOAD };
+
+ public:
+  GCNSaveLoadWindow(RLMachine& machine,
+                    WindowType type,
+                    GCNPlatform* platform_);
+  ~GCNSaveLoadWindow();
 
   // Overriden from gcn::ActionListener:
   virtual void action(const gcn::ActionEvent& actionEvent);
 
- private:
-  gcn::Button* ok_button_;
-};  // end of class GCNInfoWindow
+  // Overriden from gcn::SelectionListener:
+  virtual void valueChanged(const gcn::SelectionEvent& event);
 
-#endif  // SRC_PLATFORMS_GCN_GCNINFOWINDOW_HPP_
+ private:
+  // Provides titles and whether a save exists in said slot.
+  boost::scoped_ptr<SaveGameListModel> model_;
+
+  // The kind of dialog we're presenting.
+  WindowType type_;
+
+  // Either "Save" or "Load"
+  gcn::Button* action_button_;
+
+  gcn::ListBox* listbox_;
+
+  std::vector<gcn::Widget*> widgets_to_delete_;
+};  // end of class GCNSaveLoadWindow
+
+#endif  // SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_

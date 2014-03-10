@@ -24,14 +24,14 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_
-#define SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
+#define SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 
 #include "Systems/Base/Platform.hpp"
 #include "Systems/Base/Renderable.hpp"
-#include "Platforms/gcn/GCNMenu.hpp"
-#include "Platforms/gcn/GCNWindow.hpp"
-#include "Platforms/gcn/GCNSaveLoadWindow.hpp"
+#include "platforms/gcn/gcn_menu.h"
+#include "platforms/gcn/gcn_window.h"
+#include "platforms/gcn/gcn_save_load_window.h"
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -139,4 +139,4 @@ class GCNPlatform : public Platform,
   friend class GCNPlatformBlocker;
 };  // end of class GCNPlatform
 
-#endif  // SRC_PLATFORMS_GCN_GCNPLATFORM_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_PLATFORM_H_

@@ -7,7 +7,7 @@
 //
 // -----------------------------------------------------------------------
 //
-// Copyright (C) 2008 Elliot Glaysher
+// Copyright (C) 2009 Elliot Glaysher
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,35 +24,32 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNUTILS_HPP_
-#define SRC_PLATFORMS_GCN_GCNUTILS_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_INFO_WINDOW_H_
+#define SRC_PLATFORMS_GCN_GCN_INFO_WINDOW_H_
 
-#include "Systems/Base/Rect.hpp"
+#include "platforms/gcn/gcn_window.h"
 
-#include <guichan/image.hpp>
-#include <guichan/rectangle.hpp>
+#include <guichan/actionlistener.hpp>
+#include <guichan/widgets/button.hpp>
 
-enum ThemeImage {
-  IMG_BUTTON_DISABLED = 0,
-  IMG_BUTTONHI,
-  IMG_BUTTON,
-  IMG_BUTTONPRESS,
-  IMG_DEEPBOX,
-  IMG_HSCROLL_LEFT_DEFAULT,
-  IMG_HSCROLL_LEFT_PRESSED,
-  IMG_HSCROLL_RIGHT_DEFAULT,
-  IMG_HSCROLL_RIGHT_PRESSED,
-  IMG_VSCROLL_DOWN_DEFAULT,
-  IMG_VSCROLL_DOWN_PRESSED,
-  IMG_VSCROLL_GREY,
-  IMG_VSCROLL_UP_DEFAULT,
-  IMG_VSCROLL_UP_PRESSED
-};
+class RLMachine;
+struct RlvmInfo;
 
-gcn::Image* getThemeImage(enum ThemeImage img);
+/**
+ * Displays information about the currently played game.
+ */
+class GCNInfoWindow : public GCNWindow, public gcn::ActionListener {
+ public:
+  GCNInfoWindow(RLMachine& machine,
+                const RlvmInfo& info,
+                GCNPlatform* platform);
+  ~GCNInfoWindow();
 
-inline gcn::Rectangle rectConvert(const Rect& obj) {
-  return gcn::Rectangle(obj.x(), obj.y(), obj.x2(), obj.y2());
-}
+  // Overriden from gcn::ActionListener:
+  virtual void action(const gcn::ActionEvent& actionEvent);
 
-#endif  // SRC_PLATFORMS_GCN_GCNUTILS_HPP_
+ private:
+  gcn::Button* ok_button_;
+};  // end of class GCNInfoWindow
+
+#endif  // SRC_PLATFORMS_GCN_GCN_INFO_WINDOW_H_

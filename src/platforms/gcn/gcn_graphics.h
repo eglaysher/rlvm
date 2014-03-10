@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_
-#define SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_GRAPHICS_H_
+#define SRC_PLATFORMS_GCN_GCN_GRAPHICS_H_
 
 #include <boost/shared_ptr.hpp>
 #include <guichan/opengl/openglgraphics.hpp>
@@ -34,7 +34,7 @@
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
 #include "Systems/Base/Rect.hpp"
-#include "Platforms/gcn/gcnUtils.hpp"
+#include "platforms/gcn/gcn_utils.h"
 
 /**
  * 9 rectangles in an image. 4 corners, 4 sides and a middle area. The
@@ -116,4 +116,4 @@ class GCNGraphics : public gcn::OpenGLGraphics {
   void drawImageImpl(gcn::Image* image, const Rect& source, int dstX, int dstY);
 };
 
-#endif  // SRC_PLATFORMS_GCN_GCNGRAPHICS_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_GRAPHICS_H_

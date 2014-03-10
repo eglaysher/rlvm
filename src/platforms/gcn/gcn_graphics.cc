@@ -24,14 +24,14 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/GCNGraphics.hpp"
+#include "platforms/gcn/gcn_graphics.h"
 
 #include <guichan/exception.hpp>
 #include <guichan/image.hpp>
 #include <guichan/opengl/openglimage.hpp>
 
 #include "base/notification_service.h"
-#include "Platforms/gcn/gcnUtils.hpp"
+#include "platforms/gcn/gcn_utils.h"
 
 // -----------------------------------------------------------------------
 // ImageRect

@@ -24,13 +24,13 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/GCNButton.hpp"
+#include "platforms/gcn/gcn_button.h"
 
 #include <string>
 #include <guichan/exception.hpp>
 #include <guichan/font.hpp>
 
-#include "Platforms/gcn/gcnUtils.hpp"
+#include "platforms/gcn/gcn_utils.h"
 
 static int xpos[] = {0, 9, 16, 26};
 static int ypos[] = {0, 4, 19, 24};

@@ -24,15 +24,15 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
-#define SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_SCROLL_AREA_H_
+#define SRC_PLATFORMS_GCN_GCN_SCROLL_AREA_H_
 
 #include <boost/scoped_ptr.hpp>
 #include <guichan/widgets/scrollarea.hpp>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
-#include "Platforms/gcn/GCNGraphics.hpp"
+#include "platforms/gcn/gcn_graphics.h"
 
 /**
  * Copy of TMW's ScrollArea class, adapted to my system.
@@ -87,4 +87,4 @@ class GCNScrollArea : public gcn::ScrollArea, public NotificationObserver {
   static ImageRect s_vMarker;
 };  // end of class GCNScrollArea
 
-#endif  // SRC_PLATFORMS_GCN_GCNSCROLLAREA_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_SCROLL_AREA_H_

@@ -35,7 +35,7 @@
 #include "machine/serialization.h"
 #include "modules/modules.h"
 #include "modules/module_sys_save.h"
-#include "Platforms/gcn/GCNPlatform.hpp"
+#include "platforms/gcn/gcn_platform.h"
 #include "Systems/Base/EventSystem.hpp"
 #include "Systems/Base/GraphicsSystem.hpp"
 #include "Systems/Base/SystemError.hpp"

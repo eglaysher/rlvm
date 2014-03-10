@@ -24,36 +24,37 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/gcn/GCNWindow.hpp"
+#ifndef SRC_PLATFORMS_GCN_GCN_WINDOW_H_
+#define SRC_PLATFORMS_GCN_GCN_WINDOW_H_
 
-#include "Platforms/gcn/gcnUtils.hpp"
-#include "Systems/Base/Rect.hpp"
+#include <guichan/widgets/container.hpp>
 
-static int xpos[] = {0, 4, 7, 11};
-static int ypos[] = {0, 4, 15, 19};
-ImageRect GCNWindow::s_border(IMG_VSCROLL_GREY, xpos, ypos);
+#include "platforms/gcn/gcn_graphics.h"
 
-// -----------------------------------------------------------------------
-// GCNWindow
-// -----------------------------------------------------------------------
-GCNWindow::GCNWindow(GCNPlatform* platform) : platform_(platform) {}
+class GCNPlatform;
+class Size;
 
-// -----------------------------------------------------------------------
+/**
+ * Base window. Later, this should be themed correctly. Default ugliness for
+ * now.
+ */
+class GCNWindow : public gcn::Container {
+ public:
+  explicit GCNWindow(GCNPlatform* platform);
+  ~GCNWindow();
 
-GCNWindow::~GCNWindow() {}
+  // Centers this GCNWindow in the rlvm window.
+  void centerInWindow(const Size& screen_size);
 
-// -----------------------------------------------------------------------
+  // Override from gcn::Container:
+  virtual void draw(gcn::Graphics* graphics);
 
-void GCNWindow::centerInWindow(const Size& screen_size) {
-  setPosition((screen_size.width() / 2) - (getWidth() / 2),
-              (screen_size.height() / 2) - (getHeight() / 2));
-}
+ protected:
+  // Our owning platform.
+  GCNPlatform* platform_;
 
-// -----------------------------------------------------------------------
+  // The border that's put around a window
+  static ImageRect s_border;
+};  // end of class GCNWindow
 
-void GCNWindow::draw(gcn::Graphics* graphics) {
-  GCNGraphics* g = static_cast<GCNGraphics*>(graphics);
-  g->drawImageRect(0, 0, getWidth(), getHeight(), s_border);
-
-  drawChildren(graphics);
-}
+#endif  // SRC_PLATFORMS_GCN_GCN_WINDOW_H_

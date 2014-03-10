@@ -33,7 +33,7 @@
 #include <iostream>
 #include <string>
 
-#include "Platforms/gtk/GtkRLVMInstance.hpp"
+#include "platforms/gtk/gtk_rlvm_instance.h"
 #include "Systems/Base/System.hpp"
 #include "Utilities/File.hpp"
 

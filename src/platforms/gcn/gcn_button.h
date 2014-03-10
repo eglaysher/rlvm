@@ -24,14 +24,14 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
-#define SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_BUTTON_H_
+#define SRC_PLATFORMS_GCN_GCN_BUTTON_H_
 
 #include <string>
 
 #include <guichan/widgets/button.hpp>
 
-#include "Platforms/gcn/GCNGraphics.hpp"
+#include "platforms/gcn/gcn_graphics.h"
 
 // Graphical button overriding the default GUIchan ugliness.
 //
@@ -57,4 +57,4 @@ class GCNButton : public gcn::Button {
   static ImageRect s_button_disabled;
 };  // end of class GCNButton
 
-#endif  // SRC_PLATFORMS_GCN_GCNBUTTON_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_BUTTON_H_

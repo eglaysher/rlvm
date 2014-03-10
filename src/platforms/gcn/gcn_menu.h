@@ -24,10 +24,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GCN_GCNMENU_HPP_
-#define SRC_PLATFORMS_GCN_GCNMENU_HPP_
+#ifndef SRC_PLATFORMS_GCN_GCN_MENU_H_
+#define SRC_PLATFORMS_GCN_GCN_MENU_H_
 
-#include "Platforms/gcn/GCNWindow.hpp"
+#include "platforms/gcn/gcn_window.h"
 
 #include <guichan/actionlistener.hpp>
 #include <string>
@@ -74,4 +74,4 @@ class GCNMenu : public GCNWindow, public gcn::ActionListener {
   std::vector<gcn::Widget*> widgets_to_delete_;
 };  // end of class GCNMenu
 
-#endif  // SRC_PLATFORMS_GCN_GCNMENU_HPP_
+#endif  // SRC_PLATFORMS_GCN_GCN_MENU_H_

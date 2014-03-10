@@ -24,8 +24,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_
-#define SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_
+#ifndef SRC_PLATFORMS_OSX_COCOARLVMINSTANCE_H_
+#define SRC_PLATFORMS_OSX_COCOARLVMINSTANCE_H_
 
 #include <string>
 #include <Foundation/Foundation.h>
@@ -57,4 +57,4 @@ class CocoaRLVMInstance : public RLVMInstance {
 // A helper method for converting between string representations.
 NSString* UTF8ToNSString(const std::string& in);
 
-#endif  // SRC_PLATFORMS_COCOA_COCOARLVMINSTANCE_HPP_
+#endif  // SRC_PLATFORMS_OSX_COCOARLVMINSTANCE_H_
