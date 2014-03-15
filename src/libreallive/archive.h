@@ -34,13 +34,14 @@
 #ifndef SRC_LIBREALLIVE_ARCHIVE_H_
 #define SRC_LIBREALLIVE_ARCHIVE_H_
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
+#include <map>
+#include <string>
+
 #include "libreallive/defs.h"
 #include "libreallive/scenario.h"
 #include "libreallive/filemap.h"
-
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <map>
-#include <string>
 
 namespace libreallive {
 

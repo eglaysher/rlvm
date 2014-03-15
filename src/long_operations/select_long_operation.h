@@ -27,9 +27,10 @@
 #ifndef SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
 
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 #include "machine/long_operation.h"
 #include "systems/base/colour.h"

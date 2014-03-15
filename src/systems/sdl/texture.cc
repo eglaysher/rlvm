@@ -30,15 +30,16 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-#include <iostream>
-#include <cstdio>
-#include <sstream>
-#include <fstream>
-#include <functional>
-#include <string>
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <string>
 
+#include "pygame/alphablit.h"
 #include "systems/base/colour.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_data.h"
@@ -48,8 +49,6 @@
 #include "systems/sdl/sdl_utils.h"
 #include "systems/sdl/shaders.h"
 #include "systems/sdl/texture.h"
-
-#include "pygame/alphablit.h"
 
 unsigned int Texture::s_screen_width = 0;
 unsigned int Texture::s_screen_height = 0;

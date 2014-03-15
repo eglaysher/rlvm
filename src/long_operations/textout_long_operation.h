@@ -28,10 +28,10 @@
 #ifndef SRC_LONG_OPERATIONS_TEXTOUT_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_TEXTOUT_LONG_OPERATION_H_
 
+#include <string>
+
 #include "machine/long_operation.h"
 #include "systems/base/event_listener.h"
-
-#include <string>
 
 class RLMachine;
 

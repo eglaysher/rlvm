@@ -27,11 +27,11 @@
 #ifndef SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_BUTTON_OBJECT_SELECT_LONG_OPERATION_H_
 
-#include "libreallive/gameexe.h"
-#include "machine/long_operation.h"
-
 #include <utility>
 #include <vector>
+
+#include "libreallive/gameexe.h"
+#include "machine/long_operation.h"
 
 class GraphicsObject;
 

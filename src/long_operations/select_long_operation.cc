@@ -26,10 +26,11 @@
 
 #include "long_operations/select_long_operation.h"
 
+#include <boost/shared_ptr.hpp>
+
 #include <iostream>
 #include <vector>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"

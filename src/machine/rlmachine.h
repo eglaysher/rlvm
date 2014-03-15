@@ -33,14 +33,14 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "libreallive/bytecode_fwd.h"
-#include "libreallive/scenario.h"
-
 #include <functional>
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "libreallive/bytecode_fwd.h"
+#include "libreallive/scenario.h"
 
 namespace libreallive {
 class Archive;

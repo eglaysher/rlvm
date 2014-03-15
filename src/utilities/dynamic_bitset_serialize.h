@@ -34,12 +34,12 @@
 // portable. This representation isn't that bad once you think about
 // how the data is going to be pumped through gzip.
 
-#include <ostream>
-#include <string>
-
 #include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/string.hpp>
+
+#include <ostream>
+#include <string>
 
 namespace boost {
 namespace serialization {

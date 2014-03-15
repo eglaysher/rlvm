@@ -27,10 +27,10 @@
 
 #include "modules/module_obj_creation.h"
 
+#include <boost/shared_ptr.hpp>
+
 #include <string>
 #include <cmath>
-
-#include <boost/shared_ptr.hpp>
 
 #include "machine/properties.h"
 #include "machine/rlmachine.h"

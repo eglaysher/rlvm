@@ -28,8 +28,9 @@
 #ifndef SRC_MACHINE_SERIALIZATION_H_
 #define SRC_MACHINE_SERIALIZATION_H_
 
-#include "machine/save_game_header.h"
 #include <boost/filesystem/path.hpp>
+
+#include "machine/save_game_header.h"
 
 class RLMachine;
 class Memory;

@@ -57,14 +57,15 @@
 
 #include "systems/base/koepac_voice_archive.h"
 
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/scoped_array.hpp>
+
 #include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/scoped_array.hpp>
 
 #include "utilities/exception.h"
 #include "xclannad/endian.hpp"

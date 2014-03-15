@@ -29,10 +29,10 @@
 
 #include <boost/serialization/access.hpp>
 
+#include <iosfwd>
+
 #include "systems/base/graphics_object_data.h"
 #include "utilities/lazy_array.h"
-
-#include <iosfwd>
 
 class GraphicsObject;
 

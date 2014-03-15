@@ -28,10 +28,11 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 
-#include <functional>
-#include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <functional>
+#include <vector>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"

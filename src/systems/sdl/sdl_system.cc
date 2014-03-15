@@ -27,8 +27,9 @@
 
 #include "systems/sdl/sdl_system.h"
 
-#include <sstream>
 #include <SDL/SDL.h>
+
+#include <sstream>
 
 #include "libreallive/defs.h"
 #include "libreallive/gameexe.h"

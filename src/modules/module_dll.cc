@@ -26,12 +26,12 @@
 
 #include "modules/module_dll.h"
 
+#include <string>
+
 #include "machine/general_operations.h"
 #include "machine/rlmachine.h"
 #include "machine/rloperation.h"
 #include "machine/rloperation/default_value.h"
-
-#include <string>
 
 namespace {
 

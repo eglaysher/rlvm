@@ -27,15 +27,16 @@
 
 #include "systems/base/graphics_system.h"
 
-#include <iostream>
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/deque.hpp>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/vector.hpp>
+
+#include <algorithm>
 #include <deque>
+#include <iostream>
 #include <iterator>
 #include <list>
 #include <sstream>

@@ -28,9 +28,10 @@
 #ifndef SRC_SYSTEMS_SDL_TEXTURE_H_
 #define SRC_SYSTEMS_SDL_TEXTURE_H_
 
-#include <string>
 #include <boost/scoped_array.hpp>
 #include <SDL/SDL_opengl.h>
+
+#include <string>
 
 struct SDL_Surface;
 class SDLSurface;

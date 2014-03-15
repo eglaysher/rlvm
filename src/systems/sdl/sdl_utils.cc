@@ -31,14 +31,14 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
+
+#include <cassert>
 #include <string>
 #include <sstream>
 
 #include "systems/base/system_error.h"
 #include "systems/base/rect.h"
 #include "systems/base/colour.h"
-
-#include <cassert>
 
 // -----------------------------------------------------------------------
 

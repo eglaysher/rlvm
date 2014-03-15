@@ -27,8 +27,9 @@
 
 #include "systems/sdl/sdl_event_system.h"
 
-#include <functional>
 #include <SDL/SDL.h>
+
+#include <functional>
 
 #include "machine/rlmachine.h"
 #include "systems/base/event_listener.h"

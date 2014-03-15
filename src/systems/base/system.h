@@ -28,14 +28,15 @@
 #ifndef SRC_SYSTEMS_BASE_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_SYSTEM_H_
 
-#include <map>
-#include <vector>
-#include <sstream>
-#include <string>
-#include <utility>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/filesystem/path.hpp>
+
+#include <map>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 class GraphicsSystem;
 class EventSystem;

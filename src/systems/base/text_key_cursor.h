@@ -28,11 +28,12 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_KEY_CURSOR_H_
 #define SRC_SYSTEMS_BASE_TEXT_KEY_CURSOR_H_
 
-#include "systems/base/rect.h"
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
+
+#include "systems/base/rect.h"
 
 class Surface;
 class System;

@@ -28,18 +28,18 @@
 #ifndef SRC_SYSTEMS_BASE_GAN_GRAPHICS_OBJECT_DATA_H_
 #define SRC_SYSTEMS_BASE_GAN_GRAPHICS_OBJECT_DATA_H_
 
-#include "systems/base/graphics_object_data.h"
-
-#include "machine/rlmachine.h"
-#include "machine/serialization.h"
-
 #include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
+
 #include <iosfwd>
 #include <string>
 #include <vector>
+
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
+#include "systems/base/graphics_object_data.h"
 
 class Surface;
 class System;

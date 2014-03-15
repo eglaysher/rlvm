@@ -29,13 +29,14 @@
 #ifndef SRC_LIBREALLIVE_ALLDEFS_H_
 #define SRC_LIBREALLIVE_ALLDEFS_H_
 
-#include <cstdio>
-#include <string>
-#include <map>
-#include <vector>
-#include <memory>
-#include <algorithm>
 #include <boost/ptr_container/ptr_list.hpp>
+
+#include <algorithm>
+#include <cstdio>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 using std::string;
 

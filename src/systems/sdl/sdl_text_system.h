@@ -28,11 +28,11 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 
-#include <map>
-#include <string>
-
 #include <boost/ptr_container/ptr_map.hpp>
 #include <SDL/SDL_ttf.h>
+
+#include <map>
+#include <string>
 
 #include "systems/base/text_system.h"
 

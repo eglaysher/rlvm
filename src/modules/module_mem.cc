@@ -27,6 +27,10 @@
 
 #include "modules/module_mem.h"
 
+// For copy_n, which isn't part of the C++ standard and doesn't come on
+// OSX.
+#include <boost/multi_array/algorithm.hpp>
+
 #include <algorithm>
 #include <cmath>
 #include <numeric>
@@ -37,10 +41,6 @@
 #include "machine/rloperation/complex_t.h"
 #include "machine/rloperation/rlop_store.h"
 #include "machine/rloperation/references.h"
-
-// For copy_n, which isn't part of the C++ standard and doesn't come on
-// OSX.
-#include <boost/multi_array/algorithm.hpp>
 
 // -----------------------------------------------------------------------
 

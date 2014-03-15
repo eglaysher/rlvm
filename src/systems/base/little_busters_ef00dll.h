@@ -39,10 +39,11 @@
 #ifndef SRC_SYSTEMS_BASE_LITTLE_BUSTERS_EF00DLL_H_
 #define SRC_SYSTEMS_BASE_LITTLE_BUSTERS_EF00DLL_H_
 
-#include "machine/reallive_dll.h"
+#include <boost/scoped_array.hpp>
 
 #include <string>
-#include <boost/scoped_array.hpp>
+
+#include "machine/reallive_dll.h"
 
 class RLMachine;
 

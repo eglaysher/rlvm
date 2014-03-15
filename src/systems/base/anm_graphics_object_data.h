@@ -28,16 +28,16 @@
 #ifndef SRC_SYSTEMS_BASE_ANM_GRAPHICS_OBJECT_DATA_H_
 #define SRC_SYSTEMS_BASE_ANM_GRAPHICS_OBJECT_DATA_H_
 
-#include "systems/base/graphics_object_data.h"
-
-#include <vector>
-#include <string>
 #include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include <vector>
+#include <string>
+
 #include "machine/rlmachine.h"
+#include "systems/base/graphics_object_data.h"
 
 class Surface;
 class System;

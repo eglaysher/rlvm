@@ -27,11 +27,12 @@
 
 #include "systems/base/system.h"
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>

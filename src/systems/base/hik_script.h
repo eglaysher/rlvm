@@ -27,11 +27,11 @@
 #ifndef SRC_SYSTEMS_BASE_HIK_SCRIPT_H_
 #define SRC_SYSTEMS_BASE_HIK_SCRIPT_H_
 
-#include <string>
-#include <vector>
-
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <string>
+#include <vector>
 
 #include "systems/base/rect.h"
 

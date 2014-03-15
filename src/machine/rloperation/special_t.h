@@ -23,6 +23,7 @@
 #ifndef SRC_MACHINE_RLOPERATION_SPECIAL_T_H_
 #define SRC_MACHINE_RLOPERATION_SPECIAL_T_H_
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -31,7 +32,6 @@
 #include "libreallive/expression_pieces.h"
 #include "utilities/exception.h"
 
-#include <sstream>
 
 // In bytecode, special tags can be any char, though they're usually
 // 0. Starting in at least Little Busters, some commands use a new format where

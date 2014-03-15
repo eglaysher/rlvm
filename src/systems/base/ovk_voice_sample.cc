@@ -57,11 +57,12 @@
 
 #include "systems/base/ovk_voice_sample.h"
 
+#include <vorbis/vorbisfile.h>
+
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <sstream>
-#include <vorbis/vorbisfile.h>
 
 #include "utilities/exception.h"
 #include "xclannad/endian.hpp"

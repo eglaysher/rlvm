@@ -26,14 +26,14 @@
 
 #include "GL/glew.h"
 
+#ifndef NDEBUG
+#include <iostream>
+#endif
+
 #include "systems/base/graphics_object.h"
 #include "systems/base/system_error.h"
 #include "systems/sdl/sdl_utils.h"
 #include "systems/sdl/shaders.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 namespace {
 

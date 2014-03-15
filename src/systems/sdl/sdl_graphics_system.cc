@@ -31,19 +31,21 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
-#include <algorithm>
+
+#if defined(__linux__)
+#include <SDL/SDL_image.h>
+#endif
+
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/scoped_ptr.hpp>
+
+#include <algorithm>
 #include <cstdio>
 #include <set>
 #include <sstream>
 #include <string>
 #include <vector>
-
-#if defined(__linux__)
-#include <SDL/SDL_image.h>
-#endif
 
 #include "base/notification_source.h"
 #include "libreallive/gameexe.h"

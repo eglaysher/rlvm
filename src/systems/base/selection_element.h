@@ -28,8 +28,9 @@
 #ifndef SRC_SYSTEMS_BASE_SELECTION_ELEMENT_H_
 #define SRC_SYSTEMS_BASE_SELECTION_ELEMENT_H_
 
-#include <functional>
 #include <boost/shared_ptr.hpp>
+
+#include <functional>
 
 #include "systems/base/rect.h"
 

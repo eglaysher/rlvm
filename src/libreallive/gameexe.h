@@ -35,13 +35,13 @@
 #ifndef SRC_LIBREALLIVE_GAMEEXE_H_
 #define SRC_LIBREALLIVE_GAMEEXE_H_
 
-#include <vector>
-#include <string>
-#include <sstream>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
 class Gameexe;
 class GameexeFilteringIterator;

@@ -28,9 +28,9 @@
 #ifndef SRC_EFFECTS_WIPE_EFFECT_H_
 #define SRC_EFFECTS_WIPE_EFFECT_H_
 
-#include "effects/effect.h"
-
 #include <boost/shared_ptr.hpp>
+
+#include "effects/effect.h"
 
 class GraphicsSystem;
 

@@ -28,15 +28,15 @@
 #ifndef SRC_SYSTEMS_BASE_GRAPHICS_OBJECT_OF_FILE_H_
 #define SRC_SYSTEMS_BASE_GRAPHICS_OBJECT_OF_FILE_H_
 
-#include "systems/base/graphics_object_data.h"
-
-#include "machine/rlmachine.h"
-#include "machine/serialization.h"
-
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
+
 #include <string>
+
+#include "machine/rlmachine.h"
+#include "machine/serialization.h"
+#include "systems/base/graphics_object_data.h"
 
 class System;
 class Surface;

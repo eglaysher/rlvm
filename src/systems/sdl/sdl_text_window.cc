@@ -27,11 +27,11 @@
 
 #include "systems/sdl/sdl_text_window.h"
 
-#include <string>
-#include <vector>
-
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
+
+#include <string>
+#include <vector>
 
 #include "libreallive/gameexe.h"
 #include "systems/base/colour.h"

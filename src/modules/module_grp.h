@@ -28,12 +28,12 @@
 #ifndef SRC_MODULES_MODULE_GRP_H_
 #define SRC_MODULES_MODULE_GRP_H_
 
-#include "machine/mapped_rlmodule.h"
-#include "machine/rloperation.h"
-
 #include <deque>
 #include <string>
 #include <vector>
+
+#include "machine/mapped_rlmodule.h"
+#include "machine/rloperation.h"
 
 class GraphicsStackFrame;
 

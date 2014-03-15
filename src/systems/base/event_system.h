@@ -28,14 +28,15 @@
 #ifndef SRC_SYSTEMS_BASE_EVENT_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_EVENT_SYSTEM_H_
 
-#include "systems/base/rltimer.h"
-#include "systems/base/rect.h"
-
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
+
 #include <functional>
 #include <queue>
 #include <set>
+
+#include "systems/base/rltimer.h"
+#include "systems/base/rect.h"
 
 class RLMachine;
 

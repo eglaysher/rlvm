@@ -28,16 +28,15 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 #define SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 
-#include <string>
-
-#include "systems/base/sound_system.h"
-
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <SDL/SDL_mixer.h>
 
+#include <string>
+
+#include "systems/base/sound_system.h"
 #include "xclannad/wavfile.h"
 
 // Encapsulates access to SDLMussic.

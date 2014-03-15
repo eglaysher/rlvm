@@ -27,10 +27,11 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 #define SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 
-#include <iosfwd>
-#include <string>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <iosfwd>
+#include <string>
 
 #include "systems/base/text_waku.h"
 

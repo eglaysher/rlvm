@@ -28,11 +28,11 @@
 #ifndef SRC_SYSTEMS_BASE_SURFACE_H_
 #define SRC_SYSTEMS_BASE_SURFACE_H_
 
-#include "systems/base/rect.h"
-#include "systems/base/tone_curve.h"
-
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include "systems/base/rect.h"
+#include "systems/base/tone_curve.h"
 
 class RGBColour;
 class RGBAColour;

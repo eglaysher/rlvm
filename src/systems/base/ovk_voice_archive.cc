@@ -57,13 +57,14 @@
 
 #include "systems/base/ovk_voice_archive.h"
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
+
 #include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 #include "systems/base/ovk_voice_sample.h"
 #include "utilities/exception.h"

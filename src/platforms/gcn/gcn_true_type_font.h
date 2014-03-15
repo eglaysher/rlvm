@@ -27,12 +27,12 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 #define SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 
+#include <SDL/SDL_ttf.h>
+#include <boost/shared_ptr.hpp>
+
 #include <map>
 #include <string>
 #include <utility>
-
-#include <SDL/SDL_ttf.h>
-#include <boost/shared_ptr.hpp>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"

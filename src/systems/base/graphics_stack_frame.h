@@ -28,11 +28,12 @@
 #ifndef SRC_SYSTEMS_BASE_GRAPHICS_STACK_FRAME_H_
 #define SRC_SYSTEMS_BASE_GRAPHICS_STACK_FRAME_H_
 
-#include "systems/base/rect.h"
-
 #include <boost/serialization/access.hpp>
+
 #include <iosfwd>
 #include <string>
+
+#include "systems/base/rect.h"
 
 // -----------------------------------------------------------------------
 

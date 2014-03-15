@@ -32,17 +32,19 @@
 // -----------------------------------------------------------------------
 
 #include "libreallive/filemap.h"
+
 #include <fcntl.h>
 #ifndef O_BINARY
 const int O_BINARY = 0;
 #endif
 const HANDLE INVALID_HANDLE_VALUE = -1;
 
-#include <algorithm>
 #include <errno.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <algorithm>
 #include <string>
 
 namespace libreallive {

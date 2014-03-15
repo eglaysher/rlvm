@@ -28,10 +28,10 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SURFACE_H_
 #define SRC_SYSTEMS_SDL_SDL_SURFACE_H_
 
-#include <vector>
-
 #include <boost/scoped_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+
+#include <vector>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"

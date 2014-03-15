@@ -28,13 +28,14 @@
 #define SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
 
 #include <boost/scoped_ptr.hpp>
-#include <vector>
 
 #include <guichan/actionlistener.hpp>
 #include <guichan/widgets/listbox.hpp>
 #include <guichan/selectionlistener.hpp>
 #include <guichan/listmodel.hpp>
 #include <guichan/widgets/button.hpp>
+
+#include <vector>
 
 #include "platforms/gcn/gcn_window.h"
 

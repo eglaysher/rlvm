@@ -28,17 +28,17 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 
-#include "systems/base/rect.h"
-#include "systems/base/colour.h"
+#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include <functional>
 #include <vector>
 #include <string>
 #include <utility>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+
+#include "systems/base/rect.h"
+#include "systems/base/colour.h"
 
 class Gameexe;
 class GameexeInterpretObject;

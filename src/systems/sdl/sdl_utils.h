@@ -28,8 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_UTILS_H_
 #define SRC_SYSTEMS_SDL_SDL_UTILS_H_
 
-#include <string>
 #include <SDL/SDL.h>
+
+#include <string>
 
 class Rect;
 class RGBColour;

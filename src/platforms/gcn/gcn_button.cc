@@ -26,9 +26,10 @@
 
 #include "platforms/gcn/gcn_button.h"
 
-#include <string>
 #include <guichan/exception.hpp>
 #include <guichan/font.hpp>
+
+#include <string>
 
 #include "platforms/gcn/gcn_utils.h"
 

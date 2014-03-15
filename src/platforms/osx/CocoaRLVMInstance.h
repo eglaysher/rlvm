@@ -27,8 +27,9 @@
 #ifndef SRC_PLATFORMS_OSX_COCOARLVMINSTANCE_H_
 #define SRC_PLATFORMS_OSX_COCOARLVMINSTANCE_H_
 
-#include <string>
 #include <Foundation/Foundation.h>
+
+#include <string>
 
 #include "machine/rlvm_instance.h"
 

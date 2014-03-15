@@ -23,12 +23,13 @@
 #ifndef SRC_UTILITIES_LAZY_ARRAY_H_
 #define SRC_UTILITIES_LAZY_ARRAY_H_
 
-#include <algorithm>
-#include <ostream>
-#include <stdexcept>
 #include <boost/scoped_array.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/serialization/split_member.hpp>
+
+#include <algorithm>
+#include <ostream>
+#include <stdexcept>
 
 // Forward declaration
 template <typename T>

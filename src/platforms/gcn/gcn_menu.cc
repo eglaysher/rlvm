@@ -26,8 +26,9 @@
 
 #include "platforms/gcn/gcn_menu.h"
 
-#include <algorithm>
 #include <guichan/widgets/button.hpp>
+
+#include <algorithm>
 #include <string>
 #include <vector>
 

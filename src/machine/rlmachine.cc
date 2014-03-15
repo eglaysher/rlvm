@@ -25,11 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>  // NOLINT
+#include <boost/archive/text_oarchive.hpp>  // NOLINT
+#include <boost/serialization/vector.hpp>   // NOLINT
 
 #include "machine/rlmachine.h"
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/assign.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <functional>
 #include <string>
@@ -37,10 +42,6 @@
 #include <iostream>
 #include <iterator>
 #include <vector>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/assign.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/path.hpp>
 
 #include "libreallive/archive.h"
 #include "libreallive/bytecode.h"

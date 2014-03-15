@@ -34,12 +34,12 @@
 
 #include "libreallive/expression.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/tokenizer.hpp>
+
 #include <iomanip>
 #include <sstream>
 #include <string>
-
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/tokenizer.hpp>
 
 #include "libreallive/defs.h"
 #include "libreallive/expression_pieces.h"

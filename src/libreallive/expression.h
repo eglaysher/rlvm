@@ -35,11 +35,11 @@
 #ifndef SRC_LIBREALLIVE_EXPRESSION_H_
 #define SRC_LIBREALLIVE_EXPRESSION_H_
 
-#include "machine/reference.h"
-
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "machine/reference.h"
 
 class RLMachine;
 

@@ -27,9 +27,9 @@
 #ifndef SRC_SYSTEMS_BASE_LITTLE_BUSTERS_PT00DLL_H_
 #define SRC_SYSTEMS_BASE_LITTLE_BUSTERS_PT00DLL_H_
 
-#include "machine/reallive_dll.h"
-
 #include <string>
+
+#include "machine/reallive_dll.h"
 
 // This file exists to suppress spew. Comment once at the beginning that the
 // baseball DLL hasn't been reverse engineered and then ignore calls.

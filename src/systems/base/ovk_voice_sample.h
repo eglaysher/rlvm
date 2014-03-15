@@ -27,9 +27,10 @@
 #ifndef SRC_SYSTEMS_BASE_OVK_VOICE_SAMPLE_H_
 #define SRC_SYSTEMS_BASE_OVK_VOICE_SAMPLE_H_
 
-#include "systems/base/voice_archive.h"
 #include <boost/filesystem/path.hpp>
 #include <vorbis/vorbisfile.h>
+
+#include "systems/base/voice_archive.h"
 
 class OVKVoiceSample : public VoiceSample {
  public:

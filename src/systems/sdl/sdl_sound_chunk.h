@@ -28,14 +28,14 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 #define SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 
-#include <map>
-
 #include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include <SDL/SDL_mixer.h>
+
+#include <map>
 
 // -----------------------------------------------------------------------
 

@@ -27,6 +27,14 @@
 
 #include "systems/sdl/sdl_text_system.h"
 
+#include <SDL/SDL_ttf.h>
+
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 #include "systems/base/graphics_system.h"
 #include "systems/base/rect.h"
 #include "systems/base/system_error.h"
@@ -38,13 +46,6 @@
 #include "utilities/exception.h"
 #include "utilities/find_font_file.h"
 #include "libreallive/gameexe.h"
-
-#include <SDL/SDL_ttf.h>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
-#include <string>
-#include <vector>
 
 SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
     : TextSystem(system, gameexe), sdl_system_(system) {

@@ -28,11 +28,12 @@
 #ifndef SRC_MACHINE_MEMORY_H_
 #define SRC_MACHINE_MEMORY_H_
 
-#include <algorithm>
 #include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <algorithm>
 #include <map>
 #include <string>
 #include <utility>

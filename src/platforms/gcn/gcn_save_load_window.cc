@@ -26,9 +26,10 @@
 
 #include "platforms/gcn/gcn_save_load_window.h"
 
-#include <algorithm>
 #include <boost/date_time/posix_time/time_formatters_limited.hpp>
 #include <boost/filesystem.hpp>
+
+#include <algorithm>
 #include <iomanip>
 #include <limits>
 #include <sstream>

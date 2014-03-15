@@ -28,11 +28,12 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 
-#include "systems/base/text_window.h"
-
-#include <string>
 #include <boost/shared_ptr.hpp>
 #include <SDL/SDL_ttf.h>
+
+#include <string>
+
+#include "systems/base/text_window.h"
 
 class SDLSurface;
 class SDLSystem;

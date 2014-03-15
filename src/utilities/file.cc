@@ -27,10 +27,11 @@
 
 #include "utilities/file.h"
 
-#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+
+#include <algorithm>
 #include <cctype>
 #include <fstream>
 #include <iterator>

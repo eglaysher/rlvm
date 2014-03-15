@@ -28,13 +28,14 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SOUND_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_SOUND_SYSTEM_H_
 
-#include "systems/base/sound_system.h"
-#include "lru_cache.hpp"
-
-#include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <SDL/SDL.h>
+
+#include <string>
+
+#include "systems/base/sound_system.h"
+#include "lru_cache.hpp"
 
 class SDLSoundChunk;
 class SDLMusic;

@@ -28,14 +28,15 @@
 #ifndef SRC_SYSTEMS_BASE_RLBABEL_DLL_H_
 #define SRC_SYSTEMS_BASE_RLBABEL_DLL_H_
 
+#include <boost/shared_ptr.hpp>
+
+#include <cstdint>
+#include <string>
+#include <vector>
+
 #include "machine/reallive_dll.h"
 #include "machine/reference.h"
 #include "systems/base/rect.h"
-
-#include <boost/shared_ptr.hpp>
-#include <stdint.h>
-#include <string>
-#include <vector>
 
 class TextWindow;
 

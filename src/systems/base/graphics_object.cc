@@ -32,11 +32,12 @@
 
 #include "systems/base/graphics_object.h"
 
-#include <numeric>
 #include <boost/serialization/scoped_ptr.hpp>
 #include <boost/serialization/shared_ptr.hpp>
-#include <string>
+
 #include <algorithm>
+#include <numeric>
+#include <string>
 #include <vector>
 
 #include "systems/base/graphics_object_data.h"

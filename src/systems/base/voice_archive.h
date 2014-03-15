@@ -27,10 +27,11 @@
 #ifndef SRC_SYSTEMS_BASE_VOICE_ARCHIVE_H_
 #define SRC_SYSTEMS_BASE_VOICE_ARCHIVE_H_
 
-#include <vector>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <vector>
 
 class VoiceArchive;
 

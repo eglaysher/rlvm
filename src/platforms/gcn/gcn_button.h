@@ -27,9 +27,9 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_BUTTON_H_
 #define SRC_PLATFORMS_GCN_GCN_BUTTON_H_
 
-#include <string>
-
 #include <guichan/widgets/button.hpp>
+
+#include <string>
 
 #include "platforms/gcn/gcn_graphics.h"
 

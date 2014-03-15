@@ -27,12 +27,14 @@
 
 #include "modules/module_sys_save.h"
 
-#include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/multi_array/algorithm.hpp>  // For copy_n
 #include <boost/shared_ptr.hpp>
+
+#include <algorithm>
 #include <limits>
 #include <string>
 
@@ -55,10 +57,6 @@
 #include "systems/base/system.h"
 #include "libreallive/intmemref.h"
 #include "utf8cpp/utf8.h"
-
-// For copy_n, which isn't part of the C++ standard and doesn't come on
-// OSX.
-#include <boost/multi_array/algorithm.hpp>
 
 using boost::starts_with;
 using boost::ends_with;

@@ -28,12 +28,12 @@
 #ifndef SRC_UTILITIES_FILE_H_
 #define SRC_UTILITIES_FILE_H_
 
-#include <string>
-#include <vector>
-#include <iosfwd>
-
 #include <boost/scoped_array.hpp>
 #include <boost/filesystem.hpp>
+
+#include <iosfwd>
+#include <string>
+#include <vector>
 
 class Gameexe;
 class RLMachine;

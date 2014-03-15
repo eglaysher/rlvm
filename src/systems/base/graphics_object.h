@@ -28,15 +28,16 @@
 #ifndef SRC_SYSTEMS_BASE_GRAPHICS_OBJECT_H_
 #define SRC_SYSTEMS_BASE_GRAPHICS_OBJECT_H_
 
-#include "systems/base/colour.h"
-#include "systems/base/rect.h"
-
-#include <string>
-#include <vector>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/version.hpp>
+
+#include <string>
+#include <vector>
+
+#include "systems/base/colour.h"
+#include "systems/base/rect.h"
 
 class RLMachine;
 class GraphicsObject;

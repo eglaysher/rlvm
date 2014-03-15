@@ -27,9 +27,9 @@
 #ifndef SRC_SYSTEMS_BASE_VOICE_CACHE_H_
 #define SRC_SYSTEMS_BASE_VOICE_CACHE_H_
 
-#include "lru_cache.hpp"
-
 #include <boost/shared_ptr.hpp>
+
+#include "lru_cache.hpp"
 
 class SoundSystem;
 class VoiceArchive;

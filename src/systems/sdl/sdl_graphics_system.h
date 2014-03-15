@@ -28,15 +28,15 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 
+#include <boost/shared_ptr.hpp>
+#include <SDL/SDL_opengl.h>
+
 #include <set>
 #include <string>
 
-#include <boost/shared_ptr.hpp>
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
 #include "systems/base/graphics_system.h"
-
-#include <SDL/SDL_opengl.h>
 
 struct SDL_Surface;
 

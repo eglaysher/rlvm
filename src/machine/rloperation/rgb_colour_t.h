@@ -27,11 +27,11 @@
 #ifndef SRC_MACHINE_RLOPERATION_RGB_COLOUR_T_H_
 #define SRC_MACHINE_RLOPERATION_RGB_COLOUR_T_H_
 
-#include "machine/rloperation.h"
-#include "systems/base/colour.h"
-
 #include <string>
 #include <vector>
+
+#include "machine/rloperation.h"
+#include "systems/base/colour.h"
 
 struct RGBColour_T {
   typedef RGBAColour type;

@@ -27,10 +27,10 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_UTILS_H_
 #define SRC_PLATFORMS_GCN_GCN_UTILS_H_
 
-#include "systems/base/rect.h"
-
 #include <guichan/image.hpp>
 #include <guichan/rectangle.hpp>
+
+#include "systems/base/rect.h"
 
 enum ThemeImage {
   IMG_BUTTON_DISABLED = 0,

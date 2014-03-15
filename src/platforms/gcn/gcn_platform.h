@@ -27,12 +27,6 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 #define SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 
-#include "systems/base/platform.h"
-#include "systems/base/renderable.h"
-#include "platforms/gcn/gcn_menu.h"
-#include "platforms/gcn/gcn_window.h"
-#include "platforms/gcn/gcn_save_load_window.h"
-
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -43,6 +37,12 @@
 
 #include <string>
 #include <vector>
+
+#include "systems/base/platform.h"
+#include "systems/base/renderable.h"
+#include "platforms/gcn/gcn_menu.h"
+#include "platforms/gcn/gcn_window.h"
+#include "platforms/gcn/gcn_save_load_window.h"
 
 class Gameexe;
 class GCNPlatformBlocker;

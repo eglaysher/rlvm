@@ -26,14 +26,14 @@
 
 #include "machine/reallive_dll.h"
 
+#include <string>
+#include <sstream>
+
 #include "systems/base/little_busters_ef00dll.h"
 #include "systems/base/little_busters_pt00dll.h"
 #include "systems/base/tomoyo_after_dt00dll.h"
 #include "systems/base/rlbabel_dll.h"
 #include "utilities/exception.h"
-
-#include <string>
-#include <sstream>
 
 using std::ostringstream;
 

@@ -25,8 +25,8 @@
 //
 // -----------------------------------------------------------------------
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>  // NOLINT
+#include <boost/archive/text_oarchive.hpp>  // NOLINT
 
 #include "machine/stack_frame.h"
 

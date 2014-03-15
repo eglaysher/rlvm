@@ -27,12 +27,13 @@
 
 #include "systems/base/tone_curve.h"
 
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/scoped_array.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <boost/scoped_array.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 #include "libreallive/gameexe.h"
 #include "libreallive/intmemref.h"
@@ -42,8 +43,6 @@
 #include "utilities/file.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
-
-#include <iostream>
 
 using boost::scoped_array;
 

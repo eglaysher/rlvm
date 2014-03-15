@@ -28,19 +28,19 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_TEXT_SYSTEM_H_
 
-#include "systems/base/event_listener.h"
-
-#include "machine/long_operation.h"
-
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/shared_ptr.hpp>
-#include <stdint.h>
+
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
+
+#include "machine/long_operation.h"
+#include "systems/base/event_listener.h"
 
 class Gameexe;
 class Memory;

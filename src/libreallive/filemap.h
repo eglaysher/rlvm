@@ -34,8 +34,6 @@
 #ifndef SRC_LIBREALLIVE_FILEMAP_H_
 #define SRC_LIBREALLIVE_FILEMAP_H_
 
-#include "libreallive/defs.h"
-
 #include <stdio.h>
 #include <string>
 
@@ -44,6 +42,8 @@
 #else
 typedef int HANDLE;
 #endif
+
+#include "libreallive/defs.h"
 
 namespace libreallive {
 
