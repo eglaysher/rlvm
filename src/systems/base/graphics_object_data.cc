@@ -34,8 +34,6 @@
 #include "systems/base/surface.h"
 #include "systems/base/rect.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // GraphicsObjectData
 // -----------------------------------------------------------------------
@@ -75,18 +73,18 @@ void GraphicsObjectData::render(const GraphicsObject& go,
 
     if (tree) {
       objectInfo(*tree);
-      *tree << "  Rendering " << src << " to " << dst << endl;
+      *tree << "  Rendering " << src << " to " << dst << std::endl;
       if (parent) {
         *tree << "  Parent: ";
         PrintGraphicsObjectToTree(*parent, tree);
-        *tree << endl;
+        *tree << std::endl;
       }
 
       *tree << "  Properties: ";
       if (alpha != 255)
         *tree << "(alpha=" << alpha << ") ";
       PrintGraphicsObjectToTree(go, tree);
-      *tree << endl;
+      *tree << std::endl;
     }
 
     if (parent && parent->hasOwnClip()) {
@@ -107,8 +105,9 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       src = src.applyInset(inset);
 
       if (tree) {
-        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect() << endl
-              << "  After clipping: " << src << " to " << dst << endl;
+        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect()
+              << std::endl
+              << "  After clipping: " << src << " to " << dst << std::endl;
       }
     }
 
@@ -117,8 +116,9 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       src = src.applyInset(go.ownClipRect());
 
       if (tree) {
-        *tree << "  Internal Clipping Rect: " << go.ownClipRect() << endl
-              << "  After internal clipping: " << src << " to " << dst << endl;
+        *tree << "  Internal Clipping Rect: " << go.ownClipRect() << std::endl
+              << "  After internal clipping: " << src << " to " << dst
+              << std::endl;
       }
     }
 
@@ -137,8 +137,8 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       src = src.applyInset(inset);
 
       if (tree) {
-        *tree << "  Clipping Rect: " << go.clipRect() << endl
-              << "  After clipping: " << src << " to " << dst << endl;
+        *tree << "  Clipping Rect: " << go.clipRect() << std::endl
+              << "  After clipping: " << src << " to " << dst << std::endl;
       }
     }
 

@@ -51,8 +51,6 @@
 
 #include "pygame/alphablit.h"
 
-using namespace std;
-
 unsigned int Texture::s_screen_width = 0;
 unsigned int Texture::s_screen_height = 0;
 
@@ -288,15 +286,15 @@ void Texture::reupload(SDL_Surface* surface,
 // -----------------------------------------------------------------------
 
 std::string readTextFile(const std::string& file) {
-  ifstream ifs(file.c_str());
+  std::ifstream ifs(file.c_str());
   if (!ifs) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Can't open text file: " << file;
     throw SystemError(oss.str());
   }
 
-  string out, line;
-  while (getline(ifs, line)) {
+  std::string out, line;
+  while (std::getline(ifs, line)) {
     out += line;
     out += '\n';
   }
@@ -311,7 +309,7 @@ void printARBLog(GLhandleARB obj) {
   GLsizei size = 0;
   glGetInfoLogARB(obj, 256, &size, str);
   if (size != 0) {
-    cerr << "Log: " << str << endl;
+    std::cerr << "Log: " << str << std::endl;
   }
 }
 
@@ -592,7 +590,7 @@ void Texture::renderToScreen(const Rect& src,
   glBindTexture(GL_TEXTURE_2D, texture_id_);
 
   // Blend when we have less opacity
-  if (find_if(opacity, opacity + 4, [](int o) { return o < 255; }) !=
+  if (std::find_if(opacity, opacity + 4, [](int o) { return o < 255; }) !=
       opacity + 4) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
@@ -706,7 +704,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
         break;
       }
       default: {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "Invalid composite_mode in render: " << go.compositeMode();
         throw SystemError(oss.str());
       }

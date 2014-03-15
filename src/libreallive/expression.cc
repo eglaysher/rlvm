@@ -47,8 +47,6 @@
 #include "machine/reference.h"
 #include "machine/rlmachine.h"
 
-using namespace std;
-
 namespace {
 
 std::string IntToBytecode(int val) {
@@ -210,7 +208,7 @@ std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
     std::unique_ptr<ExpressionPiece> location = get_expression(src);
 
     if (src[0] != ']') {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_token"
          << " (']' expected)";
       throw Error(ss.str());
@@ -222,9 +220,9 @@ std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
   } else if (src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_token");
   } else {
-    ostringstream err;
-    err << "Unknown toke type 0x" << hex << (short)src[0]
-        << " in get_expr_token" << endl;
+    std::ostringstream err;
+    err << "Unknown toke type 0x" << std::hex << (short)src[0]
+        << " in get_expr_token" << std::endl;
     throw Error(err.str());
   }
 }
@@ -245,7 +243,7 @@ std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src) {
     src++;
     std::unique_ptr<ExpressionPiece> p = get_expr_bool(src);
     if (src[0] != ')') {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << "Unexpected character '" << src[0] << "' in get_expr_term"
          << " (')' expected)";
       throw Error(ss.str());
@@ -255,8 +253,8 @@ std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src) {
   } else if (src[0] == 0) {
     throw Error("Unexpected end of buffer in get_expr_term");
   } else {
-    ostringstream err;
-    err << "Unknown token type 0x" << hex << (short)src[0]
+    std::ostringstream err;
+    err << "Unknown token type 0x" << std::hex << (short)src[0]
         << " in get_expr_term";
     throw Error(err.str());
   }
@@ -362,12 +360,12 @@ std::unique_ptr<ExpressionPiece> get_expression(const char*& src) {
 
 // Parses an expression of the form [dest] = [source expression];
 std::unique_ptr<ExpressionPiece> get_assignment(const char*& src) {
-  unique_ptr<ExpressionPiece> itok(get_expr_term(src));
+  std::unique_ptr<ExpressionPiece> itok(get_expr_term(src));
   int op = src[1];
   src += 2;
-  unique_ptr<ExpressionPiece> etok(get_expression(src));
+  std::unique_ptr<ExpressionPiece> etok(get_expression(src));
   if (op >= 0x14 && op <= 0x24) {
-    return unique_ptr<ExpressionPiece>(
+    return std::unique_ptr<ExpressionPiece>(
         new AssignmentExpressionOperator(op, std::move(itok), std::move(etok)));
   } else {
     throw Error("Undefined assignment in get_assignment");
@@ -411,7 +409,7 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
   } else if (*src == 'a') {
     // @todo Cleanup below.
     const char* end = src;
-    unique_ptr<ComplexExpressionPiece> cep;
+    std::unique_ptr<ComplexExpressionPiece> cep;
 
     if (*end++ == 'a') {
       int tag = *end++;
@@ -428,7 +426,7 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
       if (*end != '(') {
         // We have a single parameter in this special expression;
         cep->addContainedPiece(get_data(end));
-        return unique_ptr<ExpressionPiece>(cep.release());
+        return std::unique_ptr<ExpressionPiece>(cep.release());
       } else {
         end++;
       }
@@ -440,7 +438,7 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
       cep->addContainedPiece(get_data(end));
     }
 
-    return unique_ptr<ExpressionPiece>(cep.release());
+    return std::unique_ptr<ExpressionPiece>(cep.release());
   } else {
     return get_expression(src);
   }
@@ -452,13 +450,13 @@ std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src) {
     return get_data(src);
   } else if (*src == '(') {
     ++src;
-    unique_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
+    std::unique_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
 
     while (*src != ')') {
       cep->addContainedPiece(get_data(src));
     }
 
-    return unique_ptr<ExpressionPiece>(cep.release());
+    return std::unique_ptr<ExpressionPiece>(cep.release());
   } else {
     return get_expression(src);
   }
@@ -469,10 +467,10 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
   // rldev manual.
   if (boost::starts_with(in, "###PRINT(")) {
     const char* expression_start = in.c_str() + 9;
-    unique_ptr<ExpressionPiece> piece(get_expression(expression_start));
+    std::unique_ptr<ExpressionPiece> piece(get_expression(expression_start));
 
     if (*expression_start != ')') {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << "Unexpected character '" << *expression_start
          << "' in evaluatePRINT (')' expected)";
       throw Error(ss.str());
@@ -500,7 +498,7 @@ std::string parsableToPrintableString(const std::string& src) {
     if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']') {
       output.push_back(tok);
     } else {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << std::hex << std::setw(2) << std::setfill('0') << int(tok);
       output += ss.str();
     }
@@ -527,7 +525,7 @@ std::string printableToParsableString(const std::string& src) {
       output.push_back(tok[0]);
     } else {
       int charToAdd;
-      istringstream ss(tok);
+      std::istringstream ss(tok);
       ss >> std::hex >> charToAdd;
       output.push_back((char)charToAdd);
     }
@@ -609,8 +607,8 @@ IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
   return IntReferenceIterator(machine.storeRegisterAddress());
 }
 
-unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
-  return unique_ptr<ExpressionPiece>(new StoreRegisterExpressionPiece);
+std::unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new StoreRegisterExpressionPiece);
 }
 
 // -----------------------------------------------------------------------
@@ -721,7 +719,7 @@ std::string MemoryReference::getDebugValue(RLMachine& machine) const {
 }
 
 std::string MemoryReference::getDebugString() const {
-  ostringstream ret;
+  std::ostringstream ret;
 
   if (type == STRS_LOCATION) {
     ret << "strS[";
@@ -809,7 +807,7 @@ std::string UniaryExpressionOperator::getDebugValue(RLMachine& machine) const {
 }
 
 std::string UniaryExpressionOperator::getDebugString() const {
-  ostringstream str;
+  std::ostringstream str;
   if (operation == 0x01) {
     str << "-";
   }
@@ -827,8 +825,8 @@ std::unique_ptr<ExpressionPiece> UniaryExpressionOperator::clone() const {
 
 BinaryExpressionOperator::BinaryExpressionOperator(
     char inOperation,
-    unique_ptr<ExpressionPiece> lhs,
-    unique_ptr<ExpressionPiece> rhs)
+    std::unique_ptr<ExpressionPiece> lhs,
+    std::unique_ptr<ExpressionPiece> rhs)
     : operation(inOperation),
       leftOperand(std::move(lhs)),
       rightOperand(std::move(rhs)) {}
@@ -885,7 +883,7 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
     case 61:
       return lhs || rhs;
     default: {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << "Invalid operator " << (int)operation << " in expression!";
       throw Error(ss.str());
     }
@@ -907,7 +905,7 @@ std::string BinaryExpressionOperator::getDebugValue(RLMachine& machine) const {
 }
 
 std::string BinaryExpressionOperator::getDebugString() const {
-  ostringstream str;
+  std::ostringstream str;
   str << leftOperand->getDebugString();
   str << " ";
 
@@ -980,7 +978,7 @@ std::string BinaryExpressionOperator::getDebugString() const {
       str << "||";
       break;
     default: {
-      ostringstream ss;
+      std::ostringstream ss;
       ss << "Invalid operator " << (int)operation << " in expression!";
       throw Error(ss.str());
     }
@@ -1005,8 +1003,8 @@ std::unique_ptr<ExpressionPiece> BinaryExpressionOperator::clone() const {
 
 AssignmentExpressionOperator::AssignmentExpressionOperator(
     char op,
-    unique_ptr<ExpressionPiece> lhs,
-    unique_ptr<ExpressionPiece> rhs)
+    std::unique_ptr<ExpressionPiece> lhs,
+    std::unique_ptr<ExpressionPiece> rhs)
     : BinaryExpressionOperator(op, std::move(lhs), std::move(rhs)) {}
 
 AssignmentExpressionOperator::~AssignmentExpressionOperator() {}
@@ -1031,8 +1029,8 @@ std::string AssignmentExpressionOperator::getDebugValue(RLMachine& machine)
   return "<assignment>";
 }
 
-unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
-  return unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
+std::unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
+  return std::unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
       operation, leftOperand->clone(), rightOperand->clone()));
 }
 
@@ -1071,11 +1069,11 @@ std::string ComplexExpressionPiece::getDebugString() const {
   return s;
 }
 
-unique_ptr<ExpressionPiece> ComplexExpressionPiece::clone() const {
+std::unique_ptr<ExpressionPiece> ComplexExpressionPiece::clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   for (auto const& piece : contained_pieces_)
     cep->contained_pieces_.push_back(piece->clone());
-  return unique_ptr<ExpressionPiece>(cep);
+  return std::unique_ptr<ExpressionPiece>(cep);
 }
 
 // -----------------------------------------------------------------------
@@ -1100,7 +1098,7 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
 }
 
 std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
-  ostringstream oss;
+  std::ostringstream oss;
 
   oss << int(overloadTag) << ":{";
 
@@ -1121,7 +1119,7 @@ std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
 }
 
 std::string SpecialExpressionPiece::getDebugString() const {
-  ostringstream oss;
+  std::ostringstream oss;
 
   oss << int(overloadTag) << ":{";
 
@@ -1140,11 +1138,11 @@ std::string SpecialExpressionPiece::getDebugString() const {
   return oss.str();
 }
 
-unique_ptr<ExpressionPiece> SpecialExpressionPiece::clone() const {
+std::unique_ptr<ExpressionPiece> SpecialExpressionPiece::clone() const {
   SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
   for (auto const& piece : contained_pieces_)
     cep->contained_pieces_.push_back(piece->clone());
-  return unique_ptr<ExpressionPiece>(cep);
+  return std::unique_ptr<ExpressionPiece>(cep);
 }
 
 }  // namespace libreallive

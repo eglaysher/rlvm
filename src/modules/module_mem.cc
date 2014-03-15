@@ -42,9 +42,6 @@
 // OSX.
 #include <boost/multi_array/algorithm.hpp>
 
-using namespace std;
-using namespace boost;
-
 // -----------------------------------------------------------------------
 
 namespace {
@@ -57,7 +54,7 @@ namespace {
 struct setarray : public RLOp_Void_2<IntReference_T, Argc_T<IntConstant_T>> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
-                  vector<int> values) {
+                  std::vector<int> values) {
     copy(values.begin(), values.end(), origin);
   }
 };
@@ -102,8 +99,9 @@ struct cpyrng
                   IntReferenceIterator source,
                   IntReferenceIterator dest,
                   int count) {
-    vector<int> tmpCopy;
-    boost::detail::multi_array::copy_n(source, count, back_inserter(tmpCopy));
+    std::vector<int> tmpCopy;
+    boost::detail::multi_array::copy_n(
+        source, count, std::back_inserter(tmpCopy));
     std::copy(tmpCopy.begin(), tmpCopy.end(), dest);
   }
 };
@@ -117,9 +115,11 @@ struct setarray_stepped
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
                   int step,
-                  vector<int> values) {
+                  std::vector<int> values) {
     // Sigh. No more simple STL statements
-    for (vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<int>::iterator it = values.begin();
+         it != values.end();
+         ++it) {
       *origin = *it;
       advance(origin, step);
     }
@@ -172,8 +172,8 @@ struct cpyvars : public RLOp_Void_3<IntReference_T,
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
                   int offset,
-                  vector<IntReferenceIterator> values) {
-    for (vector<IntReferenceIterator>::iterator it = values.begin();
+                  std::vector<IntReferenceIterator> values) {
+    for (std::vector<IntReferenceIterator>::iterator it = values.begin();
          it != values.end();
          ++it) {
       IntReferenceIterator irIt = *it;
@@ -202,16 +202,17 @@ struct sums
     : public RLOp_Store_1<Argc_T<Complex2_T<IntReference_T, IntReference_T>>> {
   int operator()(
       RLMachine& machine,
-      vector<std::tuple<IntReferenceIterator, IntReferenceIterator>> ranges) {
+      std::vector<std::tuple<IntReferenceIterator,
+      IntReferenceIterator>> ranges) {
     int total = 0;
     for (std::vector<std::tuple<IntReferenceIterator,
                                 IntReferenceIterator>>::iterator it =
              ranges.begin();
          it != ranges.end();
          ++it) {
-      IntReferenceIterator last = get<1>(*it);
+      IntReferenceIterator last = std::get<1>(*it);
       ++last;
-      total += accumulate(get<0>(*it), last, 0);
+      total += accumulate(std::get<0>(*it), last, 0);
     }
     return total;
   }

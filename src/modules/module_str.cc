@@ -45,10 +45,6 @@
 #include "utilities/exception.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-using namespace boost;
-using namespace libreallive;
-
 namespace {
 
 // Counts the number of Shift_JIS characters in a string.
@@ -73,13 +69,13 @@ inline char ToLower(char x) { return tolower(x); }
 
 // Impelmentation for the ASCII versions of itoa. Sets |length| |fill|
 // characters.
-string rl_itoa_implementation(int number, int length, char fill) {
-  ostringstream ss;
+std::string rl_itoa_implementation(int number, int length, char fill) {
+  std::ostringstream ss;
   if (number < 0)
     ss << "-";
   if (length > 0)
-    ss << setw(length);
-  ss << right << setfill(fill) << abs(number);
+    ss << std::setw(length);
+  ss << std::right << std::setfill(fill) << abs(number);
   return ss.str();
 }
 
@@ -89,7 +85,7 @@ string rl_itoa_implementation(int number, int length, char fill) {
 struct strcpy_0 : public RLOp_Void_2<StrReference_T, StrConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string val) {
+                  std::string val) {
     *dest = val;
   }
 };
@@ -101,7 +97,7 @@ struct strcpy_1
     : public RLOp_Void_3<StrReference_T, StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string val,
+                  std::string val,
                   int count) {
     *dest = val.substr(0, count);
   }
@@ -133,8 +129,8 @@ struct strclear_1 : public RLOp_Void_2<StrReference_T, StrReference_T> {
 struct Str_strcat : public RLOp_Void_2<StrReference_T, StrConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator it,
-                  string append) {
-    string s = *it;
+                  std::string append) {
+    std::string s = *it;
     s += append;
     *it = s;
   }
@@ -143,7 +139,9 @@ struct Str_strcat : public RLOp_Void_2<StrReference_T, StrConstant_T> {
 // Implement op<1:Str:00003, 0>, fun strlen(strC). Returns the length
 // of value; Double-byte characters are counted as two bytes.
 struct Str_strlen : public RLOp_Store_1<StrConstant_T> {
-  int operator()(RLMachine& machine, string value) { return value.size(); }
+  int operator()(RLMachine& machine, std::string value) {
+    return value.size();
+  }
 };
 
 // Implement op<1:Str:00004, 0>, fun strcmp(strC, strC)
@@ -153,7 +151,7 @@ struct Str_strlen : public RLOp_Store_1<StrConstant_T> {
 //
 // TODO(erg): THIS NEEDS TO HANDLE JSX ORDERING, NOT JUST ASCII!
 struct Str_strcmp : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
-  int operator()(RLMachine& machine, string lhs, string rhs) {
+  int operator()(RLMachine& machine, std::string lhs, std::string rhs) {
     return strcmp(lhs.c_str(), rhs.c_str());
   }
 };
@@ -165,10 +163,10 @@ struct strsub_0
     : public RLOp_Void_3<StrReference_T, StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string source,
+                  std::string source,
                   int offset) {
     const char* str = source.c_str();
-    string output;
+    std::string output;
 
     // Advance the string to the first
     while (offset > 0) {
@@ -202,11 +200,11 @@ struct strsub_1 : public RLOp_Void_4<StrReference_T,
                                      IntConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string source,
+                  std::string source,
                   int offset,
                   int length) {
     const char* str = source.c_str();
-    string output;
+    std::string output;
 
     // Advance the string to the first
     while (offset > 0) {
@@ -232,7 +230,7 @@ struct strsub_1 : public RLOp_Void_4<StrReference_T,
 struct strrsub_0 : public strsub_0 {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string source,
+                  std::string source,
                   int offsetFromBack) {
     int offset = strcharlen(source.c_str()) - offsetFromBack;
     return strsub_0::operator()(machine, dest, source, offset);
@@ -243,7 +241,7 @@ struct strrsub_0 : public strsub_0 {
 struct strrsub_1 : public strsub_1 {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
-                  string source,
+                  std::string source,
                   int offsetFromBack,
                   int length) {
     if (length > offsetFromBack) {
@@ -260,7 +258,7 @@ struct strrsub_1 : public strsub_1 {
 // number of characters (as opposed to bytes) in a string. This
 // function deals with Shift_JIS characters properly.
 struct Str_strcharlen : public RLOp_Store_1<StrConstant_T> {
-  int operator()(RLMachine& machine, string val) {
+  int operator()(RLMachine& machine, std::string val) {
     return strcharlen(val.c_str());
   }
 };
@@ -272,9 +270,9 @@ struct Str_strtrunc : public RLOp_Void_2<StrReference_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   StringReferenceIterator dest,
                   int length) {
-    string input = *dest;
+    std::string input = *dest;
     const char* str = input.c_str();
-    string output;
+    std::string output;
     while (*str && length > 0) {
       copyOneShiftJisCharacter(str, output);
       --length;
@@ -297,7 +295,7 @@ struct hantozen_0 : public RLOp_Void_1<StrReference_T> {
 // Changes half width characters to their full width equivalents.
 struct hantozen_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
-                  string input,
+                  std::string input,
                   StringReferenceIterator dest) {
     *dest = hantozen_cp932(input, machine.getTextEncoding());
   }
@@ -317,7 +315,7 @@ struct zentohan_0 : public RLOp_Void_1<StrReference_T> {
 // Changes full width characters to their half width equivalents.
 struct zentohan_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
-                  string input,
+                  std::string input,
                   StringReferenceIterator dest) {
     *dest = zentohan_cp932(input, machine.getTextEncoding());
   }
@@ -329,7 +327,7 @@ struct zentohan_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 // not affect full-width Shift_JIS characters.
 struct Uppercase_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    string input = *dest;
+    std::string input = *dest;
     transform(input.begin(), input.end(), input.begin(), ToUpper);
     *dest = input;
   }
@@ -341,7 +339,7 @@ struct Uppercase_0 : public RLOp_Void_1<StrReference_T> {
 // not affect full-width Shift_JIS characters.
 struct Uppercase_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
-                  string input,
+                  std::string input,
                   StringReferenceIterator dest) {
     transform(input.begin(), input.end(), input.begin(), ToUpper);
     *dest = input;
@@ -354,7 +352,7 @@ struct Uppercase_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 // not affect full-width Shift_JIS characters.
 struct Lowercase_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    string input = *dest;
+    std::string input = *dest;
     transform(input.begin(), input.end(), input.begin(), ToLower);
     *dest = input;
   }
@@ -366,7 +364,7 @@ struct Lowercase_0 : public RLOp_Void_1<StrReference_T> {
 // not affect full-width Shift_JIS characters.
 struct Lowercase_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
-                  string input,
+                  std::string input,
                   StringReferenceIterator dest) {
     transform(input.begin(), input.end(), input.begin(), ToLower);
     *dest = input;
@@ -483,8 +481,8 @@ struct itoa_1
 // not represent an integer. Leading whitespace is ignored, as is anything
 // following the last decimal digit.
 struct Str_atoi : public RLOp_Store_1<StrConstant_T> {
-  int operator()(RLMachine& machine, string word) {
-    stringstream ss(word);
+  int operator()(RLMachine& machine, std::string word) {
+    std::stringstream ss(word);
     int out;
     ss >> out;
     if (ss)
@@ -504,7 +502,7 @@ struct Str_atoi : public RLOp_Store_1<StrConstant_T> {
 // Haeleth: I've never seen it used...
 struct Str_digits : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int word) {
-    string number = rl_itoa_implementation(abs(word), 1, '0');
+    std::string number = rl_itoa_implementation(abs(word), 1, '0');
     return number.size();
   }
 };
@@ -524,7 +522,7 @@ struct Str_digit
                  int value,
                  IntReferenceIterator dest,
                  int index) {
-    string number = rl_itoa_implementation(abs(value), 1, '0');
+    std::string number = rl_itoa_implementation(abs(value), 1, '0');
     *dest = number[number.size() - index] - '0';
     return number.size();
   }
@@ -535,9 +533,9 @@ struct Str_digit
 // Returns the offset of the first instance of substring in str, or -1 if
 // substring is not found.
 struct Str_strpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
-  int operator()(RLMachine& machine, string str, string substring) {
+  int operator()(RLMachine& machine, std::string str, std::string substring) {
     size_t pos = str.find(substring);
-    if (pos == string::npos)
+    if (pos == std::string::npos)
       return -1;
     else
       return pos;
@@ -550,9 +548,9 @@ struct Str_strpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
 // substring appears only once, or not at all, in string, the behaviour is
 // identical with that of strpos.
 struct Str_strlpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
-  int operator()(RLMachine& machine, string str, string substring) {
+  int operator()(RLMachine& machine, std::string str, std::string substring) {
     size_t pos = str.rfind(substring);
-    if (pos == string::npos)
+    if (pos == std::string::npos)
       return -1;
     else
       return pos;
@@ -563,7 +561,7 @@ struct Str_strlpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
 //
 // Prints a string.
 struct Str_strout : public RLOp_Void_1<StrConstant_T> {
-  void operator()(RLMachine& machine, string value) {
+  void operator()(RLMachine& machine, std::string value) {
     // We collaborate with rlBabel here.
     //
     // This is the point right before we are about to switch from cp932 to
@@ -610,7 +608,7 @@ struct Str_intout : public RLOp_Void_1<IntConstant_T> {
 // Returns 0 if the string variable var is empty, otherwise 1.
 struct Str_strused : public RLOp_Store_1<StrReference_T> {
   int operator()(RLMachine& machine, StringReferenceIterator it) {
-    return string(*it) != "";
+    return std::string(*it) != "";
   }
 };
 

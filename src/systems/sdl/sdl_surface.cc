@@ -43,7 +43,6 @@
 #include "systems/sdl/texture.h"
 #include "utilities/graphics.h"
 
-using namespace std;
 using boost::ptr_vector;
 
 namespace {
@@ -189,7 +188,7 @@ SDL_Surface* buildNewSurface(const Size& size) {
                                           DefaultAmask);
 
   if (tmp == NULL) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Couldn't allocate surface in build_new_surface"
        << ": " << SDL_GetError();
     throw SystemError(ss.str());
@@ -283,7 +282,7 @@ SDLSurface::SDLSurface(SDLGraphicsSystem* system, SDL_Surface* surf)
 // Surface that takes ownership of an externally created surface.
 SDLSurface::SDLSurface(SDLGraphicsSystem* system,
                        SDL_Surface* surf,
-                       const vector<SDLSurface::GrpRect>& region_table)
+                       const std::vector<SDLSurface::GrpRect>& region_table)
     : surface_(surf),
       region_table_(region_table),
       texture_is_valid_(false),
@@ -351,7 +350,7 @@ Size SDLSurface::size() const {
 
 void SDLSurface::dump() {
   static int count = 0;
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "dump_" << count << ".bmp";
   count++;
   SDL_SaveBMP(surface_, ss.str().c_str());
@@ -498,18 +497,20 @@ static void determineProperties(SDL_Surface* surface,
         byte_order = GL_BGRA;
         byte_type = GL_UNSIGNED_INT_8_8_8_8_REV;
       } else {
-        ios_base::fmtflags f = cerr.flags(ios::hex | ios::uppercase);
-        cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
-             << ", " << format->Bmask << ", " << format->Amask << ")" << endl;
-        cerr.flags(f);
+        std::ios_base::fmtflags f = std::cerr.flags(
+            std::ios::hex | std::ios::uppercase);
+        std::cerr << "Unknown mask: (" << format->Rmask << ", " << format->Gmask
+                  << ", " << format->Bmask << ", " << format->Amask << ")"
+                  << std::endl;
+        std::cerr.flags(f);
       }
     } else if (bytes_per_pixel == 3) {
       // For now, just assume RGB.
       byte_order = GL_RGB;
-      cerr << "Warning: Am I really an RGB Surface? Check Texture::Texture()!"
-           << endl;
+      std::cerr << "Warning: Am I really an RGB Surface? Check"
+                << " Texture::Texture()!" << std::endl;
     } else {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "Error loading texture: bytes_per_pixel == "
           << int(bytes_per_pixel) << " and we only handle 3 or 4.";
       throw SystemError(oss.str());
@@ -536,16 +537,16 @@ void SDLSurface::uploadTextureIfNeeded() const {
       // ---------------------------------------------------------------------
 
       // Figure out the optimal way of splitting up the image.
-      vector<int> x_pieces, y_pieces;
+      std::vector<int> x_pieces, y_pieces;
       x_pieces = segmentPicture(surface_->w);
       y_pieces = segmentPicture(surface_->h);
 
       int x_offset = 0;
-      for (vector<int>::const_iterator it = x_pieces.begin();
+      for (std::vector<int>::const_iterator it = x_pieces.begin();
            it != x_pieces.end();
            ++it) {
         int y_offset = 0;
-        for (vector<int>::const_iterator jt = y_pieces.begin();
+        for (std::vector<int>::const_iterator jt = y_pieces.begin();
              jt != y_pieces.end();
              ++jt) {
           TextureRecord record(surface_,
@@ -582,7 +583,7 @@ void SDLSurface::renderToScreen(const Rect& src,
                                 int alpha) const {
   uploadTextureIfNeeded();
 
-  for (vector<TextureRecord>::iterator it = textures_.begin();
+  for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
     it->texture->renderToScreen(src, dst, alpha);
@@ -597,7 +598,7 @@ void SDLSurface::renderToScreenAsColorMask(const Rect& src,
                                            int filter) const {
   uploadTextureIfNeeded();
 
-  for (vector<TextureRecord>::iterator it = textures_.begin();
+  for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
     it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
@@ -611,7 +612,7 @@ void SDLSurface::renderToScreen(const Rect& src,
                                 const int opacity[4]) const {
   uploadTextureIfNeeded();
 
-  for (vector<TextureRecord>::iterator it = textures_.begin();
+  for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
     it->texture->renderToScreen(src, dst, opacity);
@@ -626,7 +627,7 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
                                         int alpha) const {
   uploadTextureIfNeeded();
 
-  for (vector<TextureRecord>::iterator it = textures_.begin();
+  for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
     it->texture->renderToScreenAsObject(rp, *this, src, dst, alpha);
@@ -732,10 +733,10 @@ Surface* SDLSurface::clone() const {
 /**
  * @todo This scheme may be entirely suboptimal. Needs field testing.
  */
-vector<int> SDLSurface::segmentPicture(int size_remainging) {
+std::vector<int> SDLSurface::segmentPicture(int size_remainging) {
   int max_texture_size = GetMaxTextureSize();
 
-  vector<int> output;
+  std::vector<int> output;
   while (size_remainging > max_texture_size) {
     output.push_back(max_texture_size);
     size_remainging -= max_texture_size;

@@ -41,7 +41,6 @@
 #include "utilities/file.h"
 #include "utilities/graphics.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 using boost::scoped_array;
 
@@ -76,7 +75,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
   int file_size = 0;
   scoped_array<char> hik_data;
   if (loadFileData(file, hik_data, file_size)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());
   }
@@ -86,7 +85,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
   int a = consume_i32(curpointer);
   int b = consume_i32(curpointer);
   if (a != 10000 || b != 10000) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "HIK Parse error: Invalid magic";
     throw std::runtime_error(oss.str());
   }
@@ -242,7 +241,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         frame.image = consume_string(curpointer);
         frame.surface = system.graphics().getSurfaceNamed(frame.image);
         if (!frame.surface) {
-          ostringstream oss;
+          std::ostringstream oss;
           oss << "Could not load image " << frame.image << " for HIK";
           throw rlvm::Exception(oss.str());
         }
@@ -251,7 +250,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         break;
       }
       default: {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "HIK Parse exception. Unknown id: " << property_id;
         throw rlvm::Exception(oss.str());
         break;

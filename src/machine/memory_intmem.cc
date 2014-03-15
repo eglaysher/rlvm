@@ -49,14 +49,13 @@
 #include "utilities/exception.h"
 #include "libreallive/intmemref.h"
 
-using namespace std;
 using libreallive::IntMemRef;
 
 namespace {
 
 // Helper function that throws errors for illegal memory access
 void throwIllegalIndex(const IntMemRef& ref, const std::string& function) {
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Invalid memory access " << ref << " in " << function;
   throw rlvm::Exception(ss.str());
 }

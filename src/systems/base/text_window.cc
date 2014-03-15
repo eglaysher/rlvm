@@ -57,8 +57,8 @@ using std::ref;
 using std::setfill;
 using std::setw;
 using std::vector;
-
-using namespace std::placeholders;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 struct TextWindow::FaceSlot {
   explicit FaceSlot(const std::vector<int>& vec)
@@ -679,8 +679,6 @@ void TextWindow::setRGBAF(const vector<int>& attr) {
 }
 
 void TextWindow::setMousePosition(const Point& pos) {
-  using namespace boost;
-
   if (inSelectionMode()) {
     for_each(selections_.begin(),
              selections_.end(),
@@ -693,8 +691,6 @@ void TextWindow::setMousePosition(const Point& pos) {
 bool TextWindow::handleMouseClick(RLMachine& machine,
                                   const Point& pos,
                                   bool pressed) {
-  using namespace boost;
-
   if (inSelectionMode()) {
     bool found =
         find_if(selections_.begin(),

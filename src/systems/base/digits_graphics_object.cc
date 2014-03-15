@@ -40,8 +40,6 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/surface.h"
 
-using namespace std;
-
 DigitsGraphicsObject::DigitsGraphicsObject(System& system)
     : system_(system), value_(0) {}
 
@@ -83,7 +81,7 @@ boost::shared_ptr<const Surface> DigitsGraphicsObject::currentSurface(
 }
 
 void DigitsGraphicsObject::objectInfo(std::ostream& tree) {
-  tree << "  Digits: \"" << value_ << "\"" << endl;
+  tree << "  Digits: \"" << value_ << "\"" << std::endl;
 }
 
 void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
@@ -140,7 +138,8 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
   }
 
   if (value_ < 0 || rp.digitSign()) {
-    cerr << "We don't support negative numbers in objOfDigits() yet." << endl;
+    std::cerr << "We don't support negative numbers in objOfDigits() yet."
+              << std::endl;
   }
 }
 

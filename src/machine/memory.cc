@@ -37,16 +37,19 @@
 #include "utilities/exception.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-using namespace libreallive;
+using std::make_pair;
 
 const IntegerBank_t LOCAL_INTEGER_BANKS = {
-    make_pair(INTB_LOCATION, 'A'), make_pair(INTB_LOCATION, 'B'),
-    make_pair(INTC_LOCATION, 'C'), make_pair(INTD_LOCATION, 'D'),
-    make_pair(INTE_LOCATION, 'E'), make_pair(INTF_LOCATION, 'F')};
+    make_pair(libreallive::INTA_LOCATION, 'A'),
+    make_pair(libreallive::INTB_LOCATION, 'B'),
+    make_pair(libreallive::INTC_LOCATION, 'C'),
+    make_pair(libreallive::INTD_LOCATION, 'D'),
+    make_pair(libreallive::INTE_LOCATION, 'E'),
+    make_pair(libreallive::INTF_LOCATION, 'F')};
 
-const IntegerBank_t GLOBAL_INTEGER_BANKS = {make_pair(INTG_LOCATION, 'G'),
-                                            make_pair(INTZ_LOCATION, 'Z')};
+const IntegerBank_t GLOBAL_INTEGER_BANKS = {
+  make_pair(libreallive::INTG_LOCATION, 'G'),
+  make_pair(libreallive::INTZ_LOCATION, 'Z')};
 
 // -----------------------------------------------------------------------
 // GlobalMemory
@@ -122,7 +125,7 @@ const std::string& Memory::getStringValue(int type, int location) {
         "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
-    case STRK_LOCATION:
+    case libreallive::STRK_LOCATION:
       if (location > 2) {
         throw rlvm::Exception(
             "Invalid range access on strK in RLMachine::set_string_value");
@@ -131,9 +134,9 @@ const std::string& Memory::getStringValue(int type, int location) {
       } else {
         return machine_.currentStrKBank()[location];
       }
-    case STRM_LOCATION:
+    case libreallive::STRM_LOCATION:
       return global_->strM[location];
-    case STRS_LOCATION:
+    case libreallive::STRS_LOCATION:
       return local_.strS[location];
     default:
       throw rlvm::Exception("Invalid type in RLMachine::get_string_value");
@@ -146,7 +149,7 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
         "Invalid range access in RLMachine::set_string_value");
 
   switch (type) {
-    case STRK_LOCATION:
+    case libreallive::STRK_LOCATION:
       if (number > 2) {
         throw rlvm::Exception(
             "Invalid range access on strK in RLMachine::set_string_value");
@@ -156,10 +159,10 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
         machine_.currentStrKBank()[number] = value;
       }
       break;
-    case STRM_LOCATION:
+    case libreallive::STRM_LOCATION:
       global_->strM[number] = value;
       break;
-    case STRS_LOCATION: {
+    case libreallive::STRS_LOCATION: {
       // Possibly record the orriginal value for a piece of local memory.
       std::map<int, std::string>::iterator it =
           local_.original_strS.find(number);
@@ -177,7 +180,7 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
 
 void Memory::checkNameIndex(int index, const std::string& name) const {
   if (index > (SIZE_OF_NAME_BANK - 1)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Invalid index " << index << " in " << name;
     throw rlvm::Exception(oss.str());
   }
@@ -260,7 +263,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe) {
               removeQuotes(it->to_string()));
     }
     catch (...) {
-      cerr << "WARNING: Invalid format for key " << it->key() << endl;
+      std::cerr << "WARNING: Invalid format for key " << it->key() << std::endl;
     }
   }
 
@@ -272,7 +275,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe) {
                    removeQuotes(it->to_string()));
     }
     catch (...) {
-      cerr << "WARNING: Invalid format for key " << it->key() << endl;
+      std::cerr << "WARNING: Invalid format for key " << it->key() << std::endl;
     }
   }
 }

@@ -45,8 +45,6 @@
 
 #include "machine/rlmachine.h"
 
-using namespace std;
-
 namespace libreallive {
 
 char BytecodeElement::entrypoint_marker = '@';
@@ -54,7 +52,7 @@ char BytecodeElement::entrypoint_marker = '@';
 CommandElement* BuildFunctionElement(const char* stream) {
   const char* ptr = stream;
   ptr += 8;
-  std::vector<string> params;
+  std::vector<std::string> params;
   if (*ptr == '(') {
     const char* end = ptr + 1;
     while (*end != ')') {
@@ -118,7 +116,7 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 const ElementType BytecodeElement::type() const { return Unspecified; }
 
 void BytecodeElement::print(std::ostream& oss) const {
-  oss << "<unspecified bytecode>" << endl;
+  oss << "<unspecified bytecode>" << std::endl;
 }
 
 // -----------------------------------------------------------------------
@@ -232,7 +230,7 @@ CommaElement::~CommaElement() {}
 const ElementType CommaElement::type() const { return Data; }
 
 void CommaElement::print(std::ostream& oss) const {
-  oss << "<CommaElement>" << endl;
+  oss << "<CommaElement>" << std::endl;
 }
 
 const size_t CommaElement::length() const { return 1; }
@@ -265,11 +263,11 @@ const ElementType MetaElement::type() const {
 
 void MetaElement::print(std::ostream& oss) const {
   if (type_ == Line_)
-    oss << "#line " << value_ << endl;
+    oss << "#line " << value_ << std::endl;
   else if (type_ == Entrypoint_)
-    oss << "#entrypoint " << value_ << endl;
+    oss << "#entrypoint " << value_ << std::endl;
   else
-    oss << "{- Kidoku " << value_ << " -}" << endl;
+    oss << "{- Kidoku " << value_ << " -}" << std::endl;
 }
 
 // -----------------------------------------------------------------------
@@ -330,7 +328,7 @@ TextoutElement::TextoutElement() {}
 const ElementType TextoutElement::type() const { return Textout; }
 
 void TextoutElement::print(std::ostream& oss) const {
-  oss << "\"" << text() << "\"" << endl;
+  oss << "\"" << text() << "\"" << std::endl;
 }
 
 const size_t TextoutElement::length() const { return repr.size(); }
@@ -397,7 +395,7 @@ ExpressionElement::ExpressionElement(const long val) {
 const ElementType ExpressionElement::type() const { return Expression; }
 
 void ExpressionElement::print(std::ostream& oss) const {
-  oss << parsedExpression().getDebugString() << endl;
+  oss << parsedExpression().getDebugString() << std::endl;
 }
 
 const size_t ExpressionElement::length() const { return repr.size(); }
@@ -447,18 +445,20 @@ CommandElement::~CommandElement() {}
 const ElementType CommandElement::type() const { return Command; }
 
 void CommandElement::print(std::ostream& oss) const {
-  oss << "op<" << modtype() << ":" << setw(3) << setfill('0') << module() << ":"
-      << setw(5) << setfill('0') << opcode() << ", " << overload() << ">";
+  oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
+      << module() << ":"
+      << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
+      << ">";
 
   PrintParameterString(oss, getUnparsedParameters());
 
-  oss << endl;
+  oss << std::endl;
 }
 
 // -----------------------------------------------------------------------
 
-vector<string> CommandElement::getUnparsedParameters() const {
-  vector<string> parameters;
+std::vector<std::string> CommandElement::getUnparsedParameters() const {
+  std::vector<std::string> parameters;
   size_t numberOfParameters = param_count();
   for (size_t i = 0; i < numberOfParameters; ++i)
     parameters.push_back(get_param(i));

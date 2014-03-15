@@ -39,8 +39,6 @@
 #include "systems/base/text_window.h"
 #include "libreallive/gameexe.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // PauseLongOperation
 // -----------------------------------------------------------------------

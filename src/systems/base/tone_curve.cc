@@ -45,7 +45,6 @@
 
 #include <iostream>
 
-using namespace std;
 using boost::scoped_array;
 
 namespace fs = boost::filesystem;
@@ -61,7 +60,7 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
     return;
   }
 
-  string tonecurve = filename_key.to_string("");
+  std::string tonecurve = filename_key.to_string("");
   if (tonecurve == "") {
     // It is perfectly valid not to have a tone curve. All operations in this
     // class become noops.
@@ -74,13 +73,13 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   int size;
   scoped_array<char> data;
   if (loadFileData(filename, data, size)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());
   }
 
   if (read_little_endian_int(data.get()) != 1000) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "File '" << filename << "' is not a TCC file!";
     throw rlvm::Exception(oss.str());
   }
@@ -114,7 +113,7 @@ int ToneCurve::getEffectCount() const { return effect_count_; }
 
 ToneCurveRGBMap ToneCurve::getEffect(int index) {
   if (index >= getEffectCount() || index < 0) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Requested tone curve index " << index
         << " exceeds the amount of effects in the tone curve file.";
     throw rlvm::Exception(oss.str());

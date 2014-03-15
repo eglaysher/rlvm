@@ -34,9 +34,6 @@
 
 #include "boost/filesystem/operations.hpp"
 
-#include <iostream>
-using namespace std;
-
 namespace fs = boost::filesystem;
 
 const char* western_platform_fonts[] = {

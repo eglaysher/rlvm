@@ -46,16 +46,15 @@
 #include "libreallive/expression.h"
 #include "libreallive/gameexe.h"
 
+using libreallive::CommandElement;
+using libreallive::ExpressionPiece;
+using libreallive::SelectElement;
 using std::cerr;
+using std::distance;
 using std::endl;
+using std::placeholders::_1;
 using std::string;
 using std::vector;
-using std::distance;
-using libreallive::SelectElement;
-using libreallive::ExpressionPiece;
-using libreallive::CommandElement;
-
-using namespace std::placeholders;
 
 // -----------------------------------------------------------------------
 // SelectLongOperation

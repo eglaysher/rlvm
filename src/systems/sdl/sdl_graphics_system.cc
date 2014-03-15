@@ -71,11 +71,6 @@
 #include "utilities/string_utilities.h"
 #include "xclannad/file.h"
 
-
-using namespace boost;
-using namespace std;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 // Private Interface
 // -----------------------------------------------------------------------
@@ -278,7 +273,7 @@ void SDLGraphicsSystem::setupVideo() {
   SDL_WM_SetCaption("rlvm", "rlvm");
 
   if (!info) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Video query failed: " << SDL_GetError();
     throw SystemError(ss.str());
   }
@@ -307,7 +302,7 @@ void SDLGraphicsSystem::setupVideo() {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
     // resolution not being available, etc.
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Video mode set failed: " << SDL_GetError();
     throw SystemError(ss.str());
   }
@@ -315,7 +310,7 @@ void SDLGraphicsSystem::setupVideo() {
   // Initialize glew
   GLenum err = glewInit();
   if (GLEW_OK != err) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
     throw SystemError(oss.str());
   }
@@ -401,7 +396,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
 }
 
 void SDLGraphicsSystem::setWindowTitle() {
-  ostringstream oss;
+  std::ostringstream oss;
   oss << caption_title_;
 
   if (displaySubtitle() && subtitle_ != "") {
@@ -415,7 +410,7 @@ void SDLGraphicsSystem::setWindowTitle() {
 
   // PulseAudio allocates a string each time we set the title. Make sure we
   // don't do this unnecessarily.
-  string new_caption = oss.str();
+  std::string new_caption = oss.str();
   if (new_caption != currently_set_title_) {
     SDL_WM_SetCaption(new_caption.c_str(), NULL);
     currently_set_title_ = new_caption;
@@ -444,7 +439,7 @@ void SDLGraphicsSystem::setScreenMode(const int in) {
 
 void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc >= 16) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Invalid DC number \"" << dc
        << "\" in SDLGraphicsSystem::allocate_dc";
     throw rlvm::Exception(ss.str());
@@ -501,13 +496,13 @@ void SDLGraphicsSystem::freeDC(int dc) {
 
 void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
   if (dc >= 16) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
     throw rlvm::Exception(ss.str());
   }
 
   if (display_contexts_[dc] == NULL) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
     throw rlvm::Exception(ss.str());
   }
@@ -515,7 +510,7 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
 
 void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
   if (display_contexts_[dc] == NULL) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Couldn't allocate DC[" << dc << "] in " << caller << ": "
        << SDL_GetError();
     throw SystemError(ss.str());
@@ -584,7 +579,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   boost::filesystem::path filename =
       system().findFile(short_filename, IMAGE_FILETYPES);
   if (filename.empty()) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not find image file \"" << short_filename << "\".";
     throw rlvm::Exception(oss.str());
   }
@@ -592,19 +587,20 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   // Glue code to allow my stuff to work with Jagarl's loader
   FILE* file = fopen(filename.string().c_str(), "rb");
   if (!file) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not open file: " << filename;
     throw rlvm::Exception(oss.str());
   }
 
   fseek(file, 0, SEEK_END);
   size_t size = ftell(file);
-  scoped_array<char> d(new char[size + 1]);
+  boost::scoped_array<char> d(new char[size + 1]);
   fseek(file, 0, SEEK_SET);
   fread(d.get(), size, 1, file);
   fclose(file);
 
-  scoped_ptr<GRPCONV> conv(GRPCONV::AssignConverter(d.get(), size, "???"));
+  boost::scoped_ptr<GRPCONV> conv(
+      GRPCONV::AssignConverter(d.get(), size, "???"));
   if (conv == 0) {
     throw SystemError("Failure in GRPCONV.");
   }
@@ -633,12 +629,12 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
 
   // Grab the Type-2 information out of the converter or create one
   // default region if none exist
-  vector<SDLSurface::GrpRect> region_table;
+  std::vector<SDLSurface::GrpRect> region_table;
   if (conv->region_table.size()) {
-    transform(conv->region_table.begin(),
-              conv->region_table.end(),
-              back_inserter(region_table),
-              xclannadRegionToGrpRect);
+    std::transform(conv->region_table.begin(),
+                   conv->region_table.end(),
+                   std::back_inserter(region_table),
+                   xclannadRegionToGrpRect);
   } else {
     SDLSurface::GrpRect rect;
     rect.rect = Rect(Point(0, 0), Size(conv->Width(), conv->Height()));
@@ -651,13 +647,14 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
       new SDLSurface(this, s, region_table));
   // handle tone curve effect loading
   if (short_filename.find("?") != short_filename.npos) {
-    string effect_no_str = short_filename.substr(short_filename.find("?") + 1);
+    std::string effect_no_str =
+        short_filename.substr(short_filename.find("?") + 1);
     int effect_no = std::stoi(effect_no_str);
     // the effect number is an index that goes from 10 to getEffectCount() * 10,
     // so keep that in mind here
     if ((effect_no / 10) > globals().tone_curves.getEffectCount() ||
         effect_no < 10) {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "Tone curve index " << effect_no << " is invalid.";
       throw rlvm::Exception(oss.str());
     }

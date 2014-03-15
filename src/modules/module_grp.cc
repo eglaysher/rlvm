@@ -58,8 +58,7 @@
 #include "systems/base/text_system.h"
 #include "utilities/graphics.h"
 
-using namespace std;
-using namespace boost;
+using std::get;
 
 namespace fs = boost::filesystem;
 
@@ -336,7 +335,7 @@ struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   display_1 delegate_;
 
   void operator()(RLMachine& machine, int dc, int effectNum) {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, dc, effectNum, selEffect.at(14));
   }
 };
@@ -476,7 +475,7 @@ struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   explicit open_0(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
@@ -618,7 +617,7 @@ struct openBg_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   openBg_1 delegate_;
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
@@ -664,7 +663,7 @@ struct openBg_2
                   int effectNum,
                   Rect srcRect,
                   Point destPt) {
-    vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = getSELEffect(machine, effectNum);
     delegate_(machine, fileName, effectNum, srcRect, destPt, selEffect[14]);
   }
 };
@@ -909,7 +908,8 @@ struct fade_5
 
   void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
     Gameexe& gexe = machine.system().gameexe();
-    const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
+    const std::vector<int>& rgb =
+        gexe("COLOR_TABLE", colour_num).to_intVector();
     delegate_(machine, rect, RGBAColour(rgb), time);
   }
 };
@@ -929,7 +929,8 @@ struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int colour_num, int time) {
     Size screenSize = machine.system().graphics().screenSize();
     Gameexe& gexe = machine.system().gameexe();
-    const vector<int>& rgb = gexe("COLOR_TABLE", colour_num).to_intVector();
+    const std::vector<int>& rgb =
+        gexe("COLOR_TABLE", colour_num).to_intVector();
     delegate_(machine, Rect(0, 0, screenSize), RGBAColour(rgb), time);
   }
 };
@@ -1186,7 +1187,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
   }
 
  private:
-  scoped_ptr<RLOperation> operation;
+  boost::scoped_ptr<RLOperation> operation;
 };
 
 }  // namespace
@@ -1196,7 +1197,8 @@ RLOperation* graphicsStackMappingFun(RLOperation* op) {
 }
 
 GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
-  using namespace rect_impl;
+  using rect_impl::GRP;
+  using rect_impl::REC;
 
   addOpcode(15, 0, "allocDC", new allocDC);
   addOpcode(16, 0, "freeDC", callFunction(&GraphicsSystem::freeDC));
@@ -1452,7 +1454,8 @@ void replayGraphicsStackCommand(RLMachine& machine,
     }
   }
   catch (std::exception& e) {
-    cerr << "Error while replaying graphics stack: " << e.what() << endl;
+    std::cerr << "Error while replaying graphics stack: " << e.what()
+              << std::endl;
     return;
   }
 }
@@ -1523,8 +1526,8 @@ void replayDepricatedGraphicsStackVector(
       }
     }
     catch (rlvm::Exception& e) {
-      cerr << "WARNING: Error while thawing graphics stack: " << e.what()
-           << endl;
+      std::cerr << "WARNING: Error while thawing graphics stack: "
+                << e.what() << std::endl;
     }
   }
 }

@@ -46,12 +46,10 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 SDLTextSystem::SDLTextSystem(SDLSystem& system, Gameexe& gameexe)
     : TextSystem(system, gameexe), sdl_system_(system) {
   if (TTF_Init() == -1) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Error initializing SDL_ttf: " << TTF_GetError();
     throw SystemError(oss.str());
   }
@@ -100,8 +98,9 @@ Size SDLTextSystem::renderGlyphOnto(
 
   if (character == NULL) {
     // Bug during Kyou's path. The string is printed "". Regression in parser?
-    cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the character \""
-         << current << "\". Hopefully continuing..." << endl;
+    std::cerr << "WARNING. TTF_RenderUTF8_Blended didn't render the "
+              << "character \"" << current << "\". Hopefully continuing..."
+              << std::endl;
     return Size(0, 0);
   }
 
@@ -145,10 +144,10 @@ int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
-    string filename = findFontFile(system()).native();
+    std::string filename = findFontFile(system()).native();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if (f == NULL) {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "Error loading font: " << TTF_GetError();
       throw SystemError(oss.str());
     }

@@ -42,8 +42,6 @@
 #include "systems/sdl/sdl_audio_locker.h"
 #include "utilities/exception.h"
 
-using namespace std;
-using namespace boost;
 namespace fs = boost::filesystem;
 
 const int STOP_AT_END = -1;
@@ -205,7 +203,8 @@ WAVFILE* buildMusicImplementation(FILE* file, int size) {
 boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     System& system,
     const SoundSystem::DSTrack& track) {
-  typedef vector<pair<string, std::function<WAVFILE*(FILE*, int)>>> FileTypes;
+  typedef std::vector<
+    std::pair<std::string, std::function<WAVFILE*(FILE*, int)>>> FileTypes;
   static FileTypes types = {{"wav", &buildMusicImplementation<WAVFILE_Stream>},
                             {"nwa", &buildMusicImplementation<NWAFILE>},
                             {"mp3", &buildMusicImplementation<MP3FILE>},
@@ -213,17 +212,17 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 
   fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not find music file \"" << track.file << "\".";
     throw rlvm::Exception(oss.str());
   }
 
-  const string& raw_path = file_path.native();
+  const std::string& raw_path = file_path.native();
   for (FileTypes::const_iterator it = types.begin(); it != types.end(); ++it) {
-    if (iends_with(raw_path, it->first)) {
+    if (boost::iends_with(raw_path, it->first)) {
       FILE* f = fopen(raw_path.c_str(), "r");
       if (f == 0) {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "Could not open \"" << file_path << "\" for reading.";
         throw std::runtime_error(oss.str());
       }
@@ -238,7 +237,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     }
   }
 
-  ostringstream oss;
+  std::ostringstream oss;
   oss << "Unsupported music file: \"" << file_path << "\"";
   throw std::runtime_error(oss.str());
 }

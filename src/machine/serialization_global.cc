@@ -55,9 +55,6 @@
 #include "utilities/exception.h"
 #include "utilities/gettext.h"
 
-using namespace std;
-using namespace libreallive;
-using namespace boost::archive;
 namespace fs = boost::filesystem;
 
 namespace Serialization {
@@ -75,7 +72,7 @@ fs::path buildGlobalMemoryFilename(RLMachine& machine) {
 
 void saveGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
-  fs::ofstream file(home, ios::binary);
+  fs::ofstream file(home, std::ios::binary);
   if (!file) {
     throw rlvm::Exception(_("Could not open global memory file."));
   }
@@ -84,12 +81,11 @@ void saveGlobalMemory(RLMachine& machine) {
 }
 
 void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
-  using namespace boost::iostreams;
-  filtering_stream<output> filtered_output;
-  filtered_output.push(zlib_compressor());
+  boost::iostreams::filtering_stream<boost::iostreams::output> filtered_output;
+  filtered_output.push(boost::iostreams::zlib_compressor());
   filtered_output.push(oss);
 
-  text_oarchive oa(filtered_output);
+  boost::archive::text_oarchive oa(filtered_output);
   System& sys = machine.system();
 
   oa << CURRENT_GLOBAL_VERSION
@@ -103,7 +99,7 @@ void saveGlobalMemoryTo(std::ostream& oss, RLMachine& machine) {
 
 void loadGlobalMemory(RLMachine& machine) {
   fs::path home = buildGlobalMemoryFilename(machine);
-  fs::ifstream file(home, ios::binary);
+  fs::ifstream file(home, std::ios::binary);
 
   // If we were able to open the file for reading, load it. Don't
   // complain if we're unable to, since this may be the first run on
@@ -126,19 +122,18 @@ void loadGlobalMemory(RLMachine& machine) {
         fs::remove_all(dest_save_dir);
       fs::rename(save_dir, dest_save_dir);
 
-      cerr << "WARNING: Unable to read saved global memory file. Moving "
-           << save_dir << " to " << dest_save_dir << endl;
+      std::cerr << "WARNING: Unable to read saved global memory file. Moving "
+                << save_dir << " to " << dest_save_dir << std::endl;
     }
   }
 }
 
 void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
+  boost::iostreams::filtering_stream<boost::iostreams::input> filtered_input;
+  filtered_input.push(boost::iostreams::zlib_decompressor());
   filtered_input.push(iss);
 
-  text_iarchive ia(filtered_input);
+  boost::archive::text_iarchive ia(filtered_input);
   System& sys = machine.system();
   int version;
   ia >> version;

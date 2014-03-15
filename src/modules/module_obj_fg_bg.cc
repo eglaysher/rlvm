@@ -63,10 +63,6 @@
 #include "utilities/graphics.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-using namespace boost;
-using namespace libreallive;
-
 namespace {
 
 struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
@@ -480,7 +476,7 @@ class DisplayMutator : public ObjectMutator {
     if (rotate_mod_) {
       static bool printed = false;
       if (!printed) {
-        cerr << "We don't support rotate mod yet." << endl;
+        std::cerr << "We don't support rotate mod yet." << std::endl;
         printed = true;
       }
     }
@@ -488,7 +484,7 @@ class DisplayMutator : public ObjectMutator {
     if (scale_x_mod_) {
       static bool printed = false;
       if (!printed) {
-        cerr << "We don't support scale Y mod yet." << endl;
+        std::cerr << "We don't support scale Y mod yet." << std::endl;
         printed = true;
       }
     }
@@ -496,7 +492,7 @@ class DisplayMutator : public ObjectMutator {
     if (scale_y_mod_) {
       static bool printed = false;
       if (!printed) {
-        cerr << "We don't support scale X mod yet." << endl;
+        std::cerr << "We don't support scale X mod yet." << std::endl;
         printed = true;
       }
     }
@@ -504,7 +500,7 @@ class DisplayMutator : public ObjectMutator {
     if (sin_mod) {
       static bool printed = false;
       if (!printed) {
-        cerr << "  We don't support \"sin\" yet." << endl;
+        std::cerr << "  We don't support \"sin\" yet." << std::endl;
         printed = true;
       }
     }
@@ -571,7 +567,7 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
                   int delay,
                   int param) {
     Gameexe& gameexe = machine.system().gameexe();
-    const vector<int>& disp = gameexe("OBJDISP", param).to_intVector();
+    const std::vector<int>& disp = gameexe("OBJDISP", param).to_intVector();
 
     GraphicsObject& object = getGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().getTicks();

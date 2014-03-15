@@ -40,7 +40,7 @@
 #include "systems/base/frame_counter.h"
 #include "systems/base/system.h"
 
-using namespace std;
+using std::get;
 
 namespace {
 

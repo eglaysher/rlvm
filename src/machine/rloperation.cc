@@ -38,9 +38,6 @@
 #include "machine/rlmodule.h"
 #include "utilities/exception.h"
 
-using namespace std;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 // RLOperation
 // -----------------------------------------------------------------------
@@ -95,16 +92,16 @@ RLOperation::PropertyList::iterator RLOperation::findProperty(int property)
 bool RLOperation::advanceInstructionPointer() { return true; }
 
 void RLOperation::dispatchFunction(RLMachine& machine,
-                                   const CommandElement& ff) {
+                                   const libreallive::CommandElement& ff) {
   if (!ff.areParametersParsed()) {
-    vector<string> unparsed = ff.getUnparsedParameters();
-    vector<unique_ptr<ExpressionPiece>> output;
+    std::vector<std::string> unparsed = ff.getUnparsedParameters();
+    std::vector<std::unique_ptr<libreallive::ExpressionPiece>> output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
 
-  const vector<unique_ptr<ExpressionPiece>>& parameter_pieces =
-      ff.getParameters();
+  const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>&
+      parameter_pieces = ff.getParameters();
 
   // Now dispatch based on these parameters.
   dispatch(machine, parameter_pieces);
@@ -134,7 +131,7 @@ void IntConstant_T::parseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  unique_ptr<ExpressionPiece> ep(get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntConstant_T parse err.");
@@ -157,7 +154,7 @@ void IntReference_T::parseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  unique_ptr<ExpressionPiece> ep(get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntReference_T parse err.");
@@ -215,7 +212,7 @@ void StrConstant_T::parseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  unique_ptr<ExpressionPiece> ep(get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrConstant_T parse err.");
@@ -238,7 +235,7 @@ void StrReference_T::parseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  unique_ptr<ExpressionPiece> ep(get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrReference_T parse err.");
@@ -259,7 +256,7 @@ void RLOp_SpecialCase::parseParameters(
     libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
-    output.push_back(get_data(src));
+    output.push_back(libreallive::get_data(src));
   }
 }
 
@@ -267,7 +264,7 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
                                         const libreallive::CommandElement& ff) {
   // First try to run the default parse_parameters if we can.
   if (!ff.areParametersParsed()) {
-    vector<string> unparsed = ff.getUnparsedParameters();
+    std::vector<std::string> unparsed = ff.getUnparsedParameters();
     libreallive::ExpressionPiecesVector output;
     parseParameters(unparsed, output);
     ff.setParsedParameters(output);

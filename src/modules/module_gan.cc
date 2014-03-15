@@ -43,10 +43,6 @@
 #include "systems/base/parent_graphics_object_data.h"
 #include "systems/base/system.h"
 
-using namespace std;
-using namespace boost;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 
 namespace {

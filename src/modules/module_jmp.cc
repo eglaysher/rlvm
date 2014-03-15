@@ -40,9 +40,8 @@
 #include "machine/rloperation/special_t.h"
 #include "utilities/exception.h"
 
-using namespace std;
-using namespace boost;
-using namespace libreallive;
+using libreallive::CommandElement;
+using libreallive::ExpressionPiecesVector;
 
 // The Flow Control (Jump) Module (mod<0:1>).
 //
@@ -65,7 +64,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
   // match against value.
   int cases = gotoElement.case_count();
   for (int i = 0; i < cases; ++i) {
-    string caseUnparsed = gotoElement.get_case(i);
+    std::string caseUnparsed = gotoElement.get_case(i);
 
     // Check for bytecode wellformedness. All cases should be
     // surrounded by parens
@@ -83,7 +82,8 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
     // Parse this expression, and goto the corresponding label if
     // it's equal to the value we're searching for
     const char* e = (const char*)caseUnparsed.c_str();
-    unique_ptr<ExpressionPiece> output(get_expression(e));
+    std::unique_ptr<libreallive::ExpressionPiece> output(
+        libreallive::get_expression(e));
     if (output->integerValue(machine) == value)
       return i;
   }
@@ -115,7 +115,7 @@ void readWithData(RLMachine& machine,
         strings.push_back(param.second);
         break;
       default: {
-        ostringstream ss;
+        std::ostringstream ss;
         ss << "Unknown type tag " << param.type
            << " during a *_with function call";
         throw rlvm::Exception(ss.str());
@@ -129,11 +129,12 @@ void writeWithData(RLMachine& machine,
                    const std::vector<int>& integers,
                    const std::vector<std::string>& strings) {
   for (int i = 0; i < 40 && i < integers.size(); ++i) {
-    machine.setIntValue(IntMemRef(INTL_LOCATION, 0, i), integers[i]);
+    machine.setIntValue(libreallive::IntMemRef(
+        libreallive::INTL_LOCATION, 0, i), integers[i]);
   }
 
   for (int i = 0; i < 3 && i < strings.size(); ++i) {
-    machine.setStringValue(STRK_LOCATION, i, strings[i]);
+    machine.setStringValue(libreallive::STRK_LOCATION, i, strings[i]);
   }
 }
 
@@ -154,7 +155,7 @@ struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
                                libreallive::ExpressionPiecesVector& output) {
     for (auto const& parameter : input) {
       const char* src = parameter.c_str();
-      output.push_back(get_expression(src));
+      output.push_back(libreallive::get_expression(src));
     }
   }
 };

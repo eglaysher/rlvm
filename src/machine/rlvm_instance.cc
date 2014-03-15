@@ -50,8 +50,6 @@
 #include "utilities/gettext.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-
 namespace fs = boost::filesystem;
 
 // AVG32 file checks. We can't run AVG32 games.
@@ -207,7 +205,7 @@ boost::filesystem::path RLVMInstance::SelectGameDirectory() {
 
 void RLVMInstance::ReportFatalError(const std::string& message_text,
                                     const std::string& informative_text) {
-  cerr << message_text << ": " << informative_text << endl;
+  std::cerr << message_text << ": " << informative_text << std::endl;
 }
 
 void RLVMInstance::DoUserNameCheck(RLMachine& machine) {

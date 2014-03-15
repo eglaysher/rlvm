@@ -27,11 +27,10 @@
 #include "systems/base/little_busters_pt00dll.h"
 
 #include <iostream>
-using namespace std;
 
 LittleBustersPT00DLL::LittleBustersPT00DLL() {
-  cerr << "WARNING: Little Busters Baseball is implemented in a DLL and "
-       << "hasn't been reverse engineered yet." << endl;
+  std::cerr << "WARNING: Little Busters Baseball is implemented in a DLL and "
+            << "hasn't been reverse engineered yet." << std::endl;
 }
 
 LittleBustersPT00DLL::~LittleBustersPT00DLL() {}

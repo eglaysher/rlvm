@@ -55,7 +55,6 @@
 #include "utilities/exception.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
 using boost::replace_all;
 using boost::to_lower;
 
@@ -125,7 +124,9 @@ System::System()
       force_fast_forward_(false),
       force_wait_(false),
       use_western_font_(false) {
-  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+  std::fill(syscom_status_,
+            syscom_status_ + NUM_SYSCOM_ENTRIES,
+            SYSCOM_VISIBLE);
 }
 
 System::~System() {}
@@ -165,7 +166,9 @@ int System::isSyscomEnabled(int syscom) {
 }
 
 void System::hideSyscom() {
-  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_INVISIBLE);
+  std::fill(syscom_status_,
+            syscom_status_ + NUM_SYSCOM_ENTRIES,
+            SYSCOM_INVISIBLE);
 }
 
 void System::hideSyscomEntry(int syscom) {
@@ -174,7 +177,9 @@ void System::hideSyscomEntry(int syscom) {
 }
 
 void System::enableSyscom() {
-  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_VISIBLE);
+  std::fill(syscom_status_,
+            syscom_status_ + NUM_SYSCOM_ENTRIES,
+            SYSCOM_VISIBLE);
 }
 
 void System::enableSyscomEntry(int syscom) {
@@ -183,7 +188,9 @@ void System::enableSyscomEntry(int syscom) {
 }
 
 void System::disableSyscom() {
-  fill(syscom_status_, syscom_status_ + NUM_SYSCOM_ENTRIES, SYSCOM_GREYED_OUT);
+  std::fill(syscom_status_,
+            syscom_status_ + NUM_SYSCOM_ENTRIES,
+            SYSCOM_GREYED_OUT);
 }
 
 void System::disableSyscomEntry(int syscom) {
@@ -205,13 +212,14 @@ void System::showSyscomMenu(RLMachine& machine) {
       in_menu_ = true;
       machine.pushLongOperation(new MenuReseter(*this));
 
-      vector<int> cancelcall = gexe("CANCELCALL");
+      std::vector<int> cancelcall = gexe("CANCELCALL");
       machine.farcall(cancelcall.at(0), cancelcall.at(1));
     }
   } else if (platform_) {
     platform_->showNativeSyscomMenu(machine);
   } else {
-    cerr << "(We don't deal with non-custom SYSCOM calls yet.)" << endl;
+    std::cerr << "(We don't deal with non-custom SYSCOM calls yet.)"
+              << std::endl;
   }
 }
 
@@ -253,10 +261,11 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
       graphics().setShowObject2(!graphics().showObject2());
       break;
     case SYSCOM_CLASSIFY_TEXT:
-      cerr << "We have no idea what classifying text even means!" << endl;
+      std::cerr << "We have no idea what classifying text even means!"
+                << std::endl;
       break;
     case SYSCOM_OPEN_MANUAL_PATH:
-      cerr << "Opening manual path..." << endl;
+      std::cerr << "Opening manual path..." << std::endl;
       break;
     case SYSCOM_SET_SKIP_MODE:
       text().setSkipMode(!text().skipMode());
@@ -284,7 +293,7 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
     case SYSCOM_GENERIC_2:
     case SYSCOM_SCREEN_MODE:
     case SYSCOM_WINDOW_DECORATION_STYLE:
-      cerr << "No idea what to do!" << endl;
+      std::cerr << "No idea what to do!" << std::endl;
       break;
   }
 }
@@ -293,7 +302,7 @@ void System::showSystemInfo(RLMachine& machine) {
   if (platform_) {
     RlvmInfo info;
 
-    string regname = gameexe()("REGNAME").to_string("");
+    std::string regname = gameexe()("REGNAME").to_string("");
     size_t pos = regname.find('\\');
     if (pos != string::npos) {
       info.game_brand = regname.substr(0, pos);
@@ -321,13 +330,13 @@ boost::filesystem::path System::findFile(
 
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
-  string lower_name =
+  std::string lower_name =
       string(file_name.begin(), find(file_name.begin(), file_name.end(), '?'));
   to_lower(lower_name);
 
   std::pair<FileSystemCache::const_iterator, FileSystemCache::const_iterator>
       ret = filesystem_cache_.equal_range(lower_name);
-  for (vector<string>::const_iterator ext = extensions.begin();
+  for (std::vector<std::string>::const_iterator ext = extensions.begin();
        ext != extensions.end();
        ++ext) {
     for (FileSystemCache::const_iterator it = ret.first; it != ret.second;
@@ -355,7 +364,7 @@ void System::reset() {
 
 std::string System::regname() {
   Gameexe& gexe = gameexe();
-  string regname = gexe("REGNAME");
+  std::string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
 
   // Note that we assume the Gameexe file is written in Shift-JIS. I don't
@@ -376,16 +385,16 @@ bool System::fastForward() {
 }
 
 void System::dumpRenderTree(RLMachine& machine) {
-  ostringstream oss;
-  oss << "Dump_SEEN" << setw(4) << setfill('0') << machine.sceneNumber()
-      << "_Line" << machine.lineNumber() << ".txt";
+  std::ostringstream oss;
+  oss << "Dump_SEEN" << std::setw(4) << std::setfill('0')
+      << machine.sceneNumber() << "_Line" << machine.lineNumber() << ".txt";
 
-  ofstream tree(oss.str().c_str());
+  std::ofstream tree(oss.str().c_str());
   graphics().refresh(&tree);
 }
 
 boost::filesystem::path System::getHomeDirectory() {
-  string drive, home;
+  std::string drive, home;
   char* homeptr = getenv("HOME");
   char* driveptr = getenv("HOMEDRIVE");
   char* homepathptr = getenv("HOMEPATH");
@@ -413,7 +422,7 @@ void System::invokeSaveOrLoad(RLMachine& machine,
   GameexeInterpretObject save_loc = gameexe()(location);
 
   if (save_mod.exists() && save_loc.exists() && save_mod == 1) {
-    vector<int> raw_ints = save_loc;
+    std::vector<int> raw_ints = save_loc;
     int scenario = raw_ints.at(0);
     int entrypoint = raw_ints.at(1);
 
@@ -427,7 +436,7 @@ void System::invokeSaveOrLoad(RLMachine& machine,
 
 void System::checkSyscomIndex(int index, const char* function) {
   if (index < 0 || index >= NUM_SYSCOM_ENTRIES) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Illegal syscom index #" << index << " in " << function;
     throw std::runtime_error(oss.str());
   }

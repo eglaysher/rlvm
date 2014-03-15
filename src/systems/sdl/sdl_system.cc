@@ -41,17 +41,14 @@
 #include "systems/sdl/sdl_sound_system.h"
 #include "systems/sdl/sdl_text_system.h"
 
-using namespace std;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 
 SDLSystem::SDLSystem(Gameexe& gameexe) : System(), gameexe_(gameexe) {
   // First, initialize SDL's video subsystem.
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Video initialization failed: " << SDL_GetError();
-    throw Error(ss.str());
+    throw libreallive::Error(ss.str());
   }
 
   // Initialize the various subsystems

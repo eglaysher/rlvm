@@ -33,8 +33,6 @@
 #include "utilities/exception.h"
 #include "utilities/math_util.h"
 
-using namespace std;
-
 // static
 int TimeTableMapper::GetTypeForTag(
     const libreallive::SpecialExpressionPiece& sp) {
@@ -58,7 +56,7 @@ int TimeTableMapper::GetTypeForTag(
     case 55:
       return 8;
     default: {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "Invalid timetable2 tag: " << sp.getOverloadTag();
       throw rlvm::Exception(oss.str());
     }
@@ -85,8 +83,8 @@ int Sys_timetable2::operator()(RLMachine& machine,
        ++it) {
     switch (it->type) {
       case 0: {
-        int end_time = get<0>(it->first);
-        int end_num = get<1>(it->first);
+        int end_time = std::get<0>(it->first);
+        int end_num = std::get<1>(it->first);
         if (now_time > start_time && now_time <= end_time) {
           int to_add = end_num - value;
           return value + Interpolate(start_time, now_time, end_time, to_add, 0);
@@ -98,9 +96,9 @@ int Sys_timetable2::operator()(RLMachine& machine,
         break;
       }
       case 1: {
-        int end_time = get<0>(it->second);
-        int end_num = get<1>(it->second);
-        int mod = get<2>(it->second);
+        int end_time = std::get<0>(it->second);
+        int end_num = std::get<1>(it->second);
+        int mod = std::get<2>(it->second);
 
         if (now_time > start_time && now_time <= end_time) {
           int to_add = end_num - value;
@@ -127,10 +125,10 @@ int Sys_timetable2::operator()(RLMachine& machine,
         break;
       }
       case 7: {
-        int end_time = get<0>(it->eighth);
-        int end_num = get<1>(it->eighth);
+        int end_time = std::get<0>(it->eighth);
+        int end_num = std::get<1>(it->eighth);
         if (now_time > start_time && now_time <= end_time) {
-          int count = get<2>(it->eighth);
+          int count = std::get<2>(it->eighth);
           return Jump(start_time, now_time, end_time, value, end_num, count);
         } else {
           value = end_num;
@@ -141,8 +139,8 @@ int Sys_timetable2::operator()(RLMachine& machine,
         break;
       }
       case 8: {
-        int end_time = get<0>(it->ninth);
-        int end_num = get<1>(it->ninth);
+        int end_time = std::get<0>(it->ninth);
+        int end_num = std::get<1>(it->ninth);
 
         if (now_time > start_time && now_time <= end_time) {
           return value;
@@ -154,7 +152,7 @@ int Sys_timetable2::operator()(RLMachine& machine,
         break;
       }
       default: {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "We don't handle " << it->type << " yet.";
         throw rlvm::Exception(oss.str());
       }
@@ -201,13 +199,13 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
          ++it) {
       switch (it->type) {
         case 0: {
-          total += get<0>(it->first);
-          get<0>(it->first) = total;
+          total += std::get<0>(it->first);
+          std::get<0>(it->first) = total;
           break;
         }
         case 1: {
-          total += get<0>(it->second);
-          get<0>(it->second) = total;
+          total += std::get<0>(it->second);
+          std::get<0>(it->second) = total;
           break;
         }
         case 2: {
@@ -220,17 +218,17 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
           break;
         }
         case 7: {
-          total += get<0>(it->eighth);
-          get<0>(it->eighth) = total;
+          total += std::get<0>(it->eighth);
+          std::get<0>(it->eighth) = total;
           break;
         }
         case 8: {
-          total += get<0>(it->ninth);
-          get<0>(it->ninth) = total;
+          total += std::get<0>(it->ninth);
+          std::get<0>(it->ninth) = total;
           break;
         }
         default: {
-          ostringstream oss;
+          std::ostringstream oss;
           oss << "We don't handle " << it->type << " yet.";
           throw rlvm::Exception(oss.str());
         }

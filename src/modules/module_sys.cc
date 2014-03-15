@@ -65,8 +65,6 @@
 
 const float PI = 3.14159265;
 
-using namespace std;
-
 namespace {
 
 struct title : public RLOp_Void_1<StrConstant_T> {
@@ -268,7 +266,7 @@ struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T> {
   void operator()(RLMachine& machine, int r, int g, int b, int a, int f) {
-    vector<int> attr(5);
+    std::vector<int> attr(5);
     attr[0] = r;
     attr[1] = g;
     attr[2] = b;
@@ -312,7 +310,7 @@ struct DefWindowAttr : public RLOp_Void_5<IntReference_T,
                   IntReferenceIterator a,
                   IntReferenceIterator f) {
     Gameexe& gexe = machine.system().gameexe();
-    vector<int> attr = gexe("WINDOW_ATTR");
+    std::vector<int> attr = gexe("WINDOW_ATTR");
 
     *r = attr.at(0);
     *g = attr.at(1);

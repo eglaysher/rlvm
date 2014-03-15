@@ -33,9 +33,6 @@
 #include "utilities/file.h"
 #include "utilities/gettext.h"
 
-#include <iostream>
-using namespace std;
-
 namespace fs = boost::filesystem;
 
 namespace {

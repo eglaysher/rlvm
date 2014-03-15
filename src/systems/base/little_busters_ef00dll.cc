@@ -33,7 +33,6 @@
 #include "utilities/exception.h"
 #include "libreallive/intmemref.h"
 
-using namespace std;
 using libreallive::IntMemRef;
 
 namespace {
@@ -57,8 +56,8 @@ int LittleBustersEF00DLL::callDLL(RLMachine& machine,
       performCalculations(machine, arg1);
       break;
     default:
-      cerr << "LittleBustersEF00DLL::callDLL(): Invalid function: " << func
-           << endl;
+      std::cerr << "LittleBustersEF00DLL::callDLL(): Invalid function: " << func
+                << std::endl;
       return -1;
   }
   return 0;

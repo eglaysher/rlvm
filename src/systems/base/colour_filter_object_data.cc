@@ -32,7 +32,6 @@
 
 #include <ostream>
 #include <iostream>
-using namespace std;
 
 #include "systems/base/colour.h"
 #include "systems/base/colour_filter.h"
@@ -60,7 +59,7 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
     static bool printed = false;
     if (!printed) {
       printed = true;
-      cerr << "We can't yet scaling colour filters." << endl;
+      std::cerr << "We can't yet scaling colour filters." << std::endl;
     }
   }
 
@@ -72,7 +71,7 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
           << "  Screen rect: " << screen_rect_ << std::endl
           << "  Colour: " << colour << std::endl << "  Properties: ";
     PrintGraphicsObjectToTree(go, tree);
-    *tree << endl;
+    *tree << std::endl;
   }
 }
 

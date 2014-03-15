@@ -48,7 +48,6 @@
 #include "systems/base/system.h"
 #include "utilities/graphics.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 using boost::iends_with;
 
@@ -83,7 +82,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
 };
 
 struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, string filename, int sel) {
+  void operator()(RLMachine& machine, std::string filename, int sel) {
     System& system = machine.system();
     GraphicsSystem& graphics = system.graphics();
     graphics.setDefaultBgrName(filename);
@@ -126,9 +125,11 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
 struct bgrLoadHaikei_wtf
     : RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, string filename, int sel, int a, int b) {
-    // cerr << "Filename: " << filename
-    //      << "(a: " << a << ", b: " << b << ")" << endl;
+  void operator()(RLMachine& machine,
+                  std::string filename,
+                  int sel,
+                  int a,
+                  int b) {
     bgrLoadHaikei_main()(machine, filename, sel);
   }
 };
@@ -212,18 +213,19 @@ struct bgrMulti_1
           // 2:copy(strC 'filename', '?')
           Rect srcRect;
           Point dest;
-          getSELPointAndRect(machine, get<1>(it->third), srcRect, dest);
+          getSELPointAndRect(machine, std::get<1>(it->third), srcRect, dest);
 
           surface =
-              graphics.getSurfaceNamedAndMarkViewed(machine, get<0>(it->third));
+              graphics.getSurfaceNamedAndMarkViewed(machine,
+                                                    std::get<0>(it->third));
           Rect destRect = Rect(dest, srcRect.size());
           surface->blitToSurface(
               *graphics.getHaikei(), srcRect, destRect, 255, true);
           break;
         }
         default: {
-          cerr << "Don't know what to do with a type " << it->type
-               << " in bgrMulti_1" << endl;
+          std::cerr << "Don't know what to do with a type " << it->type
+                    << " in bgrMulti_1" << std::endl;
           break;
         }
       }

@@ -41,7 +41,8 @@
 
 using std::bind;
 using std::ref;
-using namespace std::placeholders;
+using std::placeholders::_1;
+using std::placeholders::_2;
 
 // Represents the various commands.
 enum CommandType {

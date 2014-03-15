@@ -40,20 +40,19 @@
 
 #include "libreallive/compression.h"
 
-using namespace std;
 using boost::istarts_with;
 using boost::iends_with;
 namespace fs = boost::filesystem;
 
 namespace libreallive {
 
-Archive::Archive(const string& filename)
+Archive::Archive(const std::string& filename)
     : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
   readTOC();
   readOverrides();
 }
 
-Archive::Archive(const string& filename, const std::string& regname)
+Archive::Archive(const std::string& filename, const std::string& regname)
     : name(filename),
       info(filename, Read),
       second_level_xor_key_(NULL),
@@ -101,7 +100,7 @@ void Archive::readOverrides() {
   fs::path seen_dir = fs::path(name).branch_path();
   fs::directory_iterator end;
   for (fs::directory_iterator it(seen_dir); it != end; ++it) {
-    string filename = it->path().filename().string();
+    std::string filename = it->path().filename().string();
     if (filename.size() == 12 && istarts_with(filename, "seen") &&
         iends_with(filename, ".txt") && isdigit(filename[4]) &&
         isdigit(filename[5]) && isdigit(filename[6]) && isdigit(filename[7])) {

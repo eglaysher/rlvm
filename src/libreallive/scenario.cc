@@ -43,8 +43,6 @@
 #include "utilities/gettext.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-
 namespace libreallive {
 
 Metadata::Metadata() : encoding(0) {}
@@ -72,7 +70,7 @@ Header::Header(const char* data, const size_t length) {
     use_xor_2 = true;
   } else {
     // New xor key?
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Unsupported compiler version: " << read_i32(data + 4);
     throw Error(oss.str());
   }

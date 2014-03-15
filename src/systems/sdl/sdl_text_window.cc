@@ -47,9 +47,6 @@
 #include "utilities/exception.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-using namespace boost;
-
 SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
     : TextWindow(system, window_num), sdl_system_(system) {
   clearWin();

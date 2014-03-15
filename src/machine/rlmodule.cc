@@ -37,9 +37,6 @@
 #include "machine/rloperation.h"
 #include "utilities/exception.h"
 
-using namespace std;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 // RLMoudle
 // -----------------------------------------------------------------------
@@ -79,7 +76,7 @@ void RLModule::addOpcode(int opcode,
   OpcodeMap::iterator it = stored_operations.find(packed_opcode);
 
   if (it != stored_operations.end()) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Duplicate opcode in " << *this << ": opcode " << opcode << ", "
         << int(overload);
     throw rlvm::Exception(oss.str());
@@ -131,7 +128,8 @@ RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
                  [&](Property& p) { return p.first == property; });
 }
 
-void RLModule::dispatchFunction(RLMachine& machine, const CommandElement& f) {
+void RLModule::dispatchFunction(RLMachine& machine,
+                                const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =
       stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations.end()) {

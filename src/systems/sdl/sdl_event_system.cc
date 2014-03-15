@@ -36,7 +36,7 @@
 #include "systems/sdl/sdl_system.h"
 
 using std::bind;
-using namespace std::placeholders;
+using std::placeholders::_1;
 
 SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
     : EventSystem(gexe),

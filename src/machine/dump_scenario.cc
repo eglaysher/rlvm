@@ -31,14 +31,12 @@
 #include "libreallive/bytecode.h"
 #include "libreallive/scenario.h"
 
-using namespace std;
-
 void DumpScenario(libreallive::Scenario* scenario) {
   if (!scenario) {
-    cout << "Invalid scenario number." << endl;
+    std::cout << "Invalid scenario number." << std::endl;
     return;
   }
 
   for (auto const& instruction : *scenario)
-    instruction.print(cout);
+    instruction.print(std::cout);
 }

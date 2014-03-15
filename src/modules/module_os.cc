@@ -32,8 +32,6 @@
 #include "machine/rloperation.h"
 #include "machine/rloperation/rlop_store.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 namespace {

@@ -39,8 +39,6 @@
 #include "systems/sdl/texture.h"
 #include "utilities/exception.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // SDLRenderToTextureSurface
 // -----------------------------------------------------------------------
@@ -56,7 +54,7 @@ SDLRenderToTextureSurface::SDLRenderToTextureSurface(SDLGraphicsSystem* system,
 SDLRenderToTextureSurface::~SDLRenderToTextureSurface() {}
 
 void SDLRenderToTextureSurface::dump() {
-  cerr << "Attempting to dump a remembered texture." << endl;
+  std::cerr << "Attempting to dump a remembered texture." << std::endl;
 }
 
 void SDLRenderToTextureSurface::blitToSurface(Surface& dest_surface,

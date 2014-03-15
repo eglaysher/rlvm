@@ -36,11 +36,9 @@
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
 
-using namespace std;
-
 std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();
-  vector<int> selEffect;
+  std::vector<int> selEffect;
 
   if (gexe("SEL", selNum).exists()) {
     selEffect = gexe("SEL", selNum).to_intVector();
@@ -72,7 +70,7 @@ void getSELPointAndRect(RLMachine& machine,
                         int selNum,
                         Rect& rect,
                         Point& point) {
-  vector<int> selEffect = getSELEffect(machine, selNum);
+  std::vector<int> selEffect = getSELEffect(machine, selNum);
   rect = Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
   point = Point(selEffect[4], selEffect[5]);
 }
@@ -87,13 +85,13 @@ Size getScreenSize(Gameexe& gameexe) {
     } else if (graphicsMode[0] == 999 && graphicsMode.size() >= 3) {
       return Size(graphicsMode[1], graphicsMode[2]);
     } else {
-      ostringstream oss;
-      oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode[0] << endl;
+      std::ostringstream oss;
+      oss << "Illegal #SCREENSIZE_MOD value: " << graphicsMode[0];
       throw SystemError(oss.str());
     }
   }
 
-  ostringstream oss;
+  std::ostringstream oss;
   oss << "Missing #SCREENSIZE_MOD key";
   throw SystemError(oss.str());
 }
@@ -121,6 +119,7 @@ void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest) {
     dest = intersection;
     src = Rect(src.origin() + top_left_offset, intersection.size());
   } else {
-    cerr << "Doesn't deal with different sizes in ClipDestination!" << endl;
+    std::cerr << "Doesn't deal with different sizes in ClipDestination!"
+              << std::endl;
   }
 }

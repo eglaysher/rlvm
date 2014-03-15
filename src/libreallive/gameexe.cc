@@ -44,8 +44,6 @@
 
 #include "libreallive/defs.h"
 
-using namespace boost;
-using namespace std;
 namespace fs = boost::filesystem;
 
 #define is_space(c) (c == '\r' || c == '\n' || c == ' ' || c == '\t')
@@ -120,14 +118,14 @@ Gameexe::Gameexe() {}
 Gameexe::Gameexe(const fs::path& gameexefile) : data_(), cdata_() {
   fs::ifstream ifs(gameexefile);
   if (!ifs) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not find Gameexe.ini file! (Looking in " << gameexefile
         << ")";
     throw libreallive::Error(oss.str());
   }
 
-  string line;
-  while (getline(ifs, line)) {
+  std::string line;
+  while (std::getline(ifs, line)) {
     parseLine(line);
   }
 }
@@ -138,15 +136,15 @@ Gameexe::~Gameexe() {}
 
 void Gameexe::parseLine(const std::string& line) {
   size_t firstHash = line.find_first_of('#');
-  if (firstHash != string::npos) {
+  if (firstHash != std::string::npos) {
     // Extract what's the key and value
     size_t firstEqual = line.find_first_of('=');
-    string key = line.substr(firstHash + 1, firstEqual - firstHash - 1);
-    string value = line.substr(firstEqual + 1);
+    std::string key = line.substr(firstHash + 1, firstEqual - firstHash - 1);
+    std::string value = line.substr(firstEqual + 1);
 
     // Get rid of extra whitespace
-    trim(key);
-    trim(value);
+    boost::trim(key);
+    boost::trim(value);
 
     Gameexe_vec_type vec;
 
@@ -155,9 +153,9 @@ void Gameexe::parseLine(const std::string& line) {
     ValueTokenizer tokenizer(value);
     for (ValueTokenizer::iterator it = tokenizer.begin(); it != tokenizer.end();
          ++it) {
-      const string& tok = *it;
+      const std::string& tok = *it;
       if (tok[0] == '"') {
-        string unquoted = tok.substr(1, tok.size() - 2);
+        std::string unquoted = tok.substr(1, tok.size() - 2);
         cdata_.push_back(unquoted);
         vec.push_back(cdata_.size() - 1);
       } else if (tok != "-") {
@@ -165,7 +163,7 @@ void Gameexe::parseLine(const std::string& line) {
           vec.push_back(std::stoi(tok));
         }
         catch (...) {
-          cerr << "Couldn't int-ify '" << tok << "'" << endl;
+          std::cerr << "Couldn't int-ify '" << tok << "'" << std::endl;
           vec.push_back(0);
         }
       }
@@ -362,8 +360,8 @@ bool GameexeInterpretObject::exists() const {
 // -----------------------------------------------------------------------
 
 const std::vector<std::string> GameexeInterpretObject::key_parts() const {
-  vector<string> keyparts;
-  boost::split(keyparts, key_, is_any_of("."));
+  std::vector<std::string> keyparts;
+  boost::split(keyparts, key_, boost::is_any_of("."));
   return keyparts;
 }
 
@@ -390,7 +388,7 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(const int value) {
 
 void GameexeFilteringIterator::incrementUntilValid() {
   while (currentKey != gexe.data_.end() &&
-         !istarts_with(currentKey->first, filterKeys)) {
+         !boost::istarts_with(currentKey->first, filterKeys)) {
     currentKey++;
   }
 }

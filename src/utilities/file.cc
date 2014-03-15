@@ -56,23 +56,21 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 
 fs::path correctPathCase(fs::path Path) {
-  using namespace boost::filesystem;
-
 #ifndef CASE_SENSITIVE_FILESYSTEM
-  if (!exists(Path))
+  if (!fs::exists(Path))
     return path();
   return Path;
 #else
   // If the path is OK as it stands, do nothing.
-  if (exists(Path))
+  if (fs::exists(Path))
     return Path;
   // If the path doesn't seem to be OK, track backwards through it
   // looking for the point at which the problem first arises.  Path
   // will contain the parts of the path that exist on the current
   // filesystem, and pathElts will contain the parts after that point,
   // which may have incorrect case.
-  stack<string> pathElts;
-  while (!Path.empty() && !exists(Path)) {
+  std::stack<std::string> pathElts;
+  while (!Path.empty() && !fs::exists(Path)) {
     pathElts.push(Path.filename().string());
     Path = Path.branch_path();
   }
@@ -85,7 +83,7 @@ fs::path correctPathCase(fs::path Path) {
     // contains directories bar and Bar, but a full backtracking
     // search would be complicated; for now this should be adequate!)
     const bool needDir = pathElts.size() > 1;
-    string elt(pathElts.top());
+    std::string elt(pathElts.top());
     pathElts.pop();
     // Does this element exist?
     if (exists(Path / elt) && (!needDir || is_directory(Path / elt))) {
@@ -94,10 +92,10 @@ fs::path correctPathCase(fs::path Path) {
     } else {
       // If not, search for a suitable candidate.
       to_upper(elt);
-      directory_iterator end;
+      fs::directory_iterator end;
       bool found = false;
-      for (directory_iterator dir(Path); dir != end; ++dir) {
-        string uleaf = dir->path().filename().string();
+      for (fs::directory_iterator dir(Path); dir != end; ++dir) {
+        std::string uleaf = dir->path().filename().string();
         to_upper(uleaf);
         if (uleaf == elt && (!needDir || is_directory(*dir))) {
           Path /= dir->path().filename();

@@ -38,10 +38,6 @@
 #include "libreallive/bytecode.h"
 #include "utilities/exception.h"
 
-using namespace std;
-using namespace boost;
-using namespace libreallive;
-
 namespace getSystemObjImpl {
 
 template <>
@@ -93,7 +89,7 @@ void MultiDispatch::parseParameters(
     libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
-    output.push_back(get_complex_param(src));
+    output.push_back(libreallive::get_complex_param(src));
   }
 }
 
@@ -105,8 +101,8 @@ void MultiDispatch::operator()(RLMachine& machine,
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libreallive::ExpressionPiecesVector& element =
-        dynamic_cast<const ComplexExpressionPiece&>(*parameter_pieces[i])
-            .getContainedPieces();
+        dynamic_cast<const libreallive::ComplexExpressionPiece&>(
+            *parameter_pieces[i]).getContainedPieces();
 
     handler_->dispatch(machine, element);
   }
@@ -122,11 +118,11 @@ ReturnGameexeInt::ReturnGameexeInt(const std::string& full_key, int en)
 
 int ReturnGameexeInt::operator()(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
-  vector<int> values = gexe(full_key_name_);
+  std::vector<int> values = gexe(full_key_name_);
   if (static_cast<size_t>(entry_) < values.size()) {
     return values[entry_];
   } else {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not access piece " << entry_ << " in Gameexe key \""
         << full_key_name_ << "\"";
     throw std::runtime_error(oss.str());

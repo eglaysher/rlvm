@@ -43,8 +43,6 @@
 #include "systems/base/object_mutator.h"
 #include "utilities/exception.h"
 
-using namespace std;
-
 const int DEFAULT_TEXT_SIZE = 14;
 const int DEFAULT_TEXT_XSPACE = 0;
 const int DEFAULT_TEXT_YSPACE = 0;
@@ -818,9 +816,9 @@ void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
   } else if (speedup == 1) {
     // This is explicitly a noop.
   } else {
-    cerr << "Warning: We only do immediate endings in "
-         << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
-         << endl;
+    std::cerr << "Warning: We only do immediate endings in "
+              << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
+              << std::endl;
   }
 }
 
@@ -842,7 +840,7 @@ void GraphicsObject::render(int objNum,
                             std::ostream* tree) {
   if (object_data_ && visible()) {
     if (tree) {
-      *tree << "Object #" << objNum << ":" << endl;
+      *tree << "Object #" << objNum << ":" << std::endl;
     }
 
     object_data_->render(*this, parent, tree);
@@ -934,9 +932,9 @@ GraphicsObject::Impl::Impl()
       z_depth_(0),
       wipe_copy_(0) {
   // Regretfully, we can't do this in the initializer list.
-  fill(adjust_x_, adjust_x_ + 8, 0);
-  fill(adjust_y_, adjust_y_ + 8, 0);
-  fill(adjust_alpha_, adjust_alpha_ + 8, 255);
+  std::fill(adjust_x_, adjust_x_ + 8, 0);
+  std::fill(adjust_y_, adjust_y_ + 8, 0);
+  std::fill(adjust_alpha_, adjust_alpha_ + 8, 255);
 }
 
 GraphicsObject::Impl::Impl(const Impl& rhs)
@@ -978,9 +976,9 @@ GraphicsObject::Impl::Impl(const Impl& rhs)
   if (rhs.button_properties_)
     button_properties_.reset(new ButtonProperties(*rhs.button_properties_));
 
-  copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
-  copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
-  copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
+  std::copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
+  std::copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
+  std::copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
 }
 
 GraphicsObject::Impl::~Impl() {}
@@ -992,9 +990,9 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
     x_ = rhs.x_;
     y_ = rhs.y_;
 
-    copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
-    copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
-    copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
+    std::copy(rhs.adjust_x_, rhs.adjust_x_ + 8, adjust_x_);
+    std::copy(rhs.adjust_y_, rhs.adjust_y_ + 8, adjust_y_);
+    std::copy(rhs.adjust_alpha_, rhs.adjust_alpha_ + 8, adjust_alpha_);
 
     whatever_adjust_vert_operates_on_ = rhs.whatever_adjust_vert_operates_on_;
     origin_x_ = rhs.origin_x_;

@@ -42,8 +42,6 @@
 #include "systems/base/system.h"
 #include "libreallive/gameexe.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // SoundSystemGlobals
 // -----------------------------------------------------------------------
@@ -134,13 +132,13 @@ SoundSystem::SoundSystem(System& system)
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; se != end; ++se) {
-    string raw_number = se->key_parts().at(1);
+    std::string raw_number = se->key_parts().at(1);
     int entry_number = std::stoi(raw_number);
 
-    string file_name = se->getStringAt(0);
+    std::string file_name = se->getStringAt(0);
     int target_channel = se->getIntAt(1);
 
-    se_table_[entry_number] = make_pair(file_name, target_channel);
+    se_table_[entry_number] = std::make_pair(file_name, target_channel);
   }
 
   // Read the \#DSTRACK entries
@@ -171,18 +169,18 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#KOEONOFF entries
   GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
   for (; koeonoff != end; ++koeonoff) {
-    std::vector<string> keyparts = koeonoff->key_parts();
+    std::vector<std::string> keyparts = koeonoff->key_parts();
     int usekoe_id = std::stoi(keyparts.at(1));
 
     // Find the corresponding koeplay ids.
-    vector<int> koeplay_ids;
-    const string& unprocessed_koeids = keyparts.at(2);
-    if (unprocessed_koeids.find('(') != string::npos) {
+    std::vector<int> koeplay_ids;
+    const std::string& unprocessed_koeids = keyparts.at(2);
+    if (unprocessed_koeids.find('(') != std::string::npos) {
       // We have a list that we need to parse out.
-      string no_parens =
+      std::string no_parens =
           unprocessed_koeids.substr(1, unprocessed_koeids.size() - 2);
 
-      vector<string> string_koeplay_ids;
+      std::vector<std::string> string_koeplay_ids;
       boost::split(string_koeplay_ids, no_parens, boost::is_any_of(","));
 
       for (std::string const& string_id : string_koeplay_ids) {
@@ -293,7 +291,7 @@ void SoundSystem::setChannelVolume(const int channel,
 
   unsigned int cur_time = system().event().getTicks();
 
-  pcm_adjustment_tasks_.insert(make_pair(
+  pcm_adjustment_tasks_.insert(std::make_pair(
       channel,
       VolumeAdjustTask(
           cur_time, channel_volume_[channel], level, fade_time_in_ms)));
@@ -409,7 +407,7 @@ void SoundSystem::reset() {
 // static
 void SoundSystem::checkChannel(int channel, const char* function_name) {
   if (channel < 0 || channel > NUM_TOTAL_CHANNELS) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Invalid channel number " << channel << " in " << function_name;
     throw std::runtime_error(oss.str());
   }
@@ -418,7 +416,7 @@ void SoundSystem::checkChannel(int channel, const char* function_name) {
 // static
 void SoundSystem::checkVolume(int level, const char* function_name) {
   if (level < 0 || level > 255) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Invalid volume \"" << level << "\" in " << function_name
         << ". Valid values are 0-255.";
     throw std::runtime_error(oss.str());

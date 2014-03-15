@@ -27,11 +27,10 @@
 #include "systems/base/tomoyo_after_dt00dll.h"
 
 #include <iostream>
-using namespace std;
 
 TomoyoAfterDT00DLL::TomoyoAfterDT00DLL() {
-  cerr << "WARNING: Tomoyo After: Dungeons & Takafumis is implemented in a DLL"
-       << " and hasn't been reverse engineered yet." << endl;
+  std::cerr << "WARNING: Tomoyo After: Dungeons & Takafumis is implemented in"
+            << " a DLL and hasn't been reverse engineered yet." << std::endl;
 }
 
 TomoyoAfterDT00DLL::~TomoyoAfterDT00DLL() {}

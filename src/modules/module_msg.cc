@@ -44,8 +44,6 @@
 #include "systems/base/text_window.h"
 #include "utilities/string_utilities.h"
 
-using namespace std;
-
 namespace {
 
 struct par : public RLOp_Void_Void {
@@ -135,11 +133,11 @@ struct msgClear : public RLOp_Void_Void {
 struct msgClearAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    vector<int> activeWindows = text.activeWindows();
+    std::vector<int> activeWindows = text.activeWindows();
     int activeWindow = text.activeWindow();
 
     text.snapshot();
-    for (vector<int>::const_iterator it = activeWindows.begin();
+    for (std::vector<int>::const_iterator it = activeWindows.begin();
          it != activeWindows.end();
          ++it) {
       text.textWindow(activeWindow)->clearWin();
@@ -192,7 +190,7 @@ struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 };
 
 struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0>> {
-  void operator()(RLMachine& machine, string file, int index) {
+  void operator()(RLMachine& machine, std::string file, int index) {
     TextPage& page = machine.system().text().currentPage();
     page.FaceOpen(file, index);
   }

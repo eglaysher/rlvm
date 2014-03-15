@@ -52,17 +52,14 @@
 #include "utilities/graphics.h"
 #include "utilities/string_utilities.h"
 
-using namespace boost;
-using namespace libreallive;
-
 // -----------------------------------------------------------------------
 
 namespace {
 
 void setObjectDataToGan(RLMachine& machine,
                         GraphicsObject& obj,
-                        string& imgFilename,
-                        const string& ganFilename) {
+                        std::string& imgFilename,
+                        const std::string& ganFilename) {
   /// @todo This is a hack and probably a source of errors. Figure
   ///       out what '???' means when used as the first parameter to
   ///       objOfFileGan.
@@ -77,15 +74,15 @@ typedef std::function<void(RLMachine&, GraphicsObject& obj, const string&)>
 
 void objOfFileLoader(RLMachine& machine,
                      GraphicsObject& obj,
-                     const string& val) {
+                     const std::string& val) {
   obj.setObjectData(machine.system().graphics().buildObjOfFile(val));
 }
 
 void objOfTextBuilder(RLMachine& machine,
                       GraphicsObject& obj,
-                      const string& val) {
+                      const std::string& val) {
   // The text at this point is still cp932. Convert it.
-  string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+  std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
   obj.setTextText(utf8str);
   GraphicsTextObject* text_obj = new GraphicsTextObject(machine.system());
   obj.setObjectData(text_obj);
@@ -94,13 +91,13 @@ void objOfTextBuilder(RLMachine& machine,
 
 void objOfDriftLoader(RLMachine& machine,
                       GraphicsObject& obj,
-                      const string& value) {
+                      const std::string& value) {
   obj.setObjectData(new DriftGraphicsObject(machine.system(), value));
 }
 
 void objOfDigitsLoader(RLMachine& machine,
                        GraphicsObject& obj,
-                       const string& value) {
+                       const std::string& value) {
   obj.setObjectData(new DigitsGraphicsObject(machine.system(), value));
 }
 
@@ -108,7 +105,7 @@ struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_0(const DataFunction& fun) : data_fun_(fun) {}
 
-  void operator()(RLMachine& machine, int buf, string filename) {
+  void operator()(RLMachine& machine, int buf, std::string filename) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
   }
@@ -119,7 +116,10 @@ struct objGeneric_1
   DataFunction data_fun_;
   explicit objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
 
-  void operator()(RLMachine& machine, int buf, string filename, int visible) {
+  void operator()(RLMachine& machine,
+                  int buf,
+                  std::string filename,
+                  int visible) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
@@ -136,7 +136,7 @@ struct objGeneric_2 : public RLOp_Void_5<IntConstant_T,
 
   void operator()(RLMachine& machine,
                   int buf,
-                  string filename,
+                  std::string filename,
                   int visible,
                   int x,
                   int y) {

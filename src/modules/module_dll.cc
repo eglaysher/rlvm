@@ -33,8 +33,6 @@
 
 #include <string>
 
-using namespace libreallive;
-
 namespace {
 
 struct LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {

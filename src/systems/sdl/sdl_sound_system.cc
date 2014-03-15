@@ -41,7 +41,6 @@
 #include "systems/sdl/sdl_sound_chunk.h"
 #include "utilities/exception.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -75,7 +74,7 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   if (sample == NULL) {
     fs::path file_path = system().findFile(file_name, SOUND_FILETYPES);
     if (file_path.empty()) {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "Could not find sound file \"" << file_name << "\".";
       throw rlvm::Exception(oss.str());
     }
@@ -119,13 +118,13 @@ boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
   const CDTable& cd_table = getCDTable();
   CDTable::const_iterator cd_it = cd_table.find(boost::to_lower_copy(bgm_name));
   if (cd_it != cd_table.end()) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "CD music not supported yet. Could not play track \"" << bgm_name
         << "\"";
     throw std::runtime_error(oss.str());
   }
 
-  ostringstream oss;
+  std::ostringstream oss;
   oss << "Could not find music track \"" << bgm_name << "\"";
   throw std::runtime_error(oss.str());
 }
@@ -148,7 +147,7 @@ SDLSoundSystem::SDLSoundSystem(System& system)
   /* This is where we open up our audio device.  Mix_OpenAudio takes
      as its parameters the audio format we'd /like/ to have. */
   if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Couldn't initialize audio: " << Mix_GetError();
     throw SystemError(oss.str());
   }
@@ -213,7 +212,7 @@ void SDLSoundSystem::setChannelVolume(const int channel, const int level) {
 void SDLSoundSystem::wavPlay(const std::string& wav_file, bool loop) {
   int channel_number = SDLSoundChunk::FindNextFreeExtraChannel();
   if (channel_number == -1) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Couldn't find a free channel for wavPlay()";
     throw std::runtime_error(oss.str());
   }
@@ -273,12 +272,12 @@ void SDLSoundSystem::playSe(const int se_num) {
   if (seEnabled()) {
     SeTable::const_iterator it = seTable().find(se_num);
     if (it == seTable().end()) {
-      ostringstream oss;
+      std::ostringstream oss;
       oss << "No #SE entry found for sound effect number " << se_num;
       throw rlvm::Exception(oss.str());
     }
 
-    const string& file_name = it->second.first;
+    const std::string& file_name = it->second.first;
     int channel = it->second.second;
 
     // Make sure there isn't anything playing on the current channel
@@ -392,7 +391,7 @@ void SDLSoundSystem::koePlayImpl(int id) {
   // Get the VoiceSample.
   boost::shared_ptr<VoiceSample> sample = voice_cache_.find(id);
   if (!sample) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "No sample for " << id;
     throw std::runtime_error(oss.str());
   }

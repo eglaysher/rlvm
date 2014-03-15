@@ -44,7 +44,6 @@
 #include "systems/base/system.h"
 #include "utilities/file.h"
 
-using namespace std;
 namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
@@ -166,7 +165,7 @@ Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go) {
 // -----------------------------------------------------------------------
 
 void GraphicsObjectOfFile::objectInfo(std::ostream& tree) {
-  tree << "  Image: " << filename_ << endl;
+  tree << "  Image: " << filename_ << std::endl;
 }
 
 // -----------------------------------------------------------------------
@@ -177,8 +176,9 @@ void GraphicsObjectOfFile::playSet(int frame_time) {
   current_frame_ = 0;
 
   if (frame_time_ == 0) {
-    cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
-         << " this is probably going to cause a graphical glitch..." << endl;
+    std::cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
+              << " this is probably going to cause a graphical glitch..."
+              << std::endl;
     frame_time_ = 10;
   }
 

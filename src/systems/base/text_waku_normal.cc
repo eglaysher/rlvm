@@ -44,7 +44,7 @@ using std::endl;
 using std::ostringstream;
 using std::setfill;
 using std::setw;
-using namespace std::placeholders;
+using std::placeholders::_1;
 
 namespace {
 
@@ -183,8 +183,6 @@ bool TextWakuNormal::handleMouseClick(RLMachine& machine,
 }
 
 void TextWakuNormal::loadWindowWaku() {
-  using namespace boost;
-
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
 
   setWakuMain(waku("NAME").to_string(""));

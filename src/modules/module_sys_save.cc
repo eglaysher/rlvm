@@ -60,7 +60,6 @@
 // OSX.
 #include <boost/multi_array/algorithm.hpp>
 
-using namespace libreallive;
 using boost::starts_with;
 using boost::ends_with;
 namespace fs = boost::filesystem;

@@ -50,8 +50,8 @@
 #include "utilities/find_font_file.h"
 #include "libreallive/gameexe.h"
 
-using namespace std;
-using namespace std::placeholders;
+using std::bind;
+using std::placeholders::_1;
 namespace fs = boost::filesystem;
 
 const char* EVENT_CANCEL = "EVENT_CANCEL";
@@ -231,7 +231,7 @@ void GCNPlatform::render() {
     guichan_gui_->draw();
   }
   catch (gcn::Exception& e) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Guichan Exception at " << e.getFunction() << ": " << e.getMessage();
     throw rlvm::Exception(oss.str());
   }
@@ -403,8 +403,8 @@ void GCNPlatform::buildSyscomMenuFor(const std::string& label,
       int id = menu_items[i].syscom_id;
       int enabled = sys.isSyscomEnabled(id);
       if (enabled != SYSCOM_INVISIBLE) {
-        ostringstream labelss;
-        labelss << setw(3) << setfill('0') << id;
+        std::ostringstream labelss;
+        labelss << std::setw(3) << std::setfill('0') << id;
 
         if (menu_items[i].label == NULL)
           button_definition.label = syscomString(labelss.str());

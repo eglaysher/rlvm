@@ -69,8 +69,9 @@
 
 namespace fs = boost::filesystem;
 
-using namespace std;
-using namespace libreallive;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 // -----------------------------------------------------------------------
 
@@ -99,7 +100,7 @@ bool IsNotLongOp(StackFrame& frame) {
 // RLMachine
 // -----------------------------------------------------------------------
 
-RLMachine::RLMachine(System& in_system, Archive& in_archive)
+RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
     : memory_(new Memory(*this, in_system.gameexe())),
       halted_(false),
       print_undefined_opcodes_(false),
@@ -164,9 +165,9 @@ void RLMachine::attachModule(RLModule* module) {
   ModuleMap::iterator it = modules_.find(packed_module);
   if (it != modules_.end()) {
     RLModule& cur_mod = *it->second;
-    ostringstream ss;
+    std::ostringstream ss;
     ss << "Module identification clash: tyring to overwrite " << cur_mod
-       << " with " << *module << endl;
+       << " with " << *module << std::endl;
 
     // Free |module| since we took ownership of it
     delete module;
@@ -233,15 +234,18 @@ bool RLMachine::savepointDecide(AttributeFunction func,
 void RLMachine::setMarkSavepoints(const int in) { mark_savepoints_ = in; }
 
 bool RLMachine::shouldSetMessageSavepoint() const {
-  return savepointDecide(&Scenario::savepointMessage, "SAVEPOINT_MESSAGE");
+  return savepointDecide(&libreallive::Scenario::savepointMessage,
+                         "SAVEPOINT_MESSAGE");
 }
 
 bool RLMachine::shouldSetSelcomSavepoint() const {
-  return savepointDecide(&Scenario::savepointSelcom, "SAVEPOINT_SELCOM");
+  return savepointDecide(&libreallive::Scenario::savepointSelcom,
+                         "SAVEPOINT_SELCOM");
 }
 
 bool RLMachine::shouldSetSeentopSavepoint() const {
-  return savepointDecide(&Scenario::savepointSeentop, "SAVEPOINT_SEENTOP");
+  return savepointDecide(&libreallive::Scenario::savepointSeentop,
+                         "SAVEPOINT_SEENTOP");
 }
 
 void RLMachine::executeNextInstruction() {
@@ -332,7 +336,7 @@ void RLMachine::advanceInstructionPointer() {
   }
 }
 
-void RLMachine::executeCommand(const CommandElement& f) {
+void RLMachine::executeCommand(const libreallive::CommandElement& f) {
   ModuleMap::iterator it =
       modules_.find(packModuleNumber(f.modtype(), f.module()));
   if (it != modules_.end()) {
@@ -346,7 +350,7 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
   // Check to make sure it's a valid scenario
   libreallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Invalid scenario number in jump (" << scenario_num << ", "
         << entrypoint << ")";
     throw rlvm::Exception(oss.str());
@@ -374,7 +378,7 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
 void RLMachine::farcall(int scenario_num, int entrypoint) {
   libreallive::Scenario* scenario = archive_.scenario(scenario_num);
   if (scenario == 0) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Invalid scenario number in farcall (" << scenario_num << ", "
         << entrypoint << ")";
     throw rlvm::Exception(oss.str());
@@ -444,7 +448,7 @@ void RLMachine::pushLongOperation(LongOperation* long_operation) {
 void RLMachine::pushStackFrame(const StackFrame& frame) {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(
-        bind(&RLMachine::pushStackFrame, this, frame));
+        std::bind(&RLMachine::pushStackFrame, this, frame));
     return;
   }
 
@@ -457,7 +461,8 @@ void RLMachine::pushStackFrame(const StackFrame& frame) {
 
 void RLMachine::popStackFrame() {
   if (delay_stack_modifications_) {
-    delayed_modifications_.push_back(bind(&RLMachine::popStackFrame, this));
+    delayed_modifications_.push_back(
+        std::bind(&RLMachine::popStackFrame, this));
     return;
   }
 
@@ -487,7 +492,7 @@ std::string* RLMachine::currentStrKBank() {
 void RLMachine::clearLongOperationsOffBackOfStack() {
   if (delay_stack_modifications_) {
     delayed_modifications_.push_back(
-        bind(&RLMachine::clearLongOperationsOffBackOfStack, this));
+        std::bind(&RLMachine::clearLongOperationsOffBackOfStack, this));
     return;
   }
 
@@ -528,11 +533,11 @@ int RLMachine::sceneNumber() const {
   return call_stack_.back().scenario->sceneNumber();
 }
 
-const Scenario& RLMachine::scenario() const {
+const libreallive::Scenario& RLMachine::scenario() const {
   return *call_stack_.back().scenario;
 }
 
-void RLMachine::executeExpression(const ExpressionElement& e) {
+void RLMachine::executeExpression(const libreallive::ExpressionElement& e) {
   e.parsedExpression().integerValue(*this);
   advanceInstructionPointer();
 }
@@ -545,7 +550,7 @@ int RLMachine::getProbableEncodingType() const {
   return archive_.getProbableEncodingType();
 }
 
-void RLMachine::performTextout(const TextoutElement& e) {
+void RLMachine::performTextout(const libreallive::TextoutElement& e) {
   std::string unparsed_text = e.text();
   if (boost::starts_with(unparsed_text, SeenEnd)) {
     unparsed_text = SeenEnd;
@@ -571,7 +576,7 @@ void RLMachine::performTextout(const std::string& cp932str) {
   TextSystem& ts = system().text();
 
   // Display UTF-8 characters
-  unique_ptr<TextoutLongOperation> ptr(
+  std::unique_ptr<TextoutLongOperation> ptr(
       new TextoutLongOperation(*this, utf8str));
 
   if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
@@ -612,7 +617,7 @@ void RLMachine::loadDLL(int slot, const std::string& name) {
   if (dll) {
     loaded_dlls_.insert(slot, dll);
   } else {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Can't load emulated dll named '" << name << "'";
     throw rlvm::Exception(oss.str());
   }
@@ -630,7 +635,7 @@ int RLMachine::callDLL(int slot,
   if (it != loaded_dlls_.end()) {
     return it->second->callDLL(*this, one, two, three, four, five);
   } else {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Attempt to callDLL(" << one << ", " << two << ", " << three << ", "
         << four << ", " << five << ") on slot " << slot
         << " when no DLL is loaded there!";

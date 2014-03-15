@@ -101,16 +101,14 @@ IntMemRef::~IntMemRef() {}
 
 std::ostream& operator<<(std::ostream& oss,
                          const libreallive::IntMemRef& memref) {
-  using namespace libreallive;
-
   oss << "int";
 
   int bank = memref.bank();
-  if (bank >= INTA_LOCATION && bank <= INTG_LOCATION)
+  if (bank >= libreallive::INTA_LOCATION && bank <= libreallive::INTG_LOCATION)
     oss << char('A' + memref.bank());
-  else if (bank == INTZ_LOCATION)
+  else if (bank == libreallive::INTZ_LOCATION)
     oss << 'Z';
-  else if (bank == INTL_LOCATION)
+  else if (bank == libreallive::INTL_LOCATION)
     oss << 'L';
   else
     oss << "{Invalid bank# " << bank << "}";

@@ -37,10 +37,13 @@
 #include "systems/base/system.h"
 #include "utilities/file.h"
 
-using namespace std;
-
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
 
 // -----------------------------------------------------------------------
 

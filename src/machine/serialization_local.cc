@@ -64,9 +64,6 @@
 #include "utilities/exception.h"
 #include "utilities/gettext.h"
 
-using namespace std;
-using namespace libreallive;
-using namespace boost::archive;
 namespace fs = boost::filesystem;
 
 namespace Serialization {
@@ -93,16 +90,15 @@ namespace Serialization {
 
 void saveGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ofstream file(path, ios::binary);
+  fs::ofstream file(path, std::ios::binary);
   checkInFileOpened(file, path);
 
   saveGameTo(file, machine);
 }
 
 void saveGameTo(std::ostream& oss, RLMachine& machine) {
-  using namespace boost::iostreams;
-  filtering_stream<output> filtered_output;
-  filtered_output.push(zlib_compressor());
+  boost::iostreams::filtering_stream<boost::iostreams::output> filtered_output;
+  filtered_output.push(boost::iostreams::zlib_compressor());
   filtered_output.push(oss);
 
   const SaveGameHeader header(machine.system().graphics().windowSubtitle());
@@ -110,7 +106,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
   g_current_machine = &machine;
 
   try {
-    text_oarchive oa(filtered_output);
+    boost::archive::text_oarchive oa(filtered_output);
     oa << CURRENT_LOCAL_VERSION << header
        << const_cast<const LocalMemory&>(machine.memory().local())
        << const_cast<const RLMachine&>(machine)
@@ -120,8 +116,8 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
        << const_cast<const SoundSystem&>(machine.system().sound());
   }
   catch (std::exception& e) {
-    cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
-         << endl;
+    std::cerr << "--- WARNING: ERROR DURING SAVING FILE: " << e.what() << " ---"
+              << std::endl;
 
     g_current_machine = NULL;
     throw e;
@@ -131,31 +127,30 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
 }
 
 fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
-  ostringstream oss;
-  oss << "save" << setw(3) << setfill('0') << slot << ".sav.gz";
+  std::ostringstream oss;
+  oss << "save" << std::setw(3) << std::setfill('0') << slot << ".sav.gz";
 
   return machine.system().gameSaveDirectory() / oss.str();
 }
 
 SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path, ios::binary);
+  fs::ifstream file(path, std::ios::binary);
   checkInFileOpened(file, path);
 
   return loadHeaderFrom(file);
 }
 
 SaveGameHeader loadHeaderFrom(std::istream& iss) {
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
+  boost::iostreams::filtering_stream<boost::iostreams::input> filtered_input;
+  filtered_input.push(boost::iostreams::zlib_decompressor());
   filtered_input.push(iss);
 
   int version;
   SaveGameHeader header;
 
   // Only load the header
-  text_iarchive ia(filtered_input);
+  boost::archive::text_iarchive ia(filtered_input);
   ia >> version >> header;
 
   return header;
@@ -163,38 +158,36 @@ SaveGameHeader loadHeaderFrom(std::istream& iss) {
 
 void loadLocalMemoryForSlot(RLMachine& machine, int slot, Memory& memory) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path, ios::binary);
+  fs::ifstream file(path, std::ios::binary);
   checkInFileOpened(file, path);
 
   loadLocalMemoryFrom(file, memory);
 }
 
 void loadLocalMemoryFrom(std::istream& iss, Memory& memory) {
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
+  boost::iostreams::filtering_stream<boost::iostreams::input> filtered_input;
+  filtered_input.push(boost::iostreams::zlib_decompressor());
   filtered_input.push(iss);
 
   int version;
   SaveGameHeader header;
 
   // Only load the header
-  text_iarchive ia(filtered_input);
+  boost::archive::text_iarchive ia(filtered_input);
   ia >> version >> header >> memory.local();
 }
 
 void loadGameForSlot(RLMachine& machine, int slot) {
   fs::path path = buildSaveGameFilename(machine, slot);
-  fs::ifstream file(path, ios::binary);
+  fs::ifstream file(path, std::ios::binary);
   checkInFileOpened(file, path);
 
   loadGameFrom(file, machine);
 }
 
 void loadGameFrom(std::istream& iss, RLMachine& machine) {
-  using namespace boost::iostreams;
-  filtering_stream<input> filtered_input;
-  filtered_input.push(zlib_decompressor());
+  boost::iostreams::filtering_stream<boost::iostreams::input> filtered_input;
+  filtered_input.push(boost::iostreams::zlib_decompressor());
   filtered_input.push(iss);
 
   int version;
@@ -207,7 +200,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
     // often hold references to objects in the System heiarchy.
     machine.reset();
 
-    text_iarchive ia(filtered_input);
+    boost::archive::text_iarchive ia(filtered_input);
     ia >> version >> header >> machine.memory().local() >> machine >>
         machine.system() >> machine.system().graphics() >>
         machine.system().text() >> machine.system().sound();
@@ -217,8 +210,8 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
     machine.system().graphics().forceRefresh();
   }
   catch (std::exception& e) {
-    cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what() << " ---"
-         << endl;
+    std::cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what()
+              << " ---" << std::endl;
 
     g_current_machine = NULL;
     throw e;

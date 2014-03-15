@@ -26,9 +26,6 @@
 
 #include "systems/base/object_mutator.h"
 
-#include <iostream>
-using namespace std;
-
 #include "machine/rlmachine.h"
 #include "systems/base/event_system.h"
 #include "systems/base/graphics_object.h"

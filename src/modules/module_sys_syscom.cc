@@ -36,8 +36,6 @@
 #include "systems/base/event_system.h"
 #include "systems/base/system.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 
 namespace {

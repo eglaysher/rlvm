@@ -45,8 +45,6 @@
 
 namespace fs = boost::filesystem;
 
-using namespace std;
-
 const int PADDING = 5;
 
 const std::string EVENT_SAVE = "SAVE";
@@ -78,18 +76,16 @@ class SaveGameListModel : public gcn::ListModel {
 
 SaveGameListModel::SaveGameListModel(const std::string& no_data,
                                      RLMachine& machine) {
-  using namespace boost::posix_time;
-
   // TODO: Can I make this faster instead of trying to see if every game
   // exists?
   int latestSlot = -1;
-  time_t latestTime = numeric_limits<time_t>::min();
+  time_t latestTime = std::numeric_limits<time_t>::min();
 
   for (int slot = 0; slot < 100; ++slot) {
     fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
 
-    ostringstream oss;
-    oss << "[" << setw(3) << setfill('0') << slot << "] ";
+    std::ostringstream oss;
+    oss << "[" << std::setw(3) << std::setfill('0') << slot << "] ";
 
     bool file_exists = fs::exists(saveFile);
     if (file_exists) {

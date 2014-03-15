@@ -42,7 +42,6 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/system.h"
 
-using namespace std;
 using boost::numeric_cast;
 
 namespace {

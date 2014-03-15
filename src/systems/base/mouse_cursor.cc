@@ -38,8 +38,6 @@ const Size CURSOR_SIZE = Size(CURSOR_SIZE_INT, CURSOR_SIZE_INT);
 const int HOTSPOTMASK_X_OFFSET = 8;
 const int HOTSPOTMASK_Y_OFFSET = 48;
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // MouseCursor (public)
 // -----------------------------------------------------------------------

@@ -32,8 +32,6 @@
 
 #include "systems/base/event_system.h"
 
-using namespace std;
-
 // -----------------------------------------------------------------------
 // Frame Counter Base Class
 // -----------------------------------------------------------------------
@@ -173,8 +171,8 @@ TurnFrameCounter::TurnFrameCounter(EventSystem& es,
 
 // @bug This has all the bugs of the old implementation.
 int TurnFrameCounter::readFrame() {
-  cerr << "BIG WARNING: TurnFrameCounter::read_frame DOESN'T DO THE SAFE "
-       << " THING LIKE ALL OTHER FRAME COUNTERS. FIXME." << endl;
+  std::cerr << "BIG WARNING: TurnFrameCounter::read_frame DOESN'T DO THE SAFE "
+            << " THING LIKE ALL OTHER FRAME COUNTERS. FIXME." << std::endl;
 
   if (is_active_) {
     unsigned int current_time = event_system_.getTicks();

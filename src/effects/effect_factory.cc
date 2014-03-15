@@ -44,9 +44,6 @@
 #include "utilities/exception.h"
 #include "utilities/graphics.h"
 
-using namespace std;
-using namespace libreallive;
-
 const int SEL_SIZE = 16;
 
 // -----------------------------------------------------------------------
@@ -57,7 +54,7 @@ Effect* EffectFactory::buildFromSEL(RLMachine& machine,
                                     boost::shared_ptr<Surface> src,
                                     boost::shared_ptr<Surface> dst,
                                     int selNum) {
-  vector<int> selParams = getSELEffect(machine, selNum);
+  std::vector<int> selParams = getSELEffect(machine, selNum);
 
   return build(machine,
                src,
@@ -158,9 +155,9 @@ Effect* EffectFactory::buildWipeEffect(RLMachine& machine,
       return new WipeRightToLeftEffect(
           machine, src, dst, screenSize, time, interpolation);
     default:
-      cerr << "WARNING! Unsupported direction " << direction
-           << " in EffectFactory::buildWipeEffect. Returning Top to"
-           << " Bottom effect." << endl;
+      std::cerr << "WARNING! Unsupported direction " << direction
+                << " in EffectFactory::buildWipeEffect. Returning Top to"
+                << " Bottom effect." << std::endl;
       return new WipeTopToBottomEffect(
           machine, src, dst, screenSize, time, interpolation);
   }
@@ -199,9 +196,9 @@ Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
           machine, src, dst, screenSize, time, ysize);
 
     default:
-      cerr << "WARNING! Unsupported direction " << direction
-           << " in EffectFactory::buildWipeEffect. Returning Top to"
-           << " Bottom effect." << endl;
+      std::cerr << "WARNING! Unsupported direction " << direction
+                << " in EffectFactory::buildWipeEffect. Returning Top to"
+                << " Bottom effect." << std::endl;
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
       return new BlindTopToBottomEffect(
@@ -221,9 +218,9 @@ ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
     case RIGHT_TO_LEFT:
       return new RightToLeftDrawer;
     default:
-      cerr << "WARNING! Unsupported direction " << drawerType
-           << " in EffectFactory::buildWipeEffect. Returning Top to"
-           << " Bottom effect." << endl;
+      std::cerr << "WARNING! Unsupported direction " << drawerType
+                << " in EffectFactory::buildWipeEffect. Returning Top to"
+                << " Bottom effect." << std::endl;
       return new TopToBottomDrawer;
   }
 }

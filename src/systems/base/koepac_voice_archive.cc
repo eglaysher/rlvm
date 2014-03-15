@@ -69,7 +69,6 @@
 #include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
-using namespace std;
 using boost::scoped_array;
 using std::ifstream;
 using std::ostringstream;
@@ -281,7 +280,7 @@ boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::findSample(int sample_num) {
 void KOEPACVoiceArchive::readTable(boost::filesystem::path file) {
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if (!ifs) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not open file \"" << file << "\".";
     throw rlvm::Exception(oss.str());
   }
@@ -290,7 +289,7 @@ void KOEPACVoiceArchive::readTable(boost::filesystem::path file) {
   char head[0x20];
   ifs.read(head, 0x20);
   if (strncmp(head, "KOEPAC", 7) != 0) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << file << " does not appear to be in KOEPAC format";
     throw rlvm::Exception(oss.str());
   }

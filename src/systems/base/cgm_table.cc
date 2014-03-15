@@ -45,7 +45,6 @@
 
 #include <iostream>
 
-using namespace std;
 using boost::scoped_array;
 
 namespace fs = boost::filesystem;
@@ -84,7 +83,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
     return;
   }
 
-  string cgtable = filename_key.to_string("");
+  std::string cgtable = filename_key.to_string("");
   if (cgtable == "") {
     // It is perfectly valid not to have a CG table. All operations in this
     // class become noops.
@@ -97,13 +96,13 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   int size;
   scoped_array<char> data;
   if (loadFileData(filename, data, size)) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());
   }
 
   if (strncmp(data.get(), "CGTABLE", 7) != 0) {
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "File '" << filename << "' is not a CGM file!";
     throw rlvm::Exception(oss.str());
   }
@@ -112,7 +111,8 @@ CGMTable::CGMTable(Gameexe& gameexe) {
     // Kud Wafter has some sort of new CGM file that makes Extract2k corrupt
     // memory. The first entry prints correctly if we put a printf in the for
     // loop below, but then glib kills us due to memory corruption detected.
-    cerr << "CAN NOT READ CGM FILE. PROGRESS WILL NOT BE RECORDED." << endl;
+    std::cerr << "CAN NOT READ CGM FILE. PROGRESS WILL NOT BE RECORDED."
+              << std::endl;
     return;
   }
 

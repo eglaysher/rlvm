@@ -39,8 +39,6 @@
 #include "systems/base/colour.h"
 
 #include <cassert>
-#include <iostream>
-using namespace std;
 
 // -----------------------------------------------------------------------
 
@@ -49,7 +47,7 @@ void ShowGLErrors(void) {
   const GLubyte* err_str;
   if ((error = glGetError()) != GL_NO_ERROR) {
     err_str = gluErrorString(error);
-    ostringstream oss;
+    std::ostringstream oss;
     oss << "OpenGL Error: " << (char*)err_str;
     throw SystemError(oss.str());
   }
@@ -99,7 +97,7 @@ int SafeSize(int i) {
 
 void reportSDLError(const std::string& sdl_name,
                     const std::string& function_name) {
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "Error while calling SDL function '" << sdl_name << "' in "
      << function_name << ": " << SDL_GetError();
   throw SystemError(ss.str());

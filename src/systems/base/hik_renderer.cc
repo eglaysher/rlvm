@@ -36,8 +36,6 @@
 #include "systems/base/system.h"
 #include "utilities/graphics.h"
 
-using namespace std;
-
 HIKRenderer::LayerData::LayerData(int time)
     : animation_num_(0), animation_start_time_(time) {}
 
@@ -64,7 +62,7 @@ void HIKRenderer::render(std::ostream* tree) {
   int time_since_creation = current_ticks - creation_time_;
 
   if (tree) {
-    *tree << "  HIK Script:" << endl;
+    *tree << "  HIK Script:" << std::endl;
   }
 
   int layer_num = 0;
@@ -165,7 +163,7 @@ void HIKRenderer::render(std::ostream* tree) {
             << ", ??: " << animation->use_multiframe_animation << "/"
             << animation->i_30101 << "/" << animation->i_30102
             << ", O:" << frame.opacity << ", Image: " << frame.image << "]"
-            << endl;
+            << std::endl;
     }
   }
 }
