@@ -29,8 +29,6 @@
 #ifndef SRC_LIBREALLIVE_ALLDEFS_H_
 #define SRC_LIBREALLIVE_ALLDEFS_H_
 
-#include <boost/ptr_container/ptr_list.hpp>
-
 #include <algorithm>
 #include <cstdio>
 #include <map>

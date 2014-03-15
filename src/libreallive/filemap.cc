@@ -43,6 +43,7 @@ const HANDLE INVALID_HANDLE_VALUE = -1;
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include <algorithm>
 #include <string>

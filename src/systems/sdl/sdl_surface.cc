@@ -43,8 +43,6 @@
 #include "systems/sdl/texture.h"
 #include "utilities/graphics.h"
 
-using boost::ptr_vector;
-
 namespace {
 
 // An interface to TransformSurface that maps one color to another.

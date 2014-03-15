@@ -34,9 +34,8 @@
 #ifndef SRC_LIBREALLIVE_ARCHIVE_H_
 #define SRC_LIBREALLIVE_ARCHIVE_H_
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include <map>
+#include <memory>
 #include <string>
 
 #include "libreallive/defs.h"
@@ -62,7 +61,7 @@ class Archive {
   Mapping info;
 
   // Mappings to unarchived SEEN\d{4}.TXT files on disk.
-  boost::ptr_vector<Mapping> maps_to_delete_;
+  std::vector<std::unique_ptr<Mapping>> maps_to_delete_;
 
   // Now that VisualArts is using per game xor keys, this is equivalent to the
   // game's second level xor key.

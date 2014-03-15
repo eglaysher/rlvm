@@ -105,7 +105,7 @@ void Archive::readOverrides() {
         iends_with(filename, ".txt") && isdigit(filename[4]) &&
         isdigit(filename[5]) && isdigit(filename[6]) && isdigit(filename[7])) {
       Mapping* mapping = new Mapping((seen_dir / filename).string(), Read);
-      maps_to_delete_.push_back(mapping);
+      maps_to_delete_.emplace_back(mapping);
 
       int index = std::stoi(filename.substr(4, 4));
       scenarios[index] = FilePos(mapping->get(), mapping->size());

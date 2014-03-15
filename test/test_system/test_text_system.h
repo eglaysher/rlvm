@@ -30,7 +30,7 @@
 
 #include "systems/base/rect.h"
 #include "systems/base/text_system.h"
-#include <boost/ptr_container/ptr_map.hpp>
+
 #include <string>
 #include <tuple>
 
