@@ -1,0 +1,50 @@
+
+Import('component_env', 'env')
+
+component_env.Append(
+  CPPPATH = [
+    "#/vendor/SDL2_mixer/include/SDL2/",
+    "#/vendor/SDL2_mixer/src/"
+  ],
+
+  CPPDEFINES = [
+    "WAV_MUSIC",
+    "OGG_MUSIC",
+  ],
+
+  CFLAGS = [
+    # Ignore all warnings in this upstream code.
+    "-w"
+  ]
+)
+
+# SDL2_mixer is controlled by DEFINES. Here is a list of things we skip:
+#
+# - CMD_MUSIC: A unix specific hack that reads a waveform from an external
+#   program
+# - MOD_MUSIC: MOD files aren't needed
+# - MID_MUSIC: MIDI files aren't needed
+# - MP3_MUSIC / MP3_MAD_MUSIC: MP3 files aren't needed (and if you're looking
+#   to reencode those big NWA files, use ogg.
+# - OGG_DYNAMIC: We link with libogg; we don't root around in its shared object
+#   with dlopen() after the fact.
+# - All the new dynamic FLAC stuff from 1.2.9.
+
+libsdl_mixer_files = [
+  "src/dynamic_ogg.c",
+  "src/effect_position.c",
+  "src/effects_internal.c",
+  "src/effect_stereoreverse.c",
+  "src/load_aiff.c",
+  "src/load_ogg.c",
+  "src/load_voc.c",
+  "src/mixer.c",
+  "src/music.c",
+  "src/music_ogg.c",
+  "src/wavestream.c"
+]
+
+component_env.StaticLibrary('libSDL2_mixer', libsdl_mixer_files)
+component_env.Install('$LIBRARY_DIR', 'libSDL2_mixer.a')
+
+env.AddStaticLibraryTo("SDL2_mixer", "SDL2")
