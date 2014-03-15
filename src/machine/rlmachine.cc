@@ -269,7 +269,7 @@ void RLMachine::executeNextInstruction() {
         }
         delayed_modifications_.clear();
       } else {
-        call_stack_.back().ip->runOnMachine(*this);
+        (*(call_stack_.back().ip))->runOnMachine(*this);
       }
     }
     catch (rlvm::UnimplementedOpcode& e) {

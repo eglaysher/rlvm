@@ -79,7 +79,6 @@ class Scenario {
   iterator end();
   const_iterator begin() const;
   const_iterator end() const;
-  const size_t size() const;
 
  private:
   Header header;
@@ -123,10 +122,6 @@ inline Scenario::const_iterator Scenario::begin() const {
 
 inline Scenario::const_iterator Scenario::end() const {
   return script.elts.end();
-}
-
-inline const size_t Scenario::size() const {
-  return script.elts.size();
 }
 
 }  // namespace libreallive

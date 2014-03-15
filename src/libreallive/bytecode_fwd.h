@@ -29,7 +29,8 @@
 #ifndef SRC_LIBREALLIVE_BYTECODE_FWD_H_
 #define SRC_LIBREALLIVE_BYTECODE_FWD_H_
 
-#include <boost/ptr_container/ptr_list.hpp>
+#include <forward_list>
+#include <memory>
 
 namespace libreallive {
 
@@ -47,7 +48,7 @@ enum ElementType {
 // List definitions.
 class ExpressionPiece;
 class BytecodeElement;
-typedef boost::ptr_list<BytecodeElement> BytecodeList;
+typedef std::forward_list<std::unique_ptr<BytecodeElement>> BytecodeList;
 typedef BytecodeList::iterator pointer_t;
 
 struct ConstructionData;
