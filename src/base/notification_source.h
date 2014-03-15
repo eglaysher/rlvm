@@ -8,7 +8,7 @@
 #ifndef SRC_BASE_NOTIFICATION_SOURCE_H_
 #define SRC_BASE_NOTIFICATION_SOURCE_H_
 
-#include <stdint.h>
+#include <cstdint>
 
 // Do not declare a NotificationSource directly--use either
 // "Source<sourceclassname>(sourceclasspointer)" or

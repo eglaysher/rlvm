@@ -129,9 +129,8 @@
 #ifndef SRC_LIBREALLIVE_LZCOMP_H_
 #define SRC_LIBREALLIVE_LZCOMP_H_
 
-#include <string.h>
-
 #include <algorithm>
+#include <cstring>
 
 namespace AVG32Comp {
 

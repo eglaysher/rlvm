@@ -34,7 +34,7 @@
 #ifndef SRC_LIBREALLIVE_FILEMAP_H_
 #define SRC_LIBREALLIVE_FILEMAP_H_
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 #ifdef WIN32

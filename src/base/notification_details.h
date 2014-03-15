@@ -8,7 +8,7 @@
 #ifndef SRC_BASE_NOTIFICATION_DETAILS_H_
 #define SRC_BASE_NOTIFICATION_DETAILS_H_
 
-#include <stdint.h>
+#include <cstdint>
 
 // Do not declare a NotificationDetails directly--use either
 // "Details<detailsclassname>(detailsclasspointer)" or

@@ -70,7 +70,7 @@
 
 #include "encodings/cp932.h"
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 #include "utilities/string_utilities.h"

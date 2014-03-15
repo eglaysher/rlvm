@@ -5,7 +5,7 @@
 #ifndef SRC_BASE_NOTIFICATION_REGISTRAR_H_
 #define SRC_BASE_NOTIFICATION_REGISTRAR_H_
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 #include "base/notification_type.h"

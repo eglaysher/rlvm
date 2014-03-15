@@ -37,7 +37,7 @@
 
 #include "encodings/cp936.h"
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
 #include <string>
 

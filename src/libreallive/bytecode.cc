@@ -33,6 +33,7 @@
 
 #include "libreallive/bytecode.h"
 
+#include <cassert>
 #include <exception>
 #include <iomanip>
 #include <sstream>

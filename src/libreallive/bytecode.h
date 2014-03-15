@@ -34,7 +34,7 @@
 #ifndef SRC_LIBREALLIVE_BYTECODE_H_
 #define SRC_LIBREALLIVE_BYTECODE_H_
 
-#include <stdint.h>
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>

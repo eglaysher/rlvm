@@ -39,13 +39,13 @@ const int O_BINARY = 0;
 #endif
 const HANDLE INVALID_HANDLE_VALUE = -1;
 
-#include <errno.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <string>
 
 namespace libreallive {

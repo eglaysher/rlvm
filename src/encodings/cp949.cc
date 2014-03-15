@@ -38,8 +38,8 @@
 
 #include "encodings/cp949.h"
 
-#include <stdint.h>
 #include <algorithm>  // for lower_bound()
+#include <cstdint>
 #include <cstring>
 #include <string>
 
