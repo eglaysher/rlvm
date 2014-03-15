@@ -26,7 +26,6 @@
 
 #include "test_system/test_machine.h"
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <string>
 #include <vector>
@@ -98,7 +97,7 @@ void TestMachine::runOpcode(const std::string& name,
   repr[7] = overload;
 
   string full = repr + '(' + argument_string + ')';
-  boost::scoped_ptr<libreallive::CommandElement> element(
+  std::unique_ptr<libreallive::CommandElement> element(
       libreallive::BuildFunctionElement(full.c_str()));
 
   RLOperation* op = registry_[make_pair(name, overload)];

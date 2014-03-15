@@ -27,8 +27,6 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
 #define SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
 
-#include <boost/scoped_ptr.hpp>
-
 #include <guichan/actionlistener.hpp>
 #include <guichan/widgets/listbox.hpp>
 #include <guichan/selectionlistener.hpp>
@@ -67,7 +65,7 @@ class GCNSaveLoadWindow : public GCNWindow,
 
  private:
   // Provides titles and whether a save exists in said slot.
-  boost::scoped_ptr<SaveGameListModel> model_;
+  std::unique_ptr<SaveGameListModel> model_;
 
   // The kind of dialog we're presenting.
   WindowType type_;

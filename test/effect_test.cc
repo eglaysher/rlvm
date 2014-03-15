@@ -39,8 +39,6 @@
 
 #include <boost/shared_ptr.hpp>
 
-using boost::scoped_ptr;
-
 using namespace testing;
 
 // Helper to specify the return value of getTicks().
@@ -81,7 +79,7 @@ TEST_F(EffectTest, TestBase) {
   boost::shared_ptr<Surface> src(MockSurface::Create("src"));
   boost::shared_ptr<Surface> dst(MockSurface::Create("dst"));
 
-  scoped_ptr<MockEffect> effect(
+  std::unique_ptr<MockEffect> effect(
       new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
 
   bool retVal = false;
@@ -126,7 +124,7 @@ TEST_F(EffectTest, BlindTopToBottomEffect) {
   const int DURATION = 100;
   const int BLIND_SIZE = 50;
   const int HEIGHT = 480;
-  scoped_ptr<MockBlitTopToBottom> effect(new MockBlitTopToBottom(
+  std::unique_ptr<MockBlitTopToBottom> effect(new MockBlitTopToBottom(
       rlmachine, src, dst, 640, HEIGHT, DURATION, BLIND_SIZE));
 
   int numBlinds = (HEIGHT / BLIND_SIZE) + 1;

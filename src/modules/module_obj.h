@@ -28,8 +28,6 @@
 #ifndef SRC_MODULES_MODULE_OBJ_H_
 #define SRC_MODULES_MODULE_OBJ_H_
 
-#include <boost/scoped_ptr.hpp>
-
 // Reusable function objects for the GraphicsObject system.
 
 #include "machine/rloperation.h"
@@ -69,7 +67,7 @@ class ObjRangeAdapter : public RLOp_SpecialCase {
                           const libreallive::CommandElement& ff);
 
  private:
-  boost::scoped_ptr<RLOperation> handler;
+  std::unique_ptr<RLOperation> handler;
 };
 
 // Mapping function for a MappedRLModule which turns operation op into
@@ -91,7 +89,7 @@ class ChildObjAdapter : public RLOp_SpecialCase {
                           const libreallive::CommandElement& ff);
 
  private:
-  boost::scoped_ptr<RLOperation> handler;
+  std::unique_ptr<RLOperation> handler;
 };
 
 RLOperation* childObjMappingFun(RLOperation* op);
@@ -107,7 +105,7 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
                           const libreallive::CommandElement& ff);
 
  private:
-  boost::scoped_ptr<RLOperation> handler;
+  std::unique_ptr<RLOperation> handler;
 };
 
 // The combo form of rangeMappingFun and childObjMappingFun. Used for

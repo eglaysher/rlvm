@@ -31,7 +31,6 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
 
 #include "systems/base/gan_graphics_object_data.h"
 

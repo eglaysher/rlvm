@@ -73,7 +73,7 @@ class ColourFilterObjectData : public GraphicsObjectData {
 
   Rect screen_rect_;
 
-  boost::scoped_ptr<ColourFilter> colour_filer_;
+  std::unique_ptr<ColourFilter> colour_filer_;
 
   friend class boost::serialization::access;
   template <class Archive>

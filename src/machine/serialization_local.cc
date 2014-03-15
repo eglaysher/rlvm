@@ -31,7 +31,6 @@
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/export.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
 #include <boost/date_time/posix_time/time_serialize.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>

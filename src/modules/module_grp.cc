@@ -28,7 +28,6 @@
 #include "modules/module_grp.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -1187,7 +1186,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
   }
 
  private:
-  boost::scoped_ptr<RLOperation> operation;
+  std::unique_ptr<RLOperation> operation;
 };
 
 }  // namespace

@@ -60,7 +60,7 @@ void EventSystem::setFrameCounter(int layer,
 FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
   checkLayerAndCounter(layer, frame_counter);
 
-  boost::scoped_ptr<FrameCounter>& counter =
+  std::unique_ptr<FrameCounter>& counter =
       frame_counters_[layer][frame_counter];
   if (counter.get() == NULL)
     throw rlvm::Exception("Trying to get an uninitialized frame counter!");
@@ -70,7 +70,7 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
 
 bool EventSystem::frameCounterExists(int layer, int frame_counter) {
   checkLayerAndCounter(layer, frame_counter);
-  boost::scoped_ptr<FrameCounter>& counter =
+  std::unique_ptr<FrameCounter>& counter =
       frame_counters_[layer][frame_counter];
   return counter.get() != NULL;
 }

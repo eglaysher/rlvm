@@ -29,7 +29,6 @@
 #define SRC_SYSTEMS_BASE_GRAPHICS_SYSTEM_H_
 
 #include <boost/filesystem/path.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
@@ -525,10 +524,10 @@ class GraphicsSystem : public EventListener {
   // Immutable
   struct GraphicsObjectSettings;
   // Immutable global data that's constructed from the Gameexe.ini file.
-  boost::scoped_ptr<GraphicsObjectSettings> graphics_object_settings_;
+  std::unique_ptr<GraphicsObjectSettings> graphics_object_settings_;
 
   struct GraphicsObjectImpl;
-  boost::scoped_ptr<GraphicsObjectImpl> graphics_object_impl_;
+  std::unique_ptr<GraphicsObjectImpl> graphics_object_impl_;
 
   // Whether we should use a custom mouse cursor. Set while parsing the Gameexe
   // file, and then left unchanged. We only use a custom mouse cursor if
@@ -576,7 +575,7 @@ class GraphicsSystem : public EventListener {
   LRUCache<std::string, boost::shared_ptr<const Surface>> image_cache_;
 
   // Possible background script which drives graphics to the screen.
-  boost::scoped_ptr<HIKRenderer> hik_renderer_;
+  std::unique_ptr<HIKRenderer> hik_renderer_;
 
   // boost::serialization support
   friend class boost::serialization::access;

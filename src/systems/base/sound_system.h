@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_SOUND_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_SOUND_SYSTEM_H_
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -422,7 +421,7 @@ class SoundSystem {
   //       down to SDLSoundSystem later.
   ChannelAdjustmentMap pcm_adjustment_tasks_;
 
-  boost::scoped_ptr<VolumeAdjustTask> bgm_adjustment_task_;
+  std::unique_ptr<VolumeAdjustTask> bgm_adjustment_task_;
 
   // ---------------------------------------------------------------------
 

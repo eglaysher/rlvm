@@ -38,7 +38,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_array.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <algorithm>
 #include <cstdio>
@@ -601,7 +600,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
   fread(d.get(), size, 1, file);
   fclose(file);
 
-  boost::scoped_ptr<GRPCONV> conv(
+  std::unique_ptr<GRPCONV> conv(
       GRPCONV::AssignConverter(d.get(), size, "???"));
   if (conv == 0) {
     throw SystemError("Failure in GRPCONV.");

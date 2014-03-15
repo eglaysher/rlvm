@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_SYSTEM_H_
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #include "systems/base/system.h"
 #include "systems/sdl/sdl_text_system.h"
@@ -54,10 +54,10 @@ class SDLSystem : public System {
   virtual SoundSystem& sound();
 
  private:
-  boost::scoped_ptr<SDLGraphicsSystem> graphics_system_;
-  boost::scoped_ptr<SDLEventSystem> event_system_;
-  boost::scoped_ptr<SDLTextSystem> text_system_;
-  boost::scoped_ptr<SDLSoundSystem> sound_system_;
+  std::unique_ptr<SDLGraphicsSystem> graphics_system_;
+  std::unique_ptr<SDLEventSystem> event_system_;
+  std::unique_ptr<SDLTextSystem> text_system_;
+  std::unique_ptr<SDLSoundSystem> sound_system_;
   Gameexe& gameexe_;
 };
 

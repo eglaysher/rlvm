@@ -27,7 +27,6 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 #define SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <iosfwd>
@@ -110,7 +109,7 @@ class TextWakuNormal : public TextWaku {
   // things such as moving the text box, clearing the text box, moving
   // forward or backwards in message history, and farcall()-ing a
   // custom handler (EXBTN_index_BOX).
-  boost::scoped_ptr<TextWindowButton> button_map_[12];
+  std::unique_ptr<TextWindowButton> button_map_[12];
 };  // end of class TextWakuNormal
 
 #endif  // SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_

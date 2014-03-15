@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_RENDER_TO_TEXTURE_SURFACE_H_
 #define SRC_SYSTEMS_SDL_SDL_RENDER_TO_TEXTURE_SURFACE_H_
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
@@ -91,7 +91,7 @@ class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
 
  private:
   // The SDLTexture which wraps one or more OpenGL textures
-  boost::scoped_ptr<Texture> texture_;
+  std::unique_ptr<Texture> texture_;
 
   NotificationRegistrar registrar_;
 };

@@ -29,9 +29,9 @@
 #define SRC_SYSTEMS_BASE_EVENT_SYSTEM_H_
 
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <functional>
+#include <memory>
 #include <queue>
 #include <set>
 
@@ -188,7 +188,7 @@ class EventSystem : public boost::noncopyable {
   // Helper function that verifies input
   void checkLayerAndCounter(int layer, int counter);
 
-  boost::scoped_ptr<FrameCounter> frame_counters_[255][2];
+  std::unique_ptr<FrameCounter> frame_counters_[255][2];
   RLTimer timers_[255][2];
 
   EventListeners event_listeners_;

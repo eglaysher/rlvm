@@ -29,7 +29,6 @@
 #define SRC_MACHINE_RLMACHINE_H_
 
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -347,7 +346,7 @@ class RLMachine {
 
  private:
   // The Reallive VM's integer and string memory
-  boost::scoped_ptr<Memory> memory_;
+  std::unique_ptr<Memory> memory_;
 
   // The RealLive machine's single result register
   int store_register_;
@@ -386,7 +385,7 @@ class RLMachine {
 
   // (Optional) A structure that keeps track of how many times we encountered
   // undefined opcodes.
-  boost::scoped_ptr<OpcodeLog> undefined_log_;
+  std::unique_ptr<OpcodeLog> undefined_log_;
 
   // Override defaults
   bool mark_savepoints_;
@@ -407,7 +406,7 @@ class RLMachine {
   // An optional set of game specific hacks that run at certain SEEN/line
   // pairs. These run during setLineNumer().
   typedef std::map<std::pair<int, int>, std::function<void(void)>> ActionMap;
-  boost::scoped_ptr<ActionMap> on_line_actions_;
+  std::unique_ptr<ActionMap> on_line_actions_;
 
   typedef boost::ptr_map<int, RealLiveDLL> DLLMap;
   // Currenlty loaded "DLLs".

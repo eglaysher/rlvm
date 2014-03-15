@@ -28,7 +28,6 @@
 #define SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <guichan.hpp>
 #include <guichan/opengl.hpp>
@@ -124,14 +123,14 @@ class GCNPlatform : public Platform,
   //
   // In addition to the SDL systems, SDLSystem also owns the guichan based
   // GUI. The following gcn objects are the
-  boost::scoped_ptr<gcn::OpenGLSDLImageLoader> sdl_image_loader_;
-  boost::scoped_ptr<gcn::OpenGLGraphics> opengl_graphics_;
-  boost::scoped_ptr<gcn::SDLInput> sdl_input_;
+  std::unique_ptr<gcn::OpenGLSDLImageLoader> sdl_image_loader_;
+  std::unique_ptr<gcn::OpenGLGraphics> opengl_graphics_;
+  std::unique_ptr<gcn::SDLInput> sdl_input_;
 
-  boost::scoped_ptr<gcn::Container> toplevel_container_;
-  boost::scoped_ptr<gcn::Gui> guichan_gui_;
+  std::unique_ptr<gcn::Container> toplevel_container_;
+  std::unique_ptr<gcn::Gui> guichan_gui_;
 
-  boost::scoped_ptr<gcn::Font> global_font_;
+  std::unique_ptr<gcn::Font> global_font_;
 
   // Stack of menus rendered on top of each other.
   std::vector<GCNWindow*> window_stack_;

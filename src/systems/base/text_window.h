@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
@@ -285,7 +284,7 @@ class TextWindow {
   int waku_set_;
 
   // The window decorations for the text window
-  boost::scoped_ptr<TextWaku> textbox_waku_;
+  std::unique_ptr<TextWaku> textbox_waku_;
 
   // The text insertion point. These two numbers are relative to the
   // text window location and represent the top left corner of where
@@ -375,7 +374,7 @@ class TextWindow {
   // Waku set to use for the text box in the case where name_mod_ == 1.
   int name_waku_set_;
 
-  boost::scoped_ptr<TextWaku> namebox_waku_;
+  std::unique_ptr<TextWaku> namebox_waku_;
 
   int name_font_size_in_pixels_;
 
@@ -410,7 +409,7 @@ class TextWindow {
   std::function<void(int)> selection_callback_;
 
   struct FaceSlot;
-  boost::scoped_ptr<FaceSlot> face_slot_[kNumFaceSlots];
+  std::unique_ptr<FaceSlot> face_slot_[kNumFaceSlots];
 
   // A list of visible koe replay buttons. The Point is the top left corner of
   // the button and int is the corresponding id number.
@@ -421,7 +420,7 @@ class TextWindow {
     boost::shared_ptr<const Surface> icon;
     Size repos;
   };
-  boost::scoped_ptr<KoeReplayInfo> koe_replay_info_;
+  std::unique_ptr<KoeReplayInfo> koe_replay_info_;
 
   System& system_;
   TextSystem& text_system_;

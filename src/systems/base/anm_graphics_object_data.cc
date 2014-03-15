@@ -36,7 +36,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/export.hpp>
-#include <boost/serialization/scoped_ptr.hpp>
 
 #include "machine/serialization.h"
 #include "systems/base/anm_graphics_object_data.h"

@@ -27,7 +27,6 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_SCROLL_AREA_H_
 #define SRC_PLATFORMS_GCN_GCN_SCROLL_AREA_H_
 
-#include <boost/scoped_ptr.hpp>
 #include <guichan/widgets/scrollarea.hpp>
 
 #include "base/notification_observer.h"
@@ -79,7 +78,7 @@ class GCNScrollArea : public gcn::ScrollArea, public NotificationObserver {
                        const NotificationDetails& details);
 
   // Button images.
-  boost::scoped_ptr<gcn::Image> buttonImages_[4][2];
+  std::unique_ptr<gcn::Image> buttonImages_[4][2];
 
   NotificationRegistrar registrar_;
 
