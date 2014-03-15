@@ -27,7 +27,6 @@
 #include "systems/base/hik_script.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/scoped_array.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -42,7 +41,6 @@
 #include "utilities/graphics.h"
 
 namespace fs = boost::filesystem;
-using boost::scoped_array;
 
 // TODO(erg): Move everything to a common reader.
 using libreallive::read_i32;
@@ -73,7 +71,7 @@ HIKScript::~HIKScript() {}
 void HIKScript::loadHikFile(System& system, const fs::path& file) {
   // This is dumb. This all needs to rewritten as either FILE or stream.
   int file_size = 0;
-  scoped_array<char> hik_data;
+  std::unique_ptr<char[]> hik_data;
   if (loadFileData(file, hik_data, file_size)) {
     std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";

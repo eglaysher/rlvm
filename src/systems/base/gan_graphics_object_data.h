@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_GAN_GRAPHICS_OBJECT_DATA_H_
 #define SRC_SYSTEMS_BASE_GAN_GRAPHICS_OBJECT_DATA_H_
 
-#include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
@@ -94,10 +93,10 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   typedef std::vector<std::vector<Frame>> AnimationSets;
 
   void testFileMagic(const std::string& file_name,
-                     boost::scoped_array<char>& gan_data,
+                     std::unique_ptr<char[]>& gan_data,
                      int file_size);
   void readData(const std::string& file_name,
-                boost::scoped_array<char>& gan_data,
+                std::unique_ptr<char[]>& gan_data,
                 int file_size);
   Frame readSetFrame(const std::string& filename, const char*& data);
 

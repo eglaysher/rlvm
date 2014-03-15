@@ -54,7 +54,7 @@ unsigned int Texture::s_screen_width = 0;
 unsigned int Texture::s_screen_height = 0;
 
 unsigned int Texture::s_upload_buffer_size = 0;
-boost::scoped_array<char> Texture::s_upload_buffer;
+std::unique_ptr<char[]> Texture::s_upload_buffer;
 
 // -----------------------------------------------------------------------
 

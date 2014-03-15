@@ -23,11 +23,11 @@
 #ifndef SRC_UTILITIES_LAZY_ARRAY_H_
 #define SRC_UTILITIES_LAZY_ARRAY_H_
 
-#include <boost/scoped_array.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/serialization/split_member.hpp>
 
 #include <algorithm>
+#include <memory>
 #include <ostream>
 #include <stdexcept>
 
@@ -100,7 +100,7 @@ class LazyArray {
 
  private:
   int size_;
-  mutable boost::scoped_array<T*> array_;
+  mutable std::unique_ptr<T*[]> array_;
 
   template <class>
   friend class FullLazyArrayIterator;

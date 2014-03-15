@@ -37,7 +37,6 @@
 #endif
 
 #include <boost/algorithm/string.hpp>
-#include <boost/scoped_array.hpp>
 
 #include <algorithm>
 #include <cstdio>
@@ -595,7 +594,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
 
   fseek(file, 0, SEEK_END);
   size_t size = ftell(file);
-  boost::scoped_array<char> d(new char[size + 1]);
+  std::unique_ptr<char[]> d(new char[size + 1]);
   fseek(file, 0, SEEK_SET);
   fread(d.get(), size, 1, file);
   fclose(file);

@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_ANM_GRAPHICS_OBJECT_DATA_H_
 #define SRC_SYSTEMS_BASE_ANM_GRAPHICS_OBJECT_DATA_H_
 
-#include <boost/scoped_array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
@@ -81,12 +80,12 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
     int time;
   };
 
-  bool testFileMagic(boost::scoped_array<char>& anm_data);
+  bool testFileMagic(std::unique_ptr<char[]>& anm_data);
   void readIntegerList(const char* start,
                        int offset,
                        int iterations,
                        std::vector<std::vector<int>>& dest);
-  void loadAnmFileFromData(boost::scoped_array<char>& anm_data);
+  void loadAnmFileFromData(const std::unique_ptr<char[]>& anm_data);
   void fixAxis(Frame& frame, int width, int height);
 
   // The system we are a part of.

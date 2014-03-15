@@ -29,7 +29,6 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/scoped_array.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -43,8 +42,6 @@
 #include "utilities/file.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
-
-using boost::scoped_array;
 
 namespace fs = boost::filesystem;
 
@@ -70,7 +67,7 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   fs::path filename = correctPathCase(basename / "dat" / tonecurve);
 
   int size;
-  scoped_array<char> data;
+  std::unique_ptr<char[]> data;
   if (loadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";

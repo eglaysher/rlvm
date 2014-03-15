@@ -50,7 +50,6 @@
 #include "utilities/file.h"
 
 using libreallive::read_i32;
-using boost::scoped_array;
 using std::string;
 using std::ifstream;
 using std::ostringstream;
@@ -96,7 +95,7 @@ void GanGraphicsObjectData::load() {
   }
 
   int file_size = 0;
-  scoped_array<char> gan_data;
+  std::unique_ptr<char[]> gan_data;
   if (loadFileData(gan_file_path, gan_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
@@ -108,7 +107,7 @@ void GanGraphicsObjectData::load() {
 }
 
 void GanGraphicsObjectData::testFileMagic(const std::string& file_name,
-                                          boost::scoped_array<char>& gan_data,
+                                          std::unique_ptr<char[]>& gan_data,
                                           int file_size) {
   const char* data = gan_data.get();
   int a = read_i32(data);
@@ -120,7 +119,7 @@ void GanGraphicsObjectData::testFileMagic(const std::string& file_name,
 }
 
 void GanGraphicsObjectData::readData(const std::string& file_name,
-                                     boost::scoped_array<char>& gan_data,
+                                     std::unique_ptr<char[]>& gan_data,
                                      int file_size) {
   const char* data = gan_data.get();
   int file_name_length = read_i32(data + 0xc);

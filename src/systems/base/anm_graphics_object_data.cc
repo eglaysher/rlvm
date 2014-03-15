@@ -56,8 +56,6 @@
 #include "utilities/file.h"
 #include "utilities/graphics.h"
 
-using boost::scoped_array;
-
 using libreallive::read_i32;
 
 namespace fs = boost::filesystem;
@@ -84,7 +82,7 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(System& system,
 
 AnmGraphicsObjectData::~AnmGraphicsObjectData() {}
 
-bool AnmGraphicsObjectData::testFileMagic(boost::scoped_array<char>& anm_data) {
+bool AnmGraphicsObjectData::testFileMagic(std::unique_ptr<char[]>& anm_data) {
   return memcmp(anm_data.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
 }
 
@@ -97,7 +95,7 @@ void AnmGraphicsObjectData::loadAnmFile() {
   }
 
   int file_size = 0;
-  scoped_array<char> anm_data;
+  std::unique_ptr<char[]> anm_data;
   if (loadFileData(file, anm_data, file_size)) {
     std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
@@ -114,7 +112,7 @@ void AnmGraphicsObjectData::loadAnmFile() {
 }
 
 void AnmGraphicsObjectData::loadAnmFileFromData(
-    boost::scoped_array<char>& anm_data) {
+    const std::unique_ptr<char[]>& anm_data) {
   const char* data = anm_data.get();
 
   // Read the header

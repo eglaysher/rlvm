@@ -59,7 +59,6 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/scoped_array.hpp>
 
 #include <algorithm>
 #include <cstring>
@@ -70,7 +69,6 @@
 #include "utilities/exception.h"
 #include "xclannad/endian.hpp"
 
-using boost::scoped_array;
 using std::ifstream;
 using std::ostringstream;
 namespace fs = boost::filesystem;
@@ -176,7 +174,7 @@ char* KOEPACVoiceSample::decode(int* dest_len) {
   // new[]s, as the consumer of decode() will delete [] the returned pointer.
 
   // avg32 の声データ展開
-  scoped_array<char> table(new char[length_ * 2]);
+  std::unique_ptr<char[]> table(new char[length_ * 2]);
   fseek(stream_, offset_, 0);
   fread(table.get(), 2, length_, stream_);
 

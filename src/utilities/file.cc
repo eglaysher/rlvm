@@ -45,7 +45,6 @@
 #include "utilities/exception.h"
 
 using boost::to_upper;
-using boost::scoped_array;
 using std::stack;
 using std::ostringstream;
 using std::string;
@@ -115,7 +114,7 @@ fs::path correctPathCase(fs::path Path) {
 // -----------------------------------------------------------------------
 
 bool loadFileData(const boost::filesystem::path& path,
-                  scoped_array<char>& fileData,
+                  std::unique_ptr<char[]>& fileData,
                   int& fileSize) {
   fs::ifstream ifs(path, ifstream::in | ifstream::binary);
   if (!ifs) {

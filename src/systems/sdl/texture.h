@@ -28,9 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_TEXTURE_H_
 #define SRC_SYSTEMS_SDL_TEXTURE_H_
 
-#include <boost/scoped_array.hpp>
 #include <SDL/SDL_opengl.h>
 
+#include <memory>
 #include <string>
 
 struct SDL_Surface;
@@ -154,7 +154,7 @@ class Texture {
 
   // To prevent new-ing in a loop, save the dynamically allocated
   // buffer used to upload data into.
-  static boost::scoped_array<char> s_upload_buffer;
+  static std::unique_ptr<char[]> s_upload_buffer;
 };
 
 #endif  // SRC_SYSTEMS_SDL_TEXTURE_H_

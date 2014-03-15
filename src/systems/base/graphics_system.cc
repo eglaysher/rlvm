@@ -92,7 +92,7 @@ struct GraphicsSystem::GraphicsObjectSettings {
   int objects_in_a_layer;
 
   // Each is a valid index into data, refering to
-  boost::scoped_array<unsigned char> position;
+  std::unique_ptr<unsigned char[]> position;
 
   std::vector<ObjectSettings> data;
 

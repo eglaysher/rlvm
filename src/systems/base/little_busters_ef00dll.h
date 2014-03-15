@@ -39,8 +39,7 @@
 #ifndef SRC_SYSTEMS_BASE_LITTLE_BUSTERS_EF00DLL_H_
 #define SRC_SYSTEMS_BASE_LITTLE_BUSTERS_EF00DLL_H_
 
-#include <boost/scoped_array.hpp>
-
+#include <memory>
 #include <string>
 
 #include "machine/reallive_dll.h"
@@ -67,7 +66,7 @@ class LittleBustersEF00DLL : public RealLiveDLL {
   void configureEffect(int arg1, int arg2, int arg3, int arg4);
   void performCalculations(RLMachine& machine, int arg1);
 
-  boost::scoped_array<double> lb_ef_param;
+  std::unique_ptr<double[]> lb_ef_param;
 };
 
 #endif  // SRC_SYSTEMS_BASE_LITTLE_BUSTERS_EF00DLL_H_

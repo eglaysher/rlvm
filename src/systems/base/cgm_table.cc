@@ -27,7 +27,6 @@
 
 #include "systems/base/cgm_table.h"
 
-#include <boost/scoped_array.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
@@ -44,8 +43,6 @@
 #include "utilities/file.h"
 #include "xclannad/endian.hpp"
 #include "xclannad/file.h"
-
-using boost::scoped_array;
 
 namespace fs = boost::filesystem;
 
@@ -94,7 +91,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   fs::path filename = correctPathCase(basename / "dat" / cgtable);
 
   int size;
-  scoped_array<char> data;
+  std::unique_ptr<char[]> data;
   if (loadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
@@ -122,7 +119,7 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   }
 
   int dest_size = cgm_size * 36;
-  scoped_array<char> dest_orig(new char[dest_size + 1024]);
+  std::unique_ptr<char[]> dest_orig(new char[dest_size + 1024]);
   char* dest = dest_orig.get();
   char* src = data.get() + 0x28;
   ARCINFO::Extract2k(dest, src, dest + dest_size, data.get() + size);

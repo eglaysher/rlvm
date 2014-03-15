@@ -28,7 +28,6 @@
 #ifndef SRC_UTILITIES_FILE_H_
 #define SRC_UTILITIES_FILE_H_
 
-#include <boost/scoped_array.hpp>
 #include <boost/filesystem.hpp>
 
 #include <iosfwd>
@@ -47,7 +46,7 @@ boost::filesystem::path correctPathCase(boost::filesystem::path Path);
 // Reads the entire contents of a file into the passed in |data| and
 // |size|. Returns true if there were no problems.
 bool loadFileData(const boost::filesystem::path& path,
-                  boost::scoped_array<char>& fileData,
+                  std::unique_ptr<char[]>& fileData,
                   int& fileSize);
 
 #endif  // SRC_UTILITIES_FILE_H_

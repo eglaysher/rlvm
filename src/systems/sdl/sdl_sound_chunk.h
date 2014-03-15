@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 #define SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 
-#include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -90,7 +89,7 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
 
   // If this object was created from a memory chunk instead of a file, we have
   // to own the data that we pass to Mix_LoadWAV_RW(SDL_RWFromMem(...)).
-  boost::scoped_array<char> data_;
+  std::unique_ptr<char[]> data_;
 };
 
 // -----------------------------------------------------------------------
