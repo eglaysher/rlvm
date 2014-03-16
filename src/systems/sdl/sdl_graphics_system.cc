@@ -537,9 +537,11 @@ static SDL_Surface* newSurfaceFromRGBAData(int w,
   // TODO(sdl2): port
   //  Uint32 flags;
   // if (with_mask == ALPHA_MASK) {
-  //   flags = tmp->flags & (SDL_SRCALPHA | SDL_RLEACCELOK);
+  //   //flags = tmp->flags & (SDL_SRCALPHA | SDL_RLEACCELOK);
+  //   std::cerr << "with ALPHA_MASK" << std::endl;
   // } else {
-  //   flags = tmp->flags & (SDL_SRCCOLORKEY | SDL_SRCALPHA | SDL_RLEACCELOK);
+  //   //flags = tmp->flags & (SDL_SRCCOLORKEY | SDL_SRCALPHA | SDL_RLEACCELOK);
+  //   std::cerr << "without ALPHA_MASK" << std::endl;
   // }
 
   SDL_Surface* surf = SDL_ConvertSurface(tmp, tmp->format, 0);
