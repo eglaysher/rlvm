@@ -37,6 +37,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "libreallive/defs.h"
 #include "libreallive/scenario.h"
