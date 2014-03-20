@@ -48,6 +48,54 @@
 
 namespace libreallive {
 
+namespace {
+
+inline BytecodeElement* ReadFunction(const char* stream,
+                                     ConstructionData& cdata) {
+  // opcode: 0xttmmoooo (Type, Module, Opcode: e.g. 0x01030101 = 1:03:00257
+  const unsigned long opcode =
+      (stream[1] << 24) | (stream[2] << 16) | (stream[4] << 8) | stream[3];
+  switch (opcode) {
+    case 0x00010000:
+    case 0x00010005:
+    case 0x00050001:
+    case 0x00050005:
+      return new GotoElement(stream, cdata);
+    case 0x00010001:
+    case 0x00010002:
+    case 0x00010006:
+    case 0x00010007:
+    case 0x00050002:
+    case 0x00050006:
+    case 0x00050007:
+      return new GotoIfElement(stream, cdata);
+    case 0x00010003:
+    case 0x00010008:
+    case 0x00050003:
+    case 0x00050008:
+      return new GotoOnElement(stream, cdata);
+    case 0x00010004:
+    case 0x00010009:
+    case 0x00050004:
+    case 0x00050009:
+      return new GotoCaseElement(stream, cdata);
+    case 0x00010010:
+      return new GosubWithElement(stream, cdata);
+
+    // Select elements.
+    case 0x00020000:
+    case 0x00020001:
+    case 0x00020002:
+    case 0x00020003:
+    case 0x00020010:
+      return new SelectElement(stream);
+  }
+
+  return BuildFunctionElement(stream);
+}
+
+}  // namespace
+
 char BytecodeElement::entrypoint_marker = '@';
 
 CommandElement* BuildFunctionElement(const char* stream) {
@@ -107,12 +155,28 @@ ConstructionData::ConstructionData(size_t kt, pointer_t pt)
 ConstructionData::~ConstructionData() {}
 
 // -----------------------------------------------------------------------
+// Pointers
+// -----------------------------------------------------------------------
+
+void Pointers::set_pointers(ConstructionData& cdata) {
+  assert(target_ids.size() != 0);
+  targets.reserve(target_ids.size());
+  for (unsigned int i = 0; i < target_ids.size(); ++i) {
+    ConstructionData::offsets_t::const_iterator it =
+        cdata.offsets.find(target_ids[i]);
+    assert(it != cdata.offsets.end());
+    targets.push_back(it->second);
+  }
+  target_ids.clear();
+}
+
+// -----------------------------------------------------------------------
 // BytecodeElement
 // -----------------------------------------------------------------------
 
-BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
+BytecodeElement::BytecodeElement() {}
 
-// -----------------------------------------------------------------------
+BytecodeElement::~BytecodeElement() {}
 
 const ElementType BytecodeElement::type() const { return Unspecified; }
 
@@ -120,83 +184,20 @@ void BytecodeElement::print(std::ostream& oss) const {
   oss << "<unspecified bytecode>" << std::endl;
 }
 
-// -----------------------------------------------------------------------
+void BytecodeElement::set_pointers(ConstructionData& cdata) {}
+
+const int BytecodeElement::entrypoint() const { return -999; }
 
 string BytecodeElement::serializableData(RLMachine& machine) const {
   throw Error(
       "Can't call serializableData() on things other than FunctionElements");
 }
 
-// -----------------------------------------------------------------------
-
-void BytecodeElement::set_pointers(ConstructionData& cdata) {}
-
-// -----------------------------------------------------------------------
-
-BytecodeElement::~BytecodeElement() {}
-
-// -----------------------------------------------------------------------
-
-BytecodeElement::BytecodeElement() {}
-
-// -----------------------------------------------------------------------
-
-const int BytecodeElement::entrypoint() const { return -999; }
-
-// -----------------------------------------------------------------------
-
-inline BytecodeElement* read_function(const char* stream,
-                                      ConstructionData& cdata) {
-  // opcode: 0xttmmoooo (Type, Module, Opcode: e.g. 0x01030101 = 1:03:00257
-  const unsigned long opcode =
-      (stream[1] << 24) | (stream[2] << 16) | (stream[4] << 8) | stream[3];
-  switch (opcode) {
-    case 0x00010000:
-    case 0x00010005:
-    case 0x00050001:
-    case 0x00050005:
-      return new GotoElement(stream, cdata);
-    case 0x00010001:
-    case 0x00010002:
-    case 0x00010006:
-    case 0x00010007:
-    case 0x00050002:
-    case 0x00050006:
-    case 0x00050007:
-      return new GotoIfElement(stream, cdata);
-    case 0x00010003:
-    case 0x00010008:
-    case 0x00050003:
-    case 0x00050008:
-      return new GotoOnElement(stream, cdata);
-    case 0x00010004:
-    case 0x00010009:
-    case 0x00050004:
-    case 0x00050009:
-      return new GotoCaseElement(stream, cdata);
-    case 0x00010010:
-      return new GosubWithElement(stream, cdata);
-
-    // Select elements.
-    case 0x00020000:
-    case 0x00020001:
-    case 0x00020002:
-    case 0x00020003:
-    case 0x00020010:
-      return new SelectElement(stream);
-  }
-
-  return BuildFunctionElement(stream);
-}
-
-// -----------------------------------------------------------------------
-
 void BytecodeElement::runOnMachine(RLMachine& machine) const {
   machine.advanceInstructionPointer();
 }
 
-// -----------------------------------------------------------------------
-
+// static
 BytecodeElement* BytecodeElement::read(const char* stream,
                                        const char* end,
                                        ConstructionData& cdata) {
@@ -215,11 +216,13 @@ BytecodeElement* BytecodeElement::read(const char* stream,
     case '$':
       return new ExpressionElement(stream);
     case '#':
-      return read_function(stream, cdata);
+      return ReadFunction(stream, cdata);
     default:
       return new TextoutElement(stream, end);
   }
 }
+
+BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 
 // -----------------------------------------------------------------------
 // CommaElement
@@ -246,17 +249,13 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
     type_ = Line_;
   } else if (cv->kidoku_table.at(value_) >= 1000000) {
     type_ = Entrypoint_;
-    entrypoint_index = cv->kidoku_table[value_] - 1000000;
+    entrypoint_index_ = cv->kidoku_table[value_] - 1000000;
   } else {
     type_ = Kidoku_;
   }
 }
 
-// -----------------------------------------------------------------------
-
 MetaElement::~MetaElement() {}
-
-// -----------------------------------------------------------------------
 
 const ElementType MetaElement::type() const {
   return type_ == Line_ ? Line : (type_ == Kidoku_ ? Kidoku : Entrypoint);
@@ -271,17 +270,11 @@ void MetaElement::print(std::ostream& oss) const {
     oss << "{- Kidoku " << value_ << " -}" << std::endl;
 }
 
-// -----------------------------------------------------------------------
-
 const size_t MetaElement::length() const { return 3; }
 
-// -----------------------------------------------------------------------
-
 const int MetaElement::entrypoint() const {
-  return type_ == Entrypoint_ ? entrypoint_index : -999;
+  return type_ == Entrypoint_ ? entrypoint_index_ : -999;
 }
-
-// -----------------------------------------------------------------------
 
 void MetaElement::runOnMachine(RLMachine& machine) const {
   if (type_ == Line_)
@@ -320,21 +313,7 @@ TextoutElement::TextoutElement(const char* src, const char* file_end) {
   repr.assign(src, end);
 }
 
-// -----------------------------------------------------------------------
-
-TextoutElement::TextoutElement() {}
-
-// -----------------------------------------------------------------------
-
-const ElementType TextoutElement::type() const { return Textout; }
-
-void TextoutElement::print(std::ostream& oss) const {
-  oss << "\"" << text() << "\"" << std::endl;
-}
-
-const size_t TextoutElement::length() const { return repr.size(); }
-
-// -----------------------------------------------------------------------
+TextoutElement::~TextoutElement() {}
 
 const string TextoutElement::text() const {
   string rv;
@@ -361,7 +340,13 @@ const string TextoutElement::text() const {
   return rv;
 }
 
-// -----------------------------------------------------------------------
+const ElementType TextoutElement::type() const { return Textout; }
+
+void TextoutElement::print(std::ostream& oss) const {
+  oss << "\"" << text() << "\"" << std::endl;
+}
+
+const size_t TextoutElement::length() const { return repr.size(); }
 
 void TextoutElement::runOnMachine(RLMachine& machine) const {
   machine.performTextout(*this);
@@ -383,38 +368,23 @@ ExpressionElement::ExpressionElement(const char* src) {
   repr.assign(src, end);
 }
 
-// -----------------------------------------------------------------------
-
 ExpressionElement::ExpressionElement(const long val) {
   repr.resize(6, '$');
   repr[1] = 0xff;
   insert_i32(repr, 2, val);
 }
 
-// -----------------------------------------------------------------------
-
-const ElementType ExpressionElement::type() const { return Expression; }
-
-void ExpressionElement::print(std::ostream& oss) const {
-  oss << parsedExpression().getDebugString() << std::endl;
+ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
+    : parsed_expression_(nullptr) {
 }
 
-const size_t ExpressionElement::length() const { return repr.size(); }
-
-// -----------------------------------------------------------------------
-
-ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(nullptr) {}
-
-// -----------------------------------------------------------------------
+ExpressionElement::~ExpressionElement() {}
 
 int ExpressionElement::valueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
   std::unique_ptr<ExpressionPiece> e(get_expression(location));
   return e->integerValue(machine);
 }
-
-// -----------------------------------------------------------------------
 
 const ExpressionPiece& ExpressionElement::parsedExpression() const {
   if (parsed_expression_.get() == 0) {
@@ -425,7 +395,13 @@ const ExpressionPiece& ExpressionElement::parsedExpression() const {
   return *parsed_expression_;
 }
 
-// -----------------------------------------------------------------------
+const ElementType ExpressionElement::type() const { return Expression; }
+
+void ExpressionElement::print(std::ostream& oss) const {
+  oss << parsedExpression().getDebugString() << std::endl;
+}
+
+const size_t ExpressionElement::length() const { return repr.size(); }
 
 void ExpressionElement::runOnMachine(RLMachine& machine) const {
   machine.executeExpression(*this);
@@ -437,11 +413,37 @@ void ExpressionElement::runOnMachine(RLMachine& machine) const {
 
 CommandElement::CommandElement(const char* src) { memcpy(command, src, 8); }
 
-// -----------------------------------------------------------------------
-
 CommandElement::~CommandElement() {}
 
-// -----------------------------------------------------------------------
+std::vector<std::string> CommandElement::getUnparsedParameters() const {
+  std::vector<std::string> parameters;
+  size_t numberOfParameters = param_count();
+  for (size_t i = 0; i < numberOfParameters; ++i)
+    parameters.push_back(get_param(i));
+  return parameters;
+}
+
+bool CommandElement::areParametersParsed() const {
+  return param_count() == parsed_parameters_.size();
+}
+
+void CommandElement::setParsedParameters(
+    ExpressionPiecesVector& parsedParameters) const {
+  parsed_parameters_.clear();
+  parsed_parameters_ = std::move(parsedParameters);
+}
+
+const ExpressionPiecesVector& CommandElement::getParameters() const {
+  return parsed_parameters_;
+}
+
+const size_t CommandElement::pointers_count() const { return 0; }
+
+pointer_t CommandElement::get_pointer(int i) const { return pointer_t(); }
+
+const size_t CommandElement::case_count() const { return 0; }
+
+const string CommandElement::get_case(int i) const { return ""; }
 
 const ElementType CommandElement::type() const { return Command; }
 
@@ -455,38 +457,6 @@ void CommandElement::print(std::ostream& oss) const {
 
   oss << std::endl;
 }
-
-// -----------------------------------------------------------------------
-
-std::vector<std::string> CommandElement::getUnparsedParameters() const {
-  std::vector<std::string> parameters;
-  size_t numberOfParameters = param_count();
-  for (size_t i = 0; i < numberOfParameters; ++i)
-    parameters.push_back(get_param(i));
-  return parameters;
-}
-
-// -----------------------------------------------------------------------
-
-bool CommandElement::areParametersParsed() const {
-  return param_count() == parsed_parameters_.size();
-}
-
-// -----------------------------------------------------------------------
-
-void CommandElement::setParsedParameters(
-    ExpressionPiecesVector& parsedParameters) const {
-  parsed_parameters_.clear();
-  parsed_parameters_ = std::move(parsedParameters);
-}
-
-// -----------------------------------------------------------------------
-
-const ExpressionPiecesVector& CommandElement::getParameters() const {
-  return parsed_parameters_;
-}
-
-// -----------------------------------------------------------------------
 
 void CommandElement::runOnMachine(RLMachine& machine) const {
   machine.executeCommand(*this);
@@ -576,36 +546,28 @@ SelectElement::SelectElement(const char* src)
     throw Error("SelectElement(): expected `}'");
 }
 
-// -----------------------------------------------------------------------
-
-const ElementType SelectElement::type() const { return Select; }
-
-// -----------------------------------------------------------------------
+SelectElement::~SelectElement() {}
 
 ExpressionElement SelectElement::window() const {
   return repr[8] == '(' ? ExpressionElement(repr.data() + 9)
                         : ExpressionElement(-1);
 }
 
-// -----------------------------------------------------------------------
+const size_t SelectElement::param_count() const { return params.size(); }
+
+string SelectElement::get_param(int i) const {
+  string rv(params[i].cond_text);
+  rv.append(params[i].text);
+  return rv;
+}
+
+const ElementType SelectElement::type() const { return Select; }
 
 const size_t SelectElement::length() const {
   size_t rv = repr.size() + 5;
   for (Param const& param : params)
     rv += param.cond_text.size() + param.text.size() + 3;
   rv += (uselessjunk * 3);
-  return rv;
-}
-
-// -----------------------------------------------------------------------
-
-const size_t SelectElement::param_count() const { return params.size(); }
-
-// -----------------------------------------------------------------------
-
-string SelectElement::get_param(int i) const {
-  string rv(params[i].cond_text);
-  rv.append(params[i].text);
   return rv;
 }
 
@@ -617,11 +579,25 @@ FunctionElement::FunctionElement(const char* src,
                                  const std::vector<string>& params)
     : CommandElement(src), params(params) {}
 
-// -----------------------------------------------------------------------
+FunctionElement::~FunctionElement() {}
+
+const size_t FunctionElement::param_count() const {
+  // Because line number metaelements can be placed inside parameters (!?!?!),
+  // it's possible that our last parameter consists only of the data for a
+  // source line MetaElement. We can't detect this during parsing (because just
+  // dropping the parameter will put the stream cursor in the wrong place), so
+  // hack this here.
+  if (!params.empty()) {
+    string final = params.back();
+    if (final.size() == 3 && final[0] == '\n')
+      return params.size() - 1;
+  }
+  return params.size();
+}
+
+string FunctionElement::get_param(int i) const { return params[i]; }
 
 const ElementType FunctionElement::type() const { return Function; }
-
-// -----------------------------------------------------------------------
 
 const size_t FunctionElement::length() const {
   if (params.size() > 0) {
@@ -633,8 +609,6 @@ const size_t FunctionElement::length() const {
     return COMMAND_SIZE;
   }
 }
-
-// -----------------------------------------------------------------------
 
 std::string FunctionElement::serializableData(RLMachine& machine) const {
   string rv;
@@ -653,39 +627,21 @@ std::string FunctionElement::serializableData(RLMachine& machine) const {
 }
 
 // -----------------------------------------------------------------------
-
-const size_t FunctionElement::param_count() const {
-  // Because line number metaelements can be placed inside parameters (!?!?!),
-  // it's possible that our last parameter consists only of the data for a
-  // source line MetaElement. We can't detect this during parsing (because just
-  // dropping the parameter will put the stream cursor in the wrong place), so
-  // hack this here.
-  if (!params.empty()) {
-    string final = params.back();
-    if (final.size() == 3 && final[0] == '\n')
-      return params.size() - 1;
-  }
-  return params.size();
-}
-
-string FunctionElement::get_param(int i) const { return params[i]; }
-
-// -----------------------------------------------------------------------
 // VoidFunctionElement
 // -----------------------------------------------------------------------
 
 VoidFunctionElement::VoidFunctionElement(const char* src)
     : CommandElement(src) {}
 
-// -----------------------------------------------------------------------
+VoidFunctionElement::~VoidFunctionElement() {}
+
+const size_t VoidFunctionElement::param_count() const { return 0; }
+
+string VoidFunctionElement::get_param(int i) const { return std::string(); }
 
 const ElementType VoidFunctionElement::type() const { return Function; }
 
-// -----------------------------------------------------------------------
-
 const size_t VoidFunctionElement::length() const { return COMMAND_SIZE; }
-
-// -----------------------------------------------------------------------
 
 std::string VoidFunctionElement::serializableData(RLMachine& machine) const {
   string rv;
@@ -695,11 +651,6 @@ std::string VoidFunctionElement::serializableData(RLMachine& machine) const {
 }
 
 // -----------------------------------------------------------------------
-
-const size_t VoidFunctionElement::param_count() const { return 0; }
-string VoidFunctionElement::get_param(int i) const { return std::string(); }
-
-// -----------------------------------------------------------------------
 // SingleArgFunctionElement
 // -----------------------------------------------------------------------
 
@@ -707,17 +658,19 @@ SingleArgFunctionElement::SingleArgFunctionElement(const char* src,
                                                    const std::string& arg)
     : CommandElement(src), arg_(arg) {}
 
-// -----------------------------------------------------------------------
+SingleArgFunctionElement::~SingleArgFunctionElement() {}
+
+const size_t SingleArgFunctionElement::param_count() const { return 1; }
+
+string SingleArgFunctionElement::get_param(int i) const {
+  return i == 0 ? arg_ : std::string();
+}
 
 const ElementType SingleArgFunctionElement::type() const { return Function; }
-
-// -----------------------------------------------------------------------
 
 const size_t SingleArgFunctionElement::length() const {
   return COMMAND_SIZE + 2 + arg_.size();
 }
-
-// -----------------------------------------------------------------------
 
 std::string SingleArgFunctionElement::serializableData(RLMachine& machine)
     const {
@@ -733,31 +686,20 @@ std::string SingleArgFunctionElement::serializableData(RLMachine& machine)
 }
 
 // -----------------------------------------------------------------------
-
-const size_t SingleArgFunctionElement::param_count() const { return 1; }
-string SingleArgFunctionElement::get_param(int i) const {
-  return i == 0 ? arg_ : std::string();
-}
-
-// -----------------------------------------------------------------------
 // PointerElement
 // -----------------------------------------------------------------------
 
 PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
-// -----------------------------------------------------------------------
-
 PointerElement::~PointerElement() {}
-
-// -----------------------------------------------------------------------
-
-void PointerElement::set_pointers(ConstructionData& cdata) {
-  targets.set_pointers(cdata);
-}
 
 const size_t PointerElement::pointers_count() const { return targets.size(); }
 
 pointer_t PointerElement::get_pointer(int i) const { return targets[i]; }
+
+void PointerElement::set_pointers(ConstructionData& cdata) {
+  targets.set_pointers(cdata);
+}
 
 // -----------------------------------------------------------------------
 // GotoElement
@@ -770,15 +712,23 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata)
   id_ = read_i32(src);
 }
 
-// -----------------------------------------------------------------------
+GotoElement::~GotoElement() {}
 
-const ElementType GotoElement::type() const { return Goto; }
-
-// -----------------------------------------------------------------------
-
-const size_t GotoElement::param_count() const { return 0; }
+const size_t GotoElement::param_count() const {
+  // The pointer is not counted as a parameter.
+  return 0;
+}
 
 string GotoElement::get_param(int i) const { return std::string(); }
+
+const size_t GotoElement::pointers_count() const { return 1; }
+
+pointer_t GotoElement::get_pointer(int i) const {
+  assert(i == 0);
+  return pointer_;
+}
+
+const ElementType GotoElement::type() const { return Goto; }
 
 const size_t GotoElement::length() const { return 12; }
 
@@ -786,13 +736,6 @@ void GotoElement::set_pointers(ConstructionData& cdata) {
   ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
-}
-
-const size_t GotoElement::pointers_count() const { return 1; }
-
-pointer_t GotoElement::get_pointer(int i) const {
-  assert(i == 0);
-  return pointer_;
 }
 
 // -----------------------------------------------------------------------
@@ -817,13 +760,10 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
   id_ = read_i32(src);
 }
 
-// -----------------------------------------------------------------------
-
-const ElementType GotoIfElement::type() const { return Goto; }
-
-// -----------------------------------------------------------------------
+GotoIfElement::~GotoIfElement() {}
 
 const size_t GotoIfElement::param_count() const {
+  // The pointer is not counted as a parameter.
   return repr.size() == 8 ? 0 : 1;
 }
 
@@ -833,19 +773,21 @@ string GotoIfElement::get_param(int i) const {
              : string();
 }
 
+const size_t GotoIfElement::pointers_count() const { return 1; }
+
+pointer_t GotoIfElement::get_pointer(int i) const {
+  assert(i == 0);
+  return pointer_;
+}
+
+const ElementType GotoIfElement::type() const { return Goto; }
+
 const size_t GotoIfElement::length() const { return repr.size() + 4; }
 
 void GotoIfElement::set_pointers(ConstructionData& cdata) {
   ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
-}
-
-const size_t GotoIfElement::pointers_count() const { return 1; }
-
-pointer_t GotoIfElement::get_pointer(int i) const {
-  assert(i == 0);
-  return pointer_;
 }
 
 // -----------------------------------------------------------------------
@@ -886,23 +828,28 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
     throw Error("GotoCaseElement(): expected `}'");
 }
 
-// -----------------------------------------------------------------------
+GotoCaseElement::~GotoCaseElement() {}
+
+const size_t GotoCaseElement::param_count() const {
+  // The cases are not counted as parameters.
+  return 1;
+}
+
+string GotoCaseElement::get_param(int i) const {
+  return i == 0 ? repr.substr(8, repr.size() - 8) : string();
+}
+
+const size_t GotoCaseElement::case_count() const { return cases.size(); }
+
+const string GotoCaseElement::get_case(int i) const { return cases[i]; }
 
 const ElementType GotoCaseElement::type() const { return GotoCase; }
-
-// -----------------------------------------------------------------------
 
 const size_t GotoCaseElement::length() const {
   size_t rv = repr.size() + 2;
   for (unsigned int i = 0; i < cases.size(); ++i)
     rv += cases[i].size() + 4;
   return rv;
-}
-
-const size_t GotoCaseElement::param_count() const { return 1; }
-
-string GotoCaseElement::get_param(int i) const {
-  return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
 
 // -----------------------------------------------------------------------
@@ -930,15 +877,7 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
     throw Error("GotoOnElement(): expected `}'");
 }
 
-// -----------------------------------------------------------------------
-
-const ElementType GotoOnElement::type() const { return GotoOn; }
-
-// -----------------------------------------------------------------------
-
-const size_t GotoOnElement::length() const {
-  return repr.size() + argc() * 4 + 2;
-}
+GotoOnElement::~GotoOnElement() {}
 
 const size_t GotoOnElement::param_count() const { return 1; }
 
@@ -946,18 +885,10 @@ string GotoOnElement::get_param(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
 
-// -----------------------------------------------------------------------
+const ElementType GotoOnElement::type() const { return GotoOn; }
 
-void Pointers::set_pointers(ConstructionData& cdata) {
-  assert(target_ids.size() != 0);
-  targets.reserve(target_ids.size());
-  for (unsigned int i = 0; i < target_ids.size(); ++i) {
-    ConstructionData::offsets_t::const_iterator it =
-        cdata.offsets.find(target_ids[i]);
-    assert(it != cdata.offsets.end());
-    targets.push_back(it->second);
-  }
-  target_ids.clear();
+const size_t GotoOnElement::length() const {
+  return repr.size() + argc() * 4 + 2;
 }
 
 // -----------------------------------------------------------------------
@@ -985,29 +916,32 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
   id_ = read_i32(src);
 }
 
-// -----------------------------------------------------------------------
+GosubWithElement::~GosubWithElement() {}
 
-const ElementType GosubWithElement::type() const { return Goto; }
-
-// -----------------------------------------------------------------------
-
-const size_t GosubWithElement::length() const { return repr_size + 4; }
-
-const size_t GosubWithElement::param_count() const { return params.size(); }
+const size_t GosubWithElement::param_count() const {
+  // The pointer is not counted as a parameter.
+  return params.size();
+}
 
 string GosubWithElement::get_param(int i) const { return params[i]; }
 
-void GosubWithElement::set_pointers(ConstructionData& cdata) {
-  ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
-  assert(it != cdata.offsets.end());
-  pointer_ = it->second;
-}
 
 const size_t GosubWithElement::pointers_count() const { return 1; }
 
 pointer_t GosubWithElement::get_pointer(int i) const {
   assert(i == 0);
   return pointer_;
+}
+
+
+const ElementType GosubWithElement::type() const { return Goto; }
+
+const size_t GosubWithElement::length() const { return repr_size + 4; }
+
+void GosubWithElement::set_pointers(ConstructionData& cdata) {
+  ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
+  assert(it != cdata.offsets.end());
+  pointer_ = it->second;
 }
 
 }  // namespace libreallive
