@@ -28,14 +28,14 @@
 #ifndef SRC_SYSTEMS_BASE_TONE_CURVE_H_
 #define SRC_SYSTEMS_BASE_TONE_CURVE_H_
 
-#include <boost/array.hpp>
+#include <array>
 #include <vector>
 
 class Gameexe;
 class RLMachine;
 
-typedef boost::array<unsigned char, 256> ToneCurveColorMap;
-typedef boost::array<ToneCurveColorMap, 3> ToneCurveRGBMap;
+typedef std::array<unsigned char, 256> ToneCurveColorMap;
+typedef std::array<ToneCurveColorMap, 3> ToneCurveRGBMap;
 typedef std::vector<ToneCurveRGBMap> ToneCurveEffects;
 
 // Manages tone curve effects
