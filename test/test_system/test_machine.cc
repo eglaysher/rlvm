@@ -26,7 +26,6 @@
 
 #include "test_system/test_machine.h"
 
-#include <boost/variant/static_visitor.hpp>
 #include <string>
 #include <vector>
 

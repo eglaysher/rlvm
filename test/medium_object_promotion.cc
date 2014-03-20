@@ -42,6 +42,8 @@
 
 using namespace boost;
 
+using std::get;
+
 // A test suite that tests that certain graphical commands promote the object
 // layer... and tests that others that are known to not promote objects don't.
 typedef std::tuple<std::string,               // function name

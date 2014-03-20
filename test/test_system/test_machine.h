@@ -27,13 +27,11 @@
 #ifndef TEST_TEST_SYSTEM_TEST_MACHINE_H_
 #define TEST_TEST_SYSTEM_TEST_MACHINE_H_
 
-#include "machine/rlmachine.h"
-
-#include <boost/variant.hpp>
-
 #include <map>
 #include <string>
 #include <vector>
+
+#include "machine/rlmachine.h"
 
 class System;
 class RLModule;
