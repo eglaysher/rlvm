@@ -99,23 +99,6 @@ const XorKey snow_standard_edition_xor_mask[] = {
      256, 257},
     {{0x0}, -1, -1}};
 
-// "Encrypt"/"decrypt" a file.
-void apply_mask(char* array, size_t len) {
-  unsigned char i = 0;
-  while (len--)
-    *array++ ^= xor_mask[i++];
-}
-
-// -----------------------------------------------------------------------
-
-void apply_mask(string& array, size_t start) {
-  unsigned char i = 0;
-  size_t j = start;
-  size_t len = array.size() - start;
-  while (len--)
-    array[j++] ^= xor_mask[i++];
-}
-
 // -----------------------------------------------------------------------
 
 // Decompress an archived file.
@@ -160,24 +143,6 @@ void decompress(const char* src,
       }
     }
   }
-}
-
-// -----------------------------------------------------------------------
-
-string* compress(char* arr, size_t len) {
-  string* rv = new string;
-  RealliveCompressor cmp;
-  cmp.WriteData(arr, len);
-  cmp.WriteDataEnd();
-  cmp.Deflate();
-  cmp.Flush();
-  append_i32(*rv, cmp.Length());
-  append_i32(*rv, len);
-  rv->append(cmp.Data(), cmp.Length());
-  unsigned char m = 0;
-  for (unsigned int i = 0; i < rv->size(); ++i)
-    (*rv)[i] ^= xor_mask[m++];
-  return rv;
 }
 
 }  // namespace compression
