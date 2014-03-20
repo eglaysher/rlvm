@@ -589,35 +589,6 @@ ExpressionElement SelectElement::window() const {
 
 // -----------------------------------------------------------------------
 
-const string SelectElement::text(const int index) const {
-  string rv;
-  bool quoted = false;
-  const string& s = params.at(index).text;
-  const char* it = s.data(), *eit = s.data() + s.size();
-  while (it < eit) {
-    if (*it == '"') {
-      ++it;
-      quoted = !quoted;
-    } else if (!quoted && strcmp((char*)it, "###PRINT(") == 0) {
-      it += 9;
-      rv += "\\s{";
-      int ne = next_expr(it);
-      rv.append(it, ne);
-      it += ne + 1;
-      rv += '}';
-    } else if (*it == '\\') {
-      rv += "\\\\";
-    } else {
-      if ((*it >= 0x81 && *it <= 0x9f) || (*it >= 0xe0 && *it <= 0xef))
-        rv.push_back(*it++);
-      rv.push_back(*it++);
-    }
-  }
-  return rv;
-}
-
-// -----------------------------------------------------------------------
-
 const size_t SelectElement::length() const {
   size_t rv = repr.size() + 5;
   for (Param const& param : params)

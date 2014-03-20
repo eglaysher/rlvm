@@ -290,7 +290,6 @@ class SelectElement : public CommandElement {
 
   virtual const ElementType type() const;
   ExpressionElement window() const;
-  const string text(const int index) const;
 
   const size_t length() const;
 
