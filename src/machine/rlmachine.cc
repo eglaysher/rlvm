@@ -32,7 +32,6 @@
 #include "machine/rlmachine.h"
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/assign.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/path.hpp>
 

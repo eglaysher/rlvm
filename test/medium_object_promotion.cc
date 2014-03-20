@@ -26,8 +26,6 @@
 
 #include "gtest/gtest.h"
 
-#include <boost/assign.hpp>
-
 #include <string>
 #include <tuple>
 #include <vector>
