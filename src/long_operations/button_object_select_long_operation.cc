@@ -63,28 +63,28 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
   }
 
   // Initialize overrides on all buttons that we'll use.
-  for (ObjVector::iterator it = buttons_.begin(); it != buttons_.end(); ++it) {
-    setButtonOverride(it->first, "NORMAL");
+  for (ButtonPair& button_pair : buttons_) {
+    setButtonOverride(button_pair.first, "NORMAL");
   }
 }
 
 ButtonObjectSelectLongOperation::~ButtonObjectSelectLongOperation() {
   // Disable overrides on all graphics objects we've dealt with.
-  for (ObjVector::iterator it = buttons_.begin(); it != buttons_.end(); ++it) {
-    it->first->clearButtonOverrides();
+  for (ButtonPair& button_pair : buttons_) {
+    button_pair.first->clearButtonOverrides();
   }
 }
 
 void ButtonObjectSelectLongOperation::mouseMotion(const Point& point) {
   GraphicsObject* hovering_button = NULL;
 
-  for (ObjVector::iterator it = buttons_.begin(); it != buttons_.end(); ++it) {
-    if (it->first->hasObjectData()) {
-      GraphicsObjectData* data = &it->first->objectData();
-      Rect screen_rect = data->dstRect(*it->first, it->second);
+  for (ButtonPair& button_pair : buttons_) {
+    if (button_pair.first->hasObjectData()) {
+      GraphicsObjectData* data = &button_pair.first->objectData();
+      Rect screen_rect = data->dstRect(*button_pair.first, button_pair.second);
 
       if (screen_rect.contains(point))
-        hovering_button = it->first;
+        hovering_button = button_pair.first;
     }
   }
 

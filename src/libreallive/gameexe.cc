@@ -149,9 +149,7 @@ void Gameexe::parseLine(const std::string& line) {
     // Extract all numeric and data values from the value
     typedef boost::tokenizer<gameexe_token_extractor> ValueTokenizer;
     ValueTokenizer tokenizer(value);
-    for (ValueTokenizer::iterator it = tokenizer.begin(); it != tokenizer.end();
-         ++it) {
-      const std::string& tok = *it;
+    for (const std::string& tok : tokenizer) {
       if (tok[0] == '"') {
         std::string unquoted = tok.substr(1, tok.size() - 2);
         cdata_.push_back(unquoted);

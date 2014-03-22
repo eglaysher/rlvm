@@ -109,10 +109,8 @@ void EventSystem::dispatchEvent(
 void EventSystem::broadcastEvent(
     RLMachine& machine,
     const std::function<void(EventListener&)>& event) {
-  EventListeners::iterator listenerIt = listeners_begin();
-  for (; listenerIt != listeners_end(); ++listenerIt) {
-    event(**listenerIt);
-  }
+  for (EventListener* listener : event_listeners_)
+    event(*listener);
 
   boost::shared_ptr<LongOperation> current_op = machine.currentLongOperation();
   if (current_op)

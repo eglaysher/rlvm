@@ -337,12 +337,10 @@ boost::filesystem::path System::findFile(
 
   std::pair<FileSystemCache::const_iterator, FileSystemCache::const_iterator>
       ret = filesystem_cache_.equal_range(lower_name);
-  for (std::vector<std::string>::const_iterator ext = extensions.begin();
-       ext != extensions.end();
-       ++ext) {
+  for (const std::string& extension : extensions) {
     for (FileSystemCache::const_iterator it = ret.first; it != ret.second;
          ++it) {
-      if (*ext == it->second.first) {
+      if (extension == it->second.first) {
         return it->second.second;
       }
     }

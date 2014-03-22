@@ -487,14 +487,13 @@ std::string parsableToPrintableString(const std::string& src) {
   string output;
 
   bool firstToken = true;
-  for (string::const_iterator it = src.begin(); it != src.end(); ++it) {
+  for (char tok : src) {
     if (firstToken) {
       firstToken = false;
     } else {
       output += " ";
     }
 
-    char tok = *it;
     if (tok == '(' || tok == ')' || tok == '$' || tok == '[' || tok == ']') {
       output.push_back(tok);
     } else {

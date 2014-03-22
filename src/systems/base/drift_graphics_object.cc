@@ -114,39 +114,38 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
 
     // Now that we have all the particles, update state and render each
     // particle.
-    for (std::vector<Particle>::iterator it = particles_.begin();
-         it != particles_.end();
-         ++it) {
+    for (const Particle& particle : particles_) {
       int pattern = start_pattern;
       if (use_animation && end_pattern > start_pattern) {
         int number_of_patterns = end_pattern - start_pattern + 1;
         int frame_time = animation_time / number_of_patterns;
-        int frame_number =
-            ((current_time - it->start_time) / frame_time) % number_of_patterns;
+        int frame_number = ((current_time - particle.start_time) / frame_time) %
+                           number_of_patterns;
         pattern = start_pattern + frame_number;
       }
       Rect src = surface->getPattern(pattern).rect;
 
-      int dest_x = it->x;
-      int dest_y = it->y;
+      int dest_x = particle.x;
+      int dest_y = particle.y;
 
       // Add the base yspeed.
-      dest_y += bounding_box.size().height() *
-                (static_cast<double>((current_time - it->start_time) % yspeed) /
-                 static_cast<double>(yspeed));
+      dest_y +=
+          bounding_box.size().height() *
+          (static_cast<double>((current_time - particle.start_time) % yspeed) /
+           static_cast<double>(yspeed));
 
       // Add the sine wave that defines how the particle moves back and forth.
       if (period != 0 && amplitude != 0) {
-        double result =
-            sin((static_cast<double>(current_time - it->start_time) / period) *
-                (2 * 3.14));
+        double result = sin(
+            (static_cast<double>(current_time - particle.start_time) / period) *
+            (2 * 3.14));
         dest_x += scaled_amplitude * result;
       }
 
       // Add the left drift if we have this bit set.
       if (use_drift) {
         dest_x -= bounding_box.size().width() *
-                  (static_cast<double>((current_time - it->start_time) %
+                  (static_cast<double>((current_time - particle.start_time) %
                                        drift_speed) /
                    static_cast<double>(drift_speed));
       }
@@ -165,7 +164,7 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
       if (go.hasClip())
         ClipDestination(go.clipRect(), src, dest);
 
-      surface->renderToScreen(src, dest, it->alpha);
+      surface->renderToScreen(src, dest, particle.alpha);
     }
   }
 }

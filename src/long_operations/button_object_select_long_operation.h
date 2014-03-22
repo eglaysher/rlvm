@@ -76,7 +76,8 @@ class ButtonObjectSelectLongOperation : public LongOperation {
 
   // All objects that are buttons in |group_|. First is the object, Second is
   // the parent object, or NULL if first isn't a child object.
-  typedef std::vector<std::pair<GraphicsObject*, GraphicsObject*>> ObjVector;
+  typedef std::pair<GraphicsObject*, GraphicsObject*> ButtonPair;
+  typedef std::vector<ButtonPair> ObjVector;
   ObjVector buttons_;
 
   // The graphics object that the mouse cursor is hovering over.

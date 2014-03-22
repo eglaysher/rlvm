@@ -137,11 +137,9 @@ struct msgClearAll : public RLOp_Void_Void {
     int activeWindow = text.activeWindow();
 
     text.snapshot();
-    for (std::vector<int>::const_iterator it = activeWindows.begin();
-         it != activeWindows.end();
-         ++it) {
+    for (int window : activeWindows) {
       text.textWindow(activeWindow)->clearWin();
-      text.newPageOnWindow(*it);
+      text.newPageOnWindow(window);
     }
   }
 };

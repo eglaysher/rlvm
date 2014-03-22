@@ -62,18 +62,16 @@ GCNMenu::GCNMenu(const std::string& title,
   }
 
   vector<gcn::Button*> buttons;
-  for (vector<GCNMenuButton>::const_iterator it = buttons_to_display.begin();
-       it != buttons_to_display.end();
-       ++it) {
-    if (it->separator) {
+  for (const GCNMenuButton& data : buttons_to_display) {
+    if (data.separator) {
       top_offset += MENU_PADDING;
     } else {
-      gcn::Button* button = new GCNButton(it->label);
-      button->setActionEventId(it->action);
+      gcn::Button* button = new GCNButton(data.label);
+      button->setActionEventId(data.action);
       button->addActionListener(this);
-      button->setEnabled(it->enabled);
+      button->setEnabled(data.enabled);
 
-      if (!it->enabled)
+      if (!data.enabled)
         button->setForegroundColor(gcn::Color(100, 100, 100));
 
       Container::add(button, MENU_PADDING, top_offset);
@@ -91,10 +89,9 @@ GCNMenu::GCNMenu(const std::string& title,
     menu_title->setAlignment(gcn::Graphics::CENTER);
   }
 
-  for (vector<gcn::Button*>::iterator it = buttons.begin(); it != buttons.end();
-       ++it) {
-    (*it)->setWidth(max_button_size);
-    (*it)->setAlignment(gcn::Graphics::CENTER);
+  for (gcn::Button* button : buttons) {
+    button->setWidth(max_button_size);
+    button->setAlignment(gcn::Graphics::CENTER);
     // TODO: Leak
   }
 
