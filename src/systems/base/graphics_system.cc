@@ -545,9 +545,8 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
 void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // Check to see if any of the graphics objects are reporting that
   // they want to force a redraw
-  for_each(foregroundObjects().allocated_begin(),
-           foregroundObjects().allocated_end(),
-           [&](GraphicsObject& obj) { obj.execute(machine); });
+  for (GraphicsObject& obj : foregroundObjects())
+    obj.execute(machine);
 
   if (mouse_cursor_)
     mouse_cursor_->execute(system());
@@ -633,13 +632,9 @@ boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
     System& system,
     const std::string& name,
     const boost::filesystem::path& file_path) {
-  AllocatedLazyArrayIterator<HIKArrayItem> it =
-      preloaded_hik_scripts_.allocated_begin();
-  AllocatedLazyArrayIterator<HIKArrayItem> end =
-      preloaded_hik_scripts_.allocated_end();
-  for (; it != end; ++it) {
-    if (it->first == name)
-      return it->second;
+  for (HIKArrayItem& item : preloaded_hik_scripts_) {
+    if (item.first == name)
+      return item.second;
   }
 
   return boost::shared_ptr<HIKScript>(new HIKScript(system, file_path));
@@ -665,12 +660,9 @@ void GraphicsSystem::ClearAllPreloadedG00() { preloaded_g00_.clear(); }
 
 boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
     const std::string& name) {
-  AllocatedLazyArrayIterator<G00ArrayItem> it =
-      preloaded_g00_.allocated_begin();
-  AllocatedLazyArrayIterator<G00ArrayItem> end = preloaded_g00_.allocated_end();
-  for (; it != end; ++it) {
-    if (it->first == name)
-      return it->second;
+  for (G00ArrayItem& item : preloaded_g00_) {
+    if (item.first == name)
+      return item.second;
   }
 
   return boost::shared_ptr<const Surface>();
@@ -710,8 +702,6 @@ boost::shared_ptr<const Surface> GraphicsSystem::getSurfaceNamed(
 
 // -----------------------------------------------------------------------
 
-/// @todo The looping constructs here totally defeat the purpose of
-///       LazyArray, and make it a bit worse.
 void GraphicsSystem::clearAndPromoteObjects() {
   typedef LazyArray<GraphicsObject>::full_iterator FullIterator;
 
@@ -772,17 +762,11 @@ void GraphicsSystem::clearAllObjects() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::resetAllObjectsProperties() {
-  AllocatedLazyArrayIterator<GraphicsObject> it =
-      graphics_object_impl_->foreground_objects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end =
-      graphics_object_impl_->foreground_objects.allocated_end();
-  for (; it != end; ++it)
-    it->resetProperties();
+  for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
+    object.resetProperties();
 
-  it = graphics_object_impl_->background_objects.allocated_begin();
-  end = graphics_object_impl_->background_objects.allocated_end();
-  for (; it != end; ++it)
-    it->resetProperties();
+  for (GraphicsObject& object : graphics_object_impl_->background_objects)
+    object.resetProperties();
 }
 
 // -----------------------------------------------------------------------
@@ -806,13 +790,9 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() {
 // -----------------------------------------------------------------------
 
 bool GraphicsSystem::animationsPlaying() const {
-  AllocatedLazyArrayIterator<GraphicsObject> it =
-      graphics_object_impl_->foreground_objects.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end =
-      graphics_object_impl_->foreground_objects.allocated_end();
-  for (; it != end; ++it) {
-    if (it->hasObjectData()) {
-      GraphicsObjectData& data = it->objectData();
+  for (GraphicsObject& object : graphics_object_impl_->foreground_objects) {
+    if (object.hasObjectData()) {
+      GraphicsObjectData& data = object.objectData();
       if (data.isAnimation() && data.currentlyPlaying())
         return true;
     }
@@ -850,9 +830,9 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
 
   // Collate all objects that we might want to render.
   AllocatedLazyArrayIterator<GraphicsObject> it =
-      graphics_object_impl_->foreground_objects.allocated_begin();
+      graphics_object_impl_->foreground_objects.begin();
   AllocatedLazyArrayIterator<GraphicsObject> end =
-      graphics_object_impl_->foreground_objects.allocated_end();
+      graphics_object_impl_->foreground_objects.end();
   for (; it != end; ++it) {
     const ObjectSettings& settings = getObjectSettings(it.pos());
     if (settings.obj_on_off == 1 && showObject1() == false)

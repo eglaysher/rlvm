@@ -44,26 +44,18 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
       currently_hovering_button_(NULL),
       currently_pressed_button_(NULL) {
   GraphicsSystem& graphics = machine.system().graphics();
-  AllocatedLazyArrayIterator<GraphicsObject> it =
-      graphics.foregroundObjects().allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end =
-      graphics.foregroundObjects().allocated_end();
-  for (; it != end; ++it) {
-    if (it->isButton() && it->buttonGroup() == group_) {
+  for (GraphicsObject& obj : graphics.foregroundObjects()) {
+    if (obj.isButton() && obj.buttonGroup() == group_) {
       buttons_.push_back(
-          std::make_pair(&*it, static_cast<GraphicsObject*>(NULL)));
-    } else if (it->hasObjectData()) {
+          std::make_pair(&obj, static_cast<GraphicsObject*>(NULL)));
+    } else if (obj.hasObjectData()) {
       ParentGraphicsObjectData* parent =
-          dynamic_cast<ParentGraphicsObjectData*>(&it->objectData());
+          dynamic_cast<ParentGraphicsObjectData*>(&obj.objectData());
 
       if (parent) {
-        AllocatedLazyArrayIterator<GraphicsObject> child_it =
-            parent->objects().allocated_begin();
-        AllocatedLazyArrayIterator<GraphicsObject> child_end =
-            parent->objects().allocated_end();
-        for (; child_it != child_end; ++child_it) {
-          if (child_it->isButton() && child_it->buttonGroup() == group_) {
-            buttons_.push_back(std::make_pair(&*child_it, &*it));
+        for (GraphicsObject& child : parent->objects()) {
+          if (child.isButton() && child.buttonGroup() == group_) {
+            buttons_.push_back(std::make_pair(&child, &obj));
           }
         }
       }

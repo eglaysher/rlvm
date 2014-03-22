@@ -93,8 +93,8 @@ class LazyArray {
   }
 
   // Iterate across the already allocated items
-  AllocatedLazyArrayIterator<T> allocated_begin();
-  AllocatedLazyArrayIterator<T> allocated_end() {
+  AllocatedLazyArrayIterator<T> begin();
+  AllocatedLazyArrayIterator<T> end() {
     return AllocatedLazyArrayIterator<T>(size_, this);
   }
 
@@ -310,7 +310,7 @@ void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
 }
 
 template <typename T>
-AllocatedLazyArrayIterator<T> LazyArray<T>::allocated_begin() {
+AllocatedLazyArrayIterator<T> LazyArray<T>::begin() {
   // Find the first
   int firstEntry = 0;
   while (firstEntry < size_ && array_[firstEntry] == NULL)

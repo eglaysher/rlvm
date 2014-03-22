@@ -107,7 +107,7 @@ TEST_F(LazyArrayTest, EmptyArray) {
   LazyArray<int> lazyArray(SIZE);
   EXPECT_EQ(SIZE, lazyArray.size()) << "Lazy Array didn't remember its size";
 
-  EXPECT_TRUE(lazyArray.allocated_begin() == lazyArray.allocated_end())
+  EXPECT_TRUE(lazyArray.begin() == lazyArray.end())
       << "Allocated Lazy iterator is valid on an empty array";
 
   // iterating across everything; each cell should report being unallocated
@@ -127,8 +127,8 @@ TEST_F(LazyArrayTest, AllozatedLazyArrayIterator) {
 
   // Test to make sure that when we use AllocatedLazyArrayIterator, we
   // only stop on items that are valid.
-  AllocatedLazyArrayIterator<int> ait = lazyArray.allocated_begin();
-  AllocatedLazyArrayIterator<int> aend = lazyArray.allocated_end();
+  AllocatedLazyArrayIterator<int> ait = lazyArray.begin();
+  AllocatedLazyArrayIterator<int> aend = lazyArray.end();
   EXPECT_TRUE(ait != aend)
       << "Allocated Lazy iterator is invalid on an array with items in it";
 
@@ -155,8 +155,8 @@ TEST_F(LazyArrayTest, BothIterators) {
 
   // Now we should be able to iterate across all the items with
   // AllocatedLazyArrayIterator, and make sure their values are correct.
-  AllocatedLazyArrayIterator<int> ait = lazyArray.allocated_begin();
-  AllocatedLazyArrayIterator<int> aend = lazyArray.allocated_end();
+  AllocatedLazyArrayIterator<int> ait = lazyArray.begin();
+  AllocatedLazyArrayIterator<int> aend = lazyArray.end();
   for (int i = 0; ait != aend && i < SIZE; ++ait, ++i) {
     EXPECT_EQ(i, *ait) << "Correct value in position";
   }

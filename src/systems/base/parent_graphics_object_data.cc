@@ -56,8 +56,8 @@ LazyArray<GraphicsObject>& ParentGraphicsObjectData::objects() {
 void ParentGraphicsObjectData::render(const GraphicsObject& go,
                                       const GraphicsObject* parent,
                                       std::ostream* tree) {
-  AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = objects_.allocated_end();
+  AllocatedLazyArrayIterator<GraphicsObject> it = objects_.begin();
+  AllocatedLazyArrayIterator<GraphicsObject> end = objects_.end();
   for (; it != end; ++it) {
     it->render(it.pos(), &go, tree);
   }
@@ -87,12 +87,8 @@ GraphicsObjectData* ParentGraphicsObjectData::clone() const {
 }
 
 void ParentGraphicsObjectData::execute(RLMachine& machine) {
-  // We pass on execute to all our children
-  AllocatedLazyArrayIterator<GraphicsObject> it = objects_.allocated_begin();
-  AllocatedLazyArrayIterator<GraphicsObject> end = objects_.allocated_end();
-  for (; it != end; ++it) {
-    it->execute(machine);
-  }
+  for (GraphicsObject& obj : objects_)
+    obj.execute(machine);
 }
 
 bool ParentGraphicsObjectData::isAnimation() const { return false; }
