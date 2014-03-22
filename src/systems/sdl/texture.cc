@@ -617,7 +617,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
   // This all needs to be pushed up out of the rendering code and down into
   // either GraphicsObject or the individual GraphicsObjectData subclasses.
 
-  // TODO: Temporary hack while I wait to convert all of this machinery to
+  // TODO(erg): Temporary hack while I wait to convert all of this machinery to
   // Rects.
   int xSrc1 = srcRect.x();
   int ySrc1 = srcRect.y();

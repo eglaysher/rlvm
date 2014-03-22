@@ -42,7 +42,7 @@ struct render_to_texture {};
 // Contains one or more OpenGL textures, representing a single image,
 // and provides a logical interface to working with them.
 
-// TODO: The entire Texture class's internals need to be transitioned
+// TODO(erg): The entire Texture class's internals need to be transitioned
 // to the Point and Rect classes.
 class Texture {
  public:

@@ -142,7 +142,7 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       }
     }
 
-    // TODO: Do we want to skip this if no alpha?
+    // TODO(erg): Do we want to skip this if no alpha?
     surface->renderToScreenAsObject(go, src, dst, alpha);
   }
 }

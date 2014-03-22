@@ -77,7 +77,7 @@ void SDLSoundChunk::playChunkOn(int channel, int loops) {
   }
 
   if (Mix_PlayChannel(channel, sample_, loops) == -1) {
-    // TODO: Throw something here.
+    // TODO(erg): Throw something here.
   }
 }
 
@@ -88,7 +88,7 @@ void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) {
   }
 
   if (Mix_FadeInChannel(channel, sample_, loops, ms) == -1) {
-    // TODO: Throw something here.
+    // TODO(erg): Throw something here.
   }
 }
 

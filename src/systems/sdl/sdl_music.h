@@ -64,7 +64,7 @@ class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
   // Whether we are currently fading out.
   bool isFading() const;
 
-  // TODO: Now that I understand wtf is going on, redo this part here.
+  // TODO(erg): Now that I understand wtf is going on, redo this part here.
   void play(bool loop);
   void stop();
   void fadeIn(bool loop, int fade_in_ms);

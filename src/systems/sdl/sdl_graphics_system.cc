@@ -425,7 +425,7 @@ void SDLGraphicsSystem::Observe(NotificationType type,
 
 void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
                                           int text_encoding) {
-  // @todo Still not restoring title correctly!
+  // TODO(erg): Still not restoring title correctly!
   subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
   GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);

@@ -50,7 +50,7 @@ class ObjectMutator;
 // datastructure, which in turn has optional components to save
 // memory.
 //
-// @todo I want to put index checks on a lot of these accessors.
+// TODO(erg): I want to put index checks on a lot of these accessors.
 class GraphicsObject {
  public:
   GraphicsObject();

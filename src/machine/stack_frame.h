@@ -69,10 +69,10 @@ struct StackFrame {
   // The function that pushed the current frame onto the
   // stack. Used in error checking.
   enum FrameType {
-    TYPE_ROOT,    // Added by the Machine's constructor
-    TYPE_GOSUB,   // Added by a call by gosub
-    TYPE_FARCALL, // Added by a call by farcall
-    TYPE_LONGOP   // Added by pushLongOperation()
+    TYPE_ROOT,     // Added by the Machine's constructor
+    TYPE_GOSUB,    // Added by a call by gosub
+    TYPE_FARCALL,  // Added by a call by farcall
+    TYPE_LONGOP    // Added by pushLongOperation()
   } frame_type;
 
   // Default constructor. Only used during serialization.

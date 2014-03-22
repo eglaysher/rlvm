@@ -192,7 +192,7 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
     // changes a list of durations into a list of absolute times.
     int total = 0;
 
-    // TODO: How are we supposed to handle |start_time|?
+    // TODO(erg): How are we supposed to handle |start_time|?
 
     for (TimeTable2List::type::iterator it = index_list.begin();
          it != index_list.end();

@@ -33,7 +33,7 @@ static int bggridx[] = {0, 3, 28, 31};
 static int bggridy[] = {0, 3, 28, 31};
 ImageRect GCNScrollArea::s_background(IMG_DEEPBOX, bggridx, bggridy);
 
-// TODO: +1 these values? Different +1 status then other set.
+// TODO(erg): +1 these values? Different +1 status then other set.
 int vsgridx[] = {0, 4, 7, 11};
 int vsgridy[] = {0, 4, 15, 19};
 ImageRect GCNScrollArea::s_vMarker(IMG_VSCROLL_GREY, vsgridx, vsgridy);

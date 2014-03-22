@@ -49,7 +49,7 @@ class FullLazyArrayIterator;
 // foreground layer at exit. Planetarian leaves 3 objects
 // allocated. Kanon leaves 10.
 //
-// @todo Think about caching firstEntry for the iterators...
+// TODO(erg): Think about caching firstEntry for the iterators...
 template <typename T>
 class LazyArray {
  public:

@@ -162,7 +162,7 @@ void printTextToFunction(
   utf8::next(tmp, end);
   string curChar(cur, tmp);
   for (cur = tmp; tmp != end; cur = tmp) {
-    // @todo Do we have to check the return value here?
+    // TODO(erg): Do we have to check the return value here?
     fun(curChar, string(cur, end));
 
     utf8::next(tmp, end);

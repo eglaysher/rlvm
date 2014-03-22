@@ -407,7 +407,7 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
              strcmp(src, "###PRINT(") == 0) {
     return get_string(src);
   } else if (*src == 'a') {
-    // @todo Cleanup below.
+    // TODO(erg): Cleanup below.
     const char* end = src;
     std::unique_ptr<ComplexExpressionPiece> cep;
 

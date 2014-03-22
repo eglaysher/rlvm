@@ -71,8 +71,8 @@ class TextWindow {
 
   int windowNumber() const { return window_num_; }
 
-  // TODO: This is nowhere near good enough and handling waku better needs to
-  // be put on the long term goal list. Should wakuSet() live on the
+  // TODO(erg): This is nowhere near good enough and handling waku better needs
+  // to be put on the long term goal list. Should wakuSet() live on the
   // TextWindow? O RLY?
   int wakuSet() const { return waku_set_; }
 
@@ -132,7 +132,8 @@ class TextWindow {
   // The size of the writable text area.
   Size nameboxTextArea() const;
 
-  // TODO: What's setMousePosition and how does it differ from mouse listeners?
+  // TODO(erg): What's setMousePosition and how does it differ from mouse
+  // listeners?
   virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine,
                                 const Point& pos,

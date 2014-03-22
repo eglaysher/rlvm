@@ -105,7 +105,7 @@ void reportSDLError(const std::string& sdl_name,
 
 // -----------------------------------------------------------------------
 
-/// @todo This is not endian safe in any way.
+/// TODO(erg): This is not endian safe in any way.
 SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
   SDL_PixelFormat* format = in_surface->format;
 

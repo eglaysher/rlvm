@@ -60,9 +60,8 @@ void setObjectDataToGan(RLMachine& machine,
                         GraphicsObject& obj,
                         std::string& imgFilename,
                         const std::string& ganFilename) {
-  /// @todo This is a hack and probably a source of errors. Figure
-  ///       out what '???' means when used as the first parameter to
-  ///       objOfFileGan.
+  // TODO(erg): This is a hack and probably a source of errors. Figure out what
+  // '???' means when used as the first parameter to objOfFileGan.
   if (imgFilename == "???")
     imgFilename = ganFilename;
   obj.setObjectData(

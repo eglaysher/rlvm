@@ -381,7 +381,7 @@ void SDLSurface::deallocate() {
   }
 }
 
-// TODO(erg):This function doesn't ignore alpha blending when use_src_alpha is
+// TODO(erg): This function doesn't ignore alpha blending when use_src_alpha is
 // false; thus, grp_open and grp_mask_open are really grp_mask_open.
 void SDLSurface::blitToSurface(Surface& dest_surface,
                                const Rect& src,
@@ -784,7 +784,7 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(const Rect& clip_rect,
                                                        int b) const {
   const char* function_name = "SDLGraphicsSystem::clipAsColorMask()";
 
-  // TODO: This needs to be made exception safe and so does the rest
+  // TODO(erg): This needs to be made exception safe and so does the rest
   // of this file.
   SDL_Surface* tmp_surface = SDL_CreateRGBSurface(
       0, surface_->w, surface_->h, 24, 0xFF0000, 0xFF00, 0xFF, 0);

@@ -343,7 +343,7 @@ Rect TextWindow::nameboxWakuRect() const {
 }
 
 Size TextWindow::nameboxTextArea() const {
-  // TODO: This seems excessively wide.
+  // TODO(erg): This seems excessively wide.
   return Size(
       2 * horizontal_namebox_padding_ + namebox_characters_ * name_size_,
       vertical_namebox_padding_ + name_size_);

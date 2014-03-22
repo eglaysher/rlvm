@@ -52,7 +52,7 @@ int max_space(const std::vector<gcn::Label*>& labels) {
     return 0;
 }
 
-// TODO: Make GCNMenu use this too?
+// TODO(erg): Make GCNMenu use this too?
 void set_size_and_align(std::vector<gcn::Label*>& items,
                         int max_size,
                         gcn::Graphics::Alignment alignment) {

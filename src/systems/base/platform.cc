@@ -89,7 +89,7 @@ void Platform::addSyscomStringFor(const std::string& key,
   std::string::size_type back = value.rfind('"');
   std::string unquoted = string(value, front + 1, back);
 
-  // TODO: Use the correct encoding...
+  // TODO(erg): Use the correct encoding...
   std::string utf8 = cp932toUTF8(unquoted, 0);
 
   utf8_syscom_strings_[key] = utf8;

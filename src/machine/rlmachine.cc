@@ -357,9 +357,9 @@ void RLMachine::jump(int scenario_num, int entrypoint) {
   }
 
   if (call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
-    // TODO: For some reason this is slow; REALLY slow, so for now I'm trying
-    // to optimize the common case (no long operations on the back of the
-    // stack. I assume there's some weird speed issue with reverse_iterator?
+    // For some reason this is slow; REALLY slow, so for now I'm trying to
+    // optimize the common case (no long operations on the back of the stack. I
+    // assume there's some weird speed issue with reverse_iterator?
     //
     // The lag is noticeable on the CLANNAD menu, without profiling tools.
     std::vector<StackFrame>::reverse_iterator it =

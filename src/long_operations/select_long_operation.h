@@ -95,7 +95,7 @@ class SelectLongOperation : public LongOperation {
 // Selection LongOperation which waits for input in the TextBox. Most work is
 // passed off to the TextWindow which does all the drawing.
 //
-// TODO: Move that code into here.
+// TODO(erg): Move that code into here.
 class NormalSelectLongOperation : public SelectLongOperation {
  public:
   NormalSelectLongOperation(RLMachine& machine,

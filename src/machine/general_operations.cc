@@ -93,7 +93,7 @@ void MultiDispatch::parseParameters(
   }
 }
 
-/// @todo Port this up to the new expression handling code
+/// TODO(erg): Port this up to the new expression handling code
 void MultiDispatch::operator()(RLMachine& machine,
                                const libreallive::CommandElement& ff) {
   const libreallive::ExpressionPiecesVector& parameter_pieces =

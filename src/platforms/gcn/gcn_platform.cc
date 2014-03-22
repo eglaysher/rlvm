@@ -121,8 +121,8 @@ const MenuSpec EXIT_GAME_MENU[] = {{SYSCOM_HIDE_MENU, "029.000", EVENT_CANCEL},
                                    {SYSCOM_EXIT_GAME, "029.001", NULL},
                                    {MENU_END, NULL, NULL}};
 
-// TODO: Things like SYSCOM_MENU_RETURN need to be turned into menu pointers in
-// their own right.
+// TODO(erg): Things like SYSCOM_MENU_RETURN need to be turned into menu
+// pointers in their own right.
 const MenuSpec SYCOM_MAIN_MENU[] = {
     {SYSCOM_SET_SKIP_MODE, NULL, NULL},
     {SYSCOM_AUTO_MODE, NULL, NULL},
