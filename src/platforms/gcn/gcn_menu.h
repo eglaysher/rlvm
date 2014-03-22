@@ -37,9 +37,7 @@ class GCNMenu;
 
 // -----------------------------------------------------------------------
 
-/**
- * Input struct for a GCNMenu. GCNPlatform creates a vector of this struct.
- */
+// Input struct for a GCNMenu. GCNPlatform creates a vector of this struct.
 struct GCNMenuButton {
   GCNMenuButton() : enabled(false), separator(false) {}
 
@@ -49,19 +47,9 @@ struct GCNMenuButton {
   bool separator;
 };
 
-/**
- * A GCNMenu is a window that just auto-lays out a set of buttons.
- */
+// A GCNMenu is a window that just auto-lays out a set of buttons.
 class GCNMenu : public GCNWindow, public gcn::ActionListener {
  public:
-  /**
-   * Creates a menu out of a set of buttons
-   *
-   * @param title The title for an optional label. If this is empty, no label
-   *              is presented to the user.
-   * @param buttons A set of button definitions.
-   * @param platform Our parent.
-   */
   GCNMenu(const std::string& title,
           const std::vector<GCNMenuButton>& buttons,
           GCNPlatform* platform);

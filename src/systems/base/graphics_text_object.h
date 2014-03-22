@@ -41,10 +41,8 @@ class GraphicsObject;
 class Surface;
 class System;
 
-/**
- * Represents the textual data made with commands such as obj_of_text,
- * obj_set_text, obj_text_opts, et cetera.
- */
+// Represents the textual data made with commands such as obj_of_text,
+// obj_set_text, obj_text_opts, et cetera.
 class GraphicsTextObject : public GraphicsObjectData {
  public:
   explicit GraphicsTextObject(System& system);
@@ -92,10 +90,8 @@ class GraphicsTextObject : public GraphicsObjectData {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-/**
- * We need help creating GraphicsTextObject s since they don't have a default
- * constructor:
- */
+// We need help creating GraphicsTextObject s since they don't have a default
+// constructor:
 namespace boost {
 namespace serialization {
 template <class Archive>

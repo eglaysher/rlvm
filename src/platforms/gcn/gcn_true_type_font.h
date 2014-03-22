@@ -49,22 +49,16 @@ class OpenGLImage;
 
 // -----------------------------------------------------------------------
 
-/**
- * A hacked up version of the SDLTrueTypeFont file in the guichan/contrib/
- * directory. rlvm has an OpenGL out display and already has infrastructure for
- * uploading the output of SDLTrueTypeFonts as textures...
- *
- * SDL True Type Font implementation of Font. It uses the SDL_ttf library
- * to display True Type Fonts with SDL.
- *
- * NOTE: You must initialize the SDL_ttf library before using this
- *       class. Also, remember to call the SDL_ttf libraries quit
- *       function.
- *
- * @author Elliot Glaysher
- * @author Walluce Pinkham
- * @author Olof Naessén
- */
+// A hacked up version of the SDLTrueTypeFont file in the guichan/contrib/
+// directory. rlvm has an OpenGL out display and already has infrastructure for
+// uploading the output of SDLTrueTypeFonts as textures...
+//
+// SDL True Type Font implementation of Font. It uses the SDL_ttf library
+// to display True Type Fonts with SDL.
+//
+// NOTE: You must initialize the SDL_ttf library before using this
+//       class. Also, remember to call the SDL_ttf libraries quit
+//       function.
 class GCNTrueTypeFont : public gcn::Font, public NotificationObserver {
  public:
   GCNTrueTypeFont(const std::string& filename, int size);

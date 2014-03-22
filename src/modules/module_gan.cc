@@ -62,25 +62,17 @@ struct objWaitAll : public RLOp_Void_Void {
   }
 };
 
+// Save the screen update mode and change it to automatic when entering a
+// blocking animation, restoring when we leave.
+//
+// When I actually started paying attention to DrawManual()/DrawAuto(), I
+// stopped forcing a refresh of the screen on each and instead obeyed the
+// DCScreenUpdateMode, I broke the OP of Kanon.
+//
+// I don't know if this is the correct solution. If this breaks things, the
+// solution is that things like AnmGraphicsObjectData force screen refreshes,
+// ignoring whatever the current screen update mode is.
 struct WaitForGanToFinish : public LongOperation {
-  /**
-   * Save the screen update mode and change it to automatic when entering a
-   * blocking animation, restoring when we leave.
-   *
-   * When I actually started paying attention to DrawManual()/DrawAuto(), I
-   * stopped forcing a refresh of the screen on each and instead obeyed the
-   * DCScreenUpdateMode, I broke the OP of Kanon.
-   *
-   * I don't know if this is the correct solution. If this breaks things, the
-   * solution is that things like AnmGraphicsObjectData force screen
-   * refreshes, ignoring whatever the current screen update mode is.
-   */
-  GraphicsSystem& system_;
-  GraphicsSystem::DCScreenUpdateMode mode_;
-
-  int fgbg_;
-  int parent_;
-  int buf_;
   WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent, int inBuf)
       : system_(system),
         mode_(system_.screenUpdateMode()),
@@ -120,6 +112,13 @@ struct WaitForGanToFinish : public LongOperation {
       return graphics.getObject(fgbg_, buf_);
     }
   }
+
+  GraphicsSystem& system_;
+  GraphicsSystem::DCScreenUpdateMode mode_;
+
+  int fgbg_;
+  int parent_;
+  int buf_;
 };
 
 struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
@@ -170,42 +169,40 @@ struct ganWait : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-/**
- * Returns true when an animation is completed.
- *
- * RATIONALE:
- *
- * This is a guess. I'm not entirely sure what this function does, but I'm
- * trying to pick the meaning out of context. Here's a snippet of CLANNAD's
- * SEEN9081, where it's used:
- *
- * @code
- * #line 412
- * ganPlay2 (3, 15)
- *
- * [...]
- *
- *   @62
- * #line 416
- * op<1:073:00003, 0> (3)
- * intA[0] = store
- * #line 417
- * goto_unless (!intA[0]) @63
- * #line 418
- * intA[200] = 19
- * #line 420
- *
- *   @63
- * goto @64
- * @endcode
- *
- * So it looks like it's trying to set some sort of sentinel value since
- * intA[200] is checked later. It's checking SOMETHING about the gan object,
- * and I'm assuming it's whether it's done animating.
- *
- * After implementing this, we no longer get stuck in an infinite loop during
- * Ushio's birth so I'm assuming this is correct.
- */
+// Returns true when an animation is completed.
+//
+// RATIONALE:
+//
+// This is a guess. I'm not entirely sure what this function does, but I'm
+// trying to pick the meaning out of context. Here's a snippet of CLANNAD's
+// SEEN9081, where it's used:
+//
+// @code
+// #line 412
+// ganPlay2 (3, 15)
+//
+// [...]
+//
+//   @62
+// #line 416
+// op<1:073:00003, 0> (3)
+// intA[0] = store
+// #line 417
+// goto_unless (!intA[0]) @63
+// #line 418
+// intA[200] = 19
+// #line 420
+//
+//   @63
+// goto @64
+// @endcode
+//
+// So it looks like it's trying to set some sort of sentinel value since
+// intA[200] is checked later. It's checking SOMETHING about the gan object,
+// and I'm assuming it's whether it's done animating.
+//
+// After implementing this, we no longer get stuck in an infinite loop during
+// Ushio's birth so I'm assuming this is correct.
 struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
     GraphicsObject& obj = getGraphicsObject(machine, this, gan_num);

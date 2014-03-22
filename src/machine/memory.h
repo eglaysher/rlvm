@@ -195,20 +195,15 @@ class Memory {
   //
   // @note For now, we only read \#NAME and \#LOCALNAME variables, skipping any
   //       declaration of the form \#intvar[index] or \#strvar[index].
-  explicit Memory(RLMachine& machine, Gameexe& gamexe);
+  Memory(RLMachine& machine, Gameexe& gamexe);
 
-  /**
-   * TODO(erg): This function doesn't make sense. Clean up later.
-   *
-   * Creates an overlayed memory object. An overlay takes another
-   * Memory's global memory.
-   *
-   * @param machine Machine to overlay memory from.
-   * @param slot Save game slot to read local memory from.
-   *
-   * @warning Local integer memory isn't initialized; it isn't even
-   *          memset zeroed out.
-   */
+  // Creates an overlayed memory object. An overlay takes another Memory's
+  // global memory. Local integer memory isn't initialized; it isn't even
+  // memset zeroed out.
+  //
+  // Theoretically, |slot| is the save game slot to read local memory from, but
+  // this is a misnomer. |slot| isn't used and appears only for the type
+  // system(?).
   Memory(RLMachine& machine, int slot);
 
   ~Memory();

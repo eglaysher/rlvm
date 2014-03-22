@@ -52,26 +52,17 @@ WipeEffect::WipeEffect(RLMachine& machine,
     interpolation_in_pixels_ = int(pow(float(2), interpolation) * 2.5);
 }
 
-/**
- * Calculates the size of the interpolation and main polygons.
- *
- * There are 3 possible stages:
- * - [0, interpolation_in_pixels_) - Draw only the
- *   transition. (sizeOfMainPolygon == 0, sizeOfInterpolation ==
- *   amountVisible)
- * - [interpolation_in_pixels_, sizeOfScreen) - Draw both
- *   polygons. (sizeOfMainPolygon == amountVisible -
- *   interpolation_in_pixels_, sizeOfInterpolation == amountVisible)
- * - [height, height + interpolation_in_pixels_) - Draw both
- *   polygons, flooring the height of the transition to
- *
- * @param[in] currentTime The current number of ms since the Effect started
- * @param[out] sizeOfInterpolation Size of the interpolation
- * @param[out] sizeOfMainPolygon Size of the main polygon
- * @param[in] sizeOfScreen Size of the area we are rendering to. Name is
- *                     intentionally ambigous so we can apply this to
- *                     both width and height.
- */
+// Calculates the size of the interpolation and main polygons.
+//
+// There are 3 possible stages:
+// - [0, interpolation_in_pixels_) - Draw only the
+//   transition. (sizeOfMainPolygon == 0, sizeOfInterpolation ==
+//   amountVisible)
+// - [interpolation_in_pixels_, sizeOfScreen) - Draw both
+//   polygons. (sizeOfMainPolygon == amountVisible -
+//   interpolation_in_pixels_, sizeOfInterpolation == amountVisible)
+// - [height, height + interpolation_in_pixels_) - Draw both
+//   polygons, flooring the height of the transition to
 void WipeEffect::calculateSizes(int currentTime,
                                 int& sizeOfInterpolation,
                                 int& sizeOfMainPolygon,

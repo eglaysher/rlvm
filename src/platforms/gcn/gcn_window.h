@@ -34,10 +34,8 @@
 class GCNPlatform;
 class Size;
 
-/**
- * Base window. Later, this should be themed correctly. Default ugliness for
- * now.
- */
+// Base window. Later, this should be themed correctly. Default ugliness for
+// now.
 class GCNWindow : public gcn::Container {
  public:
   explicit GCNWindow(GCNPlatform* platform);

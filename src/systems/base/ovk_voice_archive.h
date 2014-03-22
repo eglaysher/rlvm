@@ -33,15 +33,14 @@
 
 #include "systems/base/voice_archive.h"
 
-/**
- * A VoiceArchive that reads the Ogg Vorbis archives (OVK files).
- */
+// A VoiceArchive that reads the Ogg Vorbis archives (OVK files).
 class OVKVoiceArchive : public VoiceArchive {
  public:
   OVKVoiceArchive(boost::filesystem::path file, int file_no);
   virtual ~OVKVoiceArchive();
 
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
+  // Overridden from VoiceArchive:
+  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) override;
 
  private:
   // The file to read from

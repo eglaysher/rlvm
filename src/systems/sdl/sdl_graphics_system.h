@@ -49,23 +49,17 @@ class Texture;
 
 // -----------------------------------------------------------------------
 
-/**
- * Implements all screen output and screen management functionality.
- *
- * @todo This public interface really needs to be rethought out.
- */
+// Implements all screen output and screen management functionality.
+//
+// TODO(erg): This public interface really needs to be rethought out.
 class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
  public:
   // SDL should be initialized before you create an SDLGraphicsSystem.
   SDLGraphicsSystem(System& system, Gameexe& gameexe);
   ~SDLGraphicsSystem();
 
-  //  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
-
-  /**
-   * When the cursor is changed, also make sure that it exists so that we can
-   * switch on/off the operating system cursor when the cursor index is invalid.
-   */
+  // When the cursor is changed, also make sure that it exists so that we can
+  // switch on/off the operating system cursor when the cursor index is invalid.
   virtual void setCursor(int cursor);
 
   virtual void beginFrame();

@@ -179,6 +179,9 @@ class BinaryExpressionOperator : public ExpressionPiece {
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
  protected:
+  // Performs operation on the two passed in operands.
+  int performOperationOn(int lhs, int rhs) const;
+
   // The operation to perform
   char operation;
 
@@ -187,19 +190,6 @@ class BinaryExpressionOperator : public ExpressionPiece {
 
   // The right operand for this expression
   std::unique_ptr<ExpressionPiece> rightOperand;
-
-  /**
-   * Performs operation on the two passed in operands.
-   *
-   * @param lhs The left operand
-   * @param rhs The right operand
-   * @return The result of this operation.
-   *
-   * @note To anyone who says that creating a full object hiearchy of
-   * all the operations would be more OO, I tried, and it's 20x more
-   * misserable.
-   */
-  int performOperationOn(int lhs, int rhs) const;
 };
 
 // ----------------------------------------------------------------------

@@ -41,19 +41,15 @@ class GraphicsSystem;
 class SDLGraphicsSystem;
 class GraphicsObject;
 
-/**
- * Helper function. Used throughout the SDL system.
- */
+// Helper function. Used throughout the SDL system.
 SDL_Surface* buildNewSurface(const Size& size);
 
-/**
- * Wrapper around an OpenGL texture; meant to be passed out of the
- * graphics system.
- *
- * Some SDLSurfaces will own their underlying SDL_Surface, for
- * example, anything returned from getSurfaceNamedAndMarkViewed(), while others
- * don't own their surfaces (SDLSurfaces returned by getDC()
- */
+// Wrapper around an OpenGL texture; meant to be passed out of the
+// graphics system.
+//
+// Some SDLSurfaces will own their underlying SDL_Surface, for
+// example, anything returned from getSurfaceNamedAndMarkViewed(), while others
+// don't own their surfaces (SDLSurfaces returned by getDC()
 class SDLSurface : public Surface, public NotificationObserver {
  public:
   explicit SDLSurface(SDLGraphicsSystem* system);
@@ -161,17 +157,12 @@ class SDLSurface : public Surface, public NotificationObserver {
                        const NotificationDetails& details);
 
  private:
-  /**
-   * Keeps track of a texture and the information about which region
-   * of the current surface this Texture is. We keep track of this
-   * information so we can reupload a certain part of the Texture
-   * without allocating a new opengl texture. glGenTexture()/
-   * glTexImage2D() is SLOW and should never be done in a loop.)
-   */
+  // Keeps track of a texture and the information about which region
+  // of the current surface this Texture is. We keep track of this
+  // information so we can reupload a certain part of the Texture
+  // without allocating a new opengl texture. glGenTexture()/
+  // glTexImage2D() is SLOW and should never be done in a loop.)
   struct TextureRecord {
-    /**
-     * Builds the texture and
-     */
     TextureRecord(SDL_Surface* surface,
                   int x,
                   int y,

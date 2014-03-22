@@ -48,61 +48,43 @@ class GameexeFilteringIterator;
 
 // -----------------------------------------------------------------------
 
-/**
- * Storage backend for the Gameexe
- */
+// Storage backend for the Gameexe
 typedef std::vector<int> Gameexe_vec_type;
 typedef std::multimap<std::string, Gameexe_vec_type> GameexeData_t;
 
 // -----------------------------------------------------------------------
 
-/**
- * Encapsulates a line of the Gameexe file that's passed to the
- * user. This is a temporary class, which should hopefully be inlined
- * away from the target implementation.
- *
- * This allows us to write code like this:
- *
- * @code
- * vector<string> x = gameexe("WHATEVER", 5).to_strVector();
- * int var = gameexe("EXPLICIT_CAST").to_int();
- * int var2 = gameexe("IMPLICIT_CAST");
- * gameexe("SOMEVAL") = 5;
- * @endcode
- *
- * This design solves the problem with the old interface, where all
- * the default parameters and overloads lead to confusion about
- * whether a parameter was part of the key, or was the deafult
- * value. Saying that components of the key are part of the operator()
- * on Gameexe and that default values are in the casting function in
- * GameexeInterpretObject solves this accidental difficulty.
- */
+// Encapsulates a line of the Gameexe file that's passed to the
+// user. This is a temporary class, which should hopefully be inlined
+// away from the target implementation.
+//
+// This allows us to write code like this:
+//
+//   vector<string> x = gameexe("WHATEVER", 5).to_strVector();
+//   int var = gameexe("EXPLICIT_CAST").to_int();
+//   int var2 = gameexe("IMPLICIT_CAST");
+//   gameexe("SOMEVAL") = 5;
+//
+// This design solves the problem with the old interface, where all
+// the default parameters and overloads lead to confusion about
+// whether a parameter was part of the key, or was the deafult
+// value. Saying that components of the key are part of the operator()
+// on Gameexe and that default values are in the casting function in
+// GameexeInterpretObject solves this accidental difficulty.
 class GameexeInterpretObject {
  public:
   ~GameexeInterpretObject();
 
-  /**
-   * Extend a key by one key piece
-   */
+  // Extend a key by one key piece
   template<typename A>
   GameexeInterpretObject operator()(const A& nextKey) {
     return object_to_lookup_on_(key_, nextKey);
   }
 
-  /**
-   * Finds an int value, returning a default if non-existant.
-   *
-   * @param defaultValue Default integer value to return if key not found
-   * @return
-   */
+  // Finds an int value, returning a default if non-existant.
   const int to_int(const int defaultValue) const;
 
-  /**
-   * Finds an int value, throwing if non-existant.
-   *
-   * @return The first int value from the Gameexe in the row key
-   * @throw Error if the key doesn't exist
-   */
+  // Finds an int value, throwing if non-existant.
   const int to_int() const;
 
   // Allow implicit casts to int with no default value
@@ -113,20 +95,11 @@ class GameexeInterpretObject {
   // Returns a specific piece of data at index as an int
   int getIntAt(int index) const;
 
-  /**
-   * Finds a string value, throwing if non-existant.
-   *
-   * @return The first string value from the Gameexe in that row
-   * @throw Error if the key doesn't exist
-   */
+
+  // Finds a string value, throwing if non-existant.
   const std::string to_string(const std::string& defaultValue) const;
 
-  /**
-   * Finds a string value, throwing if non-existant.
-   *
-   * @return The first string value from the Gameexe in that row
-   * @throw Error if the key doesn't exist
-   */
+  // Finds a string value, throwing if non-existant.
   const std::string to_string() const;
 
   // Allow implicit casts to string
@@ -137,41 +110,25 @@ class GameexeInterpretObject {
   // Returns a piece of data at a certain location as a string.
   const std::string getStringAt(int index) const;
 
-  /**
-   * Finds a vector of ints, throwing if non-existant.
-   *
-   * @return The full row in the Gameexe (if it's an int row)
-   * @throw Error if the key doesn't exist
-   */
+  // Finds a vector of ints, throwing if non-existant.
   const std::vector<int>& to_intVector() const;
 
   operator std::vector<int>() const {
     return to_intVector();
   }
 
-  /**
-   * Checks to see if the key exists.
-   *
-   * @return True if exists, false otherwise
-   */
+  // Checks to see if the key exists.
   bool exists() const;
 
   const std::string& key() const {
     return key_;
   }
 
-  /**
-   * Returns the key splitted on periods.
-   */
+  // Returns the key splitted on periods.
   const std::vector<std::string> key_parts() const;
 
-  /**
-   * Assign a value. Unlike all the other methods, we can safely
-   * templatize this since the functions it calls can be overloaded.
-   *
-   * @param value Incoming value
-   * @return self
-   */
+  // Assign a value. Unlike all the other methods, we can safely
+  // templatize this since the functions it calls can be overloaded.
   GameexeInterpretObject& operator=(const std::string& value);
 
   GameexeInterpretObject& operator=(const int value);
@@ -186,76 +143,43 @@ class GameexeInterpretObject {
   GameexeData_t::const_iterator iterator_;
   Gameexe& object_to_lookup_on_;
 
-  /**
-   * Private; only allow construction by Gameexe
-   */
+  // Private; only allow construction by Gameexe
   GameexeInterpretObject(const std::string& key, Gameexe& objectToLookupOn);
   GameexeInterpretObject(const std::string& key,
                          GameexeData_t::const_iterator it,
                          Gameexe& objectToLookupOn);
 };
 
-/**
- * New interface to Gameexe, replacing the one inherited from Haeleth,
- * which was hard to use and was very C-ish. This interface's goal is
- * to make accessing data in the Gameexe as easy as possible.
- */
+// New interface to Gameexe, replacing the one inherited from Haeleth,
+// which was hard to use and was very C-ish. This interface's goal is
+// to make accessing data in the Gameexe as easy as possible.
 class Gameexe {
  public:
-  /**
-   * Create an empty Gameexe, with no configuration data.
-   */
-  Gameexe();
-
-  /**
-   * Create a Gameexe based off the configuration data in the incoming
-   * file.
-   */
   explicit Gameexe(const boost::filesystem::path& filename);
-
-  /**
-   * Destructor
-   */
+  Gameexe();
   ~Gameexe();
 
   // Parses an individual Gameexe.ini line.
   void parseLine(const std::string& line);
 
-  /**
-   * @name Streamlined Interface for data access
-   *
-   * This is the interface intended for common use. It seperates the
-   * construction of the key from the intended type, and default value.
-   */
-
-  /**
-   * Access the key "firstKey"
-   */
+  // Access the key "firstKey"
   template<typename A>
   GameexeInterpretObject operator()(const A& firstKey);
 
-  /**
-   * Access the key "firstKey"."secondKey"
-   */
+  // Access the key "firstKey"."secondKey"
   template<typename A, typename B>
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey);
 
-  /**
-   * Access the key "firstKey"."secondKey"
-   */
+  // Access the key "firstKey"."secondKey"
   template<typename A, typename B, typename C>
   GameexeInterpretObject operator()(const A& firstKey, const B& secondKey,
                                     const C& thirdKey);
 
-  /**
-   * @name Iterated interface for keys
-   *
-   * This interface gives filtering iterators that filter on a
-   * possible value.
-   *
-   */
+  // Returns iterators that filter on a possible value.
   GameexeFilteringIterator filtering_begin(const std::string& filter);
   GameexeFilteringIterator filtering_end();
+
+  // TODO(erg): This next part should be moved to private:
 
   /**
    * @name Raw interface for Gameexe.ini data access
@@ -272,14 +196,10 @@ class Gameexe {
 
   int getIntAt(GameexeData_t::const_iterator key, int index);
 
-  /**
-   * Returns whether key exists in the stored data
-   */
+  // Returns whether key exists in the stored data
   bool exists(const std::string& key);
 
-  /**
-   * Returns the number of keys in the Gameexe.ini file.
-   */
+  // Returns the number of keys in the Gameexe.ini file.
   size_t size() const {
     return data_.size();
   }
@@ -293,22 +213,16 @@ class Gameexe {
   void setIntAt(const std::string& key, const int value);
 
  private:
-  /**
-   * Returns an iterator for the incoming key. May not be valid. This
-   * is a function only for tight coupling with
-   * GameexeInterpretObject.
-   */
+  // Returns an iterator for the incoming key. May not be valid. This
+  // is a function only for tight coupling with
+  // GameexeInterpretObject.
   GameexeData_t::const_iterator find(const std::string& key);
 
-  /**
-   * Regrettable artifact of hack to get all integers in streams to
-   * have setw(3).
-   */
+  // Regrettable artifact of hack to get all integers in streams to
+  // have setw(3).
   void addToStream(const std::string& x, std::ostringstream& ss);
 
-  /**
-   * Hack to get all integers in streams to have setw(3).
-   */
+  // Hack to get all integers in streams to have setw(3).
   void addToStream(const int& x, std::ostringstream& ss);
 
   void throwUnknownKey(const std::string& key);
@@ -318,15 +232,11 @@ class Gameexe {
   friend class GameexeInterpretObject;
   friend class GameexeFilteringIterator;
 
-  /**
-   * @name Data storage
-   *
-   * Implementation detail of how parsed Gameexe.ini data is stored in
-   * the class. This was stolen directly from Haeleth's parser in
-   * rlBabel. Eventually, this should be redone, since everything is
-   * really a vector of ints, unless you want a string in which case
-   * that int is an index into a vector of strings on the side.
-   */
+  // Implementation detail of how parsed Gameexe.ini data is stored in
+  // the class. This was stolen directly from Haeleth's parser in
+  // rlBabel. Eventually, this should be redone, since everything is
+  // really a vector of ints, unless you want a string in which case
+  // that int is an index into a vector of strings on the side.
   GameexeData_t data_;
   std::vector<std::string> cdata_;
 };

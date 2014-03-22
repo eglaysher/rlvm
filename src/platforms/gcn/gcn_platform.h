@@ -55,9 +55,7 @@ extern const char* EVENT_CANCEL;
 
 // -----------------------------------------------------------------------
 
-/**
- * Guichan GUI.
- */
+// Guichan GUI.
 class GCNPlatform : public Platform,
                     public gcn::MouseListener,
                     public gcn::KeyListener,

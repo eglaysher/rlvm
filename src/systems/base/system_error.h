@@ -31,12 +31,10 @@
 #include <exception>
 #include <string>
 
-/**
- * Kill the program Errors. This exception class should only be used
- * in cases where there is corrupted state or something; most things
- * that a bad opcode could do should not fall under this class, and
- * should be rlvm::Exception instead.
- */
+// Kill the program Errors. This exception class should only be used
+// in cases where there is corrupted state or something; most things
+// that a bad opcode could do should not fall under this class, and
+// should be rlvm::Exception instead.
 class SystemError : public std::exception {
  public:
   explicit SystemError(std::string what);

@@ -32,15 +32,14 @@
 
 #include "systems/base/voice_archive.h"
 
-/**
- * A VoiceArchive that reads the older KOEPAC archives (KOE files).
- */
+// A VoiceArchive that reads the older KOEPAC archives (KOE files).
 class KOEPACVoiceArchive : public VoiceArchive {
  public:
   KOEPACVoiceArchive(boost::filesystem::path file, int file_no);
   virtual ~KOEPACVoiceArchive();
 
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
+  // Overridden from VoiceArchive:
+  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) override;
 
  private:
   void readTable(boost::filesystem::path file);

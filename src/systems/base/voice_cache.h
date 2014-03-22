@@ -35,9 +35,6 @@ class SoundSystem;
 class VoiceArchive;
 class VoiceSample;
 
-/**
- *
- */
 class VoiceCache {
  public:
   explicit VoiceCache(SoundSystem& sound_system);

@@ -50,10 +50,8 @@ namespace fs = boost::filesystem;
 #define is_num(c) (c == '-' || (c >= '0' && c <= '9'))
 #define is_data(c) (c == '"' || is_num(c))
 
-/**
- * A boost::TokenizerFunction used to extract valid pieces of data
- * from the value part of a gameexe key/value pair.
- */
+// A boost::TokenizerFunction used to extract valid pieces of data
+// from the value part of a gameexe key/value pair.
 class gameexe_token_extractor {
  public:
   void reset() {}

@@ -37,26 +37,24 @@
 #include "systems/base/rect.h"
 
 
-/**
- * 9 rectangles in an image. 4 corners, 4 sides and a middle area. The
- * topology is as follows:
- *
- * <pre>
- *  !-----!-----------------!-----!
- *  !  0  !        1        !  2  !
- *  !-----!-----------------!-----!
- *  !  3  !        4        !  5  !
- *  !-----!-----------------!-----!
- *  !  6  !        7        !  8  !
- *  !-----!-----------------!-----!
- * </pre>
- *
- * Sections 0, 2, 6 and 8 will remain as is. 1, 3, 4, 5 and 7 will be
- * repeated to fit the size of the widget.
- *
- * Originally from The Mana World; modified to use Guichan's standard image
- * class, and to only keep one image and store regions into it.
- */
+// 9 rectangles in an image. 4 corners, 4 sides and a middle area. The
+// topology is as follows:
+//
+// <pre>
+//  !-----!-----------------!-----!
+//  !  0  !        1        !  2  !
+//  !-----!-----------------!-----!
+//  !  3  !        4        !  5  !
+//  !-----!-----------------!-----!
+//  !  6  !        7        !  8  !
+//  !-----!-----------------!-----!
+// </pre>
+//
+// Sections 0, 2, 6 and 8 will remain as is. 1, 3, 4, 5 and 7 will be
+// repeated to fit the size of the widget.
+//
+// Originally from The Mana World; modified to use Guichan's standard image
+// class, and to only keep one image and store regions into it.
 struct ImageRect : public NotificationObserver {
   ImageRect(ThemeImage resource, const int xpos[], const int ypos[]);
 

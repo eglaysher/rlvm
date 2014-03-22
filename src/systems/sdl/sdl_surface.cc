@@ -381,11 +381,8 @@ void SDLSurface::deallocate() {
   }
 }
 
-/**
- * @todo This function doesn't ignore alpha blending when use_src_alpha
- *       is false; thus, grp_open and grp_mask_open are really grp_mask_open.
- * @todo Make this only upload the changed parts of the texture!
- */
+// TODO(erg):This function doesn't ignore alpha blending when use_src_alpha is
+// false; thus, grp_open and grp_mask_open are really grp_mask_open.
 void SDLSurface::blitToSurface(Surface& dest_surface,
                                const Rect& src,
                                const Rect& dst,
@@ -437,10 +434,8 @@ void SDLSurface::blitToSurface(Surface& dest_surface,
 
 // -----------------------------------------------------------------------
 
-/**
- * Allows for tight coupling with SDL_ttf. Rethink the existence of
- * this function later.
- */
+// Allows for tight coupling with SDL_ttf. Rethink the existence of
+// this function later.
 void SDLSurface::blitFROMSurface(SDL_Surface* src_surface,
                                  const Rect& src,
                                  const Rect& dst,
@@ -728,9 +723,6 @@ Surface* SDLSurface::clone() const {
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo This scheme may be entirely suboptimal. Needs field testing.
- */
 std::vector<int> SDLSurface::segmentPicture(int size_remainging) {
   int max_texture_size = GetMaxTextureSize();
 

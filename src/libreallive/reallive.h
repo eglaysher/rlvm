@@ -29,56 +29,50 @@
 #ifndef SRC_LIBREALLIVE_REALLIVE_H_
 #define SRC_LIBREALLIVE_REALLIVE_H_
 
-/**
- * @namespace libreallive
- * @brief libreallive, a library for manipulating Reallive bytecode
- * @author Haeleth
- *
- * libreallive is a library for manipulating Reallive bytecode. It was
- * orriginally written by Haeleth, and was copy/pasted into
- * RLVM. While I've modified it to suit my needs (for example, adding
- * support for RLv1.3 goto_with constructs, parameter parsing code in
- * expression.cpp, et cetera), 99% of this code was written by
- * Haeleth.
- *
- * @section Archive The Archive and Scenario access
- *
- * We start with the main class that represents the SEEN.TXT file,
- * libreallive::Archive. A SEEN.TXT file contains all of the executed
- * code in a Reallive game (barring DLL extensions to the Reallive
- * system). A SEEN.TXT file contains number identified Scenarios,
- * which represents small pieces of bytecode which are executed in our
- * virtual machine. When we construct an Archive, we pass in the
- * path to a SEEN.TXT file to load. Currently, the only thing done on
- * startup is the parsing of the TOC, which defines which Scenarios
- * are in the SEEN.TXT archive.
- *
- * From the Archive, we can access libreallive::Scenarios using the
- * libreallive::Archive::scenario() member. This method will return
- * the Scenario relating to the passed in number. Archive has other
- * members for manipulating and rewriting the data, but these aren't
- * used in RLVM.
- *
- * @section Scenario The Scenario
- *
- * The libreallive::Scenario class represents a Scenario, a sequence
- * of commands and other metadata. It is divided into the
- * libreallive::Header and libreallive::Script. The header contains:
- *
- * - Debug information
- * - "Misc settings"
- * - A list of actors that appear in the scene (referred to as the {@em
- *   dramatic personae} table, which is used for debugging
- * - Metadata which can be added by Haeleth's <a
- *   href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler.
- *
- * The Script contains:
- *
- * - A sequence of semi-parsed/tokenized bytecode elements, which are
- *   the elements that RLMachine executes.
- * - A list of entrypoints into the scenario
- * - A list of pointers (for goto, et cetera)
- */
+// libreallive is a library for manipulating Reallive bytecode. It was
+// orriginally written by Haeleth, and was copy/pasted into
+// RLVM. While I've modified it to suit my needs (for example, adding
+// support for RLv1.3 goto_with constructs, parameter parsing code in
+// expression.cpp, et cetera), 99% of this code was written by
+// Haeleth.
+//
+// The Archive and Scenario access
+//
+// We start with the main class that represents the SEEN.TXT file,
+// libreallive::Archive. A SEEN.TXT file contains all of the executed
+// code in a Reallive game (barring DLL extensions to the Reallive
+// system). A SEEN.TXT file contains number identified Scenarios,
+// which represents small pieces of bytecode which are executed in our
+// virtual machine. When we construct an Archive, we pass in the
+// path to a SEEN.TXT file to load. Currently, the only thing done on
+// startup is the parsing of the TOC, which defines which Scenarios
+// are in the SEEN.TXT archive.
+//
+// From the Archive, we can access libreallive::Scenarios using the
+// libreallive::Archive::scenario() member. This method will return
+// the Scenario relating to the passed in number. Archive has other
+// members for manipulating and rewriting the data, but these aren't
+// used in RLVM.
+//
+// The Scenario
+//
+// The libreallive::Scenario class represents a Scenario, a sequence
+// of commands and other metadata. It is divided into the
+// libreallive::Header and libreallive::Script. The header contains:
+//
+// - Debug information
+// - "Misc settings"
+// - A list of actors that appear in the scene (referred to as the {@em
+//   dramatic personae} table, which is used for debugging
+// - Metadata which can be added by Haeleth's <a
+//   href="http://dev.haeleth.net/rldev.shtml">RLdev</a> compiler.
+//
+// The Script contains:
+//
+// - A sequence of semi-parsed/tokenized bytecode elements, which are
+//   the elements that RLMachine executes.
+// - A list of entrypoints into the scenario
+// - A list of pointers (for goto, et cetera)
 
 #include "libreallive/archive.h"
 #include "libreallive/bytecode.h"

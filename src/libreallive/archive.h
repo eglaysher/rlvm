@@ -49,10 +49,8 @@ namespace compression {
 struct XorKey;
 }  // namespace compression
 
-/**
- * Interface to a loaded SEEN.TXT file.
- *
- */
+
+// Interface to a loaded SEEN.TXT file.
 class Archive {
   typedef std::map<int, FilePos> scenarios_t;
   typedef std::map<int, Scenario*> accessed_t;
@@ -80,13 +78,8 @@ class Archive {
   // Read an archive, assuming no per-game xor key. (Used in unit testing).
   explicit Archive(const string& filename);
 
-  /**
-   * Creates an interface to a SEEN.TXT file.
-   *
-   * @param filename path to the SEEN.TXT file.
-   * @param regname The \#REGNAME key from the game's Gameexe.ini file. Required
-   *                to lookup per-game xor key for newer games.
-   */
+  // Creates an interface to a SEEN.TXT file. Uses |regname| to look up
+  // per-game xor key for newer games.
   Archive(const string& filename, const string& regname);
   ~Archive();
 
@@ -94,12 +87,7 @@ class Archive {
   const_iterator begin() { return scenarios.begin(); }
   const_iterator end()   { return scenarios.end(); }
 
-  /**
-   * Returns a specific scenario
-   *
-   * @param index The SEEN number to return
-   * @return The coresponding Scenario if index exists, or NULL if it doesn't.
-   */
+  // Returns a specific scenario by |index| number or NULL if none exist.
   Scenario* scenario(int index);
 
   // Does a quick pass through all scenarios in the archive, looking for any

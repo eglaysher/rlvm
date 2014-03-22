@@ -35,9 +35,7 @@
 class RLMachine;
 struct RlvmInfo;
 
-/**
- * Displays information about the currently played game.
- */
+// Displays information about the currently played game.
 class GCNInfoWindow : public GCNWindow, public gcn::ActionListener {
  public:
   GCNInfoWindow(RLMachine& machine,

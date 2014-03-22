@@ -63,9 +63,7 @@ inline bool isStringLocation(const int type) {
 
 // -----------------------------------------------------------------------
 
-/**
- * References a piece of integer memory.
- */
+// References a piece of integer memory.
 class IntMemRef {
  public:
   IntMemRef(int bytecodeRep, int location);

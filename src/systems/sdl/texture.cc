@@ -354,12 +354,8 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
 
 // -----------------------------------------------------------------------
 
-/**
- * @todo A function of this hairiness needs super more amounts of
- *       documentation.
- * @todo When I merge back to trunk, make sure to change the throw
- *       cstrs over to the new exception class.
- */
+// TODO(erg): A function of this hairiness needs super more amounts of
+// documentation.
 void Texture::renderToScreenAsColorMask(const Rect& src,
                                         const Rect& dst,
                                         const RGBAColour& rgba,
@@ -476,14 +472,12 @@ void Texture::render_to_screen_as_colour_mask_subtractive_glsl(
 
 // -----------------------------------------------------------------------
 
-/**
- * This fallback does not accurately render the scene according to
- * standard RealLive. This only negatively shades according to the
- * alpha value, ignoring the rest of the \#WINDOW_ATTR colour.
- *
- * This will probably only occur with mesa software and people with
- * graphics cards > 5 years old.
- */
+// This fallback does not accurately render the scene according to
+// standard RealLive. This only negatively shades according to the
+// alpha value, ignoring the rest of the \#WINDOW_ATTR colour.
+//
+// This will probably only occur with mesa software and people with
+// graphics cards > 5 years old.
 void Texture::render_to_screen_as_colour_mask_subtractive_fallback(
     const Rect& src,
     const Rect& dst,

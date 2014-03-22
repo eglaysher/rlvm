@@ -42,9 +42,6 @@ class SaveGameListModel;
 
 // -----------------------------------------------------------------------
 
-/**
- *
- */
 class GCNSaveLoadWindow : public GCNWindow,
                           public gcn::ActionListener,
                           public gcn::SelectionListener {

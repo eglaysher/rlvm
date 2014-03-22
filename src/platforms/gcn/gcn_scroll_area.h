@@ -33,29 +33,21 @@
 #include "base/notification_registrar.h"
 #include "platforms/gcn/gcn_graphics.h"
 
-/**
- * Copy of TMW's ScrollArea class, adapted to my system.
- */
+// Copy of TMW's ScrollArea class, adapted to my system.
 class GCNScrollArea : public gcn::ScrollArea, public NotificationObserver {
  public:
   explicit GCNScrollArea(gcn::Widget* widget);
   ~GCNScrollArea();
 
-  /**
-   * Logic function optionally adapts width or height of contents. This
-   * depends on the scrollbar settings.
-   */
-  void logic();
+  // Logic function optionally adapts width or height of contents. This
+  // depends on the scrollbar settings.
+  virtual void logic() override;
 
-  /**
-   * Draws the scroll area.
-   */
-  void draw(gcn::Graphics* graphics);
+  // Draws the scroll area.
+  virtual void draw(gcn::Graphics* graphics) override;
 
-  /**
-   * Draws the background and border of the scroll area.
-   */
-  void drawFrame(gcn::Graphics* graphics);
+  // Draws the background and border of the scroll area.
+  virtual void drawFrame(gcn::Graphics* graphics) override;
 
  protected:
   enum BUTTON_DIR { UP, DOWN, LEFT, RIGHT };
@@ -75,7 +67,7 @@ class GCNScrollArea : public gcn::ScrollArea, public NotificationObserver {
 
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
-                       const NotificationDetails& details);
+                       const NotificationDetails& details) override;
 
   // Button images.
   std::unique_ptr<gcn::Image> buttonImages_[4][2];

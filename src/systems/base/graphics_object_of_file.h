@@ -44,13 +44,10 @@ class RLMachine;
 
 // -----------------------------------------------------------------------
 
-/**
- * GraphicsObjectData class that encapsulates a G00 or ANM file.
- *
- * GraphicsObjectOfFile is used for loading individual bitmaps into an
- * object. It has support for normal display, and also
- *
- */
+// GraphicsObjectData class that encapsulates a G00 or ANM file.
+//
+// GraphicsObjectOfFile is used for loading individual bitmaps into an
+// object. It has support for normal display, and also
 class GraphicsObjectOfFile : public GraphicsObjectData {
  public:
   explicit GraphicsObjectOfFile(System& system);
@@ -115,10 +112,8 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-/**
- * We need help creating AnmGraphicsObjectData s since they don't have a
- * default constructor:
- */
+// We need help creating AnmGraphicsObjectData s since they don't have a
+// default constructor:
 namespace boost {
 namespace serialization {
 template <class Archive>

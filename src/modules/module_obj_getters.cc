@@ -55,14 +55,12 @@ class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
   Getter getter_;
 };
 
-/**
- * Theoretically implements objGetPos. People don't actually
- * understand what's going on in this module (more so then anything
- * else in rldev/rlvm.)
- *
- * This is probably wrong or overlooks all sorts of weird corner cases
- * that aren't immediatly obvious.
- */
+// Theoretically implements objGetPos. People don't actually
+// understand what's going on in this module (more so then anything
+// else in rldev/rlvm.)
+//
+// This is probably wrong or overlooks all sorts of weird corner cases
+// that aren't immediatly obvious.
 struct objGetPos
     : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
@@ -89,11 +87,9 @@ struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-/**
- * @note objGetDims takes an integer as its fourth argument, but we
- * have no idea what this is or how it affects things. Usually appears
- * to be 4. ????
- */
+// @note objGetDims takes an integer as its fourth argument, but we
+// have no idea what this is or how it affects things. Usually appears
+// to be 4. ????
 struct objGetDims : public RLOp_Void_4<IntConstant_T,
                                        IntReference_T,
                                        IntReference_T,

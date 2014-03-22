@@ -43,11 +43,9 @@ class System;
 class TextWindow;
 class TextWindowButton;
 
-/**
- * Container class that owns all text window decorations.
- *
- * Window decorations are defined with \#WAKU.<setno>.<no>. Gameexe.ini keys.
- */
+// Container class that owns all text window decorations.
+//
+// Window decorations are defined with \#WAKU.<setno>.<no>. Gameexe.ini keys.
 class TextWakuNormal : public TextWaku {
  public:
   TextWakuNormal(System& system, TextWindow& window, int setno, int no);
@@ -63,12 +61,10 @@ class TextWakuNormal : public TextWaku {
                                const Size& surface_size,
                                bool center) const;
 
-  /**
-   * @todo These two methods shouldn't really exist; I need to redo plumbing of
-   *       events so that these aren't routed through TextWindow, but are
-   *       instead some sort of listener. I'm currently thinking that the
-   *       individual buttons that need to handle events should be listeners.
-   */
+  // TODO(erg): These two methods shouldn't really exist; I need to redo
+  // plumbing of events so that these aren't routed through TextWindow, but are
+  // instead some sort of listener. I'm currently thinking that the individual
+  // buttons that need to handle events should be listeners.
   virtual void setMousePosition(const Point& pos);
   virtual bool handleMouseClick(RLMachine& machine,
                                 const Point& pos,

@@ -567,11 +567,9 @@ class GraphicsSystem : public EventListener {
   typedef LazyArray<G00ArrayItem> G00ScriptList;
   G00ScriptList preloaded_g00_;
 
-  /**
-   * LRU cache filled with the last fifteen accessed images.
-   *
-   * This cache's contents are assumed to be immutable.
-   */
+  // LRU cache filled with the last fifteen accessed images.
+  //
+  // This cache's contents are assumed to be immutable.
   LRUCache<std::string, boost::shared_ptr<const Surface>> image_cache_;
 
   // Possible background script which drives graphics to the screen.

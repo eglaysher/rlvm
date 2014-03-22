@@ -32,9 +32,7 @@
 #include <vector>
 #include <iosfwd>
 
-/**
- * A colour without an alpha channel.
- */
+// A colour without an alpha channel.
 class RGBColour {
  public:
   RGBColour() : r_(0), g_(0), b_(0) {}
@@ -74,12 +72,7 @@ class RGBColour {
 
 // -----------------------------------------------------------------------
 
-/**
- * Adds an alpha component to the standard RGB class.
- *
- * @note We compose instead of inherit from RGB because passing in an
- *       instance of RGBA to where one expects an RGB is WRONG!
- */
+// Adds an alpha component to the standard RGB class.
 class RGBAColour {
  public:
   RGBAColour() : rgb_(0, 0, 0), alpha_(0) {}

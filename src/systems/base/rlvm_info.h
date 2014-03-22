@@ -29,9 +29,7 @@
 
 #include <string>
 
-/**
- * Data struct used to pass data to display on the Interpreter menu.
- */
+// Data struct used to pass data to display on the Interpreter menu.
 struct RlvmInfo {
   std::string game_name;     // The second part of the #REGNAME key.
   std::string game_brand;    // The first part of the #REGNAME key.
