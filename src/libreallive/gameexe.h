@@ -95,7 +95,6 @@ class GameexeInterpretObject {
   // Returns a specific piece of data at index as an int
   int getIntAt(int index) const;
 
-
   // Finds a string value, throwing if non-existant.
   const std::string to_string(const std::string& defaultValue) const;
 
@@ -179,23 +178,6 @@ class Gameexe {
   GameexeFilteringIterator filtering_begin(const std::string& filter);
   GameexeFilteringIterator filtering_end();
 
-  // TODO(erg): This next part should be moved to private:
-
-  /**
-   * @name Raw interface for Gameexe.ini data access
-   *
-   * This is the internal interface used by GameexeInterpretObject,
-   * but it is exposed to the user for the handfull of cases where
-   * integer and string data are mixed in the same line.
-   */
-
-  /**
-   * Raw interface for
-   */
-  const std::vector<int>& getIntArray(GameexeData_t::const_iterator key);
-
-  int getIntAt(GameexeData_t::const_iterator key, int index);
-
   // Returns whether key exists in the stored data
   bool exists(const std::string& key);
 
@@ -204,15 +186,15 @@ class Gameexe {
     return data_.size();
   }
 
-  /**
-   * Internal function that returns an array of int values.
-   */
-  std::string getStringAt(GameexeData_t::const_iterator key, int index);
-
+  // Exposed for testing.
   void setStringAt(const std::string& key, const std::string& value);
   void setIntAt(const std::string& key, const int value);
 
  private:
+  const std::vector<int>& getIntArray(GameexeData_t::const_iterator key);
+  int getIntAt(GameexeData_t::const_iterator key, int index);
+  std::string getStringAt(GameexeData_t::const_iterator key, int index);
+
   // Returns an iterator for the incoming key. May not be valid. This
   // is a function only for tight coupling with
   // GameexeInterpretObject.
