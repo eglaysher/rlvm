@@ -28,8 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_EVENT_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_EVENT_SYSTEM_H_
 
-#include <boost/noncopyable.hpp>
-
 #include <functional>
 #include <memory>
 #include <queue>
@@ -70,7 +68,7 @@ struct EventSystemGlobals {
 // So what's the solution? Have two different event systems side by
 // side. One is exposed to Reallive and mimics what RealLive bytecode
 // expects. The other is based on event handlers and is sane.
-class EventSystem : public boost::noncopyable {
+class EventSystem {
  public:
   explicit EventSystem(Gameexe& gexe);
   virtual ~EventSystem();

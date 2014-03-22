@@ -28,7 +28,6 @@
 #ifndef SRC_MACHINE_RLMODULE_H_
 #define SRC_MACHINE_RLMODULE_H_
 
-#include <boost/noncopyable.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 
 #include <map>
@@ -85,7 +84,7 @@ class RLOperation;
 
 // Describes a Module, a grouping of functions. Modules are added to
 // an RLMachine before the machine starts.
-class RLModule : public boost::noncopyable {
+class RLModule {
  public:
   // Storage type of the opcodes. Exposed so TestMachine can iterate over this.
   typedef boost::ptr_map<int, RLOperation> OpcodeMap;

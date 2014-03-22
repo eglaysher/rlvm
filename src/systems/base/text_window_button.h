@@ -28,7 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 
-#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <functional>
@@ -46,7 +45,7 @@ class Surface;
 class System;
 class TextWindow;
 
-class TextWindowButton : public boost::noncopyable {
+class TextWindowButton {
  public:
   explicit TextWindowButton(System& system);
   TextWindowButton(System& system,

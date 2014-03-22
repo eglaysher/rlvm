@@ -29,7 +29,6 @@
 #define SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <SDL/SDL_mixer.h>
@@ -55,8 +54,7 @@
 //
 // So instead of taking just jagarl's nwatowav.cc, I'm also stealing
 // wavfile.{cc,h}, and some binding code.
-class SDLMusic : public boost::noncopyable,
-                 public boost::enable_shared_from_this<SDLMusic> {
+class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
  public:
   ~SDLMusic();
 
