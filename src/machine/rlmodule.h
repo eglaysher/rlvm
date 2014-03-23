@@ -28,12 +28,12 @@
 #ifndef SRC_MACHINE_RLMODULE_H_
 #define SRC_MACHINE_RLMODULE_H_
 
-#include <boost/ptr_container/ptr_map.hpp>
-
 #include <map>
-#include <vector>
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 namespace libreallive {
 class CommandElement;
@@ -87,7 +87,15 @@ class RLOperation;
 class RLModule {
  public:
   // Storage type of the opcodes. Exposed so TestMachine can iterate over this.
-  typedef boost::ptr_map<int, RLOperation> OpcodeMap;
+#if defined(__APPLE__)
+  // There is something weird about unordered_map on OSX. When using an
+  // unordered_map here with whatever dev tools shipped on Maverick, one single
+  // unit test fails. For now, just falling back to a map, which shouldn't
+  // perform too much worse in practice.
+  typedef std::map<int, std::unique_ptr<RLOperation>> OpcodeMap;
+#else
+  typedef std::unordered_map<int, std::unique_ptr<RLOperation>> OpcodeMap;
+#endif
 
  public:
   virtual ~RLModule();
@@ -122,8 +130,8 @@ class RLModule {
   void dispatchFunction(RLMachine& machine,
                         const libreallive::CommandElement& f);
 
-  OpcodeMap::iterator begin() { return stored_operations.begin(); }
-  OpcodeMap::iterator end() { return stored_operations.end(); }
+  OpcodeMap::iterator begin() { return stored_operations_.begin(); }
+  OpcodeMap::iterator end() { return stored_operations_.end(); }
 
   static int packOpcodeNumber(int opcode, unsigned char overload);
   static void unpackOpcodeNumber(int packed_opcode,
@@ -148,7 +156,7 @@ class RLModule {
   std::string module_name_;
 
   // Store functions.
-  OpcodeMap stored_operations;
+  OpcodeMap stored_operations_;
 };
 
 std::ostream& operator<<(std::ostream&, const RLModule& module);

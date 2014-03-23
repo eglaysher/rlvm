@@ -73,16 +73,17 @@ void RLModule::addOpcode(int opcode,
   op->setName(name);
   op->module_ = this;
 #ifndef NDEBUG
-  OpcodeMap::iterator it = stored_operations.find(packed_opcode);
+  OpcodeMap::iterator it = stored_operations_.find(packed_opcode);
 
-  if (it != stored_operations.end()) {
+  if (it != stored_operations_.end()) {
     std::ostringstream oss;
     oss << "Duplicate opcode in " << *this << ": opcode " << opcode << ", "
         << int(overload);
     throw rlvm::Exception(oss.str());
   }
 #endif
-  stored_operations.insert(packed_opcode, op);
+  stored_operations_.insert(
+      std::make_pair(packed_opcode, std::unique_ptr<RLOperation>(op)));
 }
 
 void RLModule::addUnsupportedOpcode(int opcode,
@@ -131,13 +132,13 @@ RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
 void RLModule::dispatchFunction(RLMachine& machine,
                                 const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =
-      stored_operations.find(packOpcodeNumber(f.opcode(), f.overload()));
-  if (it != stored_operations.end()) {
+      stored_operations_.find(packOpcodeNumber(f.opcode(), f.overload()));
+  if (it != stored_operations_.end()) {
     try {
       it->second->dispatchFunction(machine, f);
     }
     catch (rlvm::Exception& e) {
-      e.setOperation(it->second);
+      e.setOperation(it->second.get());
       throw;
     }
   } else {

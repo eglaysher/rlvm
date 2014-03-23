@@ -49,7 +49,7 @@ void TestMachine::attachModule(RLModule* module) {
     unsigned char overload = 0;
     RLModule::unpackOpcodeNumber(it->first, opcode, overload);
 
-    RLOperation* op = it->second;
+    RLOperation* op = it->second.get();
     registry_.insert(make_pair(make_pair(it->second->name(), overload), op));
   }
 

@@ -34,6 +34,7 @@
 #include "libreallive/bytecode.h"
 
 #include <cassert>
+#include <cstring>
 #include <exception>
 #include <iomanip>
 #include <sstream>

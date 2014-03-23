@@ -28,13 +28,13 @@
 #ifndef SRC_MACHINE_RLMACHINE_H_
 #define SRC_MACHINE_RLMACHINE_H_
 
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <functional>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -352,7 +352,7 @@ class RLMachine {
   int store_register_;
 
   // Mapping between the module_type:module pair and the module implementation
-  typedef boost::ptr_map<unsigned int, RLModule> ModuleMap;
+  typedef std::unordered_map<unsigned int, std::unique_ptr<RLModule>> ModuleMap;
   // Mapping between the module_type:module pair and the module implementation
   ModuleMap modules_;
 
@@ -408,7 +408,7 @@ class RLMachine {
   typedef std::map<std::pair<int, int>, std::function<void(void)>> ActionMap;
   std::unique_ptr<ActionMap> on_line_actions_;
 
-  typedef boost::ptr_map<int, RealLiveDLL> DLLMap;
+  typedef std::unordered_map<int, std::unique_ptr<RealLiveDLL>> DLLMap;
   // Currenlty loaded "DLLs".
   DLLMap loaded_dlls_;
 
