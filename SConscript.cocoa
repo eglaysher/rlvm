@@ -6,6 +6,20 @@ import string
 Import('env')
 
 static_env = env.Clone()
+static_env.Append(
+  CPPDEFINES = [
+    "CASE_SENSITIVE_FILESYSTEM",
+    "_THREAD_SAFE"
+  ],
+
+  CXXFLAGS = [
+    "--ansi",
+    "-Wall",
+    "-Wno-sign-compare",
+    "-Wno-narrowing",
+    "-std=c++11"
+  ]
+)
 
 def MergeEverythingButSDLMain(env, cmd):
   """

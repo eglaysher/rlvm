@@ -44,8 +44,6 @@
 #include "utilities/exception.h"
 #include "utilities/graphics.h"
 
-const int SEL_SIZE = 16;
-
 // -----------------------------------------------------------------------
 // EffectFactory
 // -----------------------------------------------------------------------

@@ -24,14 +24,14 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "Platforms/osx/CocoaRLVMInstance.h"
+#include "platforms/osx/CocoaRLVMInstance.h"
 
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 #include <boost/filesystem.hpp>
 
-#include "Utilities/File.hpp"
-#include "Utilities/gettext.h"
+#include "utilities/file.h"
+#include "utilities/gettext.h"
 
 namespace fs = boost::filesystem;
 

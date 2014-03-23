@@ -77,9 +77,6 @@ class WaitLongOperation : public LongOperation {
   bool break_on_event_;
   std::function<bool()> event_function_;
 
-  bool has_sleep_time_provider_;
-  std::function<int()> sleep_time_provider_;
-
   bool break_on_ctrl_pressed_;
   bool ctrl_pressed_;
 
