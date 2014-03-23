@@ -31,7 +31,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/multi_array/algorithm.hpp>  // For copy_n
 #include <boost/shared_ptr.hpp>
 
 #include <algorithm>
@@ -246,15 +245,13 @@ struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
         case 0: {
           IntReferenceIterator jt =
               get<0>(it->first).changeMemoryTo(&overlayedMemory);
-          boost::detail::multi_array::copy_n(
-              jt, get<2>(it->first), get<1>(it->first));
+          std::copy_n(jt, get<2>(it->first), get<1>(it->first));
           break;
         }
         case 1: {
           StringReferenceIterator jt =
               get<0>(it->second).changeMemoryTo(&overlayedMemory);
-          boost::detail::multi_array::copy_n(
-              jt, get<2>(it->second), get<1>(it->second));
+          std::copy_n(jt, get<2>(it->second), get<1>(it->second));
           break;
         }
         default:

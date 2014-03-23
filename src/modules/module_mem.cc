@@ -27,10 +27,6 @@
 
 #include "modules/module_mem.h"
 
-// For copy_n, which isn't part of the C++ standard and doesn't come on
-// OSX.
-#include <boost/multi_array/algorithm.hpp>
-
 #include <algorithm>
 #include <cmath>
 #include <numeric>
@@ -89,10 +85,6 @@ struct setrng_1
 //
 // Copies a block of values of length count from source to dest. The
 // function appears to succeed even if the ranges overlap.
-//
-// @note copy_n is not part of the C++ standard, and while it's part of
-// STL on the machines at work, it doesn't exist on OSX's implementation,
-// so grab a copy that boost includes.
 struct cpyrng
     : public RLOp_Void_3<IntReference_T, IntReference_T, IntConstant_T> {
   void operator()(RLMachine& machine,
@@ -100,8 +92,7 @@ struct cpyrng
                   IntReferenceIterator dest,
                   int count) {
     std::vector<int> tmpCopy;
-    boost::detail::multi_array::copy_n(
-        source, count, std::back_inserter(tmpCopy));
+    std::copy_n(source, count, std::back_inserter(tmpCopy));
     std::copy(tmpCopy.begin(), tmpCopy.end(), dest);
   }
 };
