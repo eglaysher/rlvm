@@ -88,7 +88,7 @@ class StringConstant : public ExpressionPiece {
   explicit StringConstant(const std::string& inStr);
 
   virtual ExpressionValueType expressionValueType() const;
-  virtual const std::string& getStringValue(RLMachine& machine) const;
+  virtual const std::string& GetStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
   virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
@@ -114,7 +114,7 @@ class MemoryReference : public ExpressionPiece {
   virtual int integerValue(RLMachine& machine) const;
 
   virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
-  virtual const std::string& getStringValue(RLMachine& machine) const;
+  virtual const std::string& GetStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
   virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;

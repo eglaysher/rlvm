@@ -58,7 +58,7 @@ struct objWaitAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 };
 
@@ -146,7 +146,7 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
           if (!getProperty(P_PARENTOBJ, parent_object))
             parent_object = -1;
 
-          machine.pushLongOperation(new WaitForGanToFinish(
+          machine.PushLongOperation(new WaitForGanToFinish(
               machine.system().graphics(), fgbg, parent_object, buf));
         }
       }
@@ -164,7 +164,7 @@ struct ganWait : public RLOp_Void_1<IntConstant_T> {
     if (!getProperty(P_PARENTOBJ, parent_object))
       parent_object = -1;
 
-    machine.pushLongOperation(new WaitForGanToFinish(
+    machine.PushLongOperation(new WaitForGanToFinish(
         machine.system().graphics(), fgbg, parent_object, buf));
   }
 };

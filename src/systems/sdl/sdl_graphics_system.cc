@@ -384,10 +384,10 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   if ((current_time - time_of_last_titlebar_update_) > 60) {
     time_of_last_titlebar_update_ = current_time;
 
-    if (machine.sceneNumber() != last_seen_number_ ||
-        machine.lineNumber() != last_line_number_) {
-      last_seen_number_ = machine.sceneNumber();
-      last_line_number_ = machine.lineNumber();
+    if (machine.SceneNumber() != last_seen_number_ ||
+        machine.line_number() != last_line_number_) {
+      last_seen_number_ = machine.SceneNumber();
+      last_line_number_ = machine.line_number();
       setWindowTitle();
     }
   }

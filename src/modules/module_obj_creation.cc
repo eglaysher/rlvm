@@ -81,7 +81,7 @@ void objOfTextBuilder(RLMachine& machine,
                       GraphicsObject& obj,
                       const std::string& val) {
   // The text at this point is still cp932. Convert it.
-  std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+  std::string utf8str = cp932toUTF8(val, machine.GetTextEncoding());
   obj.setTextText(utf8str);
   GraphicsTextObject* text_obj = new GraphicsTextObject(machine.system());
   obj.setObjectData(text_obj);

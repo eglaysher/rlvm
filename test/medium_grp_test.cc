@@ -35,7 +35,7 @@
 
 class MediumGrpTest : public FullSystemTest {
  protected:
-  MediumGrpTest() { rlmachine.attachModule(new GrpModule); }
+  MediumGrpTest() { rlmachine.AttachModule(new GrpModule); }
 };
 
 TEST_F(MediumGrpTest, TestWipe) {

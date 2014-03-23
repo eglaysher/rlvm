@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
 
     ScriptMachine rlmachine(world, sdlSystem, arc);
     addAllModules(rlmachine);
-    addGameHacks(rlmachine);
+    AddGameHacks(rlmachine);
     world.initializeMachine(rlmachine);
     world.loadToplevelFile(scriptLocation.string());
 
@@ -224,24 +224,24 @@ int main(int argc, char* argv[]) {
     sdlSystem.setForceFastForward();
 
     if (vm.count("undefined-opcodes"))
-      rlmachine.setPrintUndefinedOpcodes(true);
+      rlmachine.SetPrintUndefinedOpcodes(true);
 
     if (vm.count("count-undefined"))
-      rlmachine.recordUndefinedOpcodeCounts();
+      rlmachine.RecordUndefinedOpcodeCounts();
 
     if (vm.count("save-on-decision")) {
       int decision_num = vm["save-on-decision"].as<int>();
-      rlmachine.saveOnDecisions(decision_num);
+      rlmachine.set_save_on_decision_slot(decision_num);
     }
 
     if (vm.count("save-on-decision-counting-from")) {
       int start_from = vm["save-on-decision-counting-from"].as<int>();
-      rlmachine.saveOnDecisions(start_from);
-      rlmachine.incrementOnSave();
+      rlmachine.set_save_on_decision_slot(start_from);
+      rlmachine.set_increment_on_save();
     }
 
     Serialization::loadGlobalMemory(rlmachine);
-    rlmachine.setHaltOnException(false);
+    rlmachine.SetHaltOnException(false);
 
     if (vm.count("load-save")) {
       Sys_load()(rlmachine, vm["load-save"].as<int>());
@@ -253,7 +253,7 @@ int main(int argc, char* argv[]) {
       sdlSystem.run(rlmachine);
 
       // Run the rlmachine through another instruction
-      rlmachine.executeNextInstruction();
+      rlmachine.ExecuteNextInstruction();
     }
 
     Serialization::saveGlobalMemory(rlmachine);

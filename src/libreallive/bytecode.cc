@@ -195,7 +195,7 @@ string BytecodeElement::serializableData(RLMachine& machine) const {
 }
 
 void BytecodeElement::runOnMachine(RLMachine& machine) const {
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 // static
@@ -279,11 +279,11 @@ const int MetaElement::entrypoint() const {
 
 void MetaElement::runOnMachine(RLMachine& machine) const {
   if (type_ == Line_)
-    machine.setLineNumber(value_);
+    machine.SetLineNumber(value_);
   else if (type_ == Kidoku_)
-    machine.setKidokuMarker(value_);
+    machine.SetKidokuMarker(value_);
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -350,8 +350,8 @@ void TextoutElement::print(std::ostream& oss) const {
 const size_t TextoutElement::length() const { return repr.size(); }
 
 void TextoutElement::runOnMachine(RLMachine& machine) const {
-  machine.performTextout(*this);
-  machine.advanceInstructionPointer();
+  machine.PerformTextout(*this);
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -405,7 +405,7 @@ void ExpressionElement::print(std::ostream& oss) const {
 const size_t ExpressionElement::length() const { return repr.size(); }
 
 void ExpressionElement::runOnMachine(RLMachine& machine) const {
-  machine.executeExpression(*this);
+  machine.ExecuteExpression(*this);
 }
 
 // -----------------------------------------------------------------------
@@ -460,7 +460,7 @@ void CommandElement::print(std::ostream& oss) const {
 }
 
 void CommandElement::runOnMachine(RLMachine& machine) const {
-  machine.executeCommand(*this);
+  machine.ExecuteCommand(*this);
 }
 
 // -----------------------------------------------------------------------

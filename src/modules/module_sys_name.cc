@@ -43,13 +43,13 @@ struct GetName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   int index,
                   StringReferenceIterator strIt) {
-    *strIt = machine.memory().getName(index);
+    *strIt = machine.memory().GetName(index);
   }
 };
 
 struct SetName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
-    machine.memory().setName(index, name);
+    machine.memory().SetName(index, name);
   }
 };
 
@@ -57,13 +57,13 @@ struct GetLocalName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   int index,
                   StringReferenceIterator strIt) {
-    *strIt = machine.memory().getLocalName(index);
+    *strIt = machine.memory().GetLocalName(index);
   }
 };
 
 struct SetLocalName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
-    machine.memory().setLocalName(index, name);
+    machine.memory().SetLocalName(index, name);
   }
 };
 

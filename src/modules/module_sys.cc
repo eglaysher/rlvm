@@ -70,7 +70,7 @@ namespace {
 struct title : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string subtitle) {
     machine.system().graphics().setWindowSubtitle(subtitle,
-                                                  machine.getTextEncoding());
+                                                  machine.GetTextEncoding());
   }
 };
 
@@ -112,7 +112,7 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
 struct CallStackPop : RLOp_Void_1<DefaultIntValue_T<1>> {
   void operator()(RLMachine& machine, int frames_to_pop) {
     for (int i = 0; i < frames_to_pop; ++i)
-      machine.popStackFrame();
+      machine.PopStackFrame();
   }
 };
 
@@ -243,17 +243,17 @@ struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
 // This method also resets a LOT of the game state, though this isn't mentioned
 // in the rldev manual.
 struct ReturnMenu : public RLOp_Void_Void {
-  virtual bool advanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine) {
     int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-    machine.localReset();
-    machine.jump(scenario, 0);
+    machine.LocalReset();
+    machine.Jump(scenario, 0);
   }
 };
 
 struct ReturnPrevSelect : public RLOp_Void_Void {
-  virtual bool advanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() { return false; }
 
   void operator()(RLMachine& machine) {
     machine.system().restoreSelectionSnapshot(machine);
@@ -331,19 +331,19 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   boost::shared_ptr<Surface> before = graphics.renderToSurface();
 
   // Clear everything
-  machine.localReset();
+  machine.LocalReset();
 
   boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-  machine.jump(scenario, 0);
+  machine.Jump(scenario, 0);
 
   // Now we push a LongOperation on top of the stack; when this
   // ends, we'll be at SEEN_MENU.
   LongOperation* effect =
       new FadeEffect(machine, after, before, after->size(), 1000);
-  machine.pushLongOperation(effect);
+  machine.PushLongOperation(effect);
 }
 
 SysModule::SysModule() : RLModule("Sys", 1, 004) {
@@ -445,9 +445,9 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   // (unknown) 01012
   // (unknown) 01013
 
-  addOpcode(1120, 0, "SceneNum", returnIntValue(&RLMachine::sceneNumber));
+  addOpcode(1120, 0, "SceneNum", returnIntValue(&RLMachine::SceneNumber));
 
-  addOpcode(1200, 0, "end", callFunction(&RLMachine::halt));
+  addOpcode(1200, 0, "end", callFunction(&RLMachine::Halt));
   addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
   addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
   addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);

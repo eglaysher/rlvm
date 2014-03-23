@@ -346,7 +346,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine) {
     SDLEventSystem& event =
         dynamic_cast<SDLEventSystem&>(machine.system().event());
     GraphicsSystem& graphics = machine.system().graphics();
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new GCNPlatformBlocker(event, graphics, shared_from_this()));
   }
 }
@@ -476,7 +476,7 @@ void GCNPlatform::MenuLoad(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
-  machine.clearLongOperationsOffBackOfStack();
+  machine.ClearLongOperationsOffBackOfStack();
   Sys_load()(machine, slot);
 }
 

@@ -42,7 +42,7 @@ using std::make_pair;
 TestMachine::TestMachine(System& in_system, libreallive::Archive& in_archive)
     : RLMachine(in_system, in_archive) {}
 
-void TestMachine::attachModule(RLModule* module) {
+void TestMachine::AttachModule(RLModule* module) {
   for (RLModule::OpcodeMap::iterator it = module->begin(); it != module->end();
        ++it) {
     int opcode = -1;
@@ -53,7 +53,7 @@ void TestMachine::attachModule(RLModule* module) {
     registry_.insert(make_pair(make_pair(it->second->name(), overload), op));
   }
 
-  RLMachine::attachModule(module);
+  RLMachine::AttachModule(module);
 }
 
 void TestMachine::exe(const std::string& name, unsigned char overload) {

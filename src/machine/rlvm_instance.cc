@@ -112,7 +112,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     SDLSystem sdlSystem(gameexe);
     RLMachine rlmachine(sdlSystem, arc);
     addAllModules(rlmachine);
-    addGameHacks(rlmachine);
+    AddGameHacks(rlmachine);
 
     // Validate our font file
     // TODO(erg): Remove this when we switch to native font selection dialogs.
@@ -131,10 +131,10 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     sdlSystem.setPlatform(platform);
 
     if (undefined_opcodes_)
-      rlmachine.setPrintUndefinedOpcodes(true);
+      rlmachine.SetPrintUndefinedOpcodes(true);
 
     if (count_undefined_copcodes_)
-      rlmachine.recordUndefinedOpcodeCounts();
+      rlmachine.RecordUndefinedOpcodeCounts();
 
     Serialization::loadGlobalMemory(rlmachine);
 
@@ -143,7 +143,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     // user data is going to be screwed!
     DoUserNameCheck(rlmachine);
 
-    rlmachine.setHaltOnException(false);
+    rlmachine.SetHaltOnException(false);
 
     if (load_save_ != -1)
       Sys_load()(rlmachine, load_save_);
@@ -159,9 +159,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       unsigned int start_ticks = sdlSystem.event().getTicks();
       unsigned int end_ticks = start_ticks;
       do {
-        rlmachine.executeNextInstruction();
+        rlmachine.ExecuteNextInstruction();
         end_ticks = sdlSystem.event().getTicks();
-      } while (!rlmachine.currentLongOperation() &&
+      } while (!rlmachine.CurrentLongOperation() &&
                !sdlSystem.forceWait() &&
                (end_ticks - start_ticks < 10));
 
@@ -210,7 +210,7 @@ void RLVMInstance::ReportFatalError(const std::string& message_text,
 
 void RLVMInstance::DoUserNameCheck(RLMachine& machine) {
   try {
-    int encoding = machine.getProbableEncodingType();
+    int encoding = machine.GetProbableEncodingType();
 
     // Iterate over all the names in both global and local memory banks.
     GlobalMemory& g = machine.memory().global();

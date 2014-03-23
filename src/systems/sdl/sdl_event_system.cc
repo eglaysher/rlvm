@@ -85,7 +85,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
         break;
       }
       case SDL_QUIT:
-        machine.halt();
+        machine.Halt();
         break;
       case SDL_ACTIVEEVENT:
         if (raw_handler_)

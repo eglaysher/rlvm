@@ -71,7 +71,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 
     std::string evaluated_native =
         libreallive::evaluatePRINT(machine, param.text);
-    o.str = cp932toUTF8(evaluated_native, machine.getTextEncoding());
+    o.str = cp932toUTF8(evaluated_native, machine.GetTextEncoding());
 
     for (auto const& condition : param.cond_parsed) {
       switch (condition.effect) {
@@ -160,7 +160,7 @@ std::vector<std::string> SelectLongOperation::options() const {
 
 bool SelectLongOperation::operator()(RLMachine& machine) {
   if (return_value_ != -1) {
-    machine.setStoreRegister(return_value_);
+    machine.set_store_register(return_value_);
     return true;
   } else {
     return false;

@@ -169,7 +169,7 @@ void CGMTable::setViewed(RLMachine& machine, const std::string& filename) {
 
   if (flag != -1) {
     // Set the intZ[] flag
-    machine.memory().setIntValue(
+    machine.memory().SetIntValue(
         libreallive::IntMemRef(libreallive::INTZ_LOCATION, 0, flag), 1);
 
     cgm_data_.insert(flag);

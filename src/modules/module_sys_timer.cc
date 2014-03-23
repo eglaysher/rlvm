@@ -79,7 +79,7 @@ struct Sys_time : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
         wait_op->breakOnClicks();
       wait_op->breakOnEvent(
           std::bind(TimerIsDone, std::ref(machine), layer_, counter, time));
-      machine.pushLongOperation(wait_op);
+      machine.PushLongOperation(wait_op);
     }
   }
 };

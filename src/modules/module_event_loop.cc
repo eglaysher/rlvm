@@ -52,9 +52,9 @@ EventLoopModule::EventLoopModule() : RLModule("EventLoop", 0, 4) {
   addUnsupportedOpcode(303, 0, "yield");
 
   // Theoretically the same as rtl, but we don't really know.
-  addOpcode(300, 0, "rtlButton", callFunction(&RLMachine::returnFromFarcall));
-  addOpcode(301, 0, "rtlCancel", callFunction(&RLMachine::returnFromFarcall));
-  addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::returnFromFarcall));
+  addOpcode(300, 0, "rtlButton", callFunction(&RLMachine::ReturnFromFarcall));
+  addOpcode(301, 0, "rtlCancel", callFunction(&RLMachine::ReturnFromFarcall));
+  addOpcode(302, 0, "rtlSystem", callFunction(&RLMachine::ReturnFromFarcall));
 
   addOpcode(1000,
             0,

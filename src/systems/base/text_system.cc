@@ -869,9 +869,9 @@ void parseNames(const Memory& memory,
 
       int index = Memory::ConvertLetterIndexToInt(strindex);
       if (type == LOWER_BYTE_FULLWIDTH_ASTERISK)
-        output += memory.getName(index);
+        output += memory.GetName(index);
       else
-        output += memory.getLocalName(index);
+        output += memory.GetLocalName(index);
     } else {
       copyOneShiftJisCharacter(cur, output);
     }

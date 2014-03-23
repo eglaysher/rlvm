@@ -55,14 +55,14 @@ void addKoeWaitC(RLMachine& machine) {
   wait_op->breakOnClicks();
   wait_op->breakOnEvent(std::bind(koeIsPlaying, std::ref(machine)));
 
-  machine.pushLongOperation(wait_op);
+  machine.PushLongOperation(wait_op);
 }
 
 void addKoeWait(RLMachine& machine) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
   wait_op->breakOnEvent(std::bind(koeIsPlaying, std::ref(machine)));
 
-  machine.pushLongOperation(wait_op);
+  machine.PushLongOperation(wait_op);
 }
 
 struct koePlay_0 : public RLOp_Void_1<IntConstant_T> {

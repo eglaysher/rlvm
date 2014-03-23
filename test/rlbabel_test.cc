@@ -41,30 +41,30 @@ class RLBabelTest : public FullSystemTest {};
 const std::string rlBabel = "rlBabel";
 
 TEST_F(RLBabelTest, Loading) {
-  EXPECT_FALSE(rlmachine.dllLoaded(rlBabel));
-  rlmachine.loadDLL(0, rlBabel);
-  EXPECT_TRUE(rlmachine.dllLoaded(rlBabel));
+  EXPECT_FALSE(rlmachine.DllLoaded(rlBabel));
+  rlmachine.LoadDLL(0, rlBabel);
+  EXPECT_TRUE(rlmachine.DllLoaded(rlBabel));
 
   // Shouldn't throw.
-  rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0);
+  rlmachine.CallDLL(0, dllInitialise, 0, 0, 0, 0);
 
-  rlmachine.unloadDLL(0);
-  EXPECT_FALSE(rlmachine.dllLoaded(rlBabel));
+  rlmachine.UnloadDLL(0);
+  EXPECT_FALSE(rlmachine.DllLoaded(rlBabel));
 
-  EXPECT_THROW({ rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0); },
+  EXPECT_THROW({ rlmachine.CallDLL(0, dllInitialise, 0, 0, 0, 0); },
                rlvm::Exception);
 }
 
 TEST_F(RLBabelTest, Initialization) {
-  rlmachine.loadDLL(0, rlBabel);
+  rlmachine.LoadDLL(0, rlBabel);
 
   // Initialize DLL
-  rlmachine.callDLL(0, dllInitialise, 0, 0, 0, 0);
+  rlmachine.CallDLL(0, dllInitialise, 0, 0, 0, 0);
 
   // Prime the buffer
-  rlmachine.setStringValue(
+  rlmachine.SetStringValue(
       libreallive::STRS_LOCATION, 0, "A world, covered in white");
-  rlmachine.callDLL(
+  rlmachine.CallDLL(
       0, dllTextoutStart, libreallive::STRS_LOCATION << 16, 0, 0, 0);
 
   // TODO: Doing anything real with RLBabel requires that we have working

@@ -131,12 +131,12 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
   if (break_on_clicks_) {
     if (button_pressed_) {
       done = true;
-      machine.setStoreRegister(button_pressed_);
+      machine.set_store_register(button_pressed_);
     } else if (done) {
       // TODO(erg): this is fishy. shouldn't we record when clicked?
       if (save_click_location_)
         recordMouseCursorPosition();
-      machine.setStoreRegister(0);
+      machine.set_store_register(0);
     }
   }
 

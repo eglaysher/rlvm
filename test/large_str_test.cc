@@ -53,10 +53,10 @@ TEST(LargeModuleStrTest, strcpy0) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
+  string one = rlmachine.GetStringValue(STRS_LOCATION, 0);
   EXPECT_EQ("valid", one) << "strcpy_0 script failed to set value";
 }
 
@@ -70,10 +70,10 @@ TEST(LargeModuleStrTest, strcpy1) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcpy_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
+  string one = rlmachine.GetStringValue(STRS_LOCATION, 0);
   EXPECT_EQ("va", one) << "strcpy_1 script failed to set value";
 }
 
@@ -89,16 +89,16 @@ TEST(LargeModuleStrTest, strclear0) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
+  string one = rlmachine.GetStringValue(STRS_LOCATION, 0);
   EXPECT_EQ("", one) << "strclear_0 script failed to unset value";
 
   // We include this check to make sure the machine is sane and that
   // the first assignment works, so strclear doesn't appear to work
   // because assignment failed.
-  string two = rlmachine.getStringValue(STRS_LOCATION, 1);
+  string two = rlmachine.GetStringValue(STRS_LOCATION, 1);
   EXPECT_EQ("valid", two) << "strclear_0 script failed to set value";
 }
 
@@ -112,18 +112,18 @@ TEST(LargeModuleStrTest, strclear1) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strclear_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
+  string one = rlmachine.GetStringValue(STRS_LOCATION, 0);
   EXPECT_EQ("", one) << "strclear_1 script failed to unset value";
-  string two = rlmachine.getStringValue(STRS_LOCATION, 1);
+  string two = rlmachine.GetStringValue(STRS_LOCATION, 1);
   EXPECT_EQ("", two) << "strclear_1 script failed to unset value";
 
   // We include this check to make sure the machine is sane and that
   // the first assignment works, so strclear doesn't appear to work
   // because assignment failed.
-  string three = rlmachine.getStringValue(STRS_LOCATION, 2);
+  string three = rlmachine.GetStringValue(STRS_LOCATION, 2);
   EXPECT_EQ("valid", three) << "strclear_1 script failed to set value";
 }
 
@@ -138,10 +138,10 @@ TEST(LargeModuleStrTest, strcat) {  // NOLINT
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcat_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  string one = rlmachine.getStringValue(STRS_LOCATION, 0);
+  string one = rlmachine.GetStringValue(STRS_LOCATION, 0);
   EXPECT_EQ("valid", one) << "strcat script failed to set value";
 }
 
@@ -156,10 +156,10 @@ TEST(LargeModuleStrTest, strlen) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strlen_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  int one = rlmachine.getIntValue(IntMemRef('A', 0));
+  int one = rlmachine.GetIntValue(IntMemRef('A', 0));
   EXPECT_EQ(5, one) << "strlen script failed to set the strlen(\"valid\") to 5";
 }
 
@@ -179,14 +179,14 @@ TEST(LargeModuleStrTest, strcmp) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcmp_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(strcmp("a", "b"), rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(strcmp("a", "b"), rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Different values for strcmp(\"a\", \"b\")";
-  EXPECT_EQ(strcmp("b", "b"), rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(strcmp("b", "b"), rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Different values for strcmp(\"b\", \"b\")";
-  EXPECT_EQ(strcmp("b", "c"), rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(strcmp("b", "c"), rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "Different values for strcmp(\"b\", \"c\")";
 }
 
@@ -195,10 +195,10 @@ TEST(LargeModuleStrTest, strsub0_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("lid", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("lid", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strsub returned wrong value";
 }
 
@@ -211,11 +211,11 @@ TEST(LargeModuleStrTest, strsub0_shiftjis) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   EXPECT_EQ("\x82\xDC\x82\xBE\x8A\x6F\x82\xA6\x82\xC4\x82\xE9\x81\x48",
-            rlmachine.getStringValue(STRS_LOCATION, 1))
+            rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strsub returned wrong value";
 }
 
@@ -228,10 +228,10 @@ TEST(LargeModuleStrTest, strsub1_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_2.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("al", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("al", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strsub returned wrong value";
 }
 
@@ -244,10 +244,10 @@ TEST(LargeModuleStrTest, strsub1_shiftjis) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strsub_3.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("\x96\xBC\x91\x4F", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("\x96\xBC\x91\x4F", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strsub returned wrong value";
 }
 
@@ -262,10 +262,10 @@ TEST(LargeModuleStrTest, strrsub_0) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("id", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("id", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strrsub returned wrong value";
 }
 
@@ -278,10 +278,10 @@ TEST(LargeModuleStrTest, strrsub_1) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strrsub_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("i", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("i", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "strrsub returned wrong value";
 }
 
@@ -294,10 +294,10 @@ TEST(LargeModuleStrTest, strcharlen_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "strcharlen returned wrong value";
 }
 
@@ -310,10 +310,10 @@ TEST(LargeModuleStrTest, srcharlen_shiftjis) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strcharlen_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(14, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(14, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "strcharlen returned wrong value";
 }
 
@@ -326,10 +326,10 @@ TEST(LargeModuleStrTest, strtrunc_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("va", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("va", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "strtrunc returned wrong value";
 }
 
@@ -338,11 +338,11 @@ TEST(LargeModuleStrTest, strtrunc_shiftjis) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strtrunc_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   EXPECT_EQ("\x82\xED\x82\xBD\x82\xB5",
-            rlmachine.getStringValue(STRS_LOCATION, 0))
+            rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "strtrunc returned wrong value";
 }
 
@@ -355,11 +355,11 @@ TEST(LargeModuleStrTest, hantozen_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   EXPECT_EQ("\x82\x50\x82\x51\x82\x52\x82\x53\x82\x54",
-            rlmachine.getStringValue(STRS_LOCATION, 0))
+            rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "hantozen returned wrong value";
 }
 
@@ -373,11 +373,11 @@ TEST(LargeModuleStrTest, hantozen_half_width_katakana) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/hantozen_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   EXPECT_EQ("\x83\x8F\x83\x5E\x83\x56\x83\x6D\x83\x69\x83\x7D\x83\x47",
-            rlmachine.getStringValue(STRS_LOCATION, 0))
+            rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "hantozen returned wrong value";
 }
 
@@ -390,10 +390,10 @@ TEST(LargeModuleStrTest, hantozen_fullwidth_ascii) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("12345", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("12345", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "zentohan returned wrong value";
 }
 
@@ -406,11 +406,11 @@ TEST(LargeModuleStrTest, zentohan_fullwidth_katakana) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/zentohan_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   EXPECT_EQ("\xDC\xC0\xBC\xC9\xC5\xCF\xB4",
-            rlmachine.getStringValue(STRS_LOCATION, 0))
+            rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "zentohan returned wrong value";
 }
 
@@ -424,10 +424,10 @@ TEST(LargeModuleStrTest, Uppercase_0) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("VALID", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("VALID", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "Uppercase returned wrong value";
 }
 
@@ -441,12 +441,12 @@ TEST(LargeModuleStrTest, Uppercase_1) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/uppercase_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("Valid", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("Valid", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "Uppercase touched strS[0]";
-  EXPECT_EQ("VALID", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("VALID", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "Uppercase returned wrong value";
 }
 
@@ -460,10 +460,10 @@ TEST(LargeModuleStrTest, Lowercase_0) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("valid", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("valid", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "Lowercase returned wrong value";
 }
 
@@ -477,12 +477,12 @@ TEST(LargeModuleStrTest, Lowercase_1) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/lowercase_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("Valid", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("Valid", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "Lowercase touched strS[0]";
-  EXPECT_EQ("valid", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("valid", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "Lowercase returned wrong value";
 }
 
@@ -497,18 +497,18 @@ TEST(LargeModuleStrTest, itoa_ws) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_ws_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("\x81\x7C\x82\x50", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("\x81\x7C\x82\x50", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "itoa_ws set wrong value for strS[0]";
   EXPECT_EQ("\x81\x7C\x81\x40\x81\x40\x82\x50",
-            rlmachine.getStringValue(STRS_LOCATION, 1))
+            rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "itoa_ws set wrong value for strS[1]";
-  EXPECT_EQ("\x82\x52", rlmachine.getStringValue(STRS_LOCATION, 2))
+  EXPECT_EQ("\x82\x52", rlmachine.GetStringValue(STRS_LOCATION, 2))
       << "itoa_ws set wrong value for strS[2]";
   EXPECT_EQ("\x81\x40\x81\x40\x82\x50",
-            rlmachine.getStringValue(STRS_LOCATION, 3))
+            rlmachine.GetStringValue(STRS_LOCATION, 3))
       << "itoa_ws set wrong value for strS[3]";
 }
 
@@ -523,16 +523,16 @@ TEST(LargeModuleStrTest, itoa_s) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_s_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("-1", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("-1", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "itoa_s set wrong value for strS[0]";
-  EXPECT_EQ("-  1", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("-  1", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "itoa_s set wrong value for strS[1]";
-  EXPECT_EQ("3", rlmachine.getStringValue(STRS_LOCATION, 2))
+  EXPECT_EQ("3", rlmachine.GetStringValue(STRS_LOCATION, 2))
       << "itoa_s set wrong value for strS[2]";
-  EXPECT_EQ("  1", rlmachine.getStringValue(STRS_LOCATION, 3))
+  EXPECT_EQ("  1", rlmachine.GetStringValue(STRS_LOCATION, 3))
       << "itoa_s set wrong value for strS[3]";
 }
 
@@ -547,18 +547,18 @@ TEST(LargeModuleStrTest, itoa_w) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_w_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("\x81\x7C\x82\x50", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("\x81\x7C\x82\x50", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "itoa_w set wrong value for strS[0]";
   EXPECT_EQ("\x81\x7C\x82\x4F\x82\x4F\x82\x50",
-            rlmachine.getStringValue(STRS_LOCATION, 1))
+            rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "itoa_w set wrong value for strS[1]";
-  EXPECT_EQ("\x82\x52", rlmachine.getStringValue(STRS_LOCATION, 2))
+  EXPECT_EQ("\x82\x52", rlmachine.GetStringValue(STRS_LOCATION, 2))
       << "itoa_w set wrong value for strS[2]";
   EXPECT_EQ("\x82\x4F\x82\x4F\x82\x50",
-            rlmachine.getStringValue(STRS_LOCATION, 3))
+            rlmachine.GetStringValue(STRS_LOCATION, 3))
       << "itoa_w set wrong value for strS[3]";
 }
 
@@ -573,16 +573,16 @@ TEST(LargeModuleStrTest, itoa) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/itoa_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("-1", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("-1", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "itoa set wrong value for strS[0]";
-  EXPECT_EQ("-001", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("-001", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "itoa set wrong value for strS[1]";
-  EXPECT_EQ("3", rlmachine.getStringValue(STRS_LOCATION, 2))
+  EXPECT_EQ("3", rlmachine.GetStringValue(STRS_LOCATION, 2))
       << "itoa set wrong value for strS[2]";
-  EXPECT_EQ("001", rlmachine.getStringValue(STRS_LOCATION, 3))
+  EXPECT_EQ("001", rlmachine.GetStringValue(STRS_LOCATION, 3))
       << "itoa set wrong value for strS[3]";
 }
 
@@ -598,18 +598,18 @@ TEST(LargeModuleStrTest, atoi) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/atoi_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(15, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(15, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "atoi returned wrong value for intA[0]";
-  EXPECT_EQ(15, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(15, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "atoi returned wrong value for intA[1]";
-  EXPECT_EQ(-12, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(-12, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "atoi returned wrong value for intA[2]";
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "atoi returned wrong value for intA[3]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "atoi returned wrong value for intA[4]";
 }
 
@@ -623,14 +623,14 @@ TEST(LargeModuleStrTest, digits) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/digits_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "digits returned wrong value for intA[0]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "digits returned wrong value for intA[1]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "digits returned wrong value for intA[2]";
 }
 
@@ -644,14 +644,14 @@ TEST(LargeModuleStrTest, strpos) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strpos_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "strpos returned wrong value for intA[0]";
-  EXPECT_EQ(8, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(8, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "strpos returned wrong value for intA[1]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "strpos returned wrong value for intA[2]";
 }
 
@@ -665,14 +665,14 @@ TEST(LargeModuleStrTest, strlpos) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strlpos_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "strlpos returned wrong value for intA[0]";
-  EXPECT_EQ(12, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(12, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "strlpos returned wrong value for intA[1]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "strlpos returned wrong value for intA[2]";
 }
 
@@ -686,11 +686,11 @@ TEST(LargeModuleStrTest, strused) {
   libreallive::Archive arc(locateTestCase("Module_Str_SEEN/strused_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "strused returned wrong value for intA[0]";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "strused returned wrong value for intA[1]";
 }

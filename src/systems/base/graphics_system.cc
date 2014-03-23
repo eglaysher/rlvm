@@ -952,7 +952,7 @@ void GraphicsSystem::load(Archive& ar, unsigned int version) {
 
   // Now alert all subclasses that we've set the subtitle
   setWindowSubtitle(subtitle_,
-                    Serialization::g_current_machine->getTextEncoding());
+                    Serialization::g_current_machine->GetTextEncoding());
 }
 
 // -----------------------------------------------------------------------

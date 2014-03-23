@@ -112,8 +112,8 @@ struct IntRefIntRefCapturer
 };
 
 TEST_F(RLOperationTest, TestIntReference_T) {
-  rlmachine.setIntValue(IntMemRef('A', 0), 1);
-  rlmachine.setIntValue(IntMemRef('B', 5), 2);
+  rlmachine.SetIntValue(IntMemRef('A', 0), 1);
+  rlmachine.SetIntValue(IntMemRef('B', 5), 2);
 
   int one = -1;
   int two = -1;
@@ -179,8 +179,8 @@ struct StrRefStrRefCapturer
 };
 
 TEST_F(RLOperationTest, TestStringReference_T) {
-  rlmachine.setStringValue(STRM_LOCATION, 0, "string one");
-  rlmachine.setStringValue(STRS_LOCATION, 5, "string two");
+  rlmachine.SetStringValue(STRM_LOCATION, 0, "string one");
+  rlmachine.SetStringValue(STRS_LOCATION, 5, "string two");
 
   std::string one = "empty";
   std::string two = "empty";

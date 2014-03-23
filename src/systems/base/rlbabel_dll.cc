@@ -203,8 +203,8 @@ int RlBabelDLL::textoutAdd(const std::string& str) {
         string += 2;
       }
       Memory& memory = machine_.memory();
-      const char* namestr = global ? memory.getName(idx).c_str()
-                                   : memory.getLocalName(idx).c_str();
+      const char* namestr = global ? memory.GetName(idx).c_str()
+                                   : memory.GetLocalName(idx).c_str();
 
       // Copy to string.
       if (string[0] == 0x82 && (string[1] >= 0x4f && string[1] <= 0x58)) {
@@ -368,7 +368,7 @@ int RlBabelDLL::textoutGetChar(StringReferenceIterator buffer,
         return textoutGetChar(buffer, xmod);
       }
       case 2: {
-        Codepage& cp = Cp::instance(machine_.getTextEncoding());
+        Codepage& cp = Cp::instance(machine_.GetTextEncoding());
         // End of previously-handled name setter.
         // If this is the end of the string, do nothing.
         if (!endToken(1))
@@ -570,7 +570,7 @@ int RlBabelDLL::testGlosses(int x,
 }
 
 int RlBabelDLL::getCharWidth(uint16_t cp932_char, bool as_xmod) {
-  Codepage& cp = Cp::instance(machine_.getTextEncoding());
+  Codepage& cp = Cp::instance(machine_.GetTextEncoding());
   uint16_t native_char = cp.JisDecode(cp932_char);
   uint16_t unicode_codepoint = cp.Convert(native_char);
   boost::shared_ptr<TextWindow> window = getWindow(-1);

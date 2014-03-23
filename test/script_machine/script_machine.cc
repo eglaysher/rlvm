@@ -56,12 +56,12 @@ ScriptMachine::ScriptMachine(ScriptWorld& world,
 
 ScriptMachine::~ScriptMachine() {}
 
-void ScriptMachine::setDecisionList(const std::vector<std::string>& decisions) {
+void ScriptMachine::SetDecisionList(const std::vector<std::string>& decisions) {
   decisions_ = decisions;
   current_decision_ = 0;
 }
 
-void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
+void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
   if (SelectLongOperation* sel =
           dynamic_cast<SelectLongOperation*>(long_operation)) {
@@ -131,16 +131,16 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
                      long_operation)) {
     // We don't deal with these yet. Return 1 for the first option every time,
     // which corresponds with selecting "NO" for battle missions.
-    setStoreRegister(1);
+    set_store_register(1);
     delete sel;
     return;
   }
 
-  RLMachine::pushLongOperation(long_operation);
+  RLMachine::PushLongOperation(long_operation);
 }
 
-int ScriptMachine::getInt(const std::string& bank, int position) {
+int ScriptMachine::GetInt(const std::string& bank, int position) {
   char bchar = bank[0];
 
-  return getIntValue(IntMemRef(bchar, position));
+  return GetIntValue(IntMemRef(bchar, position));
 }

@@ -148,7 +148,7 @@ void performEffect(RLMachine& machine,
                    int selnum) {
   if (!machine.replaying_graphics_stack()) {
     LongOperation* lop = EffectFactory::buildFromSEL(machine, src, dst, selnum);
-    machine.pushLongOperation(lop);
+    machine.PushLongOperation(lop);
   }
 }
 
@@ -177,7 +177,7 @@ void performEffect(RLMachine& machine,
                                               a,
                                               b,
                                               c);
-    machine.pushLongOperation(lop);
+    machine.PushLongOperation(lop);
   }
 }
 
@@ -230,7 +230,7 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
 
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(std::bind(StopShaking, std::ref(machine)));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 
   static bool StopShaking(RLMachine& machine) {
@@ -987,7 +987,7 @@ struct zoom : public RLOp_Void_5<Rect_T<SPACE>,
         machine, gs.getDC(0), gs.getDC(srcDC), frect, trect, drect, time);
     BlitAfterEffectFinishes* blitOp = new BlitAfterEffectFinishes(
         zoomOp, gs.getDC(srcDC), gs.getDC(0), trect, drect);
-    machine.pushLongOperation(blitOp);
+    machine.PushLongOperation(blitOp);
   }
 };
 
@@ -1447,7 +1447,7 @@ void replayGraphicsStackCommand(RLMachine& machine,
         libreallive::CommandElement* command =
             dynamic_cast<libreallive::CommandElement*>(element);
         if (command) {
-          machine.executeCommand(*command);
+          machine.ExecuteCommand(*command);
         }
       }
     }

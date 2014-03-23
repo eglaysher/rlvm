@@ -208,7 +208,7 @@ class TestMachine : public RLMachine {
   TestMachine(System& in_system, libreallive::Archive& in_archive);
 
   // Index all the RLOperations before passing to parent.
-  virtual void attachModule(RLModule* module);
+  virtual void AttachModule(RLModule* module) override;
 
   // Invokes a named opcode (with no arguments)
   void exe(const std::string& name, unsigned char overload);

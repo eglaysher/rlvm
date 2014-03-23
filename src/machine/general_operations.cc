@@ -107,7 +107,7 @@ void MultiDispatch::operator()(RLMachine& machine,
     handler_->dispatch(machine, element);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------

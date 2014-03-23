@@ -76,7 +76,7 @@ class RLOperation;
 //
 // @code
 // RLMachine machine(some_archive_object);
-// machine.attachModule(new FakeModule);
+// machine.AttachModule(new FakeModule);
 // @endcode
 //
 // For information on how to write an RLOperation subclass, see the

@@ -47,8 +47,8 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
   dc0->fill(RGBAColour::Black());
 
-  machine.pushLongOperation(this);
-  machine.pushLongOperation(
+  machine.PushLongOperation(this);
+  machine.PushLongOperation(
       new FadeEffect(machine, dc0, currentWindow, s, 250));
 
   // We have our before and after images to use as a transition now. Reset the
@@ -72,7 +72,7 @@ bool LoadGameLongOperation::operator()(RLMachine& machine) {
   boost::shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
   blankScreen->fill(RGBAColour::Black());
 
-  machine.pushLongOperation(
+  machine.PushLongOperation(
       new FadeEffect(machine, currentWindow, blankScreen, s, 250));
 
   // At this point, the stack has been nuked, and this current

@@ -92,7 +92,7 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
     if (file_exists) {
       SaveGameHeader header = Serialization::loadHeaderForSlot(machine, slot);
       oss << to_simple_string(header.save_time) << " - "
-          << cp932toUTF8(header.title, machine.getTextEncoding());
+          << cp932toUTF8(header.title, machine.GetTextEncoding());
 
       time_t mtime = fs::last_write_time(saveFile);
 

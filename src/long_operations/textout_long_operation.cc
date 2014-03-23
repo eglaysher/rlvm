@@ -180,7 +180,7 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       if (page.IsFull()) {
         paused = true;
         machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
-        machine.pushLongOperation(
+        machine.PushLongOperation(
             new NewPageAfterLongop(new PauseLongOperation(machine)));
       }
 

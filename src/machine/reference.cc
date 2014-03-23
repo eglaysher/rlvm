@@ -47,14 +47,14 @@ IntAccessor::operator int() const {
   if (store_register_)
     return *store_register_;
   else
-    return it->memory_->getIntValue(IntMemRef(it->type_, it->location_));
+    return it->memory_->GetIntValue(IntMemRef(it->type_, it->location_));
 }
 
 IntAccessor& IntAccessor::operator=(const int new_value) {
   if (store_register_)
     *store_register_ = new_value;
   else
-    it->memory_->setIntValue(IntMemRef(it->type_, it->location_), new_value);
+    it->memory_->SetIntValue(IntMemRef(it->type_, it->location_), new_value);
   return *this;
 }
 
@@ -72,11 +72,11 @@ StringAccessor::StringAccessor(MemoryReferenceIterator<StringAccessor>* i)
 StringAccessor::~StringAccessor() {}
 
 StringAccessor::operator std::string() const {
-  return it->memory_->getStringValue(it->type_, it->location_);
+  return it->memory_->GetStringValue(it->type_, it->location_);
 }
 
 StringAccessor& StringAccessor::operator=(const std::string& new_value) {
-  it->memory_->setStringValue(it->type_, it->location_, new_value);
+  it->memory_->SetStringValue(it->type_, it->location_, new_value);
   return *this;
 }
 

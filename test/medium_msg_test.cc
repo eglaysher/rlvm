@@ -36,7 +36,7 @@
 
 class MediumMsgLoopTest : public FullSystemTest {
  protected:
-  MediumMsgLoopTest() { rlmachine.attachModule(new MsgModule); }
+  MediumMsgLoopTest() { rlmachine.AttachModule(new MsgModule); }
 };
 
 TEST_F(MediumMsgLoopTest, TestFastText) {

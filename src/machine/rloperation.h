@@ -110,7 +110,7 @@ class RLOperation {
   // instruction pointer and we don't want to mess with it afterwards.
   // The default implmentation returns true; 99% of instructions want
   // the instruction pointer to be advanced automatically.
-  virtual bool advanceInstructionPointer();
+  virtual bool AdvanceInstructionPointer();
 
   // The dispatch function is implemented on a per type basis and is called by
   // the Module, after checking to make sure that the

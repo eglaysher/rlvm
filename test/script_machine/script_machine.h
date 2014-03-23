@@ -45,19 +45,17 @@ class ScriptMachine : public RLMachine {
                 libreallive::Archive& in_archive);
   virtual ~ScriptMachine();
 
+  void set_increment_on_save() { increment_on_save_ = true; }
+  void set_save_on_decision_slot(int slot) { save_on_decision_slot_ = slot; }
+
   // Sets the decisions to take.
-  void setDecisionList(const std::vector<std::string>& decisions);
-
-  void saveOnDecisions(int slot) { save_on_decision_slot_ = slot; }
-
-  // Overloaded from RLMachine:
-  // So we can effectively intercept requests to pause and selection options.
-  virtual void pushLongOperation(LongOperation* long_operation);
-
-  void incrementOnSave() { increment_on_save_ = true; }
+  void SetDecisionList(const std::vector<std::string>& decisions);
 
   // Memory accessor. (Maybe just translate this in luabind_Machine?)
-  int getInt(const std::string& bank, int position);
+  int GetInt(const std::string& bank, int position);
+
+  // Overloaded from RLMachine:
+  virtual void PushLongOperation(LongOperation* long_operation) override;
 
  private:
   typedef std::vector<std::string> Selections;

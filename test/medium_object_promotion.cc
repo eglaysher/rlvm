@@ -58,7 +58,7 @@ class PromotionTest : public ::testing::TestWithParam<PromotionData> {
       : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
         system(locateTestCase("Gameexe_data/Gameexe.ini")),
         rlmachine(system, arc) {
-    rlmachine.attachModule(new GrpModule);
+    rlmachine.AttachModule(new GrpModule);
   }
 
   // Use any old test case; it isn't getting executed

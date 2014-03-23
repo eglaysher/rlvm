@@ -209,7 +209,7 @@ struct objSetRect_0 : public RLOp_Void_1<IntConstant_T> {
 struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
   void operator()(RLMachine& machine, int buf, string val) {
     GraphicsObject& obj = getGraphicsObject(machine, this, buf);
-    std::string utf8str = cp932toUTF8(val, machine.getTextEncoding());
+    std::string utf8str = cp932toUTF8(val, machine.GetTextEncoding());
     obj.setTextText(utf8str);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -717,7 +717,7 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(
         std::bind(MutatorIsDone, std::ref(machine), this, obj, -1, name_));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 
  private:
@@ -732,7 +732,7 @@ class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
     wait_op->breakOnEvent(
         std::bind(MutatorIsDone, std::ref(machine), this, obj, repno, name_));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 
  private:
@@ -757,7 +757,7 @@ class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(std::bind(
         objectMutatorIsWorking, std::ref(machine), this, obj, -1, name_));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 
  private:
@@ -773,7 +773,7 @@ class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     wait_op->breakOnClicks();
     wait_op->breakOnEvent(std::bind(
         objectMutatorIsWorking, std::ref(machine), this, obj, repno, name_));
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 
  private:

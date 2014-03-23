@@ -77,7 +77,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
 
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, after, before, sel);
-    machine.pushLongOperation(effect);
+    machine.PushLongOperation(effect);
   }
 };
 
@@ -118,7 +118,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 
       LongOperation* effect =
           EffectFactory::buildFromSEL(machine, after, before, sel);
-      machine.pushLongOperation(effect);
+      machine.PushLongOperation(effect);
     }
   }
 };
@@ -239,7 +239,7 @@ struct bgrMulti_1
     boost::shared_ptr<Surface> after = graphics.renderToSurface();
     LongOperation* effect =
         EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(effect);
+    machine.PushLongOperation(effect);
   }
 };
 

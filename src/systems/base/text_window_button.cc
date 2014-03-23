@@ -325,6 +325,6 @@ void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
 
   // Push a LongOperation onto the stack which will restore
   // visibility when we return from this Exbtn call
-  machine.pushLongOperation(new RestoreTextSystemVisibility);
-  machine.farcall(scenario_, entrypoint_);
+  machine.PushLongOperation(new RestoreTextSystemVisibility);
+  machine.Farcall(scenario_, entrypoint_);
 }

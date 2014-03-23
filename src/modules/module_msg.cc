@@ -61,10 +61,10 @@ struct Msg_pause : public RLOp_Void_Void {
     boost::shared_ptr<TextWindow> textWindow = text.textWindow(windowNum);
 
     if (textWindow->actionOnPause()) {
-      machine.pushLongOperation(
+      machine.PushLongOperation(
           new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     } else {
-      machine.pushLongOperation(
+      machine.PushLongOperation(
           new NewPageOnAllAfterLongop(new PauseLongOperation(machine)));
     }
   }
@@ -95,7 +95,7 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
 
 struct doruby_display : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string cpStr) {
-    std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
+    std::string utf8str = cp932toUTF8(cpStr, machine.GetTextEncoding());
     machine.system().text().currentPage().DisplayRubyText(utf8str);
   }
 };
@@ -146,13 +146,13 @@ struct msgClearAll : public RLOp_Void_Void {
 
 struct spause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new PauseLongOperation(machine));
+    machine.PushLongOperation(new PauseLongOperation(machine));
   }
 };
 
 struct page : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new NewPageAfterLongop(new PauseLongOperation(machine)));
   }
 };

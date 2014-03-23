@@ -119,7 +119,7 @@ class ExpressionPiece {
 
   virtual void assignStringValue(RLMachine& machine,
                                  const std::string& rvalue);
-  virtual const std::string& getStringValue(RLMachine& machine) const;
+  virtual const std::string& GetStringValue(RLMachine& machine) const;
 
   // A persistable version of this value. This method should return RealLive
   // bytecode equal to this ExpressionPiece with all references returned.

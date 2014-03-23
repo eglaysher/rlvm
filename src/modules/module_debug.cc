@@ -54,7 +54,7 @@ struct DebugMessageInt : public RLOp_Void_1<IntConstant_T> {
 struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string value) {
     if (machine.system().gameexe()("MEMORY").exists()) {
-      std::string utfvalue = cp932toUTF8(value, machine.getTextEncoding());
+      std::string utfvalue = cp932toUTF8(value, machine.GetTextEncoding());
       std::cerr << "DebugMessage: " << utfvalue << std::endl;
     }
   }

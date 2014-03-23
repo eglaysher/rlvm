@@ -52,7 +52,7 @@ class RLMachineTest : public FullSystemTest {
          it != banks.end();
          ++it) {
       for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-        saveMachine.setIntValue(IntMemRef(it->second, i), count);
+        saveMachine.SetIntValue(IntMemRef(it->second, i), count);
         count++;
       }
     }
@@ -60,7 +60,7 @@ class RLMachineTest : public FullSystemTest {
 
   void setStrMemoryCountingFrom(RLMachine& saveMachine, int type, int count) {
     for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-      saveMachine.setStringValue(type, i, std::to_string(count));
+      saveMachine.SetStringValue(type, i, std::to_string(count));
       count++;
     }
   }
@@ -72,7 +72,7 @@ class RLMachineTest : public FullSystemTest {
          it != banks.end();
          ++it) {
       for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-        EXPECT_EQ(count, loadMachine.getIntValue(IntMemRef(it->second, i)));
+        EXPECT_EQ(count, loadMachine.GetIntValue(IntMemRef(it->second, i)));
         count++;
       }
     }
@@ -82,35 +82,35 @@ class RLMachineTest : public FullSystemTest {
                                    int type,
                                    int count) {
     for (int i = 0; i < SIZE_OF_MEM_BANK; ++i) {
-      EXPECT_EQ(std::to_string(count), loadMachine.getStringValue(type, i));
+      EXPECT_EQ(std::to_string(count), loadMachine.GetStringValue(type, i));
       count++;
     }
   }
 };
 
 TEST_F(RLMachineTest, RejectsDoubleAttachs) {
-  rlmachine.attachModule(new StrModule);
-  EXPECT_THROW({ rlmachine.attachModule(new StrModule); }, rlvm::Exception);
+  rlmachine.AttachModule(new StrModule);
+  EXPECT_THROW({ rlmachine.AttachModule(new StrModule); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, ReturnFromFarcallMismatch) {
-  EXPECT_THROW({ rlmachine.returnFromFarcall(); }, rlvm::Exception);
+  EXPECT_THROW({ rlmachine.ReturnFromFarcall(); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, ReturnFromGosubMismatch) {
-  EXPECT_THROW({ rlmachine.returnFromGosub(); }, rlvm::Exception);
+  EXPECT_THROW({ rlmachine.ReturnFromGosub(); }, rlvm::Exception);
 }
 
 TEST_F(RLMachineTest, Halts) {
   EXPECT_TRUE(!rlmachine.halted()) << "Machine does not start halted.";
-  rlmachine.halt();
+  rlmachine.Halt();
   EXPECT_TRUE(rlmachine.halted()) << "Machine is halted.";
 }
 
 TEST_F(RLMachineTest, RegisterStore) {
   for (int i = 0; i < 10; ++i) {
-    rlmachine.setStoreRegister(i);
-    EXPECT_EQ(i, rlmachine.getStoreRegisterValue());
+    rlmachine.set_store_register(i);
+    EXPECT_EQ(i, rlmachine.store_register());
   }
 }
 
@@ -121,20 +121,20 @@ TEST_F(RLMachineTest, StringMemory) {
   for (vector<int>::const_iterator it = types.begin(); it != types.end();
        ++it) {
     const string str = "Stored at " + std::to_string(*it);
-    rlmachine.setStringValue(*it, 0, str);
-    EXPECT_EQ(str, rlmachine.getStringValue(*it, 0));
+    rlmachine.SetStringValue(*it, 0, str);
+    EXPECT_EQ(str, rlmachine.GetStringValue(*it, 0));
   }
 }
 
 // Test error-inducing, string memory access.
 TEST_F(RLMachineTest, StringMemoryErrors) {
-  EXPECT_THROW({ rlmachine.setStringValue(STRK_LOCATION, 3, "Blah"); },
+  EXPECT_THROW({ rlmachine.SetStringValue(STRK_LOCATION, 3, "Blah"); },
                rlvm::Exception);
-  EXPECT_THROW({ rlmachine.setStringValue(STRM_LOCATION, 2000, "Blah"); },
+  EXPECT_THROW({ rlmachine.SetStringValue(STRM_LOCATION, 2000, "Blah"); },
                rlvm::Exception);
-  EXPECT_THROW({ rlmachine.getStringValue(STRK_LOCATION, 3); },
+  EXPECT_THROW({ rlmachine.GetStringValue(STRK_LOCATION, 3); },
                rlvm::Exception);
-  EXPECT_THROW({ rlmachine.getStringValue(STRM_LOCATION, 2000); },
+  EXPECT_THROW({ rlmachine.GetStringValue(STRM_LOCATION, 2000); },
                rlvm::Exception);
 }
 
@@ -157,28 +157,28 @@ TEST_F(RLMachineTest, IntegerMemory) {
   for (vector<char>::const_iterator it = banks.begin(); it != banks.end();
        ++it) {
     IntMemRef wordRef(*it, 0);
-    rlmachine.setIntValue(wordRef, base);
-    EXPECT_EQ(base, rlmachine.getIntValue(wordRef))
+    rlmachine.SetIntValue(wordRef, base);
+    EXPECT_EQ(base, rlmachine.GetIntValue(wordRef))
         << "Didn't record full value";
 
     for (int i = 0; i < 4; ++i) {
       IntMemRef comp(*it, "8b", i);
-      EXPECT_EQ(in8b[3 - i], rlmachine.getIntValue(comp))
+      EXPECT_EQ(in8b[3 - i], rlmachine.GetIntValue(comp))
           << "Could get partial value";
 
-      rlmachine.setIntValue(comp, rc);
+      rlmachine.SetIntValue(comp, rc);
     }
 
-    EXPECT_EQ(final, rlmachine.getIntValue(wordRef))
+    EXPECT_EQ(final, rlmachine.GetIntValue(wordRef))
         << "Changing the components didn't change the full value!";
   }
 }
 
 TEST_F(RLMachineTest, IntegerMemoryErrors) {
-  EXPECT_THROW({ rlmachine.getIntValue(IntMemRef(10, 0, 0)); },
+  EXPECT_THROW({ rlmachine.GetIntValue(IntMemRef(10, 0, 0)); },
                rlvm::Exception);
-  EXPECT_NO_THROW({ rlmachine.getIntValue(IntMemRef('A', 1999)); });  // NOLINT
-  EXPECT_THROW({ rlmachine.getIntValue(IntMemRef('A', 2000)); },
+  EXPECT_NO_THROW({ rlmachine.GetIntValue(IntMemRef('A', 1999)); });  // NOLINT
+  EXPECT_THROW({ rlmachine.GetIntValue(IntMemRef('A', 2000)); },
                rlvm::Exception);
 }
 
@@ -192,9 +192,9 @@ TEST_F(RLMachineTest, CheckNameLetterIndex) {
 
 TEST_F(RLMachineTest, NameStorage) {
   Memory& memory = rlmachine.memory();
-  EXPECT_EQ("Bob", memory.getName(Memory::ConvertLetterIndexToInt("A")));
+  EXPECT_EQ("Bob", memory.GetName(Memory::ConvertLetterIndexToInt("A")));
   EXPECT_EQ("Alice",
-            memory.getLocalName(Memory::ConvertLetterIndexToInt("AB")));
+            memory.GetLocalName(Memory::ConvertLetterIndexToInt("AB")));
 }
 
 TEST_F(RLMachineTest, Serialization) {
@@ -228,7 +228,7 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
     RLMachine saveMachine(system, arc);
 
     for (int i = 0; i < 10; i += 2) {
-      saveMachine.memory().recordKidoku(5, i);
+      saveMachine.memory().RecordKidoku(5, i);
     }
 
     Serialization::saveGlobalMemoryTo(ss, saveMachine);
@@ -240,7 +240,7 @@ TEST_F(RLMachineTest, SerializationOfKidoku) {
     Serialization::loadGlobalMemoryFrom(ss, loadMachine);
 
     for (int i = 0; i < 10; i++) {
-      EXPECT_EQ(!(i % 2), loadMachine.memory().hasBeenRead(5, i))
+      EXPECT_EQ(!(i % 2), loadMachine.memory().HasBeenRead(5, i))
           << "Didn't save kidoku table correctly!";
     }
   }
@@ -256,7 +256,7 @@ TEST_F(RLMachineTest, SerializationOfSavepointValues) {
     // Write the values we're going to check for.
     setIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 0);
     setStrMemoryCountingFrom(saveMachine, STRS_LOCATION, 0);
-    saveMachine.markSavepoint();
+    saveMachine.MarkSavepoint();
 
     // Verify that those values are written.
     verifyIntMemoryCountingFrom(saveMachine, LOCAL_INTEGER_BANKS, 0);

@@ -85,21 +85,21 @@ void LocalMemory::reset() {
 // -----------------------------------------------------------------------
 Memory::Memory(RLMachine& machine, Gameexe& gameexe)
     : global_(new GlobalMemory), local_(), machine_(machine) {
-  connectIntVarPointers();
+  ConnectIntVarPointers();
 
-  initializeDefaultValues(gameexe);
+  InitializeDefaultValues(gameexe);
 }
 
 Memory::Memory(RLMachine& machine, int slot)
     : global_(machine.memory().global_),
       local_(dont_initialize()),
       machine_(machine) {
-  connectIntVarPointers();
+  ConnectIntVarPointers();
 }
 
 Memory::~Memory() {}
 
-void Memory::connectIntVarPointers() {
+void Memory::ConnectIntVarPointers() {
   int_var[0] = local_.intA;
   int_var[1] = local_.intB;
   int_var[2] = local_.intC;
@@ -119,7 +119,7 @@ void Memory::connectIntVarPointers() {
   original_int_var[7] = NULL;
 }
 
-const std::string& Memory::getStringValue(int type, int location) {
+const std::string& Memory::GetStringValue(int type, int location) {
   if (location > (SIZE_OF_MEM_BANK - 1))
     throw rlvm::Exception(
         "Invalid range access in RLMachine::set_string_value");
@@ -129,10 +129,10 @@ const std::string& Memory::getStringValue(int type, int location) {
       if (location > 2) {
         throw rlvm::Exception(
             "Invalid range access on strK in RLMachine::set_string_value");
-      } else if (!machine_.currentStrKBank()) {
+      } else if (!machine_.CurrentStrKBank()) {
         throw rlvm::Exception("No string bank connected yet!");
       } else {
-        return machine_.currentStrKBank()[location];
+        return machine_.CurrentStrKBank()[location];
       }
     case libreallive::STRM_LOCATION:
       return global_->strM[location];
@@ -143,7 +143,7 @@ const std::string& Memory::getStringValue(int type, int location) {
   }
 }
 
-void Memory::setStringValue(int type, int number, const std::string& value) {
+void Memory::SetStringValue(int type, int number, const std::string& value) {
   if (number > (SIZE_OF_MEM_BANK - 1))
     throw rlvm::Exception(
         "Invalid range access in RLMachine::set_string_value");
@@ -153,10 +153,10 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
       if (number > 2) {
         throw rlvm::Exception(
             "Invalid range access on strK in RLMachine::set_string_value");
-      } else if (!machine_.currentStrKBank()) {
+      } else if (!machine_.CurrentStrKBank()) {
         throw rlvm::Exception("No string bank connected yet!");
       } else {
-        machine_.currentStrKBank()[number] = value;
+        machine_.CurrentStrKBank()[number] = value;
       }
       break;
     case libreallive::STRM_LOCATION:
@@ -178,7 +178,7 @@ void Memory::setStringValue(int type, int number, const std::string& value) {
   }
 }
 
-void Memory::checkNameIndex(int index, const std::string& name) const {
+void Memory::CheckNameIndex(int index, const std::string& name) const {
   if (index > (SIZE_OF_NAME_BANK - 1)) {
     std::ostringstream oss;
     oss << "Invalid index " << index << " in " << name;
@@ -186,27 +186,27 @@ void Memory::checkNameIndex(int index, const std::string& name) const {
   }
 }
 
-void Memory::setName(int index, const std::string& name) {
-  checkNameIndex(index, "Memory::set_name");
+void Memory::SetName(int index, const std::string& name) {
+  CheckNameIndex(index, "Memory::set_name");
   global_->global_names[index] = name;
 }
 
-const std::string& Memory::getName(int index) const {
-  checkNameIndex(index, "Memory::get_name");
+const std::string& Memory::GetName(int index) const {
+  CheckNameIndex(index, "Memory::get_name");
   return global_->global_names[index];
 }
 
-void Memory::setLocalName(int index, const std::string& name) {
-  checkNameIndex(index, "Memory::set_local_name");
+void Memory::SetLocalName(int index, const std::string& name) {
+  CheckNameIndex(index, "Memory::set_local_name");
   local_.local_names[index] = name;
 }
 
-const std::string& Memory::getLocalName(int index) const {
-  checkNameIndex(index, "Memory::set_local_name");
+const std::string& Memory::GetLocalName(int index) const {
+  CheckNameIndex(index, "Memory::set_local_name");
   return local_.local_names[index];
 }
 
-bool Memory::hasBeenRead(int scenario, int kidoku) const {
+bool Memory::HasBeenRead(int scenario, int kidoku) const {
   std::map<int, boost::dynamic_bitset<>>::const_iterator it =
       global_->kidoku_data.find(scenario);
 
@@ -217,7 +217,7 @@ bool Memory::hasBeenRead(int scenario, int kidoku) const {
   return false;
 }
 
-void Memory::recordKidoku(int scenario, int kidoku) {
+void Memory::RecordKidoku(int scenario, int kidoku) {
   boost::dynamic_bitset<>& bitset = global_->kidoku_data[scenario];
   if (bitset.size() <= static_cast<size_t>(kidoku))
     bitset.resize(kidoku + 1, false);
@@ -225,7 +225,7 @@ void Memory::recordKidoku(int scenario, int kidoku) {
   bitset[kidoku] = true;
 }
 
-void Memory::takeSavepointSnapshot() {
+void Memory::TakeSavepointSnapshot() {
   local_.original_intA.clear();
   local_.original_intB.clear();
   local_.original_intC.clear();
@@ -251,7 +251,7 @@ int Memory::ConvertLetterIndexToInt(const std::string& value) {
   return total;
 }
 
-void Memory::initializeDefaultValues(Gameexe& gameexe) {
+void Memory::InitializeDefaultValues(Gameexe& gameexe) {
   // Note: We ignore the \#NAME_MAXLEN variable because manual allocation is
   // error prone and for losers.
   GameexeFilteringIterator end = gameexe.filtering_end();
@@ -259,7 +259,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe) {
        it != end;
        ++it) {
     try {
-      setName(ConvertLetterIndexToInt(it->key_parts().at(1)),
+      SetName(ConvertLetterIndexToInt(it->key_parts().at(1)),
               removeQuotes(it->to_string()));
     }
     catch (...) {
@@ -271,7 +271,7 @@ void Memory::initializeDefaultValues(Gameexe& gameexe) {
        it != end;
        ++it) {
     try {
-      setLocalName(ConvertLetterIndexToInt(it->key_parts().at(1)),
+      SetLocalName(ConvertLetterIndexToInt(it->key_parts().at(1)),
                    removeQuotes(it->to_string()));
     }
     catch (...) {

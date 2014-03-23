@@ -104,7 +104,7 @@ struct bgmPlay_2
 
 struct bgmWait : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(MakeBgmWait(machine));
+    machine.PushLongOperation(MakeBgmWait(machine));
   }
 };
 
@@ -123,7 +123,7 @@ struct bgmSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
 struct bgmFadeOutEx : public RLOp_Void_1<DefaultIntValue_T<1000>> {
   void operator()(RLMachine& machine, int fadeout) {
     machine.system().sound().bgmFadeOut(fadeout);
-    machine.pushLongOperation(MakeBgmWait(machine));
+    machine.PushLongOperation(MakeBgmWait(machine));
   }
 };
 

@@ -37,7 +37,7 @@ namespace {
 
 struct LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
-    machine.loadDLL(slot, name);
+    machine.LoadDLL(slot, name);
   }
 };
 
@@ -54,7 +54,7 @@ struct CallDLL : public RLOp_Store_6<IntConstant_T,
                  int three,
                  int four,
                  int five) {
-    return machine.callDLL(index, one, two, three, four, five);
+    return machine.CallDLL(index, one, two, three, four, five);
   }
 };
 
@@ -62,7 +62,7 @@ struct CallDLL : public RLOp_Store_6<IntConstant_T,
 
 DLLModule::DLLModule() : RLModule("DLL", 2, 1) {
   addOpcode(10, 0, "LoadDLL", new LoadDLL);
-  addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::unloadDLL));
+  addOpcode(11, 0, "UnloadDLL", callFunction(&RLMachine::UnloadDLL));
 
   addOpcode(12, 0, "CallDLL", new CallDLL);
   addOpcode(12, 1, "CallDLL", new CallDLL);

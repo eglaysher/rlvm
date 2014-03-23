@@ -476,7 +476,7 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
       throw Error(ss.str());
     }
 
-    return piece->getStringValue(machine);
+    return piece->GetStringValue(machine);
   } else {
     // Just a normal string we can ignore
     return in;
@@ -552,14 +552,14 @@ void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
 
 int ExpressionPiece::integerValue(RLMachine& machine) const {
   throw libreallive::Error(
-      "ExpressionPiece::getStringValue() invalid on this object");
+      "ExpressionPiece::GetStringValue() invalid on this object");
 }
 
 void ExpressionPiece::assignStringValue(RLMachine& machine,
                                         const std::string&) {}
-const std::string& ExpressionPiece::getStringValue(RLMachine& machine) const {
+const std::string& ExpressionPiece::GetStringValue(RLMachine& machine) const {
   throw libreallive::Error(
-      "ExpressionPiece::getStringValue() invalid on this object");
+      "ExpressionPiece::GetStringValue() invalid on this object");
 }
 
 IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
@@ -580,21 +580,21 @@ bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
 
 void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine,
                                                   int rvalue) {
-  machine.setStoreRegister(rvalue);
+  machine.set_store_register(rvalue);
 }
 
 int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
-  return machine.getStoreRegisterValue();
+  return machine.store_register();
 }
 
 std::string StoreRegisterExpressionPiece::serializedValue(RLMachine& machine)
     const {
-  return IntToBytecode(machine.getStoreRegisterValue());
+  return IntToBytecode(machine.store_register());
 }
 
 std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine)
     const {
-  return std::to_string(machine.getStoreRegisterValue());
+  return std::to_string(machine.store_register());
 }
 
 std::string StoreRegisterExpressionPiece::getDebugString() const {
@@ -603,7 +603,7 @@ std::string StoreRegisterExpressionPiece::getDebugString() const {
 
 IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
     RLMachine& machine) const {
-  return IntReferenceIterator(machine.storeRegisterAddress());
+  return IntReferenceIterator(machine.store_register_address());
 }
 
 std::unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
@@ -644,7 +644,7 @@ ExpressionValueType StringConstant::expressionValueType() const {
   return ValueTypeString;
 }
 
-const std::string& StringConstant::getStringValue(RLMachine& machine) const {
+const std::string& StringConstant::GetStringValue(RLMachine& machine) const {
   return constant;
 }
 
@@ -684,26 +684,26 @@ ExpressionValueType MemoryReference::expressionValueType() const {
 }
 
 void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) {
-  return machine.setIntValue(IntMemRef(type, location->integerValue(machine)),
+  return machine.SetIntValue(IntMemRef(type, location->integerValue(machine)),
                              rvalue);
 }
 
 int MemoryReference::integerValue(RLMachine& machine) const {
-  return machine.getIntValue(IntMemRef(type, location->integerValue(machine)));
+  return machine.GetIntValue(IntMemRef(type, location->integerValue(machine)));
 }
 
 void MemoryReference::assignStringValue(RLMachine& machine,
                                         const std::string& rvalue) {
-  return machine.setStringValue(type, location->integerValue(machine), rvalue);
+  return machine.SetStringValue(type, location->integerValue(machine), rvalue);
 }
 
-const std::string& MemoryReference::getStringValue(RLMachine& machine) const {
-  return machine.getStringValue(type, location->integerValue(machine));
+const std::string& MemoryReference::GetStringValue(RLMachine& machine) const {
+  return machine.GetStringValue(type, location->integerValue(machine));
 }
 
 std::string MemoryReference::serializedValue(RLMachine& machine) const {
   if (isStringLocation(type)) {
-    return string("\"") + getStringValue(machine) + string("\"");
+    return string("\"") + GetStringValue(machine) + string("\"");
   } else {
     return IntToBytecode(integerValue(machine));
   }
@@ -711,7 +711,7 @@ std::string MemoryReference::serializedValue(RLMachine& machine) const {
 
 std::string MemoryReference::getDebugValue(RLMachine& machine) const {
   if (isStringLocation(type)) {
-    return string("\"") + getStringValue(machine) + string("\"");
+    return string("\"") + GetStringValue(machine) + string("\"");
   } else {
     return std::to_string(integerValue(machine));
   }

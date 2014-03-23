@@ -135,7 +135,7 @@ bool ButtonObjectSelectLongOperation::mouseButtonStateChanged(
 
 bool ButtonObjectSelectLongOperation::operator()(RLMachine& machine) {
   if (has_return_value_) {
-    machine.setStoreRegister(return_value_);
+    machine.set_store_register(return_value_);
     return true;
   } else {
     return false;

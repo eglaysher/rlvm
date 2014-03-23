@@ -286,7 +286,7 @@ struct Str_strtrunc : public RLOp_Void_2<StrReference_T, IntConstant_T> {
 // Changes half width characters to their full width equivalents.
 struct hantozen_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = hantozen_cp932(*dest, machine.getTextEncoding());
+    *dest = hantozen_cp932(*dest, machine.GetTextEncoding());
   }
 };
 
@@ -297,7 +297,7 @@ struct hantozen_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   std::string input,
                   StringReferenceIterator dest) {
-    *dest = hantozen_cp932(input, machine.getTextEncoding());
+    *dest = hantozen_cp932(input, machine.GetTextEncoding());
   }
 };
 
@@ -306,7 +306,7 @@ struct hantozen_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 // Changes full width characters to their half width equivalents.
 struct zentohan_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = zentohan_cp932(*dest, machine.getTextEncoding());
+    *dest = zentohan_cp932(*dest, machine.GetTextEncoding());
   }
 };
 
@@ -317,7 +317,7 @@ struct zentohan_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   std::string input,
                   StringReferenceIterator dest) {
-    *dest = zentohan_cp932(input, machine.getTextEncoding());
+    *dest = zentohan_cp932(input, machine.GetTextEncoding());
   }
 };
 
@@ -379,7 +379,7 @@ struct Lowercase_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 struct itoa_ws_0 : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine, int input, StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -394,7 +394,7 @@ struct itoa_ws_1
                   StringReferenceIterator dest,
                   int length) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, length, ' '),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -431,7 +431,7 @@ struct itoa_s_1
 struct itoa_w_0 : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine, int input, StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -446,7 +446,7 @@ struct itoa_w_1
                   StringReferenceIterator dest,
                   int length) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, length, '0'),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -567,7 +567,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
     // This is the point right before we are about to switch from cp932 to
     // unicode. If the character is supposed to be italic, the incoming values
     // may have been munged to be valid cp932 character.
-    int encoding = machine.getTextEncoding();
+    int encoding = machine.GetTextEncoding();
     size_t size = value.size();
     if (encoding != 0 && (size == 1 || size == 2)) {
       // Look at the first character in the
@@ -589,7 +589,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
       }
     }
 
-    machine.performTextout(value);
+    machine.PerformTextout(value);
   }
 };
 
@@ -598,8 +598,8 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
 // Prints an integer.
 struct Str_intout : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
-    // Assumption: Text is in whatever native encoding for getTextEncoding().
-    machine.performTextout(std::to_string(value));
+    // Assumption: Text is in whatever native encoding for GetTextEncoding().
+    machine.PerformTextout(std::to_string(value));
   }
 };
 

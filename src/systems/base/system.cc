@@ -211,10 +211,10 @@ void System::showSyscomMenu(RLMachine& machine) {
       // Multiple right clicks shouldn't spawn multiple copies of the menu
       // system on top of each other.
       in_menu_ = true;
-      machine.pushLongOperation(new MenuReseter(*this));
+      machine.PushLongOperation(new MenuReseter(*this));
 
       std::vector<int> cancelcall = gexe("CANCELCALL");
-      machine.farcall(cancelcall.at(0), cancelcall.at(1));
+      machine.Farcall(cancelcall.at(0), cancelcall.at(1));
     }
   } else if (platform_) {
     platform_->showNativeSyscomMenu(machine);
@@ -276,13 +276,13 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
       break;
     case SYSCOM_MENU_RETURN:
       // This is a hack since we probably have a bunch of crap on the stack.
-      machine.clearLongOperationsOffBackOfStack();
+      machine.ClearLongOperationsOffBackOfStack();
 
       // Simulate a MenuReturn.
       Sys_MenuReturn()(machine);
       break;
     case SYSCOM_EXIT_GAME:
-      machine.halt();
+      machine.Halt();
       break;
     case SYSCOM_SHOW_BACKGROUND:
       graphics().toggleInterfaceHidden();
@@ -316,8 +316,8 @@ void System::showSystemInfo(RLMachine& machine) {
     info.game_version = gameexe()("VERSION_STR").to_string("");
     info.game_path = gameexe()("__GAMEPATH").to_string("");
     info.rlvm_version = rlvm_version();
-    info.rlbabel_loaded = machine.dllLoaded("rlBabel");
-    info.text_transformation = machine.getTextEncoding();
+    info.rlbabel_loaded = machine.DllLoaded("rlBabel");
+    info.text_transformation = machine.GetTextEncoding();
 
     platform_->showSystemInfo(machine, info);
   }
@@ -386,7 +386,7 @@ bool System::fastForward() {
 void System::dumpRenderTree(RLMachine& machine) {
   std::ostringstream oss;
   oss << "Dump_SEEN" << std::setw(4) << std::setfill('0')
-      << machine.sceneNumber() << "_Line" << machine.lineNumber() << ".txt";
+      << machine.SceneNumber() << "_Line" << machine.line_number() << ".txt";
 
   std::ofstream tree(oss.str().c_str());
   graphics().refresh(&tree);
@@ -426,8 +426,8 @@ void System::invokeSaveOrLoad(RLMachine& machine,
     int entrypoint = raw_ints.at(1);
 
     text().setSystemVisible(false);
-    machine.pushLongOperation(new RestoreTextSystemVisibility);
-    machine.farcall(scenario, entrypoint);
+    machine.PushLongOperation(new RestoreTextSystemVisibility);
+    machine.Farcall(scenario, entrypoint);
   } else if (platform_) {
     platform_->invokeSyscomStandardUI(machine, syscom);
   }

@@ -197,7 +197,7 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
   try {
     // Must clear the stack before reseting the System because LongOperations
     // often hold references to objects in the System heiarchy.
-    machine.reset();
+    machine.Reset();
 
     boost::archive::text_iarchive ia(filtered_input);
     ia >> version >> header >> machine.memory().local() >> machine >>

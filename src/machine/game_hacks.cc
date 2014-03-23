@@ -51,17 +51,17 @@ void PBRIDE_ResetAutoMode(RLMachine& machine) {
 void LB_SkipBaseball(RLMachine& machine) {
   // Baseball is a weird minigame that requires talking to a DLL. :( We will
   // *never* emulate it properly without reverse engineering what the DLL does.
-  machine.returnFromFarcall();
+  machine.ReturnFromFarcall();
 }
 
 }  // namespace
 
-void addGameHacks(RLMachine& machine) {
+void AddGameHacks(RLMachine& machine) {
   std::string diskmark = machine.system().gameexe()("DISKMARK");
 
   if (diskmark == "P_BRIDE_SE.ENV") {
-    machine.addLineAction(310, 446, bind(PBRIDE_ResetAutoMode, ref(machine)));
+    machine.AddLineAction(310, 446, bind(PBRIDE_ResetAutoMode, ref(machine)));
   } else if (diskmark == "LB.ENV" || diskmark == "LB_EX.ENV") {
-    machine.addLineAction(7030, 15, bind(LB_SkipBaseball, ref(machine)));
+    machine.AddLineAction(7030, 15, bind(LB_SkipBaseball, ref(machine)));
   }
 }

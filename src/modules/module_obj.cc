@@ -127,7 +127,7 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
     handler->dispatch(machine, currentInstantiation);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 RLOperation* rangeMappingFun(RLOperation* op) {
@@ -162,7 +162,7 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   handler->setProperty(P_PARENTOBJ, objset);
   handler->dispatch(machine, currentInstantiation);
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 RLOperation* childObjMappingFun(RLOperation* op) {
@@ -212,7 +212,7 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
     handler->dispatch(machine, currentInstantiation);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 RLOperation* childRangeMappingFun(RLOperation* op) {

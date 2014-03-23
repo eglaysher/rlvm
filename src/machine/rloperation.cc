@@ -89,7 +89,7 @@ RLOperation::PropertyList::iterator RLOperation::findProperty(int property)
                  [&](Property& p) { return p.first == property; });
 }
 
-bool RLOperation::advanceInstructionPointer() { return true; }
+bool RLOperation::AdvanceInstructionPointer() { return true; }
 
 void RLOperation::dispatchFunction(RLMachine& machine,
                                    const libreallive::CommandElement& ff) {
@@ -109,8 +109,8 @@ void RLOperation::dispatchFunction(RLMachine& machine,
   // By default, we advacne the instruction pointer on any instruction we
   // perform. Weird special cases all derive from RLOp_SpecialCase, which
   // redefines the dispatcher, so this is ok.
-  if (advanceInstructionPointer())
-    machine.advanceInstructionPointer();
+  if (AdvanceInstructionPointer())
+    machine.AdvanceInstructionPointer();
 }
 
 void RLOperation::throw_unimplemented() {
@@ -203,7 +203,7 @@ StrConstant_T::type StrConstant_T::getData(
   // So to fix this, we break the COW semantics here by forcing a copy. I'd
   // prefer to do this in RLMachine or Memory, but I can't because they return
   // references.
-  string tmp = p[position++]->getStringValue(machine);
+  string tmp = p[position++]->GetStringValue(machine);
   return string(tmp.data(), tmp.size());
 }
 

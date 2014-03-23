@@ -56,12 +56,12 @@ struct Sel_select : public RLOp_SpecialCase {
                                libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
-    machine.pushLongOperation(new NormalSelectLongOperation(machine, element));
-    machine.advanceInstructionPointer();
+    machine.PushLongOperation(new NormalSelectLongOperation(machine, element));
+    machine.AdvanceInstructionPointer();
   }
 };
 
@@ -72,13 +72,13 @@ struct Sel_select_s : public RLOp_SpecialCase {
                                libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new ButtonSelectLongOperation(machine, element, 0));
-    machine.advanceInstructionPointer();
+    machine.AdvanceInstructionPointer();
   }
 };
 
@@ -100,8 +100,8 @@ struct Sel_select_w : public RLOp_SpecialCase {
                                libreallive::ExpressionPiecesVector& output) {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
 
@@ -117,45 +117,45 @@ struct Sel_select_w : public RLOp_SpecialCase {
     int active_window = text.activeWindow();
     text.hideAllTextWindows();
     text.setActiveWindow(window);
-    machine.pushLongOperation(new ClearAndRestoreWindow(active_window));
+    machine.PushLongOperation(new ClearAndRestoreWindow(active_window));
 
-    machine.pushLongOperation(new NormalSelectLongOperation(machine, element));
-    machine.advanceInstructionPointer();
+    machine.PushLongOperation(new NormalSelectLongOperation(machine, element));
+    machine.AdvanceInstructionPointer();
   }
 };
 
 struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new ButtonObjectSelectLongOperation(machine, group));
   }
 };
 
 struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     ButtonObjectSelectLongOperation* obj =
         new ButtonObjectSelectLongOperation(machine, group);
     obj->set_cancelable();
-    machine.pushLongOperation(obj);
+    machine.PushLongOperation(obj);
   }
 };
 
 struct Sel_select_objbtn_cancel_1
     : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int group, int se) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     ButtonObjectSelectLongOperation* obj =
         new ButtonObjectSelectLongOperation(machine, group);
     obj->set_cancelable();
-    machine.pushLongOperation(obj);
+    machine.PushLongOperation(obj);
   }
 };
 

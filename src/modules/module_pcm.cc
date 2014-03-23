@@ -45,7 +45,7 @@ bool NoLongerPlaying(RLMachine& machine, int channel) {
 void addPcmWait(RLMachine& machine, int channel) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
   wait_op->breakOnEvent(std::bind(NoLongerPlaying, std::ref(machine), channel));
-  machine.pushLongOperation(wait_op);
+  machine.PushLongOperation(wait_op);
 }
 
 struct wavPlay_0 : public RLOp_Void_1<StrConstant_T> {

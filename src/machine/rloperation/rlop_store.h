@@ -30,7 +30,7 @@ struct RLOp_Store_Void : public RLOp_NormalOperation<> {
   void dispatch(RLMachine& machine,
                 const libreallive::ExpressionPiecesVector& parameters) {
     int store = operator()(machine);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&) = 0;
@@ -42,7 +42,7 @@ struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
                 const libreallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     int store = operator()(machine, A::getData(machine, parameters, position));
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&, typename A::type) = 0;
@@ -56,7 +56,7 @@ struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
     int store = operator()(machine, a, b);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&, typename A::type, typename B::type) = 0;
@@ -71,7 +71,7 @@ struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
     typename B::type b = B::getData(machine, parameters, position);
     typename C::type c = C::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -90,7 +90,7 @@ struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
     typename C::type c = C::getData(machine, parameters, position);
     typename D::type d = D::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -111,7 +111,7 @@ struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E> {
     typename D::type d = D::getData(machine, parameters, position);
     typename E::type e = E::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -139,7 +139,7 @@ struct RLOp_Store_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
     typename E::type e = E::getData(machine, parameters, position);
     typename F::type f = F::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -170,7 +170,7 @@ struct RLOp_Store_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
     typename F::type f = F::getData(machine, parameters, position);
     typename G::type g = G::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -204,7 +204,7 @@ struct RLOp_Store_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
     typename G::type g = G::getData(machine, parameters, position);
     typename H::type h = H::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -241,7 +241,7 @@ struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
     typename H::type h = H::getData(machine, parameters, position);
     typename I::type i = I::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -282,7 +282,7 @@ struct RLOp_Store_10
     typename I::type i = I::getData(machine, parameters, position);
     typename J::type j = J::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i, j);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -326,7 +326,7 @@ struct RLOp_Store_11
     typename J::type j = J::getData(machine, parameters, position);
     typename K::type k = K::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i, j, k);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -373,7 +373,7 @@ struct RLOp_Store_12
     typename K::type k = K::getData(machine, parameters, position);
     typename L::type l = L::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -423,7 +423,7 @@ struct RLOp_Store_13
     typename L::type l = L::getData(machine, parameters, position);
     typename M::type m = M::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -476,7 +476,7 @@ struct RLOp_Store_14
     typename M::type m = M::getData(machine, parameters, position);
     typename N::type n = N::getData(machine, parameters, position);
     int store = operator()(machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -533,7 +533,7 @@ struct RLOp_Store_15
     typename O::type o = O::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -607,7 +607,7 @@ struct RLOp_Store_16 : public RLOp_NormalOperation<A,
     typename P::type p = P::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -685,7 +685,7 @@ struct RLOp_Store_17 : public RLOp_NormalOperation<A,
     typename Q::type q = Q::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -767,7 +767,7 @@ struct RLOp_Store_18 : public RLOp_NormalOperation<A,
     typename R::type r = R::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -853,7 +853,7 @@ struct RLOp_Store_19 : public RLOp_NormalOperation<A,
     typename S::type s = S::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -943,7 +943,7 @@ struct RLOp_Store_20 : public RLOp_NormalOperation<A,
     typename T::type t = T::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1037,7 +1037,7 @@ struct RLOp_Store_21 : public RLOp_NormalOperation<A,
     typename U::type u = U::getData(machine, parameters, position);
     int store = operator()(
         machine, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1156,7 +1156,7 @@ struct RLOp_Store_22 : public RLOp_NormalOperation<A,
                            t,
                            u,
                            v);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1280,7 +1280,7 @@ struct RLOp_Store_23 : public RLOp_NormalOperation<A,
                            u,
                            v,
                            w);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1409,7 +1409,7 @@ struct RLOp_Store_24 : public RLOp_NormalOperation<A,
                            v,
                            w,
                            x);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1543,7 +1543,7 @@ struct RLOp_Store_25 : public RLOp_NormalOperation<A,
                            w,
                            x,
                            y);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
@@ -1682,7 +1682,7 @@ struct RLOp_Store_26 : public RLOp_NormalOperation<A,
                            x,
                            y,
                            z);
-    machine.setStoreRegister(store);
+    machine.set_store_register(store);
   }
 
   virtual int operator()(RLMachine&,
