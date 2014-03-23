@@ -220,6 +220,23 @@ void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine) {
 }
 
 // -----------------------------------------------------------------------
+// NewPageOnAllAfterLongop
+// -----------------------------------------------------------------------
+NewPageOnAllAfterLongop::NewPageOnAllAfterLongop(LongOperation* inOp)
+    : PerformAfterLongOperationDecorator(inOp) {}
+
+NewPageOnAllAfterLongop::~NewPageOnAllAfterLongop() {}
+
+void NewPageOnAllAfterLongop::performAfterLongOperation(RLMachine& machine) {
+  TextSystem& text = machine.system().text();
+  text.snapshot();
+  for (int window : text.activeWindows()) {
+    text.textWindow(window)->clearWin();
+    text.newPageOnWindow(window);
+  }
+}
+
+// -----------------------------------------------------------------------
 // NewParagraphAfterLongop
 // -----------------------------------------------------------------------
 NewParagraphAfterLongop::NewParagraphAfterLongop(LongOperation* inOp)

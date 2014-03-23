@@ -65,7 +65,7 @@ struct Msg_pause : public RLOp_Void_Void {
           new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     } else {
       machine.pushLongOperation(
-          new NewPageAfterLongop(new PauseLongOperation(machine)));
+          new NewPageOnAllAfterLongop(new PauseLongOperation(machine)));
     }
   }
 };

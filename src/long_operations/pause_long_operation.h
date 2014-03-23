@@ -78,6 +78,18 @@ class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
 };
 
 // -----------------------------------------------------------------------
+// NewPageOnAllAfterLongop
+// -----------------------------------------------------------------------
+class NewPageOnAllAfterLongop : public PerformAfterLongOperationDecorator {
+ public:
+  explicit NewPageOnAllAfterLongop(LongOperation* inOp);
+  ~NewPageOnAllAfterLongop();
+
+ private:
+  virtual void performAfterLongOperation(RLMachine& machine);
+};
+
+// -----------------------------------------------------------------------
 // NewParagraphAfterLongop
 // -----------------------------------------------------------------------
 class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
