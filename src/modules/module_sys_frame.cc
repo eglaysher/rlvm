@@ -230,7 +230,7 @@ void addSysFrameOpcodes(RLModule& m) {
   m.addOpcode(534, 0, "ClearAllExFrames", new ClearAllFrames_0(1));
   m.addOpcode(534, 1, "ClearAllExFrames", new ClearAllFrames_1(1));
 
-  // Multiple dispatch operations on normal frame counters
+  // Multiple Dispatch operations on normal frame counters
   m.addOpcode(600,
               0,
               "InitFrames",
@@ -253,7 +253,7 @@ void addSysFrameOpcodes(RLModule& m) {
               new MultiDispatch(new InitFrame<DeceleratingFrameCounter>(0)));
   m.addOpcode(610, 0, "ReadFrames", new ReadFrames(0));
 
-  // Multiple dispatch operations on normal frame counters
+  // Multiple Dispatch operations on normal frame counters
   m.addOpcode(620,
               0,
               "InitExFrames",

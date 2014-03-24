@@ -83,7 +83,7 @@ void EventSystem::removeMouseListener(EventListener* listener) {
   event_listeners_.erase(listener);
 }
 
-void EventSystem::dispatchEvent(
+void EventSystem::DispatchEvent(
     RLMachine& machine,
     const std::function<bool(EventListener&)>& event) {
   // In addition to the handled variable, we need to add break statements to

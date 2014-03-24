@@ -469,14 +469,14 @@ void addObjectCreationFunctions(RLModule& m) {
 
 ObjFgCreationModule::ObjFgCreationModule() : RLModule("ObjFgCreation", 1, 71) {
   addObjectCreationFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ObjBgCreationModule::ObjBgCreationModule() : RLModule("ObjBgCreation", 1, 72) {
   addObjectCreationFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -484,7 +484,7 @@ ObjBgCreationModule::ObjBgCreationModule() : RLModule("ObjBgCreation", 1, 72) {
 ChildObjFgCreationModule::ChildObjFgCreationModule()
     : MappedRLModule(childObjMappingFun, "ChildObjFgCreation", 2, 71) {
   addObjectCreationFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -492,5 +492,5 @@ ChildObjFgCreationModule::ChildObjFgCreationModule()
 ChildObjBgCreationModule::ChildObjBgCreationModule()
     : MappedRLModule(childObjMappingFun, "ChildObjBgCreation", 2, 72) {
   addObjectCreationFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }

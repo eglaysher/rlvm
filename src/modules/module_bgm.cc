@@ -157,29 +157,29 @@ BgmModule::BgmModule() : RLModule("Bgm", 1, 20) {
 
   addOpcode(3, 0, "bgmWait", new bgmWait);
   addOpcode(4, 0, "bgmPlaying", new bgmPlaying);
-  addOpcode(5, 0, "bgmStop", callFunction(&SoundSystem::bgmStop));
-  addOpcode(6, 0, "bgmStop2", callFunction(&SoundSystem::bgmStop));
-  addOpcode(7, 0, "bgmStatus", returnIntValue(&SoundSystem::bgmStatus));
+  addOpcode(5, 0, "bgmStop", CallFunction(&SoundSystem::bgmStop));
+  addOpcode(6, 0, "bgmStop2", CallFunction(&SoundSystem::bgmStop));
+  addOpcode(7, 0, "bgmStatus", ReturnIntValue(&SoundSystem::bgmStatus));
   addUnsupportedOpcode(8, 0, "bgmRewind");
-  addOpcode(9, 0, "bgmPause", callFunction(&SoundSystem::bgmPause));
-  addOpcode(10, 0, "bgmUnPause", callFunction(&SoundSystem::bgmUnPause));
-  addOpcode(11, 0, "bgmVolume", returnIntValue(&SoundSystem::bgmVolumeScript));
+  addOpcode(9, 0, "bgmPause", CallFunction(&SoundSystem::bgmPause));
+  addOpcode(10, 0, "bgmUnPause", CallFunction(&SoundSystem::bgmUnPause));
+  addOpcode(11, 0, "bgmVolume", ReturnIntValue(&SoundSystem::bgmVolumeScript));
 
   addOpcode(12, 0, "bgmSetVolume", new bgmSetVolume_0);
   addOpcode(
-      12, 1, "bgmSetVolume", callFunction(&SoundSystem::setBgmVolumeScript));
+      12, 1, "bgmSetVolume", CallFunction(&SoundSystem::setBgmVolumeScript));
   addOpcode(13,
             0,
             "bgmUnMute",
-            callFunctionWith(&SoundSystem::setBgmVolumeScript, 255, 0));
+            CallFunctionWith(&SoundSystem::setBgmVolumeScript, 255, 0));
   addOpcode(13, 1, "bgmUnMute", new bgmUnMute_1);
   addOpcode(14,
             0,
             "bgmMute",
-            callFunctionWith(&SoundSystem::setBgmVolumeScript, 0, 0));
+            CallFunctionWith(&SoundSystem::setBgmVolumeScript, 0, 0));
   addOpcode(14, 1, "bgmMute", new bgmMute_1);
 
-  addOpcode(105, 0, "bgmFadeOut", callFunction(&SoundSystem::bgmFadeOut));
+  addOpcode(105, 0, "bgmFadeOut", CallFunction(&SoundSystem::bgmFadeOut));
 
   addOpcode(106, 0, "bgmFadeOutEx", new bgmFadeOutEx);
   addOpcode(106, 1, "bgmFadeOutEx", new bgmFadeOutEx);

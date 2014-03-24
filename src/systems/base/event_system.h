@@ -177,7 +177,7 @@ class EventSystem {
 
   // Calls a EventListener member function on all event listeners, and then
   // event handlers, stopping when an object says they handled it.
-  void dispatchEvent(RLMachine& machine,
+  void DispatchEvent(RLMachine& machine,
                      const std::function<bool(EventListener&)>& event);
   void broadcastEvent(RLMachine& machine,
                       const std::function<void(EventListener&)>& event);

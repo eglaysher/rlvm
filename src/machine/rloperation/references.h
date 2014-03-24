@@ -47,7 +47,7 @@ struct IntReference_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output);
 
@@ -71,7 +71,7 @@ struct StrReference_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output);
 

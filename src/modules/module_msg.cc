@@ -211,16 +211,16 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   addUnsupportedOpcode(100, 0, "SetFontColour");
   addOpcode(100, 1, "SetFontColour", new SetFontColour);
   addOpcode(100, 2, "SetFontColour", new SetFontColour);
-  addOpcode(101, 0, "FontSize", callFunction(&TextPage::FontSize));
-  addOpcode(101, 1, "FontSize", callFunction(&TextPage::DefaultFontSize));
+  addOpcode(101, 0, "FontSize", CallFunction(&TextPage::FontSize));
+  addOpcode(101, 1, "FontSize", CallFunction(&TextPage::DefaultFontSize));
 
   addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
   addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
   addOpcode(
-      103, 0, "FastText", callFunctionWith(&TextSystem::setFastTextMode, 1));
+      103, 0, "FastText", CallFunctionWith(&TextSystem::setFastTextMode, 1));
   addOpcode(
-      104, 0, "NormalText", callFunctionWith(&TextSystem::setFastTextMode, 0));
+      104, 0, "NormalText", CallFunctionWith(&TextSystem::setFastTextMode, 0));
 
   addOpcode(105, 0, "FontColor", new FontColour);
   addOpcode(105, 1, "FontColor", new FontColour);
@@ -235,16 +235,16 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   addOpcode(109,
             0,
             "messageNoWaitOn",
-            callFunctionWith(&TextSystem::setScriptMessageNowait, 1));
+            CallFunctionWith(&TextSystem::setScriptMessageNowait, 1));
   addOpcode(110,
             0,
             "messageNoWaitOff",
-            callFunctionWith(&TextSystem::setScriptMessageNowait, 0));
+            CallFunctionWith(&TextSystem::setScriptMessageNowait, 0));
 
-  addOpcode(111, 0, "activeWindow", returnIntValue(&TextSystem::activeWindow));
+  addOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::activeWindow));
 
   addOpcode(120, 0, "__doruby_on", new doruby_display);
-  addOpcode(120, 1, "__doruby_off", callFunction(&TextPage::MarkRubyBegin));
+  addOpcode(120, 1, "__doruby_off", CallFunction(&TextPage::MarkRubyBegin));
 
   addOpcode(151, 0, "msgHide", new msgHide);
   addOpcode(152, 0, "msgClear", new msgClear);
@@ -252,23 +252,23 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   addOpcode(161, 0, "msgHideAll", new msgHideAll);
   addOpcode(162, 0, "msgClearAll", new msgClearAll);
   addUnsupportedOpcode(170, 0, "msgHideAllTemp");
-  addOpcode(201, 0, "br", callFunction(&TextPage::HardBrake));
+  addOpcode(201, 0, "br", CallFunction(&TextPage::HardBrake));
   addOpcode(205, 0, "spause", new spause);
   addUnsupportedOpcode(206, 0, "spause2");
   addUnsupportedOpcode(207, 0, "pause_all");
   addOpcode(210, 0, "page", new page);
 
-  addOpcode(300, 0, "SetIndent", callFunction(&TextPage::SetIndentation));
-  addOpcode(301, 0, "ClearIndent", callFunction(&TextPage::ResetIndentation));
+  addOpcode(300, 0, "SetIndent", CallFunction(&TextPage::SetIndentation));
+  addOpcode(301, 0, "ClearIndent", CallFunction(&TextPage::ResetIndentation));
 
   addOpcode(310, 0, "TextPos", new TextPos);
-  addOpcode(311, 0, "TextPosX", callFunction(&TextPage::SetInsertionPointX));
-  addOpcode(312, 0, "TextPosY", callFunction(&TextPage::SetInsertionPointY));
+  addOpcode(311, 0, "TextPosX", CallFunction(&TextPage::SetInsertionPointX));
+  addOpcode(312, 0, "TextPosY", CallFunction(&TextPage::SetInsertionPointY));
   addOpcode(320, 0, "TextOffset", new TextOffset);
   addOpcode(
-      321, 0, "TextOffsetX", callFunction(&TextPage::OffsetInsertionPointX));
+      321, 0, "TextOffsetX", CallFunction(&TextPage::OffsetInsertionPointX));
   addOpcode(
-      322, 0, "TextOffsetY", callFunction(&TextPage::OffsetInsertionPointY));
+      322, 0, "TextOffsetY", CallFunction(&TextPage::OffsetInsertionPointY));
   addOpcode(330, 0, "GetTextPos", new GetTextPos);
 
   addUnsupportedOpcode(340, 0, "WindowLen");

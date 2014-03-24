@@ -81,26 +81,26 @@ struct GetDCPixel : public RLOp_Void_6<IntConstant_T,
 // -----------------------------------------------------------------------
 
 ScrModule::ScrModule() : RLModule("Scr", 1, 30) {
-  addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
+  addOpcode(0, 0, "stackClear", CallFunction(&GraphicsSystem::clearStack));
   addOpcode(1, 0, "stackNop", new stackNop);
-  addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
-  addOpcode(3, 0, "stackSize", returnIntValue(&GraphicsSystem::stackSize));
+  addOpcode(2, 0, "stackPop", CallFunction(&GraphicsSystem::stackPop));
+  addOpcode(3, 0, "stackSize", ReturnIntValue(&GraphicsSystem::stackSize));
   addOpcode(4, 0, "stackTrunc", new stackTrunc);
 
   addOpcode(20,
             0,
             "DrawAuto",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
   addOpcode(21,
             0,
             "DrawSemiAuto",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
   addOpcode(22,
             0,
             "DrawManual",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::setScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 
   addOpcode(31, 0, "GetDCPixel", new GetDCPixel);

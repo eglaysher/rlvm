@@ -58,8 +58,8 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
             back_inserter(binary_strings),
             bind(&printableToParsableString, _1));
 
-  t.parseParameters(binary_strings, expression_pieces);
-  t.dispatch(machine, expression_pieces);
+  t.ParseParameters(binary_strings, expression_pieces);
+  t.Dispatch(machine, expression_pieces);
 }
 
 // -----------------------------------------------------------------------
@@ -152,8 +152,8 @@ TEST_F(RLOperationTest, TestStringConstant_T) {
 
   vector<string> unparsed = {"\"string one\"", "\"string two\""};
   ExpressionPiecesVector expression_pieces;
-  capturer.parseParameters(unparsed, expression_pieces);
-  capturer.dispatch(rlmachine, expression_pieces);
+  capturer.ParseParameters(unparsed, expression_pieces);
+  capturer.Dispatch(rlmachine, expression_pieces);
 
   EXPECT_EQ("string one", one);
   EXPECT_EQ("string two", two);

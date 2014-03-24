@@ -174,8 +174,8 @@ KoeModule::KoeModule() : RLModule("Koe", 1, 23) {
   addOpcode(1, 1, "koePlayEx", new koePlayEx_1);
 
   addOpcode(3, 0, "koeWait", new koeWait);
-  addOpcode(4, 0, "koePlaying", returnIntValue(&SoundSystem::koePlaying));
-  addOpcode(5, 0, "koeStop", callFunction(&SoundSystem::koeStop));
+  addOpcode(4, 0, "koePlaying", ReturnIntValue(&SoundSystem::koePlaying));
+  addOpcode(5, 0, "koeStop", CallFunction(&SoundSystem::koeStop));
   addOpcode(6, 0, "koeWaitC", new koeWaitC);
 
   addOpcode(7, 0, "koePlayExC", new koePlayExC_0);
@@ -190,16 +190,16 @@ KoeModule::KoeModule() : RLModule("Koe", 1, 23) {
   addOpcode(10, 0, "koeDoPlayExC", new koePlayExC_0);
   addOpcode(10, 1, "koeDoPlayExC", new koeDoPlayExC_1);
 
-  addOpcode(11, 0, "koeVolume", returnIntValue(&SoundSystem::koeVolume));
+  addOpcode(11, 0, "koeVolume", ReturnIntValue(&SoundSystem::koeVolume));
 
   addOpcode(12, 0, "koeSetVolume", new koeSetVolume_0);
-  addOpcode(12, 1, "koeSetVolume", callFunction(&SoundSystem::setKoeVolume));
+  addOpcode(12, 1, "koeSetVolume", CallFunction(&SoundSystem::setKoeVolume));
 
   addOpcode(
-      13, 0, "koeUnMute", callFunctionWith(&SoundSystem::setKoeVolume, 255, 0));
+      13, 0, "koeUnMute", CallFunctionWith(&SoundSystem::setKoeVolume, 255, 0));
   addOpcode(13, 1, "koeUnMute", new koeUnMute_1);
 
   addOpcode(
-      14, 0, "koeMute", callFunctionWith(&SoundSystem::setKoeVolume, 0, 0));
+      14, 0, "koeMute", CallFunctionWith(&SoundSystem::setKoeVolume, 0, 0));
   addOpcode(14, 1, "koeMute", new koeMute_1);
 }

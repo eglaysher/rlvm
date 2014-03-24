@@ -151,8 +151,9 @@ struct Jmp_goto : public RLOp_SpecialCase {
 // The rest of the goto statements must parse their expressions before use. By
 // default, special cases treat this as data instead of expressions.
 struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {
     for (auto const& parameter : input) {
       const char* src = parameter.c_str();
       output.push_back(libreallive::get_expression(src));
@@ -310,7 +311,7 @@ struct ret : public RLOp_Void_Void {
 //
 // Jumps the instruction pointer to the begining of the |scenario|.
 struct jump_0 : public RLOp_Void_1<IntConstant_T> {
-  virtual bool AdvanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
     machine.Jump(scenario, 0);
@@ -321,7 +322,7 @@ struct jump_0 : public RLOp_Void_1<IntConstant_T> {
 //
 // Jumps the instruction pointer to |entrypoint| of |scenario|.
 struct jump_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  virtual bool AdvanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
     machine.Jump(scenario, entrypoint);
@@ -332,7 +333,7 @@ struct jump_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 //
 // Farcalls the instruction pointer to the begining of the |scenario|.
 struct farcall_0 : public RLOp_Void_1<IntConstant_T> {
-  virtual bool AdvanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
     machine.Farcall(scenario, 0);
@@ -343,7 +344,7 @@ struct farcall_0 : public RLOp_Void_1<IntConstant_T> {
 //
 // Farcalls the instruction pointer to |entrypoint| of |scenario|.
 struct farcall_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
-  virtual bool AdvanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
     machine.Farcall(scenario, entrypoint);
@@ -420,7 +421,7 @@ struct farcall_with
           IntConstant_T,
           Argc_T<
               Special_T<DefaultSpecialMapper, IntConstant_T, StrConstant_T>>> {
-  virtual bool AdvanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine,
                   int scenario,

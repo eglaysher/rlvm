@@ -92,7 +92,7 @@ class NotificationService {
 
   // Keeps track of the observers for each type of notification.
   // Until we get a prohibitively large number of notification types,
-  // a simple array is probably the fastest way to dispatch.
+  // a simple array is probably the fastest way to Dispatch.
   NotificationSourceMap observers_[NotificationType::NOTIFICATION_TYPE_COUNT];
 };
 

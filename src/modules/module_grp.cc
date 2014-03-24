@@ -1029,7 +1029,7 @@ typedef Argc_T<Special_T<
 // following is fairly difficult to read; it comes from the quagmire of
 // composing Special_T and ComplexX_T templates.
 //
-// In the end, this operation struct simply dispatches the Special/Complex
+// In the end, this operation struct simply Dispatches the Special/Complex
 // commands to functions and other operation structs that are clearer in
 // purpose.
 //
@@ -1178,7 +1178,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
   explicit GrpStackAdapter(RLOperation* in) : operation(in) {}
 
   void operator()(RLMachine& machine, const libreallive::CommandElement& ff) {
-    operation->dispatchFunction(machine, ff);
+    operation->DispatchFunction(machine, ff);
 
     // Record this command's reallive bytecode form onto the graphics stack.
     machine.system().graphics().addGraphicsStackCommand(
@@ -1200,7 +1200,7 @@ GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
   using rect_impl::REC;
 
   addOpcode(15, 0, "allocDC", new allocDC);
-  addOpcode(16, 0, "freeDC", callFunction(&GraphicsSystem::freeDC));
+  addOpcode(16, 0, "freeDC", CallFunction(&GraphicsSystem::freeDC));
 
   addUnsupportedOpcode(20, 0, "grpLoadMask");
   // addOpcode(30, 0, new grpTextout);

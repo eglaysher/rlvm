@@ -64,18 +64,18 @@ void addSysSyscomOpcodes(RLModule& m) {
   m.addOpcode(1210, 0, "ContextMenu", new ContextMenu);
 
   m.addOpcode(
-      1211, 0, "EnableSyscom", callFunction(&System::enableSyscomEntry));
-  m.addOpcode(1211, 1, "EnableSyscom", callFunction(&System::enableSyscom));
+      1211, 0, "EnableSyscom", CallFunction(&System::enableSyscomEntry));
+  m.addOpcode(1211, 1, "EnableSyscom", CallFunction(&System::enableSyscom));
 
-  m.addOpcode(1212, 0, "HideSyscom", callFunction(&System::hideSyscomEntry));
-  m.addOpcode(1212, 1, "HideSyscom", callFunction(&System::hideSyscom));
+  m.addOpcode(1212, 0, "HideSyscom", CallFunction(&System::hideSyscomEntry));
+  m.addOpcode(1212, 1, "HideSyscom", CallFunction(&System::hideSyscom));
 
   m.addOpcode(
-      1213, 0, "DisableSyscom", callFunction(&System::disableSyscomEntry));
+      1213, 0, "DisableSyscom", CallFunction(&System::disableSyscomEntry));
 
   m.addOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
 
-  m.addOpcode(1215, 0, "InvokeSyscom", callFunction(&System::invokeSyscom));
+  m.addOpcode(1215, 0, "InvokeSyscom", CallFunction(&System::invokeSyscom));
   m.addUnsupportedOpcode(1215, 1, "InvokeSyscom");
   m.addUnsupportedOpcode(1216, 0, "ReadSyscom");
 }

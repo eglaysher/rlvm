@@ -99,14 +99,14 @@ struct GetDateTime : public RLOp_Void_8<IntReference_T,
 }  // namespace
 
 void addSysDateOpcodes(RLModule& m) {
-  m.addOpcode(1100, 0, "GetYear", returnIntValue(datetime::getYear));
-  m.addOpcode(1101, 0, "GetMonth", returnIntValue(datetime::getMonth));
-  m.addOpcode(1102, 0, "GetDay", returnIntValue(datetime::getDay));
-  m.addOpcode(1103, 0, "GetDayOfWeek", returnIntValue(datetime::getDayOfWeek));
-  m.addOpcode(1104, 0, "GetHour", returnIntValue(datetime::getHour));
-  m.addOpcode(1105, 0, "GetMinute", returnIntValue(datetime::getMinute));
-  m.addOpcode(1106, 0, "GetSecond", returnIntValue(datetime::getSecond));
-  m.addOpcode(1107, 0, "GetMs", returnIntValue(datetime::getMs));
+  m.addOpcode(1100, 0, "GetYear", ReturnIntValue(datetime::getYear));
+  m.addOpcode(1101, 0, "GetMonth", ReturnIntValue(datetime::getMonth));
+  m.addOpcode(1102, 0, "GetDay", ReturnIntValue(datetime::getDay));
+  m.addOpcode(1103, 0, "GetDayOfWeek", ReturnIntValue(datetime::getDayOfWeek));
+  m.addOpcode(1104, 0, "GetHour", ReturnIntValue(datetime::getHour));
+  m.addOpcode(1105, 0, "GetMinute", ReturnIntValue(datetime::getMinute));
+  m.addOpcode(1106, 0, "GetSecond", ReturnIntValue(datetime::getSecond));
+  m.addOpcode(1107, 0, "GetMs", ReturnIntValue(datetime::getMs));
   m.addOpcode(1110, 0, "GetDate", new GetDate);
   m.addOpcode(1111, 0, "GetTime", new GetTime);
   m.addOpcode(1112, 0, "GetDateTime", new GetDateTime);

@@ -27,8 +27,9 @@
 #include "machine/rlmachine.h"
 
 struct RLOp_Store_Void : public RLOp_NormalOperation<> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     int store = operator()(machine);
     machine.set_store_register(store);
   }
@@ -38,8 +39,9 @@ struct RLOp_Store_Void : public RLOp_NormalOperation<> {
 
 template <typename A>
 struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     int store = operator()(machine, A::getData(machine, parameters, position));
     machine.set_store_register(store);
@@ -50,8 +52,9 @@ struct RLOp_Store_1 : public RLOp_NormalOperation<A> {
 
 template <typename A, typename B>
 struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -64,8 +67,9 @@ struct RLOp_Store_2 : public RLOp_NormalOperation<A, B> {
 
 template <typename A, typename B, typename C>
 struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -82,8 +86,9 @@ struct RLOp_Store_3 : public RLOp_NormalOperation<A, B, C> {
 
 template <typename A, typename B, typename C, typename D>
 struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -102,8 +107,9 @@ struct RLOp_Store_4 : public RLOp_NormalOperation<A, B, C, D> {
 
 template <typename A, typename B, typename C, typename D, typename E>
 struct RLOp_Store_5 : public RLOp_NormalOperation<A, B, C, D, E> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -129,8 +135,9 @@ template <typename A,
           typename E,
           typename F>
 struct RLOp_Store_6 : public RLOp_NormalOperation<A, B, C, D, E, F> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -159,8 +166,9 @@ template <typename A,
           typename F,
           typename G>
 struct RLOp_Store_7 : public RLOp_NormalOperation<A, B, C, D, E, F, G> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -192,8 +200,9 @@ template <typename A,
           typename G,
           typename H>
 struct RLOp_Store_8 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -228,8 +237,9 @@ template <typename A,
           typename H,
           typename I>
 struct RLOp_Store_9 : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -268,8 +278,9 @@ template <typename A,
           typename J>
 struct RLOp_Store_10
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -311,8 +322,9 @@ template <typename A,
           typename K>
 struct RLOp_Store_11
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -357,8 +369,9 @@ template <typename A,
           typename L>
 struct RLOp_Store_12
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -406,8 +419,9 @@ template <typename A,
           typename M>
 struct RLOp_Store_13
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -458,8 +472,9 @@ template <typename A,
           typename N>
 struct RLOp_Store_14
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -513,8 +528,9 @@ template <typename A,
           typename O>
 struct RLOp_Store_15
     : public RLOp_NormalOperation<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -586,8 +602,9 @@ struct RLOp_Store_16 : public RLOp_NormalOperation<A,
                                                    N,
                                                    O,
                                                    P> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -663,8 +680,9 @@ struct RLOp_Store_17 : public RLOp_NormalOperation<A,
                                                    O,
                                                    P,
                                                    Q> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -744,8 +762,9 @@ struct RLOp_Store_18 : public RLOp_NormalOperation<A,
                                                    P,
                                                    Q,
                                                    R> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -829,8 +848,9 @@ struct RLOp_Store_19 : public RLOp_NormalOperation<A,
                                                    Q,
                                                    R,
                                                    S> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -918,8 +938,9 @@ struct RLOp_Store_20 : public RLOp_NormalOperation<A,
                                                    R,
                                                    S,
                                                    T> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1011,8 +1032,9 @@ struct RLOp_Store_21 : public RLOp_NormalOperation<A,
                                                    S,
                                                    T,
                                                    U> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1108,8 +1130,9 @@ struct RLOp_Store_22 : public RLOp_NormalOperation<A,
                                                    T,
                                                    U,
                                                    V> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1230,8 +1253,9 @@ struct RLOp_Store_23 : public RLOp_NormalOperation<A,
                                                    U,
                                                    V,
                                                    W> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1357,8 +1381,9 @@ struct RLOp_Store_24 : public RLOp_NormalOperation<A,
                                                    V,
                                                    W,
                                                    X> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1489,8 +1514,9 @@ struct RLOp_Store_25 : public RLOp_NormalOperation<A,
                                                    W,
                                                    X,
                                                    Y> {
-  void dispatch(RLMachine& machine,
-                const libreallive::ExpressionPiecesVector& parameters) {
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);
     typename B::type b = B::getData(machine, parameters, position);
@@ -1626,7 +1652,7 @@ struct RLOp_Store_26 : public RLOp_NormalOperation<A,
                                                    X,
                                                    Y,
                                                    Z> {
-  void dispatch(RLMachine& machine,
+  void Dispatch(RLMachine& machine,
                 const libreallive::ExpressionPiecesVector& parameters) {
     unsigned int position = 0;
     typename A::type a = A::getData(machine, parameters, position);

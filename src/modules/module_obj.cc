@@ -56,11 +56,11 @@ GraphicsObject& getGraphicsObject(RLMachine& machine,
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if (!op->getProperty(P_FGBG, fgbg))
+  if (!op->GetProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
-  if (op->getProperty(P_PARENTOBJ, parentobj)) {
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     ensureIsParentObject(parent, graphics.objectLayerSize());
     return static_cast<ParentGraphicsObjectData&>(parent.objectData())
@@ -77,11 +77,11 @@ void setGraphicsObject(RLMachine& machine,
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if (!op->getProperty(P_FGBG, fgbg))
+  if (!op->GetProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
-  if (op->getProperty(P_PARENTOBJ, parentobj)) {
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     ensureIsParentObject(parent, graphics.objectLayerSize());
     static_cast<ParentGraphicsObjectData&>(parent.objectData())
@@ -104,8 +104,8 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
     throw rlvm::Exception("Less then two arguments to an objRange function!");
 
   // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
-  // what RLOperation.dispatchFunction() does; we manually call the
-  // subclass's dispatch() so that we can get around the automated
+  // what RLOperation.DispatchFunction() does; we manually call the
+  // subclass's Dispatch() so that we can get around the automated
   // incrementing of the instruction pointer.
   int lowerRange = allParameters[0]->integerValue(machine);
   int upperRange = allParameters[1]->integerValue(machine);
@@ -123,8 +123,8 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
       currentInstantiation.emplace_back((*it)->clone());
     }
 
-    // Now dispatch based on these parameters.
-    handler->dispatch(machine, currentInstantiation);
+    // Now Dispatch based on these parameters.
+    handler->Dispatch(machine, currentInstantiation);
   }
 
   machine.AdvanceInstructionPointer();
@@ -159,8 +159,8 @@ void ChildObjAdapter::operator()(RLMachine& machine,
     currentInstantiation.emplace_back((*it)->clone());
   }
 
-  handler->setProperty(P_PARENTOBJ, objset);
-  handler->dispatch(machine, currentInstantiation);
+  handler->SetProperty(P_PARENTOBJ, objset);
+  handler->Dispatch(machine, currentInstantiation);
 
   machine.AdvanceInstructionPointer();
 }
@@ -207,9 +207,9 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
       currentInstantiation.emplace_back((*it)->clone());
     }
 
-    // Now dispatch based on these parameters.
-    handler->setProperty(P_PARENTOBJ, objset);
-    handler->dispatch(machine, currentInstantiation);
+    // Now Dispatch based on these parameters.
+    handler->SetProperty(P_PARENTOBJ, objset);
+    handler->Dispatch(machine, currentInstantiation);
   }
 
   machine.AdvanceInstructionPointer();

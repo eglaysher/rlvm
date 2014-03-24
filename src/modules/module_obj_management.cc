@@ -155,7 +155,7 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     // tampered with by the ChildObjAdaptor. So use P_PARENTOBJ as our toplevel
     // object.
     int parentobj;
-    if (getProperty(P_PARENTOBJ, parentobj)) {
+    if (GetProperty(P_PARENTOBJ, parentobj)) {
       GraphicsObject& go = sys.getObject(fgbg_, parentobj);
       ensureIsParentObject(go, sys.objectLayerSize());
 
@@ -174,7 +174,7 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
-  addOpcode(0, 0, "objFree", callFunction(&GraphicsSystem::clearObject));
+  addOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::clearObject));
 
   addOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
 
@@ -184,16 +184,16 @@ ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
   addOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
   addOpcode(
-      100, 0, "objClearAll", callFunction(&GraphicsSystem::clearAllObjects));
+      100, 0, "objClearAll", CallFunction(&GraphicsSystem::clearAllObjects));
   addOpcode(110,
             0,
             "objResetPropertiesAll",
-            callFunction(&GraphicsSystem::resetAllObjectsProperties));
+            CallFunction(&GraphicsSystem::resetAllObjectsProperties));
 
   // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
   // op<1:60:100, 0>. May have differences?
   addOpcode(
-      111, 0, "objClearAll2", callFunction(&GraphicsSystem::clearAllObjects));
+      111, 0, "objClearAll2", CallFunction(&GraphicsSystem::clearAllObjects));
 }
 
 // -----------------------------------------------------------------------
@@ -203,7 +203,7 @@ ObjFgManagement::ObjFgManagement() : RLModule("ObjFgManagement", 1, 61) {
   addOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -213,7 +213,7 @@ ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
   addOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -226,7 +226,7 @@ ChildObjFgManagement::ChildObjFgManagement()
   addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -239,7 +239,7 @@ ChildObjBgManagement::ChildObjBgManagement()
   addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------

@@ -101,7 +101,7 @@ void TestMachine::runOpcode(const std::string& name,
 
   RLOperation* op = registry_[make_pair(name, overload)];
   if (op) {
-    op->dispatchFunction(*this, *element.get());
+    op->DispatchFunction(*this, *element.get());
   } else {
     throw rlvm::Exception("Illegal opcode TestMachine::runOpcode");
   }

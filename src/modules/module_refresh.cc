@@ -34,5 +34,5 @@
 #include "systems/base/graphics_system.h"
 
 RefreshModule::RefreshModule() : RLModule("Refresh", 1, 31) {
-  addOpcode(0, 0, "refresh", callFunction(&GraphicsSystem::forceRefresh));
+  addOpcode(0, 0, "refresh", CallFunction(&GraphicsSystem::forceRefresh));
 }

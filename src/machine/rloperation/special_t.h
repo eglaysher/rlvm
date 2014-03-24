@@ -153,7 +153,7 @@ struct Special_T {
     return par;
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();

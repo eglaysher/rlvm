@@ -54,7 +54,7 @@ struct Complex2_T {
     return type(a, b);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
@@ -92,7 +92,7 @@ struct Complex3_T {
     return type(a, b, c);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
@@ -136,7 +136,7 @@ struct Complex4_T {
     return type(a, b, c, d);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
@@ -195,7 +195,7 @@ struct Complex7_T {
     return type(a, b, c, d, e, f, g);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
@@ -257,7 +257,7 @@ struct Complex8_T {
     return type(a, b, c, d, e, f, g, h);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();

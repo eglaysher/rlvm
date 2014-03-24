@@ -121,13 +121,13 @@ class RLModule {
   // Accessor that returns this module's mnemonic nmae
   const std::string& moduleName() const { return module_name_; }
 
-  void setProperty(int property, int value);
-  bool getProperty(int property, int& value) const;
+  void SetProperty(int property, int value);
+  bool GetProperty(int property, int& value) const;
 
   // Using the bytecode element CommandElement f, try to find an
   // RLOperation implementation of the instruction in this module, and
   // execute it.
-  void dispatchFunction(RLMachine& machine,
+  void DispatchFunction(RLMachine& machine,
                         const libreallive::CommandElement& f);
 
   OpcodeMap::iterator begin() { return stored_operations_.begin(); }
@@ -147,7 +147,7 @@ class RLModule {
   typedef std::pair<int, int> Property;
   typedef std::vector<Property> PropertyList;
 
-  PropertyList::iterator findProperty(int property) const;
+  PropertyList::iterator FindProperty(int property) const;
 
   PropertyList* property_list_;
 

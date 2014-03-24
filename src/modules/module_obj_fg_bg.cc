@@ -1105,7 +1105,7 @@ void addEveObjectFunctions(RLModule& m) {
 ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -1113,7 +1113,7 @@ ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
 ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -1122,7 +1122,7 @@ ChildObjFgModule::ChildObjFgModule()
     : MappedRLModule(childObjMappingFun, "ChildObjFg", 2, 81) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -1131,7 +1131,7 @@ ChildObjBgModule::ChildObjBgModule()
     : MappedRLModule(childObjMappingFun, "ChildObjBg", 2, 82) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -1139,7 +1139,7 @@ ChildObjBgModule::ChildObjBgModule()
 ObjRangeFgModule::ObjRangeFgModule()
     : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90) {
   addObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -1147,7 +1147,7 @@ ObjRangeFgModule::ObjRangeFgModule()
 ObjRangeBgModule::ObjRangeBgModule()
     : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91) {
   addObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -1155,5 +1155,5 @@ ObjRangeBgModule::ObjRangeBgModule()
 ChildObjRangeFgModule::ChildObjRangeFgModule()
     : MappedRLModule(childRangeMappingFun, "ObjChildRangeFg", 2, 90) {
   addObjectFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }

@@ -180,13 +180,13 @@ PcmModule::PcmModule() : RLModule("Pcm", 1, 21) {
   addOpcode(3, 0, "wavWait", new wavWait);
   addOpcode(4, 0, "wavPlaying", new wavPlaying);
 
-  addOpcode(5, 0, "wavStop", callFunction(&SoundSystem::wavStop));
-  addOpcode(5, 1, "wavStop", callFunction(&SoundSystem::wavStopAll));
+  addOpcode(5, 0, "wavStop", CallFunction(&SoundSystem::wavStop));
+  addOpcode(5, 1, "wavStop", CallFunction(&SoundSystem::wavStopAll));
 
   addUnsupportedOpcode(7, 0, "wavPlaying2");
   addUnsupportedOpcode(8, 0, "wavRewind");
-  addOpcode(9, 0, "wavStop3", callFunction(&SoundSystem::wavStop));
-  addOpcode(10, 0, "wavStop4", callFunction(&SoundSystem::wavStop));
+  addOpcode(9, 0, "wavStop3", CallFunction(&SoundSystem::wavStop));
+  addOpcode(10, 0, "wavStop4", CallFunction(&SoundSystem::wavStop));
   addOpcode(11, 0, "wavVolume", new wavVolume);
 
   addOpcode(12, 0, "wavSetVolume", new wavSetVolume_0);
@@ -198,11 +198,11 @@ PcmModule::PcmModule() : RLModule("Pcm", 1, 21) {
   addOpcode(14, 0, "wavMute", new wavMute_0);
   addOpcode(14, 1, "wavMute", new wavMute_1);
 
-  addOpcode(20, 0, "wavStopAll", callFunction(&SoundSystem::wavStopAll));
+  addOpcode(20, 0, "wavStopAll", CallFunction(&SoundSystem::wavStopAll));
 
-  addOpcode(105, 0, "wavFadeOut", callFunction(&SoundSystem::wavFadeOut));
+  addOpcode(105, 0, "wavFadeOut", CallFunction(&SoundSystem::wavFadeOut));
   addUnsupportedOpcode(106, 0, "wavFadeOut2");
-  addOpcode(106, 1, "wavFadeOut2", callFunction(&SoundSystem::wavFadeOut));
+  addOpcode(106, 1, "wavFadeOut2", CallFunction(&SoundSystem::wavFadeOut));
 
   // Unknown/Undocumented function in this module
   //  fun <1:Pcm:00040, 0> (<intC, (strC, intC, intC)+)

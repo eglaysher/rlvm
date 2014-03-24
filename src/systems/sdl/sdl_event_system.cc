@@ -140,7 +140,7 @@ void SDLEventSystem::injectMouseDown(RLMachine& machine) {
   m_button1State = 1;
   m_button2State = 0;
 
-  dispatchEvent(
+  DispatchEvent(
       machine,
       bind(&EventListener::mouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
@@ -149,7 +149,7 @@ void SDLEventSystem::injectMouseUp(RLMachine& machine) {
   m_button1State = 2;
   m_button2State = 0;
 
-  dispatchEvent(
+  DispatchEvent(
       machine,
       bind(&EventListener::mouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
@@ -188,7 +188,7 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
           (event.key.keysym.mod & KMOD_META)) {
         machine.system().graphics().toggleFullscreen();
 
-        // Stop processing because we don't want to dispatch this event, which
+        // Stop processing because we don't want to Dispatch this event, which
         // might advance the text.
         return;
       }
@@ -200,7 +200,7 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
   }
 
   KeyCode code = KeyCode(event.key.keysym.sym);
-  dispatchEvent(machine, bind(&EventListener::keyStateChanged, _1, code, true));
+  DispatchEvent(machine, bind(&EventListener::keyStateChanged, _1, code, true));
 }
 
 void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
@@ -228,7 +228,7 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
   }
 
   KeyCode code = KeyCode(event.key.keysym.sym);
-  dispatchEvent(machine,
+  DispatchEvent(machine,
                 bind(&EventListener::keyStateChanged, _1, code, false));
 }
 
@@ -274,7 +274,7 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
         break;
     }
 
-    dispatchEvent(
+    DispatchEvent(
         machine,
         bind(&EventListener::mouseButtonStateChanged, _1, button, pressed));
   }

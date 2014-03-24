@@ -49,13 +49,13 @@ RLOperation::~RLOperation() {
     delete property_list_;
 }
 
-RLOperation* RLOperation::setProperty(int property, int value) {
+RLOperation* RLOperation::SetProperty(int property, int value) {
   if (!property_list_) {
     property_list_ = new std::vector<std::pair<int, int>>;
   }
 
   // Modify the property if it already exists
-  PropertyList::iterator it = findProperty(property);
+  PropertyList::iterator it = FindProperty(property);
   if (it != property_list_->end()) {
     it->second = value;
   } else {
@@ -65,9 +65,9 @@ RLOperation* RLOperation::setProperty(int property, int value) {
   return this;
 }
 
-bool RLOperation::getProperty(int property, int& value) const {
+bool RLOperation::GetProperty(int property, int& value) const {
   if (property_list_) {
-    PropertyList::iterator it = findProperty(property);
+    PropertyList::iterator it = FindProperty(property);
     if (it != property_list_->end()) {
       value = it->second;
       return true;
@@ -76,13 +76,13 @@ bool RLOperation::getProperty(int property, int& value) const {
 
   if (module_) {
     // If we don't have a property, ask our module if it has one.
-    return module_->getProperty(property, value);
+    return module_->GetProperty(property, value);
   }
 
   return false;
 }
 
-RLOperation::PropertyList::iterator RLOperation::findProperty(int property)
+RLOperation::PropertyList::iterator RLOperation::FindProperty(int property)
     const {
   return find_if(property_list_->begin(),
                  property_list_->end(),
@@ -91,30 +91,26 @@ RLOperation::PropertyList::iterator RLOperation::findProperty(int property)
 
 bool RLOperation::AdvanceInstructionPointer() { return true; }
 
-void RLOperation::dispatchFunction(RLMachine& machine,
+void RLOperation::DispatchFunction(RLMachine& machine,
                                    const libreallive::CommandElement& ff) {
   if (!ff.areParametersParsed()) {
     std::vector<std::string> unparsed = ff.getUnparsedParameters();
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>> output;
-    parseParameters(unparsed, output);
+    ParseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
 
   const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>&
       parameter_pieces = ff.getParameters();
 
-  // Now dispatch based on these parameters.
-  dispatch(machine, parameter_pieces);
+  // Now Dispatch based on these parameters.
+  Dispatch(machine, parameter_pieces);
 
   // By default, we advacne the instruction pointer on any instruction we
   // perform. Weird special cases all derive from RLOp_SpecialCase, which
-  // redefines the dispatcher, so this is ok.
+  // redefines the Dispatcher, so this is ok.
   if (AdvanceInstructionPointer())
     machine.AdvanceInstructionPointer();
-}
-
-void RLOperation::throw_unimplemented() {
-  throw rlvm::Exception("Unimplemented function");
 }
 
 // Implementation for IntConstant_T
@@ -126,7 +122,7 @@ IntConstant_T::type IntConstant_T::getData(
 }
 
 // Was working to change the verify_type to parse_parameters.
-void IntConstant_T::parseParameters(
+void IntConstant_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
@@ -149,7 +145,7 @@ IntReference_T::type IntReference_T::getData(
       .getIntegerReferenceIterator(machine);
 }
 
-void IntReference_T::parseParameters(
+void IntReference_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
@@ -207,7 +203,7 @@ StrConstant_T::type StrConstant_T::getData(
   return string(tmp.data(), tmp.size());
 }
 
-void StrConstant_T::parseParameters(
+void StrConstant_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
@@ -230,7 +226,7 @@ StrReference_T::type StrReference_T::getData(
       .getStringReferenceIterator(machine);
 }
 
-void StrReference_T::parseParameters(
+void StrReference_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
@@ -245,13 +241,13 @@ void StrReference_T::parseParameters(
   position++;
 }
 
-void RLOp_SpecialCase::dispatch(
+void RLOp_SpecialCase::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
-  throw rlvm::Exception("Tried to call empty RLOp_SpecialCase::dispatch().");
+  throw rlvm::Exception("Tried to call empty RLOp_SpecialCase::Dispatch().");
 }
 
-void RLOp_SpecialCase::parseParameters(
+void RLOp_SpecialCase::ParseParameters(
     const std::vector<std::string>& input,
     libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
@@ -260,13 +256,13 @@ void RLOp_SpecialCase::parseParameters(
   }
 }
 
-void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
+void RLOp_SpecialCase::DispatchFunction(RLMachine& machine,
                                         const libreallive::CommandElement& ff) {
   // First try to run the default parse_parameters if we can.
   if (!ff.areParametersParsed()) {
     std::vector<std::string> unparsed = ff.getUnparsedParameters();
     libreallive::ExpressionPiecesVector output;
-    parseParameters(unparsed, output);
+    ParseParameters(unparsed, output);
     ff.setParsedParameters(output);
   }
 
@@ -274,7 +270,7 @@ void RLOp_SpecialCase::dispatchFunction(RLMachine& machine,
   operator()(machine, ff);
 }
 
-void RLOp_Void_Void::dispatch(
+void RLOp_Void_Void::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
   operator()(machine);

@@ -305,13 +305,13 @@ class EventListener {
   virtual void mouseMotion(const Point& new_location);
 
   // A notification of a mouse or key press. Returns true if this EventListener
-  // handled the message (and this message shouldn't be dispatched to other
+  // handled the message (and this message shouldn't be Dispatched to other
   // EventListeners).
   virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
 
   // A notification that a key was pressed or unpressed. Returns true if this
   // EventListener handled the message (and this message shouldn't be
-  // dispatched to other EventListeners).
+  // Dispatched to other EventListeners).
   virtual bool keyStateChanged(KeyCode key_code, bool pressed);
 };
 

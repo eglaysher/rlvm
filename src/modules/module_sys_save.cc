@@ -312,6 +312,8 @@ struct LoadingGameFromSlot : public LoadGameLongOperation {
 
 // -----------------------------------------------------------------------
 
+bool Sys_load::AdvanceInstructionPointer() { return false; }
+
 void Sys_load::operator()(RLMachine& machine, int slot) {
   // LoadGameLongOperation will add self to |machine|'s stack.
   new LoadingGameFromSlot(machine, slot);
@@ -329,9 +331,9 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(1421, 0, "LatestSave", new LatestSave);
 
   m.addOpcode(
-      2053, 0, "SetConfirmSaveLoad", callFunction(&System::setConfirmSaveLoad));
+      2053, 0, "SetConfirmSaveLoad", CallFunction(&System::setConfirmSaveLoad));
   m.addOpcode(
-      2003, 0, "ConfirmSaveLoad", returnIntValue(&System::confirmSaveLoad));
+      2003, 0, "ConfirmSaveLoad", ReturnIntValue(&System::confirmSaveLoad));
 
   m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
   m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
@@ -345,13 +347,13 @@ void addSysSaveOpcodes(RLModule& m) {
   m.addOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
   m.addOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3500, 0, "Savepoint", callFunction(&RLMachine::MarkSavepoint));
+  m.addOpcode(3500, 0, "Savepoint", CallFunction(&RLMachine::MarkSavepoint));
   m.addOpcode(3501,
               0,
               "EnableAutoSavepoints",
-              callFunctionWith(&RLMachine::SetMarkSavepoints, 1));
+              CallFunctionWith(&RLMachine::SetMarkSavepoints, 1));
   m.addOpcode(3502,
               0,
               "DisableAutoSavepoints",
-              callFunctionWith(&RLMachine::SetMarkSavepoints, 0));
+              CallFunctionWith(&RLMachine::SetMarkSavepoints, 0));
 }

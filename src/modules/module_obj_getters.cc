@@ -130,14 +130,14 @@ void addFunctions(RLModule& m) {
 
 ObjFgGettersModule::ObjFgGettersModule() : RLModule("ObjFgGetters", 1, 84) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ObjBgGettersModule::ObjBgGettersModule() : RLModule("ObjBgGetters", 1, 85) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -145,7 +145,7 @@ ObjBgGettersModule::ObjBgGettersModule() : RLModule("ObjBgGetters", 1, 85) {
 ChildObjFgGettersModule::ChildObjFgGettersModule()
     : MappedRLModule(childObjMappingFun, "ChildObjFgGetters", 2, 84) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -153,5 +153,5 @@ ChildObjFgGettersModule::ChildObjFgGettersModule()
 ChildObjBgGettersModule::ChildObjBgGettersModule()
     : MappedRLModule(childObjMappingFun, "ChildObjBgGetters", 2, 85) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }

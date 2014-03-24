@@ -302,9 +302,9 @@ BgrModule::BgrModule() : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
   addOpcode(2001,
             0,
             "bgrClearPreloadedScript",
-            callFunction(&GraphicsSystem::ClearPreloadedHIKScript));
+            CallFunction(&GraphicsSystem::ClearPreloadedHIKScript));
   addOpcode(2002,
             0,
             "bgrClearAllPreloadedScripts",
-            callFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
+            CallFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
 }

@@ -52,8 +52,9 @@ namespace {
 struct Sel_select : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.ShouldSetSelcomSavepoint())
@@ -68,8 +69,9 @@ struct Sel_select : public RLOp_SpecialCase {
 struct Sel_select_s : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.ShouldSetSelcomSavepoint())
@@ -96,8 +98,9 @@ struct ClearAndRestoreWindow : public LongOperation {
 struct Sel_select_w : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
     if (machine.ShouldSetSelcomSavepoint())

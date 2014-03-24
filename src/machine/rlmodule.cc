@@ -96,13 +96,13 @@ void RLModule::addUnsupportedOpcode(int opcode,
                 name, module_type_, module_number_, opcode, (int)overload));
 }
 
-void RLModule::setProperty(int property, int value) {
+void RLModule::SetProperty(int property, int value) {
   if (!property_list_) {
     property_list_ = new std::vector<std::pair<int, int>>;
   }
 
   // Modify the property if it already exists
-  PropertyList::iterator it = findProperty(property);
+  PropertyList::iterator it = FindProperty(property);
   if (it != property_list_->end()) {
     it->second = value;
     return;
@@ -111,9 +111,9 @@ void RLModule::setProperty(int property, int value) {
   property_list_->push_back(std::make_pair(property, value));
 }
 
-bool RLModule::getProperty(int property, int& value) const {
+bool RLModule::GetProperty(int property, int& value) const {
   if (property_list_) {
-    PropertyList::iterator it = findProperty(property);
+    PropertyList::iterator it = FindProperty(property);
     if (it != property_list_->end()) {
       value = it->second;
       return true;
@@ -123,19 +123,19 @@ bool RLModule::getProperty(int property, int& value) const {
   return false;
 }
 
-RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
+RLModule::PropertyList::iterator RLModule::FindProperty(int property) const {
   return find_if(property_list_->begin(),
                  property_list_->end(),
                  [&](Property& p) { return p.first == property; });
 }
 
-void RLModule::dispatchFunction(RLMachine& machine,
+void RLModule::DispatchFunction(RLMachine& machine,
                                 const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =
       stored_operations_.find(packOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations_.end()) {
     try {
-      it->second->dispatchFunction(machine, f);
+      it->second->DispatchFunction(machine, f);
     }
     catch (rlvm::Exception& e) {
       e.setOperation(it->second.get());

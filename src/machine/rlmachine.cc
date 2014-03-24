@@ -340,7 +340,7 @@ void RLMachine::ExecuteCommand(const libreallive::CommandElement& f) {
   ModuleMap::iterator it =
       modules_.find(PackModuleNumber(f.modtype(), f.module()));
   if (it != modules_.end()) {
-    it->second->dispatchFunction(*this, f);
+    it->second->DispatchFunction(*this, f);
   } else {
     throw rlvm::UnimplementedOpcode(*this, f);
   }

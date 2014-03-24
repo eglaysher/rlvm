@@ -139,11 +139,11 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
         if (block_) {
           int fgbg;
-          if (!getProperty(P_FGBG, fgbg))
+          if (!GetProperty(P_FGBG, fgbg))
             fgbg = OBJ_FG;
 
           int parent_object;
-          if (!getProperty(P_PARENTOBJ, parent_object))
+          if (!GetProperty(P_PARENTOBJ, parent_object))
             parent_object = -1;
 
           machine.PushLongOperation(new WaitForGanToFinish(
@@ -157,11 +157,11 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct ganWait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     int fgbg;
-    if (!getProperty(P_FGBG, fgbg))
+    if (!GetProperty(P_FGBG, fgbg))
       fgbg = OBJ_FG;
 
     int parent_object;
-    if (!getProperty(P_PARENTOBJ, parent_object))
+    if (!GetProperty(P_PARENTOBJ, parent_object))
       parent_object = -1;
 
     machine.PushLongOperation(new WaitForGanToFinish(
@@ -287,14 +287,14 @@ void addGanOperationsTo(RLModule& m) {
 
 GanFgModule::GanFgModule() : RLModule("GanFg", 1, 73) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 GanBgModule::GanBgModule() : RLModule("GanBg", 1, 74) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
@@ -302,7 +302,7 @@ GanBgModule::GanBgModule() : RLModule("GanBg", 1, 74) {
 ChildGanFgModule::ChildGanFgModule()
     : MappedRLModule(childObjMappingFun, "ChildGanFg", 2, 73) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
@@ -310,5 +310,5 @@ ChildGanFgModule::ChildGanFgModule()
 ChildGanBgModule::ChildGanBgModule()
     : MappedRLModule(childObjMappingFun, "ChildGanBg", 2, 74) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
