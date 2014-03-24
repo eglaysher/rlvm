@@ -512,7 +512,7 @@ class GraphicsObject {
   //
   // I think R23 mentioned that these were called "Parameter Events" in the
   // RLMAX SDK.
-  std::vector<ObjectMutator*> object_mutators_;
+  std::vector<std::unique_ptr<ObjectMutator>> object_mutators_;
 
   friend class boost::serialization::access;
 

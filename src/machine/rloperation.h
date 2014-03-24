@@ -139,7 +139,7 @@ class RLOperation {
 
   // Our properties (for the number of properties O(n) is faster than O(log
   // n)...)
-  PropertyList* property_list_;
+  std::unique_ptr<PropertyList> property_list_;
 
   // The module that owns us (we ask it for properties).
   RLModule* module_;

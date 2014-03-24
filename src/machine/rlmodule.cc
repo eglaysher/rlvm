@@ -44,15 +44,12 @@
 RLModule::RLModule(const std::string& in_module_name,
                    int in_module_type,
                    int in_module_number)
-    : property_list_(NULL),
+    : property_list_(),
       module_type_(in_module_type),
       module_number_(in_module_number),
       module_name_(in_module_name) {}
 
-RLModule::~RLModule() {
-  if (property_list_)
-    delete property_list_;
-}
+RLModule::~RLModule() {}
 
 int RLModule::PackOpcodeNumber(int opcode, unsigned char overload) {
   return ((int)opcode << 8) | overload;
@@ -98,7 +95,7 @@ void RLModule::AddUnsupportedOpcode(int opcode,
 
 void RLModule::SetProperty(int property, int value) {
   if (!property_list_) {
-    property_list_ = new std::vector<std::pair<int, int>>;
+    property_list_.reset(new std::vector<std::pair<int, int>>);
   }
 
   // Modify the property if it already exists

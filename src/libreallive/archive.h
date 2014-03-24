@@ -53,11 +53,11 @@ struct XorKey;
 // Interface to a loaded SEEN.TXT file.
 class Archive {
   typedef std::map<int, FilePos> scenarios_t;
-  typedef std::map<int, Scenario*> accessed_t;
-  scenarios_t scenarios;
-  accessed_t accessed;
-  string name;
-  Mapping info;
+  typedef std::map<int, std::unique_ptr<Scenario>> accessed_t;
+  scenarios_t scenarios_;
+  accessed_t accessed_;
+  string name_;
+  Mapping info_;
 
   // Mappings to unarchived SEEN\d{4}.TXT files on disk.
   std::vector<std::unique_ptr<Mapping>> maps_to_delete_;
@@ -84,8 +84,8 @@ class Archive {
   ~Archive();
 
   typedef std::map<int, FilePos>::const_iterator const_iterator;
-  const_iterator begin() { return scenarios.begin(); }
-  const_iterator end()   { return scenarios.end(); }
+  const_iterator begin() { return scenarios_.begin(); }
+  const_iterator end()   { return scenarios_.end(); }
 
   // Returns a specific scenario by |index| number or NULL if none exist.
   Scenario* scenario(int index);

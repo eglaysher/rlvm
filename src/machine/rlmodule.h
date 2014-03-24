@@ -149,7 +149,7 @@ class RLModule {
 
   PropertyList::iterator FindProperty(int property) const;
 
-  PropertyList* property_list_;
+  std::unique_ptr<PropertyList> property_list_;
 
   int module_type_;
   int module_number_;

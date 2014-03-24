@@ -787,11 +787,11 @@ int GraphicsObject::buttonYOffsetOverride() const {
 void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
   makeImplUnique();
   // TODO(erg): If we have an equivalent mutator, remove it first.
-  object_mutators_.push_back(mutator);
+  object_mutators_.emplace_back(mutator);
 }
 
 bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
-  for (auto const* mutator : object_mutators_) {
+  for (auto const& mutator : object_mutators_) {
     if (mutator->OperationMatches(repno, name))
       return true;
   }
@@ -804,11 +804,11 @@ void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
                                               const char* name,
                                               int speedup) {
   if (speedup == 0) {
-    std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+    std::vector<std::unique_ptr<ObjectMutator>>::iterator it =
+        object_mutators_.begin();
     while (it != object_mutators_.end()) {
       if ((*it)->OperationMatches(repno, name)) {
         (*it)->SetToEnd(machine, *this);
-        delete *it;
         it = object_mutators_.erase(it);
       } else {
         ++it;
@@ -830,9 +830,6 @@ void GraphicsObject::makeImplUnique() {
 }
 
 void GraphicsObject::deleteObjectMutators() {
-  for (auto* mutator : object_mutators_) {
-    delete mutator;
-  }
   object_mutators_.clear();
 }
 
@@ -870,10 +867,10 @@ void GraphicsObject::execute(RLMachine& machine) {
   }
 
   // Run each mutator. If it returns true, remove it.
-  std::vector<ObjectMutator*>::iterator it = object_mutators_.begin();
+  std::vector<std::unique_ptr<ObjectMutator>>::iterator it =
+      object_mutators_.begin();
   while (it != object_mutators_.end()) {
     if ((**it)(machine, *this)) {
-      delete *it;
       it = object_mutators_.erase(it);
     } else {
       ++it;

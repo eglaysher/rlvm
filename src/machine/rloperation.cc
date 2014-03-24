@@ -42,16 +42,13 @@
 // RLOperation
 // -----------------------------------------------------------------------
 
-RLOperation::RLOperation() : property_list_(NULL), name_(NULL) {}
+RLOperation::RLOperation() : name_(NULL) {}
 
-RLOperation::~RLOperation() {
-  if (property_list_)
-    delete property_list_;
-}
+RLOperation::~RLOperation() {}
 
 RLOperation* RLOperation::SetProperty(int property, int value) {
   if (!property_list_) {
-    property_list_ = new std::vector<std::pair<int, int>>;
+    property_list_.reset(new std::vector<std::pair<int, int>>);
   }
 
   // Modify the property if it already exists
