@@ -133,15 +133,15 @@ struct setWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 };
 
 void addObjManagementFunctions(RLModule& m) {
-  m.addOpcode(4, 0, "objWipeCopyOn", new setWipeCopyTo_0(1));
-  m.addOpcode(4, 1, "objWipeCopyOn", new setWipeCopyTo_1(1));
-  m.addOpcode(5, 0, "objWipeCopyOff", new setWipeCopyTo_0(0));
-  m.addOpcode(5, 1, "objWipeCopyOff", new setWipeCopyTo_1(0));
+  m.AddOpcode(4, 0, "objWipeCopyOn", new setWipeCopyTo_0(1));
+  m.AddOpcode(4, 1, "objWipeCopyOn", new setWipeCopyTo_1(1));
+  m.AddOpcode(5, 0, "objWipeCopyOff", new setWipeCopyTo_0(0));
+  m.AddOpcode(5, 1, "objWipeCopyOff", new setWipeCopyTo_1(0));
 
-  m.addOpcode(10, 0, "objClear", new objClear_0);
-  m.addOpcode(10, 1, "objClear", new objClear_1);
-  m.addOpcode(11, 0, "objDelete", new objDelete_0);
-  m.addOpcode(11, 1, "objDelete", new objDelete_1);
+  m.AddOpcode(10, 0, "objClear", new objClear_0);
+  m.AddOpcode(10, 1, "objClear", new objClear_1);
+  m.AddOpcode(11, 0, "objDelete", new objDelete_0);
+  m.AddOpcode(11, 1, "objDelete", new objDelete_1);
 }
 
 struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
@@ -174,33 +174,33 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
-  addOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::clearObject));
+  AddOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::clearObject));
 
-  addOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
+  AddOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
 
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.
-  addOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
-  addOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
+  AddOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
+  AddOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
-  addOpcode(
+  AddOpcode(
       100, 0, "objClearAll", CallFunction(&GraphicsSystem::clearAllObjects));
-  addOpcode(110,
+  AddOpcode(110,
             0,
             "objResetPropertiesAll",
             CallFunction(&GraphicsSystem::resetAllObjectsProperties));
 
   // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
   // op<1:60:100, 0>. May have differences?
-  addOpcode(
+  AddOpcode(
       111, 0, "objClearAll2", CallFunction(&GraphicsSystem::clearAllObjects));
 }
 
 // -----------------------------------------------------------------------
 
 ObjFgManagement::ObjFgManagement() : RLModule("ObjFgManagement", 1, 61) {
-  addOpcode(2, 0, "objCopy", new objCopy(OBJ_FG, OBJ_FG));
-  addOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
+  AddOpcode(2, 0, "objCopy", new objCopy(OBJ_FG, OBJ_FG));
+  AddOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
   addObjManagementFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -209,8 +209,8 @@ ObjFgManagement::ObjFgManagement() : RLModule("ObjFgManagement", 1, 61) {
 // -----------------------------------------------------------------------
 
 ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
-  addOpcode(2, 0, "objBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
-  addOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
+  AddOpcode(2, 0, "objBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
+  AddOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
   addObjManagementFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -220,10 +220,10 @@ ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
 
 ChildObjFgManagement::ChildObjFgManagement()
     : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 61) {
-  addOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
-  addOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
+  AddOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
+  AddOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
-  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
+  AddOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
 
   addObjManagementFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -233,10 +233,10 @@ ChildObjFgManagement::ChildObjFgManagement()
 
 ChildObjBgManagement::ChildObjBgManagement()
     : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 62) {
-  addOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
-  addOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
+  AddOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
+  AddOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
-  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
+  AddOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
 
   addObjManagementFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);

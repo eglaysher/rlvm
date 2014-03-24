@@ -119,29 +119,29 @@ struct SetTimer : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
 // -----------------------------------------------------------------------
 
 void addSysTimerOpcodes(RLModule& m) {
-  m.addOpcode(110, 0, "ResetTimer", new ResetTimer(0));
-  m.addOpcode(110, 1, "ResetTimer", new ResetTimer(0));
-  m.addOpcode(111, 0, "time", new Sys_time(0, false));
-  m.addOpcode(111, 1, "time", new Sys_time(0, false));
-  m.addOpcode(112, 0, "timeC", new Sys_time(0, true));
-  m.addOpcode(112, 1, "timeC", new Sys_time(0, true));
-  m.addOpcode(114, 0, "Timer", new Timer(0));
-  m.addOpcode(114, 1, "Timer", new Timer(0));
-  m.addOpcode(115, 0, "CmpTimer", new CmpTimer(0));
-  m.addOpcode(115, 1, "CmpTimer", new CmpTimer(0));
-  m.addOpcode(116, 0, "CmpTimer", new SetTimer(0));
-  m.addOpcode(116, 1, "CmpTimer", new SetTimer(0));
+  m.AddOpcode(110, 0, "ResetTimer", new ResetTimer(0));
+  m.AddOpcode(110, 1, "ResetTimer", new ResetTimer(0));
+  m.AddOpcode(111, 0, "time", new Sys_time(0, false));
+  m.AddOpcode(111, 1, "time", new Sys_time(0, false));
+  m.AddOpcode(112, 0, "timeC", new Sys_time(0, true));
+  m.AddOpcode(112, 1, "timeC", new Sys_time(0, true));
+  m.AddOpcode(114, 0, "Timer", new Timer(0));
+  m.AddOpcode(114, 1, "Timer", new Timer(0));
+  m.AddOpcode(115, 0, "CmpTimer", new CmpTimer(0));
+  m.AddOpcode(115, 1, "CmpTimer", new CmpTimer(0));
+  m.AddOpcode(116, 0, "CmpTimer", new SetTimer(0));
+  m.AddOpcode(116, 1, "CmpTimer", new SetTimer(0));
 
-  m.addOpcode(120, 0, "ResetExTimer", new ResetTimer(1));
-  m.addOpcode(120, 1, "ResetExTimer", new ResetTimer(1));
-  m.addOpcode(121, 0, "timeEx", new Sys_time(1, false));
-  m.addOpcode(121, 1, "timeEx", new Sys_time(1, false));
-  m.addOpcode(122, 0, "timeExC", new Sys_time(1, true));
-  m.addOpcode(122, 1, "timeExC", new Sys_time(1, true));
-  m.addOpcode(124, 0, "ExTimer", new Timer(1));
-  m.addOpcode(124, 1, "ExTimer", new Timer(1));
-  m.addOpcode(125, 0, "CmpExTimer", new CmpTimer(1));
-  m.addOpcode(125, 1, "CmpExTimer", new CmpTimer(1));
-  m.addOpcode(126, 0, "SetExTimer", new SetTimer(1));
-  m.addOpcode(126, 1, "SetExTimer", new SetTimer(1));
+  m.AddOpcode(120, 0, "ResetExTimer", new ResetTimer(1));
+  m.AddOpcode(120, 1, "ResetExTimer", new ResetTimer(1));
+  m.AddOpcode(121, 0, "timeEx", new Sys_time(1, false));
+  m.AddOpcode(121, 1, "timeEx", new Sys_time(1, false));
+  m.AddOpcode(122, 0, "timeExC", new Sys_time(1, true));
+  m.AddOpcode(122, 1, "timeExC", new Sys_time(1, true));
+  m.AddOpcode(124, 0, "ExTimer", new Timer(1));
+  m.AddOpcode(124, 1, "ExTimer", new Timer(1));
+  m.AddOpcode(125, 0, "CmpExTimer", new CmpTimer(1));
+  m.AddOpcode(125, 1, "CmpExTimer", new CmpTimer(1));
+  m.AddOpcode(126, 0, "SetExTimer", new SetTimer(1));
+  m.AddOpcode(126, 1, "SetExTimer", new SetTimer(1));
 }

@@ -39,10 +39,10 @@ struct g00Preload : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 };
 
 G00Module::G00Module() : RLModule("G00", 1, 14) {
-  addOpcode(1000, 0, "g00Preload", new g00Preload);
-  addOpcode(
+  AddOpcode(1000, 0, "g00Preload", new g00Preload);
+  AddOpcode(
       1001, 0, "g00Clear", CallFunction(&GraphicsSystem::ClearPreloadedG00));
-  addOpcode(1002,
+  AddOpcode(1002,
             0,
             "g00ClearAll",
             CallFunction(&GraphicsSystem::ClearAllPreloadedG00));

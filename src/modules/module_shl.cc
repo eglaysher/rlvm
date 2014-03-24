@@ -27,47 +27,47 @@
 #include "modules/module_shl.h"
 
 LayeredShakingModule::LayeredShakingModule() : RLModule("Shl", 1, 12) {
-  addUnsupportedOpcode(0, 0, "ShakeLayersStop");
-  addUnsupportedOpcode(0, 1, "ShakeLayersStop");
-  addUnsupportedOpcode(0, 2, "ShakeLayersStop");
+  AddUnsupportedOpcode(0, 0, "ShakeLayersStop");
+  AddUnsupportedOpcode(0, 1, "ShakeLayersStop");
+  AddUnsupportedOpcode(0, 2, "ShakeLayersStop");
 
-  addUnsupportedOpcode(1100, 0, "ShakeLayers=DOWNUP");
-  addUnsupportedOpcode(1100, 1, "ShakeLayers=DOWNUP");
-  addUnsupportedOpcode(1101, 0, "ShakeLayers=RIGHTLEFT");
-  addUnsupportedOpcode(1101, 1, "ShakeLayers=RIGHTLEFT");
+  AddUnsupportedOpcode(1100, 0, "ShakeLayers=DOWNUP");
+  AddUnsupportedOpcode(1100, 1, "ShakeLayers=DOWNUP");
+  AddUnsupportedOpcode(1101, 0, "ShakeLayers=RIGHTLEFT");
+  AddUnsupportedOpcode(1101, 1, "ShakeLayers=RIGHTLEFT");
 
-  addUnsupportedOpcode(1102, 0, "ShakeLayers2D");
-  addUnsupportedOpcode(1102, 1, "ShakeLayers2D");
+  AddUnsupportedOpcode(1102, 0, "ShakeLayers2D");
+  AddUnsupportedOpcode(1102, 1, "ShakeLayers2D");
 
-  addUnsupportedOpcode(1200, 0, "ShakeLayers=UP");
-  addUnsupportedOpcode(1200, 1, "ShakeLayers=UP");
-  addUnsupportedOpcode(1201, 0, "ShakeLayers=DOWN");
-  addUnsupportedOpcode(1201, 1, "ShakeLayers=DOWN");
-  addUnsupportedOpcode(1202, 0, "ShakeLayers=LEFT");
-  addUnsupportedOpcode(1202, 1, "ShakeLayers=LEFT");
-  addUnsupportedOpcode(1203, 0, "ShakeLayers=RIGHT");
-  addUnsupportedOpcode(1203, 1, "ShakeLayers=RIGHT");
+  AddUnsupportedOpcode(1200, 0, "ShakeLayers=UP");
+  AddUnsupportedOpcode(1200, 1, "ShakeLayers=UP");
+  AddUnsupportedOpcode(1201, 0, "ShakeLayers=DOWN");
+  AddUnsupportedOpcode(1201, 1, "ShakeLayers=DOWN");
+  AddUnsupportedOpcode(1202, 0, "ShakeLayers=LEFT");
+  AddUnsupportedOpcode(1202, 1, "ShakeLayers=LEFT");
+  AddUnsupportedOpcode(1203, 0, "ShakeLayers=RIGHT");
+  AddUnsupportedOpcode(1203, 1, "ShakeLayers=RIGHT");
 
-  addUnsupportedOpcode(1300, 0, "ShakeLayersSpecEx");
-  addUnsupportedOpcode(1300, 1, "ShakeLayersSpecEx");
+  AddUnsupportedOpcode(1300, 0, "ShakeLayersSpecEx");
+  AddUnsupportedOpcode(1300, 1, "ShakeLayersSpecEx");
 
-  addUnsupportedOpcode(3100, 0, "ShakeLayersEx=DOWNUP");
-  addUnsupportedOpcode(3100, 1, "ShakeLayersEx=DOWNUP");
-  addUnsupportedOpcode(3101, 0, "ShakeLayersEx=RIGHTLEFT");
-  addUnsupportedOpcode(3101, 1, "ShakeLayersEx=RIGHTLEFT");
+  AddUnsupportedOpcode(3100, 0, "ShakeLayersEx=DOWNUP");
+  AddUnsupportedOpcode(3100, 1, "ShakeLayersEx=DOWNUP");
+  AddUnsupportedOpcode(3101, 0, "ShakeLayersEx=RIGHTLEFT");
+  AddUnsupportedOpcode(3101, 1, "ShakeLayersEx=RIGHTLEFT");
 
-  addUnsupportedOpcode(3102, 0, "ShakeLayers2DEx");
-  addUnsupportedOpcode(3102, 1, "ShakeLayers2DEx");
+  AddUnsupportedOpcode(3102, 0, "ShakeLayers2DEx");
+  AddUnsupportedOpcode(3102, 1, "ShakeLayers2DEx");
 
-  addUnsupportedOpcode(3200, 0, "ShakeLayersEx=UP");
-  addUnsupportedOpcode(3200, 1, "ShakeLayersEx=UP");
-  addUnsupportedOpcode(3201, 0, "ShakeLayersEx=DOWN");
-  addUnsupportedOpcode(3201, 1, "ShakeLayersEx=DOWN");
-  addUnsupportedOpcode(3202, 0, "ShakeLayersEx=LEFT");
-  addUnsupportedOpcode(3202, 1, "ShakeLayersEx=LEFT");
-  addUnsupportedOpcode(3203, 0, "ShakeLayersEx=RIGHT");
-  addUnsupportedOpcode(3203, 1, "ShakeLayersEx=RIGHT");
+  AddUnsupportedOpcode(3200, 0, "ShakeLayersEx=UP");
+  AddUnsupportedOpcode(3200, 1, "ShakeLayersEx=UP");
+  AddUnsupportedOpcode(3201, 0, "ShakeLayersEx=DOWN");
+  AddUnsupportedOpcode(3201, 1, "ShakeLayersEx=DOWN");
+  AddUnsupportedOpcode(3202, 0, "ShakeLayersEx=LEFT");
+  AddUnsupportedOpcode(3202, 1, "ShakeLayersEx=LEFT");
+  AddUnsupportedOpcode(3203, 0, "ShakeLayersEx=RIGHT");
+  AddUnsupportedOpcode(3203, 1, "ShakeLayersEx=RIGHT");
 
-  addUnsupportedOpcode(3300, 0, "ShakeLayersSpecEx");
-  addUnsupportedOpcode(3300, 1, "ShakeLayersSpecEx");
+  AddUnsupportedOpcode(3300, 0, "ShakeLayersSpecEx");
+  AddUnsupportedOpcode(3300, 1, "ShakeLayersSpecEx");
 }

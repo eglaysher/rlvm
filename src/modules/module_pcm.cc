@@ -167,42 +167,42 @@ struct wavMute_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 PcmModule::PcmModule() : RLModule("Pcm", 1, 21) {
-  addOpcode(0, 0, "wavPlay", new wavPlay_0);
-  addOpcode(0, 1, "wavPlay", new wavPlay_1);
-  addOpcode(0, 2, "wavPlay", new wavPlay_2);
+  AddOpcode(0, 0, "wavPlay", new wavPlay_0);
+  AddOpcode(0, 1, "wavPlay", new wavPlay_1);
+  AddOpcode(0, 2, "wavPlay", new wavPlay_2);
 
-  addOpcode(1, 0, "wavPlayEx", new wavPlayEx_0);
-  addOpcode(1, 1, "wavPlayEx", new wavPlayEx_1);
+  AddOpcode(1, 0, "wavPlayEx", new wavPlayEx_0);
+  AddOpcode(1, 1, "wavPlayEx", new wavPlayEx_1);
 
-  addOpcode(2, 0, "wavLoop", new wavLoop_0);
-  addOpcode(2, 1, "wavLoop", new wavLoop_1);
+  AddOpcode(2, 0, "wavLoop", new wavLoop_0);
+  AddOpcode(2, 1, "wavLoop", new wavLoop_1);
 
-  addOpcode(3, 0, "wavWait", new wavWait);
-  addOpcode(4, 0, "wavPlaying", new wavPlaying);
+  AddOpcode(3, 0, "wavWait", new wavWait);
+  AddOpcode(4, 0, "wavPlaying", new wavPlaying);
 
-  addOpcode(5, 0, "wavStop", CallFunction(&SoundSystem::wavStop));
-  addOpcode(5, 1, "wavStop", CallFunction(&SoundSystem::wavStopAll));
+  AddOpcode(5, 0, "wavStop", CallFunction(&SoundSystem::wavStop));
+  AddOpcode(5, 1, "wavStop", CallFunction(&SoundSystem::wavStopAll));
 
-  addUnsupportedOpcode(7, 0, "wavPlaying2");
-  addUnsupportedOpcode(8, 0, "wavRewind");
-  addOpcode(9, 0, "wavStop3", CallFunction(&SoundSystem::wavStop));
-  addOpcode(10, 0, "wavStop4", CallFunction(&SoundSystem::wavStop));
-  addOpcode(11, 0, "wavVolume", new wavVolume);
+  AddUnsupportedOpcode(7, 0, "wavPlaying2");
+  AddUnsupportedOpcode(8, 0, "wavRewind");
+  AddOpcode(9, 0, "wavStop3", CallFunction(&SoundSystem::wavStop));
+  AddOpcode(10, 0, "wavStop4", CallFunction(&SoundSystem::wavStop));
+  AddOpcode(11, 0, "wavVolume", new wavVolume);
 
-  addOpcode(12, 0, "wavSetVolume", new wavSetVolume_0);
-  addOpcode(12, 1, "wavSetVolume", new wavSetVolume_1);
+  AddOpcode(12, 0, "wavSetVolume", new wavSetVolume_0);
+  AddOpcode(12, 1, "wavSetVolume", new wavSetVolume_1);
 
-  addOpcode(13, 0, "wavUnMute", new wavUnMute_0);
-  addOpcode(13, 1, "wavUnMute", new wavUnMute_1);
+  AddOpcode(13, 0, "wavUnMute", new wavUnMute_0);
+  AddOpcode(13, 1, "wavUnMute", new wavUnMute_1);
 
-  addOpcode(14, 0, "wavMute", new wavMute_0);
-  addOpcode(14, 1, "wavMute", new wavMute_1);
+  AddOpcode(14, 0, "wavMute", new wavMute_0);
+  AddOpcode(14, 1, "wavMute", new wavMute_1);
 
-  addOpcode(20, 0, "wavStopAll", CallFunction(&SoundSystem::wavStopAll));
+  AddOpcode(20, 0, "wavStopAll", CallFunction(&SoundSystem::wavStopAll));
 
-  addOpcode(105, 0, "wavFadeOut", CallFunction(&SoundSystem::wavFadeOut));
-  addUnsupportedOpcode(106, 0, "wavFadeOut2");
-  addOpcode(106, 1, "wavFadeOut2", CallFunction(&SoundSystem::wavFadeOut));
+  AddOpcode(105, 0, "wavFadeOut", CallFunction(&SoundSystem::wavFadeOut));
+  AddUnsupportedOpcode(106, 0, "wavFadeOut2");
+  AddOpcode(106, 1, "wavFadeOut2", CallFunction(&SoundSystem::wavFadeOut));
 
   // Unknown/Undocumented function in this module
   //  fun <1:Pcm:00040, 0> (<intC, (strC, intC, intC)+)

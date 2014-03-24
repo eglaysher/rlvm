@@ -235,51 +235,51 @@ struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 void addGanOperationsTo(RLModule& m) {
-  m.addOpcode(0, 0, "objStop2", new objStop_0);
-  m.addOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
-  m.addOpcode(4, 0, "ganWait", new ganWait);
+  m.AddOpcode(0, 0, "objStop2", new objStop_0);
+  m.AddOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
+  m.AddOpcode(4, 0, "ganWait", new ganWait);
 
-  m.addOpcode(1000, 0, "objStop", new objStop_0);
-  m.addUnsupportedOpcode(1000, 1, "objStop");
+  m.AddOpcode(1000, 0, "objStop", new objStop_0);
+  m.AddUnsupportedOpcode(1000, 1, "objStop");
 
-  m.addOpcode(104, 0, "objWaitAll", new objWaitAll);
+  m.AddOpcode(104, 0, "objWaitAll", new objWaitAll);
 
-  m.addOpcode(
+  m.AddOpcode(
       1001, 0, "ganLoop", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       1003, 0, "ganPlay", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(1005,
+  m.AddOpcode(1005,
               0,
               "ganPlayOnce",
               new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
-  m.addOpcode(
+  m.AddOpcode(
       1006, 0, "ganPlayEx", new ganPlay(true, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(1007,
+  m.AddOpcode(1007,
               0,
               "ganPlayOnceEx",
               new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
-  m.addOpcode(
+  m.AddOpcode(
       2001, 0, "objLoop", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       2003, 0, "objPlay", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 
-  m.addOpcode(
+  m.AddOpcode(
       3001, 0, "ganLoop2", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       3003, 0, "ganPlay2", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(3005,
+  m.AddOpcode(3005,
               0,
               "ganPlayOnce2",
               new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
-  m.addOpcode(
+  m.AddOpcode(
       3006, 0, "ganPlayEx2", new ganPlay(true, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(3007,
+  m.AddOpcode(3007,
               0,
               "ganPlayOnceEx2",
               new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
-  m.addOpcode(
+  m.AddOpcode(
       3103, 0, "ganPlay3", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 }
 

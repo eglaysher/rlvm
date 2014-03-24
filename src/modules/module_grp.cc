@@ -1199,235 +1199,235 @@ GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
   using rect_impl::GRP;
   using rect_impl::REC;
 
-  addOpcode(15, 0, "allocDC", new allocDC);
-  addOpcode(16, 0, "freeDC", CallFunction(&GraphicsSystem::freeDC));
+  AddOpcode(15, 0, "allocDC", new allocDC);
+  AddOpcode(16, 0, "freeDC", CallFunction(&GraphicsSystem::freeDC));
 
-  addUnsupportedOpcode(20, 0, "grpLoadMask");
-  // addOpcode(30, 0, new grpTextout);
+  AddUnsupportedOpcode(20, 0, "grpLoadMask");
+  // AddOpcode(30, 0, new grpTextout);
 
-  addOpcode(31, 0, "wipe", new wipe);
-  addOpcode(32, 0, "shake", new shake);
+  AddOpcode(31, 0, "wipe", new wipe);
+  AddOpcode(32, 0, "shake", new shake);
 
-  addOpcode(50, 0, "grpLoad", new load_1(false));
-  addOpcode(50, 1, "grpLoad", new load_1(false));
-  addOpcode(50, 2, "grpLoad", new load_3<GRP>(false));
-  addOpcode(50, 3, "grpLoad", new load_3<GRP>(false));
-  addOpcode(51, 0, "grpMaskLoad", new load_1(true));
-  addOpcode(51, 1, "grpMaskLoad", new load_1(true));
-  addOpcode(51, 2, "grpMaskLoad", new load_3<GRP>(true));
-  addOpcode(51, 3, "grpMaskLoad", new load_3<GRP>(true));
+  AddOpcode(50, 0, "grpLoad", new load_1(false));
+  AddOpcode(50, 1, "grpLoad", new load_1(false));
+  AddOpcode(50, 2, "grpLoad", new load_3<GRP>(false));
+  AddOpcode(50, 3, "grpLoad", new load_3<GRP>(false));
+  AddOpcode(51, 0, "grpMaskLoad", new load_1(true));
+  AddOpcode(51, 1, "grpMaskLoad", new load_1(true));
+  AddOpcode(51, 2, "grpMaskLoad", new load_3<GRP>(true));
+  AddOpcode(51, 3, "grpMaskLoad", new load_3<GRP>(true));
 
   // These are grpBuffer, which is very similar to grpLoad and Haeleth
   // doesn't know how they differ. For now, we just assume they're
   // equivalent.
-  addOpcode(70, 0, "grpBuffer", new load_1(false));
-  addOpcode(70, 1, "grpBuffer", new load_1(false));
-  addOpcode(70, 2, "grpBuffer", new load_3<GRP>(false));
-  addOpcode(70, 3, "grpBuffer", new load_3<GRP>(false));
-  addOpcode(71, 0, "grpMaskBuffer", new load_1(true));
-  addOpcode(71, 1, "grpMaskBuffer", new load_1(true));
-  addOpcode(71, 2, "grpMaskBuffer", new load_3<GRP>(true));
-  addOpcode(71, 3, "grpMaskBuffer", new load_3<GRP>(true));
+  AddOpcode(70, 0, "grpBuffer", new load_1(false));
+  AddOpcode(70, 1, "grpBuffer", new load_1(false));
+  AddOpcode(70, 2, "grpBuffer", new load_3<GRP>(false));
+  AddOpcode(70, 3, "grpBuffer", new load_3<GRP>(false));
+  AddOpcode(71, 0, "grpMaskBuffer", new load_1(true));
+  AddOpcode(71, 1, "grpMaskBuffer", new load_1(true));
+  AddOpcode(71, 2, "grpMaskBuffer", new load_3<GRP>(true));
+  AddOpcode(71, 3, "grpMaskBuffer", new load_3<GRP>(true));
 
-  addOpcode(72, 0, "grpDisplay", new display_0);
-  addOpcode(72, 1, "grpDisplay", new display_1);
-  addOpcode(72, 2, "grpDisplay", new display_2<GRP>());
-  addOpcode(72, 3, "grpDisplay", new display_3<GRP>());
-  addOpcode(72, 4, "grpDisplay", new display_4<GRP>());
+  AddOpcode(72, 0, "grpDisplay", new display_0);
+  AddOpcode(72, 1, "grpDisplay", new display_1);
+  AddOpcode(72, 2, "grpDisplay", new display_2<GRP>());
+  AddOpcode(72, 3, "grpDisplay", new display_3<GRP>());
+  AddOpcode(72, 4, "grpDisplay", new display_4<GRP>());
 
-  addOpcode(73, 0, "grpOpenBg", new openBg_0);
-  addOpcode(73, 1, "grpOpenBg", new openBg_1);
-  addOpcode(73, 2, "grpOpenBg", new openBg_2<GRP>(false));
-  addOpcode(73, 3, "grpOpenBg", new openBg_3<GRP>(false));
-  addOpcode(73, 4, "grpOpenBg", new openBg_4<GRP>(false));
+  AddOpcode(73, 0, "grpOpenBg", new openBg_0);
+  AddOpcode(73, 1, "grpOpenBg", new openBg_1);
+  AddOpcode(73, 2, "grpOpenBg", new openBg_2<GRP>(false));
+  AddOpcode(73, 3, "grpOpenBg", new openBg_3<GRP>(false));
+  AddOpcode(73, 4, "grpOpenBg", new openBg_4<GRP>(false));
 
-  addOpcode(74, 0, "grpMaskOpen", new open_0(true));
-  addOpcode(74, 1, "grpMaskOpen", new open_1(true));
-  addOpcode(74, 2, "grpMaskOpen", new open_2<GRP>(true));
-  addOpcode(74, 3, "grpMaskOpen", new open_3<GRP>(true));
-  addOpcode(74, 4, "grpMaskOpen", new open_4<GRP>(true));
+  AddOpcode(74, 0, "grpMaskOpen", new open_0(true));
+  AddOpcode(74, 1, "grpMaskOpen", new open_1(true));
+  AddOpcode(74, 2, "grpMaskOpen", new open_2<GRP>(true));
+  AddOpcode(74, 3, "grpMaskOpen", new open_3<GRP>(true));
+  AddOpcode(74, 4, "grpMaskOpen", new open_4<GRP>(true));
 
-  addOpcode(75, 0, "grpMulti", new multi_str_0<GRP>());
-  addOpcode(75, 1, "grpMulti", new multi_str_1<GRP>());
-  addUnsupportedOpcode(75, 2, "grpMulti");
-  addUnsupportedOpcode(75, 3, "grpMulti");
-  addUnsupportedOpcode(75, 4, "grpMulti");
+  AddOpcode(75, 0, "grpMulti", new multi_str_0<GRP>());
+  AddOpcode(75, 1, "grpMulti", new multi_str_1<GRP>());
+  AddUnsupportedOpcode(75, 2, "grpMulti");
+  AddUnsupportedOpcode(75, 3, "grpMulti");
+  AddUnsupportedOpcode(75, 4, "grpMulti");
 
-  addOpcode(76, 0, "grpOpen", new open_0(false));
-  addOpcode(76, 1, "grpOpen", new open_1(false));
-  addOpcode(76, 2, "grpOpen", new open_2<GRP>(false));
-  addOpcode(76, 3, "grpOpen", new open_3<GRP>(false));
-  addOpcode(76, 4, "grpOpen", new open_4<GRP>(false));
+  AddOpcode(76, 0, "grpOpen", new open_0(false));
+  AddOpcode(76, 1, "grpOpen", new open_1(false));
+  AddOpcode(76, 2, "grpOpen", new open_2<GRP>(false));
+  AddOpcode(76, 3, "grpOpen", new open_3<GRP>(false));
+  AddOpcode(76, 4, "grpOpen", new open_4<GRP>(false));
 
-  addOpcode(77, 0, "grpMulti", new multi_dc_0<GRP>());
-  addOpcode(77, 1, "grpMulti", new multi_dc_1<GRP>());
-  addUnsupportedOpcode(77, 2, "grpMulti");
-  addUnsupportedOpcode(77, 3, "grpMulti");
-  addUnsupportedOpcode(77, 4, "grpMulti");
+  AddOpcode(77, 0, "grpMulti", new multi_dc_0<GRP>());
+  AddOpcode(77, 1, "grpMulti", new multi_dc_1<GRP>());
+  AddUnsupportedOpcode(77, 2, "grpMulti");
+  AddUnsupportedOpcode(77, 3, "grpMulti");
+  AddUnsupportedOpcode(77, 4, "grpMulti");
 
-  addOpcode(100, 0, "grpCopy", new copy_1(false));
-  addOpcode(100, 1, "grpCopy", new copy_1(false));
-  addOpcode(100, 2, "grpCopy", new copy_3<GRP>(false));
-  addOpcode(100, 3, "grpCopy", new copy_3<GRP>(false));
-  addOpcode(101, 0, "grpMaskCopy", new copy_1(true));
-  addOpcode(101, 1, "grpMaskCopy", new copy_1(true));
-  addOpcode(101, 2, "grpMaskCopy", new copy_3<GRP>(true));
-  addOpcode(101, 3, "grpMaskCopy", new copy_3<GRP>(true));
+  AddOpcode(100, 0, "grpCopy", new copy_1(false));
+  AddOpcode(100, 1, "grpCopy", new copy_1(false));
+  AddOpcode(100, 2, "grpCopy", new copy_3<GRP>(false));
+  AddOpcode(100, 3, "grpCopy", new copy_3<GRP>(false));
+  AddOpcode(101, 0, "grpMaskCopy", new copy_1(true));
+  AddOpcode(101, 1, "grpMaskCopy", new copy_1(true));
+  AddOpcode(101, 2, "grpMaskCopy", new copy_3<GRP>(true));
+  AddOpcode(101, 3, "grpMaskCopy", new copy_3<GRP>(true));
 
-  addUnsupportedOpcode(120, 5, "grpCopyWithMask");
-  addUnsupportedOpcode(140, 5, "grpCopyInvMask");
+  AddUnsupportedOpcode(120, 5, "grpCopyWithMask");
+  AddUnsupportedOpcode(140, 5, "grpCopyInvMask");
 
-  addOpcode(201, 0, "grpFill", new fill_0);
-  addOpcode(201, 1, "grpFill", new fill_1);
-  addOpcode(201, 2, "grpFill", new fill_3<GRP>());
-  addOpcode(201, 3, "grpFill", new fill_3<GRP>());
+  AddOpcode(201, 0, "grpFill", new fill_0);
+  AddOpcode(201, 1, "grpFill", new fill_1);
+  AddOpcode(201, 2, "grpFill", new fill_3<GRP>());
+  AddOpcode(201, 3, "grpFill", new fill_3<GRP>());
 
-  addOpcode(300, 0, "grpInvert", new invert_1);
-  addUnsupportedOpcode(300, 1, "grpInvert");
-  addOpcode(300, 2, "grpInvert", new invert_3<GRP>());
-  addUnsupportedOpcode(300, 3, "grpInvert");
+  AddOpcode(300, 0, "grpInvert", new invert_1);
+  AddUnsupportedOpcode(300, 1, "grpInvert");
+  AddOpcode(300, 2, "grpInvert", new invert_3<GRP>());
+  AddUnsupportedOpcode(300, 3, "grpInvert");
 
-  addOpcode(301, 0, "grpMono", new mono_1);
-  addUnsupportedOpcode(301, 1, "grpMono");
-  addOpcode(301, 2, "grpMono", new mono_3<GRP>());
-  addUnsupportedOpcode(301, 3, "grpMono");
+  AddOpcode(301, 0, "grpMono", new mono_1);
+  AddUnsupportedOpcode(301, 1, "grpMono");
+  AddOpcode(301, 2, "grpMono", new mono_3<GRP>());
+  AddUnsupportedOpcode(301, 3, "grpMono");
 
-  addOpcode(302, 0, "grpColour", new colour_1);
-  addOpcode(302, 1, "grpColour", new colour_2<GRP>());
+  AddOpcode(302, 0, "grpColour", new colour_1);
+  AddOpcode(302, 1, "grpColour", new colour_2<GRP>());
 
-  addOpcode(303, 0, "grpLight", new light_1);
-  addOpcode(303, 1, "grpLight", new light_2<GRP>());
+  AddOpcode(303, 0, "grpLight", new light_1);
+  AddOpcode(303, 1, "grpLight", new light_2<GRP>());
 
-  addUnsupportedOpcode(400, 0, "grpSwap");
-  addUnsupportedOpcode(400, 1, "grpSwap");
+  AddUnsupportedOpcode(400, 0, "grpSwap");
+  AddUnsupportedOpcode(400, 1, "grpSwap");
 
-  addOpcode(401, 0, "grpStretchBlt", new stretchBlit_1<GRP>(false));
-  addOpcode(401, 1, "grpStretchBlt", new stretchBlit_1<GRP>(false));
+  AddOpcode(401, 0, "grpStretchBlt", new stretchBlit_1<GRP>(false));
+  AddOpcode(401, 1, "grpStretchBlt", new stretchBlit_1<GRP>(false));
 
-  addOpcode(402, 0, "grpZoom", new zoom<GRP>());
+  AddOpcode(402, 0, "grpZoom", new zoom<GRP>());
 
-  addOpcode(403, 0, "grpFade", new fade_1);
-  addOpcode(403, 1, "grpFade", new fade_1);
-  addOpcode(403, 2, "grpFade", new fade_3);
-  addOpcode(403, 3, "grpFade", new fade_3);
-  addOpcode(403, 4, "grpFade", new fade_5<GRP>());
-  addOpcode(403, 5, "grpFade", new fade_5<GRP>());
-  addOpcode(403, 6, "grpFade", new fade_7<GRP>());
-  addOpcode(403, 7, "grpFade", new fade_7<GRP>());
+  AddOpcode(403, 0, "grpFade", new fade_1);
+  AddOpcode(403, 1, "grpFade", new fade_1);
+  AddOpcode(403, 2, "grpFade", new fade_3);
+  AddOpcode(403, 3, "grpFade", new fade_3);
+  AddOpcode(403, 4, "grpFade", new fade_5<GRP>());
+  AddOpcode(403, 5, "grpFade", new fade_5<GRP>());
+  AddOpcode(403, 6, "grpFade", new fade_7<GRP>());
+  AddOpcode(403, 7, "grpFade", new fade_7<GRP>());
 
-  addOpcode(409, 0, "grpMaskStretchBlt", new stretchBlit_1<GRP>(true));
-  addOpcode(409, 1, "grpMaskStretchBlt", new stretchBlit_1<GRP>(true));
+  AddOpcode(409, 0, "grpMaskStretchBlt", new stretchBlit_1<GRP>(true));
+  AddOpcode(409, 1, "grpMaskStretchBlt", new stretchBlit_1<GRP>(true));
 
-  addUnsupportedOpcode(601, 0, "grpMaskAdd");
-  addUnsupportedOpcode(601, 1, "grpMaskAdd");
-  addUnsupportedOpcode(601, 2, "grpMaskAdd");
-  addUnsupportedOpcode(601, 3, "grpMaskAdd");
+  AddUnsupportedOpcode(601, 0, "grpMaskAdd");
+  AddUnsupportedOpcode(601, 1, "grpMaskAdd");
+  AddUnsupportedOpcode(601, 2, "grpMaskAdd");
+  AddUnsupportedOpcode(601, 3, "grpMaskAdd");
 
   // -----------------------------------------------------------------------
 
-  addOpcode(1050, 0, "recLoad", new load_1(false));
-  addOpcode(1050, 1, "recLoad", new load_1(false));
-  addOpcode(1050, 2, "recLoad", new load_3<REC>(false));
-  addOpcode(1050, 3, "recLoad", new load_3<REC>(false));
+  AddOpcode(1050, 0, "recLoad", new load_1(false));
+  AddOpcode(1050, 1, "recLoad", new load_1(false));
+  AddOpcode(1050, 2, "recLoad", new load_3<REC>(false));
+  AddOpcode(1050, 3, "recLoad", new load_3<REC>(false));
 
-  addOpcode(1051, 0, "recMaskLoad", new load_1(true));
-  addOpcode(1051, 1, "recMaskLoad", new load_1(true));
-  addOpcode(1051, 2, "recMaskLoad", new load_3<REC>(true));
-  addOpcode(1051, 3, "recMaskLoad", new load_3<REC>(true));
+  AddOpcode(1051, 0, "recMaskLoad", new load_1(true));
+  AddOpcode(1051, 1, "recMaskLoad", new load_1(true));
+  AddOpcode(1051, 2, "recMaskLoad", new load_3<REC>(true));
+  AddOpcode(1051, 3, "recMaskLoad", new load_3<REC>(true));
 
-  addOpcode(1052, 0, "recDisplay", new display_0);
-  addOpcode(1052, 1, "recDisplay", new display_1);
-  addOpcode(1052, 2, "recDisplay", new display_2<REC>());
-  addOpcode(1052, 3, "recDisplay", new display_3<REC>());
-  addOpcode(1052, 4, "recDisplay", new display_4<REC>());
+  AddOpcode(1052, 0, "recDisplay", new display_0);
+  AddOpcode(1052, 1, "recDisplay", new display_1);
+  AddOpcode(1052, 2, "recDisplay", new display_2<REC>());
+  AddOpcode(1052, 3, "recDisplay", new display_3<REC>());
+  AddOpcode(1052, 4, "recDisplay", new display_4<REC>());
 
-  addOpcode(1053, 0, "recOpenBg", new openBg_0);
-  addOpcode(1053, 1, "recOpenBg", new openBg_1);
-  addOpcode(1053, 2, "recOpenBg", new openBg_2<REC>(false));
-  addOpcode(1053, 3, "recOpenBg", new openBg_3<REC>(false));
-  addOpcode(1053, 4, "recOpenBg", new openBg_4<REC>(false));
+  AddOpcode(1053, 0, "recOpenBg", new openBg_0);
+  AddOpcode(1053, 1, "recOpenBg", new openBg_1);
+  AddOpcode(1053, 2, "recOpenBg", new openBg_2<REC>(false));
+  AddOpcode(1053, 3, "recOpenBg", new openBg_3<REC>(false));
+  AddOpcode(1053, 4, "recOpenBg", new openBg_4<REC>(false));
 
-  addOpcode(1054, 0, "recMaskOpen", new open_0(true));
-  addOpcode(1054, 1, "recMaskOpen", new open_1(true));
-  addOpcode(1054, 2, "recMaskOpen", new open_2<REC>(true));
-  addOpcode(1054, 3, "recMaskOpen", new open_3<REC>(true));
-  addOpcode(1054, 4, "recMaskOpen", new open_4<REC>(true));
+  AddOpcode(1054, 0, "recMaskOpen", new open_0(true));
+  AddOpcode(1054, 1, "recMaskOpen", new open_1(true));
+  AddOpcode(1054, 2, "recMaskOpen", new open_2<REC>(true));
+  AddOpcode(1054, 3, "recMaskOpen", new open_3<REC>(true));
+  AddOpcode(1054, 4, "recMaskOpen", new open_4<REC>(true));
 
-  addOpcode(1056, 0, "recOpen", new open_0(false));
-  addOpcode(1056, 1, "recOpen", new open_1(false));
-  addOpcode(1056, 2, "recOpen", new open_2<REC>(false));
-  addOpcode(1056, 3, "recOpen", new open_3<REC>(false));
-  addOpcode(1056, 4, "recOpen", new open_4<REC>(false));
+  AddOpcode(1056, 0, "recOpen", new open_0(false));
+  AddOpcode(1056, 1, "recOpen", new open_1(false));
+  AddOpcode(1056, 2, "recOpen", new open_2<REC>(false));
+  AddOpcode(1056, 3, "recOpen", new open_3<REC>(false));
+  AddOpcode(1056, 4, "recOpen", new open_4<REC>(false));
 
-  addOpcode(1055, 0, "recMulti", new multi_str_0<REC>());
-  addOpcode(1055, 1, "recMulti", new multi_str_1<REC>());
-  addUnsupportedOpcode(1055, 2, "recMulti");
-  addUnsupportedOpcode(1055, 3, "recMulti");
-  addUnsupportedOpcode(1055, 4, "recMulti");
+  AddOpcode(1055, 0, "recMulti", new multi_str_0<REC>());
+  AddOpcode(1055, 1, "recMulti", new multi_str_1<REC>());
+  AddUnsupportedOpcode(1055, 2, "recMulti");
+  AddUnsupportedOpcode(1055, 3, "recMulti");
+  AddUnsupportedOpcode(1055, 4, "recMulti");
 
-  addOpcode(1057, 0, "recMulti", new multi_dc_0<REC>());
-  addOpcode(1057, 1, "recMulti", new multi_dc_1<REC>());
-  addUnsupportedOpcode(1057, 2, "recMulti");
-  addUnsupportedOpcode(1057, 3, "recMulti");
-  addUnsupportedOpcode(1057, 4, "recMulti");
+  AddOpcode(1057, 0, "recMulti", new multi_dc_0<REC>());
+  AddOpcode(1057, 1, "recMulti", new multi_dc_1<REC>());
+  AddUnsupportedOpcode(1057, 2, "recMulti");
+  AddUnsupportedOpcode(1057, 3, "recMulti");
+  AddUnsupportedOpcode(1057, 4, "recMulti");
 
-  addOpcode(1100, 0, "recCopy", new copy_1(false));
-  addOpcode(1100, 1, "recCopy", new copy_1(false));
-  addOpcode(1100, 2, "recCopy", new copy_3<REC>(false));
-  addOpcode(1100, 3, "recCopy", new copy_3<REC>(false));
-  addOpcode(1101, 0, "recMaskCopy", new copy_1(true));
-  addOpcode(1101, 1, "recMaskCopy", new copy_1(true));
-  addOpcode(1101, 2, "recMaskCopy", new copy_3<REC>(true));
-  addOpcode(1101, 3, "recMaskCopy", new copy_3<REC>(true));
+  AddOpcode(1100, 0, "recCopy", new copy_1(false));
+  AddOpcode(1100, 1, "recCopy", new copy_1(false));
+  AddOpcode(1100, 2, "recCopy", new copy_3<REC>(false));
+  AddOpcode(1100, 3, "recCopy", new copy_3<REC>(false));
+  AddOpcode(1101, 0, "recMaskCopy", new copy_1(true));
+  AddOpcode(1101, 1, "recMaskCopy", new copy_1(true));
+  AddOpcode(1101, 2, "recMaskCopy", new copy_3<REC>(true));
+  AddOpcode(1101, 3, "recMaskCopy", new copy_3<REC>(true));
 
-  addOpcode(1201, 0, "recFill", new fill_0);
-  addOpcode(1201, 1, "recFill", new fill_1);
-  addOpcode(1201, 2, "recFill", new fill_3<REC>());
-  addOpcode(1201, 3, "recFill", new fill_3<REC>());
+  AddOpcode(1201, 0, "recFill", new fill_0);
+  AddOpcode(1201, 1, "recFill", new fill_1);
+  AddOpcode(1201, 2, "recFill", new fill_3<REC>());
+  AddOpcode(1201, 3, "recFill", new fill_3<REC>());
 
-  addOpcode(1300, 0, "recInvert", new invert_1);
-  addUnsupportedOpcode(1300, 1, "recInvert");
-  addOpcode(1300, 2, "recInvert", new invert_3<REC>());
-  addUnsupportedOpcode(1300, 3, "recInvert");
+  AddOpcode(1300, 0, "recInvert", new invert_1);
+  AddUnsupportedOpcode(1300, 1, "recInvert");
+  AddOpcode(1300, 2, "recInvert", new invert_3<REC>());
+  AddUnsupportedOpcode(1300, 3, "recInvert");
 
-  addOpcode(1301, 0, "recMono", new mono_1);
-  addUnsupportedOpcode(1301, 1, "recMono");
-  addOpcode(1301, 2, "recMono", new mono_3<REC>());
-  addUnsupportedOpcode(1301, 3, "recMono");
+  AddOpcode(1301, 0, "recMono", new mono_1);
+  AddUnsupportedOpcode(1301, 1, "recMono");
+  AddOpcode(1301, 2, "recMono", new mono_3<REC>());
+  AddUnsupportedOpcode(1301, 3, "recMono");
 
-  addOpcode(1302, 0, "recColour", new colour_1);
-  addOpcode(1302, 1, "recColour", new colour_2<REC>());
+  AddOpcode(1302, 0, "recColour", new colour_1);
+  AddOpcode(1302, 1, "recColour", new colour_2<REC>());
 
-  addOpcode(1303, 0, "recLight", new light_1);
-  addOpcode(1303, 1, "recLight", new light_2<REC>());
+  AddOpcode(1303, 0, "recLight", new light_1);
+  AddOpcode(1303, 1, "recLight", new light_2<REC>());
 
-  addUnsupportedOpcode(1400, 0, "recSwap");
-  addUnsupportedOpcode(1400, 1, "recSwap");
+  AddUnsupportedOpcode(1400, 0, "recSwap");
+  AddUnsupportedOpcode(1400, 1, "recSwap");
 
-  addOpcode(1401, 0, "recStretchBlt", new stretchBlit_1<REC>(false));
-  addOpcode(1401, 1, "recStretchBlt", new stretchBlit_1<REC>(false));
+  AddOpcode(1401, 0, "recStretchBlt", new stretchBlit_1<REC>(false));
+  AddOpcode(1401, 1, "recStretchBlt", new stretchBlit_1<REC>(false));
 
-  addOpcode(1402, 0, "recZoom", new zoom<REC>());
+  AddOpcode(1402, 0, "recZoom", new zoom<REC>());
 
-  addOpcode(1403, 0, "recFade", new fade_1);
-  addOpcode(1403, 1, "recFade", new fade_1);
-  addOpcode(1403, 2, "recFade", new fade_3);
-  addOpcode(1403, 3, "recFade", new fade_3);
-  addOpcode(1403, 4, "recFade", new fade_5<REC>());
-  addOpcode(1403, 5, "recFade", new fade_5<REC>());
-  addOpcode(1403, 6, "recFade", new fade_7<REC>());
-  addOpcode(1403, 7, "recFade", new fade_7<REC>());
+  AddOpcode(1403, 0, "recFade", new fade_1);
+  AddOpcode(1403, 1, "recFade", new fade_1);
+  AddOpcode(1403, 2, "recFade", new fade_3);
+  AddOpcode(1403, 3, "recFade", new fade_3);
+  AddOpcode(1403, 4, "recFade", new fade_5<REC>());
+  AddOpcode(1403, 5, "recFade", new fade_5<REC>());
+  AddOpcode(1403, 6, "recFade", new fade_7<REC>());
+  AddOpcode(1403, 7, "recFade", new fade_7<REC>());
 
-  addUnsupportedOpcode(1404, 0, "recFlash");
-  addUnsupportedOpcode(1404, 1, "recFlash");
-  addUnsupportedOpcode(1404, 2, "recFlash");
-  addUnsupportedOpcode(1404, 3, "recFlash");
+  AddUnsupportedOpcode(1404, 0, "recFlash");
+  AddUnsupportedOpcode(1404, 1, "recFlash");
+  AddUnsupportedOpcode(1404, 2, "recFlash");
+  AddUnsupportedOpcode(1404, 3, "recFlash");
 
-  addUnsupportedOpcode(1406, 0, "recPan");
-  addUnsupportedOpcode(1407, 0, "recShift");
-  addUnsupportedOpcode(1408, 0, "recSlide");
-  addOpcode(1409, 0, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
-  addOpcode(1409, 1, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
+  AddUnsupportedOpcode(1406, 0, "recPan");
+  AddUnsupportedOpcode(1407, 0, "recShift");
+  AddUnsupportedOpcode(1408, 0, "recSlide");
+  AddOpcode(1409, 0, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
+  AddOpcode(1409, 1, "recMaskStretchBlt", new stretchBlit_1<REC>(true));
 }
 
 // @}

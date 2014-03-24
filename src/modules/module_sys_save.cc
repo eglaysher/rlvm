@@ -322,37 +322,37 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 // -----------------------------------------------------------------------
 
 void addSysSaveOpcodes(RLModule& m) {
-  m.addOpcode(1409, 0, "SaveExists", new SaveExists);
-  m.addOpcode(1410, 0, "SaveDate", new SaveDate);
-  m.addOpcode(1411, 0, "SaveTime", new SaveTime);
-  m.addOpcode(1412, 0, "SaveDateTime", new SaveDateTime);
-  m.addOpcode(1413, 0, "SaveInfo", new SaveInfo);
-  m.addOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
-  m.addOpcode(1421, 0, "LatestSave", new LatestSave);
+  m.AddOpcode(1409, 0, "SaveExists", new SaveExists);
+  m.AddOpcode(1410, 0, "SaveDate", new SaveDate);
+  m.AddOpcode(1411, 0, "SaveTime", new SaveTime);
+  m.AddOpcode(1412, 0, "SaveDateTime", new SaveDateTime);
+  m.AddOpcode(1413, 0, "SaveInfo", new SaveInfo);
+  m.AddOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
+  m.AddOpcode(1421, 0, "LatestSave", new LatestSave);
 
-  m.addOpcode(
+  m.AddOpcode(
       2053, 0, "SetConfirmSaveLoad", CallFunction(&System::setConfirmSaveLoad));
-  m.addOpcode(
+  m.AddOpcode(
       2003, 0, "ConfirmSaveLoad", ReturnIntValue(&System::confirmSaveLoad));
 
-  m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
-  m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
+  m.AddOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
+  m.AddOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3007, 0, "save", new save);
-  m.addOpcode(3107, 0, "save_always", new save);
+  m.AddOpcode(3007, 0, "save", new save);
+  m.AddOpcode(3107, 0, "save_always", new save);
 
-  m.addOpcode(3009, 0, "load", new Sys_load);
-  m.addOpcode(3109, 0, "load_always", new Sys_load);
+  m.AddOpcode(3009, 0, "load", new Sys_load);
+  m.AddOpcode(3109, 0, "load_always", new Sys_load);
 
-  m.addOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
-  m.addOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
+  m.AddOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
+  m.AddOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3500, 0, "Savepoint", CallFunction(&RLMachine::MarkSavepoint));
-  m.addOpcode(3501,
+  m.AddOpcode(3500, 0, "Savepoint", CallFunction(&RLMachine::MarkSavepoint));
+  m.AddOpcode(3501,
               0,
               "EnableAutoSavepoints",
               CallFunctionWith(&RLMachine::SetMarkSavepoints, 1));
-  m.addOpcode(3502,
+  m.AddOpcode(3502,
               0,
               "DisableAutoSavepoints",
               CallFunctionWith(&RLMachine::SetMarkSavepoints, 0));

@@ -421,48 +421,48 @@ struct objOfChild_2 : public RLOp_Void_7<IntConstant_T,
 // -----------------------------------------------------------------------
 
 void addObjectCreationFunctions(RLModule& m) {
-  m.addOpcode(1000, 0, "objOfFile", new objGeneric_0(objOfFileLoader));
-  m.addOpcode(1000, 1, "objOfFile", new objGeneric_1(objOfFileLoader));
-  m.addOpcode(1000, 2, "objOfFile", new objGeneric_2(objOfFileLoader));
-  m.addOpcode(1000, 3, "objOfFile", new objGeneric_3(objOfFileLoader));
-  m.addOpcode(1000, 4, "objOfFile", new objGeneric_4(objOfFileLoader));
+  m.AddOpcode(1000, 0, "objOfFile", new objGeneric_0(objOfFileLoader));
+  m.AddOpcode(1000, 1, "objOfFile", new objGeneric_1(objOfFileLoader));
+  m.AddOpcode(1000, 2, "objOfFile", new objGeneric_2(objOfFileLoader));
+  m.AddOpcode(1000, 3, "objOfFile", new objGeneric_3(objOfFileLoader));
+  m.AddOpcode(1000, 4, "objOfFile", new objGeneric_4(objOfFileLoader));
 
-  m.addOpcode(1001, 0, "objOfFile2", new objGeneric_0(objOfFileLoader));
-  m.addOpcode(1001, 1, "objOfFile2", new objGeneric_2(objOfFileLoader));
+  m.AddOpcode(1001, 0, "objOfFile2", new objGeneric_0(objOfFileLoader));
+  m.AddOpcode(1001, 1, "objOfFile2", new objGeneric_2(objOfFileLoader));
 
-  m.addOpcode(1003, 0, "objOfFileGan", new objOfFileGan_0);
-  m.addOpcode(1003, 1, "objOfFileGan", new objOfFileGan_1);
-  m.addOpcode(1003, 2, "objOfFileGan", new objOfFileGan_2);
-  m.addOpcode(1003, 3, "objOfFileGan", new objOfFileGan_3);
-  m.addUnsupportedOpcode(1003, 4, "objOfFileGan");
+  m.AddOpcode(1003, 0, "objOfFileGan", new objOfFileGan_0);
+  m.AddOpcode(1003, 1, "objOfFileGan", new objOfFileGan_1);
+  m.AddOpcode(1003, 2, "objOfFileGan", new objOfFileGan_2);
+  m.AddOpcode(1003, 3, "objOfFileGan", new objOfFileGan_3);
+  m.AddUnsupportedOpcode(1003, 4, "objOfFileGan");
 
-  m.addOpcode(1100, 0, "objOfArea", new objOfArea_0);
-  m.addOpcode(1100, 1, "objOfArea", new objOfArea_1);
-  m.addOpcode(1100, 2, "objOfArea", new objOfArea_2);
+  m.AddOpcode(1100, 0, "objOfArea", new objOfArea_0);
+  m.AddOpcode(1100, 1, "objOfArea", new objOfArea_1);
+  m.AddOpcode(1100, 2, "objOfArea", new objOfArea_2);
 
-  m.addOpcode(1101, 0, "objOfRect", new objOfArea_0);
-  m.addOpcode(1101, 1, "objOfRect", new objOfRect_1);
-  m.addOpcode(1101, 2, "objOfRect", new objOfRect_2);
-  m.addUnsupportedOpcode(1101, 3, "objOfRect");
+  m.AddOpcode(1101, 0, "objOfRect", new objOfArea_0);
+  m.AddOpcode(1101, 1, "objOfRect", new objOfRect_1);
+  m.AddOpcode(1101, 2, "objOfRect", new objOfRect_2);
+  m.AddUnsupportedOpcode(1101, 3, "objOfRect");
 
-  m.addOpcode(1200, 0, "objOfText", new objGeneric_0(objOfTextBuilder));
-  m.addOpcode(1200, 1, "objOfText", new objGeneric_1(objOfTextBuilder));
-  m.addOpcode(1200, 2, "objOfText", new objGeneric_2(objOfTextBuilder));
-  m.addUnsupportedOpcode(1200, 3, "objOfText");
+  m.AddOpcode(1200, 0, "objOfText", new objGeneric_0(objOfTextBuilder));
+  m.AddOpcode(1200, 1, "objOfText", new objGeneric_1(objOfTextBuilder));
+  m.AddOpcode(1200, 2, "objOfText", new objGeneric_2(objOfTextBuilder));
+  m.AddUnsupportedOpcode(1200, 3, "objOfText");
 
-  m.addOpcode(1300, 0, "objDriftOfFile", new objGeneric_0(objOfDriftLoader));
-  m.addOpcode(1300, 1, "objDriftOfFile", new objGeneric_1(objOfDriftLoader));
-  m.addOpcode(1300, 2, "objDriftOfFile", new objGeneric_2(objOfDriftLoader));
-  m.addOpcode(1300, 3, "objDriftOfFile", new objGeneric_3(objOfDriftLoader));
+  m.AddOpcode(1300, 0, "objDriftOfFile", new objGeneric_0(objOfDriftLoader));
+  m.AddOpcode(1300, 1, "objDriftOfFile", new objGeneric_1(objOfDriftLoader));
+  m.AddOpcode(1300, 2, "objDriftOfFile", new objGeneric_2(objOfDriftLoader));
+  m.AddOpcode(1300, 3, "objDriftOfFile", new objGeneric_3(objOfDriftLoader));
 
-  m.addOpcode(1400, 0, "objOfDigits", new objGeneric_0(objOfDigitsLoader));
-  m.addOpcode(1400, 1, "objOfDigits", new objGeneric_1(objOfDigitsLoader));
-  m.addOpcode(1400, 2, "objOfDigits", new objGeneric_2(objOfDigitsLoader));
-  m.addOpcode(1400, 3, "objOfDigits", new objGeneric_3(objOfDigitsLoader));
+  m.AddOpcode(1400, 0, "objOfDigits", new objGeneric_0(objOfDigitsLoader));
+  m.AddOpcode(1400, 1, "objOfDigits", new objGeneric_1(objOfDigitsLoader));
+  m.AddOpcode(1400, 2, "objOfDigits", new objGeneric_2(objOfDigitsLoader));
+  m.AddOpcode(1400, 3, "objOfDigits", new objGeneric_3(objOfDigitsLoader));
 
-  m.addOpcode(1500, 0, "objOfChild", new objOfChild_0);
-  m.addOpcode(1500, 1, "objOfChild", new objOfChild_1);
-  m.addOpcode(1500, 2, "objOfChild", new objOfChild_2);
+  m.AddOpcode(1500, 0, "objOfChild", new objOfChild_0);
+  m.AddOpcode(1500, 1, "objOfChild", new objOfChild_1);
+  m.AddOpcode(1500, 2, "objOfChild", new objOfChild_2);
 }
 
 // -----------------------------------------------------------------------

@@ -63,6 +63,6 @@ struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
 }  // namespace
 
 DebugModule::DebugModule() : RLModule("Debug", 1, 255) {
-  addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
-  addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
+  AddOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
+  AddOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }

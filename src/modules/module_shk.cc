@@ -27,26 +27,26 @@
 #include "modules/module_shk.h"
 
 ShakingModule::ShakingModule() : RLModule("Shk", 1, 13) {
-  addUnsupportedOpcode(0, 0, "ShakeStop");
-  addUnsupportedOpcode(0, 1, "ShakeStop");
+  AddUnsupportedOpcode(0, 0, "ShakeStop");
+  AddUnsupportedOpcode(0, 1, "ShakeStop");
 
-  addUnsupportedOpcode(1100, 0, "ShakeScreen=DOWNUP");
-  addUnsupportedOpcode(1101, 0, "ShakeScreen=RIGHTLEFT");
-  addUnsupportedOpcode(1102, 0, "ShakeScreen2D");
-  addUnsupportedOpcode(1200, 0, "ShakeScreen=UP");
-  addUnsupportedOpcode(1201, 0, "ShakeScreen=DOWN");
-  addUnsupportedOpcode(1202, 0, "ShakeScreen=LEFT");
-  addUnsupportedOpcode(1203, 0, "ShakeScreen=RIGHT");
-  addUnsupportedOpcode(1300, 0, "ShakeSpec");
-  addUnsupportedOpcode(1400, 0, "ShakeScreen=ZOOM");
+  AddUnsupportedOpcode(1100, 0, "ShakeScreen=DOWNUP");
+  AddUnsupportedOpcode(1101, 0, "ShakeScreen=RIGHTLEFT");
+  AddUnsupportedOpcode(1102, 0, "ShakeScreen2D");
+  AddUnsupportedOpcode(1200, 0, "ShakeScreen=UP");
+  AddUnsupportedOpcode(1201, 0, "ShakeScreen=DOWN");
+  AddUnsupportedOpcode(1202, 0, "ShakeScreen=LEFT");
+  AddUnsupportedOpcode(1203, 0, "ShakeScreen=RIGHT");
+  AddUnsupportedOpcode(1300, 0, "ShakeSpec");
+  AddUnsupportedOpcode(1400, 0, "ShakeScreen=ZOOM");
 
-  addUnsupportedOpcode(3100, 0, "ShakeScreenEx=DOWNUP");
-  addUnsupportedOpcode(3101, 0, "ShakeScreenEx=RIGHTLEFT");
-  addUnsupportedOpcode(3102, 0, "ShakeScreen2DEx");
-  addUnsupportedOpcode(3200, 0, "ShakeScreenEx=UP");
-  addUnsupportedOpcode(3201, 0, "ShakeScreenEx=DOWN");
-  addUnsupportedOpcode(3202, 0, "ShakeScreenEx=LEFT");
-  addUnsupportedOpcode(3203, 0, "ShakeScreenEx=RIGHT");
-  addUnsupportedOpcode(3300, 0, "ShakeSpecEx");
-  addUnsupportedOpcode(3400, 0, "ShakeScreenEx=ZOOM");
+  AddUnsupportedOpcode(3100, 0, "ShakeScreenEx=DOWNUP");
+  AddUnsupportedOpcode(3101, 0, "ShakeScreenEx=RIGHTLEFT");
+  AddUnsupportedOpcode(3102, 0, "ShakeScreen2DEx");
+  AddUnsupportedOpcode(3200, 0, "ShakeScreenEx=UP");
+  AddUnsupportedOpcode(3201, 0, "ShakeScreenEx=DOWN");
+  AddUnsupportedOpcode(3202, 0, "ShakeScreenEx=LEFT");
+  AddUnsupportedOpcode(3203, 0, "ShakeScreenEx=RIGHT");
+  AddUnsupportedOpcode(3300, 0, "ShakeSpecEx");
+  AddUnsupportedOpcode(3400, 0, "ShakeScreenEx=ZOOM");
 }

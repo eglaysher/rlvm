@@ -204,79 +204,79 @@ struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
 }  // namespace
 
 MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
-  addOpcode(3, 0, "par", new par);
-  //  addOpcode(15, 0, /* spause3 */ );
-  addOpcode(17, 0, "pause", new Msg_pause);
+  AddOpcode(3, 0, "par", new par);
+  //  AddOpcode(15, 0, /* spause3 */ );
+  AddOpcode(17, 0, "pause", new Msg_pause);
 
-  addUnsupportedOpcode(100, 0, "SetFontColour");
-  addOpcode(100, 1, "SetFontColour", new SetFontColour);
-  addOpcode(100, 2, "SetFontColour", new SetFontColour);
-  addOpcode(101, 0, "FontSize", CallFunction(&TextPage::FontSize));
-  addOpcode(101, 1, "FontSize", CallFunction(&TextPage::DefaultFontSize));
+  AddUnsupportedOpcode(100, 0, "SetFontColour");
+  AddOpcode(100, 1, "SetFontColour", new SetFontColour);
+  AddOpcode(100, 2, "SetFontColour", new SetFontColour);
+  AddOpcode(101, 0, "FontSize", CallFunction(&TextPage::FontSize));
+  AddOpcode(101, 1, "FontSize", CallFunction(&TextPage::DefaultFontSize));
 
-  addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
-  addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
+  AddOpcode(102, 0, "TextWindow", new Msg_TextWindow);
+  AddOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addOpcode(
+  AddOpcode(
       103, 0, "FastText", CallFunctionWith(&TextSystem::setFastTextMode, 1));
-  addOpcode(
+  AddOpcode(
       104, 0, "NormalText", CallFunctionWith(&TextSystem::setFastTextMode, 0));
 
-  addOpcode(105, 0, "FontColor", new FontColour);
-  addOpcode(105, 1, "FontColor", new FontColour);
-  addOpcode(105, 2, "FontColor", new FontColour);
+  AddOpcode(105, 0, "FontColor", new FontColour);
+  AddOpcode(105, 1, "FontColor", new FontColour);
+  AddOpcode(105, 2, "FontColor", new FontColour);
 
-  addUnsupportedOpcode(106, 0, "SetFontColourAll");
-  addUnsupportedOpcode(106, 1, "SetFontColourAll");
-  addUnsupportedOpcode(106, 2, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 0, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 1, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 2, "SetFontColourAll");
 
-  addUnsupportedOpcode(107, 0, "FontSizeAll");
+  AddUnsupportedOpcode(107, 0, "FontSizeAll");
 
-  addOpcode(109,
+  AddOpcode(109,
             0,
             "messageNoWaitOn",
             CallFunctionWith(&TextSystem::setScriptMessageNowait, 1));
-  addOpcode(110,
+  AddOpcode(110,
             0,
             "messageNoWaitOff",
             CallFunctionWith(&TextSystem::setScriptMessageNowait, 0));
 
-  addOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::activeWindow));
+  AddOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::activeWindow));
 
-  addOpcode(120, 0, "__doruby_on", new doruby_display);
-  addOpcode(120, 1, "__doruby_off", CallFunction(&TextPage::MarkRubyBegin));
+  AddOpcode(120, 0, "__doruby_on", new doruby_display);
+  AddOpcode(120, 1, "__doruby_off", CallFunction(&TextPage::MarkRubyBegin));
 
-  addOpcode(151, 0, "msgHide", new msgHide);
-  addOpcode(152, 0, "msgClear", new msgClear);
+  AddOpcode(151, 0, "msgHide", new msgHide);
+  AddOpcode(152, 0, "msgClear", new msgClear);
 
-  addOpcode(161, 0, "msgHideAll", new msgHideAll);
-  addOpcode(162, 0, "msgClearAll", new msgClearAll);
-  addUnsupportedOpcode(170, 0, "msgHideAllTemp");
-  addOpcode(201, 0, "br", CallFunction(&TextPage::HardBrake));
-  addOpcode(205, 0, "spause", new spause);
-  addUnsupportedOpcode(206, 0, "spause2");
-  addUnsupportedOpcode(207, 0, "pause_all");
-  addOpcode(210, 0, "page", new page);
+  AddOpcode(161, 0, "msgHideAll", new msgHideAll);
+  AddOpcode(162, 0, "msgClearAll", new msgClearAll);
+  AddUnsupportedOpcode(170, 0, "msgHideAllTemp");
+  AddOpcode(201, 0, "br", CallFunction(&TextPage::HardBrake));
+  AddOpcode(205, 0, "spause", new spause);
+  AddUnsupportedOpcode(206, 0, "spause2");
+  AddUnsupportedOpcode(207, 0, "pause_all");
+  AddOpcode(210, 0, "page", new page);
 
-  addOpcode(300, 0, "SetIndent", CallFunction(&TextPage::SetIndentation));
-  addOpcode(301, 0, "ClearIndent", CallFunction(&TextPage::ResetIndentation));
+  AddOpcode(300, 0, "SetIndent", CallFunction(&TextPage::SetIndentation));
+  AddOpcode(301, 0, "ClearIndent", CallFunction(&TextPage::ResetIndentation));
 
-  addOpcode(310, 0, "TextPos", new TextPos);
-  addOpcode(311, 0, "TextPosX", CallFunction(&TextPage::SetInsertionPointX));
-  addOpcode(312, 0, "TextPosY", CallFunction(&TextPage::SetInsertionPointY));
-  addOpcode(320, 0, "TextOffset", new TextOffset);
-  addOpcode(
+  AddOpcode(310, 0, "TextPos", new TextPos);
+  AddOpcode(311, 0, "TextPosX", CallFunction(&TextPage::SetInsertionPointX));
+  AddOpcode(312, 0, "TextPosY", CallFunction(&TextPage::SetInsertionPointY));
+  AddOpcode(320, 0, "TextOffset", new TextOffset);
+  AddOpcode(
       321, 0, "TextOffsetX", CallFunction(&TextPage::OffsetInsertionPointX));
-  addOpcode(
+  AddOpcode(
       322, 0, "TextOffsetY", CallFunction(&TextPage::OffsetInsertionPointY));
-  addOpcode(330, 0, "GetTextPos", new GetTextPos);
+  AddOpcode(330, 0, "GetTextPos", new GetTextPos);
 
-  addUnsupportedOpcode(340, 0, "WindowLen");
-  addUnsupportedOpcode(340, 1, "WindowLen");
-  addUnsupportedOpcode(341, 0, "WindowLenAll");
+  AddUnsupportedOpcode(340, 0, "WindowLen");
+  AddUnsupportedOpcode(340, 1, "WindowLen");
+  AddUnsupportedOpcode(341, 0, "WindowLenAll");
 
-  addOpcode(1000, 0, "FaceOpen", new FaceOpen);
-  addOpcode(1000, 1, "FaceOpen", new FaceOpen);
-  addOpcode(1001, 0, "FaceClose", new FaceClose);
-  addOpcode(1001, 1, "FaceClose", new FaceClose);
+  AddOpcode(1000, 0, "FaceOpen", new FaceOpen);
+  AddOpcode(1000, 1, "FaceOpen", new FaceOpen);
+  AddOpcode(1001, 0, "FaceClose", new FaceClose);
+  AddOpcode(1001, 1, "FaceClose", new FaceClose);
 }

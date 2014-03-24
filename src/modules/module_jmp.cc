@@ -476,29 +476,29 @@ struct push_string_value_up : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 JmpModule::JmpModule() : RLModule("Jmp", 0, 1) {
-  addOpcode(0, 0, "goto", new Jmp_goto);
-  addOpcode(1, 0, "goto_if", new goto_if);
-  addOpcode(2, 0, "goto_unless", new goto_unless);
-  addOpcode(3, 0, "goto_on", new goto_on);
-  addOpcode(4, 0, "goto_case", new goto_case);
-  addOpcode(5, 0, "gosub", new gosub);
-  addOpcode(6, 0, "gosub_if", new gosub_if);
-  addOpcode(7, 0, "gosub_unless", new gosub_unless);
-  addOpcode(8, 0, "gosub_on", new gosub_on);
-  addOpcode(9, 0, "gosub_case", new gosub_case);
-  addOpcode(10, 0, "ret", new ret);
-  addOpcode(11, 0, "jump", new jump_0);
-  addOpcode(11, 1, "jump", new jump_1);
-  addOpcode(12, 0, "farcall", new farcall_0);
-  addOpcode(12, 1, "farcall", new farcall_1);
-  addOpcode(13, 0, "rtl", new rtl);
+  AddOpcode(0, 0, "goto", new Jmp_goto);
+  AddOpcode(1, 0, "goto_if", new goto_if);
+  AddOpcode(2, 0, "goto_unless", new goto_unless);
+  AddOpcode(3, 0, "goto_on", new goto_on);
+  AddOpcode(4, 0, "goto_case", new goto_case);
+  AddOpcode(5, 0, "gosub", new gosub);
+  AddOpcode(6, 0, "gosub_if", new gosub_if);
+  AddOpcode(7, 0, "gosub_unless", new gosub_unless);
+  AddOpcode(8, 0, "gosub_on", new gosub_on);
+  AddOpcode(9, 0, "gosub_case", new gosub_case);
+  AddOpcode(10, 0, "ret", new ret);
+  AddOpcode(11, 0, "jump", new jump_0);
+  AddOpcode(11, 1, "jump", new jump_1);
+  AddOpcode(12, 0, "farcall", new farcall_0);
+  AddOpcode(12, 1, "farcall", new farcall_1);
+  AddOpcode(13, 0, "rtl", new rtl);
 
-  addOpcode(16, 0, "gosub_with", new gosub_with);
-  addOpcode(17, 0, "ret_with", new ret_with_0);
-  addOpcode(17, 1, "ret_with", new ret_with_1);
-  addOpcode(18, 0, "farcall_with", new farcall_with);
-  addOpcode(19, 0, "rtl_with", new rtl_with_0);
-  addOpcode(19, 1, "rtl_with", new rtl_with_1);
+  AddOpcode(16, 0, "gosub_with", new gosub_with);
+  AddOpcode(17, 0, "ret_with", new ret_with_0);
+  AddOpcode(17, 1, "ret_with", new ret_with_1);
+  AddOpcode(18, 0, "farcall_with", new farcall_with);
+  AddOpcode(19, 0, "rtl_with", new rtl_with_0);
+  AddOpcode(19, 1, "rtl_with", new rtl_with_1);
 
-  addOpcode(101, 0, "pushStringValueUp", new push_string_value_up);
+  AddOpcode(101, 0, "pushStringValueUp", new push_string_value_up);
 }

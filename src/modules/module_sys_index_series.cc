@@ -110,5 +110,5 @@ void Sys_index_series::adder(int index,
 // -----------------------------------------------------------------------
 
 void addIndexSeriesOpcode(RLModule& module) {
-  module.addOpcode(800, 0, "index_series", new Sys_index_series);
+  module.AddOpcode(800, 0, "index_series", new Sys_index_series);
 }

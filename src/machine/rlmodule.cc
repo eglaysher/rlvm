@@ -54,22 +54,22 @@ RLModule::~RLModule() {
     delete property_list_;
 }
 
-int RLModule::packOpcodeNumber(int opcode, unsigned char overload) {
+int RLModule::PackOpcodeNumber(int opcode, unsigned char overload) {
   return ((int)opcode << 8) | overload;
 }
 
-void RLModule::unpackOpcodeNumber(int packed_opcode,
+void RLModule::UnpackOpcodeNumber(int packed_opcode,
                                   int& opcode,
                                   unsigned char& overload) {
   opcode = (packed_opcode >> 8);
   overload = packed_opcode & 0xFF;
 }
 
-void RLModule::addOpcode(int opcode,
+void RLModule::AddOpcode(int opcode,
                          unsigned char overload,
                          const char* name,
                          RLOperation* op) {
-  int packed_opcode = packOpcodeNumber(opcode, overload);
+  int packed_opcode = PackOpcodeNumber(opcode, overload);
   op->setName(name);
   op->module_ = this;
 #ifndef NDEBUG
@@ -86,10 +86,10 @@ void RLModule::addOpcode(int opcode,
       std::make_pair(packed_opcode, std::unique_ptr<RLOperation>(op)));
 }
 
-void RLModule::addUnsupportedOpcode(int opcode,
+void RLModule::AddUnsupportedOpcode(int opcode,
                                     unsigned char overload,
                                     const std::string& name) {
-  addOpcode(opcode,
+  AddOpcode(opcode,
             overload,
             "",
             new UndefinedFunction(
@@ -132,7 +132,7 @@ RLModule::PropertyList::iterator RLModule::FindProperty(int property) const {
 void RLModule::DispatchFunction(RLMachine& machine,
                                 const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =
-      stored_operations_.find(packOpcodeNumber(f.opcode(), f.overload()));
+      stored_operations_.find(PackOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations_.end()) {
     try {
       it->second->DispatchFunction(machine, f);
@@ -147,7 +147,7 @@ void RLModule::DispatchFunction(RLMachine& machine,
 }
 
 std::ostream& operator<<(std::ostream& os, const RLModule& module) {
-  os << "mod<" << module.moduleName() << "," << module.moduleType() << ":"
-     << module.moduleNumber() << ">";
+  os << "mod<" << module.module_name() << "," << module.module_type() << ":"
+     << module.module_number() << ">";
   return os;
 }

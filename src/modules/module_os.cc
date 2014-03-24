@@ -53,5 +53,5 @@ struct CheckFile
 }  // namespace
 
 OsModule::OsModule() : RLModule("Os", 1, 005) {
-  addOpcode(114, 0, "(unknown)", new CheckFile);
+  AddOpcode(114, 0, "(unknown)", new CheckFile);
 }

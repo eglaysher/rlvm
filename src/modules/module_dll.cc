@@ -61,13 +61,13 @@ struct CallDLL : public RLOp_Store_6<IntConstant_T,
 }  // namespace
 
 DLLModule::DLLModule() : RLModule("DLL", 2, 1) {
-  addOpcode(10, 0, "LoadDLL", new LoadDLL);
-  addOpcode(11, 0, "UnloadDLL", CallFunction(&RLMachine::UnloadDLL));
+  AddOpcode(10, 0, "LoadDLL", new LoadDLL);
+  AddOpcode(11, 0, "UnloadDLL", CallFunction(&RLMachine::UnloadDLL));
 
-  addOpcode(12, 0, "CallDLL", new CallDLL);
-  addOpcode(12, 1, "CallDLL", new CallDLL);
-  addOpcode(12, 2, "CallDLL", new CallDLL);
-  addOpcode(12, 3, "CallDLL", new CallDLL);
-  addOpcode(12, 4, "CallDLL", new CallDLL);
-  addOpcode(12, 5, "CallDLL", new CallDLL);
+  AddOpcode(12, 0, "CallDLL", new CallDLL);
+  AddOpcode(12, 1, "CallDLL", new CallDLL);
+  AddOpcode(12, 2, "CallDLL", new CallDLL);
+  AddOpcode(12, 3, "CallDLL", new CallDLL);
+  AddOpcode(12, 4, "CallDLL", new CallDLL);
+  AddOpcode(12, 5, "CallDLL", new CallDLL);
 }

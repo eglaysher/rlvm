@@ -44,14 +44,14 @@ class MappedRLModule : public RLModule {
                  const std::string& in_module_name,
                  int in_module_type,
                  int in_module_number);
-  ~MappedRLModule();
+  virtual ~MappedRLModule();
 
   // Adds a map_function_(op) to this modules set of opcodes. Takes ownership
   // of |op|.
-  virtual void addOpcode(int opcode,
+  virtual void AddOpcode(int opcode,
                          unsigned char overload,
                          const char* name,
-                         RLOperation* op);
+                         RLOperation* op) override;
 
  private:
   // Function which takes an RLOperation and returns an RLOperation. Takes

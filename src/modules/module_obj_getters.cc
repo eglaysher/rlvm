@@ -106,22 +106,22 @@ struct objGetDims : public RLOp_Void_4<IntConstant_T,
 };
 
 void addFunctions(RLModule& m) {
-  m.addOpcode(1000, 0, "objGetPos", new objGetPos);
-  m.addOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
-  m.addOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
-  m.addOpcode(
+  m.AddOpcode(1000, 0, "objGetPos", new objGetPos);
+  m.AddOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
+  m.AddOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
+  m.AddOpcode(
       1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::rawAlpha));
-  m.addOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
+  m.AddOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
 
-  m.addOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
-  m.addOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
-  m.addOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));
-  m.addOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
-  m.addOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
+  m.AddOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
+  m.AddOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
+  m.AddOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));
+  m.AddOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
+  m.AddOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
 
-  m.addOpcode(1039, 0, "objGetPattNo", new Obj_GetInt(&GraphicsObject::pattNo));
-  m.addOpcode(1100, 0, "objGetDims", new objGetDims);
-  m.addOpcode(1100, 1, "objGetDims", new objGetDims);
+  m.AddOpcode(1039, 0, "objGetPattNo", new Obj_GetInt(&GraphicsObject::pattNo));
+  m.AddOpcode(1100, 0, "objGetDims", new objGetDims);
+  m.AddOpcode(1100, 1, "objGetDims", new objGetDims);
 }
 
 }  // namespace

@@ -243,6 +243,6 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
 // -----------------------------------------------------------------------
 
 void addTimetable2Opcode(RLModule& module) {
-  module.addOpcode(810, 0, "timetable2", new Sys_timetable2);
-  module.addOpcode(811, 0, "timetablelen2", new Sys_timetablelen2);
+  module.AddOpcode(810, 0, "timetable2", new Sys_timetable2);
+  module.AddOpcode(811, 0, "timetablelen2", new Sys_timetablelen2);
 }

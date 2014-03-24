@@ -158,8 +158,8 @@ RLMachine::~RLMachine() {
 }
 
 void RLMachine::AttachModule(RLModule* module) {
-  int module_type = module->moduleType();
-  int module_number = module->moduleNumber();
+  int module_type = module->module_type();
+  int module_number = module->module_number();
   unsigned int packed_module = PackModuleNumber(module_type, module_number);
 
   ModuleMap::iterator it = modules_.find(packed_module);

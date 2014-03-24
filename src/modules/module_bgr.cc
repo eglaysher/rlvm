@@ -285,25 +285,25 @@ struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 // -----------------------------------------------------------------------
 
 BgrModule::BgrModule() : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
-  addOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
-  addOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
-  addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
-  addOpcode(10, 3, "bgrLoadHaikei", new bgrLoadHaikei_wtf2);
+  AddOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
+  AddOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
+  AddOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
+  AddOpcode(10, 3, "bgrLoadHaikei", new bgrLoadHaikei_wtf2);
 
-  addUnsupportedOpcode(100, 0, "bgrMulti");
-  addOpcode(100, 1, "bgrMulti", new bgrMulti_1);
+  AddUnsupportedOpcode(100, 0, "bgrMulti");
+  AddOpcode(100, 1, "bgrMulti", new bgrMulti_1);
 
-  addOpcode(1000, 0, "bgrNext", new bgrNext);
+  AddOpcode(1000, 0, "bgrNext", new bgrNext);
 
-  addOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
-  addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
+  AddOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
+  AddOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
 
-  addOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
-  addOpcode(2001,
+  AddOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
+  AddOpcode(2001,
             0,
             "bgrClearPreloadedScript",
             CallFunction(&GraphicsSystem::ClearPreloadedHIKScript));
-  addOpcode(2002,
+  AddOpcode(2002,
             0,
             "bgrClearAllPreloadedScripts",
             CallFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));

@@ -143,47 +143,47 @@ struct bgmMute_1 : public RLOp_Void_1<IntConstant_T> {
 
 BgmModule::BgmModule() : RLModule("Bgm", 1, 20) {
   // fun \\([A-Za-z0-9]+\\) +<1:Bgm:\\([0-9]+\\), \\([0-9]+\\).*$
-  addOpcode(0, 0, "bgmLoop", new bgmLoop_0);
-  addOpcode(0, 1, "bgmLoop", new bgmLoop_1);
-  addOpcode(0, 2, "bgmLoop", new bgmLoop_2);
+  AddOpcode(0, 0, "bgmLoop", new bgmLoop_0);
+  AddOpcode(0, 1, "bgmLoop", new bgmLoop_1);
+  AddOpcode(0, 2, "bgmLoop", new bgmLoop_2);
 
-  addUnsupportedOpcode(1, 0, "bgmPlayEx");
-  addUnsupportedOpcode(1, 1, "bgmPlayEx");
-  addUnsupportedOpcode(1, 2, "bgmPlayEx");
+  AddUnsupportedOpcode(1, 0, "bgmPlayEx");
+  AddUnsupportedOpcode(1, 1, "bgmPlayEx");
+  AddUnsupportedOpcode(1, 2, "bgmPlayEx");
 
-  addOpcode(2, 0, "bgmPlay", new bgmPlay_0);
-  addOpcode(2, 1, "bgmPlay", new bgmPlay_1);
-  addOpcode(2, 2, "bgmPlay", new bgmPlay_2);
+  AddOpcode(2, 0, "bgmPlay", new bgmPlay_0);
+  AddOpcode(2, 1, "bgmPlay", new bgmPlay_1);
+  AddOpcode(2, 2, "bgmPlay", new bgmPlay_2);
 
-  addOpcode(3, 0, "bgmWait", new bgmWait);
-  addOpcode(4, 0, "bgmPlaying", new bgmPlaying);
-  addOpcode(5, 0, "bgmStop", CallFunction(&SoundSystem::bgmStop));
-  addOpcode(6, 0, "bgmStop2", CallFunction(&SoundSystem::bgmStop));
-  addOpcode(7, 0, "bgmStatus", ReturnIntValue(&SoundSystem::bgmStatus));
-  addUnsupportedOpcode(8, 0, "bgmRewind");
-  addOpcode(9, 0, "bgmPause", CallFunction(&SoundSystem::bgmPause));
-  addOpcode(10, 0, "bgmUnPause", CallFunction(&SoundSystem::bgmUnPause));
-  addOpcode(11, 0, "bgmVolume", ReturnIntValue(&SoundSystem::bgmVolumeScript));
+  AddOpcode(3, 0, "bgmWait", new bgmWait);
+  AddOpcode(4, 0, "bgmPlaying", new bgmPlaying);
+  AddOpcode(5, 0, "bgmStop", CallFunction(&SoundSystem::bgmStop));
+  AddOpcode(6, 0, "bgmStop2", CallFunction(&SoundSystem::bgmStop));
+  AddOpcode(7, 0, "bgmStatus", ReturnIntValue(&SoundSystem::bgmStatus));
+  AddUnsupportedOpcode(8, 0, "bgmRewind");
+  AddOpcode(9, 0, "bgmPause", CallFunction(&SoundSystem::bgmPause));
+  AddOpcode(10, 0, "bgmUnPause", CallFunction(&SoundSystem::bgmUnPause));
+  AddOpcode(11, 0, "bgmVolume", ReturnIntValue(&SoundSystem::bgmVolumeScript));
 
-  addOpcode(12, 0, "bgmSetVolume", new bgmSetVolume_0);
-  addOpcode(
+  AddOpcode(12, 0, "bgmSetVolume", new bgmSetVolume_0);
+  AddOpcode(
       12, 1, "bgmSetVolume", CallFunction(&SoundSystem::setBgmVolumeScript));
-  addOpcode(13,
+  AddOpcode(13,
             0,
             "bgmUnMute",
             CallFunctionWith(&SoundSystem::setBgmVolumeScript, 255, 0));
-  addOpcode(13, 1, "bgmUnMute", new bgmUnMute_1);
-  addOpcode(14,
+  AddOpcode(13, 1, "bgmUnMute", new bgmUnMute_1);
+  AddOpcode(14,
             0,
             "bgmMute",
             CallFunctionWith(&SoundSystem::setBgmVolumeScript, 0, 0));
-  addOpcode(14, 1, "bgmMute", new bgmMute_1);
+  AddOpcode(14, 1, "bgmMute", new bgmMute_1);
 
-  addOpcode(105, 0, "bgmFadeOut", CallFunction(&SoundSystem::bgmFadeOut));
+  AddOpcode(105, 0, "bgmFadeOut", CallFunction(&SoundSystem::bgmFadeOut));
 
-  addOpcode(106, 0, "bgmFadeOutEx", new bgmFadeOutEx);
-  addOpcode(106, 1, "bgmFadeOutEx", new bgmFadeOutEx);
+  AddOpcode(106, 0, "bgmFadeOutEx", new bgmFadeOutEx);
+  AddOpcode(106, 1, "bgmFadeOutEx", new bgmFadeOutEx);
 
-  addUnsupportedOpcode(107, 0, "bgmStatus2");
-  addUnsupportedOpcode(200, 0, "bgmTimer");
+  AddUnsupportedOpcode(107, 0, "bgmStatus2");
+  AddUnsupportedOpcode(200, 0, "bgmTimer");
 }

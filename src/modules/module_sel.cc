@@ -174,14 +174,14 @@ struct objbtn_init_1 : public RLOp_Void_Void {
 }  // namespace
 
 SelModule::SelModule() : RLModule("Sel", 0, 2) {
-  addOpcode(0, 0, "select_w", new Sel_select_w);
-  addOpcode(1, 0, "select", new Sel_select);
-  addOpcode(2, 0, "select_s2", new Sel_select_s);
-  addOpcode(3, 0, "select_s", new Sel_select_s);
-  addOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
-  addOpcode(14, 0, "select_objbtn_cancel", new Sel_select_objbtn_cancel_0);
-  addOpcode(14, 1, "select_objbtn_cancel", new Sel_select_objbtn_cancel_1);
+  AddOpcode(0, 0, "select_w", new Sel_select_w);
+  AddOpcode(1, 0, "select", new Sel_select);
+  AddOpcode(2, 0, "select_s2", new Sel_select_s);
+  AddOpcode(3, 0, "select_s", new Sel_select_s);
+  AddOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
+  AddOpcode(14, 0, "select_objbtn_cancel", new Sel_select_objbtn_cancel_0);
+  AddOpcode(14, 1, "select_objbtn_cancel", new Sel_select_objbtn_cancel_1);
 
-  addOpcode(20, 0, "objbtn_init", new objbtn_init_0);
-  addOpcode(20, 1, "objbtn_init", new objbtn_init_1);
+  AddOpcode(20, 0, "objbtn_init", new objbtn_init_0);
+  AddOpcode(20, 1, "objbtn_init", new objbtn_init_1);
 }

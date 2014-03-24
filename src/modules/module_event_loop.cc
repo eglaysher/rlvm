@@ -47,38 +47,38 @@ struct setOverride : public RLOp_Void_1<IntConstant_T> {
 }  // namespace
 
 EventLoopModule::EventLoopModule() : RLModule("EventLoop", 0, 4) {
-  addUnsupportedOpcode(120, 0, "SetInterrupt");
-  addUnsupportedOpcode(121, 0, "ClearInterrupt");
-  addUnsupportedOpcode(303, 0, "yield");
+  AddUnsupportedOpcode(120, 0, "SetInterrupt");
+  AddUnsupportedOpcode(121, 0, "ClearInterrupt");
+  AddUnsupportedOpcode(303, 0, "yield");
 
   // Theoretically the same as rtl, but we don't really know.
-  addOpcode(300, 0, "rtlButton", CallFunction(&RLMachine::ReturnFromFarcall));
-  addOpcode(301, 0, "rtlCancel", CallFunction(&RLMachine::ReturnFromFarcall));
-  addOpcode(302, 0, "rtlSystem", CallFunction(&RLMachine::ReturnFromFarcall));
+  AddOpcode(300, 0, "rtlButton", CallFunction(&RLMachine::ReturnFromFarcall));
+  AddOpcode(301, 0, "rtlCancel", CallFunction(&RLMachine::ReturnFromFarcall));
+  AddOpcode(302, 0, "rtlSystem", CallFunction(&RLMachine::ReturnFromFarcall));
 
-  addOpcode(1000,
+  AddOpcode(1000,
             0,
             "ShowBackground",
             CallFunction(&GraphicsSystem::toggleInterfaceHidden));
-  addOpcode(
+  AddOpcode(
       1100, 0, "SetSkipMode", CallFunctionWith(&TextSystem::setSkipMode, 1));
-  addOpcode(
+  AddOpcode(
       1101, 0, "ClearSkipMode", CallFunctionWith(&TextSystem::setSkipMode, 0));
-  addOpcode(1102, 0, "SkipMode", ReturnIntValue(&TextSystem::skipMode));
+  AddOpcode(1102, 0, "SkipMode", ReturnIntValue(&TextSystem::skipMode));
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.
-  addOpcode(1200, 0, "TextwindowOverrideShow", new setOverride(true));
-  addOpcode(1200,
+  AddOpcode(1200, 0, "TextwindowOverrideShow", new setOverride(true));
+  AddOpcode(1200,
             2,
             "TextwindowOverrideShow",
             CallFunctionWith(&TextSystem::setVisualOverrideAll, true));
-  addOpcode(1201, 0, "TextwindowOverrideHide", new setOverride(false));
-  addOpcode(1201,
+  AddOpcode(1201, 0, "TextwindowOverrideHide", new setOverride(false));
+  AddOpcode(1201,
             2,
             "TextwindowOverrideHide",
             CallFunctionWith(&TextSystem::setVisualOverrideAll, false));
-  addOpcode(1202,
+  AddOpcode(1202,
             0,
             "ClearTextwindowOverrides",
             CallFunction(&TextSystem::clearVisualOverrides));
