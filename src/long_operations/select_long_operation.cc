@@ -201,12 +201,12 @@ NormalSelectLongOperation::~NormalSelectLongOperation() {
   machine_.system().text().setInSelectionMode(false);
 }
 
-void NormalSelectLongOperation::mouseMotion(const Point& pos) {
+void NormalSelectLongOperation::MouseMotion(const Point& pos) {
   // Tell the text system about the move
   machine_.system().text().setMousePosition(pos);
 }
 
-bool NormalSelectLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool NormalSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                         bool pressed) {
   EventSystem& es = machine_.system().event();
 
@@ -386,7 +386,7 @@ ButtonSelectLongOperation::~ButtonSelectLongOperation() {
   machine_.system().graphics().removeRenderable(this);
 }
 
-void ButtonSelectLongOperation::mouseMotion(const Point& p) {
+void ButtonSelectLongOperation::MouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     if (buttons_[i].bounding_rect.contains(p)) {
       if (options_[i].enabled) {
@@ -403,7 +403,7 @@ void ButtonSelectLongOperation::mouseMotion(const Point& p) {
   highlighted_item_ = -1;
 }
 
-bool ButtonSelectLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                         bool pressed) {
   EventSystem& es = machine_.system().event();
 

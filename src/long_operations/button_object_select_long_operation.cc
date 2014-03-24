@@ -75,7 +75,7 @@ ButtonObjectSelectLongOperation::~ButtonObjectSelectLongOperation() {
   }
 }
 
-void ButtonObjectSelectLongOperation::mouseMotion(const Point& point) {
+void ButtonObjectSelectLongOperation::MouseMotion(const Point& point) {
   GraphicsObject* hovering_button = NULL;
 
   for (ButtonPair& button_pair : buttons_) {
@@ -103,7 +103,7 @@ void ButtonObjectSelectLongOperation::mouseMotion(const Point& point) {
   currently_hovering_button_ = hovering_button;
 }
 
-bool ButtonObjectSelectLongOperation::mouseButtonStateChanged(
+bool ButtonObjectSelectLongOperation::MouseButtonStateChanged(
     MouseButton mouseButton,
     bool pressed) {
   if (mouseButton == MOUSE_LEFT) {

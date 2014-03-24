@@ -43,8 +43,8 @@ class TextoutLongOperation : public LongOperation {
   void setNoWait(bool in = true) { no_wait_ = in; }
 
   // Overriden from EventListener:
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  virtual bool keyStateChanged(KeyCode keyCode, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual bool KeyStateChanged(KeyCode keyCode, bool pressed);
 
   // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);

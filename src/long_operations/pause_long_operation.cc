@@ -65,12 +65,12 @@ PauseLongOperation::~PauseLongOperation() {
   machine_.system().text().setInPauseState(false);
 }
 
-void PauseLongOperation::mouseMotion(const Point& p) {
+void PauseLongOperation::MouseMotion(const Point& p) {
   // Tell the text system about the move
   machine_.system().text().setMousePosition(p);
 }
 
-bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                  bool pressed) {
   GraphicsSystem& graphics = machine_.system().graphics();
   EventSystem& es = machine_.system().event();
@@ -130,7 +130,7 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   bool handled = false;
 
   if (pressed) {
@@ -212,7 +212,7 @@ NewPageAfterLongop::NewPageAfterLongop(LongOperation* inOp)
 
 NewPageAfterLongop::~NewPageAfterLongop() {}
 
-void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine) {
+void NewPageAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
   TextSystem& text = machine.system().text();
   text.snapshot();
   text.currentWindow()->clearWin();
@@ -227,7 +227,7 @@ NewPageOnAllAfterLongop::NewPageOnAllAfterLongop(LongOperation* inOp)
 
 NewPageOnAllAfterLongop::~NewPageOnAllAfterLongop() {}
 
-void NewPageOnAllAfterLongop::performAfterLongOperation(RLMachine& machine) {
+void NewPageOnAllAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
   TextSystem& text = machine.system().text();
   text.snapshot();
   for (int window : text.activeWindows()) {
@@ -244,7 +244,7 @@ NewParagraphAfterLongop::NewParagraphAfterLongop(LongOperation* inOp)
 
 NewParagraphAfterLongop::~NewParagraphAfterLongop() {}
 
-void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine) {
+void NewParagraphAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
   TextPage& page = machine.system().text().currentPage();
   page.ResetIndentation();
   page.HardBrake();

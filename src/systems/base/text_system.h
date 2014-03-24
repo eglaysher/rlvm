@@ -256,8 +256,8 @@ class TextSystem : public EventListener {
   void setInSelectionMode(const bool in) { in_selection_mode_ = in; }
 
   // Overriden from EventListener
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool KeyStateChanged(KeyCode key_code, bool pressed);
 
   System& system() { return system_; }
 

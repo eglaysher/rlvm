@@ -414,7 +414,7 @@ class GraphicsSystem : public EventListener {
   void clearAllDCs();
 
   // Implementation of MouseMotionListener:
-  virtual void mouseMotion(const Point& new_location);
+  virtual void MouseMotion(const Point& new_location) override;
 
   // Reset the system. Should clear all state for when a user loads a game.
   virtual void reset();

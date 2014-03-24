@@ -71,9 +71,9 @@ void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
   y_ = y;
 }
 
-void WaitLongOperation::mouseMotion(const Point&) { mouse_moved_ = true; }
+void WaitLongOperation::MouseMotion(const Point&) { mouse_moved_ = true; }
 
-bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool WaitLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed) {
   if (pressed && break_on_clicks_) {
     if (save_click_location_ &&
@@ -93,7 +93,7 @@ bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool WaitLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool WaitLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && break_on_ctrl_pressed_ &&
       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
     ctrl_pressed_ = true;

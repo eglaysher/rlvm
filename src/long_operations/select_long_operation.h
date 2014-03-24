@@ -103,8 +103,8 @@ class NormalSelectLongOperation : public SelectLongOperation {
   virtual ~NormalSelectLongOperation();
 
   // Overridden from EventListener:
-  virtual void mouseMotion(const Point&);
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual void MouseMotion(const Point&) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed) override;
 
  private:
   boost::shared_ptr<TextWindow> text_window_;
@@ -124,8 +124,8 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   virtual ~ButtonSelectLongOperation();
 
   // Overridden from EventListener:
-  virtual void mouseMotion(const Point&);
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual void MouseMotion(const Point&);
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
 
   // Overridden from Renderable:
   virtual void render(std::ostream* tree);

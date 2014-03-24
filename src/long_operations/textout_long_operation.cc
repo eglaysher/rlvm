@@ -75,7 +75,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
 TextoutLongOperation::~TextoutLongOperation() {}
 
-bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool TextoutLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed) {
   if (pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
@@ -85,7 +85,7 @@ bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool TextoutLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
     return true;

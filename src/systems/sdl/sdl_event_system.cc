@@ -133,7 +133,7 @@ void SDLEventSystem::wait(unsigned int milliseconds) const {
 
 void SDLEventSystem::injectMouseMovement(RLMachine& machine, const Point& loc) {
   mouse_pos_ = loc;
-  broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
+  broadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
 }
 
 void SDLEventSystem::injectMouseDown(RLMachine& machine) {
@@ -142,7 +142,7 @@ void SDLEventSystem::injectMouseDown(RLMachine& machine) {
 
   DispatchEvent(
       machine,
-      bind(&EventListener::mouseButtonStateChanged, _1, MOUSE_LEFT, 1));
+      bind(&EventListener::MouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
 
 void SDLEventSystem::injectMouseUp(RLMachine& machine) {
@@ -151,7 +151,7 @@ void SDLEventSystem::injectMouseUp(RLMachine& machine) {
 
   DispatchEvent(
       machine,
-      bind(&EventListener::mouseButtonStateChanged, _1, MOUSE_LEFT, 1));
+      bind(&EventListener::MouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
 
 void SDLEventSystem::preventCursorPosSpinning() {
@@ -200,7 +200,7 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
   }
 
   KeyCode code = KeyCode(event.key.keysym.sym);
-  DispatchEvent(machine, bind(&EventListener::keyStateChanged, _1, code, true));
+  DispatchEvent(machine, bind(&EventListener::KeyStateChanged, _1, code, true));
 }
 
 void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
@@ -229,7 +229,7 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
 
   KeyCode code = KeyCode(event.key.keysym.sym);
   DispatchEvent(machine,
-                bind(&EventListener::keyStateChanged, _1, code, false));
+                bind(&EventListener::KeyStateChanged, _1, code, false));
 }
 
 void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
@@ -238,7 +238,7 @@ void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
     last_mouse_move_time_ = getTicks();
 
     // Handle this somehow.
-    broadcastEvent(machine, bind(&EventListener::mouseMotion, _1, mouse_pos_));
+    broadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
   }
 }
 
@@ -276,7 +276,7 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
 
     DispatchEvent(
         machine,
-        bind(&EventListener::mouseButtonStateChanged, _1, button, pressed));
+        bind(&EventListener::MouseButtonStateChanged, _1, button, pressed));
   }
 }
 

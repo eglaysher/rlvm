@@ -892,7 +892,7 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::mouseMotion(const Point& new_location) {
+void GraphicsSystem::MouseMotion(const Point& new_location) {
   if (use_custom_mouse_cursor_ && show_cursor_from_bytecode_)
     markScreenAsDirty(GUT_MOUSE_MOTION);
 

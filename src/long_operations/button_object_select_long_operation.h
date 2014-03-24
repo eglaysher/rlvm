@@ -46,8 +46,9 @@ class ButtonObjectSelectLongOperation : public LongOperation {
   void set_cancelable() { cancelable_ = true; }
 
   // Overridden from EventListener:
-  virtual void mouseMotion(const Point& point);
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual void MouseMotion(const Point& point) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton,
+                                       bool pressed) override;
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);

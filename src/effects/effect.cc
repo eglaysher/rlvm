@@ -96,7 +96,7 @@ BlitAfterEffectFinishes::BlitAfterEffectFinishes(LongOperation* in,
 
 BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
-void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
+void BlitAfterEffectFinishes::PerformAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src_surface_->blitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
 

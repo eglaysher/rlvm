@@ -130,7 +130,7 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
   ~BlitAfterEffectFinishes();
 
  private:
-  virtual void performAfterLongOperation(RLMachine& machine);
+  virtual void PerformAfterLongOperation(RLMachine& machine) override;
 
   // The source surface (previously known as DC1, before I realized
   // that temporary surfaces could in fact be part of effects)

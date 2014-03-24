@@ -54,11 +54,11 @@ class WaitLongOperation : public LongOperation {
   // breaking on mouse click.
   void saveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
 
-  void mouseMotion(const Point&);
+  void MouseMotion(const Point&);
 
   // Overridden from EventListener:
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  virtual bool keyStateChanged(KeyCode keyCode, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual bool KeyStateChanged(KeyCode keyCode, bool pressed);
 
   void recordMouseCursorPosition();
 

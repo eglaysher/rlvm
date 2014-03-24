@@ -302,17 +302,17 @@ class EventListener {
   virtual ~EventListener();
 
   // Notifies of the new location of the mouse hotspot.
-  virtual void mouseMotion(const Point& new_location);
+  virtual void MouseMotion(const Point& new_location);
 
   // A notification of a mouse or key press. Returns true if this EventListener
   // handled the message (and this message shouldn't be Dispatched to other
   // EventListeners).
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button, bool pressed);
 
   // A notification that a key was pressed or unpressed. Returns true if this
   // EventListener handled the message (and this message shouldn't be
   // Dispatched to other EventListeners).
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+  virtual bool KeyStateChanged(KeyCode key_code, bool pressed);
 };
 
 #endif  // SRC_SYSTEMS_BASE_EVENT_LISTENER_H_
