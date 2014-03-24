@@ -84,9 +84,10 @@ class Gloss {
         int y1,
         int x2,
         int y2);
+  ~Gloss();
 
   // Whether the passed in point intersects with
-  bool contains(const Point& point);
+  bool Contains(const Point& point);
 
   const std::string& text() const { return text_; }
 
@@ -132,90 +133,90 @@ class RlBabelDLL : public RealLiveDLL {
 
   // Main entrypoint to the "DLL". It's a giant switch function that handles
   // all the commands that Haeleth added with rlBabel.
-  virtual int callDLL(RLMachine& machine,
+  virtual int CallDLL(RLMachine& machine,
                       int func,
                       int arg1,
                       int arg2,
                       int arg3,
-                      int arg4);
+                      int arg4) override;
 
-  virtual const std::string& name() const;
+  virtual const std::string& GetDLLName() const override;
 
  private:
   // Initializes the DLL.
-  int initialize(int dllno, int windname);
+  int Initialize(int dllno, int windname);
 
   // Takes an input string and copies it to our internal buffer.
-  int textoutAdd(const std::string& str);
+  int TextoutAdd(const std::string& str);
 
   // Adds characters to the internal buffer, italicizing text as it comes in.
   void AppendChar(const char*& ch);
 
   // Clears our intenrnal text buffer.
-  void textoutClear();
+  void TextoutClear();
 
   // Checks if there's room on this page, and either line breaks (returns
   // getcNewLine) or page breaks (returns getcNewScreen).
-  int textoutLineBreak(StringReferenceIterator buf);
+  int TextoutLineBreak(StringReferenceIterator buf);
 
   // Retrieves an action specified in getcReturn, which directs the side of
   // rlBabel implemented in RealLive code. Uses buffer and xmod as output
   // variables for the command given.
-  int textoutGetChar(StringReferenceIterator buffer, IntReferenceIterator xmod);
+  int TextoutGetChar(StringReferenceIterator buffer, IntReferenceIterator xmod);
 
   // (rlBabel function not entirely understood...)
-  int startNewScreen(const std::string& cnam);
+  int StartNewScreen(const std::string& cnam);
 
   // Sets the window name internally. This does not display the name in the
   // case of NAME_MOD being 0 (name displayed inline), but will display it in
   // case of NAME_MOD being 1 (name being displayed in a different window
   // where it won't mess with our indentation rules.)
-  int setCurrentWindowName(StringReferenceIterator buffer);
+  int SetCurrentWindowName(StringReferenceIterator buffer);
 
   // Clears all on screen glosses.
-  int clearGlosses();
+  int ClearGlosses();
 
   // Mark where this gloss begins.
-  int newGloss();
+  int NewGloss();
 
   // Create a gloss of the text since newGloss() with the glosstext of
   // |cp932_gloss_text|.
-  int addGloss(const std::string& cp932_gloss_text);
+  int AddGloss(const std::string& cp932_gloss_text);
 
   // Tests if (x, y) is inside any defined glosses. If so, return true and put
   // the glosstext in |text|.
-  int testGlosses(int x, int y, StringReferenceIterator text, int globalwaku);
+  int TestGlosses(int x, int y, StringReferenceIterator text, int globalwaku);
 
   // Helper functions:
 
-  int getCharWidth(uint16_t full_char, bool as_xmod);
+  int GetCharWidth(uint16_t full_char, bool as_xmod);
 
-  bool lineBreakRequired();
+  bool LineBreakRequired();
 
-  uint16_t consumeNextCharacter(std::string::size_type& index);
+  uint16_t ConsumeNextCharacter(std::string::size_type& index);
 
-  inline char& curPos(int offset = 0) {
+  inline char& cur_pos(int offset = 0) {
     return cp932_text_buffer[text_index + offset];
   }
-  inline const char& curPos(int offset = 0) const {
+  inline const char& cur_pos(int offset = 0) const {
     return cp932_text_buffer[text_index + offset];
   }
-  inline char& endToken(int offset = 0) {
+  inline char& end_token(int offset = 0) {
     return cp932_text_buffer[end_token_index + offset];
   }
-  inline const char& endToken(int offset = 0) const {
+  inline const char& end_token(int offset = 0) const {
     return cp932_text_buffer[end_token_index + offset];
   }
 
   // Transform one of rlBabel's integer addresses into an iterator to the
   // corresponding piece of integer memory.
-  IntReferenceIterator getIvar(int addr);
+  IntReferenceIterator GetIvar(int addr);
 
   // Transform one of rlBabel's integer addresses into an iterator to the
   // corresponding piece of integer memory.
-  StringReferenceIterator getSvar(int addr);
+  StringReferenceIterator GetSvar(int addr);
 
-  boost::shared_ptr<TextWindow> getWindow(int id);
+  boost::shared_ptr<TextWindow> GetWindow(int id);
 
   // Whether text being added is italicized.
   bool add_is_italic;

@@ -605,7 +605,7 @@ void RLMachine::SetKidokuMarker(int kidoku_number) {
 
 bool RLMachine::DllLoaded(const std::string& name) {
   for (auto const& dll : loaded_dlls_) {
-    if (dll.second->name() == name)
+    if (dll.second->GetDLLName() == name)
       return true;
   }
 
@@ -634,7 +634,7 @@ int RLMachine::CallDLL(int slot,
                        int five) {
   DLLMap::iterator it = loaded_dlls_.find(slot);
   if (it != loaded_dlls_.end()) {
-    return it->second->callDLL(*this, one, two, three, four, five);
+    return it->second->CallDLL(*this, one, two, three, four, five);
   } else {
     std::ostringstream oss;
     oss << "Attempt to callDLL(" << one << ", " << two << ", " << three << ", "
