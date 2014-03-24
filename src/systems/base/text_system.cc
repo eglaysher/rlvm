@@ -289,8 +289,22 @@ vector<int> TextSystem::activeWindows() {
 }
 
 void TextSystem::snapshot() {
-  previous_page_sets_.push_back(current_pageset_->clone().release());
-  expireOldPages();
+  // TODO(erg): Get off ptr_container and then switch the implementation here
+  // to std::all_of.
+  bool all_empty = true;
+  for (PageSet::iterator it = current_pageset_->begin();
+       it != current_pageset_->end();
+       ++it) {
+    if (!it->second->empty()) {
+      all_empty = false;
+      break;
+    }
+  }
+
+  if (!all_empty) {
+    previous_page_sets_.push_back(current_pageset_->clone().release());
+    expireOldPages();
+  }
 }
 
 void TextSystem::newPageOnWindow(int window) {

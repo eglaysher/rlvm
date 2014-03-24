@@ -57,6 +57,8 @@ class TextPage {
   // markRubyBegin(), but not the closing displayRubyText().
   bool in_ruby_gloss() const { return in_ruby_gloss_; }
 
+  bool empty() const { return elements_to_replay_.empty(); }
+
   // Replays every recordable action called on this TextPage.
   void Replay(bool is_active_page);
 
