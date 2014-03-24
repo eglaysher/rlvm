@@ -44,7 +44,7 @@ class OpcodeLog {
   ~OpcodeLog();
 
   // Increments the number of times we've encountered "name".
-  void increment(const std::string& name);
+  void Increment(const std::string& name);
 
   Storage::const_iterator begin() const { return storage_.begin(); }
   Storage::const_iterator end() const { return storage_.end(); }

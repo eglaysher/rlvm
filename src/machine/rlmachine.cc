@@ -280,7 +280,7 @@ void RLMachine::ExecuteNextInstruction() {
       }
 
       if (undefined_log_)
-        undefined_log_->increment(e.opcodeName());
+        undefined_log_->Increment(e.opcodeName());
     }
     catch (rlvm::Exception& e) {
       if (halt_on_exception_) {
