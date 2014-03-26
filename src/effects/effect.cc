@@ -57,22 +57,22 @@ Effect::~Effect() {
 
 bool Effect::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
-  unsigned int currentFrame = time - start_time_;
+  unsigned int current_frame = time - start_time_;
 
-  bool fastForward = machine.system().fastForward();
+  bool fast_forward = machine.system().fastForward();
 
-  if (currentFrame >= duration_ || fastForward) {
+  if (current_frame >= duration_ || fast_forward) {
     return true;
   } else {
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.beginFrame();
 
-    if (blitOriginalImage()) {
-      dstSurface().renderToScreen(
+    if (BlitOriginalImage()) {
+      dst_surface().renderToScreen(
           Rect(Point(0, 0), size()), Rect(Point(0, 0), size()), 255);
     }
 
-    performEffectForTime(machine, currentFrame);
+    PerformEffectForTime(machine, current_frame);
 
     graphics.endFrame();
     return false;

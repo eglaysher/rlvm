@@ -43,46 +43,46 @@ BlindEffect::BlindEffect(RLMachine& machine,
 
 BlindEffect::~BlindEffect() {}
 
-void BlindEffect::computeGrowing(RLMachine& machine,
+void BlindEffect::ComputeGrowing(RLMachine& machine,
                                  int maxSize,
                                  int currentTime) {
-  int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay =
-      int((float(currentTime) / duration()) * (blindSize() + numBlinds));
+  int num_blinds = maxSize / blind_size() + 1;
+  int rows_to_display =
+      int((float(currentTime) / duration()) * (blind_size() + num_blinds));
 
-  for (int currentBlind = 0; currentBlind < numBlinds; ++currentBlind) {
-    if (currentBlind <= rowsToDisplay) {
-      int currentlyDisplayed = abs(currentBlind - rowsToDisplay);
-      if (currentlyDisplayed > blindSize())
-        currentlyDisplayed = blindSize();
+  for (int currentBlind = 0; currentBlind < num_blinds; ++currentBlind) {
+    if (currentBlind <= rows_to_display) {
+      int currentlyDisplayed = abs(currentBlind - rows_to_display);
+      if (currentlyDisplayed > blind_size())
+        currentlyDisplayed = blind_size();
 
-      int polygonStart = currentBlind * blindSize();
-      renderPolygon(polygonStart, polygonStart + currentlyDisplayed);
+      int polygonStart = currentBlind * blind_size();
+      RenderPolygon(polygonStart, polygonStart + currentlyDisplayed);
     }
   }
 }
 
-void BlindEffect::computeDecreasing(RLMachine& machine,
+void BlindEffect::ComputeDecreasing(RLMachine& machine,
                                     int maxSize,
                                     int currentTime) {
-  int numBlinds = maxSize / blindSize() + 1;
-  int rowsToDisplay =
-      int((float(currentTime) / duration()) * (blindSize() + numBlinds));
+  int num_blinds = maxSize / blind_size() + 1;
+  int rows_to_display =
+      int((float(currentTime) / duration()) * (blind_size() + num_blinds));
 
-  for (int currentBlind = numBlinds; currentBlind >= 0; --currentBlind) {
-    if ((numBlinds - currentBlind) < rowsToDisplay) {
-      int currentlyDisplayed = abs(numBlinds - currentBlind - rowsToDisplay);
-      if (currentlyDisplayed > blindSize())
-        currentlyDisplayed = blindSize();
+  for (int currentBlind = num_blinds; currentBlind >= 0; --currentBlind) {
+    if ((num_blinds - currentBlind) < rows_to_display) {
+      int currentlyDisplayed = abs(num_blinds - currentBlind - rows_to_display);
+      if (currentlyDisplayed > blind_size())
+        currentlyDisplayed = blind_size();
 
-      int bottomOfPolygon = currentBlind * blindSize();
+      int bottomOfPolygon = currentBlind * blind_size();
 
-      renderPolygon(bottomOfPolygon, bottomOfPolygon - currentlyDisplayed);
+      RenderPolygon(bottomOfPolygon, bottomOfPolygon - currentlyDisplayed);
     }
   }
 }
 
-bool BlindEffect::blitOriginalImage() const { return true; }
+bool BlindEffect::BlitOriginalImage() const { return true; }
 
 // -----------------------------------------------------------------------
 // BlindTopToBottomEffect
@@ -96,15 +96,17 @@ BlindTopToBottomEffect::BlindTopToBottomEffect(RLMachine& machine,
                                                int blindSize)
     : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
-void BlindTopToBottomEffect::performEffectForTime(RLMachine& machine,
+BlindTopToBottomEffect::~BlindTopToBottomEffect() {}
+
+void BlindTopToBottomEffect::PerformEffectForTime(RLMachine& machine,
                                                   int currentTime) {
-  computeGrowing(machine, height(), currentTime);
+  ComputeGrowing(machine, height(), currentTime);
 }
 
-void BlindTopToBottomEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().renderToScreen(Rect::GRP(0, polyStart, width(), polyEnd),
-                              Rect::GRP(0, polyStart, width(), polyEnd),
-                              255);
+void BlindTopToBottomEffect::RenderPolygon(int polyStart, int polyEnd) {
+  src_surface().renderToScreen(Rect::GRP(0, polyStart, width(), polyEnd),
+                               Rect::GRP(0, polyStart, width(), polyEnd),
+                               255);
 }
 
 // -----------------------------------------------------------------------
@@ -119,16 +121,18 @@ BlindBottomToTopEffect::BlindBottomToTopEffect(RLMachine& machine,
                                                int blindSize)
     : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
-void BlindBottomToTopEffect::performEffectForTime(RLMachine& machine,
+BlindBottomToTopEffect::~BlindBottomToTopEffect() {}
+
+void BlindBottomToTopEffect::PerformEffectForTime(RLMachine& machine,
                                                   int currentTime) {
-  computeDecreasing(machine, height(), currentTime);
+  ComputeDecreasing(machine, height(), currentTime);
 }
 
-void BlindBottomToTopEffect::renderPolygon(int polyStart, int polyEnd) {
+void BlindBottomToTopEffect::RenderPolygon(int polyStart, int polyEnd) {
   // Render polygon
-  srcSurface().renderToScreen(Rect::GRP(0, polyEnd, width(), polyStart),
-                              Rect::GRP(0, polyEnd, width(), polyStart),
-                              255);
+  src_surface().renderToScreen(Rect::GRP(0, polyEnd, width(), polyStart),
+                               Rect::GRP(0, polyEnd, width(), polyStart),
+                               255);
 }
 
 // -----------------------------------------------------------------------
@@ -143,15 +147,17 @@ BlindLeftToRightEffect::BlindLeftToRightEffect(RLMachine& machine,
                                                int blindSize)
     : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
-void BlindLeftToRightEffect::performEffectForTime(RLMachine& machine,
+BlindLeftToRightEffect::~BlindLeftToRightEffect() {}
+
+void BlindLeftToRightEffect::PerformEffectForTime(RLMachine& machine,
                                                   int currentTime) {
-  computeGrowing(machine, width(), currentTime);
+  ComputeGrowing(machine, width(), currentTime);
 }
 
-void BlindLeftToRightEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().renderToScreen(Rect::GRP(polyStart, 0, polyEnd, height()),
-                              Rect::GRP(polyStart, 0, polyEnd, height()),
-                              255);
+void BlindLeftToRightEffect::RenderPolygon(int polyStart, int polyEnd) {
+  src_surface().renderToScreen(Rect::GRP(polyStart, 0, polyEnd, height()),
+                               Rect::GRP(polyStart, 0, polyEnd, height()),
+                               255);
 }
 
 // -----------------------------------------------------------------------
@@ -166,13 +172,15 @@ BlindRightToLeftEffect::BlindRightToLeftEffect(RLMachine& machine,
                                                int blindSize)
     : BlindEffect(machine, src, dst, screenSize, time, blindSize) {}
 
-void BlindRightToLeftEffect::performEffectForTime(RLMachine& machine,
+BlindRightToLeftEffect::~BlindRightToLeftEffect() {}
+
+void BlindRightToLeftEffect::PerformEffectForTime(RLMachine& machine,
                                                   int currentTime) {
-  computeDecreasing(machine, width(), currentTime);
+  ComputeDecreasing(machine, width(), currentTime);
 }
 
-void BlindRightToLeftEffect::renderPolygon(int polyStart, int polyEnd) {
-  srcSurface().renderToScreen(Rect::GRP(polyEnd, 0, polyStart, height()),
-                              Rect::GRP(polyEnd, 0, polyStart, height()),
-                              255);
+void BlindRightToLeftEffect::RenderPolygon(int polyStart, int polyEnd) {
+  src_surface().renderToScreen(Rect::GRP(polyEnd, 0, polyStart, height()),
+                               Rect::GRP(polyEnd, 0, polyStart, height()),
+                               255);
 }

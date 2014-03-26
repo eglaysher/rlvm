@@ -85,7 +85,7 @@ class Archive {
 
   typedef std::map<int, FilePos>::const_iterator const_iterator;
   const_iterator begin() { return scenarios_.begin(); }
-  const_iterator end()   { return scenarios_.end(); }
+  const_iterator end() { return scenarios_.end(); }
 
   // Returns a specific scenario by |index| number or NULL if none exist.
   Scenario* scenario(int index);

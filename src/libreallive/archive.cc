@@ -116,8 +116,8 @@ Scenario* Archive::scenario(int index) {
     return at->second.get();
   scenarios_t::const_iterator st = scenarios_.find(index);
   if (st != scenarios_.end()) {
-    Scenario* scene = new Scenario(
-        st->second, index, regname_, second_level_xor_key_);
+    Scenario* scene =
+        new Scenario(st->second, index, regname_, second_level_xor_key_);
     accessed_[index].reset(scene);
     return scene;
   }
@@ -136,8 +136,6 @@ int Archive::getProbableEncodingType() const {
   return 0;
 }
 
-void Archive::reset() {
-  accessed_.clear();
-}
+void Archive::reset() { accessed_.clear(); }
 
 }  // namespace libreallive

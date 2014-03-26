@@ -48,27 +48,27 @@
 // EffectFactory
 // -----------------------------------------------------------------------
 
-Effect* EffectFactory::buildFromSEL(RLMachine& machine,
+Effect* EffectFactory::BuildFromSEL(RLMachine& machine,
                                     boost::shared_ptr<Surface> src,
                                     boost::shared_ptr<Surface> dst,
                                     int selNum) {
-  std::vector<int> selParams = getSELEffect(machine, selNum);
+  std::vector<int> sel_params = getSELEffect(machine, selNum);
 
-  return build(machine,
+  return Build(machine,
                src,
                dst,
-               selParams[6],
-               selParams[7],
-               selParams[8],
-               selParams[9],
-               selParams[10],
-               selParams[11],
-               selParams[12],
-               selParams[13],
-               selParams[15]);
+               sel_params[6],
+               sel_params[7],
+               sel_params[8],
+               sel_params[9],
+               sel_params[10],
+               sel_params[11],
+               sel_params[12],
+               sel_params[13],
+               sel_params[15]);
 }
 
-Effect* EffectFactory::build(RLMachine& machine,
+Effect* EffectFactory::Build(RLMachine& machine,
                              boost::shared_ptr<Surface> src,
                              boost::shared_ptr<Surface> dst,
                              int time,
@@ -80,7 +80,7 @@ Effect* EffectFactory::build(RLMachine& machine,
                              int a,
                              int b,
                              int c) {
-  Size screenSize = machine.system().graphics().screenSize();
+  Size screen_size = machine.system().graphics().screenSize();
 
   // Ensure that both of our images are on the graphics card so we don't
   // stutter during the loop. These can be NULL in unit tests.
@@ -94,8 +94,8 @@ Effect* EffectFactory::build(RLMachine& machine,
   // confusing and hard to implement!
   switch (style) {
     case 10:
-      return buildWipeEffect(
-          machine, src, dst, screenSize, time, direction, interpolation);
+      return BuildWipeEffect(
+          machine, src, dst, screen_size, time, direction, interpolation);
     // We have the bunch of similar effects that are all implemented by
     // ScrollSquashSlideBaseEffect
     case 15:
@@ -104,19 +104,19 @@ Effect* EffectFactory::build(RLMachine& machine,
     case 18:
     case 20:
     case 21: {
-      ScrollSquashSlideDrawer* drawer = buildScrollSquashSlideDrawer(direction);
+      ScrollSquashSlideDrawer* drawer = BuildScrollSquashSlideDrawer(direction);
       ScrollSquashSlideEffectTypeBase* effect =
-          buildScrollSquashSlideTypeBase(style);
+          BuildScrollSquashSlideTypeBase(style);
       return new ScrollSquashSlideBaseEffect(
-          machine, src, dst, drawer, effect, screenSize, time);
+          machine, src, dst, drawer, effect, screen_size, time);
     }
     case 120:
-      return buildBlindEffect(
-          machine, src, dst, screenSize, time, direction, xsize, ysize);
+      return BuildBlindEffect(
+          machine, src, dst, screen_size, time, direction, xsize, ysize);
     case 0:
     case 50:
     default:
-      return new FadeEffect(machine, src, dst, screenSize, time);
+      return new FadeEffect(machine, src, dst, screen_size, time);
   }
 }
 
@@ -132,39 +132,39 @@ enum ScreenDirection {
   RIGHT_TO_LEFT = 3   // From right to left
 };
 
-Effect* EffectFactory::buildWipeEffect(RLMachine& machine,
+Effect* EffectFactory::BuildWipeEffect(RLMachine& machine,
                                        boost::shared_ptr<Surface> src,
                                        boost::shared_ptr<Surface> dst,
-                                       const Size& screenSize,
+                                       const Size& screen_size,
                                        int time,
                                        int direction,
                                        int interpolation) {
   switch (direction) {
     case TOP_TO_BOTTOM:
       return new WipeTopToBottomEffect(
-          machine, src, dst, screenSize, time, interpolation);
+          machine, src, dst, screen_size, time, interpolation);
     case BOTTOM_TO_TOP:
       return new WipeBottomToTopEffect(
-          machine, src, dst, screenSize, time, interpolation);
+          machine, src, dst, screen_size, time, interpolation);
     case LEFT_TO_RIGHT:
       return new WipeLeftToRightEffect(
-          machine, src, dst, screenSize, time, interpolation);
+          machine, src, dst, screen_size, time, interpolation);
     case RIGHT_TO_LEFT:
       return new WipeRightToLeftEffect(
-          machine, src, dst, screenSize, time, interpolation);
+          machine, src, dst, screen_size, time, interpolation);
     default:
       std::cerr << "WARNING! Unsupported direction " << direction
                 << " in EffectFactory::buildWipeEffect. Returning Top to"
                 << " Bottom effect." << std::endl;
       return new WipeTopToBottomEffect(
-          machine, src, dst, screenSize, time, interpolation);
+          machine, src, dst, screen_size, time, interpolation);
   }
 }
 
-Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
+Effect* EffectFactory::BuildBlindEffect(RLMachine& machine,
                                         boost::shared_ptr<Surface> src,
                                         boost::shared_ptr<Surface> dst,
-                                        const Size& screenSize,
+                                        const Size& screen_size,
                                         int time,
                                         int direction,
                                         int xsize,
@@ -176,22 +176,22 @@ Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
       return new BlindTopToBottomEffect(
-          machine, src, dst, screenSize, time, xsize);
+          machine, src, dst, screen_size, time, xsize);
     case BOTTOM_TO_TOP:
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
       return new BlindBottomToTopEffect(
-          machine, src, dst, screenSize, time, xsize);
+          machine, src, dst, screen_size, time, xsize);
     case LEFT_TO_RIGHT:
       if (ysize == 0 && xsize > 0)
         ysize = xsize;
       return new BlindLeftToRightEffect(
-          machine, src, dst, screenSize, time, ysize);
+          machine, src, dst, screen_size, time, ysize);
     case RIGHT_TO_LEFT:
       if (ysize == 0 && xsize > 0)
         ysize = xsize;
       return new BlindRightToLeftEffect(
-          machine, src, dst, screenSize, time, ysize);
+          machine, src, dst, screen_size, time, ysize);
 
     default:
       std::cerr << "WARNING! Unsupported direction " << direction
@@ -200,11 +200,11 @@ Effect* EffectFactory::buildBlindEffect(RLMachine& machine,
       if (xsize == 0 && ysize > 0)
         xsize = ysize;
       return new BlindTopToBottomEffect(
-          machine, src, dst, screenSize, time, xsize);
+          machine, src, dst, screen_size, time, xsize);
   }
 }
 
-ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
+ScrollSquashSlideDrawer* EffectFactory::BuildScrollSquashSlideDrawer(
     int drawerType) {
   switch (drawerType) {
     case TOP_TO_BOTTOM:
@@ -223,7 +223,7 @@ ScrollSquashSlideDrawer* EffectFactory::buildScrollSquashSlideDrawer(
   }
 }
 
-ScrollSquashSlideEffectTypeBase* EffectFactory::buildScrollSquashSlideTypeBase(
+ScrollSquashSlideEffectTypeBase* EffectFactory::BuildScrollSquashSlideTypeBase(
     int style) {
   switch (style) {
     case 15:

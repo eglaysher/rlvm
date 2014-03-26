@@ -147,7 +147,7 @@ void performEffect(RLMachine& machine,
                    const boost::shared_ptr<Surface>& dst,
                    int selnum) {
   if (!machine.replaying_graphics_stack()) {
-    LongOperation* lop = EffectFactory::buildFromSEL(machine, src, dst, selnum);
+    LongOperation* lop = EffectFactory::BuildFromSEL(machine, src, dst, selnum);
     machine.PushLongOperation(lop);
   }
 }
@@ -165,7 +165,7 @@ void performEffect(RLMachine& machine,
                    int b,
                    int c) {
   if (!machine.replaying_graphics_stack()) {
-    LongOperation* lop = EffectFactory::build(machine,
+    LongOperation* lop = EffectFactory::Build(machine,
                                               src,
                                               dst,
                                               time,

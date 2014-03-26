@@ -40,11 +40,13 @@ FadeEffect::FadeEffect(RLMachine& machine,
                        int time)
     : Effect(machine, src, dst, screenSize, time) {}
 
-void FadeEffect::performEffectForTime(RLMachine& machine, int currentTime) {
+FadeEffect::~FadeEffect() {}
+
+void FadeEffect::PerformEffectForTime(RLMachine& machine, int currentTime) {
   // Blit the source image to the screen with the opacity
   int opacity = int((float(currentTime) / duration()) * 255);
 
-  srcSurface().renderToScreen(Rect(0, 0, size()), Rect(0, 0, size()), opacity);
+  src_surface().renderToScreen(Rect(0, 0, size()), Rect(0, 0, size()), opacity);
 }
 
-bool FadeEffect::blitOriginalImage() const { return true; }
+bool FadeEffect::BlitOriginalImage() const { return true; }
