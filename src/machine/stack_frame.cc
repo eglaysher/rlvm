@@ -87,7 +87,7 @@ void StackFrame::load(Archive& ar, unsigned int version) {
   ar& scene_number& offset& type;
 
   libreallive::Scenario const* scenario =
-      Serialization::g_current_machine->archive().scenario(scene_number);
+      Serialization::g_current_machine->archive().GetScenario(scene_number);
   if (scenario == NULL) {
     std::ostringstream oss;
     oss << "Unknown SEEN #" << scene_number << " in save file!";

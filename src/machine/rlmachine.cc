@@ -116,7 +116,7 @@ RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
   libreallive::Scenario* scenario = NULL;
   if (gameexe.exists("SEEN_START")) {
     int first_seen = gameexe("SEEN_START").to_int();
-    scenario = in_archive.scenario(first_seen);
+    scenario = in_archive.GetScenario(first_seen);
 
     if (scenario == NULL)
       cerr << "WARNING: Invalid #SEEN_START in Gameexe" << endl;
@@ -124,7 +124,7 @@ RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
 
   if (scenario == NULL) {
     // if SEEN_START is undefined, then just grab the first SEEN.
-    scenario = in_archive.scenario(archive_.begin()->first);
+    scenario = in_archive.GetScenario(archive_.begin()->first);
   }
 
   if (scenario == 0)
@@ -348,7 +348,7 @@ void RLMachine::ExecuteCommand(const libreallive::CommandElement& f) {
 
 void RLMachine::Jump(int scenario_num, int entrypoint) {
   // Check to make sure it's a valid scenario
-  libreallive::Scenario* scenario = archive_.scenario(scenario_num);
+  libreallive::Scenario* scenario = archive_.GetScenario(scenario_num);
   if (scenario == 0) {
     std::ostringstream oss;
     oss << "Invalid scenario number in jump (" << scenario_num << ", "
@@ -376,7 +376,7 @@ void RLMachine::Jump(int scenario_num, int entrypoint) {
 }
 
 void RLMachine::Farcall(int scenario_num, int entrypoint) {
-  libreallive::Scenario* scenario = archive_.scenario(scenario_num);
+  libreallive::Scenario* scenario = archive_.GetScenario(scenario_num);
   if (scenario == 0) {
     std::ostringstream oss;
     oss << "Invalid scenario number in farcall (" << scenario_num << ", "
@@ -547,7 +547,7 @@ int RLMachine::GetTextEncoding() const {
 }
 
 int RLMachine::GetProbableEncodingType() const {
-  return archive_.getProbableEncodingType();
+  return archive_.GetProbableEncodingType();
 }
 
 void RLMachine::PerformTextout(const libreallive::TextoutElement& e) {

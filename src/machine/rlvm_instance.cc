@@ -104,7 +104,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
     if (dump_seen_ != -1) {
-      libreallive::Scenario* scenario = arc.scenario(dump_seen_);
+      libreallive::Scenario* scenario = arc.GetScenario(dump_seen_);
       DumpScenario(scenario);
       return;
     }
