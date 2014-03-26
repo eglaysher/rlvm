@@ -81,7 +81,7 @@ UnimplementedOpcode::UnimplementedOpcode(
     const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
-      parameters_(command.getUnparsedParameters()) {
+      parameters_(command.GetUnparsedParameters()) {
   std::ostringstream oss;
   oss << funName << " [opcode<" << command.modtype() << ":" << command.module()
       << ":" << command.opcode() << ", " << command.overload() << ">]";
@@ -94,7 +94,7 @@ UnimplementedOpcode::UnimplementedOpcode(
     const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
-      parameters_(command.getUnparsedParameters()) {
+      parameters_(command.GetUnparsedParameters()) {
   ostringstream oss;
   oss << "opcode<" << command.modtype() << ":" << command.module() << ":"
       << command.opcode() << ", " << command.overload() << ">";

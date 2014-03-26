@@ -63,7 +63,7 @@ using std::vector;
 SelectLongOperation::SelectLongOperation(RLMachine& machine,
                                          const SelectElement& commandElement)
     : machine_(machine), return_value_(-1) {
-  for (SelectElement::Param const& param : commandElement.getRawParams()) {
+  for (SelectElement::Param const& param : commandElement.raw_params()) {
     Option o;
     o.shown = true;
     o.enabled = true;

@@ -268,7 +268,7 @@ void RLMachine::ExecuteNextInstruction() {
         }
         delayed_modifications_.clear();
       } else {
-        (*(call_stack_.back().ip))->runOnMachine(*this);
+        (*(call_stack_.back().ip))->RunOnMachine(*this);
       }
     }
     catch (rlvm::UnimplementedOpcode& e) {
@@ -538,7 +538,7 @@ const libreallive::Scenario& RLMachine::Scenario() const {
 }
 
 void RLMachine::ExecuteExpression(const libreallive::ExpressionElement& e) {
-  e.parsedExpression().integerValue(*this);
+  e.ParsedExpression().integerValue(*this);
   AdvanceInstructionPointer();
 }
 
@@ -551,7 +551,7 @@ int RLMachine::GetProbableEncodingType() const {
 }
 
 void RLMachine::PerformTextout(const libreallive::TextoutElement& e) {
-  std::string unparsed_text = e.text();
+  std::string unparsed_text = e.GetText();
   if (boost::starts_with(unparsed_text, SeenEnd)) {
     unparsed_text = SeenEnd;
     Halt();

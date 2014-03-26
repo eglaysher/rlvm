@@ -151,16 +151,16 @@ Script::Script(const Header& hdr,
   pointer_t it = elts.before_begin();
   while (pos < dlen) {
     // Read element
-    it = elts.emplace_after(it, BytecodeElement::read(stream, end, cdat));
+    it = elts.emplace_after(it, BytecodeElement::Read(stream, end, cdat));
     cdat.offsets[pos] = it;
 
     // Keep track of the entrypoints
-    if ((*it)->type() == Entrypoint) {
-      entrypointAssociations.insert(make_pair((*it)->entrypoint(), it));
+    if ((*it)->GetType() == Entrypoint) {
+      entrypointAssociations.insert(make_pair((*it)->GetEntrypoint(), it));
     }
 
     // Advance
-    size_t l = (*it)->length();
+    size_t l = (*it)->GetBytecodeLength();
     if (l <= 0)
       l = 1;  // Failsafe: always advance at least one byte.
     stream += l;
@@ -169,7 +169,7 @@ Script::Script(const Header& hdr,
 
   // Resolve pointers
   for (pointer_t it = elts.begin(); it != elts.end(); ++it) {
-    (*it)->set_pointers(cdat);
+    (*it)->SetPointers(cdat);
   }
 
   delete[] uncompressed;

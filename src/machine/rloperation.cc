@@ -90,15 +90,15 @@ bool RLOperation::AdvanceInstructionPointer() { return true; }
 
 void RLOperation::DispatchFunction(RLMachine& machine,
                                    const libreallive::CommandElement& ff) {
-  if (!ff.areParametersParsed()) {
-    std::vector<std::string> unparsed = ff.getUnparsedParameters();
+  if (!ff.AreParametersParsed()) {
+    std::vector<std::string> unparsed = ff.GetUnparsedParameters();
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>> output;
     ParseParameters(unparsed, output);
-    ff.setParsedParameters(output);
+    ff.SetParsedParameters(output);
   }
 
   const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>&
-      parameter_pieces = ff.getParameters();
+      parameter_pieces = ff.GetParsedParameters();
 
   // Now Dispatch based on these parameters.
   Dispatch(machine, parameter_pieces);
@@ -256,11 +256,11 @@ void RLOp_SpecialCase::ParseParameters(
 void RLOp_SpecialCase::DispatchFunction(RLMachine& machine,
                                         const libreallive::CommandElement& ff) {
   // First try to run the default parse_parameters if we can.
-  if (!ff.areParametersParsed()) {
-    std::vector<std::string> unparsed = ff.getUnparsedParameters();
+  if (!ff.AreParametersParsed()) {
+    std::vector<std::string> unparsed = ff.GetUnparsedParameters();
     libreallive::ExpressionPiecesVector output;
     ParseParameters(unparsed, output);
-    ff.setParsedParameters(output);
+    ff.SetParsedParameters(output);
   }
 
   // Pass this on to the implementation of this functor.

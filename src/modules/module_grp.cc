@@ -1182,7 +1182,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
 
     // Record this command's reallive bytecode form onto the graphics stack.
     machine.system().graphics().addGraphicsStackCommand(
-        ff.serializableData(machine));
+        ff.GetSerializedCommand(machine));
   }
 
  private:
@@ -1442,7 +1442,7 @@ void replayGraphicsStackCommand(RLMachine& machine,
         // Parse the string as a chunk of Reallive bytecode.
         libreallive::ConstructionData cdata(0, libreallive::pointer_t());
         libreallive::BytecodeElement* element =
-            libreallive::BytecodeElement::read(
+            libreallive::BytecodeElement::Read(
                 command.c_str(), command.c_str() + command.size(), cdata);
         libreallive::CommandElement* command =
             dynamic_cast<libreallive::CommandElement*>(element);

@@ -97,7 +97,7 @@ void MultiDispatch::ParseParameters(
 void MultiDispatch::operator()(RLMachine& machine,
                                const libreallive::CommandElement& ff) {
   const libreallive::ExpressionPiecesVector& parameter_pieces =
-      ff.getParameters();
+      ff.GetParsedParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libreallive::ExpressionPiecesVector& element =

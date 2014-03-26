@@ -207,7 +207,7 @@ class RLMachine {
   const libreallive::Scenario& Scenario() const;
 
   // ------------------------------------------------ [ Execuion interface ]
-  // Normally, execute_next_instruction will call runOnMachine() on
+  // Normally, execute_next_instruction will call RunOnMachine() on
   // whatever BytecodeElement is currently pointed to by the
   // instruction pointer.
 

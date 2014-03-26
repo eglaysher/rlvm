@@ -97,7 +97,8 @@ ObjRangeAdapter::ObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ObjRangeAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 2)
@@ -142,7 +143,8 @@ ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 1)
@@ -177,7 +179,8 @@ ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in) : handler(in) {}
 
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
                                       const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 3) {

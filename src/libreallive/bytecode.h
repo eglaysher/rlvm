@@ -67,8 +67,10 @@ struct ConstructionData {
 
 class Pointers {
  public:
-  typedef std::vector<pointer_t> t;
-  typedef t::iterator iterator;
+  Pointers();
+  ~Pointers();
+
+  typedef std::vector<pointer_t>::iterator iterator;
   iterator begin() { return targets.begin(); }
   iterator end() { return targets.end(); }
 
@@ -79,7 +81,7 @@ class Pointers {
   const size_t size() const { return targets.size(); }
   const size_t idSize() const { return target_ids.size(); }
 
-  void set_pointers(ConstructionData& cdata);
+  void SetPointers(ConstructionData& cdata);
 
  private:
   std::vector<unsigned long> target_ids;
@@ -94,31 +96,33 @@ class BytecodeElement {
   virtual ~BytecodeElement();
 
   // Returns this piece's RTTI information.
-  virtual const ElementType type() const;
+  virtual const ElementType GetType() const;
 
-  // Prints a human readable version of this bytecode element to |oss|.
-  virtual void print(std::ostream& oss) const;
+  // Prints a human readable version of this bytecode element to |oss|. This
+  // tries to match Haeleth's kepago language as much as is feasible.
+  virtual void PrintSourceRepresentation(std::ostream& oss) const;
 
   // Returns the length of this element in bytes in the source file.
-  virtual const size_t length() const = 0;
+  virtual const size_t GetBytecodeLength() const = 0;
 
   // Used to connect pointers in the bytecode after we've created all
   // BytecodeElements in a Scenario.
-  virtual void set_pointers(ConstructionData& cdata);
+  virtual void SetPointers(ConstructionData& cdata);
 
   // Needed for MetaElement during reading the script
-  virtual const int entrypoint() const;
+  virtual const int GetEntrypoint() const;
 
   // Fat interface: takes a FunctionElement and returns all data serialized for
   // writing to disk so the exact command can be replayed later. Throws in all
   // other cases.
-  virtual string serializableData(RLMachine& machine) const;
+  virtual string GetSerializedCommand(RLMachine& machine) const;
 
   // Execute this bytecode instruction on this virtual machine
-  virtual void runOnMachine(RLMachine& machine) const;
+  virtual void RunOnMachine(RLMachine& machine) const;
 
   // Read the next element from a stream.
-  static BytecodeElement* read(const char* stream, const char* end,
+  static BytecodeElement* Read(const char* stream,
+                               const char* end,
                                ConstructionData& cdata);
 
  protected:
@@ -135,9 +139,9 @@ class CommaElement : public BytecodeElement {
   virtual ~CommaElement();
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const;
-  virtual void print(std::ostream& oss) const;
-  virtual const size_t length() const;
+  virtual const ElementType GetType() const override;
+  virtual void PrintSourceRepresentation(std::ostream& oss) const override;
+  virtual const size_t GetBytecodeLength() const override;
 };
 
 // Metadata elements: source line, kidoku, and entrypoint markers.
@@ -150,11 +154,11 @@ class MetaElement : public BytecodeElement {
   void set_value(const int value) { value_ = value; }
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual void print(std::ostream& oss) const override;
-  virtual const size_t length() const override;
-  virtual const int entrypoint() const override;
-  virtual void runOnMachine(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual void PrintSourceRepresentation(std::ostream& oss) const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual const int GetEntrypoint() const override;
+  virtual void RunOnMachine(RLMachine& machine) const override;
 
  private:
   enum MetaElementType { Line_ = '\n', Kidoku_ = '@', Entrypoint_ };
@@ -169,13 +173,13 @@ class TextoutElement : public BytecodeElement {
   TextoutElement(const char* src, const char* file_end);
   virtual ~TextoutElement();
 
-  const string text() const;
+  const string GetText() const;
 
   // Overridden from BytecodeElement::
-  virtual const ElementType type() const override;
-  virtual void print(std::ostream& oss) const override;
-  virtual const size_t length() const override;
-  virtual void runOnMachine(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual void PrintSourceRepresentation(std::ostream& oss) const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual void RunOnMachine(RLMachine& machine) const override;
 
  private:
   string repr;
@@ -193,17 +197,20 @@ class ExpressionElement : public BytecodeElement {
   virtual ~ExpressionElement();
 
   // Assumes the expression isn't an assignment and returns the integer value.
-  int valueOnly(RLMachine& machine) const;
+  //
+  // TODO(erg): We should be delete this if we make GetWindowExpression()
+  // return an ExpressionPiece instead.
+  int GetValueOnly(RLMachine& machine) const;
 
   // Returns an ExpressionPiece representing this expression. This function
   // lazily parses the expression and stores the tree for reuse.
-  const ExpressionPiece& parsedExpression() const;
+  const ExpressionPiece& ParsedExpression() const;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual void print(std::ostream& oss) const override;
-  virtual const size_t length() const override;
-  virtual void runOnMachine(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual void PrintSourceRepresentation(std::ostream& oss) const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual void RunOnMachine(RLMachine& machine) const override;
 
  private:
   string repr;
@@ -228,31 +235,31 @@ class CommandElement : public BytecodeElement {
   const int overload() const { return command[7]; }
 
   // Returns the raw byte strings of this command elements parameters.
-  std::vector<string> getUnparsedParameters() const;
+  std::vector<string> GetUnparsedParameters() const;
 
   // Whether the RLOperation has cached the parsed versions of the parameters.
-  bool areParametersParsed() const;
+  bool AreParametersParsed() const;
 
   // Gets/Sets the cached parameters.
-  void setParsedParameters(ExpressionPiecesVector& p) const;
-  const ExpressionPiecesVector& getParameters() const;
+  void SetParsedParameters(ExpressionPiecesVector& p) const;
+  const ExpressionPiecesVector& GetParsedParameters() const;
 
   // Returns the number of parameters.
-  virtual const size_t param_count() const = 0;
-  virtual string get_param(int index) const = 0;
+  virtual const size_t GetParamCount() const = 0;
+  virtual string GetParam(int index) const = 0;
 
   // Methods that deal with pointers.
-  virtual const size_t pointers_count() const;
-  virtual pointer_t get_pointer(int i) const;
+  virtual const size_t GetPointersCount() const;
+  virtual pointer_t GetPointer(int i) const;
 
   // Fat interface stuff for GotoCase. Prevents casting, etc.
-  virtual const size_t case_count() const;
-  virtual const string get_case(int i) const;
+  virtual const size_t GetCaseCount() const;
+  virtual const string GetCase(int i) const;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual void print(std::ostream& oss) const override;
-  virtual void runOnMachine(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual void PrintSourceRepresentation(std::ostream& oss) const override;
+  virtual void RunOnMachine(RLMachine& machine) const override;
 
  protected:
   static const int COMMAND_SIZE = 8;
@@ -296,17 +303,20 @@ class SelectElement : public CommandElement {
 
   // Returns the expression in the source code which refers to which window to
   // display.
-  ExpressionElement window() const;
+  //
+  // TODO(erg): I believe I can simplify the only caller of this if I return an
+  // ExpressionPiece instead.
+  ExpressionElement GetWindowExpression() const;
 
-  const params_t& getRawParams() const { return params; }
+  const params_t& raw_params() const { return params; }
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
 
  private:
   string repr;
@@ -321,13 +331,13 @@ class FunctionElement : public CommandElement {
   virtual ~FunctionElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual string serializableData(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual string GetSerializedCommand(RLMachine& machine) const override;
 
  private:
   std::vector<string> params;
@@ -339,13 +349,13 @@ class VoidFunctionElement : public CommandElement {
   virtual ~VoidFunctionElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual string serializableData(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual string GetSerializedCommand(RLMachine& machine) const override;
 };
 
 class SingleArgFunctionElement : public CommandElement {
@@ -355,13 +365,13 @@ class SingleArgFunctionElement : public CommandElement {
   virtual ~SingleArgFunctionElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual string serializableData(RLMachine& machine) const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual string GetSerializedCommand(RLMachine& machine) const override;
 
  private:
   std::string arg_;
@@ -373,11 +383,11 @@ class PointerElement : public CommandElement {
   virtual ~PointerElement();
 
   // Overridden from CommandElement:
-  virtual const size_t pointers_count() const override;
-  virtual pointer_t get_pointer(int i) const override;
+  virtual const size_t GetPointersCount() const override;
+  virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual void set_pointers(ConstructionData& cdata) override;
+  virtual void SetPointers(ConstructionData& cdata) override;
 
  protected:
   Pointers targets;
@@ -389,15 +399,15 @@ class GotoElement : public CommandElement {
   virtual ~GotoElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
-  virtual const size_t pointers_count() const override;
-  virtual pointer_t get_pointer(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
+  virtual const size_t GetPointersCount() const override;
+  virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual void set_pointers(ConstructionData& cdata) override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual void SetPointers(ConstructionData& cdata) override;
 
  private:
   unsigned long id_;
@@ -410,15 +420,15 @@ class GotoIfElement : public CommandElement {
   virtual ~GotoIfElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
-  virtual const size_t pointers_count() const override;
-  virtual pointer_t get_pointer(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
+  virtual const size_t GetPointersCount() const override;
+  virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual void set_pointers(ConstructionData& cdata) override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual void SetPointers(ConstructionData& cdata) override;
 
  private:
   unsigned long id_;
@@ -432,14 +442,14 @@ class GotoCaseElement : public PointerElement {
   virtual ~GotoCaseElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
-  virtual const size_t case_count() const override;
-  virtual const string get_case(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
+  virtual const size_t GetCaseCount() const override;
+  virtual const string GetCase(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
 
  private:
   string repr;
@@ -452,12 +462,12 @@ class GotoOnElement : public PointerElement {
   virtual ~GotoOnElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
 
  private:
   string repr;
@@ -469,15 +479,15 @@ class GosubWithElement : public CommandElement {
   virtual ~GosubWithElement();
 
   // Overridden from CommandElement:
-  virtual const size_t param_count() const override;
-  virtual string get_param(int i) const override;
-  virtual const size_t pointers_count() const override;
-  virtual pointer_t get_pointer(int i) const override;
+  virtual const size_t GetParamCount() const override;
+  virtual string GetParam(int i) const override;
+  virtual const size_t GetPointersCount() const override;
+  virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType type() const override;
-  virtual const size_t length() const override;
-  virtual void set_pointers(ConstructionData& cdata) override;
+  virtual const ElementType GetType() const override;
+  virtual const size_t GetBytecodeLength() const override;
+  virtual void SetPointers(ConstructionData& cdata) override;
 
  private:
   unsigned long id_;
