@@ -183,15 +183,13 @@ BytecodeElement::BytecodeElement() {}
 
 BytecodeElement::~BytecodeElement() {}
 
-const ElementType BytecodeElement::GetType() const { return Unspecified; }
-
 void BytecodeElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "<unspecified bytecode>" << std::endl;
 }
 
 void BytecodeElement::SetPointers(ConstructionData& cdata) {}
 
-const int BytecodeElement::GetEntrypoint() const { return -999; }
+const int BytecodeElement::GetEntrypoint() const { return kInvalidEntrypoint; }
 
 string BytecodeElement::GetSerializedCommand(RLMachine& machine) const {
   throw Error(
@@ -237,8 +235,6 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 CommaElement::CommaElement() {}
 CommaElement::~CommaElement() {}
 
-const ElementType CommaElement::GetType() const { return Data; }
-
 void CommaElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "<CommaElement>" << std::endl;
 }
@@ -263,10 +259,6 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
 
 MetaElement::~MetaElement() {}
 
-const ElementType MetaElement::GetType() const {
-  return type_ == Line_ ? Line : (type_ == Kidoku_ ? Kidoku : Entrypoint);
-}
-
 void MetaElement::PrintSourceRepresentation(std::ostream& oss) const {
   if (type_ == Line_)
     oss << "#line " << value_ << std::endl;
@@ -279,7 +271,7 @@ void MetaElement::PrintSourceRepresentation(std::ostream& oss) const {
 const size_t MetaElement::GetBytecodeLength() const { return 3; }
 
 const int MetaElement::GetEntrypoint() const {
-  return type_ == Entrypoint_ ? entrypoint_index_ : -999;
+  return type_ == Entrypoint_ ? entrypoint_index_ : kInvalidEntrypoint;
 }
 
 void MetaElement::RunOnMachine(RLMachine& machine) const {
@@ -346,8 +338,6 @@ const string TextoutElement::GetText() const {
   return rv;
 }
 
-const ElementType TextoutElement::GetType() const { return Textout; }
-
 void TextoutElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "\"" << GetText() << "\"" << std::endl;
 }
@@ -401,8 +391,6 @@ const ExpressionPiece& ExpressionElement::ParsedExpression() const {
   return *parsed_expression_;
 }
 
-const ElementType ExpressionElement::GetType() const { return Expression; }
-
 void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << ParsedExpression().getDebugString() << std::endl;
 }
@@ -452,8 +440,6 @@ pointer_t CommandElement::GetPointer(int i) const { return pointer_t(); }
 const size_t CommandElement::GetCaseCount() const { return 0; }
 
 const string CommandElement::GetCase(int i) const { return ""; }
-
-const ElementType CommandElement::GetType() const { return Command; }
 
 void CommandElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
@@ -569,8 +555,6 @@ string SelectElement::GetParam(int i) const {
   return rv;
 }
 
-const ElementType SelectElement::GetType() const { return Select; }
-
 const size_t SelectElement::GetBytecodeLength() const {
   size_t rv = repr.size() + 5;
   for (Param const& param : params)
@@ -604,8 +588,6 @@ const size_t FunctionElement::GetParamCount() const {
 }
 
 string FunctionElement::GetParam(int i) const { return params[i]; }
-
-const ElementType FunctionElement::GetType() const { return Function; }
 
 const size_t FunctionElement::GetBytecodeLength() const {
   if (params.size() > 0) {
@@ -647,8 +629,6 @@ const size_t VoidFunctionElement::GetParamCount() const { return 0; }
 
 string VoidFunctionElement::GetParam(int i) const { return std::string(); }
 
-const ElementType VoidFunctionElement::GetType() const { return Function; }
-
 const size_t VoidFunctionElement::GetBytecodeLength() const {
   return COMMAND_SIZE;
 }
@@ -676,8 +656,6 @@ const size_t SingleArgFunctionElement::GetParamCount() const { return 1; }
 string SingleArgFunctionElement::GetParam(int i) const {
   return i == 0 ? arg_ : std::string();
 }
-
-const ElementType SingleArgFunctionElement::GetType() const { return Function; }
 
 const size_t SingleArgFunctionElement::GetBytecodeLength() const {
   return COMMAND_SIZE + 2 + arg_.size();
@@ -739,8 +717,6 @@ pointer_t GotoElement::GetPointer(int i) const {
   return pointer_;
 }
 
-const ElementType GotoElement::GetType() const { return Goto; }
-
 const size_t GotoElement::GetBytecodeLength() const { return 12; }
 
 void GotoElement::SetPointers(ConstructionData& cdata) {
@@ -790,8 +766,6 @@ pointer_t GotoIfElement::GetPointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
-
-const ElementType GotoIfElement::GetType() const { return Goto; }
 
 const size_t GotoIfElement::GetBytecodeLength() const {
   return repr.size() + 4;
@@ -856,8 +830,6 @@ const size_t GotoCaseElement::GetCaseCount() const { return cases.size(); }
 
 const string GotoCaseElement::GetCase(int i) const { return cases[i]; }
 
-const ElementType GotoCaseElement::GetType() const { return GotoCase; }
-
 const size_t GotoCaseElement::GetBytecodeLength() const {
   size_t rv = repr.size() + 2;
   for (unsigned int i = 0; i < cases.size(); ++i)
@@ -897,8 +869,6 @@ const size_t GotoOnElement::GetParamCount() const { return 1; }
 string GotoOnElement::GetParam(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
-
-const ElementType GotoOnElement::GetType() const { return GotoOn; }
 
 const size_t GotoOnElement::GetBytecodeLength() const {
   return repr.size() + argc() * 4 + 2;
@@ -944,8 +914,6 @@ pointer_t GosubWithElement::GetPointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
-
-const ElementType GosubWithElement::GetType() const { return Goto; }
 
 const size_t GosubWithElement::GetBytecodeLength() const {
   return repr_size + 4;

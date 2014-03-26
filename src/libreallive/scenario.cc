@@ -155,9 +155,9 @@ Script::Script(const Header& hdr,
     cdat.offsets[pos] = it;
 
     // Keep track of the entrypoints
-    if ((*it)->GetType() == Entrypoint) {
-      entrypointAssociations.insert(make_pair((*it)->GetEntrypoint(), it));
-    }
+    int entrypoint = (*it)->GetEntrypoint();
+    if (entrypoint != BytecodeElement::kInvalidEntrypoint)
+      entrypointAssociations.insert(make_pair(entrypoint, it));
 
     // Advance
     size_t l = (*it)->GetBytecodeLength();

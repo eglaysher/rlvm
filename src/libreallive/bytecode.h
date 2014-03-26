@@ -92,11 +92,10 @@ class Pointers {
 
 class BytecodeElement {
  public:
+  static const int kInvalidEntrypoint = -999;
+
   BytecodeElement();
   virtual ~BytecodeElement();
-
-  // Returns this piece's RTTI information.
-  virtual const ElementType GetType() const;
 
   // Prints a human readable version of this bytecode element to |oss|. This
   // tries to match Haeleth's kepago language as much as is feasible.
@@ -139,7 +138,6 @@ class CommaElement : public BytecodeElement {
   virtual ~CommaElement();
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual void PrintSourceRepresentation(std::ostream& oss) const override;
   virtual const size_t GetBytecodeLength() const override;
 };
@@ -154,7 +152,6 @@ class MetaElement : public BytecodeElement {
   void set_value(const int value) { value_ = value; }
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual void PrintSourceRepresentation(std::ostream& oss) const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual const int GetEntrypoint() const override;
@@ -176,7 +173,6 @@ class TextoutElement : public BytecodeElement {
   const string GetText() const;
 
   // Overridden from BytecodeElement::
-  virtual const ElementType GetType() const override;
   virtual void PrintSourceRepresentation(std::ostream& oss) const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual void RunOnMachine(RLMachine& machine) const override;
@@ -207,7 +203,6 @@ class ExpressionElement : public BytecodeElement {
   const ExpressionPiece& ParsedExpression() const;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual void PrintSourceRepresentation(std::ostream& oss) const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual void RunOnMachine(RLMachine& machine) const override;
@@ -257,7 +252,6 @@ class CommandElement : public BytecodeElement {
   virtual const string GetCase(int i) const;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual void PrintSourceRepresentation(std::ostream& oss) const override;
   virtual void RunOnMachine(RLMachine& machine) const override;
 
@@ -315,7 +309,6 @@ class SelectElement : public CommandElement {
   virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
 
  private:
@@ -335,7 +328,6 @@ class FunctionElement : public CommandElement {
   virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual string GetSerializedCommand(RLMachine& machine) const override;
 
@@ -353,7 +345,6 @@ class VoidFunctionElement : public CommandElement {
   virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual string GetSerializedCommand(RLMachine& machine) const override;
 };
@@ -369,7 +360,6 @@ class SingleArgFunctionElement : public CommandElement {
   virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual string GetSerializedCommand(RLMachine& machine) const override;
 
@@ -405,7 +395,6 @@ class GotoElement : public CommandElement {
   virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual void SetPointers(ConstructionData& cdata) override;
 
@@ -426,7 +415,6 @@ class GotoIfElement : public CommandElement {
   virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual void SetPointers(ConstructionData& cdata) override;
 
@@ -448,7 +436,6 @@ class GotoCaseElement : public PointerElement {
   virtual const string GetCase(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
 
  private:
@@ -466,7 +453,6 @@ class GotoOnElement : public PointerElement {
   virtual string GetParam(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
 
  private:
@@ -485,7 +471,6 @@ class GosubWithElement : public CommandElement {
   virtual pointer_t GetPointer(int i) const override;
 
   // Overridden from BytecodeElement:
-  virtual const ElementType GetType() const override;
   virtual const size_t GetBytecodeLength() const override;
   virtual void SetPointers(ConstructionData& cdata) override;
 

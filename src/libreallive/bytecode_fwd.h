@@ -34,17 +34,6 @@
 
 namespace libreallive {
 
-// A nasty-hacky (but simple and efficient) form of RTTI.
-enum ElementType {
-  Unspecified, Data,
-  Line, Kidoku, Entrypoint,
-  Textout, Expression,
-  // Everything after this point must be a CommandElement or subtype.
-  Command, Select, Function,
-  // Everything after this point must be a PointerElement or subtype.
-  Goto, GotoCase, GotoOn
-};
-
 // List definitions.
 class ExpressionPiece;
 class BytecodeElement;
