@@ -56,7 +56,7 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
   transform(input.begin(),
             input.end(),
             back_inserter(binary_strings),
-            bind(&printableToParsableString, _1));
+            bind(&PrintableToParsableString, _1));
 
   t.ParseParameters(binary_strings, expression_pieces);
   t.Dispatch(machine, expression_pieces);

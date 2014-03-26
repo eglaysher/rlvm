@@ -124,12 +124,12 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       const char* start = it->c_str();
       try {
         std::unique_ptr<libreallive::ExpressionPiece> piece(
-            libreallive::get_data(start));
+            libreallive::GetData(start));
         oss << piece->getDebugValue(machine);
       }
       catch (libreallive::Error& e) {
         // Any error throw here is a parse error.
-        oss << "{RAW : " << libreallive::parsableToPrintableString(*it) << "}";
+        oss << "{RAW : " << libreallive::ParsableToPrintableString(*it) << "}";
       }
     }
     oss << ")";

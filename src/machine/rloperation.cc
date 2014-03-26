@@ -124,7 +124,7 @@ void IntConstant_T::ParseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntConstant_T parse err.");
@@ -147,7 +147,7 @@ void IntReference_T::ParseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntReference_T parse err.");
@@ -205,7 +205,7 @@ void StrConstant_T::ParseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrConstant_T parse err.");
@@ -228,7 +228,7 @@ void StrReference_T::ParseParameters(
     const std::vector<std::string>& input,
     std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::get_data(data));
+  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->expressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrReference_T parse err.");
@@ -249,7 +249,7 @@ void RLOp_SpecialCase::ParseParameters(
     libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
-    output.push_back(libreallive::get_data(src));
+    output.push_back(libreallive::GetData(src));
   }
 }
 

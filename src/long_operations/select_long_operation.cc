@@ -70,7 +70,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
     o.use_colour = false;
 
     std::string evaluated_native =
-        libreallive::evaluatePRINT(machine, param.text);
+        libreallive::EvaluatePRINT(machine, param.text);
     o.str = cp932toUTF8(evaluated_native, machine.GetTextEncoding());
 
     for (auto const& condition : param.cond_parsed) {
@@ -82,7 +82,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (condition.condition != "") {
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
-                libreallive::get_expression(location));
+                libreallive::GetExpression(location));
             value = !condition->integerValue(machine);
           }
 
@@ -94,7 +94,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (condition.condition != "") {
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
-                libreallive::get_expression(location));
+                libreallive::GetExpression(location));
             enabled = !condition->integerValue(machine);
           }
 
@@ -103,7 +103,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
           if (!enabled && condition.effect_argument != "") {
             const char* location = condition.effect_argument.c_str();
             std::unique_ptr<ExpressionPiece> effect_argument(
-                libreallive::get_expression(location));
+                libreallive::GetExpression(location));
             colour_index = !effect_argument->integerValue(machine);
             use_colour = true;
           }
@@ -116,9 +116,9 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
         default:
           cerr << "Unsupported option in select statement "
                << "(condition: "
-               << libreallive::parsableToPrintableString(condition.condition)
+               << libreallive::ParsableToPrintableString(condition.condition)
                << ", effect: " << condition.effect << ", effect_argument: "
-               << libreallive::parsableToPrintableString(
+               << libreallive::ParsableToPrintableString(
                       condition.effect_argument) << ")" << endl;
           break;
       }

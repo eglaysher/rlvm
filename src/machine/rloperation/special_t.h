@@ -157,7 +157,7 @@ struct Special_T {
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
-    output.emplace_back(libreallive::get_data(data));
+    output.emplace_back(libreallive::GetData(data));
     position++;
   }
 

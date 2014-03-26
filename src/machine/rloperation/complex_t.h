@@ -59,7 +59,7 @@ struct Complex2_T {
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::get_complex_param(data));
+        libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }
@@ -97,7 +97,7 @@ struct Complex3_T {
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::get_complex_param(data));
+        libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }
@@ -141,7 +141,7 @@ struct Complex4_T {
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::get_complex_param(data));
+        libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }
@@ -200,7 +200,7 @@ struct Complex7_T {
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::get_complex_param(data));
+        libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }
@@ -262,7 +262,7 @@ struct Complex8_T {
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
     std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::get_complex_param(data));
+        libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }

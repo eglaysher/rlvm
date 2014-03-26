@@ -106,7 +106,7 @@ CommandElement* BuildFunctionElement(const char* stream) {
   if (*ptr == '(') {
     const char* end = ptr + 1;
     while (*end != ')') {
-      const size_t len = next_data(end);
+      const size_t len = NextData(end);
       params.push_back(string(end, len));
       end += len;
     }
@@ -133,12 +133,12 @@ void PrintParameterString(std::ostream& oss,
     // Take the binary stuff and try to get usefull, printable values.
     const char* start = param.c_str();
     try {
-      std::unique_ptr<ExpressionPiece> piece(get_data(start));
+      std::unique_ptr<ExpressionPiece> piece(GetData(start));
       oss << piece->getDebugString();
     }
     catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
-      oss << "{RAW : " << parsableToPrintableString(param) << "}";
+      oss << "{RAW : " << ParsableToPrintableString(param) << "}";
     }
   }
   oss << ")";
@@ -356,10 +356,10 @@ void TextoutElement::RunOnMachine(RLMachine& machine) const {
 ExpressionElement::ExpressionElement(const char* src) {
   // Don't parse the expression, just isolate it.
   const char* end = src;
-  end += next_token(end);
+  end += NextToken(end);
   if (*end == '\\') {
     end += 2;
-    end += next_expr(end);
+    end += NextExpression(end);
   }
   repr.assign(src, end);
 }
@@ -378,14 +378,14 @@ ExpressionElement::~ExpressionElement() {}
 
 int ExpressionElement::GetValueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
-  std::unique_ptr<ExpressionPiece> e(get_expression(location));
+  std::unique_ptr<ExpressionPiece> e(GetExpression(location));
   return e->integerValue(machine);
 }
 
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
   if (parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
-    parsed_expression_ = get_assignment(location);
+    parsed_expression_ = GetAssignment(location);
   }
 
   return *parsed_expression_;
@@ -466,7 +466,7 @@ SelectElement::SelectElement(const char* src)
 
   src += 8;
   if (*src == '(') {
-    const int elen = next_expr(src);
+    const int elen = NextExpression(src);
     repr.append(src, elen);
     src += elen;
   }
@@ -493,7 +493,7 @@ SelectElement::SelectElement(const char* src)
       while (*src != ')') {
         Condition c;
         if (*src == '(') {
-          int len = next_expr(src);
+          int len = NextExpression(src);
           c.condition = string(src, len);
           src += len;
         }
@@ -501,7 +501,7 @@ SelectElement::SelectElement(const char* src)
         c.effect = *src;
         ++src;
         if (seekarg && *src != ')' && (*src < '0' || *src > '9')) {
-          int len = next_expr(src);
+          int len = NextExpression(src);
           c.effect_argument = string(src, len);
           src += len;
         }
@@ -513,7 +513,7 @@ SelectElement::SelectElement(const char* src)
     size_t clen = src - cond;
     // Read text.
     const char* text = src;
-    src += next_string(src);
+    src += NextString(src);
     size_t tlen = src - text;
     // Add parameter to list.
     if (*src != '\n')
@@ -608,7 +608,7 @@ std::string FunctionElement::GetSerializedCommand(RLMachine& machine) const {
     rv.push_back('(');
     for (string const& param : params) {
       const char* data = param.c_str();
-      std::unique_ptr<ExpressionPiece> expression(get_data(data));
+      std::unique_ptr<ExpressionPiece> expression(GetData(data));
       rv.append(expression->serializedValue(machine));
     }
     rv.push_back(')');
@@ -668,7 +668,7 @@ std::string SingleArgFunctionElement::GetSerializedCommand(RLMachine& machine)
     rv.push_back(command[i]);
   rv.push_back('(');
   const char* data = arg_.c_str();
-  std::unique_ptr<ExpressionPiece> expression(get_data(data));
+  std::unique_ptr<ExpressionPiece> expression(GetData(data));
   rv.append(expression->serializedValue(machine));
   rv.push_back(')');
   return rv;
@@ -736,7 +736,7 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
 
   if (*src++ != '(')
     throw Error("GotoIfElement(): expected `('");
-  int expr = next_expr(src);
+  int expr = NextExpression(src);
   repr.push_back('(');
   repr.append(src, expr);
   repr.push_back(')');
@@ -786,7 +786,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
   repr.assign(src, 8);
   src += 8;
   // Condition
-  const int expr = next_expr(src);
+  const int expr = NextExpression(src);
   repr.append(src, expr);
   src += expr;
   // Cases
@@ -802,7 +802,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
       cases.push_back("()");
       src += 2;
     } else {
-      int cexpr = next_expr(src + 1);
+      int cexpr = NextExpression(src + 1);
       cases.push_back(string(src, cexpr + 2));
       src += cexpr + 1;
       if (*src++ != ')')
@@ -846,7 +846,7 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
   repr.assign(src, 8);
   src += 8;
   // Condition
-  const int expr = next_expr(src);
+  const int expr = NextExpression(src);
   repr.append(src, expr);
   src += expr;
   // Pointers
@@ -886,7 +886,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     repr_size++;
 
     while (*src != ')') {
-      int expr = next_data(src);
+      int expr = NextData(src);
       repr_size += expr;
       params.push_back(string(src, expr));
       src += expr;

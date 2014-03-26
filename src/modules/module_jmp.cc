@@ -83,7 +83,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
     // it's equal to the value we're searching for
     const char* e = (const char*)caseUnparsed.c_str();
     std::unique_ptr<libreallive::ExpressionPiece> output(
-        libreallive::get_expression(e));
+        libreallive::GetExpression(e));
     if (output->integerValue(machine) == value)
       return i;
   }
@@ -156,7 +156,7 @@ struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
       libreallive::ExpressionPiecesVector& output) override {
     for (auto const& parameter : input) {
       const char* src = parameter.c_str();
-      output.push_back(libreallive::get_expression(src));
+      output.push_back(libreallive::GetExpression(src));
     }
   }
 };

@@ -46,32 +46,32 @@ class RLMachine;
 namespace libreallive {
 
 // Size of expression functions
-size_t next_token(const char* src);
-size_t next_expr(const char* src);
-size_t next_string(const char* src);
-size_t next_data(const char* src);
+size_t NextToken(const char* src);
+size_t NextExpression(const char* src);
+size_t NextString(const char* src);
+size_t NextData(const char* src);
 
 // Parse expression functions
 class ExpressionPiece;
-std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src);
-std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src);
-std::unique_ptr<ExpressionPiece> get_expr_arith(const char*& src);
-std::unique_ptr<ExpressionPiece> get_expr_cond(const char*& src);
-std::unique_ptr<ExpressionPiece> get_expr_bool(const char*& src);
-std::unique_ptr<ExpressionPiece> get_expression(const char*& src);
-std::unique_ptr<ExpressionPiece> get_assignment(const char*& src);
-std::unique_ptr<ExpressionPiece> get_data(const char*& src);
-std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpressionToken(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpressionTerm(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpressionArithmatic(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpressionCondition(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpressionBoolean(const char*& src);
+std::unique_ptr<ExpressionPiece> GetExpression(const char*& src);
+std::unique_ptr<ExpressionPiece> GetAssignment(const char*& src);
+std::unique_ptr<ExpressionPiece> GetData(const char*& src);
+std::unique_ptr<ExpressionPiece> GetComplexParam(const char*& src);
 
-std::string evaluatePRINT(RLMachine& machine, const std::string& in);
+std::string EvaluatePRINT(RLMachine& machine, const std::string& in);
 
 // Converts a parameter string (as read from the binary SEEN.TXT file)
 // into a human readable (and printable) format.
-std::string parsableToPrintableString(const std::string& src);
+std::string ParsableToPrintableString(const std::string& src);
 
 // Converts a printable string (i.e., "$ 05 [ $ FF EE 03 00 00 ]")
 // into one that can be parsed by all the get_expr family of functions.
-std::string printableToParsableString(const std::string& src);
+std::string PrintableToParsableString(const std::string& src);
 
 enum ExpressionValueType {
   ValueTypeInteger,
@@ -146,14 +146,6 @@ class ExpressionPiece {
 
 typedef std::vector<std::unique_ptr<libreallive::ExpressionPiece> >
     ExpressionPiecesVector;
-
-// -----------------------------------------------------------------------
-
-// Taking |bytecode|, raw RealLive bytecode, change all instances of memory
-// references into raw integers or strings. Used by the graphics system to
-// serialize raw commands. Returns the input on error.
-std::string changeToConstantData(RLMachine& machine,
-                                 const std::string& bytecode);
 
 }  // namespace libreallive
 

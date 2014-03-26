@@ -65,51 +65,51 @@ namespace libreallive {
 // to create the BytecodeElements. These functions simply tokenize and
 // mark boundaries; they do not perform any parsing.
 
-size_t next_token(const char* src) {
+size_t NextToken(const char* src) {
   if (*src++ != '$')
     return 0;
   if (*src++ == 0xff)
     return 6;
   if (*src++ != '[')
     return 2;
-  return 4 + next_expr(src);
+  return 4 + NextExpression(src);
 }
 
-size_t next_term(const char* src) {
+static size_t NextTerm(const char* src) {
   if (*src == '(')
-    return 2 + next_expr(src + 1);
+    return 2 + NextExpression(src + 1);
   if (*src == '\\')
-    return 2 + next_term(src + 2);
-  return next_token(src);
+    return 2 + NextTerm(src + 2);
+  return NextToken(src);
 }
 
-size_t next_arith(const char* src) {
-  size_t lhs = next_term(src);
-  return (src[lhs] == '\\') ? lhs + 2 + next_arith(src + lhs + 2) : lhs;
+static size_t NextArithmatic(const char* src) {
+  size_t lhs = NextTerm(src);
+  return (src[lhs] == '\\') ? lhs + 2 + NextArithmatic(src + lhs + 2) : lhs;
 }
 
-size_t next_cond(const char* src) {
-  size_t lhs = next_arith(src);
+static size_t NextCondition(const char* src) {
+  size_t lhs = NextArithmatic(src);
   return (src[lhs] == '\\' && src[lhs + 1] >= 0x28 && src[lhs + 1] <= 0x2d)
-             ? lhs + 2 + next_arith(src + lhs + 2)
+             ? lhs + 2 + NextArithmatic(src + lhs + 2)
              : lhs;
 }
 
-size_t next_and(const char* src) {
-  size_t lhs = next_cond(src);
+static size_t NextAnd(const char* src) {
+  size_t lhs = NextCondition(src);
   return (src[lhs] == '\\' && src[lhs + 1] == '<')
-             ? lhs + 2 + next_and(src + lhs + 2)
+             ? lhs + 2 + NextAnd(src + lhs + 2)
              : lhs;
 }
 
-size_t next_expr(const char* src) {
-  size_t lhs = next_and(src);
+size_t NextExpression(const char* src) {
+  size_t lhs = NextAnd(src);
   return (src[lhs] == '\\' && src[lhs + 1] == '=')
-             ? lhs + 2 + next_expr(src + lhs + 2)
+             ? lhs + 2 + NextExpression(src + lhs + 2)
              : lhs;
 }
 
-size_t next_string(const char* src) {
+size_t NextString(const char* src) {
   bool quoted = false;
   const char* end = src;
 
@@ -124,7 +124,7 @@ size_t next_string(const char* src) {
       quoted = *end == '"';
       if (strncmp(end, "###PRINT(", 9) == 0) {
         end += 9;
-        end += 1 + next_expr(end);
+        end += 1 + NextExpression(end);
         continue;
       }
       if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef) ||
@@ -141,16 +141,16 @@ size_t next_string(const char* src) {
   return end - src;
 }
 
-size_t next_data(const char* src) {
+size_t NextData(const char* src) {
   if (*src == ',')
-    return 1 + next_data(src + 1);
+    return 1 + NextData(src + 1);
   if (*src == '\n')
-    return 3 + next_data(src + 3);
+    return 3 + NextData(src + 3);
   if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef) ||
       (*src >= 'A' && *src <= 'Z') || (*src >= '0' && *src <= '9') ||
       *src == ' ' || *src == '?' || *src == '_' || *src == '"' ||
       strcmp(src, "###PRINT(") == 0)
-    return next_string(src);
+    return NextString(src);
   if (*src == 'a' || *src == '(') {
     const char* end = src;
     if (*end++ == 'a') {
@@ -161,7 +161,7 @@ size_t next_data(const char* src) {
         end += 2;
 
       if (*end != '(') {
-        end += next_data(end);
+        end += NextData(end);
         return end - src;
       } else {
         end++;
@@ -169,13 +169,13 @@ size_t next_data(const char* src) {
     }
 
     while (*end != ')')
-      end += next_data(end);
+      end += NextData(end);
     end++;
     if (*end == '\\')
-      end += next_expr(end);
+      end += NextExpression(end);
     return end - src;
   } else {
-    return next_expr(src);
+    return NextExpression(src);
   }
 }
 
@@ -193,7 +193,7 @@ size_t next_data(const char* src) {
 // dissassembler.ml in RLDev, so really, while I coded this, Haeleth
 // really gets all the credit.
 
-std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
+std::unique_ptr<ExpressionPiece> GetExpressionToken(const char*& src) {
   if (src[0] == 0xff) {
     src++;
     int value = read_i32(src);
@@ -205,11 +205,11 @@ std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
   } else if ((src[0] != 0xc8 && src[0] != 0xff) && src[1] == '[') {
     int type = src[0];
     src += 2;
-    std::unique_ptr<ExpressionPiece> location = get_expression(src);
+    std::unique_ptr<ExpressionPiece> location = GetExpression(src);
 
     if (src[0] != ']') {
       std::ostringstream ss;
-      ss << "Unexpected character '" << src[0] << "' in get_expr_token"
+      ss << "Unexpected character '" << src[0] << "' in GetExpressionToken"
          << " (']' expected)";
       throw Error(ss.str());
     }
@@ -218,49 +218,49 @@ std::unique_ptr<ExpressionPiece> get_expr_token(const char*& src) {
     return std::unique_ptr<ExpressionPiece>(
         new MemoryReference(type, std::move(location)));
   } else if (src[0] == 0) {
-    throw Error("Unexpected end of buffer in get_expr_token");
+    throw Error("Unexpected end of buffer in GetExpressionToken");
   } else {
     std::ostringstream err;
     err << "Unknown toke type 0x" << std::hex << (short)src[0]
-        << " in get_expr_token" << std::endl;
+        << " in GetExpressionToken" << std::endl;
     throw Error(err.str());
   }
 }
 
-std::unique_ptr<ExpressionPiece> get_expr_term(const char*& src) {
+std::unique_ptr<ExpressionPiece> GetExpressionTerm(const char*& src) {
   if (src[0] == '$') {
     src++;
-    return get_expr_token(src);
+    return GetExpressionToken(src);
   } else if (src[0] == '\\' && src[1] == 0x00) {
     src += 2;
-    return get_expr_term(src);
+    return GetExpressionTerm(src);
   } else if (src[0] == '\\' && src[1] == 0x01) {
     // Uniary -
     src += 2;
     return std::unique_ptr<ExpressionPiece>(
-        new UniaryExpressionOperator(0x01, get_expr_term(src)));
+        new UniaryExpressionOperator(0x01, GetExpressionTerm(src)));
   } else if (src[0] == '(') {
     src++;
-    std::unique_ptr<ExpressionPiece> p = get_expr_bool(src);
+    std::unique_ptr<ExpressionPiece> p = GetExpressionBoolean(src);
     if (src[0] != ')') {
       std::ostringstream ss;
-      ss << "Unexpected character '" << src[0] << "' in get_expr_term"
+      ss << "Unexpected character '" << src[0] << "' in GetExpressionTerm"
          << " (')' expected)";
       throw Error(ss.str());
     }
     src++;
     return p;
   } else if (src[0] == 0) {
-    throw Error("Unexpected end of buffer in get_expr_term");
+    throw Error("Unexpected end of buffer in GetExpressionTerm");
   } else {
     std::ostringstream err;
     err << "Unknown token type 0x" << std::hex << (short)src[0]
-        << " in get_expr_term";
+        << " in GetExpressionTerm";
     throw Error(err.str());
   }
 }
 
-static std::unique_ptr<ExpressionPiece> get_expr_arith_loop_hi_prec(
+static std::unique_ptr<ExpressionPiece> GetExpressionArithmaticLoopHiPrec(
     const char*& src,
     std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] >= 0x02 && src[1] <= 0x09) {
@@ -268,62 +268,62 @@ static std::unique_ptr<ExpressionPiece> get_expr_arith_loop_hi_prec(
     // Advance past this operator
     src += 2;
     std::unique_ptr<ExpressionPiece> newPiece(
-        new BinaryExpressionOperator(op, std::move(tok), get_expr_term(src)));
-    return get_expr_arith_loop_hi_prec(src, std::move(newPiece));
+        new BinaryExpressionOperator(op, std::move(tok), GetExpressionTerm(src)));
+    return GetExpressionArithmaticLoopHiPrec(src, std::move(newPiece));
   } else {
     // We don't consume anything and just return our input token.
     return tok;
   }
 }
 
-static std::unique_ptr<ExpressionPiece> get_expr_arith_loop(
+static std::unique_ptr<ExpressionPiece> GetExpressionArithmaticLoop(
     const char*& src,
     std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && (src[1] == 0x00 || src[1] == 0x01)) {
     char op = src[1];
     src += 2;
-    std::unique_ptr<ExpressionPiece> other = get_expr_term(src);
+    std::unique_ptr<ExpressionPiece> other = GetExpressionTerm(src);
     std::unique_ptr<ExpressionPiece> rhs =
-        get_expr_arith_loop_hi_prec(src, std::move(other));
+        GetExpressionArithmaticLoopHiPrec(src, std::move(other));
     std::unique_ptr<ExpressionPiece> newPiece(
         new BinaryExpressionOperator(op, std::move(tok), std::move(rhs)));
-    return get_expr_arith_loop(src, std::move(newPiece));
+    return GetExpressionArithmaticLoop(src, std::move(newPiece));
   } else {
     return tok;
   }
 }
 
-std::unique_ptr<ExpressionPiece> get_expr_arith(const char*& src) {
-  return get_expr_arith_loop(
-      src, get_expr_arith_loop_hi_prec(src, get_expr_term(src)));
+std::unique_ptr<ExpressionPiece> GetExpressionArithmatic(const char*& src) {
+  return GetExpressionArithmaticLoop(
+      src, GetExpressionArithmaticLoopHiPrec(src, GetExpressionTerm(src)));
 }
 
-static std::unique_ptr<ExpressionPiece> get_expr_cond_loop(
+static std::unique_ptr<ExpressionPiece> GetExpressionConditionLoop(
     const char*& src,
     std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && (src[1] >= 0x28 && src[1] <= 0x2d)) {
     char op = src[1];
     src += 2;
-    std::unique_ptr<ExpressionPiece> rhs = get_expr_arith(src);
+    std::unique_ptr<ExpressionPiece> rhs = GetExpressionArithmatic(src);
     std::unique_ptr<ExpressionPiece> newPiece(
         new BinaryExpressionOperator(op, std::move(tok), std::move(rhs)));
-    return get_expr_cond_loop(src, std::move(newPiece));
+    return GetExpressionConditionLoop(src, std::move(newPiece));
   } else {
     return tok;
   }
 }
 
-std::unique_ptr<ExpressionPiece> get_expr_cond(const char*& src) {
-  return get_expr_cond_loop(src, get_expr_arith(src));
+std::unique_ptr<ExpressionPiece> GetExpressionCondition(const char*& src) {
+  return GetExpressionConditionLoop(src, GetExpressionArithmatic(src));
 }
 
-static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_and(
+static std::unique_ptr<ExpressionPiece> GetExpressionBooleanLoopAnd(
     const char*& src,
     std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] == '<') {
     src += 2;
-    std::unique_ptr<ExpressionPiece> rhs = get_expr_cond(src);
-    return get_expr_bool_loop_and(
+    std::unique_ptr<ExpressionPiece> rhs = GetExpressionCondition(src);
+    return GetExpressionBooleanLoopAnd(
         src,
         std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
             0x3c, std::move(tok), std::move(rhs))));
@@ -332,15 +332,15 @@ static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_and(
   }
 }
 
-static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_or(
+static std::unique_ptr<ExpressionPiece> GetExpressionBooleanLoopOr(
     const char*& src,
     std::unique_ptr<ExpressionPiece> tok) {
   if (src[0] == '\\' && src[1] == '=') {
     src += 2;
-    std::unique_ptr<ExpressionPiece> innerTerm = get_expr_cond(src);
+    std::unique_ptr<ExpressionPiece> innerTerm = GetExpressionCondition(src);
     std::unique_ptr<ExpressionPiece> rhs =
-        get_expr_bool_loop_and(src, std::move(innerTerm));
-    return get_expr_bool_loop_or(
+        GetExpressionBooleanLoopAnd(src, std::move(innerTerm));
+    return GetExpressionBooleanLoopOr(
         src,
         std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
             0x3d, std::move(tok), std::move(rhs))));
@@ -349,33 +349,34 @@ static std::unique_ptr<ExpressionPiece> get_expr_bool_loop_or(
   }
 }
 
-std::unique_ptr<ExpressionPiece> get_expr_bool(const char*& src) {
-  return get_expr_bool_loop_or(src,
-                               get_expr_bool_loop_and(src, get_expr_cond(src)));
+std::unique_ptr<ExpressionPiece> GetExpressionBoolean(const char*& src) {
+  return GetExpressionBooleanLoopOr(
+      src,
+      GetExpressionBooleanLoopAnd(src, GetExpressionCondition(src)));
 }
 
-std::unique_ptr<ExpressionPiece> get_expression(const char*& src) {
-  return get_expr_bool(src);
+std::unique_ptr<ExpressionPiece> GetExpression(const char*& src) {
+  return GetExpressionBoolean(src);
 }
 
 // Parses an expression of the form [dest] = [source expression];
-std::unique_ptr<ExpressionPiece> get_assignment(const char*& src) {
-  std::unique_ptr<ExpressionPiece> itok(get_expr_term(src));
+std::unique_ptr<ExpressionPiece> GetAssignment(const char*& src) {
+  std::unique_ptr<ExpressionPiece> itok(GetExpressionTerm(src));
   int op = src[1];
   src += 2;
-  std::unique_ptr<ExpressionPiece> etok(get_expression(src));
+  std::unique_ptr<ExpressionPiece> etok(GetExpression(src));
   if (op >= 0x14 && op <= 0x24) {
     return std::unique_ptr<ExpressionPiece>(
         new AssignmentExpressionOperator(op, std::move(itok), std::move(etok)));
   } else {
-    throw Error("Undefined assignment in get_assignment");
+    throw Error("Undefined assignment in GetAssignment");
   }
 }
 
 // Parses a string in the parameter list.
-static std::unique_ptr<ExpressionPiece> get_string(const char*& src) {
+static std::unique_ptr<ExpressionPiece> GetString(const char*& src) {
   // Get the length of this string in the bytecode:
-  size_t length = next_string(src);
+  size_t length = NextString(src);
 
   string s;
   // Check to see if the string is quoted;
@@ -394,18 +395,18 @@ static std::unique_ptr<ExpressionPiece> get_string(const char*& src) {
 // of all the get_*(const char*& src) functions that can parse
 // strings. It also deals with things like special and complex
 // parameters.
-std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
+std::unique_ptr<ExpressionPiece> GetData(const char*& src) {
   if (*src == ',') {
     ++src;
-    return get_data(src);
+    return GetData(src);
   } else if (*src == '\n') {
     src += 3;
-    return get_data(src);
+    return GetData(src);
   } else if ((*src >= 0x81 && *src <= 0x9f) || (*src >= 0xe0 && *src <= 0xef) ||
              (*src >= 'A' && *src <= 'Z') || (*src >= '0' && *src <= '9') ||
              *src == ' ' || *src == '?' || *src == '_' || *src == '"' ||
              strcmp(src, "###PRINT(") == 0) {
-    return get_string(src);
+    return GetString(src);
   } else if (*src == 'a') {
     // TODO(erg): Cleanup below.
     const char* end = src;
@@ -425,7 +426,7 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
 
       if (*end != '(') {
         // We have a single parameter in this special expression;
-        cep->addContainedPiece(get_data(end));
+        cep->addContainedPiece(GetData(end));
         return std::unique_ptr<ExpressionPiece>(cep.release());
       } else {
         end++;
@@ -435,39 +436,39 @@ std::unique_ptr<ExpressionPiece> get_data(const char*& src) {
     }
 
     while (*end != ')') {
-      cep->addContainedPiece(get_data(end));
+      cep->addContainedPiece(GetData(end));
     }
 
     return std::unique_ptr<ExpressionPiece>(cep.release());
   } else {
-    return get_expression(src);
+    return GetExpression(src);
   }
 }
 
-std::unique_ptr<ExpressionPiece> get_complex_param(const char*& src) {
+std::unique_ptr<ExpressionPiece> GetComplexParam(const char*& src) {
   if (*src == ',') {
     ++src;
-    return get_data(src);
+    return GetData(src);
   } else if (*src == '(') {
     ++src;
     std::unique_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
 
     while (*src != ')') {
-      cep->addContainedPiece(get_data(src));
+      cep->addContainedPiece(GetData(src));
     }
 
     return std::unique_ptr<ExpressionPiece>(cep.release());
   } else {
-    return get_expression(src);
+    return GetExpression(src);
   }
 }
 
-std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
+std::string EvaluatePRINT(RLMachine& machine, const std::string& in) {
   // Currently, this doesn't evaluate the # commands inline. See 5.12.11 of the
   // rldev manual.
   if (boost::starts_with(in, "###PRINT(")) {
     const char* expression_start = in.c_str() + 9;
-    std::unique_ptr<ExpressionPiece> piece(get_expression(expression_start));
+    std::unique_ptr<ExpressionPiece> piece(GetExpression(expression_start));
 
     if (*expression_start != ')') {
       std::ostringstream ss;
@@ -483,7 +484,7 @@ std::string evaluatePRINT(RLMachine& machine, const std::string& in) {
   }
 }
 
-std::string parsableToPrintableString(const std::string& src) {
+std::string ParsableToPrintableString(const std::string& src) {
   string output;
 
   bool firstToken = true;
@@ -508,7 +509,7 @@ std::string parsableToPrintableString(const std::string& src) {
 
 // -----------------------------------------------------------------------
 
-std::string printableToParsableString(const std::string& src) {
+std::string PrintableToParsableString(const std::string& src) {
   typedef boost::tokenizer<boost::char_separator<char>> ttokenizer;
 
   std::string output;
