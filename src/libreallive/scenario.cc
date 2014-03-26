@@ -139,7 +139,7 @@ Script::Script(const Header& hdr,
   }
 
   char* uncompressed = new char[dlen];
-  compression::decompress(data + read_i32(data + 0x20),
+  compression::Decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
                           uncompressed,
                           dlen,

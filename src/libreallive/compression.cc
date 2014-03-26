@@ -102,7 +102,7 @@ const XorKey snow_standard_edition_xor_mask[] = {
 // -----------------------------------------------------------------------
 
 // Decompress an archived file.
-void decompress(const char* src,
+void Decompress(const char* src,
                 size_t src_len,
                 char* dst,
                 size_t dst_len,
