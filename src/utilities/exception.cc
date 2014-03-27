@@ -125,7 +125,7 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       try {
         std::unique_ptr<libreallive::ExpressionPiece> piece(
             libreallive::GetData(start));
-        oss << piece->getDebugString();
+        oss << piece->GetDebugString();
       }
       catch (libreallive::Error& e) {
         // Any error throw here is a parse error.

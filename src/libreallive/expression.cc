@@ -426,7 +426,7 @@ std::unique_ptr<ExpressionPiece> GetData(const char*& src) {
 
       if (*end != '(') {
         // We have a single parameter in this special expression;
-        cep->addContainedPiece(GetData(end));
+        cep->AddContainedPiece(GetData(end));
         return std::unique_ptr<ExpressionPiece>(cep.release());
       } else {
         end++;
@@ -436,7 +436,7 @@ std::unique_ptr<ExpressionPiece> GetData(const char*& src) {
     }
 
     while (*end != ')') {
-      cep->addContainedPiece(GetData(end));
+      cep->AddContainedPiece(GetData(end));
     }
 
     return std::unique_ptr<ExpressionPiece>(cep.release());
@@ -454,7 +454,7 @@ std::unique_ptr<ExpressionPiece> GetComplexParam(const char*& src) {
     std::unique_ptr<ComplexExpressionPiece> cep(new ComplexExpressionPiece());
 
     while (*src != ')') {
-      cep->addContainedPiece(GetData(src));
+      cep->AddContainedPiece(GetData(src));
     }
 
     return std::unique_ptr<ExpressionPiece>(cep.release());
@@ -537,72 +537,76 @@ std::string PrintableToParsableString(const std::string& src) {
 // ----------------------------------------------------------------------
 
 ExpressionPiece::~ExpressionPiece() {}
-bool ExpressionPiece::isMemoryReference() const { return false; }
-bool ExpressionPiece::isOperator() const { return false; }
-bool ExpressionPiece::isAssignment() const { return false; }
-bool ExpressionPiece::isComplexParameter() const { return false; }
-bool ExpressionPiece::isSpecialParamater() const { return false; }
+bool ExpressionPiece::IsMemoryReference() const { return false; }
+bool ExpressionPiece::IsOperator() const { return false; }
+bool ExpressionPiece::IsAssignment() const { return false; }
+bool ExpressionPiece::IsComplexParameter() const { return false; }
+bool ExpressionPiece::IsSpecialParameter() const { return false; }
 
-ExpressionValueType ExpressionPiece::expressionValueType() const {
+ExpressionValueType ExpressionPiece::GetExpressionValueType() const {
   return ValueTypeInteger;
 }
 
 // A default implementation is provided since not everything will have assign
 // semantics.
-void ExpressionPiece::assignIntValue(RLMachine& machine, int rvalue) {}
+void ExpressionPiece::SetIntegerValue(RLMachine& machine, int rvalue) {}
 
-int ExpressionPiece::integerValue(RLMachine& machine) const {
+int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
   throw libreallive::Error(
       "ExpressionPiece::GetStringValue() invalid on this object");
 }
 
-void ExpressionPiece::assignStringValue(RLMachine& machine,
+void ExpressionPiece::SetStringValue(RLMachine& machine,
                                         const std::string&) {}
 const std::string& ExpressionPiece::GetStringValue(RLMachine& machine) const {
   throw libreallive::Error(
       "ExpressionPiece::GetStringValue() invalid on this object");
 }
 
-IntReferenceIterator ExpressionPiece::getIntegerReferenceIterator(
+IntReferenceIterator ExpressionPiece::GetIntegerReferenceIterator(
     RLMachine& machine) const {
   throw libreallive::Error(
-      "ExpressionPiece::getIntegerReferenceIterator() invalid on this object");
+      "ExpressionPiece::GetIntegerReferenceIterator() invalid on this object");
 }
 
-StringReferenceIterator ExpressionPiece::getStringReferenceIterator(
+StringReferenceIterator ExpressionPiece::GetStringReferenceIterator(
     RLMachine& machine) const {
   throw libreallive::Error(
-      "ExpressionPiece::getStringReferenceIterator() invalid on this object");
+      "ExpressionPiece::GetStringReferenceIterator() invalid on this object");
 }
 
 // -----------------------------------------------------------------------
 
-bool StoreRegisterExpressionPiece::isMemoryReference() const { return true; }
+StoreRegisterExpressionPiece::StoreRegisterExpressionPiece() {}
 
-void StoreRegisterExpressionPiece::assignIntValue(RLMachine& machine,
+StoreRegisterExpressionPiece::~StoreRegisterExpressionPiece() {}
+
+bool StoreRegisterExpressionPiece::IsMemoryReference() const { return true; }
+
+void StoreRegisterExpressionPiece::SetIntegerValue(RLMachine& machine,
                                                   int rvalue) {
   machine.set_store_register(rvalue);
 }
 
-int StoreRegisterExpressionPiece::integerValue(RLMachine& machine) const {
+int StoreRegisterExpressionPiece::GetIntegerValue(RLMachine& machine) const {
   return machine.store_register();
 }
 
-std::string StoreRegisterExpressionPiece::serializedValue(RLMachine& machine)
+std::string StoreRegisterExpressionPiece::GetSerializedExpression(RLMachine& machine)
     const {
   return IntToBytecode(machine.store_register());
 }
 
-std::string StoreRegisterExpressionPiece::getDebugString() const {
+std::string StoreRegisterExpressionPiece::GetDebugString() const {
   return "<store>";
 }
 
-IntReferenceIterator StoreRegisterExpressionPiece::getIntegerReferenceIterator(
+IntReferenceIterator StoreRegisterExpressionPiece::GetIntegerReferenceIterator(
     RLMachine& machine) const {
   return IntReferenceIterator(machine.store_register_address());
 }
 
-std::unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::clone() const {
+std::unique_ptr<ExpressionPiece> StoreRegisterExpressionPiece::Clone() const {
   return std::unique_ptr<ExpressionPiece>(new StoreRegisterExpressionPiece);
 }
 
@@ -613,17 +617,17 @@ IntegerConstant::IntegerConstant(const int in) : constant(in) {}
 
 IntegerConstant::~IntegerConstant() {}
 
-int IntegerConstant::integerValue(RLMachine& machine) const { return constant; }
+int IntegerConstant::GetIntegerValue(RLMachine& machine) const { return constant; }
 
-std::string IntegerConstant::serializedValue(RLMachine& machine) const {
+std::string IntegerConstant::GetSerializedExpression(RLMachine& machine) const {
   return IntToBytecode(constant);
 }
 
-std::string IntegerConstant::getDebugString() const {
+std::string IntegerConstant::GetDebugString() const {
   return std::to_string(constant);
 }
 
-std::unique_ptr<ExpressionPiece> IntegerConstant::clone() const {
+std::unique_ptr<ExpressionPiece> IntegerConstant::Clone() const {
   return std::unique_ptr<ExpressionPiece>(new IntegerConstant(constant));
 }
 
@@ -632,7 +636,9 @@ std::unique_ptr<ExpressionPiece> IntegerConstant::clone() const {
 // StringConstant
 StringConstant::StringConstant(const std::string& in) : constant(in) {}
 
-ExpressionValueType StringConstant::expressionValueType() const {
+StringConstant::~StringConstant() {}
+
+ExpressionValueType StringConstant::GetExpressionValueType() const {
   return ValueTypeString;
 }
 
@@ -640,15 +646,15 @@ const std::string& StringConstant::GetStringValue(RLMachine& machine) const {
   return constant;
 }
 
-std::string StringConstant::serializedValue(RLMachine& machine) const {
+std::string StringConstant::GetSerializedExpression(RLMachine& machine) const {
   return string("\"") + constant + string("\"");
 }
 
-std::string StringConstant::getDebugString() const {
+std::string StringConstant::GetDebugString() const {
   return string("\"") + constant + string("\"");
 }
 
-std::unique_ptr<ExpressionPiece> StringConstant::clone() const {
+std::unique_ptr<ExpressionPiece> StringConstant::Clone() const {
   return std::unique_ptr<ExpressionPiece>(new StringConstant(constant));
 }
 
@@ -661,9 +667,9 @@ MemoryReference::MemoryReference(int inType,
 
 MemoryReference::~MemoryReference() {}
 
-bool MemoryReference::isMemoryReference() const { return true; }
+bool MemoryReference::IsMemoryReference() const { return true; }
 
-ExpressionValueType MemoryReference::expressionValueType() const {
+ExpressionValueType MemoryReference::GetExpressionValueType() const {
   if (isStringLocation(type)) {
     return ValueTypeString;
   } else {
@@ -671,33 +677,33 @@ ExpressionValueType MemoryReference::expressionValueType() const {
   }
 }
 
-void MemoryReference::assignIntValue(RLMachine& machine, int rvalue) {
-  return machine.SetIntValue(IntMemRef(type, location->integerValue(machine)),
+void MemoryReference::SetIntegerValue(RLMachine& machine, int rvalue) {
+  return machine.SetIntValue(IntMemRef(type, location->GetIntegerValue(machine)),
                              rvalue);
 }
 
-int MemoryReference::integerValue(RLMachine& machine) const {
-  return machine.GetIntValue(IntMemRef(type, location->integerValue(machine)));
+int MemoryReference::GetIntegerValue(RLMachine& machine) const {
+  return machine.GetIntValue(IntMemRef(type, location->GetIntegerValue(machine)));
 }
 
-void MemoryReference::assignStringValue(RLMachine& machine,
+void MemoryReference::SetStringValue(RLMachine& machine,
                                         const std::string& rvalue) {
-  return machine.SetStringValue(type, location->integerValue(machine), rvalue);
+  return machine.SetStringValue(type, location->GetIntegerValue(machine), rvalue);
 }
 
 const std::string& MemoryReference::GetStringValue(RLMachine& machine) const {
-  return machine.GetStringValue(type, location->integerValue(machine));
+  return machine.GetStringValue(type, location->GetIntegerValue(machine));
 }
 
-std::string MemoryReference::serializedValue(RLMachine& machine) const {
+std::string MemoryReference::GetSerializedExpression(RLMachine& machine) const {
   if (isStringLocation(type)) {
     return string("\"") + GetStringValue(machine) + string("\"");
   } else {
-    return IntToBytecode(integerValue(machine));
+    return IntToBytecode(GetIntegerValue(machine));
   }
 }
 
-std::string MemoryReference::getDebugString() const {
+std::string MemoryReference::GetDebugString() const {
   std::ostringstream ret;
 
   if (type == STRS_LOCATION) {
@@ -715,39 +721,39 @@ std::string MemoryReference::getDebugString() const {
     ret << "int" << bank << "[";
   }
 
-  ret << location->getDebugString();
+  ret << location->GetDebugString();
 
   ret << "]";
   return ret.str();
 }
 
-IntReferenceIterator MemoryReference::getIntegerReferenceIterator(
+IntReferenceIterator MemoryReference::GetIntegerReferenceIterator(
     RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
   if (isStringLocation(type)) {
     throw Error(
-        "Request to getIntegerReferenceIterator() on a string reference!");
+        "Request to GetIntegerReferenceIterator() on a string reference!");
   }
 
   return IntReferenceIterator(
-      &machine.memory(), type, location->integerValue(machine));
+      &machine.memory(), type, location->GetIntegerValue(machine));
 }
 
-StringReferenceIterator MemoryReference::getStringReferenceIterator(
+StringReferenceIterator MemoryReference::GetStringReferenceIterator(
     RLMachine& machine) const {
   // Make sure that we are actually referencing an integer
   if (!isStringLocation(type)) {
     throw Error(
-        "Request to getStringReferenceIterator() on an integer reference!");
+        "Request to GetStringReferenceIterator() on an integer reference!");
   }
 
   return StringReferenceIterator(
-      &machine.memory(), type, location->integerValue(machine));
+      &machine.memory(), type, location->GetIntegerValue(machine));
 }
 
-std::unique_ptr<ExpressionPiece> MemoryReference::clone() const {
+std::unique_ptr<ExpressionPiece> MemoryReference::Clone() const {
   return std::unique_ptr<ExpressionPiece>(
-      new MemoryReference(type, location->clone()));
+      new MemoryReference(type, location->Clone()));
 }
 
 // ----------------------------------------------------------------------
@@ -759,7 +765,7 @@ UniaryExpressionOperator::UniaryExpressionOperator(
 
 UniaryExpressionOperator::~UniaryExpressionOperator() {}
 
-int UniaryExpressionOperator::performOperationOn(int int_operand) const {
+int UniaryExpressionOperator::PerformOperationOn(int int_operand) const {
   int result = int_operand;
   switch (operation) {
     case 0x01:
@@ -772,28 +778,28 @@ int UniaryExpressionOperator::performOperationOn(int int_operand) const {
   return result;
 }
 
-int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
-  return performOperationOn(operand->integerValue(machine));
+int UniaryExpressionOperator::GetIntegerValue(RLMachine& machine) const {
+  return PerformOperationOn(operand->GetIntegerValue(machine));
 }
 
-std::string UniaryExpressionOperator::serializedValue(RLMachine& machine)
+std::string UniaryExpressionOperator::GetSerializedExpression(RLMachine& machine)
     const {
-  return IntToBytecode(integerValue(machine));
+  return IntToBytecode(GetIntegerValue(machine));
 }
 
-std::string UniaryExpressionOperator::getDebugString() const {
+std::string UniaryExpressionOperator::GetDebugString() const {
   std::ostringstream str;
   if (operation == 0x01) {
     str << "-";
   }
-  str << operand->getDebugString();
+  str << operand->GetDebugString();
 
   return str.str();
 }
 
-std::unique_ptr<ExpressionPiece> UniaryExpressionOperator::clone() const {
+std::unique_ptr<ExpressionPiece> UniaryExpressionOperator::Clone() const {
   return std::unique_ptr<ExpressionPiece>(
-      new UniaryExpressionOperator(operation, operand->clone()));
+      new UniaryExpressionOperator(operation, operand->Clone()));
 }
 
 // ----------------------------------------------------------------------
@@ -809,7 +815,7 @@ BinaryExpressionOperator::BinaryExpressionOperator(
 BinaryExpressionOperator::~BinaryExpressionOperator() {}
 
 // Stolen from xclannad
-int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
+int BinaryExpressionOperator::PerformOperationOn(int lhs, int rhs) const {
   switch (operation) {
     case 0:
     case 20:
@@ -865,19 +871,19 @@ int BinaryExpressionOperator::performOperationOn(int lhs, int rhs) const {
   }
 }
 
-int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
-  return performOperationOn(leftOperand->integerValue(machine),
-                            rightOperand->integerValue(machine));
+int BinaryExpressionOperator::GetIntegerValue(RLMachine& machine) const {
+  return PerformOperationOn(leftOperand->GetIntegerValue(machine),
+                            rightOperand->GetIntegerValue(machine));
 }
 
-std::string BinaryExpressionOperator::serializedValue(RLMachine& machine)
+std::string BinaryExpressionOperator::GetSerializedExpression(RLMachine& machine)
     const {
-  return IntToBytecode(integerValue(machine));
+  return IntToBytecode(GetIntegerValue(machine));
 }
 
-std::string BinaryExpressionOperator::getDebugString() const {
+std::string BinaryExpressionOperator::GetDebugString() const {
   std::ostringstream str;
-  str << leftOperand->getDebugString();
+  str << leftOperand->GetDebugString();
   str << " ";
 
   switch (operation) {
@@ -955,19 +961,19 @@ std::string BinaryExpressionOperator::getDebugString() const {
     }
   }
 
-  if (isAssignment() && operation != 30) {
+  if (IsAssignment() && operation != 30) {
     str << "=";
   }
 
   str << " ";
-  str << rightOperand->getDebugString();
+  str << rightOperand->GetDebugString();
 
   return str.str();
 }
 
-std::unique_ptr<ExpressionPiece> BinaryExpressionOperator::clone() const {
+std::unique_ptr<ExpressionPiece> BinaryExpressionOperator::Clone() const {
   return std::unique_ptr<ExpressionPiece>(new BinaryExpressionOperator(
-      operation, leftOperand->clone(), rightOperand->clone()));
+      operation, leftOperand->Clone(), rightOperand->Clone()));
 }
 
 // ----------------------------------------------------------------------
@@ -980,78 +986,84 @@ AssignmentExpressionOperator::AssignmentExpressionOperator(
 
 AssignmentExpressionOperator::~AssignmentExpressionOperator() {}
 
-bool AssignmentExpressionOperator::isAssignment() const { return true; }
+bool AssignmentExpressionOperator::IsAssignment() const { return true; }
 
-int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
+int AssignmentExpressionOperator::GetIntegerValue(RLMachine& machine) const {
   if (operation == 30) {
-    int value = rightOperand->integerValue(machine);
-    leftOperand->assignIntValue(machine, value);
+    int value = rightOperand->GetIntegerValue(machine);
+    leftOperand->SetIntegerValue(machine, value);
     return value;
   } else {
-    int value = performOperationOn(leftOperand->integerValue(machine),
-                                   rightOperand->integerValue(machine));
-    leftOperand->assignIntValue(machine, value);
+    int value = PerformOperationOn(leftOperand->GetIntegerValue(machine),
+                                   rightOperand->GetIntegerValue(machine));
+    leftOperand->SetIntegerValue(machine, value);
     return value;
   }
 }
 
-std::unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
+std::unique_ptr<ExpressionPiece> AssignmentExpressionOperator::Clone() const {
   return std::unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
-      operation, leftOperand->clone(), rightOperand->clone()));
+      operation, leftOperand->Clone(), rightOperand->Clone()));
 }
 
 // -----------------------------------------------------------------------
 
-bool ComplexExpressionPiece::isComplexParameter() const { return true; }
+ComplexExpressionPiece::ComplexExpressionPiece() {}
 
-void ComplexExpressionPiece::addContainedPiece(
+ComplexExpressionPiece::~ComplexExpressionPiece() {}
+
+bool ComplexExpressionPiece::IsComplexParameter() const { return true; }
+
+void ComplexExpressionPiece::AddContainedPiece(
     std::unique_ptr<ExpressionPiece> piece) {
   contained_pieces_.push_back(std::move(piece));
 }
 
-std::string ComplexExpressionPiece::serializedValue(RLMachine& machine) const {
+std::string ComplexExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
   string s("(");
   for (auto const& piece : contained_pieces_) {
     s += "(";
-    s += piece->serializedValue(machine);
+    s += piece->GetSerializedExpression(machine);
     s += ")";
   }
   s += ")";
   return s;
 }
 
-std::string ComplexExpressionPiece::getDebugString() const {
+std::string ComplexExpressionPiece::GetDebugString() const {
   string s("(");
   for (auto const& piece : contained_pieces_) {
     s += "(";
-    s += piece->getDebugString();
+    s += piece->GetDebugString();
     s += ")";
   }
   s += ")";
   return s;
 }
 
-std::unique_ptr<ExpressionPiece> ComplexExpressionPiece::clone() const {
+std::unique_ptr<ExpressionPiece> ComplexExpressionPiece::Clone() const {
   ComplexExpressionPiece* cep = new ComplexExpressionPiece;
   for (auto const& piece : contained_pieces_)
-    cep->contained_pieces_.push_back(piece->clone());
+    cep->contained_pieces_.push_back(piece->Clone());
   return std::unique_ptr<ExpressionPiece>(cep);
 }
 
 // -----------------------------------------------------------------------
 
-SpecialExpressionPiece::SpecialExpressionPiece(int tag) : overloadTag(tag) {}
+SpecialExpressionPiece::SpecialExpressionPiece(int tag) : overload_tag_(tag) {}
 
-bool SpecialExpressionPiece::isSpecialParamater() const { return true; }
+SpecialExpressionPiece::~SpecialExpressionPiece() {}
 
-std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
+bool SpecialExpressionPiece::IsSpecialParameter() const { return true; }
+
+std::string SpecialExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
   string s("a");
-  s += char(overloadTag);
+  s += char(overload_tag_);
 
   if (contained_pieces_.size() > 1)
     s.append("(");
   for (auto const& piece : contained_pieces_) {
-    s += piece->serializedValue(machine);
+    s += piece->GetSerializedExpression(machine);
   }
   if (contained_pieces_.size() > 1)
     s.append(")");
@@ -1059,10 +1071,10 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
   return s;
 }
 
-std::string SpecialExpressionPiece::getDebugString() const {
+std::string SpecialExpressionPiece::GetDebugString() const {
   std::ostringstream oss;
 
-  oss << int(overloadTag) << ":{";
+  oss << int(overload_tag_) << ":{";
 
   bool first = true;
   for (auto const& piece : contained_pieces_) {
@@ -1072,17 +1084,17 @@ std::string SpecialExpressionPiece::getDebugString() const {
       first = false;
     }
 
-    oss << piece->getDebugString();
+    oss << piece->GetDebugString();
   }
   oss << "}";
 
   return oss.str();
 }
 
-std::unique_ptr<ExpressionPiece> SpecialExpressionPiece::clone() const {
-  SpecialExpressionPiece* cep = new SpecialExpressionPiece(overloadTag);
+std::unique_ptr<ExpressionPiece> SpecialExpressionPiece::Clone() const {
+  SpecialExpressionPiece* cep = new SpecialExpressionPiece(overload_tag_);
   for (auto const& piece : contained_pieces_)
-    cep->contained_pieces_.push_back(piece->clone());
+    cep->contained_pieces_.push_back(piece->Clone());
   return std::unique_ptr<ExpressionPiece>(cep);
 }
 

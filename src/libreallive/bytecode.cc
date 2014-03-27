@@ -134,7 +134,7 @@ void PrintParameterString(std::ostream& oss,
     const char* start = param.c_str();
     try {
       std::unique_ptr<ExpressionPiece> piece(GetData(start));
-      oss << piece->getDebugString();
+      oss << piece->GetDebugString();
     }
     catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
@@ -379,7 +379,7 @@ ExpressionElement::~ExpressionElement() {}
 int ExpressionElement::GetValueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
   std::unique_ptr<ExpressionPiece> e(GetExpression(location));
-  return e->integerValue(machine);
+  return e->GetIntegerValue(machine);
 }
 
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
@@ -392,7 +392,7 @@ const ExpressionPiece& ExpressionElement::ParsedExpression() const {
 }
 
 void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
-  oss << ParsedExpression().getDebugString() << std::endl;
+  oss << ParsedExpression().GetDebugString() << std::endl;
 }
 
 const size_t ExpressionElement::GetBytecodeLength() const {
@@ -609,7 +609,7 @@ std::string FunctionElement::GetSerializedCommand(RLMachine& machine) const {
     for (string const& param : params) {
       const char* data = param.c_str();
       std::unique_ptr<ExpressionPiece> expression(GetData(data));
-      rv.append(expression->serializedValue(machine));
+      rv.append(expression->GetSerializedExpression(machine));
     }
     rv.push_back(')');
   }
@@ -669,7 +669,7 @@ std::string SingleArgFunctionElement::GetSerializedCommand(RLMachine& machine)
   rv.push_back('(');
   const char* data = arg_.c_str();
   std::unique_ptr<ExpressionPiece> expression(GetData(data));
-  rv.append(expression->serializedValue(machine));
+  rv.append(expression->GetSerializedExpression(machine));
   rv.push_back(')');
   return rv;
 }

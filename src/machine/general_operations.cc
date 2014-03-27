@@ -102,7 +102,7 @@ void MultiDispatch::operator()(RLMachine& machine,
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libreallive::ExpressionPiecesVector& element =
         dynamic_cast<const libreallive::ComplexExpressionPiece&>(
-            *parameter_pieces[i]).getContainedPieces();
+            *parameter_pieces[i]).contained_pieces();
 
     handler_->Dispatch(machine, element);
   }

@@ -83,7 +83,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
                 libreallive::GetExpression(location));
-            value = !condition->integerValue(machine);
+            value = !condition->GetIntegerValue(machine);
           }
 
           o.shown = value;
@@ -95,7 +95,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
             const char* location = condition.condition.c_str();
             std::unique_ptr<ExpressionPiece> condition(
                 libreallive::GetExpression(location));
-            enabled = !condition->integerValue(machine);
+            enabled = !condition->GetIntegerValue(machine);
           }
 
           bool use_colour = false;
@@ -104,7 +104,7 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
             const char* location = condition.effect_argument.c_str();
             std::unique_ptr<ExpressionPiece> effect_argument(
                 libreallive::GetExpression(location));
-            colour_index = !effect_argument->integerValue(machine);
+            colour_index = !effect_argument->GetIntegerValue(machine);
             use_colour = true;
           }
 

@@ -108,8 +108,8 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
   // what RLOperation.DispatchFunction() does; we manually call the
   // subclass's Dispatch() so that we can get around the automated
   // incrementing of the instruction pointer.
-  int lowerRange = allParameters[0]->integerValue(machine);
-  int upperRange = allParameters[1]->integerValue(machine);
+  int lowerRange = allParameters[0]->GetIntegerValue(machine);
+  int upperRange = allParameters[1]->GetIntegerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
@@ -121,7 +121,7 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
         allParameters.begin();
     std::advance(it, 2);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->clone());
+      currentInstantiation.emplace_back((*it)->Clone());
     }
 
     // Now Dispatch based on these parameters.
@@ -150,7 +150,7 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   if (allParameters.size() < 1)
     throw rlvm::Exception("Less than one argument to an objLayered function!");
 
-  int objset = allParameters[0]->integerValue(machine);
+  int objset = allParameters[0]->GetIntegerValue(machine);
 
   // Copy everything after the first item
   libreallive::ExpressionPiecesVector currentInstantiation;
@@ -158,7 +158,7 @@ void ChildObjAdapter::operator()(RLMachine& machine,
       allParameters.begin();
   ++it;
   for (; it != allParameters.end(); ++it) {
-    currentInstantiation.emplace_back((*it)->clone());
+    currentInstantiation.emplace_back((*it)->Clone());
   }
 
   handler->SetProperty(P_PARENTOBJ, objset);
@@ -190,12 +190,12 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
   // This part is like ChildObjAdapter; the first parameter is an integer
   // that represents the parent object.
-  int objset = allParameters[0]->integerValue(machine);
+  int objset = allParameters[0]->GetIntegerValue(machine);
 
   // This part is like ObjRangeAdapter; the second and third parameters are
   // integers that represent a range of child objects.
-  int lowerRange = allParameters[1]->integerValue(machine);
-  int upperRange = allParameters[2]->integerValue(machine);
+  int lowerRange = allParameters[1]->GetIntegerValue(machine);
+  int upperRange = allParameters[2]->GetIntegerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
@@ -207,7 +207,7 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
         allParameters.begin();
     std::advance(it, 3);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->clone());
+      currentInstantiation.emplace_back((*it)->Clone());
     }
 
     // Now Dispatch based on these parameters.

@@ -58,7 +58,7 @@ namespace {
 // Finds which case should be used in the *_case functions.
 int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
   const ExpressionPiecesVector& conditions = gotoElement.GetParsedParameters();
-  int value = conditions[0]->integerValue(machine);
+  int value = conditions[0]->GetIntegerValue(machine);
 
   // Walk linearly through the output cases, executing the first
   // match against value.
@@ -84,7 +84,7 @@ int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
     const char* e = (const char*)caseUnparsed.c_str();
     std::unique_ptr<libreallive::ExpressionPiece> output(
         libreallive::GetExpression(e));
-    if (output->integerValue(machine) == value)
+    if (output->GetIntegerValue(machine) == value)
       return i;
   }
 
@@ -170,7 +170,7 @@ struct goto_if : public ParseGotoParametersAsExpressions {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
 
-    if (conditions[0]->integerValue(machine)) {
+    if (conditions[0]->GetIntegerValue(machine)) {
       machine.GotoLocation(gotoElement.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
@@ -184,7 +184,7 @@ struct goto_unless : public ParseGotoParametersAsExpressions {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
 
-    if (!conditions[0]->integerValue(machine)) {
+    if (!conditions[0]->GetIntegerValue(machine)) {
       machine.GotoLocation(gotoElement.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
@@ -202,7 +202,7 @@ struct goto_on : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
-    int value = conditions[0]->integerValue(machine);
+    int value = conditions[0]->GetIntegerValue(machine);
 
     if (value >= 0 && value < int(gotoElement.GetPointersCount())) {
       machine.GotoLocation(gotoElement.GetPointer(value));
@@ -245,7 +245,7 @@ struct gosub_if : public ParseGotoParametersAsExpressions {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
 
-    if (conditions[0]->integerValue(machine)) {
+    if (conditions[0]->GetIntegerValue(machine)) {
       machine.Gosub(gotoElement.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
@@ -262,7 +262,7 @@ struct gosub_unless : public ParseGotoParametersAsExpressions {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
 
-    if (!conditions[0]->integerValue(machine)) {
+    if (!conditions[0]->GetIntegerValue(machine)) {
       machine.Gosub(gotoElement.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
@@ -280,7 +280,7 @@ struct gosub_on : public ParseGotoParametersAsExpressions {
   void operator()(RLMachine& machine, const CommandElement& gotoElement) {
     const ExpressionPiecesVector& conditions =
         gotoElement.GetParsedParameters();
-    int value = conditions[0]->integerValue(machine);
+    int value = conditions[0]->GetIntegerValue(machine);
 
     if (value >= 0 && value < int(gotoElement.GetPointersCount()))
       machine.Gosub(gotoElement.GetPointer(value));

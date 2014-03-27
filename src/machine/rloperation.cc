@@ -115,7 +115,7 @@ IntConstant_T::type IntConstant_T::getData(
     RLMachine& machine,
     const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
-  return p[position++]->integerValue(machine);
+  return p[position++]->GetIntegerValue(machine);
 }
 
 // Was working to change the verify_type to parse_parameters.
@@ -126,7 +126,7 @@ void IntConstant_T::ParseParameters(
   const char* data = input.at(position).c_str();
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
-  if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
+  if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntConstant_T parse err.");
   }
 
@@ -139,7 +139,7 @@ IntReference_T::type IntReference_T::getData(
     const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
   return static_cast<const libreallive::MemoryReference&>(*p[position++])
-      .getIntegerReferenceIterator(machine);
+      .GetIntegerReferenceIterator(machine);
 }
 
 void IntReference_T::ParseParameters(
@@ -149,7 +149,7 @@ void IntReference_T::ParseParameters(
   const char* data = input.at(position).c_str();
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
-  if (ep->expressionValueType() != libreallive::ValueTypeInteger) {
+  if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
     throw rlvm::Exception("IntReference_T parse err.");
   }
 
@@ -207,7 +207,7 @@ void StrConstant_T::ParseParameters(
   const char* data = input.at(position).c_str();
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
-  if (ep->expressionValueType() != libreallive::ValueTypeString) {
+  if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrConstant_T parse err.");
   }
 
@@ -220,7 +220,7 @@ StrReference_T::type StrReference_T::getData(
     const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
     unsigned int& position) {
   return static_cast<const libreallive::MemoryReference&>(*p[position++])
-      .getStringReferenceIterator(machine);
+      .GetStringReferenceIterator(machine);
 }
 
 void StrReference_T::ParseParameters(
@@ -230,7 +230,7 @@ void StrReference_T::ParseParameters(
   const char* data = input.at(position).c_str();
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
-  if (ep->expressionValueType() != libreallive::ValueTypeString) {
+  if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
     throw rlvm::Exception("StrReference_T parse err.");
   }
 

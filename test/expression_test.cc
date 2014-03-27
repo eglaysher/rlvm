@@ -141,5 +141,5 @@ TEST(ExpressionTest, ParseWithNewlineInIt) {
   std::unique_ptr<libreallive::ExpressionPiece> piece(
       libreallive::GetData(start));
 
-  ASSERT_TRUE(piece->isSpecialParamater());
+  ASSERT_TRUE(piece->IsSpecialParameter());
 }

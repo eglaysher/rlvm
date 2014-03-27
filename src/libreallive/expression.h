@@ -84,60 +84,62 @@ class ExpressionPiece {
 
   // Capability method; returns false by default. Override when
   // ExpressionPiece subclass accesses a piece of memory.
-  virtual bool isMemoryReference() const;
+  virtual bool IsMemoryReference() const;
 
   // Capability method; returns false by default. Override when
   // ExpressionPiece subclass is an operation on one or more other
   // ExpressionPieces.
-  virtual bool isOperator() const;
+  virtual bool IsOperator() const;
 
   // Used only to add a '=' in debug strings.
-  virtual bool isAssignment() const;
+  virtual bool IsAssignment() const;
 
   // Capability method; returns false by default. Override only in
   // classes that represent a complex parameter to the type system.
   // @see Complex2_T
-  virtual bool isComplexParameter() const;
+  virtual bool IsComplexParameter() const;
 
   // Capability method; returns false by default. Override only in
   // classes that represent a special parameter to the type system.
   // @see Special_T
-  virtual bool isSpecialParamater() const;
+  virtual bool IsSpecialParameter() const;
 
   // Returns the value type of this expression (i.e. string or
   // integer)
-  virtual ExpressionValueType expressionValueType() const;
+  virtual ExpressionValueType GetExpressionValueType() const;
 
   // Assigns the value into the memory location represented by the
   // current expression. Not all ExpressionPieces can do this, so
   // there is a default implementation which does nothing.
-  virtual void assignIntValue(RLMachine& machine, int rvalue);
+  virtual void SetIntegerValue(RLMachine& machine, int rvalue);
 
   // Returns the integer value of this expression; this can either be
   // a memory access or a calculation based on some subexpressions.
-  virtual int integerValue(RLMachine& machine) const;
+  virtual int GetIntegerValue(RLMachine& machine) const;
 
-  virtual void assignStringValue(RLMachine& machine,
+  virtual void SetStringValue(RLMachine& machine,
                                  const std::string& rvalue);
   virtual const std::string& GetStringValue(RLMachine& machine) const;
 
   // A persistable version of this value. This method should return RealLive
   // bytecode equal to this ExpressionPiece with all references returned.
-  virtual std::string serializedValue(RLMachine& machine) const = 0;
+  virtual std::string GetSerializedExpression(RLMachine& machine) const = 0;
 
   // A printable representation of the expression itself. Used to dump our
   // parsing of the bytecode to the console.
-  virtual std::string getDebugString() const = 0;
+  virtual std::string GetDebugString() const = 0;
 
   // I used to be able to just static cast any ExpressionPiece to a
   // MemoryReference if I wanted/needed a corresponding iterator. Haeleth's
   // rlBabel library instead uses the store register as an argument to a
   // function that takes a integer reference. So this needs to be here now.
-  virtual IntReferenceIterator getIntegerReferenceIterator(
+  virtual IntReferenceIterator GetIntegerReferenceIterator(
       RLMachine& machine) const;
-  virtual StringReferenceIterator getStringReferenceIterator(
+  virtual StringReferenceIterator GetStringReferenceIterator(
       RLMachine& machine) const;
-  virtual std::unique_ptr<ExpressionPiece> clone() const = 0;
+
+  // Builds a copy of this Expression.
+  virtual std::unique_ptr<ExpressionPiece> Clone() const = 0;
 };
 
 typedef std::vector<std::unique_ptr<libreallive::ExpressionPiece> >

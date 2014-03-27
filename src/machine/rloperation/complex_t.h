@@ -48,9 +48,9 @@ struct Complex2_T {
     const libreallive::ComplexExpressionPiece& sp =
         static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
-        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        A::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename B::type b =
-        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        B::getData(machine, sp.contained_pieces(), pos_in_expression);
     return type(a, b);
   }
 
@@ -84,11 +84,11 @@ struct Complex3_T {
     const libreallive::ComplexExpressionPiece& sp =
         static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
-        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        A::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename B::type b =
-        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        B::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename C::type c =
-        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        C::getData(machine, sp.contained_pieces(), pos_in_expression);
     return type(a, b, c);
   }
 
@@ -126,13 +126,13 @@ struct Complex4_T {
     const libreallive::ComplexExpressionPiece& sp =
         static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
-        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        A::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename B::type b =
-        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        B::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename C::type c =
-        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        C::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename D::type d =
-        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        D::getData(machine, sp.contained_pieces(), pos_in_expression);
     return type(a, b, c, d);
   }
 
@@ -179,19 +179,19 @@ struct Complex7_T {
     const libreallive::ComplexExpressionPiece& sp =
         static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
-        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        A::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename B::type b =
-        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        B::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename C::type c =
-        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        C::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename D::type d =
-        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        D::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename E::type e =
-        E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        E::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename F::type f =
-        F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        F::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename G::type g =
-        G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        G::getData(machine, sp.contained_pieces(), pos_in_expression);
     return type(a, b, c, d, e, f, g);
   }
 
@@ -239,21 +239,21 @@ struct Complex8_T {
     const libreallive::ComplexExpressionPiece& sp =
         static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
     typename A::type a =
-        A::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        A::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename B::type b =
-        B::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        B::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename C::type c =
-        C::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        C::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename D::type d =
-        D::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        D::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename E::type e =
-        E::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        E::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename F::type f =
-        F::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        F::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename G::type g =
-        G::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        G::getData(machine, sp.contained_pieces(), pos_in_expression);
     typename H::type h =
-        H::getData(machine, sp.getContainedPieces(), pos_in_expression);
+        H::getData(machine, sp.contained_pieces(), pos_in_expression);
     return type(a, b, c, d, e, f, g, h);
   }
 
