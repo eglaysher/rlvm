@@ -168,8 +168,8 @@ Script::Script(const Header& hdr,
   }
 
   // Resolve pointers
-  for (pointer_t it = elts.begin(); it != elts.end(); ++it) {
-    (*it)->SetPointers(cdat);
+  for (auto& element : elts) {
+    element->SetPointers(cdat);
   }
 
   delete[] uncompressed;
