@@ -593,11 +593,6 @@ std::string StoreRegisterExpressionPiece::serializedValue(RLMachine& machine)
   return IntToBytecode(machine.store_register());
 }
 
-std::string StoreRegisterExpressionPiece::getDebugValue(RLMachine& machine)
-    const {
-  return std::to_string(machine.store_register());
-}
-
 std::string StoreRegisterExpressionPiece::getDebugString() const {
   return "<store>";
 }
@@ -624,10 +619,6 @@ std::string IntegerConstant::serializedValue(RLMachine& machine) const {
   return IntToBytecode(constant);
 }
 
-std::string IntegerConstant::getDebugValue(RLMachine& machine) const {
-  return std::to_string(constant);
-}
-
 std::string IntegerConstant::getDebugString() const {
   return std::to_string(constant);
 }
@@ -651,10 +642,6 @@ const std::string& StringConstant::GetStringValue(RLMachine& machine) const {
 
 std::string StringConstant::serializedValue(RLMachine& machine) const {
   return string("\"") + constant + string("\"");
-}
-
-std::string StringConstant::getDebugValue(RLMachine& machine) const {
-  return serializedValue(machine);
 }
 
 std::string StringConstant::getDebugString() const {
@@ -707,14 +694,6 @@ std::string MemoryReference::serializedValue(RLMachine& machine) const {
     return string("\"") + GetStringValue(machine) + string("\"");
   } else {
     return IntToBytecode(integerValue(machine));
-  }
-}
-
-std::string MemoryReference::getDebugValue(RLMachine& machine) const {
-  if (isStringLocation(type)) {
-    return string("\"") + GetStringValue(machine) + string("\"");
-  } else {
-    return std::to_string(integerValue(machine));
   }
 }
 
@@ -800,10 +779,6 @@ int UniaryExpressionOperator::integerValue(RLMachine& machine) const {
 std::string UniaryExpressionOperator::serializedValue(RLMachine& machine)
     const {
   return IntToBytecode(integerValue(machine));
-}
-
-std::string UniaryExpressionOperator::getDebugValue(RLMachine& machine) const {
-  return std::to_string(integerValue(machine));
 }
 
 std::string UniaryExpressionOperator::getDebugString() const {
@@ -898,10 +873,6 @@ int BinaryExpressionOperator::integerValue(RLMachine& machine) const {
 std::string BinaryExpressionOperator::serializedValue(RLMachine& machine)
     const {
   return IntToBytecode(integerValue(machine));
-}
-
-std::string BinaryExpressionOperator::getDebugValue(RLMachine& machine) const {
-  return std::to_string(integerValue(machine));
 }
 
 std::string BinaryExpressionOperator::getDebugString() const {
@@ -1024,11 +995,6 @@ int AssignmentExpressionOperator::integerValue(RLMachine& machine) const {
   }
 }
 
-std::string AssignmentExpressionOperator::getDebugValue(RLMachine& machine)
-    const {
-  return "<assignment>";
-}
-
 std::unique_ptr<ExpressionPiece> AssignmentExpressionOperator::clone() const {
   return std::unique_ptr<ExpressionPiece>(new AssignmentExpressionOperator(
       operation, leftOperand->clone(), rightOperand->clone()));
@@ -1052,10 +1018,6 @@ std::string ComplexExpressionPiece::serializedValue(RLMachine& machine) const {
   }
   s += ")";
   return s;
-}
-
-std::string ComplexExpressionPiece::getDebugValue(RLMachine& machine) const {
-  return "<complex value>";
 }
 
 std::string ComplexExpressionPiece::getDebugString() const {
@@ -1095,27 +1057,6 @@ std::string SpecialExpressionPiece::serializedValue(RLMachine& machine) const {
     s.append(")");
 
   return s;
-}
-
-std::string SpecialExpressionPiece::getDebugValue(RLMachine& machine) const {
-  std::ostringstream oss;
-
-  oss << int(overloadTag) << ":{";
-
-  bool first = true;
-
-  for (auto const& piece : contained_pieces_) {
-    if (!first) {
-      oss << ", ";
-    } else {
-      first = false;
-    }
-
-    oss << piece->getDebugValue(machine);
-  }
-  oss << "}";
-
-  return oss.str();
 }
 
 std::string SpecialExpressionPiece::getDebugString() const {

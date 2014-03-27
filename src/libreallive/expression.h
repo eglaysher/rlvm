@@ -125,10 +125,6 @@ class ExpressionPiece {
   // bytecode equal to this ExpressionPiece with all references returned.
   virtual std::string serializedValue(RLMachine& machine) const = 0;
 
-  // A printable representation of the final value of this expression. Used to
-  // dump a value to the console.
-  virtual std::string getDebugValue(RLMachine& machine) const = 0;
-
   // A printable representation of the expression itself. Used to dump our
   // parsing of the bytecode to the console.
   virtual std::string getDebugString() const = 0;

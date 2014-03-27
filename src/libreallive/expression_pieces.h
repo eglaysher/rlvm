@@ -53,7 +53,6 @@ class StoreRegisterExpressionPiece : public ExpressionPiece {
   virtual int integerValue(RLMachine& machine) const;
 
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
 
   // Never seen in any commercial games, but needed for rlBabel support.
@@ -72,7 +71,6 @@ class IntegerConstant : public ExpressionPiece {
   // Returns the constant value
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
@@ -90,7 +88,6 @@ class StringConstant : public ExpressionPiece {
   virtual ExpressionValueType expressionValueType() const;
   virtual const std::string& GetStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
 
   virtual std::unique_ptr<ExpressionPiece> clone() const;
@@ -116,7 +113,6 @@ class MemoryReference : public ExpressionPiece {
   virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
   virtual const std::string& GetStringValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
 
   virtual IntReferenceIterator getIntegerReferenceIterator(
@@ -147,7 +143,6 @@ class UniaryExpressionOperator : public ExpressionPiece {
   ~UniaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
@@ -173,7 +168,6 @@ class BinaryExpressionOperator : public ExpressionPiece {
   ~BinaryExpressionOperator();
   virtual int integerValue(RLMachine& machine) const;
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
 
   virtual std::unique_ptr<ExpressionPiece> clone() const;
@@ -211,7 +205,6 @@ class AssignmentExpressionOperator : public BinaryExpressionOperator {
 
   // Deliberately has no serializedValue() implementation; uses
   // BinaryExpressionOperator's.
-  virtual std::string getDebugValue(RLMachine& machine) const;
 
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 };
@@ -234,7 +227,6 @@ class ComplexExpressionPiece : public ExpressionPiece {
   getContainedPieces() const
     { return contained_pieces_; }
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
@@ -258,7 +250,6 @@ class SpecialExpressionPiece : public ComplexExpressionPiece {
 
   int getOverloadTag() const { return overloadTag; }
   virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
   virtual std::string getDebugString() const;
   virtual std::unique_ptr<ExpressionPiece> clone() const;
 
