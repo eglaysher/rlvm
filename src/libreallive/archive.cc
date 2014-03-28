@@ -101,8 +101,8 @@ int Archive::GetProbableEncodingType() const {
   // parse the entire SEEN file here.
   for (const_iterator it = scenarios_.begin(); it != scenarios_.end(); ++it) {
     Header header(it->second.data, it->second.length);
-    if (header.rldev_metadata.text_encoding() != 0)
-      return header.rldev_metadata.text_encoding();
+    if (header.rldev_metadata_.text_encoding() != 0)
+      return header.rldev_metadata_.text_encoding();
   }
 
   return 0;

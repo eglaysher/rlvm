@@ -46,32 +46,37 @@ struct FilePos {
 class Metadata {
  public:
   Metadata();
-  void assign(const char* input);
-  const string& to_string() const { return as_string; }
-  const int text_encoding() const { return encoding; }
+  const string& to_string() const { return as_string_; }
+  const int text_encoding() const { return encoding_; }
+
+  void Assign(const char* input);
 
  private:
-  string as_string;
-  int encoding;
+  string as_string_;
+  int encoding_;
 };
 
 class Header {
  public:
   Header(const char* data, const size_t length);
+  ~Header();
 
   // Starting around the release of Little Busters!, scenario files has a
   // second round of xor done to them. When will they learn?
-  bool use_xor_2;
+  bool use_xor_2_;
 
-  long zminusone, zminustwo, savepoint_message,
-       savepoint_selcom, savepoint_seentop;
-  std::vector<string> dramatis_personae;
-  Metadata rldev_metadata;
+  long z_minus_one_;
+  long z_minus_two_;
+  long savepoint_message_;
+  long savepoint_selcom_;
+  long savepoint_seentop_;
+  std::vector<string> dramatis_personae_;
+  Metadata rldev_metadata_;
 };
 
 class Script {
  public:
-  const pointer_t getEntrypoint(int entrypoint) const;
+  const pointer_t GetEntrypoint(int entrypoint) const;
 
  private:
   friend class Scenario;
@@ -79,12 +84,13 @@ class Script {
   Script(const Header& hdr, const char* data, const size_t length,
          const std::string& regname,
          bool use_xor_2, const compression::XorKey* second_level_xor_key);
+  ~Script();
 
-  BytecodeList elts;
+  BytecodeList elts_;
 
   // Entrypoint handeling
   typedef std::map<int, pointer_t> pointernumber;
-  pointernumber entrypointAssociations;
+  pointernumber entrypoint_associations_;
 };
 
 #endif  // SRC_LIBREALLIVE_SCENARIO_INTERNALS_H_

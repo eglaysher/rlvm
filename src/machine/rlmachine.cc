@@ -234,17 +234,17 @@ bool RLMachine::SavepointDecide(AttributeFunction func,
 void RLMachine::SetMarkSavepoints(const int in) { mark_savepoints_ = in; }
 
 bool RLMachine::ShouldSetMessageSavepoint() const {
-  return SavepointDecide(&libreallive::Scenario::savepointMessage,
+  return SavepointDecide(&libreallive::Scenario::savepoint_message,
                          "SAVEPOINT_MESSAGE");
 }
 
 bool RLMachine::ShouldSetSelcomSavepoint() const {
-  return SavepointDecide(&libreallive::Scenario::savepointSelcom,
+  return SavepointDecide(&libreallive::Scenario::savepoint_selcom,
                          "SAVEPOINT_SELCOM");
 }
 
 bool RLMachine::ShouldSetSeentopSavepoint() const {
-  return SavepointDecide(&libreallive::Scenario::savepointSeentop,
+  return SavepointDecide(&libreallive::Scenario::savepoint_seentop,
                          "SAVEPOINT_SEENTOP");
 }
 
@@ -275,7 +275,7 @@ void RLMachine::ExecuteNextInstruction() {
       AdvanceInstructionPointer();
 
       if (print_undefined_opcodes_) {
-        cout << "(SEEN" << call_stack_.back().scenario->sceneNumber()
+        cout << "(SEEN" << call_stack_.back().scenario->scene_number()
              << ")(Line " << line_ << "):  " << e.what() << endl;
       }
 
@@ -291,7 +291,7 @@ void RLMachine::ExecuteNextInstruction() {
         AdvanceInstructionPointer();
       }
 
-      cout << "(SEEN" << call_stack_.back().scenario->sceneNumber() << ")(Line "
+      cout << "(SEEN" << call_stack_.back().scenario->scene_number() << ")(Line "
            << line_ << ")";
 
       // We specialcase rlvm::Exception because we might have the name of the
@@ -311,7 +311,7 @@ void RLMachine::ExecuteNextInstruction() {
         AdvanceInstructionPointer();
       }
 
-      cout << "(SEEN" << call_stack_.back().scenario->sceneNumber() << ")(Line "
+      cout << "(SEEN" << call_stack_.back().scenario->scene_number() << ")(Line "
            << line_ << "):  " << e.what() << endl;
     }
   }
@@ -367,11 +367,11 @@ void RLMachine::Jump(int scenario_num, int entrypoint) {
 
     if (it != call_stack_.rend()) {
       it->scenario = scenario;
-      it->ip = scenario->findEntrypoint(entrypoint);
+      it->ip = scenario->FindEntrypoint(entrypoint);
     }
   } else {
     call_stack_.back().scenario = scenario;
-    call_stack_.back().ip = scenario->findEntrypoint(entrypoint);
+    call_stack_.back().ip = scenario->FindEntrypoint(entrypoint);
   }
 }
 
@@ -385,7 +385,7 @@ void RLMachine::Farcall(int scenario_num, int entrypoint) {
   }
 
   libreallive::Scenario::const_iterator it =
-      scenario->findEntrypoint(entrypoint);
+      scenario->FindEntrypoint(entrypoint);
 
   if (entrypoint == 0 && ShouldSetSeentopSavepoint())
     MarkSavepoint();
@@ -530,7 +530,7 @@ void RLMachine::ClearCallstack() {
 }
 
 int RLMachine::SceneNumber() const {
-  return call_stack_.back().scenario->sceneNumber();
+  return call_stack_.back().scenario->scene_number();
 }
 
 const libreallive::Scenario& RLMachine::Scenario() const {

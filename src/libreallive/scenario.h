@@ -55,74 +55,37 @@ class Scenario {
   Scenario(const FilePos& fp, int scenarioNum,
            const std::string& regname,
            const compression::XorKey* second_level_xor_key);
+  ~Scenario();
 
   // Get the scenario number
-  int sceneNumber() const { return scenarioNum; }
+  int scene_number() const { return scenario_number_; }
 
   // Get the text encoding used for this scenario
-  int encoding() const { return header.rldev_metadata.text_encoding(); }
+  int encoding() const { return header.rldev_metadata_.text_encoding(); }
+
+  // Access to metadata in the script. Don't worry about information loss;
+  // valid values are 0, 1, and 2.
+  int savepoint_message() const { return header.savepoint_message_; }
+  int savepoint_selcom()  const { return header.savepoint_selcom_;  }
+  int savepoint_seentop() const { return header.savepoint_seentop_; }
 
   // Access to script
   typedef BytecodeList::const_iterator const_iterator;
   typedef BytecodeList::iterator iterator;
 
-  // Access to metadata in the script. Don't worry about information loss;
-  // valid values are 0, 1, and 2.
-  int savepointMessage() const { return header.savepoint_message; }
-  int savepointSelcom()  const { return header.savepoint_selcom;  }
-  int savepointSeentop() const { return header.savepoint_seentop; }
+  iterator begin()              { return script.elts_.begin(); }
+  iterator end()                { return script.elts_.end();   }
+  const_iterator begin() const  { return script.elts_.begin(); }
+  const_iterator end() const    { return script.elts_.end();   }
 
   // Locate the entrypoint
-  const_iterator findEntrypoint(int entrypoint) const;
-
-  iterator begin();
-  iterator end();
-  const_iterator begin() const;
-  const_iterator end() const;
+  const_iterator FindEntrypoint(int entrypoint) const;
 
  private:
   Header header;
   Script script;
-  int scenarioNum;
+  int scenario_number_;
 };
-
-// Inline definitions for Scenario
-
-inline
-Scenario::Scenario(const char* data, const size_t length, int sn,
-                   const std::string& regname,
-                   const compression::XorKey* second_level_xor_key)
-  : header(data, length),
-    script(header, data, length, regname,
-           header.use_xor_2, second_level_xor_key),
-    scenarioNum(sn) {
-}
-
-inline
-Scenario::Scenario(const FilePos& fp, int sn,
-                   const std::string& regname,
-                   const compression::XorKey* second_level_xor_key)
-  : header(fp.data, fp.length),
-    script(header, fp.data, fp.length, regname,
-           header.use_xor_2, second_level_xor_key),
-    scenarioNum(sn) {
-}
-
-inline Scenario::iterator Scenario::begin() {
-  return script.elts.begin();
-}
-
-inline Scenario::iterator Scenario::end() {
-  return script.elts.end();
-}
-
-inline Scenario::const_iterator Scenario::begin() const {
-  return script.elts.begin();
-}
-
-inline Scenario::const_iterator Scenario::end() const {
-  return script.elts.end();
-}
 
 }  // namespace libreallive
 
