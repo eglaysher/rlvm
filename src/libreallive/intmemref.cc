@@ -35,58 +35,58 @@ namespace libreallive {
 
 // -----------------------------------------------------------------------
 
-IntMemRef::IntMemRef(int bytecodeRep, int location)
-    : memoryBank(bytecodeRep % 26),
-      accessType(bytecodeRep / 26),
-      loc(location) {
-  if (memoryBank == INTZ_LOCATION_IN_BYTECODE)
-    memoryBank = INTZ_LOCATION;
-  else if (memoryBank == INTL_LOCATION_IN_BYTECODE)
-    memoryBank = INTL_LOCATION;
+IntMemRef::IntMemRef(int bytecode_rep, int location)
+    : memory_bank_(bytecode_rep % 26),
+      access_type_(bytecode_rep / 26),
+      location_(location) {
+  if (memory_bank_ == INTZ_LOCATION_IN_BYTECODE)
+    memory_bank_ = INTZ_LOCATION;
+  else if (memory_bank_ == INTL_LOCATION_IN_BYTECODE)
+    memory_bank_ = INTL_LOCATION;
 }
 
 // -----------------------------------------------------------------------
 
 IntMemRef::IntMemRef(int bank, int type, int location)
-    : memoryBank(bank), accessType(type), loc(location) {}
+    : memory_bank_(bank), access_type_(type), location_(location) {}
 
 // -----------------------------------------------------------------------
 
-IntMemRef::IntMemRef(char bankName, int location)
-    : accessType(0), loc(location) {
-  if (bankName >= 'A' && bankName <= 'G')
-    memoryBank = bankName - 'A';
-  else if (bankName == 'Z')
-    memoryBank = INTZ_LOCATION;
-  else if (bankName == 'L')
-    memoryBank = INTL_LOCATION;
+IntMemRef::IntMemRef(char bank_name, int location)
+    : access_type_(0), location_(location) {
+  if (bank_name >= 'A' && bank_name <= 'G')
+    memory_bank_ = bank_name - 'A';
+  else if (bank_name == 'Z')
+    memory_bank_ = INTZ_LOCATION;
+  else if (bank_name == 'L')
+    memory_bank_ = INTL_LOCATION;
   else
     throw std::runtime_error("Invalid memory bank name.");
 }
 
 // -----------------------------------------------------------------------
 
-IntMemRef::IntMemRef(char bankName, const char* accessStr, int location)
-    : accessType(0), loc(location) {
-  if (bankName >= 'A' && bankName <= 'G')
-    memoryBank = bankName - 'A';
-  else if (bankName == 'Z')
-    memoryBank = INTZ_LOCATION;
-  else if (bankName == 'L')
-    memoryBank = INTL_LOCATION;
+IntMemRef::IntMemRef(char bank_name, const char* access_str, int location)
+    : access_type_(0), location_(location) {
+  if (bank_name >= 'A' && bank_name <= 'G')
+    memory_bank_ = bank_name - 'A';
+  else if (bank_name == 'Z')
+    memory_bank_ = INTZ_LOCATION;
+  else if (bank_name == 'L')
+    memory_bank_ = INTL_LOCATION;
   else
     throw std::runtime_error("Invalid memory bank name.");
 
-  if (strcmp(accessStr, "") == 0)
-    accessType = 0;
-  else if (strcmp(accessStr, "b") == 0)
-    accessType = 1;
-  else if (strcmp(accessStr, "2b") == 0)
-    accessType = 2;
-  else if (strcmp(accessStr, "4b") == 0)
-    accessType = 3;
-  else if (strcmp(accessStr, "8b") == 0)
-    accessType = 4;
+  if (strcmp(access_str, "") == 0)
+    access_type_ = 0;
+  else if (strcmp(access_str, "b") == 0)
+    access_type_ = 1;
+  else if (strcmp(access_str, "2b") == 0)
+    access_type_ = 2;
+  else if (strcmp(access_str, "4b") == 0)
+    access_type_ = 3;
+  else if (strcmp(access_str, "8b") == 0)
+    access_type_ = 4;
   else
     throw std::runtime_error("Invalid access type string.");
 }

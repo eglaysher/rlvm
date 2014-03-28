@@ -56,7 +56,7 @@ const int STRS_LOCATION = 0x12;
 
 // -----------------------------------------------------------------------
 
-inline bool isStringLocation(const int type) {
+inline bool is_string_location(const int type) {
   return type == STRS_LOCATION || type == STRK_LOCATION ||
       type == STRM_LOCATION;
 }
@@ -66,26 +66,26 @@ inline bool isStringLocation(const int type) {
 // References a piece of integer memory.
 class IntMemRef {
  public:
-  IntMemRef(int bytecodeRep, int location);
+  IntMemRef(int bytecode_rep, int location);
   IntMemRef(int bank, int type, int location);
 
-  IntMemRef(char bankName, int location);
-  IntMemRef(char bankName, const char* accessStr, int location);
+  IntMemRef(char bank_name, int location);
+  IntMemRef(char bank_name, const char* access_str, int location);
   ~IntMemRef();
 
-  int bank() const { return memoryBank; }
-  int type() const { return accessType; }
-  int location() const { return loc;    }
+  int bank() const { return memory_bank_; }
+  int type() const { return access_type_; }
+  int location() const { return location_; }
 
  private:
   // Which piece of memory to operate on.
-  int memoryBank;
+  int memory_bank_;
 
   // How to access
-  int accessType;
+  int access_type_;
 
   // The memory location to
-  int loc;
+  int location_;
 };
 
 }  // namespace libreallive
