@@ -40,8 +40,8 @@
 EventSystemGlobals::EventSystemGlobals() : generic1(false), generic2(false) {}
 
 EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
-    : generic1(gexe("INIT_ORIGINALSETING1_MOD").to_int(0)),
-      generic2(gexe("INIT_ORIGINALSETING2_MOD").to_int(0)) {}
+    : generic1(gexe("INIT_ORIGINALSETING1_MOD").ToInt(0)),
+      generic2(gexe("INIT_ORIGINALSETING2_MOD").ToInt(0)) {}
 
 // -----------------------------------------------------------------------
 // EventSystem

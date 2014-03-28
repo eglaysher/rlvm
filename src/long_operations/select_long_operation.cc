@@ -279,28 +279,28 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
     select_colour_num_ = default_colour_num_;
 
   GraphicsSystem& gs = machine.system().graphics();
-  if (selbtn("NAME").exists() && selbtn("NAME").to_string() != "")
+  if (selbtn("NAME").Exists() && selbtn("NAME").ToString() != "")
     name_surface_ = gs.getSurfaceNamed(selbtn("NAME"));
-  if (selbtn("BACK").exists() && selbtn("BACK").to_string() != "")
+  if (selbtn("BACK").Exists() && selbtn("BACK").ToString() != "")
     back_surface_ = gs.getSurfaceNamed(selbtn("BACK"));
 
   std::vector<int> tmp;
-  if (selbtn("NORMAL").exists()) {
+  if (selbtn("NORMAL").Exists()) {
     tmp = selbtn("NORMAL");
     normal_frame_ = tmp.at(0);
     normal_frame_offset_ = Point(tmp.at(1), tmp.at(2));
   }
-  if (selbtn("SELECT").exists()) {
+  if (selbtn("SELECT").Exists()) {
     tmp = selbtn("SELECT");
     select_frame_ = tmp.at(0);
     select_frame_offset_ = Point(tmp.at(1), tmp.at(2));
   }
-  if (selbtn("PUSH").exists()) {
+  if (selbtn("PUSH").Exists()) {
     tmp = selbtn("PUSH");
     push_frame_ = tmp.at(0);
     push_frame_offset_ = Point(tmp.at(1), tmp.at(2));
   }
-  if (selbtn("DONTSEL").exists()) {
+  if (selbtn("DONTSEL").Exists()) {
     tmp = selbtn("DONTSEL");
     dontsel_frame_ = tmp.at(0);
     dontsel_frame_offset_ = Point(tmp.at(1), tmp.at(2));

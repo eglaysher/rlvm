@@ -86,7 +86,7 @@ struct FontColour
 struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
-    if (gexe("COLOR_TABLE", textColorNum).exists()) {
+    if (gexe("COLOR_TABLE", textColorNum).Exists()) {
       machine.system().text().currentWindow()->setDefaultTextColor(
           gexe("COLOR_TABLE", textColorNum));
     }

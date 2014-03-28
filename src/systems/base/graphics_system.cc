@@ -105,7 +105,7 @@ struct GraphicsSystem::GraphicsObjectSettings {
 
 GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     Gameexe& gameexe) {
-  if (gameexe.exists("OBJECT_MAX"))
+  if (gameexe.Exists("OBJECT_MAX"))
     objects_in_a_layer = gameexe("OBJECT_MAX");
   else
     objects_in_a_layer = 256;
@@ -114,7 +114,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   position.reset(new unsigned char[objects_in_a_layer]);
   fill(position.get(), position.get() + objects_in_a_layer, 0);
 
-  if (gameexe.exists("OBJECT.999"))
+  if (gameexe.Exists("OBJECT.999"))
     data.push_back(ObjectSettings(gameexe("OBJECT.999")));
   else
     data.push_back(ObjectSettings());
@@ -165,9 +165,9 @@ GraphicsSystemGlobals::GraphicsSystemGlobals()
       tone_curves() {}
 
 GraphicsSystemGlobals::GraphicsSystemGlobals(Gameexe& gameexe)
-    : show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").to_int(0) ? 0 : 1),
-      show_object_2(gameexe("INIT_OBJECT2_ONOFF_MOD").to_int(0) ? 0 : 1),
-      show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").to_int(0) ? 0 : 1),
+    : show_object_1(gameexe("INIT_OBJECT1_ONOFF_MOD").ToInt(0) ? 0 : 1),
+      show_object_2(gameexe("INIT_OBJECT2_ONOFF_MOD").ToInt(0) ? 0 : 1),
+      show_weather(gameexe("INIT_WEATHER_ONOFF_MOD").ToInt(0) ? 0 : 1),
       skip_animations(0),
       screen_mode(1),
       cg_table(gameexe),
@@ -224,16 +224,16 @@ GraphicsSystem::GraphicsSystem(System& system, Gameexe& gameexe)
       screen_needs_refresh_(false),
       object_state_dirty_(false),
       is_responsible_for_update_(true),
-      display_subtitle_(gameexe("SUBTITLE").to_int(0)),
+      display_subtitle_(gameexe("SUBTITLE").ToInt(0)),
       hide_interface_(false),
       globals_(gameexe),
       time_at_last_queue_change_(0),
       graphics_object_settings_(new GraphicsObjectSettings(gameexe)),
       graphics_object_impl_(new GraphicsObjectImpl(
           graphics_object_settings_->objects_in_a_layer)),
-      use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").exists()),
+      use_custom_mouse_cursor_(gameexe("MOUSE_CURSOR").Exists()),
       show_cursor_from_bytecode_(true),
-      cursor_(gameexe("MOUSE_CURSOR").to_int(0)),
+      cursor_(gameexe("MOUSE_CURSOR").ToInt(0)),
       system_(system),
       preloaded_hik_scripts_(32),
       preloaded_g00_(256),
@@ -294,8 +294,8 @@ void GraphicsSystem::setScreenUpdateMode(DCScreenUpdateMode u) {
 void GraphicsSystem::QueueShakeSpec(int spec) {
   Gameexe& gameexe = system().gameexe();
 
-  if (gameexe("SHAKE", spec).exists()) {
-    vector<int> spec_vector = gameexe("SHAKE", spec).to_intVector();
+  if (gameexe("SHAKE", spec).Exists()) {
+    vector<int> spec_vector = gameexe("SHAKE", spec).ToIntVector();
 
     int x, y, time;
     vector<int>::const_iterator it = spec_vector.begin();
@@ -343,8 +343,7 @@ int GraphicsSystem::CurrentShakingFrameTime() const {
 
 int GraphicsSystem::useCustomCursor() {
   return use_custom_mouse_cursor_ &&
-         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").to_string("") !=
-             "";
+         system().gameexe()("MOUSE_CURSOR", cursor_, "NAME").ToString("") != "";
 }
 
 // -----------------------------------------------------------------------
@@ -582,7 +581,7 @@ void GraphicsSystem::reset() {
 
   // Reset the cursor
   show_cursor_from_bytecode_ = true;
-  cursor_ = system().gameexe()("MOUSE_CURSOR").to_int(0);
+  cursor_ = system().gameexe()("MOUSE_CURSOR").ToInt(0);
   mouse_cursor_.reset();
 
   default_grp_name_ = "";
@@ -598,7 +597,7 @@ boost::shared_ptr<const Surface> GraphicsSystem::GetEmojiSurface() {
   GameexeFilteringIterator end = system().gameexe().filtering_end();
   for (; it != end; ++it) {
     // Try to interpret each key as a filename.
-    std::string file_name = it->to_string("");
+    std::string file_name = it->ToString("");
     boost::shared_ptr<const Surface> surface = getSurfaceNamed(file_name);
     if (surface)
       return surface;
@@ -873,9 +872,9 @@ boost::shared_ptr<MouseCursor> GraphicsSystem::currentCursor() {
           system().gameexe()("MOUSE_CURSOR", cursor_);
       GameexeInterpretObject name_key = cursor("NAME");
 
-      if (name_key.exists()) {
-        int count = cursor("CONT").to_int(1);
-        int speed = cursor("SPEED").to_int(800);
+      if (name_key.Exists()) {
+        int count = cursor("CONT").ToInt(1);
+        int speed = cursor("SPEED").ToInt(800);
 
         cursor_surface = getSurfaceNamed(name_key);
         mouse_cursor_.reset(

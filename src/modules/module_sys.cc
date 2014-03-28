@@ -246,7 +246,7 @@ struct ReturnMenu : public RLOp_Void_Void {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
-    int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+    int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();
     machine.LocalReset();
     machine.Jump(scenario, 0);
   }
@@ -338,7 +338,7 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   boost::shared_ptr<Surface> after = graphics.renderToSurface();
 
   // First, we jump the instruction pointer to the new location.
-  int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
+  int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();
   machine.Jump(scenario, 0);
 
   // Now we push a LongOperation on top of the stack; when this

@@ -303,7 +303,7 @@ void System::showSystemInfo(RLMachine& machine) {
   if (platform_) {
     RlvmInfo info;
 
-    std::string regname = gameexe()("REGNAME").to_string("");
+    std::string regname = gameexe()("REGNAME").ToString("");
     size_t pos = regname.find('\\');
     if (pos != string::npos) {
       info.game_brand = regname.substr(0, pos);
@@ -313,8 +313,8 @@ void System::showSystemInfo(RLMachine& machine) {
       info.game_name = regname;
     }
 
-    info.game_version = gameexe()("VERSION_STR").to_string("");
-    info.game_path = gameexe()("__GAMEPATH").to_string("");
+    info.game_version = gameexe()("VERSION_STR").ToString("");
+    info.game_path = gameexe()("__GAMEPATH").ToString("");
     info.rlvm_version = rlvm_version();
     info.rlbabel_loaded = machine.DllLoaded("rlBabel");
     info.text_transformation = machine.GetTextEncoding();
@@ -420,7 +420,7 @@ void System::invokeSaveOrLoad(RLMachine& machine,
   GameexeInterpretObject save_mod = gameexe()(mod_key);
   GameexeInterpretObject save_loc = gameexe()(location);
 
-  if (save_mod.exists() && save_loc.exists() && save_mod == 1) {
+  if (save_mod.Exists() && save_loc.Exists() && save_mod == 1) {
     std::vector<int> raw_ints = save_loc;
     int scenario = raw_ints.at(0);
     int entrypoint = raw_ints.at(1);
@@ -448,14 +448,14 @@ void System::buildFileSystemCache() {
   GameexeFilteringIterator it = gexe.filtering_begin("FOLDNAME");
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; it != end; ++it) {
-    std::string dir = it->to_string();
+    std::string dir = it->ToString();
     if (!dir.empty()) {
       to_lower(dir);
       valid_directories.push_back(dir);
     }
   }
 
-  fs::path gamepath(gexe("__GAMEPATH").to_string());
+  fs::path gamepath(gexe("__GAMEPATH").ToString());
   fs::directory_iterator dir_end;
   for (fs::directory_iterator dir(gamepath); dir != dir_end; ++dir) {
     if (fs::is_directory(dir->status())) {

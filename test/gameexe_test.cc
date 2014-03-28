@@ -44,23 +44,23 @@ TEST(GameexeUnit, ReadAllKeys) {
 // Make sure #CAPTION exists and that we read its value correctly.
 TEST(GameexeUnit, ReadsCaption) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
-  EXPECT_TRUE(ini("CAPTION").exists()) << "#CAPTION exists";
-  EXPECT_EQ(string("Canon: A firearm"), ini("CAPTION").to_string())
+  EXPECT_TRUE(ini("CAPTION").Exists()) << "#CAPTION exists";
+  EXPECT_EQ(string("Canon: A firearm"), ini("CAPTION").ToString())
       << "Wrong value for CAPTION";
 }
 
 // Make sure #RANDOM_KEY doesn't exist.
 TEST(GameexeUnit, RandomKeyDoesntExist) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
-  EXPECT_FALSE(ini("RANDOM_KEY").exists()) << "#RANDOM_KEY does not exist";
+  EXPECT_FALSE(ini("RANDOM_KEY").Exists()) << "#RANDOM_KEY does not exist";
 }
 
-// Test to_intVector() parsing.
+// Test ToIntVector() parsing.
 TEST(GameexeUnit, IntVectorParsing) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
-  EXPECT_TRUE(ini("WINDOW_ATTR").exists()) << "#WINDOW_ATTR exists!";
+  EXPECT_TRUE(ini("WINDOW_ATTR").Exists()) << "#WINDOW_ATTR exists!";
 
-  vector<int> ints = ini("WINDOW_ATTR").to_intVector();
+  vector<int> ints = ini("WINDOW_ATTR").ToIntVector();
   for (int i = 0; i < 5; ++i) {
     EXPECT_EQ(i + 1, ints.at(i));
   }
@@ -99,7 +99,7 @@ TEST(GameexeUnit, FilteringIterators) {
 TEST(GameexeUnit, KeyParts) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe.ini"));
   GameexeInterpretObject gio = ini("WINDOW.000.ATTR_MOD");
-  vector<string> pieces = gio.key_parts();
+  vector<string> pieces = gio.GetKeyParts();
   EXPECT_EQ(3, pieces.size());
   EXPECT_EQ("WINDOW", pieces[0]);
   EXPECT_EQ("000", pieces[1]);
@@ -123,16 +123,16 @@ TEST(GameexeUnit, DstrackRegression) {
   Gameexe ini(locateTestCase("Gameexe_data/Gameexe_tokenization.ini"));
 
   GameexeInterpretObject clannad = ini("CLANNADDSTRACK");
-  EXPECT_EQ(0, clannad.getIntAt(0));
-  EXPECT_EQ(99999999, clannad.getIntAt(1));
-  EXPECT_EQ(269364, clannad.getIntAt(2));
-  EXPECT_EQ("BGM01", clannad.getStringAt(3));
-  EXPECT_EQ("BGM01", clannad.getStringAt(4));
+  EXPECT_EQ(0, clannad.GetIntAt(0));
+  EXPECT_EQ(99999999, clannad.GetIntAt(1));
+  EXPECT_EQ(269364, clannad.GetIntAt(2));
+  EXPECT_EQ("BGM01", clannad.GetStringAt(3));
+  EXPECT_EQ("BGM01", clannad.GetStringAt(4));
 
   GameexeInterpretObject dc = ini("DCDSTRACK");
-  EXPECT_EQ(0, dc.getIntAt(0));
-  EXPECT_EQ(10998934, dc.getIntAt(1));
-  EXPECT_EQ(0, dc.getIntAt(2));
-  EXPECT_EQ("dcbgm000", dc.getStringAt(3));
-  EXPECT_EQ("dcbgm000", dc.getStringAt(4));
+  EXPECT_EQ(0, dc.GetIntAt(0));
+  EXPECT_EQ(10998934, dc.GetIntAt(1));
+  EXPECT_EQ(0, dc.GetIntAt(2));
+  EXPECT_EQ("dcbgm000", dc.GetStringAt(3));
+  EXPECT_EQ("dcbgm000", dc.GetStringAt(4));
 }

@@ -69,7 +69,7 @@ TextWakuType4::TextWakuType4(System& system,
       area_left_(0),
       area_right_(0) {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
-  setWakuMain(waku("NAME").to_string(""));
+  setWakuMain(waku("NAME").ToString(""));
 
   std::vector<int> area = waku("AREA");
   if (area.size() >= 1)

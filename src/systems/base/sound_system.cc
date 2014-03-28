@@ -61,7 +61,7 @@ SoundSystemGlobals::SoundSystemGlobals()
       bgm_koe_fade_vol(128) {}
 
 SoundSystemGlobals::SoundSystemGlobals(Gameexe& gexe)
-    : sound_quality(gexe("SOUND_DEFAULT").to_int(5)),
+    : sound_quality(gexe("SOUND_DEFAULT").ToInt(5)),
       bgm_enabled(true),
       bgm_volume_mod(255),
       pcm_enabled(true),
@@ -133,11 +133,11 @@ SoundSystem::SoundSystem(System& system)
   GameexeFilteringIterator se = gexe.filtering_begin("SE.");
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; se != end; ++se) {
-    std::string raw_number = se->key_parts().at(1);
+    std::string raw_number = se->GetKeyParts().at(1);
     int entry_number = std::stoi(raw_number);
 
-    std::string file_name = se->getStringAt(0);
-    int target_channel = se->getIntAt(1);
+    std::string file_name = se->GetStringAt(0);
+    int target_channel = se->GetIntAt(1);
 
     se_table_[entry_number] = std::make_pair(file_name, target_channel);
   }
@@ -145,11 +145,11 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#DSTRACK entries
   GameexeFilteringIterator dstrack = gexe.filtering_begin("DSTRACK");
   for (; dstrack != end; ++dstrack) {
-    int from = dstrack->getIntAt(0);
-    int to = dstrack->getIntAt(1);
-    int loop = dstrack->getIntAt(2);
-    const std::string& file = dstrack->getStringAt(3);
-    std::string name = dstrack->getStringAt(4);
+    int from = dstrack->GetIntAt(0);
+    int to = dstrack->GetIntAt(1);
+    int loop = dstrack->GetIntAt(2);
+    const std::string& file = dstrack->GetStringAt(3);
+    std::string name = dstrack->GetStringAt(4);
     boost::to_lower(name);
 
     ds_tracks_[name] = DSTrack(name, file, from, to, loop);
@@ -158,10 +158,10 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#CDTRACK entries
   GameexeFilteringIterator cdtrack = gexe.filtering_begin("CDTRACK");
   for (; cdtrack != end; ++cdtrack) {
-    int from = cdtrack->getIntAt(0);
-    int to = cdtrack->getIntAt(1);
-    int loop = cdtrack->getIntAt(2);
-    std::string name = cdtrack->getStringAt(3);
+    int from = cdtrack->GetIntAt(0);
+    int to = cdtrack->GetIntAt(1);
+    int loop = cdtrack->GetIntAt(2);
+    std::string name = cdtrack->GetStringAt(3);
     boost::to_lower(name);
 
     cd_tracks_[name] = CDTrack(name, from, to, loop);
@@ -170,7 +170,7 @@ SoundSystem::SoundSystem(System& system)
   // Read the \#KOEONOFF entries
   GameexeFilteringIterator koeonoff = gexe.filtering_begin("KOEONOFF.");
   for (; koeonoff != end; ++koeonoff) {
-    std::vector<std::string> keyparts = koeonoff->key_parts();
+    std::vector<std::string> keyparts = koeonoff->GetKeyParts();
     int usekoe_id = std::stoi(keyparts.at(1));
 
     // Find the corresponding koeplay ids.

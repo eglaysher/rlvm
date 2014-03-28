@@ -567,7 +567,7 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
                   int delay,
                   int param) {
     Gameexe& gameexe = machine.system().gameexe();
-    const std::vector<int>& disp = gameexe("OBJDISP", param).to_intVector();
+    const std::vector<int>& disp = gameexe("OBJDISP", param).ToIntVector();
 
     GraphicsObject& object = getGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().getTicks();

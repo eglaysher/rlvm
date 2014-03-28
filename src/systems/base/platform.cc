@@ -57,18 +57,18 @@ Platform::Platform(Gameexe& gameexe) {
     string key = it->key().substr(7);
     if (key.size() == 3 && isdigit(key[0]) && isdigit(key[1]) &&
         isdigit(key[2])) {
-      addSyscomStringFor(key, it->to_string());
+      addSyscomStringFor(key, it->ToString());
     } else if (key.size() == 7 && isdigit(key[0]) && isdigit(key[1]) &&
                isdigit(key[2]) && key[3] == '.' && isdigit(key[4]) &&
                isdigit(key[5]) && isdigit(key[6])) {
-      addSyscomStringFor(key, it->to_string());
+      addSyscomStringFor(key, it->ToString());
     }
   }
 
   for (int i = 0; ADDTIONAL_STRINGS_TO_LOAD[i] != NULL; ++i) {
     GameexeInterpretObject toload = gameexe(ADDTIONAL_STRINGS_TO_LOAD[i]);
-    if (toload.exists())
-      addSyscomStringFor(toload.key(), toload.to_string());
+    if (toload.Exists())
+      addSyscomStringFor(toload.key(), toload.ToString());
   }
 }
 

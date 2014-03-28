@@ -80,13 +80,13 @@ TextSystemGlobals::TextSystemGlobals()
 // -----------------------------------------------------------------------
 
 TextSystemGlobals::TextSystemGlobals(Gameexe& gexe)
-    : auto_mode_base_time(gexe("MESSAGE_KEY_WAIT_TIME").to_int(1500)),
-      auto_mode_char_time(gexe("INIT_MESSAGE_SPEED").to_int(30)),
-      message_speed(gexe("INIT_MESSAGE_SPEED").to_int(30)),
+    : auto_mode_base_time(gexe("MESSAGE_KEY_WAIT_TIME").ToInt(1500)),
+      auto_mode_char_time(gexe("INIT_MESSAGE_SPEED").ToInt(30)),
+      message_speed(gexe("INIT_MESSAGE_SPEED").ToInt(30)),
       font_weight(0),
       font_shadow(1) {
   GameexeInterpretObject in_window_attr(gexe("WINDOW_ATTR"));
-  if (in_window_attr.exists())
+  if (in_window_attr.Exists())
     window_attr = in_window_attr;
 }
 
@@ -119,7 +119,7 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
       in_selection_mode_(false),
       system_(system) {
   GameexeInterpretObject ctrl_use(gexe("CTRL_USE"));
-  if (ctrl_use.exists())
+  if (ctrl_use.Exists())
     ctrl_key_skip_ = ctrl_use;
 
   checkAndSetBool(gexe, "WINDOW_MOVE_USE", move_use_);
@@ -250,8 +250,8 @@ void TextSystem::checkAndSetBool(Gameexe& gexe,
                                  const std::string& key,
                                  bool& out) {
   GameexeInterpretObject key_obj(gexe(key));
-  if (key_obj.exists())
-    out = key_obj.to_int();
+  if (key_obj.Exists())
+    out = key_obj.ToInt();
 }
 
 void TextSystem::expireOldPages() {

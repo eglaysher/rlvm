@@ -231,8 +231,8 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   Texture::SetScreenSize(screenSize());
 
   // Grab the caption
-  std::string cp932caption = gameexe("CAPTION").to_string();
-  int name_enc = gameexe("NAME_ENC").to_int(0);
+  std::string cp932caption = gameexe("CAPTION").ToString();
+  int name_enc = gameexe("NAME_ENC").ToInt(0);
   caption_title_ = cp932toUTF8(cp932caption, name_enc);
 
   setupVideo();
@@ -256,7 +256,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 #endif
 
   // When debug is set, display trace data in the titlebar
-  if (gameexe("MEMORY").exists()) {
+  if (gameexe("MEMORY").Exists()) {
     display_data_in_titlebar_ = true;
   }
 

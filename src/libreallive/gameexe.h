@@ -61,7 +61,7 @@ typedef std::multimap<std::string, Gameexe_vec_type> GameexeData_t;
 // This allows us to write code like this:
 //
 //   vector<string> x = gameexe("WHATEVER", 5).to_strVector();
-//   int var = gameexe("EXPLICIT_CAST").to_int();
+//   int var = gameexe("EXPLICIT_CAST").ToInt();
 //   int var2 = gameexe("IMPLICIT_CAST");
 //   gameexe("SOMEVAL") = 5;
 //
@@ -82,49 +82,43 @@ class GameexeInterpretObject {
   }
 
   // Finds an int value, returning a default if non-existant.
-  const int to_int(const int defaultValue) const;
+  const int ToInt(const int defaultValue) const;
 
   // Finds an int value, throwing if non-existant.
-  const int to_int() const;
+  const int ToInt() const;
 
   // Allow implicit casts to int with no default value
-  operator int() const {
-    return to_int();
-  }
+  operator int() const { return ToInt(); }
 
   // Returns a specific piece of data at index as an int
-  int getIntAt(int index) const;
+  int GetIntAt(int index) const;
 
   // Finds a string value, throwing if non-existant.
-  const std::string to_string(const std::string& defaultValue) const;
+  const std::string ToString(const std::string& defaultValue) const;
 
   // Finds a string value, throwing if non-existant.
-  const std::string to_string() const;
+  const std::string ToString() const;
 
   // Allow implicit casts to string
-  operator std::string() const {
-    return to_string();
-  }
+  operator std::string() const { return ToString(); }
 
   // Returns a piece of data at a certain location as a string.
-  const std::string getStringAt(int index) const;
+  const std::string GetStringAt(int index) const;
 
   // Finds a vector of ints, throwing if non-existant.
-  const std::vector<int>& to_intVector() const;
+  const std::vector<int>& ToIntVector() const;
 
-  operator std::vector<int>() const {
-    return to_intVector();
-  }
+  operator std::vector<int>() const { return ToIntVector(); }
 
   // Checks to see if the key exists.
-  bool exists() const;
+  bool Exists() const;
 
   const std::string& key() const {
     return key_;
   }
 
   // Returns the key splitted on periods.
-  const std::vector<std::string> key_parts() const;
+  const std::vector<std::string> GetKeyParts() const;
 
   // Assign a value. Unlike all the other methods, we can safely
   // templatize this since the functions it calls can be overloaded.
@@ -179,7 +173,7 @@ class Gameexe {
   GameexeFilteringIterator filtering_end();
 
   // Returns whether key exists in the stored data
-  bool exists(const std::string& key);
+  bool Exists(const std::string& key);
 
   // Returns the number of keys in the Gameexe.ini file.
   size_t size() const {
@@ -187,27 +181,27 @@ class Gameexe {
   }
 
   // Exposed for testing.
-  void setStringAt(const std::string& key, const std::string& value);
-  void setIntAt(const std::string& key, const int value);
+  void SetStringAt(const std::string& key, const std::string& value);
+  void SetIntAt(const std::string& key, const int value);
 
  private:
-  const std::vector<int>& getIntArray(GameexeData_t::const_iterator key);
-  int getIntAt(GameexeData_t::const_iterator key, int index);
-  std::string getStringAt(GameexeData_t::const_iterator key, int index);
+  const std::vector<int>& GetIntArray(GameexeData_t::const_iterator key);
+  int GetIntAt(GameexeData_t::const_iterator key, int index);
+  std::string GetStringAt(GameexeData_t::const_iterator key, int index);
 
   // Returns an iterator for the incoming key. May not be valid. This
   // is a function only for tight coupling with
   // GameexeInterpretObject.
-  GameexeData_t::const_iterator find(const std::string& key);
+  GameexeData_t::const_iterator Find(const std::string& key);
 
   // Regrettable artifact of hack to get all integers in streams to
   // have setw(3).
-  void addToStream(const std::string& x, std::ostringstream& ss);
+  void AddToStream(const std::string& x, std::ostringstream& ss);
 
   // Hack to get all integers in streams to have setw(3).
-  void addToStream(const int& x, std::ostringstream& ss);
+  void AddToStream(const int& x, std::ostringstream& ss);
 
-  void throwUnknownKey(const std::string& key);
+  void ThrowUnknownKey(const std::string& key);
 
  private:
   // Allow access from the helper class
@@ -228,7 +222,7 @@ class Gameexe {
 template<typename A>
 GameexeInterpretObject Gameexe::operator()(const A& firstKey) {
   std::ostringstream ss;
-  addToStream(firstKey, ss);
+  AddToStream(firstKey, ss);
   return GameexeInterpretObject(ss.str(), *this);
 }
 
@@ -245,9 +239,9 @@ template<typename A, typename B>
 GameexeInterpretObject Gameexe::operator()(const A& firstKey,
                                            const B& secondKey) {
   std::ostringstream ss;
-  addToStream(firstKey, ss);
+  AddToStream(firstKey, ss);
   ss << ".";
-  addToStream(secondKey, ss);
+  AddToStream(secondKey, ss);
   return GameexeInterpretObject(ss.str(), *this);
 }
 
@@ -258,11 +252,11 @@ GameexeInterpretObject Gameexe::operator()(const A& firstKey,
                                            const B& secondKey,
                                            const C& thirdKey) {
   std::ostringstream ss;
-  addToStream(firstKey, ss);
+  AddToStream(firstKey, ss);
   ss << ".";
-  addToStream(secondKey, ss);
+  AddToStream(secondKey, ss);
   ss << ".";
-  addToStream(thirdKey, ss);
+  AddToStream(thirdKey, ss);
   return GameexeInterpretObject(ss.str(), *this);
 }
 

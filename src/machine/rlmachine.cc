@@ -114,8 +114,8 @@ RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libreallive::Scenario* scenario = NULL;
-  if (gameexe.exists("SEEN_START")) {
-    int first_seen = gameexe("SEEN_START").to_int();
+  if (gameexe.Exists("SEEN_START")) {
+    int first_seen = gameexe("SEEN_START").ToInt();
     scenario = in_archive.GetScenario(first_seen);
 
     if (scenario == NULL)
@@ -139,7 +139,7 @@ RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
   GameexeFilteringIterator it = gameexe.filtering_begin("DLL.");
   GameexeFilteringIterator end = gameexe.filtering_end();
   for (; it != end; ++it) {
-    const string& name = it->to_string("");
+    const string& name = it->ToString("");
     try {
       string index_str = it->key().substr(it->key().find_first_of(".") + 1);
       int index = std::stoi(index_str);
@@ -219,7 +219,7 @@ bool RLMachine::SavepointDecide(AttributeFunction func,
   //
   // check Gameexe key
   Gameexe& gexe = system_.gameexe();
-  if (gexe.exists(gameexe_key)) {
+  if (gexe.Exists(gameexe_key)) {
     int value = gexe(gameexe_key);
     if (value == 0)
       return false;

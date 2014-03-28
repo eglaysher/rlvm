@@ -121,11 +121,11 @@ TextWindow::TextWindow(System& system, int window_num)
   else
     setRGBAF(window("ATTR"));
 
-  default_font_size_in_pixels_ = window("MOJI_SIZE").to_int(25);
+  default_font_size_in_pixels_ = window("MOJI_SIZE").ToInt(25);
   setFontSizeInPixels(default_font_size_in_pixels_);
   setWindowSizeInCharacters(window("MOJI_CNT"));
   setSpacingBetweenCharacters(window("MOJI_REP"));
-  setRubyTextSize(window("LUBY_SIZE").to_int(0));
+  setRubyTextSize(window("LUBY_SIZE").ToInt(0));
   setTextboxPadding(window("MOJI_POS"));
 
   setWindowPosition(window("POS"));
@@ -135,27 +135,27 @@ TextWindow::TextWindow(System& system, int window_num)
   // INDENT_USE appears to default to on. See the first scene in the
   // game with Nagisa, paying attention to indentation; then check the
   // Gameexe.ini.
-  setUseIndentation(window("INDENT_USE").to_int(1));
+  setUseIndentation(window("INDENT_USE").ToInt(1));
 
   setKeycurMod(window("KEYCUR_MOD"));
-  setActionOnPause(window("R_COMMAND_MOD").to_int(0));
+  setActionOnPause(window("R_COMMAND_MOD").ToInt(0));
 
   // Main textbox waku
-  waku_set_ = window("WAKU_SETNO").to_int(0);
+  waku_set_ = window("WAKU_SETNO").ToInt(0);
   textbox_waku_.reset(TextWaku::Create(system_, *this, waku_set_, 0));
 
   // Name textbox if that setting has been enabled.
-  setNameMod(window("NAME_MOD").to_int(0));
-  if (name_mod_ == 1 && window("NAME_WAKU_SETNO").exists()) {
+  setNameMod(window("NAME_MOD").ToInt(0));
+  if (name_mod_ == 1 && window("NAME_WAKU_SETNO").Exists()) {
     name_waku_set_ = window("NAME_WAKU_SETNO");
     namebox_waku_.reset(TextWaku::Create(system_, *this, name_waku_set_, 0));
     setNameSpacingBetweenCharacters(window("NAME_MOJI_REP"));
     setNameboxPadding(window("NAME_MOJI_POS"));
     // Ignoring NAME_WAKU_MIN for now
     setNameboxPosition(window("NAME_POS"));
-    name_waku_dir_set_ = window("NAME_WAKU_DIR").to_int(0);
-    namebox_centering_ = window("NAME_CENTERING").to_int(0);
-    minimum_namebox_size_ = window("NAME_MOJI_MIN").to_int(4);
+    name_waku_dir_set_ = window("NAME_WAKU_DIR").ToInt(0);
+    namebox_centering_ = window("NAME_CENTERING").ToInt(0);
+    minimum_namebox_size_ = window("NAME_MOJI_MIN").ToInt(4);
     name_size_ = window("NAME_MOJI_SIZE");
   }
 
@@ -164,12 +164,12 @@ TextWindow::TextWindow(System& system, int window_num)
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; it != end; ++it) {
     // Retrieve the face slot number
-    std::vector<std::string> key_parts = it->key_parts();
+    std::vector<std::string> GetKeyParts = it->GetKeyParts();
 
     try {
-      int slot = std::stoi(key_parts.at(3));
+      int slot = std::stoi(GetKeyParts.at(3));
       if (slot < kNumFaceSlots) {
-        face_slot_[slot].reset(new FaceSlot(it->to_intVector()));
+        face_slot_[slot].reset(new FaceSlot(it->ToIntVector()));
       }
     }
     catch (...) {

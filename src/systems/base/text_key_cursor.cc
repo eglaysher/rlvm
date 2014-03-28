@@ -52,7 +52,7 @@ TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
   Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
-  if (cursor("NAME").exists()) {
+  if (cursor("NAME").Exists()) {
     setCursorImage(system, cursor("NAME"));
     setCursorSize(cursor("SIZE"));
     setCursorFrameCount(cursor("CONT"));

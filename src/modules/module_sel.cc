@@ -109,7 +109,7 @@ struct Sel_select_w : public RLOp_SpecialCase {
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
 
     // Sometimes the RL bytecode will override DEFAULT_SEL_WINDOW.
-    int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").to_int(-1);
+    int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").ToInt(-1);
     libreallive::ExpressionElement window_exp = element.GetWindowExpression();
     int computed = window_exp.GetValueOnly(machine);
     if (computed != -1)

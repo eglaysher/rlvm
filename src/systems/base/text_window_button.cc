@@ -64,7 +64,7 @@ TextWindowButton::TextWindowButton(System& system,
                                    bool use_this_button,
                                    GameexeInterpretObject location_box)
     : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
-  if (use_this_button && location_box.exists()) {
+  if (use_this_button && location_box.Exists()) {
     std::vector<int> z = location_box;
     location_ = location_box;
     state_ = BUTTONSTATE_NORMAL;
@@ -310,7 +310,7 @@ ExbtnWindowButton::ExbtnWindowButton(System& system,
     : TextWindowButton(system, use, location_box),
       scenario_(0),
       entrypoint_(0) {
-  if (location_box.exists() && to_call.exists()) {
+  if (location_box.Exists() && to_call.Exists()) {
     std::vector<int> farcall = to_call;
     scenario_ = farcall.at(0);
     entrypoint_ = farcall.at(1);

@@ -147,8 +147,8 @@ void ButtonObjectSelectLongOperation::setButtonOverride(GraphicsObject* object,
   int action = object->buttonAction();
 
   GameexeInterpretObject key = gameexe_("BTNOBJ.ACTION", action, type);
-  if (key.exists()) {
-    const std::vector<int>& ints = key.to_intVector();
+  if (key.Exists()) {
+    const std::vector<int>& ints = key.ToIntVector();
     object->setButtonOverrides(ints[0], ints[2], ints[3]);
   }
 }

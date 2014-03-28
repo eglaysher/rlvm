@@ -40,19 +40,19 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();
   std::vector<int> selEffect;
 
-  if (gexe("SEL", selNum).exists()) {
-    selEffect = gexe("SEL", selNum).to_intVector();
+  if (gexe("SEL", selNum).Exists()) {
+    selEffect = gexe("SEL", selNum).ToIntVector();
     grpToRecCoordinates(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
-  } else if (gexe("SELR", selNum).exists()) {
-    selEffect = gexe("SELR", selNum).to_intVector();
+  } else if (gexe("SELR", selNum).Exists()) {
+    selEffect = gexe("SELR", selNum).ToIntVector();
   } else {
     // Can't find the specified #SEL effect. See if there's a #SEL.000 effect:
-    if (gexe("SEL", 0).exists()) {
-      selEffect = gexe("SEL", 0).to_intVector();
+    if (gexe("SEL", 0).Exists()) {
+      selEffect = gexe("SEL", 0).ToIntVector();
       grpToRecCoordinates(
           selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
-    } else if (gexe("SELR", 0).exists()) {
-      selEffect = gexe("SELR", 0).to_intVector();
+    } else if (gexe("SELR", 0).Exists()) {
+      selEffect = gexe("SELR", 0).ToIntVector();
     } else {
       // Crap! Couldn't fall back on the default one either, so instead return
       // a SEL vector that is a screenwide, short fade because we absolutely

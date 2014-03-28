@@ -46,14 +46,14 @@ namespace {
 
 struct DebugMessageInt : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
-    if (machine.system().gameexe()("MEMORY").exists())
+    if (machine.system().gameexe()("MEMORY").Exists())
       std::cerr << "DebugMessage: " << value << std::endl;
   }
 };
 
 struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string value) {
-    if (machine.system().gameexe()("MEMORY").exists()) {
+    if (machine.system().gameexe()("MEMORY").Exists()) {
       std::string utfvalue = cp932toUTF8(value, machine.GetTextEncoding());
       std::cerr << "DebugMessage: " << utfvalue << std::endl;
     }

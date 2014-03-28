@@ -320,7 +320,7 @@ TEST_F(TextSystemTest, DontCrashWithNoEmojiFile) {
 
 TEST_F(TextSystemTest, TestEmoji) {
   // Set up emoji printing:
-  system.gameexe().setStringAt("E_MOJI.004", "emoji_file");
+  system.gameexe().SetStringAt("E_MOJI.004", "emoji_file");
 
   // Inject a fake surface of (24*5, 24). We will expect this to blit to the
   // text surface.

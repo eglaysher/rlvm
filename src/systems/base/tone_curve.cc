@@ -49,21 +49,21 @@ ToneCurve::ToneCurve() {}
 
 ToneCurve::ToneCurve(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("TONECURVE_FILENAME");
-  if (!filename_key.exists()) {
+  if (!filename_key.Exists()) {
     // It is perfectly valid not to have a tone curve key. All operations in
     // this
     // class become noops.
     return;
   }
 
-  std::string tonecurve = filename_key.to_string("");
+  std::string tonecurve = filename_key.ToString("");
   if (tonecurve == "") {
     // It is perfectly valid not to have a tone curve. All operations in this
     // class become noops.
     return;
   }
 
-  fs::path basename = gameexe("__GAMEPATH").to_string();
+  fs::path basename = gameexe("__GAMEPATH").ToString();
   fs::path filename = correctPathCase(basename / "dat" / tonecurve);
 
   int size;

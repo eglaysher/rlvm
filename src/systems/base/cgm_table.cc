@@ -74,20 +74,20 @@ CGMTable::CGMTable() {}
 
 CGMTable::CGMTable(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("CGTABLE_FILENAME");
-  if (!filename_key.exists()) {
+  if (!filename_key.Exists()) {
     // It is perfectly valid not to have a CG table key. All operations in this
     // class become noops.
     return;
   }
 
-  std::string cgtable = filename_key.to_string("");
+  std::string cgtable = filename_key.ToString("");
   if (cgtable == "") {
     // It is perfectly valid not to have a CG table. All operations in this
     // class become noops.
     return;
   }
 
-  fs::path basename = gameexe("__GAMEPATH").to_string();
+  fs::path basename = gameexe("__GAMEPATH").ToString();
   fs::path filename = correctPathCase(basename / "dat" / cgtable);
 
   int size;

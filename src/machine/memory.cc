@@ -259,8 +259,8 @@ void Memory::InitializeDefaultValues(Gameexe& gameexe) {
        it != end;
        ++it) {
     try {
-      SetName(ConvertLetterIndexToInt(it->key_parts().at(1)),
-              removeQuotes(it->to_string()));
+      SetName(ConvertLetterIndexToInt(it->GetKeyParts().at(1)),
+              removeQuotes(it->ToString()));
     }
     catch (...) {
       std::cerr << "WARNING: Invalid format for key " << it->key() << std::endl;
@@ -271,8 +271,8 @@ void Memory::InitializeDefaultValues(Gameexe& gameexe) {
        it != end;
        ++it) {
     try {
-      SetLocalName(ConvertLetterIndexToInt(it->key_parts().at(1)),
-                   removeQuotes(it->to_string()));
+      SetLocalName(ConvertLetterIndexToInt(it->GetKeyParts().at(1)),
+                   removeQuotes(it->ToString()));
     }
     catch (...) {
       std::cerr << "WARNING: Invalid format for key " << it->key() << std::endl;

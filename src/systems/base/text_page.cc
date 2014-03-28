@@ -313,7 +313,7 @@ void TextPage::Replay(bool is_active_page) {
   if (!is_active_page) {
     Gameexe& gexe = system_->gameexe();
     GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
-    if (colour.exists()) {
+    if (colour.Exists()) {
       system_->text().textWindow(window_num_)->setFontColor(colour);
     }
   }

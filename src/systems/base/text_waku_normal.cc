@@ -185,21 +185,21 @@ bool TextWakuNormal::handleMouseClick(RLMachine& machine,
 void TextWakuNormal::loadWindowWaku() {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
 
-  setWakuMain(waku("NAME").to_string(""));
-  setWakuBacking(waku("BACK").to_string(""));
-  setWakuButton(waku("BTN").to_string(""));
+  setWakuMain(waku("NAME").ToString(""));
+  setWakuBacking(waku("BACK").ToString(""));
+  setWakuButton(waku("BTN").ToString(""));
 
   TextSystem& ts = system_.text();
   GraphicsSystem& gs = system_.graphics();
 
-  if (waku("CLEAR_BOX").exists()) {
+  if (waku("CLEAR_BOX").Exists()) {
     button_map_[0].reset(new ActionTextWindowButton(
         system_,
         ts.windowClearUse(),
         waku("CLEAR_BOX"),
         std::bind(&GraphicsSystem::toggleInterfaceHidden, std::ref(gs))));
   }
-  if (waku("MSGBKLEFT_BOX").exists()) {
+  if (waku("MSGBKLEFT_BOX").Exists()) {
     button_map_[1].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
         ts.windowMsgbkleftUse(),
@@ -207,7 +207,7 @@ void TextWakuNormal::loadWindowWaku() {
         std::bind(&TextSystem::backPage, std::ref(ts)),
         250));
   }
-  if (waku("MSGBKRIGHT_BOX").exists()) {
+  if (waku("MSGBKRIGHT_BOX").Exists()) {
     button_map_[2].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
         ts.windowMsgbkrightUse(),
@@ -220,13 +220,13 @@ void TextWakuNormal::loadWindowWaku() {
     GameexeInterpretObject wbcall(system_.gameexe()("WBCALL", i));
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
-    if (waku(oss.str()).exists()) {
+    if (waku(oss.str()).Exists()) {
       button_map_[3 + i].reset(new ExbtnWindowButton(
           system_, ts.windowExbtnUse(), waku(oss.str()), wbcall));
     }
   }
 
-  if (waku("READJUMP_BOX").exists()) {
+  if (waku("READJUMP_BOX").Exists()) {
     ActivationTextWindowButton* readjump_box = new ActivationTextWindowButton(
         system_,
         ts.windowReadJumpUse(),
@@ -244,7 +244,7 @@ void TextWakuNormal::loadWindowWaku() {
     button_map_[10].reset(readjump_box);
   }
 
-  if (waku("AUTOMODE_BOX").exists()) {
+  if (waku("AUTOMODE_BOX").Exists()) {
     ActivationTextWindowButton* automode_button =
         new ActivationTextWindowButton(
             system_,
