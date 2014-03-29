@@ -102,7 +102,6 @@ padding: 0;
 }
 
 div#footer p {
-
 margin:0;padding:5px 10px;
 }
 
@@ -139,7 +138,6 @@ text-align: center;
 
 div#footer a, div#footer a:hover {
 margin-top: 10px;
-background-color: #333;
 color: #FFF;
 font-size: 11px;
 font-family: Tahoma, Arial, Helvetica, sans-serif;
@@ -148,8 +146,6 @@ width:100%;
 color: #06266F;
 font-weight: bold;
 text-decoration: none;
-border-bottom: 1px solid #333; 
-border-right: 1px solid #333;
 }
 
 /* Taken from http://loadaveragezero.com/vnav/labs/CSS/code.php */
