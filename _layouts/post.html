@@ -10,7 +10,12 @@
 <meta property="og:image" content="http://rlvm.net/images/rlvm.png" />
 <meta property="og:description" content="{{ content | strip_html | truncate: 200 }}" />
 
-<meta http-equiv="refresh" content="0; url=http://rlvm.net{{ page.url }}">
+<!-- Make sure we redirect to rlvm.net -->
+<script type="text/javascript">
+if (window.location.href.indexOf('http://www.elliotglaysher.org') === 0) {
+  window.location.href = 'http://rlvm.net{{ page.url }}';
+}
+</script>
 <link rel="canonical" href="http://rlvm.net{{ page.url }}">
 
 <!-- Begin IE Fixes (Don't touch unless you know what you're doing!)-->
