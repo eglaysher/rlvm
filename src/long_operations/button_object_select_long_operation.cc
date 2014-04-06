@@ -64,7 +64,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
 
   // Initialize overrides on all buttons that we'll use.
   for (ButtonPair& button_pair : buttons_) {
-    setButtonOverride(button_pair.first, "NORMAL");
+    SetButtonOverride(button_pair.first, "NORMAL");
   }
 }
 
@@ -90,14 +90,14 @@ void ButtonObjectSelectLongOperation::MouseMotion(const Point& point) {
 
   if (currently_hovering_button_ != hovering_button) {
     if (currently_hovering_button_) {
-      setButtonOverride(currently_hovering_button_, "NORMAL");
+      SetButtonOverride(currently_hovering_button_, "NORMAL");
 
       if (currently_hovering_button_ == currently_pressed_button_)
         currently_pressed_button_ = NULL;
     }
 
     if (hovering_button)
-      setButtonOverride(hovering_button, "HIT");
+      SetButtonOverride(hovering_button, "HIT");
   }
 
   currently_hovering_button_ = hovering_button;
@@ -110,13 +110,13 @@ bool ButtonObjectSelectLongOperation::MouseButtonStateChanged(
     if (pressed) {
       currently_pressed_button_ = currently_hovering_button_;
       if (currently_pressed_button_)
-        setButtonOverride(currently_pressed_button_, "PUSH");
+        SetButtonOverride(currently_pressed_button_, "PUSH");
     } else {
       if (currently_hovering_button_ &&
           currently_hovering_button_ == currently_pressed_button_) {
         has_return_value_ = true;
         return_value_ = currently_pressed_button_->buttonNumber();
-        setButtonOverride(currently_pressed_button_, "HIT");
+        SetButtonOverride(currently_pressed_button_, "HIT");
       }
     }
 
@@ -142,7 +142,7 @@ bool ButtonObjectSelectLongOperation::operator()(RLMachine& machine) {
   }
 }
 
-void ButtonObjectSelectLongOperation::setButtonOverride(GraphicsObject* object,
+void ButtonObjectSelectLongOperation::SetButtonOverride(GraphicsObject* object,
                                                         const char* type) {
   int action = object->buttonAction();
 

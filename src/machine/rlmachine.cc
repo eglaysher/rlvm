@@ -580,7 +580,7 @@ void RLMachine::PerformTextout(const std::string& cp932str) {
       new TextoutLongOperation(*this, utf8str));
 
   if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
-    ptr->setNoWait();
+    ptr->set_no_wait();
 
   // Run the textout operation once. If it doesn't fully succeed, push it onto
   // the stack.

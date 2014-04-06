@@ -57,7 +57,7 @@ struct objWaitAll : public RLOp_Void_Void {
 
   void operator()(RLMachine& machine) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
+    wait_op->BreakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
     machine.PushLongOperation(wait_op);
   }
 };

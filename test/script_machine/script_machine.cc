@@ -66,10 +66,10 @@ void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
   if (SelectLongOperation* sel =
           dynamic_cast<SelectLongOperation*>(long_operation)) {
     // Try our optional, script provided matching behaviour.
-    std::string choice = world_.makeDecision(sel->options());
+    std::string choice = world_.makeDecision(sel->GetOptions());
     bool optionFound = false;
     if (choice != "") {
-      optionFound = sel->selectOption(choice);
+      optionFound = sel->SelectByText(choice);
       if (!optionFound) {
         cerr << "WTF? Script decision handler returned invalid choice" << endl;
       } else {
@@ -88,7 +88,7 @@ void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
         }
 
         std::string to_select = decisions_.at(current_decision_ + offset);
-        optionFound = sel->selectOption(to_select);
+        optionFound = sel->SelectByText(to_select);
 
         if (optionFound) {
           cerr << "Selected '" << to_select << "'";
@@ -118,7 +118,7 @@ void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
         cerr << "WARNING! Couldn't call option " << current_decision_
              << ". Options are: " << endl;
 
-        for (const std::string& option : sel->options())
+        for (const std::string& option : sel->GetOptions())
           cerr << "- \"" << option << "\"" << endl;
 
         current_decision_++;

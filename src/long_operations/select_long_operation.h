@@ -68,18 +68,19 @@ class SelectLongOperation : public LongOperation {
 
   SelectLongOperation(RLMachine& machine,
                       const libreallive::SelectElement& commandElement);
+  virtual ~SelectLongOperation();
 
   // Selects by index among options.
-  void selected(int num);
+  void SelectByIndex(int num);
 
   // Selects by the string text. Returns true if successful.
-  bool selectOption(const std::string& str);
+  bool SelectByText(const std::string& str);
 
   // Returns the underlying list of options.
-  std::vector<std::string> options() const;
+  std::vector<std::string> GetOptions() const;
 
   // Overridden from LongOperation:
-  virtual bool operator()(RLMachine& machine);
+  virtual bool operator()(RLMachine& machine) override;
 
  protected:
   RLMachine& machine_;
@@ -146,7 +147,7 @@ class ButtonSelectLongOperation : public SelectLongOperation,
     Rect bounding_rect;
   };
 
-  void renderTextSurface(const boost::shared_ptr<Surface>& text_surface,
+  void RenderTextSurface(const boost::shared_ptr<Surface>& text_surface,
                          const Rect& bounding_rect);
 
   // ????

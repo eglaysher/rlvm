@@ -76,8 +76,8 @@ struct Sys_time : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
         numeric_cast<unsigned int>(time)) {
       WaitLongOperation* wait_op = new WaitLongOperation(machine);
       if (in_time_c_)
-        wait_op->breakOnClicks();
-      wait_op->breakOnEvent(
+        wait_op->BreakOnClicks();
+      wait_op->BreakOnEvent(
           std::bind(TimerIsDone, std::ref(machine), layer_, counter, time));
       machine.PushLongOperation(wait_op);
     }

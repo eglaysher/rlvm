@@ -51,19 +51,19 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
 
 WaitLongOperation::~WaitLongOperation() {}
 
-void WaitLongOperation::waitMilliseconds(unsigned int time) {
+void WaitLongOperation::WaitMilliseconds(unsigned int time) {
   wait_until_target_time_ = true;
   target_time_ = machine_.system().event().getTicks() + time;
 }
 
-void WaitLongOperation::breakOnClicks() { break_on_clicks_ = true; }
+void WaitLongOperation::BreakOnClicks() { break_on_clicks_ = true; }
 
-void WaitLongOperation::breakOnEvent(const std::function<bool()>& function) {
+void WaitLongOperation::BreakOnEvent(const std::function<bool()>& function) {
   break_on_event_ = true;
   event_function_ = function;
 }
 
-void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
+void WaitLongOperation::SaveClickLocation(IntReferenceIterator x,
                                           IntReferenceIterator y) {
   break_on_clicks_ = true;
   save_click_location_ = true;
@@ -78,7 +78,7 @@ bool WaitLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
   if (pressed && break_on_clicks_) {
     if (save_click_location_ &&
         (mouseButton == MOUSE_LEFT || mouseButton == MOUSE_RIGHT)) {
-      recordMouseCursorPosition();
+      RecordMouseCursorPosition();
     }
 
     if (mouseButton == MOUSE_LEFT) {
@@ -103,7 +103,7 @@ bool WaitLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   return false;
 }
 
-void WaitLongOperation::recordMouseCursorPosition() {
+void WaitLongOperation::RecordMouseCursorPosition() {
   Point location = machine_.system().event().getCursorPos();
   *x_ = location.x();
   *y_ = location.y();
@@ -135,7 +135,7 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
     } else if (done) {
       // TODO(erg): this is fishy. shouldn't we record when clicked?
       if (save_click_location_)
-        recordMouseCursorPosition();
+        RecordMouseCursorPosition();
       machine.set_store_register(0);
     }
   }

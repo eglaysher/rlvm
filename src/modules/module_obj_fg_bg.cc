@@ -715,7 +715,7 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
 
   virtual void operator()(RLMachine& machine, int obj) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(
+    wait_op->BreakOnEvent(
         std::bind(MutatorIsDone, std::ref(machine), this, obj, -1, name_));
     machine.PushLongOperation(wait_op);
   }
@@ -730,7 +730,7 @@ class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(
+    wait_op->BreakOnEvent(
         std::bind(MutatorIsDone, std::ref(machine), this, obj, repno, name_));
     machine.PushLongOperation(wait_op);
   }
@@ -754,8 +754,8 @@ class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
 
   virtual void operator()(RLMachine& machine, int obj) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnClicks();
-    wait_op->breakOnEvent(std::bind(
+    wait_op->BreakOnClicks();
+    wait_op->BreakOnEvent(std::bind(
         objectMutatorIsWorking, std::ref(machine), this, obj, -1, name_));
     machine.PushLongOperation(wait_op);
   }
@@ -770,8 +770,8 @@ class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
   virtual void operator()(RLMachine& machine, int obj, int repno) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnClicks();
-    wait_op->breakOnEvent(std::bind(
+    wait_op->BreakOnClicks();
+    wait_op->BreakOnEvent(std::bind(
         objectMutatorIsWorking, std::ref(machine), this, obj, repno, name_));
     machine.PushLongOperation(wait_op);
   }

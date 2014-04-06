@@ -38,21 +38,21 @@ class Point;
 class WaitLongOperation : public LongOperation {
  public:
   explicit WaitLongOperation(RLMachine& machine);
-  ~WaitLongOperation();
+  virtual ~WaitLongOperation();
 
   // This instance should wait time milliseconds and then return.
-  void waitMilliseconds(unsigned int time);
+  void WaitMilliseconds(unsigned int time);
 
   // Whether we should exit this long operation on a click.
-  void breakOnClicks();
+  void BreakOnClicks();
 
   // Checks |function| on every LongOperation invocation to see if we are
   // finished. |function| should return true if we are done.
-  void breakOnEvent(const std::function<bool()>& function);
+  void BreakOnEvent(const std::function<bool()>& function);
 
   // Whether we write out the location of a mouse click. Implies that we're
   // breaking on mouse click.
-  void saveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
+  void SaveClickLocation(IntReferenceIterator x, IntReferenceIterator y);
 
   void MouseMotion(const Point&);
 
@@ -60,7 +60,7 @@ class WaitLongOperation : public LongOperation {
   virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
   virtual bool KeyStateChanged(KeyCode keyCode, bool pressed);
 
-  void recordMouseCursorPosition();
+  void RecordMouseCursorPosition();
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);

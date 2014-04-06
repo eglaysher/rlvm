@@ -56,7 +56,7 @@ class ButtonObjectSelectLongOperation : public LongOperation {
  private:
   // Sets the override data (changes pattern number and offset) based on
   // |type|, which is a string representation of the hover state.
-  void setButtonOverride(GraphicsObject* object, const char* type);
+  void SetButtonOverride(GraphicsObject* object, const char* type);
 
   RLMachine& machine_;
 

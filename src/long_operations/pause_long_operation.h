@@ -35,7 +35,7 @@
 class PauseLongOperation : public LongOperation {
  public:
   explicit PauseLongOperation(RLMachine& machine);
-  ~PauseLongOperation();
+  virtual ~PauseLongOperation();
 
   // Overridden from EventListener:
   virtual void MouseMotion(const Point& new_location) override;
@@ -72,7 +72,7 @@ class PauseLongOperation : public LongOperation {
 class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewPageAfterLongop(LongOperation* inOp);
-  ~NewPageAfterLongop();
+  virtual ~NewPageAfterLongop();
 
  private:
   virtual void PerformAfterLongOperation(RLMachine& machine) override;
@@ -84,7 +84,7 @@ class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
 class NewPageOnAllAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewPageOnAllAfterLongop(LongOperation* inOp);
-  ~NewPageOnAllAfterLongop();
+  virtual ~NewPageOnAllAfterLongop();
 
  private:
   virtual void PerformAfterLongOperation(RLMachine& machine) override;
@@ -96,7 +96,7 @@ class NewPageOnAllAfterLongop : public PerformAfterLongOperationDecorator {
 class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewParagraphAfterLongop(LongOperation* inOp);
-  ~NewParagraphAfterLongop();
+  virtual ~NewParagraphAfterLongop();
 
  private:
   virtual void PerformAfterLongOperation(RLMachine& machine) override;

@@ -58,7 +58,7 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
 }
 
 bool LoadGameLongOperation::operator()(RLMachine& machine) {
-  load(machine);
+  Load(machine);
   // Warning: the stack has now been nuked and |this| is an invalid.
 
   // Render the current state of the screen

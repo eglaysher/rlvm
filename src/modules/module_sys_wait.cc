@@ -42,9 +42,9 @@ struct Sys_wait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int time) {
     // Simply set the long operation
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->waitMilliseconds(time);
+    wait_op->WaitMilliseconds(time);
     if (cancelable_)
-      wait_op->breakOnClicks();
+      wait_op->BreakOnClicks();
 
     machine.PushLongOperation(wait_op);
   }
@@ -57,7 +57,7 @@ struct Sys_GetClick : public RLOp_Void_2<IntReference_T, IntReference_T> {
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->saveClickLocation(x, y);
+    wait_op->SaveClickLocation(x, y);
     machine.PushLongOperation(wait_op);
   }
 };
@@ -72,8 +72,8 @@ struct Sys_WaitClick
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->waitMilliseconds(time);
-    wait_op->saveClickLocation(x, y);
+    wait_op->WaitMilliseconds(time);
+    wait_op->SaveClickLocation(x, y);
     machine.PushLongOperation(wait_op);
   }
 };

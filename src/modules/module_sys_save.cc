@@ -303,7 +303,7 @@ struct LoadingGameFromSlot : public LoadGameLongOperation {
   explicit LoadingGameFromSlot(RLMachine& machine, int slot)
       : LoadGameLongOperation(machine), slot_(slot) {}
 
-  virtual void load(RLMachine& machine) {
+  virtual void Load(RLMachine& machine) override {
     Serialization::loadGameForSlot(machine, slot_);
   }
 };

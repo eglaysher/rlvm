@@ -72,7 +72,7 @@ struct LoadingGameFromStream : public LoadGameLongOperation {
                         const boost::shared_ptr<std::stringstream>& selection)
       : LoadGameLongOperation(machine), selection_(selection) {}
 
-  virtual void load(RLMachine& machine) {
+  virtual void Load(RLMachine& machine) override {
     // We need to copy data here onto the stack because the action of loading
     // will deallocate this object.
     boost::shared_ptr<std::stringstream> s = selection_;

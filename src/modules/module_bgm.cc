@@ -48,7 +48,7 @@ bool BgmWait(RLMachine& machine) {
 
 LongOperation* MakeBgmWait(RLMachine& machine) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(std::bind(BgmWait, std::ref(machine)));
+  wait_op->BreakOnEvent(std::bind(BgmWait, std::ref(machine)));
   return wait_op;
 }
 

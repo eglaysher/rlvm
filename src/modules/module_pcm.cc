@@ -44,7 +44,7 @@ bool NoLongerPlaying(RLMachine& machine, int channel) {
 
 void addPcmWait(RLMachine& machine, int channel) {
   WaitLongOperation* wait_op = new WaitLongOperation(machine);
-  wait_op->breakOnEvent(std::bind(NoLongerPlaying, std::ref(machine), channel));
+  wait_op->BreakOnEvent(std::bind(NoLongerPlaying, std::ref(machine), channel));
   machine.PushLongOperation(wait_op);
 }
 

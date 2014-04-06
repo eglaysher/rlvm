@@ -229,7 +229,7 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
     machine.system().graphics().QueueShakeSpec(spec);
 
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(std::bind(StopShaking, std::ref(machine)));
+    wait_op->BreakOnEvent(std::bind(StopShaking, std::ref(machine)));
     machine.PushLongOperation(wait_op);
   }
 

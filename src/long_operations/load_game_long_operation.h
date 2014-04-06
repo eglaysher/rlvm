@@ -55,7 +55,7 @@ struct LoadGameLongOperation : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
   // Load operation to be specified by subclasses.
-  virtual void load(RLMachine& machine) = 0;
+  virtual void Load(RLMachine& machine) = 0;
 };
 
 #endif  // SRC_LONG_OPERATIONS_LOAD_GAME_LONG_OPERATION_H_

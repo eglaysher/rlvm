@@ -128,28 +128,30 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
   }
 }
 
-void SelectLongOperation::selected(int num) {
+SelectLongOperation::~SelectLongOperation() {}
+
+void SelectLongOperation::SelectByIndex(int num) {
   if (machine_.system().sound().hasSe(1))
     machine_.system().sound().playSe(1);
   machine_.system().takeSelectionSnapshot(machine_);
   return_value_ = num;
 }
 
-bool SelectLongOperation::selectOption(const std::string& str) {
+bool SelectLongOperation::SelectByText(const std::string& str) {
   std::vector<Option>::iterator it =
       find_if(options_.begin(), options_.end(), [&](Option& o) {
         return o.str == str;
       });
 
   if (it != options_.end() && it->shown) {
-    selected(distance(options_.begin(), it));
+    SelectByIndex(distance(options_.begin(), it));
     return true;
   }
 
   return false;
 }
 
-std::vector<std::string> SelectLongOperation::options() const {
+std::vector<std::string> SelectLongOperation::GetOptions() const {
   std::vector<std::string> opt;
   for (Option const& option : options_) {
     opt.push_back(option.str);
@@ -179,7 +181,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
   text_window_->setVisible(true);
   text_window_->startSelectionMode();
   text_window_->setSelectionCallback(
-      std::bind(&NormalSelectLongOperation::selected, this, _1));
+      std::bind(&NormalSelectLongOperation::SelectByIndex, this, _1));
 
   for (size_t i = 0; i < options_.size(); ++i) {
     // TODO(erg): Also deal with colour.
@@ -414,7 +416,7 @@ bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
         Point pos = es.getCursorPos();
         for (size_t i = 0; i < buttons_.size(); i++) {
           if (buttons_[i].bounding_rect.contains(pos) && options_[i].enabled) {
-            selected(buttons_[i].id);
+            SelectByIndex(buttons_[i].id);
             break;
           }
         }
@@ -469,14 +471,14 @@ void ButtonSelectLongOperation::render(std::ostream* tree) {
     }
 
     if (i == highlighted_item_) {
-      renderTextSurface(buttons_[i].select_surface, bounding_rect);
+      RenderTextSurface(buttons_[i].select_surface, bounding_rect);
     } else {
-      renderTextSurface(buttons_[i].default_surface, bounding_rect);
+      RenderTextSurface(buttons_[i].default_surface, bounding_rect);
     }
   }
 }
 
-void ButtonSelectLongOperation::renderTextSurface(
+void ButtonSelectLongOperation::RenderTextSurface(
     const boost::shared_ptr<Surface>& text_surface,
     const Rect& bounding_rect) {
   // Render the correct text in the correct place.

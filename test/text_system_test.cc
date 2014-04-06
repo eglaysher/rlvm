@@ -85,7 +85,7 @@ class TextSystemTest : public FullSystemTest {
         new TextoutLongOperation(rlmachine, text));
 
     if (nowait)
-      tolo->setNoWait();
+      tolo->set_no_wait();
 
     while (!(*tolo)(rlmachine))
       ;
