@@ -673,7 +673,7 @@ boost::shared_ptr<const Surface> GraphicsSystem::getSurfaceNamedAndMarkViewed(
     RLMachine& machine,
     const std::string& short_filename) {
   // Record that we viewed this CG.
-  cgTable().setViewed(machine, short_filename);
+  cgTable().SetViewed(machine, short_filename);
 
   return getSurfaceNamed(short_filename);
 }

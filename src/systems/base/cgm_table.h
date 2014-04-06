@@ -53,25 +53,25 @@ class CGMTable {
   ~CGMTable();
 
   // Returns the total number of images designated as CGs.
-  int getTotal() const;
+  int GetTotal() const;
 
   // Returns the number of CG entries viewed.
-  int getViewed() const;
+  int GetViewed() const;
 
   // Returns the percentage of CG images that have been viewed.
-  int getPercent() const;
+  int GetPercent() const;
 
   // Returns the cg index for filename, or -1 if filename is not a CG image.
-  int getFlag(const std::string& filename) const;
+  int GetFlag(const std::string& filename) const;
 
   // Returns a value indicating whether filename is a CG that has been viewed:
   //   1   CG has been viewed
   //   0   CG has not been viewed
   //  -1   filename is not a CG image
-  int getStatus(const std::string& filename) const;
+  int GetStatus(const std::string& filename) const;
 
   // Mark a cg as viewed. Sets intZ[getFlag()] to 1.
-  void setViewed(RLMachine& machine, const std::string& filename);
+  void SetViewed(RLMachine& machine, const std::string& filename);
 
  private:
   typedef std::map<std::string, int> CGMMap;

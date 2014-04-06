@@ -478,11 +478,11 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddUnsupportedOpcode(1312, 0, "nwSingleLocal");
   AddUnsupportedOpcode(1313, 0, "nwMultiLocal");
 
-  AddOpcode(1500, 0, "cgGetTotal", ReturnIntValue(&CGMTable::getTotal));
-  AddOpcode(1501, 0, "cgGetViewed", ReturnIntValue(&CGMTable::getViewed));
-  AddOpcode(1502, 0, "cgGetViewedPcnt", ReturnIntValue(&CGMTable::getPercent));
-  AddOpcode(1503, 0, "cgGetFlag", ReturnIntValue(&CGMTable::getFlag));
-  AddOpcode(1504, 0, "cgStatus", ReturnIntValue(&CGMTable::getStatus));
+  AddOpcode(1500, 0, "cgGetTotal", ReturnIntValue(&CGMTable::GetTotal));
+  AddOpcode(1501, 0, "cgGetViewed", ReturnIntValue(&CGMTable::GetViewed));
+  AddOpcode(1502, 0, "cgGetViewedPcnt", ReturnIntValue(&CGMTable::GetPercent));
+  AddOpcode(1503, 0, "cgGetFlag", ReturnIntValue(&CGMTable::GetFlag));
+  AddOpcode(1504, 0, "cgStatus", ReturnIntValue(&CGMTable::GetStatus));
 
   AddUnsupportedOpcode(2050, 0, "SetCursorMono");
   AddUnsupportedOpcode(2000, 0, "CursorMono");

@@ -133,19 +133,19 @@ CGMTable::CGMTable(Gameexe& gameexe) {
 
 CGMTable::~CGMTable() {}
 
-int CGMTable::getTotal() const { return cgm_info_.size(); }
+int CGMTable::GetTotal() const { return cgm_info_.size(); }
 
-int CGMTable::getViewed() const { return cgm_data_.size(); }
+int CGMTable::GetViewed() const { return cgm_data_.size(); }
 
-int CGMTable::getPercent() const {
+int CGMTable::GetPercent() const {
   // Prevent divide by zero
-  if (getTotal())
-    return (getViewed() / double(getTotal())) * 100;
+  if (GetTotal())
+    return (GetViewed() / double(GetTotal())) * 100;
   else
     return 0;
 }
 
-int CGMTable::getFlag(const std::string& filename) const {
+int CGMTable::GetFlag(const std::string& filename) const {
   CGMMap::const_iterator it = cgm_info_.find(filename);
   if (it == cgm_info_.end())
     return -1;
@@ -153,8 +153,8 @@ int CGMTable::getFlag(const std::string& filename) const {
   return it->second;
 }
 
-int CGMTable::getStatus(const std::string& filename) const {
-  int flag = getFlag(filename);
+int CGMTable::GetStatus(const std::string& filename) const {
+  int flag = GetFlag(filename);
   if (flag == -1)
     return -1;
 
@@ -164,8 +164,8 @@ int CGMTable::getStatus(const std::string& filename) const {
   return 0;
 }
 
-void CGMTable::setViewed(RLMachine& machine, const std::string& filename) {
-  int flag = getFlag(filename);
+void CGMTable::SetViewed(RLMachine& machine, const std::string& filename) {
+  int flag = GetFlag(filename);
 
   if (flag != -1) {
     // Set the intZ[] flag
