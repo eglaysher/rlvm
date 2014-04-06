@@ -54,7 +54,7 @@ size_t strcharlen(const char* string) {
   size_t result = 0;
   while (*string) {
     ++result;
-    advanceOneShiftJISChar(string);
+    AdvanceOneShiftJISChar(string);
   }
   return result;
 }
@@ -175,7 +175,7 @@ struct strsub_0
             "Error in strsub: offset is greater then string length");
       }
 
-      advanceOneShiftJISChar(str);
+      AdvanceOneShiftJISChar(str);
       offset--;
     }
 
@@ -213,12 +213,12 @@ struct strsub_1 : public RLOp_Void_4<StrReference_T,
             "Error in strsub: offset is greater then string length");
       }
 
-      advanceOneShiftJISChar(str);
+      AdvanceOneShiftJISChar(str);
       offset--;
     }
 
     while (*str && length > 0) {
-      copyOneShiftJisCharacter(str, output);
+      CopyOneShiftJisCharacter(str, output);
       length--;
     }
 
@@ -274,7 +274,7 @@ struct Str_strtrunc : public RLOp_Void_2<StrReference_T, IntConstant_T> {
     const char* str = input.c_str();
     std::string output;
     while (*str && length > 0) {
-      copyOneShiftJisCharacter(str, output);
+      CopyOneShiftJisCharacter(str, output);
       --length;
     }
     *dest = output;
@@ -580,7 +580,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
         // form.
         uint16_t decoded = GetItalic(cp932_char);
         value.clear();
-        addShiftJISChar(decoded, value);
+        AddShiftJISChar(decoded, value);
 
         // Notify the TextSystem that the next character that will be printed
         // should be printed in italics.

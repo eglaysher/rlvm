@@ -52,7 +52,7 @@ class Exception : public std::exception {
 
  protected:
   // Returned in what().
-  std::string description;
+  std::string description_;
 
   // Optionally, the operation that we were in when we threw.
   RLOperation* operation_;
@@ -87,17 +87,17 @@ class UnimplementedOpcode : public Exception {
                       const libreallive::CommandElement& command);
   UnimplementedOpcode(RLMachine& machine,
                       const libreallive::CommandElement& command);
-  ~UnimplementedOpcode() throw();
+  virtual ~UnimplementedOpcode() throw();
 
   // Returns the name of the function that wasn't implemented.
-  const std::string& opcodeName() const { return name_; }
+  const std::string& opcode_name() const { return name_; }
 
  private:
   // Parses parameters and makes the string.
-  void setFullDescription(RLMachine& machine);
+  void SetFullDescription(RLMachine& machine);
 
   // For when we don't have parameters.
-  void setSimpleDescription();
+  void SetSimpleDescription();
 
   // Printable name of the opcode. Either "funname (opcode<W:X:Y:Z>)"
   // or "opcode<W:X:Y:Z>".
@@ -106,7 +106,7 @@ class UnimplementedOpcode : public Exception {
   bool has_parameters_;
   std::vector<std::string> parameters_;
 
-  void setDescription();
+  void SetDescription();
 };
 
 }  // namespace rlvm

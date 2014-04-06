@@ -145,7 +145,7 @@ int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
 boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
-    std::string filename = findFontFile(system()).native();
+    std::string filename = FindFontFile(system()).native();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if (f == NULL) {
       std::ostringstream oss;

@@ -55,7 +55,7 @@ namespace fs = boost::filesystem;
 
 // -----------------------------------------------------------------------
 
-fs::path correctPathCase(fs::path Path) {
+fs::path CorrectPathCase(fs::path Path) {
 #ifndef CASE_SENSITIVE_FILESYSTEM
   if (!fs::exists(Path))
     return path();
@@ -113,7 +113,7 @@ fs::path correctPathCase(fs::path Path) {
 
 // -----------------------------------------------------------------------
 
-bool loadFileData(const boost::filesystem::path& path,
+bool LoadFileData(const boost::filesystem::path& path,
                   std::unique_ptr<char[]>& fileData,
                   int& fileSize) {
   fs::ifstream ifs(path, ifstream::in | ifstream::binary);

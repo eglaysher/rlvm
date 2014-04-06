@@ -432,7 +432,7 @@ void TextPage::RunTextPageCommand(const Command& command,
   switch (command.command) {
     case TYPE_CHARACTERS:
       if (command.characters.size()) {
-        printTextToFunction(
+        PrintTextToFunction(
             bind(&TextPage::CharacterImpl, ref(*this), _1, _2),
             command.characters,
             "");

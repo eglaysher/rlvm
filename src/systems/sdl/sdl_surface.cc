@@ -77,7 +77,7 @@ class MonoColourTransformer : public ColourTransformer {
  public:
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     float grayscale = 0.3 * colour.r + 0.59 * colour.g + 0.11 * colour.b;
-    clamp(grayscale, 0, 255);
+    Clamp(grayscale, 0, 255);
     SDL_Color out = {grayscale, grayscale, grayscale, 0};
     return out;
   }

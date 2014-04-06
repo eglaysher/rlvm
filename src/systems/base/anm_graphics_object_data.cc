@@ -96,7 +96,7 @@ void AnmGraphicsObjectData::loadAnmFile() {
 
   int file_size = 0;
   std::unique_ptr<char[]> anm_data;
-  if (loadFileData(file, anm_data, file_size)) {
+  if (LoadFileData(file, anm_data, file_size)) {
     std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());
@@ -131,7 +131,7 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
 
   // Read the frame list
   const char* buf = data + 0xb8;
-  Size screen_size = getScreenSize(system_.gameexe());
+  Size screen_size = GetScreenSize(system_.gameexe());
   for (int i = 0; i < frames_len; ++i) {
     Frame f;
     f.src_x1 = read_i32(buf);

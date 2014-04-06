@@ -96,7 +96,7 @@ void GanGraphicsObjectData::load() {
 
   int file_size = 0;
   std::unique_ptr<char[]> gan_data;
-  if (loadFileData(gan_file_path, gan_data, file_size)) {
+  if (LoadFileData(gan_file_path, gan_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
     throw rlvm::Exception(oss.str());

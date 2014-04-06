@@ -227,7 +227,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
 
-  setScreenSize(getScreenSize(gameexe));
+  setScreenSize(GetScreenSize(gameexe));
   Texture::SetScreenSize(screenSize());
 
   // Grab the caption

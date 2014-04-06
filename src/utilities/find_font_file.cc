@@ -70,7 +70,7 @@ const char* ja_platform_fonts[] = {
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFileFinal(Gameexe& gexe, const std::string& fileName) {
+fs::path FindFontFileFinal(Gameexe& gexe, const std::string& fileName) {
   // HACK: Look for the font in the game
   if (gexe.Exists("__GAMEPATH")) {
     std::string gamepath = gexe("__GAMEPATH");
@@ -99,7 +99,7 @@ fs::path findFontFileFinal(Gameexe& gexe, const std::string& fileName) {
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(System& system) {
+fs::path FindFontFile(System& system) {
   Gameexe& gexe = system.gameexe();
   // HACK: If the user has overridden the __GAMEFONT, use it instead.
   if (gexe.Exists("__GAMEFONT")) {
@@ -123,5 +123,5 @@ fs::path findFontFile(System& system) {
       return fs::path(*file);
   }
 
-  return findFontFileFinal(system.gameexe(), "msgothic.ttc");
+  return FindFontFileFinal(system.gameexe(), "msgothic.ttc");
 }

@@ -52,7 +52,7 @@ Effect* EffectFactory::BuildFromSEL(RLMachine& machine,
                                     boost::shared_ptr<Surface> src,
                                     boost::shared_ptr<Surface> dst,
                                     int selNum) {
-  std::vector<int> sel_params = getSELEffect(machine, selNum);
+  std::vector<int> sel_params = GetSELEffect(machine, selNum);
 
   return Build(machine,
                src,

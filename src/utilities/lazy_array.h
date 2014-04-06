@@ -70,17 +70,17 @@ class LazyArray {
   bool exists(int index) const { return array_[index] != NULL; }
 
   // Deletes an object at |index| if it exists.
-  void deleteAt(int index);
+  void DeleteAt(int index);
 
   // Go through each item in the array, and deletes it. The array's
   // size is maintained.
-  void clear();
+  void Clear();
 
   // Copies the contents of one LazyArray to another. This method will
   // reuse already allocated objects in otherArray (and simply calling
   // T::operator=(const T&) on them), but will allocate a new object
   // if otherArray[i] == NULL.
-  void copyTo(LazyArray<T>& otherArray);
+  void CopyTo(LazyArray<T>& otherArray);
 
   // Iterate across all items, allocated or not. It is the users
   // responsibility to call the isValid() method on the iterator
@@ -274,13 +274,13 @@ const T& LazyArray<T>::operator[](int pos) const {
 }
 
 template <typename T>
-void LazyArray<T>::deleteAt(int i) {
+void LazyArray<T>::DeleteAt(int i) {
   boost::checked_delete<T>(array_[i]);
   array_[i] = NULL;
 }
 
 template <typename T>
-void LazyArray<T>::clear() {
+void LazyArray<T>::Clear() {
   for (int i = 0; i < size_; ++i) {
     boost::checked_delete<T>(array_[i]);
     array_[i] = NULL;
@@ -288,7 +288,7 @@ void LazyArray<T>::clear() {
 }
 
 template <typename T>
-void LazyArray<T>::copyTo(LazyArray<T>& otherArray) {
+void LazyArray<T>::CopyTo(LazyArray<T>& otherArray) {
   if (otherArray.size_ < size_)
     throw std::runtime_error(
         "Not enough space in target array in LazyArray::copyTo");

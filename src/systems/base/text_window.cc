@@ -107,7 +107,7 @@ TextWindow::TextWindow(System& system, int window_num)
   Gameexe& gexe = system.gameexe();
 
   // POINT
-  Size size = getScreenSize(gexe);
+  Size size = GetScreenSize(gexe);
   screen_width_ = size.width();
   screen_height_ = size.height();
 
@@ -197,7 +197,7 @@ void TextWindow::setName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
     // Display the name in one pass
-    printTextToFunction(
+    PrintTextToFunction(
         bind(&TextWindow::character, ref(*this), _1, _2), utf8name, next_char);
     setIndentation();
   }
@@ -524,17 +524,17 @@ bool TextWindow::character(const std::string& current,
   setVisible(true);
 
   if (current != "") {
-    int cur_codepoint = codepoint(current);
+    int cur_codepoint = Codepoint(current);
     bool indent_after_spacing = false;
 
     // But if the last character was a lenticular bracket, we need to indent
     // now. See doc/notes/NamesAndIndentation.txt for more details.
     if (last_token_was_name_) {
       if (name_mod_ == 0) {
-        if (isOpeningQuoteMark(cur_codepoint))
+        if (IsOpeningQuoteMark(cur_codepoint))
           indent_after_spacing = true;
       } else if (name_mod_ == 2) {
-        if (isOpeningQuoteMark(cur_codepoint)) {
+        if (IsOpeningQuoteMark(cur_codepoint)) {
           indent_after_spacing = true;
         } else {
           // An implicit wide space is printed instead on lines that don't have
@@ -593,7 +593,7 @@ bool TextWindow::character(const std::string& current,
 
 bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
   int char_width = system().text().charWidth(fontSizeInPixels(), cur_codepoint);
-  bool cur_codepoint_is_kinsoku = isKinsoku(cur_codepoint);
+  bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint);
   int normal_width =
       x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_);
   int extended_width = normal_width + default_font_size_in_pixels_;
@@ -619,7 +619,7 @@ bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
     string::const_iterator end = rest.end();
     while (cur != end) {
       int point = utf8::next(cur, end);
-      if (isKinsoku(point)) {
+      if (IsKinsoku(point)) {
         final_insertion_x += char_width + x_spacing_;
 
         if (final_insertion_x > extended_width) {

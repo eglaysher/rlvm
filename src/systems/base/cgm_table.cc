@@ -88,11 +88,11 @@ CGMTable::CGMTable(Gameexe& gameexe) {
   }
 
   fs::path basename = gameexe("__GAMEPATH").ToString();
-  fs::path filename = correctPathCase(basename / "dat" / cgtable);
+  fs::path filename = CorrectPathCase(basename / "dat" / cgtable);
 
   int size;
   std::unique_ptr<char[]> data;
-  if (loadFileData(filename, data, size)) {
+  if (LoadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());

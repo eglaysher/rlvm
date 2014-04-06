@@ -259,7 +259,7 @@ void RlBabelDLL::AppendChar(const char*& ch) {
       cp932_text_buffer += uc >> 8;
     cp932_text_buffer += uc & 0xff;
   } else {
-    copyOneShiftJisCharacter(ch, cp932_text_buffer);
+    CopyOneShiftJisCharacter(ch, cp932_text_buffer);
   }
 }
 

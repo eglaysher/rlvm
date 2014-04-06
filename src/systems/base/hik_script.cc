@@ -72,7 +72,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
   // This is dumb. This all needs to rewritten as either FILE or stream.
   int file_size = 0;
   std::unique_ptr<char[]> hik_data;
-  if (loadFileData(file, hik_data, file_size)) {
+  if (LoadFileData(file, hik_data, file_size)) {
     std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());

@@ -25,14 +25,14 @@
 
 namespace datetime {
 
-int getYear();
-int getMonth();
-int getDay();
-int getDayOfWeek();
-int getHour();
-int getMinute();
-int getSecond();
-int getMs();
+int GetYear();
+int GetMonth();
+int GetDay();
+int GetDayOfWeek();
+int GetHour();
+int GetMinute();
+int GetSecond();
+int GetMs();
 
 }  // namespace datetime
 

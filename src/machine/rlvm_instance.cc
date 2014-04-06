@@ -116,7 +116,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     // Validate our font file
     // TODO(erg): Remove this when we switch to native font selection dialogs.
-    fs::path fontFile = findFontFile(sdlSystem);
+    fs::path fontFile = FindFontFile(sdlSystem);
     if (fontFile.empty() || !fs::exists(fontFile)) {
       throw rlvm::UserPresentableError(
           _("Could not find msgothic.ttc or a suitable fallback font."),
@@ -243,7 +243,7 @@ boost::filesystem::path RLVMInstance::FindGameFile(
     const boost::filesystem::path& gamerootPath,
     const std::string& filename) {
   fs::path search_for = gamerootPath / filename;
-  fs::path corrected_path = correctPathCase(search_for);
+  fs::path corrected_path = CorrectPathCase(search_for);
   if (corrected_path.empty()) {
     throw rlvm::UserPresentableError(
         _("Could not load game"),
@@ -258,7 +258,7 @@ void RLVMInstance::CheckBadEngine(const boost::filesystem::path& gamerootPath,
                                   const char** filenames,
                                   const std::string& message_text) {
   for (const char** cur_file = filenames; *cur_file; cur_file++) {
-    if (fs::exists(correctPathCase(gamerootPath / *cur_file))) {
+    if (fs::exists(CorrectPathCase(gamerootPath / *cur_file))) {
       throw rlvm::UserPresentableError(message_text,
                                        _("rlvm can only play RealLive games."));
     }

@@ -195,7 +195,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(
+  PrintTextToFunction(
       bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
@@ -223,7 +223,7 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
     str += kHiraganaA;
   str += kCloseQuote;
 
-  printTextToFunction(
+  PrintTextToFunction(
       bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
@@ -253,7 +253,7 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   str += kPeriod;
   str += kCloseQuote;
 
-  printTextToFunction(
+  PrintTextToFunction(
       bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),

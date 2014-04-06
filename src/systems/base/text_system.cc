@@ -860,9 +860,9 @@ void parseNames(const Memory& memory,
       cur += 2;
 
       string strindex;
-      if (readFullwidthLatinLetter(cur, strindex)) {
+      if (ReadFullwidthLatinLetter(cur, strindex)) {
         // Try to read a second character. We don't care if it fails.
-        readFullwidthLatinLetter(cur, strindex);
+        ReadFullwidthLatinLetter(cur, strindex);
       } else {
         throw rlvm::Exception("Malformed name construct in bytecode!");
       }
@@ -873,7 +873,7 @@ void parseNames(const Memory& memory,
       else
         output += memory.GetLocalName(index);
     } else {
-      copyOneShiftJisCharacter(cur, output);
+      CopyOneShiftJisCharacter(cur, output);
     }
   }
 }

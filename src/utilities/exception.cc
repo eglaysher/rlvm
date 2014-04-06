@@ -42,11 +42,11 @@ namespace rlvm {
 // -----------------------------------------------------------------------
 
 Exception::Exception(const std::string& what)
-    : description(what), operation_(NULL) {}
+    : description_(what), operation_(NULL) {}
 
 Exception::~Exception() throw() {}
 
-const char* Exception::what() const throw() { return description.c_str(); }
+const char* Exception::what() const throw() { return description_.c_str(); }
 
 // -----------------------------------------------------------------------
 // UserPresentableError
@@ -72,7 +72,7 @@ UnimplementedOpcode::UnimplementedOpcode(const std::string& funName,
   oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
   name_ = oss.str();
-  setSimpleDescription();
+  SetSimpleDescription();
 }
 
 UnimplementedOpcode::UnimplementedOpcode(
@@ -86,7 +86,7 @@ UnimplementedOpcode::UnimplementedOpcode(
   oss << funName << " [opcode<" << command.modtype() << ":" << command.module()
       << ":" << command.opcode() << ", " << command.overload() << ">]";
   name_ = oss.str();
-  setFullDescription(machine);
+  SetFullDescription(machine);
 }
 
 UnimplementedOpcode::UnimplementedOpcode(
@@ -99,12 +99,12 @@ UnimplementedOpcode::UnimplementedOpcode(
   oss << "opcode<" << command.modtype() << ":" << command.module() << ":"
       << command.opcode() << ", " << command.overload() << ">";
   name_ = oss.str();
-  setFullDescription(machine);
+  SetFullDescription(machine);
 }
 
 UnimplementedOpcode::~UnimplementedOpcode() throw() {}
 
-void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
+void UnimplementedOpcode::SetFullDescription(RLMachine& machine) {
   ostringstream oss;
   oss << "Undefined: " << name_;
 
@@ -136,13 +136,13 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
   }
 #endif
 
-  description = oss.str();
+  description_ = oss.str();
 }
 
-void UnimplementedOpcode::setSimpleDescription() {
+void UnimplementedOpcode::SetSimpleDescription() {
   ostringstream oss;
   oss << "Undefined: " << name_;
-  description = oss.str();
+  description_ = oss.str();
 }
 
 }  // namespace rlvm

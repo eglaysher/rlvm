@@ -239,14 +239,14 @@ string hantozen_cp932(const string& input, int transformation) {
 
     while (s < end) {
       if (shiftjis_lead_byte(*s)) {
-        copyOneShiftJisCharacter(s, output);
+        CopyOneShiftJisCharacter(s, output);
       } else {
         char c = *s;
         if (c >= ' ' && c <= '~') {
           // Lower ASCII conversion table
-          addShiftJISChar(lower_hantozen_table[c - ' '], output);
+          AddShiftJISChar(lower_hantozen_table[c - ' '], output);
         } else if (c >= 0xA1 && c <= 0xDF) {
-          addShiftJISChar(upper_hantozen_table[c - 0xA1], output);
+          AddShiftJISChar(upper_hantozen_table[c - 0xA1], output);
         } else {
           output += c;
         }
@@ -301,10 +301,10 @@ string zentohan_cp932(const string& input, int transformation) {
           s += 2;
         } else {
           // Not an anything.
-          copyOneShiftJisCharacter(s, output);
+          CopyOneShiftJisCharacter(s, output);
         }
       } else {
-        copyOneShiftJisCharacter(s, output);
+        CopyOneShiftJisCharacter(s, output);
       }
     }
 

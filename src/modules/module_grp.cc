@@ -316,7 +316,7 @@ struct display_1
   void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
     Rect src;
     Point dest;
-    getSELPointAndRect(machine, effectNum, src, dest);
+    GetSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
 
@@ -334,7 +334,7 @@ struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   display_1 delegate_;
 
   void operator()(RLMachine& machine, int dc, int effectNum) {
-    std::vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = GetSELEffect(machine, effectNum);
     delegate_(machine, dc, effectNum, selEffect.at(14));
   }
 };
@@ -371,7 +371,7 @@ struct display_2
                   int effectNum,
                   Rect src_rect,
                   Point dest) {
-    int opacity = getSELEffect(machine, effectNum).at(14);
+    int opacity = GetSELEffect(machine, effectNum).at(14);
     display_3<SPACE>()(machine, dc, effectNum, src_rect, dest, opacity);
   }
 };
@@ -450,7 +450,7 @@ struct open_1
                   int opacity) {
     Rect src;
     Point dest;
-    getSELPointAndRect(machine, effectNum, src, dest);
+    GetSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
     boost::shared_ptr<Surface> before = graphics.renderToSurface();
@@ -474,7 +474,7 @@ struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   explicit open_0(bool in) : delegate_(in) {}
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    std::vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = GetSELEffect(machine, effectNum);
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
@@ -526,7 +526,7 @@ struct open_2
                   int effectNum,
                   Rect src,
                   Point dest) {
-    int opacity = getSELEffect(machine, effectNum).at(14);
+    int opacity = GetSELEffect(machine, effectNum).at(14);
     delegate_(machine, filename, effectNum, src, dest, opacity);
   }
 };
@@ -597,7 +597,7 @@ struct openBg_1
     GraphicsSystem& graphics = machine.system().graphics();
     Rect srcRect;
     Point destPoint;
-    getSELPointAndRect(machine, effectNum, srcRect, destPoint);
+    GetSELPointAndRect(machine, effectNum, srcRect, destPoint);
 
     OpenBgPrelude(machine, fileName);
 
@@ -616,7 +616,7 @@ struct openBg_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   openBg_1 delegate_;
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
-    std::vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = GetSELEffect(machine, effectNum);
     delegate_(machine, filename, effectNum, selEffect[14]);
   }
 };
@@ -662,7 +662,7 @@ struct openBg_2
                   int effectNum,
                   Rect srcRect,
                   Point destPt) {
-    std::vector<int> selEffect = getSELEffect(machine, effectNum);
+    std::vector<int> selEffect = GetSELEffect(machine, effectNum);
     delegate_(machine, fileName, effectNum, srcRect, destPt, selEffect[14]);
   }
 };
@@ -1058,7 +1058,7 @@ void multi_command<SPACE>::handleMultiCommands(
         // 1:copy(strC 'filename', 'effect')
         Rect src;
         Point dest;
-        getSELPointAndRect(machine, get<1>(it->second), src, dest);
+        GetSELPointAndRect(machine, get<1>(it->second), src, dest);
 
         load_3<SPACE>(true)(
             machine, get<0>(it->second), MULTI_TARGET_DC, src, dest, 255);
@@ -1068,7 +1068,7 @@ void multi_command<SPACE>::handleMultiCommands(
         // 2:copy(strC 'filename', 'effect', 'alpha')
         Rect src;
         Point dest;
-        getSELPointAndRect(machine, get<1>(it->third), src, dest);
+        GetSELPointAndRect(machine, get<1>(it->third), src, dest);
 
         load_3<SPACE>(true)(machine,
                             get<0>(it->third),

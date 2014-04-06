@@ -90,7 +90,7 @@ GCNInfoWindow::GCNInfoWindow(RLMachine& machine,
   values.push_back(
       new gcn::Label(info.rlbabel_loaded ? "Enabled" : "Disabled"));
   values.push_back(
-      new gcn::Label(transformationName(info.text_transformation)));
+      new gcn::Label(TransformationName(info.text_transformation)));
 
   int max_key_space = max_space(keys);
   int max_value_space = max_space(values);

@@ -286,7 +286,7 @@ void setObjectDataToRect(RLMachine& machine,
 
 struct objOfArea_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    Rect rect(0, 0, getScreenSize(machine.system().gameexe()));
+    Rect rect(0, 0, GetScreenSize(machine.system().gameexe()));
     setObjectDataToRect(machine, this, buf, rect);
   }
 };
@@ -321,7 +321,7 @@ struct objOfRect_1 : public RLOp_Void_5<IntConstant_T,
     // Because of the screwed up optionality here, (x and y are optional while
     // width height are not, we hack with the INT_MIN value).
     if (width == INT_MIN) {
-      Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
+      Rect screen(0, 0, GetScreenSize(machine.system().gameexe()));
       setObjectDataToRect(machine, this, buf, Size(x, y).centeredIn(screen));
     } else {
       setObjectDataToRect(machine, this, buf, Rect(x, y, Size(width, height)));
@@ -344,7 +344,7 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
                   int visible) {
     Rect data_rect;
     if (height == INT_MIN) {
-      Rect screen(0, 0, getScreenSize(machine.system().gameexe()));
+      Rect screen(0, 0, GetScreenSize(machine.system().gameexe()));
       data_rect = Size(x, y).centeredIn(screen);
       // Crazy optionality here.
       visible = width;

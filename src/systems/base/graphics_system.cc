@@ -574,8 +574,8 @@ void GraphicsSystem::reset() {
   clearAllObjects();
   clearAllDCs();
 
-  preloaded_hik_scripts_.clear();
-  preloaded_g00_.clear();
+  preloaded_hik_scripts_.Clear();
+  preloaded_g00_.Clear();
   hik_renderer_.reset();
   background_type_ = BACKGROUND_DC0;
 
@@ -624,7 +624,7 @@ void GraphicsSystem::ClearPreloadedHIKScript(int slot) {
 }
 
 void GraphicsSystem::ClearAllPreloadedHIKScripts() {
-  preloaded_hik_scripts_.clear();
+  preloaded_hik_scripts_.Clear();
 }
 
 boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
@@ -655,7 +655,7 @@ void GraphicsSystem::ClearPreloadedG00(int slot) {
   preloaded_g00_[slot] = std::make_pair("", boost::shared_ptr<const Surface>());
 }
 
-void GraphicsSystem::ClearAllPreloadedG00() { preloaded_g00_.clear(); }
+void GraphicsSystem::ClearAllPreloadedG00() { preloaded_g00_.Clear(); }
 
 boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
     const std::string& name) {
@@ -747,15 +747,15 @@ void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearObject(int obj_number) {
-  graphics_object_impl_->foreground_objects.deleteAt(obj_number);
-  graphics_object_impl_->background_objects.deleteAt(obj_number);
+  graphics_object_impl_->foreground_objects.DeleteAt(obj_number);
+  graphics_object_impl_->background_objects.DeleteAt(obj_number);
 }
 
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::clearAllObjects() {
-  graphics_object_impl_->foreground_objects.clear();
-  graphics_object_impl_->background_objects.clear();
+  graphics_object_impl_->foreground_objects.Clear();
+  graphics_object_impl_->background_objects.Clear();
 }
 
 // -----------------------------------------------------------------------
@@ -803,8 +803,8 @@ bool GraphicsSystem::animationsPlaying() const {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::takeSavepointSnapshot() {
-  foregroundObjects().copyTo(graphics_object_impl_->saved_foreground_objects);
-  backgroundObjects().copyTo(graphics_object_impl_->saved_background_objects);
+  foregroundObjects().CopyTo(graphics_object_impl_->saved_foreground_objects);
+  backgroundObjects().CopyTo(graphics_object_impl_->saved_background_objects);
   graphics_object_impl_->saved_graphics_stack =
       graphics_object_impl_->graphics_stack;
 }

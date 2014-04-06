@@ -201,7 +201,7 @@ struct objSetRect_1
 
 struct objSetRect_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    Rect rect(0, 0, getScreenSize(machine.system().gameexe()));
+    Rect rect(0, 0, GetScreenSize(machine.system().gameexe()));
     objSetRect_1()(machine, buf, rect);
   }
 };

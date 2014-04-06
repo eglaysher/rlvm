@@ -41,7 +41,7 @@ namespace fs = boost::filesystem;
 
 @implementation FileValidator
 - (BOOL)panel:(id)sender isValidFilename:(NSString *)filename {
-  if (!fs::exists(correctPathCase(
+  if (!fs::exists(CorrectPathCase(
           fs::path([filename fileSystemRepresentation]) / "Seen.txt"))) {
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithUTF8String:

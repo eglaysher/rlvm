@@ -64,11 +64,11 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   }
 
   fs::path basename = gameexe("__GAMEPATH").ToString();
-  fs::path filename = correctPathCase(basename / "dat" / tonecurve);
+  fs::path filename = CorrectPathCase(basename / "dat" / tonecurve);
 
   int size;
   std::unique_ptr<char[]> data;
-  if (loadFileData(filename, data, size)) {
+  if (LoadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());

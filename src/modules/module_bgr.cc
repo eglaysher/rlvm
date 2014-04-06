@@ -213,7 +213,7 @@ struct bgrMulti_1
           // 2:copy(strC 'filename', '?')
           Rect srcRect;
           Point dest;
-          getSELPointAndRect(machine, std::get<1>(it->third), srcRect, dest);
+          GetSELPointAndRect(machine, std::get<1>(it->third), srcRect, dest);
 
           surface =
               graphics.getSurfaceNamedAndMarkViewed(machine,
