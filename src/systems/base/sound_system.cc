@@ -381,12 +381,12 @@ void SoundSystem::setBgmKoeFadeVolume(const int level) {
 int SoundSystem::bgmKoeFadeVolume() const { return globals_.bgm_koe_fade_vol; }
 
 void SoundSystem::koePlay(int id) {
-  if (!system_.fastForward())
+  if (!system_.ShouldFastForward())
     koePlayImpl(id);
 }
 
 void SoundSystem::koePlay(int id, int charid) {
-  if (!system_.fastForward()) {
+  if (!system_.ShouldFastForward()) {
     bool play_voice = true;
 
     std::map<int, int>::const_iterator koe_it =

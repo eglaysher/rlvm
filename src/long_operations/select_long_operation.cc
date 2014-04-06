@@ -133,7 +133,7 @@ SelectLongOperation::~SelectLongOperation() {}
 void SelectLongOperation::SelectByIndex(int num) {
   if (machine_.system().sound().hasSe(1))
     machine_.system().sound().playSe(1);
-  machine_.system().takeSelectionSnapshot(machine_);
+  machine_.system().TakeSelectionSnapshot(machine_);
   return_value_ = num;
 }
 
@@ -221,7 +221,7 @@ bool NormalSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
     }
     case MOUSE_RIGHT: {
       if (pressed) {
-        machine_.system().showSyscomMenu(machine_);
+        machine_.system().ShowSyscomMenu(machine_);
         return true;
       }
       break;
@@ -427,7 +427,7 @@ bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
     }
     case MOUSE_RIGHT: {
       if (pressed) {
-        machine_.system().showSyscomMenu(machine_);
+        machine_.system().ShowSyscomMenu(machine_);
         return true;
       }
       break;

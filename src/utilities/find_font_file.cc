@@ -109,7 +109,7 @@ fs::path FindFontFile(System& system) {
       return gameFont;
   }
 
-  if (system.useWesternFont()) {
+  if (system.use_western_font()) {
     // Try to look up a western alternative font.
     for (const char** file = western_platform_fonts; *file; ++file) {
       if (fs::exists(*file))

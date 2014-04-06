@@ -456,7 +456,7 @@ void RLMachine::PushStackFrame(const StackFrame& frame) {
 
   // Font hack. Try using a western font if we haven't already loaded a font.
   if (GetTextEncoding() == 2)
-    system().setUseWesternFont();
+    system().set_use_western_font();
 }
 
 void RLMachine::PopStackFrame() {
@@ -506,13 +506,13 @@ void RLMachine::ClearLongOperationsOffBackOfStack() {
 void RLMachine::Reset() {
   call_stack_.clear();
   savepoint_call_stack_.clear();
-  system().reset();
+  system().Reset();
 }
 
 void RLMachine::LocalReset() {
   savepoint_call_stack_.clear();
   memory_->local().reset();
-  system().reset();
+  system().Reset();
 }
 
 boost::shared_ptr<LongOperation> RLMachine::CurrentLongOperation() const {
@@ -579,8 +579,11 @@ void RLMachine::PerformTextout(const std::string& cp932str) {
   std::unique_ptr<TextoutLongOperation> ptr(
       new TextoutLongOperation(*this, utf8str));
 
-  if (system().fastForward() || ts.messageNoWait() || ts.scriptMessageNowait())
+  if (system().ShouldFastForward() ||
+      ts.messageNoWait() ||
+      ts.scriptMessageNowait()) {
     ptr->set_no_wait();
+  }
 
   // Run the textout operation once. If it doesn't fully succeed, push it onto
   // the stack.

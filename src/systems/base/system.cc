@@ -132,12 +132,16 @@ System::System()
 
 System::~System() {}
 
-void System::takeSelectionSnapshot(RLMachine& machine) {
+void System::SetPlatform(const boost::shared_ptr<Platform>& platform) {
+  platform_ = platform;
+}
+
+void System::TakeSelectionSnapshot(RLMachine& machine) {
   previous_selection_.reset(new std::stringstream);
   Serialization::saveGameTo(*previous_selection_, machine);
 }
 
-void System::restoreSelectionSnapshot(RLMachine& machine) {
+void System::RestoreSelectionSnapshot(RLMachine& machine) {
   // We need to reference this on the stack because it will call
   // System::reset() to get the black screen. (We'll reset again inside
   // LoadingGameFromStream.)
@@ -149,8 +153,8 @@ void System::restoreSelectionSnapshot(RLMachine& machine) {
   }
 }
 
-int System::isSyscomEnabled(int syscom) {
-  checkSyscomIndex(syscom, "System::is_syscom_enabled");
+int System::IsSyscomEnabled(int syscom) {
+  CheckSyscomIndex(syscom, "System::is_syscom_enabled");
 
   // Special cases where state of the interpreter would override the
   // programmatically set (or user set) values.
@@ -166,44 +170,44 @@ int System::isSyscomEnabled(int syscom) {
   return syscom_status_[syscom];
 }
 
-void System::hideSyscom() {
+void System::HideSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_INVISIBLE);
 }
 
-void System::hideSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::hide_system");
+void System::HideSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::hide_system");
   syscom_status_[syscom] = SYSCOM_INVISIBLE;
 }
 
-void System::enableSyscom() {
+void System::EnableSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_VISIBLE);
 }
 
-void System::enableSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::enable_system");
+void System::EnableSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::enable_system");
   syscom_status_[syscom] = SYSCOM_VISIBLE;
 }
 
-void System::disableSyscom() {
+void System::DisableSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_GREYED_OUT);
 }
 
-void System::disableSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::disable_system");
+void System::DisableSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::disable_system");
   syscom_status_[syscom] = SYSCOM_GREYED_OUT;
 }
 
-int System::readSyscom(int syscom) {
+int System::ReadSyscom(int syscom) {
   throw rlvm::Exception("ReadSyscom unimplemented!");
 }
 
-void System::showSyscomMenu(RLMachine& machine) {
+void System::ShowSyscomMenu(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
 
   if (gexe("CANCELCALL_MOD") == 1) {
@@ -224,14 +228,14 @@ void System::showSyscomMenu(RLMachine& machine) {
   }
 }
 
-void System::invokeSyscom(RLMachine& machine, int syscom) {
+void System::InvokeSyscom(RLMachine& machine, int syscom) {
   switch (syscom) {
     case SYSCOM_SAVE:
-      invokeSaveOrLoad(
+      InvokeSaveOrLoad(
           machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
       break;
     case SYSCOM_LOAD:
-      invokeSaveOrLoad(
+      InvokeSaveOrLoad(
           machine, syscom, "SYSTEMCALL_LOAD_MOD", "SYSTEMCALL_LOAD");
       break;
     case SYSCOM_MESSAGE_SPEED:
@@ -250,7 +254,7 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
       break;
     }
     case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
-      restoreSelectionSnapshot(machine);
+      RestoreSelectionSnapshot(machine);
       break;
     case SYSCOM_SHOW_WEATHER:
       graphics().setShowWeather(!graphics().showWeather());
@@ -299,7 +303,7 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
   }
 }
 
-void System::showSystemInfo(RLMachine& machine) {
+void System::ShowSystemInfo(RLMachine& machine) {
   if (platform_) {
     RlvmInfo info;
 
@@ -315,7 +319,7 @@ void System::showSystemInfo(RLMachine& machine) {
 
     info.game_version = gameexe()("VERSION_STR").ToString("");
     info.game_path = gameexe()("__GAMEPATH").ToString("");
-    info.rlvm_version = rlvm_version();
+    info.rlvm_version = GetRlvmVersionString();
     info.rlbabel_loaded = machine.DllLoaded("rlBabel");
     info.text_transformation = machine.GetTextEncoding();
 
@@ -323,11 +327,11 @@ void System::showSystemInfo(RLMachine& machine) {
   }
 }
 
-boost::filesystem::path System::findFile(
+boost::filesystem::path System::FindFile(
     const std::string& file_name,
     const std::vector<std::string>& extensions) {
   if (filesystem_cache_.empty())
-    buildFileSystemCache();
+    BuildFileSystemCache();
 
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
@@ -350,18 +354,18 @@ boost::filesystem::path System::findFile(
   return fs::path();
 }
 
-void System::reset() {
+void System::Reset() {
   in_menu_ = false;
   previous_selection_.reset();
 
-  enableSyscom();
+  EnableSyscom();
 
   sound().reset();
   graphics().reset();
   text().reset();
 }
 
-std::string System::regname() {
+std::string System::Regname() {
   Gameexe& gexe = gameexe();
   std::string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
@@ -371,19 +375,19 @@ std::string System::regname() {
   return cp932toUTF8(regname, 0);
 }
 
-boost::filesystem::path System::gameSaveDirectory() {
-  fs::path base_dir = getHomeDirectory() / ".rlvm" / regname();
+boost::filesystem::path System::GameSaveDirectory() {
+  fs::path base_dir = GetHomeDirectory() / ".rlvm" / Regname();
   fs::create_directories(base_dir);
 
   return base_dir;
 }
 
-bool System::fastForward() {
+bool System::ShouldFastForward() {
   return (event().ctrlPressed() && text().ctrlKeySkip()) ||
          text().currentlySkipping() || force_fast_forward_;
 }
 
-void System::dumpRenderTree(RLMachine& machine) {
+void System::DumpRenderTree(RLMachine& machine) {
   std::ostringstream oss;
   oss << "Dump_SEEN" << std::setw(4) << std::setfill('0')
       << machine.SceneNumber() << "_Line" << machine.line_number() << ".txt";
@@ -392,7 +396,7 @@ void System::dumpRenderTree(RLMachine& machine) {
   graphics().refresh(&tree);
 }
 
-boost::filesystem::path System::getHomeDirectory() {
+boost::filesystem::path System::GetHomeDirectory() {
   std::string drive, home;
   char* homeptr = getenv("HOME");
   char* driveptr = getenv("HOMEDRIVE");
@@ -413,7 +417,7 @@ boost::filesystem::path System::getHomeDirectory() {
   }
 }
 
-void System::invokeSaveOrLoad(RLMachine& machine,
+void System::InvokeSaveOrLoad(RLMachine& machine,
                               int syscom,
                               const std::string& mod_key,
                               const std::string& location) {
@@ -433,7 +437,7 @@ void System::invokeSaveOrLoad(RLMachine& machine,
   }
 }
 
-void System::checkSyscomIndex(int index, const char* function) {
+void System::CheckSyscomIndex(int index, const char* function) {
   if (index < 0 || index >= NUM_SYSCOM_ENTRIES) {
     std::ostringstream oss;
     oss << "Illegal syscom index #" << index << " in " << function;
@@ -441,7 +445,7 @@ void System::checkSyscomIndex(int index, const char* function) {
   }
 }
 
-void System::buildFileSystemCache() {
+void System::BuildFileSystemCache() {
   // First retrieve all the directories defined in the #FOLDNAME section.
   std::vector<std::string> valid_directories;
   Gameexe& gexe = gameexe();
@@ -463,17 +467,17 @@ void System::buildFileSystemCache() {
       to_lower(lowername);
       if (find(valid_directories.begin(), valid_directories.end(), lowername) !=
           valid_directories.end()) {
-        addDirectoryToCache(dir->path());
+        AddDirectoryToCache(dir->path());
       }
     }
   }
 }
 
-void System::addDirectoryToCache(const fs::path& directory) {
+void System::AddDirectoryToCache(const fs::path& directory) {
   fs::directory_iterator dir_end;
   for (fs::directory_iterator dir(directory); dir != dir_end; ++dir) {
     if (fs::is_directory(dir->status())) {
-      addDirectoryToCache(dir->path());
+      AddDirectoryToCache(dir->path());
     } else {
       std::string extension = dir->path().extension().string();
       if (extension.size() > 1 && extension[0] == '.')
@@ -492,4 +496,4 @@ void System::addDirectoryToCache(const fs::path& directory) {
   }
 }
 
-std::string rlvm_version() { return "Version 0.13.1"; }
+std::string GetRlvmVersionString() { return "Version 0.13.1"; }

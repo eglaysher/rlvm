@@ -210,7 +210,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
                             {"mp3", &buildMusicImplementation<MP3FILE>},
                             {"ogg", &buildMusicImplementation<OggFILE>}};
 
-  fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
+  fs::path file_path = system.FindFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {
     std::ostringstream oss;
     oss << "Could not find music file \"" << track.file << "\".";

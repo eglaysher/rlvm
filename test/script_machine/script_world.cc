@@ -99,7 +99,7 @@ std::string ScriptWorld::regname() const {
   ScriptMachine* machine =
       luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
   if (machine) {
-    return machine->system().regname();
+    return machine->system().Regname();
   } else {
     throw std::logic_error("No machine!?");
   }

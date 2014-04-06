@@ -110,7 +110,7 @@ void WaitLongOperation::RecordMouseCursorPosition() {
 }
 
 bool WaitLongOperation::operator()(RLMachine& machine) {
-  bool done = ctrl_pressed_ || machine.system().fastForward();
+  bool done = ctrl_pressed_ || machine.system().ShouldFastForward();
 
   if (!done && wait_until_target_time_) {
     done = machine.system().event().getTicks() > target_time_;

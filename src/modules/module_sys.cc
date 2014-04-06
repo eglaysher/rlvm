@@ -256,7 +256,7 @@ struct ReturnPrevSelect : public RLOp_Void_Void {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
-    machine.system().restoreSelectionSnapshot(machine);
+    machine.system().RestoreSelectionSnapshot(machine);
   }
 };
 
@@ -494,8 +494,8 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
             0,
             "SkipAnimations",
             ReturnIntValue(&GraphicsSystem::skipAnimations));
-  AddOpcode(2052, 0, "SetLowPriority", CallFunction(&System::setLowPriority));
-  AddOpcode(2002, 0, "LowPriority", ReturnIntValue(&System::lowPriority));
+  AddOpcode(2052, 0, "SetLowPriority", CallFunction(&System::set_low_priority));
+  AddOpcode(2002, 0, "LowPriority", ReturnIntValue(&System::low_priority));
 
   AddOpcode(
       2223, 0, "SetMessageSpeed", CallFunction(&TextSystem::setMessageSpeed));

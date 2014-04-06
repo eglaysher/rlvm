@@ -54,7 +54,7 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   // We have our before and after images to use as a transition now. Reset the
   // system to prevent a brief flash of the previous contents of the screen for
   // whatever number of user preceivable milliseconds.
-  machine.system().reset();
+  machine.system().Reset();
 }
 
 bool LoadGameLongOperation::operator()(RLMachine& machine) {

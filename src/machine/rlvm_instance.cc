@@ -128,7 +128,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     // looking for a font because we use that font internally).
     boost::shared_ptr<Platform> platform(
         new GCNPlatform(sdlSystem, sdlSystem.graphics().screenRect()));
-    sdlSystem.setPlatform(platform);
+    sdlSystem.SetPlatform(platform);
 
     if (undefined_opcodes_)
       rlmachine.SetPrintUndefinedOpcodes(true);
@@ -162,19 +162,19 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
         rlmachine.ExecuteNextInstruction();
         end_ticks = sdlSystem.event().getTicks();
       } while (!rlmachine.CurrentLongOperation() &&
-               !sdlSystem.forceWait() &&
+               !sdlSystem.force_wait() &&
                (end_ticks - start_ticks < 10));
 
       // Sleep to be nice to the processor and to give the GPU a chance to
       // catch up.
-      if (!sdlSystem.fastForward()) {
+      if (!sdlSystem.ShouldFastForward()) {
         int real_sleep_time = 10 - (end_ticks - start_ticks);
         if (real_sleep_time < 1)
           real_sleep_time = 1;
         sdlSystem.event().wait(real_sleep_time);
       }
 
-      sdlSystem.setForceWait(false);
+      sdlSystem.set_force_wait(false);
     }
 
     Serialization::saveGlobalMemory(rlmachine);

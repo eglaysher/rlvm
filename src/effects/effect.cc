@@ -59,7 +59,7 @@ bool Effect::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
   unsigned int current_frame = time - start_time_;
 
-  bool fast_forward = machine.system().fastForward();
+  bool fast_forward = machine.system().ShouldFastForward();
 
   if (current_frame >= duration_ || fast_forward) {
     return true;

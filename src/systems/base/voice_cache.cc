@@ -85,7 +85,7 @@ boost::shared_ptr<VoiceArchive> VoiceCache::findArchive(int file_no) const {
   oss << "z" << std::setw(4) << std::setfill('0') << file_no;
 
   fs::path file =
-      sound_system_.system().findFile(oss.str(), KOE_ARCHIVE_FILETYPES);
+      sound_system_.system().FindFile(oss.str(), KOE_ARCHIVE_FILETYPES);
   if (file.empty()) {
     return boost::shared_ptr<VoiceArchive>();
   }
@@ -112,7 +112,7 @@ boost::shared_ptr<VoiceSample> VoiceCache::findUnpackedSample(int file_no,
       << std::setfill('0') << index;
 
   fs::path file =
-      sound_system_.system().findFile(oss.str(), KOE_LOOSE_FILETYPES);
+      sound_system_.system().FindFile(oss.str(), KOE_LOOSE_FILETYPES);
   string file_str = file.string();
 
   if (iends_with(file_str, "ogg")) {

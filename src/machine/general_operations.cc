@@ -135,7 +135,7 @@ int ReturnGameexeInt::operator()(RLMachine& machine) {
 InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom) : syscom_(syscom) {}
 
 void InvokeSyscomAsOp::operator()(RLMachine& machine) {
-  machine.system().invokeSyscom(machine, syscom_);
+  machine.system().InvokeSyscom(machine, syscom_);
 }
 
 // -----------------------------------------------------------------------

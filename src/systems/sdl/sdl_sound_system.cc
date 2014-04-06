@@ -72,7 +72,7 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
     SoundChunkCache& cache) {
   SDLSoundChunkPtr sample = cache.fetch(file_name);
   if (sample == NULL) {
-    fs::path file_path = system().findFile(file_name, SOUND_FILETYPES);
+    fs::path file_path = system().FindFile(file_name, SOUND_FILETYPES);
     if (file_path.empty()) {
       std::ostringstream oss;
       oss << "Could not find sound file \"" << file_name << "\".";

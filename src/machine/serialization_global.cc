@@ -67,7 +67,7 @@ namespace Serialization {
 const int CURRENT_GLOBAL_VERSION = 3;
 
 fs::path buildGlobalMemoryFilename(RLMachine& machine) {
-  return machine.system().gameSaveDirectory() / "global.sav.gz";
+  return machine.system().GameSaveDirectory() / "global.sav.gz";
 }
 
 void saveGlobalMemory(RLMachine& machine) {
@@ -114,7 +114,7 @@ void loadGlobalMemory(RLMachine& machine) {
       // we're trying to read an incompatible old version's files or the global
       // data is corrupted. Either way, we can't safely do ANYTHING with this
       // game's entire save data so move it out of the way.
-      fs::path save_dir = machine.system().gameSaveDirectory();
+      fs::path save_dir = machine.system().GameSaveDirectory();
       fs::path dest_save_dir = save_dir.parent_path() /
                                (save_dir.filename() / ".old_corrupted_data");
 

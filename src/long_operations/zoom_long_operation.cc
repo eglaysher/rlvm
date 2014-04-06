@@ -59,7 +59,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine) {
   unsigned int time = machine.system().event().getTicks();
   unsigned int currentFrame = time - start_time_;
 
-  bool fastForward = machine.system().fastForward();
+  bool fastForward = machine.system().ShouldFastForward();
 
   if (currentFrame >= duration_ || fastForward) {
     return true;

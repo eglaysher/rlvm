@@ -268,7 +268,7 @@ struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
 // been saved.
 struct LatestSave : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    fs::path saveDir = machine.system().gameSaveDirectory();
+    fs::path saveDir = machine.system().GameSaveDirectory();
     int latestSlot = -1;
     time_t latestTime = std::numeric_limits<time_t>::min();
 
@@ -331,9 +331,9 @@ void AddSysSaveOpcodes(RLModule& m) {
   m.AddOpcode(1421, 0, "LatestSave", new LatestSave);
 
   m.AddOpcode(
-      2053, 0, "SetConfirmSaveLoad", CallFunction(&System::setConfirmSaveLoad));
+      2053, 0, "SetConfirmSaveLoad", CallFunction(&System::set_confirm_save_load));
   m.AddOpcode(
-      2003, 0, "ConfirmSaveLoad", ReturnIntValue(&System::confirmSaveLoad));
+      2003, 0, "ConfirmSaveLoad", ReturnIntValue(&System::confirm_save_load));
 
   m.AddOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
   m.AddOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));

@@ -91,7 +91,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
     // bgrLoadHaikei clears the stack.
     graphics.clearStack();
 
-    fs::path path = system.findFile(filename, HIK_FILETYPES);
+    fs::path path = system.FindFile(filename, HIK_FILETYPES);
     if (iends_with(path.string(), "hik")) {
       if (!machine.replaying_graphics_stack())
         graphics.clearAndPromoteObjects();
@@ -273,7 +273,7 @@ struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
 struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     System& system = machine.system();
-    fs::path path = system.findFile(name, HIK_FILETYPES);
+    fs::path path = system.FindFile(name, HIK_FILETYPES);
     if (iends_with(path.string(), "hik")) {
       system.graphics().PreloadHIKScript(system, slot, name, path);
     }

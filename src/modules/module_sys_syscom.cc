@@ -46,13 +46,13 @@ struct ContextMenu : public RLOp_Void_Void {
     // clicks.
     machine.system().event().flushMouseClicks();
 
-    machine.system().showSyscomMenu(machine);
+    machine.system().ShowSyscomMenu(machine);
   }
 };
 
 struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int num) {
-    return machine.system().isSyscomEnabled(num);
+    return machine.system().IsSyscomEnabled(num);
   }
 };
 
@@ -64,18 +64,18 @@ void AddSysSyscomOpcodes(RLModule& m) {
   m.AddOpcode(1210, 0, "ContextMenu", new ContextMenu);
 
   m.AddOpcode(
-      1211, 0, "EnableSyscom", CallFunction(&System::enableSyscomEntry));
-  m.AddOpcode(1211, 1, "EnableSyscom", CallFunction(&System::enableSyscom));
+      1211, 0, "EnableSyscom", CallFunction(&System::EnableSyscomEntry));
+  m.AddOpcode(1211, 1, "EnableSyscom", CallFunction(&System::EnableSyscom));
 
-  m.AddOpcode(1212, 0, "HideSyscom", CallFunction(&System::hideSyscomEntry));
-  m.AddOpcode(1212, 1, "HideSyscom", CallFunction(&System::hideSyscom));
+  m.AddOpcode(1212, 0, "HideSyscom", CallFunction(&System::HideSyscomEntry));
+  m.AddOpcode(1212, 1, "HideSyscom", CallFunction(&System::HideSyscom));
 
   m.AddOpcode(
-      1213, 0, "DisableSyscom", CallFunction(&System::disableSyscomEntry));
+      1213, 0, "DisableSyscom", CallFunction(&System::DisableSyscomEntry));
 
   m.AddOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
 
-  m.AddOpcode(1215, 0, "InvokeSyscom", CallFunction(&System::invokeSyscom));
+  m.AddOpcode(1215, 0, "InvokeSyscom", CallFunction(&System::InvokeSyscom));
   m.AddUnsupportedOpcode(1215, 1, "InvokeSyscom");
   m.AddUnsupportedOpcode(1216, 0, "ReadSyscom");
 }

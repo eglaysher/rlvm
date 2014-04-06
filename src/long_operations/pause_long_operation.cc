@@ -107,7 +107,7 @@ bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
     }
     case MOUSE_RIGHT:
       if (!pressed) {
-        machine_.system().showSyscomMenu(machine_);
+        machine_.system().ShowSyscomMenu(machine_);
         return true;
       }
       break;
@@ -178,7 +178,7 @@ bool PauseLongOperation::operator()(RLMachine& machine) {
 
   // Check to see if we're done because we're being asked to pause on a piece
   // of text we've already hit.
-  if (machine_.system().fastForward())
+  if (machine_.system().ShouldFastForward())
     is_done_ = true;
 
   if (is_done_) {

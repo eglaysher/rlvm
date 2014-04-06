@@ -87,7 +87,7 @@ void GanGraphicsObjectData::load() {
   image_ = system_.graphics().getSurfaceNamed(img_filename_);
   image_->EnsureUploaded();
 
-  fs::path gan_file_path = system_.findFile(gan_filename_, GAN_FILETYPES);
+  fs::path gan_file_path = system_.FindFile(gan_filename_, GAN_FILETYPES);
   if (gan_file_path.empty()) {
     ostringstream oss;
     oss << "Could not find GAN file \"" << gan_filename_ << "\".";

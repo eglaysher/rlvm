@@ -49,7 +49,7 @@ using std::string;
 
 void printVersionInformation() {
   cout
-      << "rlvm (" << rlvm_version() << ")" << endl
+      << "rlvm (" << GetRlvmVersionString() << ")" << endl
       << "Copyright (C) 2006-2011 Elliot Glaysher, et all." << endl << endl
       << "Contains code that is: " << endl
       << "  Copyright (C) 2006-2007 Peter \"Haeleth\" Jolly" << endl

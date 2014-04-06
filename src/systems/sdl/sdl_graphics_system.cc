@@ -577,7 +577,7 @@ static SDLSurface::GrpRect xclannadRegionToGrpRect(
 boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
     const std::string& short_filename) {
   boost::filesystem::path filename =
-      system().findFile(short_filename, IMAGE_FILETYPES);
+      system().FindFile(short_filename, IMAGE_FILETYPES);
   if (filename.empty()) {
     std::ostringstream oss;
     oss << "Could not find image file \"" << short_filename << "\".";

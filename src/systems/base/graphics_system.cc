@@ -277,9 +277,9 @@ void GraphicsSystem::forceRefresh() {
   screen_needs_refresh_ = true;
 
   if (screen_update_mode_ == SCREENUPDATEMODE_MANUAL) {
-    // Note: SDLEventSystem can also setForceWait(), in the case of automatic
+    // Note: SDLEventSystem can also set_force_wait(), in the case of automatic
     // mode.
-    system().setForceWait(true);
+    system().set_force_wait(true);
   }
 }
 
@@ -903,7 +903,7 @@ void GraphicsSystem::MouseMotion(const Point& new_location) {
 GraphicsObjectData* GraphicsSystem::buildObjOfFile(
     const std::string& filename) {
   // Get the path to get the file type (which won't be in filename)
-  fs::path full_path = system().findFile(filename, OBJ_FILETYPES);
+  fs::path full_path = system().FindFile(filename, OBJ_FILETYPES);
   if (full_path.empty()) {
     ostringstream oss;
     oss << "Could not find Object compatible file \"" << filename << "\".";

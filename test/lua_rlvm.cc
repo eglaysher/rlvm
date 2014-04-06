@@ -221,7 +221,7 @@ int main(int argc, char* argv[]) {
     world.loadToplevelFile(scriptLocation.string());
 
     // Make sure we go as fast as possible:
-    sdlSystem.setForceFastForward();
+    sdlSystem.set_force_fast_forward();
 
     if (vm.count("undefined-opcodes"))
       rlmachine.SetPrintUndefinedOpcodes(true);

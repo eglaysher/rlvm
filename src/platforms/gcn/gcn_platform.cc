@@ -401,7 +401,7 @@ void GCNPlatform::buildSyscomMenuFor(const std::string& label,
       buttons.push_back(button_definition);
     } else {
       int id = menu_items[i].syscom_id;
-      int enabled = sys.isSyscomEnabled(id);
+      int enabled = sys.IsSyscomEnabled(id);
       if (enabled != SYSCOM_INVISIBLE) {
         std::ostringstream labelss;
         labelss << std::setw(3) << std::setfill('0') << id;
@@ -483,5 +483,5 @@ void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
 // -----------------------------------------------------------------------
 
 void GCNPlatform::InvokeSyscom(RLMachine& machine, int syscom) {
-  machine.system().invokeSyscom(machine, syscom);
+  machine.system().InvokeSyscom(machine, syscom);
 }

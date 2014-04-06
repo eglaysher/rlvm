@@ -129,7 +129,7 @@ fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
   std::ostringstream oss;
   oss << "save" << std::setw(3) << std::setfill('0') << slot << ".sav.gz";
 
-  return machine.system().gameSaveDirectory() / oss.str();
+  return machine.system().GameSaveDirectory() / oss.str();
 }
 
 SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {

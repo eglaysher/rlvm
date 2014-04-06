@@ -101,7 +101,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
 }
 
 bool SDLEventSystem::ctrlPressed() const {
-  return system_.forceFastForward() || ctrl_pressed_;
+  return system_.force_fast_forward() || ctrl_pressed_;
 }
 
 Point SDLEventSystem::getCursorPos() {
@@ -164,7 +164,7 @@ void SDLEventSystem::preventCursorPosSpinning() {
     // convenient refresh() calls to insert pauses at. Instead, we need to sort
     // of intuit about what's going on and the easiest way to slow down is to
     // track when the bytecode keeps spamming us for the cursor.
-    system_.setForceWait(true);
+    system_.set_force_wait(true);
   }
 
   last_get_currsor_time_ = newTime;
@@ -216,11 +216,11 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
       break;
     }
     case SDLK_F1: {
-      machine.system().showSystemInfo(machine);
+      machine.system().ShowSystemInfo(machine);
       break;
     }
     case SDLK_F12: {
-      machine.system().dumpRenderTree(machine);
+      machine.system().DumpRenderTree(machine);
       break;
     }
     default:
