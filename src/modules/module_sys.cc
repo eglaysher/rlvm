@@ -652,13 +652,13 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
-  addWaitAndMouseOpcodes(*this);
-  addSysTimerOpcodes(*this);
-  addSysFrameOpcodes(*this);
-  addSysSaveOpcodes(*this);
-  addSysSyscomOpcodes(*this);
-  addSysDateOpcodes(*this);
-  addSysNameOpcodes(*this);
-  addIndexSeriesOpcode(*this);
-  addTimetable2Opcode(*this);
+  AddWaitAndMouseOpcodes(*this);
+  AddSysTimerOpcodes(*this);
+  AddSysFrameOpcodes(*this);
+  AddSysSaveOpcodes(*this);
+  AddSysSyscomOpcodes(*this);
+  AddSysDateOpcodes(*this);
+  AddSysNameOpcodes(*this);
+  AddIndexSeriesOpcode(*this);
+  AddTimetable2Opcode(*this);
 }

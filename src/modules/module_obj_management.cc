@@ -74,7 +74,7 @@ struct objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct objClear_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.clearObject();
   }
 };
@@ -88,14 +88,14 @@ struct objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     max++;
 
     for (int i = min; i < max; ++i) {
-      getGraphicsObject(machine, this, i).clearObject();
+      GetGraphicsObject(machine, this, i).clearObject();
     }
   }
 };
 
 struct objDelete_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.deleteObject();
   }
 };
@@ -106,7 +106,7 @@ struct objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     max++;
 
     for (int i = min; i < max; ++i) {
-      getGraphicsObject(machine, this, i).deleteObject();
+      GetGraphicsObject(machine, this, i).deleteObject();
     }
   }
 };
@@ -116,7 +116,7 @@ struct setWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
   explicit setWipeCopyTo_0(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int buf) {
-    getGraphicsObject(machine, this, buf).setWipeCopy(val_);
+    GetGraphicsObject(machine, this, buf).setWipeCopy(val_);
   }
 };
 
@@ -127,7 +127,7 @@ struct setWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int min, int numObjsToSet) {
     int maxObj = min + numObjsToSet;
     for (int i = min; i < maxObj; ++i) {
-      getGraphicsObject(machine, this, i).setWipeCopy(val_);
+      GetGraphicsObject(machine, this, i).setWipeCopy(val_);
     }
   }
 };
@@ -157,7 +157,7 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     int parentobj;
     if (GetProperty(P_PARENTOBJ, parentobj)) {
       GraphicsObject& go = sys.getObject(fgbg_, parentobj);
-      ensureIsParentObject(go, sys.objectLayerSize());
+      EnsureIsParentObject(go, sys.objectLayerSize());
 
       // Pick out the object data.
       ParentGraphicsObjectData& parent =
@@ -219,7 +219,7 @@ ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
 // -----------------------------------------------------------------------
 
 ChildObjFgManagement::ChildObjFgManagement()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 61) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgManagement", 2, 61) {
   AddOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
   AddOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
@@ -232,7 +232,7 @@ ChildObjFgManagement::ChildObjFgManagement()
 // -----------------------------------------------------------------------
 
 ChildObjBgManagement::ChildObjBgManagement()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 62) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgManagement", 2, 62) {
   AddOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
   AddOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 

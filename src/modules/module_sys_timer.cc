@@ -118,7 +118,7 @@ struct SetTimer : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
 
 // -----------------------------------------------------------------------
 
-void addSysTimerOpcodes(RLModule& m) {
+void AddSysTimerOpcodes(RLModule& m) {
   m.AddOpcode(110, 0, "ResetTimer", new ResetTimer(0));
   m.AddOpcode(110, 1, "ResetTimer", new ResetTimer(0));
   m.AddOpcode(111, 0, "time", new Sys_time(0, false));

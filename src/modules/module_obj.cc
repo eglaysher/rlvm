@@ -40,7 +40,7 @@
 using libreallive::IntegerConstant;
 using libreallive::ExpressionPiece;
 
-void ensureIsParentObject(GraphicsObject& parent, int size) {
+void EnsureIsParentObject(GraphicsObject& parent, int size) {
   if (parent.hasObjectData()) {
     if (parent.objectData().isParentLayer()) {
       return;
@@ -50,7 +50,7 @@ void ensureIsParentObject(GraphicsObject& parent, int size) {
   parent.setObjectData(new ParentGraphicsObjectData(size));
 }
 
-GraphicsObject& getGraphicsObject(RLMachine& machine,
+GraphicsObject& GetGraphicsObject(RLMachine& machine,
                                   RLOperation* op,
                                   int obj) {
   GraphicsSystem& graphics = machine.system().graphics();
@@ -62,7 +62,7 @@ GraphicsObject& getGraphicsObject(RLMachine& machine,
   int parentobj;
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent, graphics.objectLayerSize());
+    EnsureIsParentObject(parent, graphics.objectLayerSize());
     return static_cast<ParentGraphicsObjectData&>(parent.objectData())
         .getObject(obj);
   } else {
@@ -70,7 +70,7 @@ GraphicsObject& getGraphicsObject(RLMachine& machine,
   }
 }
 
-void setGraphicsObject(RLMachine& machine,
+void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
                        int obj,
                        GraphicsObject& gobj) {
@@ -83,7 +83,7 @@ void setGraphicsObject(RLMachine& machine,
   int parentobj;
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent, graphics.objectLayerSize());
+    EnsureIsParentObject(parent, graphics.objectLayerSize());
     static_cast<ParentGraphicsObjectData&>(parent.objectData())
         .setObject(obj, gobj);
   } else {
@@ -94,6 +94,8 @@ void setGraphicsObject(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 ObjRangeAdapter::ObjRangeAdapter(RLOperation* in) : handler(in) {}
+
+ObjRangeAdapter::~ObjRangeAdapter() {}
 
 void ObjRangeAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
@@ -131,7 +133,7 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
   machine.AdvanceInstructionPointer();
 }
 
-RLOperation* rangeMappingFun(RLOperation* op) {
+RLOperation* RangeMappingFun(RLOperation* op) {
   return new ObjRangeAdapter(op);
 }
 
@@ -140,6 +142,8 @@ RLOperation* rangeMappingFun(RLOperation* op) {
 // -----------------------------------------------------------------------
 
 ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {}
+
+ChildObjAdapter::~ChildObjAdapter() {}
 
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
@@ -167,7 +171,7 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   machine.AdvanceInstructionPointer();
 }
 
-RLOperation* childObjMappingFun(RLOperation* op) {
+RLOperation* ChildObjMappingFun(RLOperation* op) {
   return new ChildObjAdapter(op);
 }
 
@@ -176,6 +180,8 @@ RLOperation* childObjMappingFun(RLOperation* op) {
 // -----------------------------------------------------------------------
 
 ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in) : handler(in) {}
+
+ChildObjRangeAdapter::~ChildObjRangeAdapter() {}
 
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
                                       const libreallive::CommandElement& ff) {
@@ -218,7 +224,7 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
   machine.AdvanceInstructionPointer();
 }
 
-RLOperation* childRangeMappingFun(RLOperation* op) {
+RLOperation* ChildRangeMappingFun(RLOperation* op) {
   return new ChildObjRangeAdapter(op);
 }
 
@@ -231,7 +237,7 @@ Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s) : setter(s) {}
 Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
 
 void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
-  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
   ((obj).*(setter))(incoming);
 
   machine.system().graphics().markObjectStateAsDirty();
@@ -250,7 +256,7 @@ void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
                                     int buf,
                                     int incomingOne,
                                     int incomingTwo) {
-  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);
 

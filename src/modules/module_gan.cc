@@ -105,7 +105,7 @@ struct WaitForGanToFinish : public LongOperation {
 
     if (parent_ != -1) {
       GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
-      ensureIsParentObject(parent, graphics.objectLayerSize());
+      EnsureIsParentObject(parent, graphics.objectLayerSize());
       return static_cast<ParentGraphicsObjectData&>(parent.objectData())
           .getObject(buf_);
     } else {
@@ -129,7 +129,7 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       : block_(block), after_effect_(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
@@ -205,7 +205,7 @@ struct ganWait : public RLOp_Void_1<IntConstant_T> {
 // Ushio's birth so I'm assuming this is correct.
 struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, gan_num);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, gan_num);
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
@@ -224,7 +224,7 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
 
 struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, obj_num);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
     if (obj.hasObjectData())
       obj.objectData().setCurrentlyPlaying(false);
   }
@@ -300,7 +300,7 @@ GanBgModule::GanBgModule() : RLModule("GanBg", 1, 74) {
 // -----------------------------------------------------------------------
 
 ChildGanFgModule::ChildGanFgModule()
-    : MappedRLModule(childObjMappingFun, "ChildGanFg", 2, 73) {
+    : MappedRLModule(ChildObjMappingFun, "ChildGanFg", 2, 73) {
   addGanOperationsTo(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -308,7 +308,7 @@ ChildGanFgModule::ChildGanFgModule()
 // -----------------------------------------------------------------------
 
 ChildGanBgModule::ChildGanBgModule()
-    : MappedRLModule(childObjMappingFun, "ChildGanBg", 2, 74) {
+    : MappedRLModule(ChildObjMappingFun, "ChildGanBg", 2, 74) {
   addGanOperationsTo(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }

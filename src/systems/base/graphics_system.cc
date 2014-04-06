@@ -401,14 +401,14 @@ void GraphicsSystem::replayGraphicsStack(RLMachine& machine) {
     // stack, so clear it.
     vector<GraphicsStackFrame> stack_to_replay;
     stack_to_replay.swap(graphics_object_impl_->old_graphics_stack);
-    replayDepricatedGraphicsStackVector(machine, stack_to_replay);
+    ReplayDepricatedGraphicsStackVector(machine, stack_to_replay);
     graphics_object_impl_->use_old_graphics_stack = false;
   } else {
     std::deque<std::string> stack_to_replay;
     stack_to_replay.swap(graphics_object_impl_->graphics_stack);
 
     machine.set_replaying_graphics_stack(true);
-    replayGraphicsStackCommand(machine, stack_to_replay);
+    ReplayGraphicsStackCommand(machine, stack_to_replay);
     machine.set_replaying_graphics_stack(false);
   }
 }

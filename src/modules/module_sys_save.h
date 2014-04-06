@@ -36,7 +36,7 @@ class System;
 
 // Public access to the frame counter operations. Meant to be called
 // from the constructor of SysModule.
-void addSysSaveOpcodes(RLModule& module);
+void AddSysSaveOpcodes(RLModule& module);
 
 // -----------------------------------------------------------------------
 

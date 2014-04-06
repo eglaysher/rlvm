@@ -71,7 +71,7 @@ struct SetLocalName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-void addSysNameOpcodes(RLModule& m) {
+void AddSysNameOpcodes(RLModule& m) {
   m.AddOpcode(1300, 0, "GetName", new GetName);
   m.AddOpcode(1301, 0, "SetName", new SetName);
   m.AddOpcode(1310, 0, "GetLocalName", new GetLocalName);

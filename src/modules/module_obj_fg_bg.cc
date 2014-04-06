@@ -67,7 +67,7 @@ namespace {
 
 struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.clearClip();
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -79,7 +79,7 @@ struct dispArea_1 : RLOp_Void_5<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(x1, y1, x2, y2));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -91,7 +91,7 @@ struct dispRect_1 : RLOp_Void_5<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setClip(Rect::REC(x, y, w, h));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -99,7 +99,7 @@ struct dispRect_1 : RLOp_Void_5<IntConstant_T,
 
 struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setClip(Rect::GRP(0, 0, x, y));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -107,7 +107,7 @@ struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
 
 struct dispOwnArea_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.clearOwnClip();
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -119,7 +119,7 @@ struct dispOwnArea_1 : RLOp_Void_5<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x1, int y1, int x2, int y2) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setOwnClip(Rect::GRP(x1, y1, x2, y2));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -131,7 +131,7 @@ struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x, int y, int w, int h) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setOwnClip(Rect::REC(x, y, w, h));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -140,7 +140,7 @@ struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
 struct adjust
     : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setXAdjustment(idx, x);
     obj.setYAdjustment(idx, y);
     machine.system().graphics().markObjectStateAsDirty();
@@ -149,7 +149,7 @@ struct adjust
 
 struct adjustX : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setXAdjustment(idx, x);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -157,7 +157,7 @@ struct adjustX : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
 
 struct adjustY : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setYAdjustment(idx, y);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -166,7 +166,7 @@ struct adjustY : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
 struct tint
     : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setTint(RGBColour(r, g, b));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -178,7 +178,7 @@ struct colour : RLOp_Void_5<IntConstant_T,
                             IntConstant_T,
                             IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b, int level) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setColour(RGBAColour(r, g, b, level));
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -187,7 +187,7 @@ struct colour : RLOp_Void_5<IntConstant_T,
 struct objSetRect_1
     : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine, int buf, Rect rect) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     if (obj.hasObjectData()) {
       ColourFilterObjectData* data =
           dynamic_cast<ColourFilterObjectData*>(&obj.objectData());
@@ -208,7 +208,7 @@ struct objSetRect_0 : public RLOp_Void_1<IntConstant_T> {
 
 struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
   void operator()(RLMachine& machine, int buf, string val) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     std::string utf8str = cp932toUTF8(val, machine.GetTextEncoding());
     obj.setTextText(utf8str);
     machine.system().graphics().markObjectStateAsDirty();
@@ -230,7 +230,7 @@ struct objTextOpts : public RLOp_Void_7<IntConstant_T,
                   int char_count,
                   int colour,
                   int shadow) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setTextOps(size, xspace, yspace, char_count, colour, shadow);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -263,7 +263,7 @@ struct objDriftOpts : public RLOp_Void_13<IntConstant_T,
                   int unknown,
                   int driftspeed,
                   Rect drift_area) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setDriftOpts(count,
                      use_animation,
                      start_pattern,
@@ -293,7 +293,7 @@ struct objNumOpts : public RLOp_Void_6<IntConstant_T,
                   int sign,
                   int pack,
                   int space) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setDigitOpts(digits, zero, sign, pack, space);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -302,7 +302,7 @@ struct objNumOpts : public RLOp_Void_6<IntConstant_T,
 struct objAdjustAlpha
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int alpha) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setAlphaAdjustment(idx, alpha);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -319,7 +319,7 @@ struct objButtonOpts : public RLOp_Void_5<IntConstant_T,
                   int se,
                   int group,
                   int button_number) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setButtonOpts(action, se, group, button_number);
     machine.system().graphics().markObjectStateAsDirty();
   }
@@ -345,7 +345,7 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
                           int type) {
     unsigned int creation_time = machine.system().event().getTicks();
 
-    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     int start_x = object.xAdjustment(repno);
     int start_y = object.yAdjustment(repno);
 
@@ -569,7 +569,7 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
     Gameexe& gameexe = machine.system().gameexe();
     const std::vector<int>& disp = gameexe("OBJDISP", param).ToIntVector();
 
-    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().getTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
@@ -613,7 +613,7 @@ struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
                   int move_mod,
                   int move_len_x,
                   int move_len_y) {
-    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().getTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
@@ -675,7 +675,7 @@ struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
                   int sin_mod,
                   int sin_len,
                   int sin_count) {
-    GraphicsObject& object = getGraphicsObject(machine, this, obj);
+    GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().getTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
@@ -705,7 +705,7 @@ bool MutatorIsDone(RLMachine& machine,
                    int obj,
                    int repno,
                    const char* name) {
-  return getGraphicsObject(machine, op, obj)
+  return GetGraphicsObject(machine, op, obj)
              .IsMutatorRunningMatching(repno, name) == false;
 }
 
@@ -744,7 +744,7 @@ bool objectMutatorIsWorking(RLMachine& machine,
                             int obj,
                             int repno,
                             const char* name) {
-  return getGraphicsObject(machine, op, obj)
+  return GetGraphicsObject(machine, op, obj)
              .IsMutatorRunningMatching(repno, name) == false;
 }
 
@@ -1119,7 +1119,7 @@ ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
 // -----------------------------------------------------------------------
 
 ChildObjFgModule::ChildObjFgModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjFg", 2, 81) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFg", 2, 81) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -1128,7 +1128,7 @@ ChildObjFgModule::ChildObjFgModule()
 // -----------------------------------------------------------------------
 
 ChildObjBgModule::ChildObjBgModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjBg", 2, 82) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBg", 2, 82) {
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -1137,7 +1137,7 @@ ChildObjBgModule::ChildObjBgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeFgModule::ObjRangeFgModule()
-    : MappedRLModule(rangeMappingFun, "ObjRangeFg", 1, 90) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeFg", 1, 90) {
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -1145,7 +1145,7 @@ ObjRangeFgModule::ObjRangeFgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeBgModule::ObjRangeBgModule()
-    : MappedRLModule(rangeMappingFun, "ObjRangeBg", 1, 91) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeBg", 1, 91) {
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }
@@ -1153,7 +1153,7 @@ ObjRangeBgModule::ObjRangeBgModule()
 // -----------------------------------------------------------------------
 
 ChildObjRangeFgModule::ChildObjRangeFgModule()
-    : MappedRLModule(childRangeMappingFun, "ObjChildRangeFg", 2, 90) {
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90) {
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }

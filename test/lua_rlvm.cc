@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
     libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
 
     ScriptMachine rlmachine(world, sdlSystem, arc);
-    addAllModules(rlmachine);
+    AddAllModules(rlmachine);
     AddGameHacks(rlmachine);
     world.initializeMachine(rlmachine);
     world.loadToplevelFile(scriptLocation.string());

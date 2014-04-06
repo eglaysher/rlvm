@@ -32,6 +32,6 @@ class RLModule;
 
 // Public access to the date functions. Meant to be called from the
 // constructor of SysModule.
-void addSysDateOpcodes(RLModule& module);
+void AddSysDateOpcodes(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_DATE_H_

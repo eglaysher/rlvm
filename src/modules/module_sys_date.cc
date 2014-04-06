@@ -98,7 +98,7 @@ struct GetDateTime : public RLOp_Void_8<IntReference_T,
 
 }  // namespace
 
-void addSysDateOpcodes(RLModule& m) {
+void AddSysDateOpcodes(RLModule& m) {
   m.AddOpcode(1100, 0, "GetYear", ReturnIntValue(datetime::getYear));
   m.AddOpcode(1101, 0, "GetMonth", ReturnIntValue(datetime::getMonth));
   m.AddOpcode(1102, 0, "GetDay", ReturnIntValue(datetime::getDay));

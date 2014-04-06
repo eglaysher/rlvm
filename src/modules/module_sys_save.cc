@@ -321,7 +321,7 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 
 // -----------------------------------------------------------------------
 
-void addSysSaveOpcodes(RLModule& m) {
+void AddSysSaveOpcodes(RLModule& m) {
   m.AddOpcode(1409, 0, "SaveExists", new SaveExists);
   m.AddOpcode(1410, 0, "SaveDate", new SaveDate);
   m.AddOpcode(1411, 0, "SaveTime", new SaveTime);

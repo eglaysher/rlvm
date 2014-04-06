@@ -1189,11 +1189,11 @@ class GrpStackAdapter : public RLOp_SpecialCase {
 
 }  // namespace
 
-RLOperation* graphicsStackMappingFun(RLOperation* op) {
+RLOperation* GraphicsStackMappingFun(RLOperation* op) {
   return new GrpStackAdapter(op);
 }
 
-GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
+GrpModule::GrpModule() : MappedRLModule(GraphicsStackMappingFun, "Grp", 1, 33) {
   using rect_impl::GRP;
   using rect_impl::REC;
 
@@ -1432,7 +1432,7 @@ GrpModule::GrpModule() : MappedRLModule(graphicsStackMappingFun, "Grp", 1, 33) {
 
 // -----------------------------------------------------------------------
 
-void replayGraphicsStackCommand(RLMachine& machine,
+void ReplayGraphicsStackCommand(RLMachine& machine,
                                 const std::deque<std::string>& stack) {
   try {
     for (auto const& command : stack) {
@@ -1459,7 +1459,7 @@ void replayGraphicsStackCommand(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-void replayDepricatedGraphicsStackVector(
+void ReplayDepricatedGraphicsStackVector(
     RLMachine& machine,
     const std::vector<GraphicsStackFrame>& gstack) {
   for (auto const& frame : gstack) {

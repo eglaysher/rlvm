@@ -60,7 +60,7 @@ struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-void addSysSyscomOpcodes(RLModule& m) {
+void AddSysSyscomOpcodes(RLModule& m) {
   m.AddOpcode(1210, 0, "ContextMenu", new ContextMenu);
 
   m.AddOpcode(

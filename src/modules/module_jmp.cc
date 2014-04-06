@@ -56,15 +56,15 @@ using libreallive::ExpressionPiecesVector;
 namespace {
 
 // Finds which case should be used in the *_case functions.
-int evaluateCase(RLMachine& machine, const CommandElement& gotoElement) {
-  const ExpressionPiecesVector& conditions = gotoElement.GetParsedParameters();
+int EvaluateCase(RLMachine& machine, const CommandElement& goto_element) {
+  const ExpressionPiecesVector& conditions = goto_element.GetParsedParameters();
   int value = conditions[0]->GetIntegerValue(machine);
 
   // Walk linearly through the output cases, executing the first
   // match against value.
-  int cases = gotoElement.GetCaseCount();
+  int cases = goto_element.GetCaseCount();
   for (int i = 0; i < cases; ++i) {
-    std::string caseUnparsed = gotoElement.GetCase(i);
+    std::string caseUnparsed = goto_element.GetCase(i);
 
     // Check for bytecode wellformedness. All cases should be
     // surrounded by parens
@@ -102,7 +102,7 @@ typedef Argc_T<
 // parameters in gosub_with and farcall_with calls, and return them to the
 // caller. We read the data before pushing the stack frame because intL[] and
 // strK[]'s values change after the gosub_with/farcall_with.
-void readWithData(RLMachine& machine,
+void ReadWithData(RLMachine& machine,
                   const ParamVector& f,
                   std::vector<int>& integers,
                   std::vector<std::string>& strings) {
@@ -125,7 +125,7 @@ void readWithData(RLMachine& machine,
 }
 
 // Write the data after we've changed the stack frame.
-void writeWithData(RLMachine& machine,
+void WriteWithData(RLMachine& machine,
                    const std::vector<int>& integers,
                    const std::vector<std::string>& strings) {
   for (int i = 0; i < 40 && i < integers.size(); ++i) {
@@ -142,9 +142,9 @@ void writeWithData(RLMachine& machine,
 //
 // Jumps to the supplied label in the current scenario.
 struct Jmp_goto : public RLOp_SpecialCase {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     // Goto the first pointer
-    machine.GotoLocation(gotoElement.GetPointer(0));
+    machine.GotoLocation(goto_element.GetPointer(0));
   }
 };
 
@@ -166,12 +166,12 @@ struct ParseGotoParametersAsExpressions : public RLOp_SpecialCase {
 // Conditional equivalents of goto; goto_if () jumps to @label if the value of
 // condition is non-zero
 struct goto_if : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
 
     if (conditions[0]->GetIntegerValue(machine)) {
-      machine.GotoLocation(gotoElement.GetPointer(0));
+      machine.GotoLocation(goto_element.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
     }
@@ -180,12 +180,12 @@ struct goto_if : public ParseGotoParametersAsExpressions {
 
 // Implements op<0:Jmp:00002, 0>, fun goto_unless (<'condition').
 struct goto_unless : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
 
     if (!conditions[0]->GetIntegerValue(machine)) {
-      machine.GotoLocation(gotoElement.GetPointer(0));
+      machine.GotoLocation(goto_element.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
     }
@@ -199,13 +199,13 @@ struct goto_unless : public ParseGotoParametersAsExpressions {
 // outside the valid range, no jump takes place, and execution
 // continues from the next statement instead.
 struct goto_on : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
     int value = conditions[0]->GetIntegerValue(machine);
 
-    if (value >= 0 && value < int(gotoElement.GetPointersCount())) {
-      machine.GotoLocation(gotoElement.GetPointer(value));
+    if (value >= 0 && value < int(goto_element.GetPointersCount())) {
+      machine.GotoLocation(goto_element.GetPointer(value));
     } else {
       // If the value is not a valid pointer, simply increment.
       machine.AdvanceInstructionPointer();
@@ -219,9 +219,9 @@ struct goto_on : public ParseGotoParametersAsExpressions {
 // compared to val1, val2, etc. in turn, and control passes to the
 // label associated with the first matching value.
 struct goto_case : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    int i = evaluateCase(machine, gotoElement);
-    machine.GotoLocation(gotoElement.GetPointer(i));
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
+    int i = EvaluateCase(machine, goto_element);
+    machine.GotoLocation(goto_element.GetPointer(i));
   }
 };
 
@@ -230,8 +230,8 @@ struct goto_case : public ParseGotoParametersAsExpressions {
 // Pushes the current location onto the call stack, then jumps to the
 // label @label in the current scenario.
 struct gosub : public RLOp_SpecialCase {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    machine.Gosub(gotoElement.GetPointer(0));
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
+    machine.Gosub(goto_element.GetPointer(0));
   }
 };
 
@@ -241,12 +241,12 @@ struct gosub : public RLOp_SpecialCase {
 // label @label in the current scenario, if the passed in condition is
 // true.
 struct gosub_if : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
 
     if (conditions[0]->GetIntegerValue(machine)) {
-      machine.Gosub(gotoElement.GetPointer(0));
+      machine.Gosub(goto_element.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
     }
@@ -258,12 +258,12 @@ struct gosub_if : public ParseGotoParametersAsExpressions {
 // Pushes the current location onto the call stack, then jumps to the label
 // @label in the current scenario, if the passed in condition is false.
 struct gosub_unless : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
 
     if (!conditions[0]->GetIntegerValue(machine)) {
-      machine.Gosub(gotoElement.GetPointer(0));
+      machine.Gosub(goto_element.GetPointer(0));
     } else {
       machine.AdvanceInstructionPointer();
     }
@@ -277,13 +277,13 @@ struct gosub_unless : public ParseGotoParametersAsExpressions {
 // no gosub takes place, and execution continues from the next statement
 // instead.
 struct gosub_on : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     const ExpressionPiecesVector& conditions =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
     int value = conditions[0]->GetIntegerValue(machine);
 
-    if (value >= 0 && value < int(gotoElement.GetPointersCount()))
-      machine.Gosub(gotoElement.GetPointer(value));
+    if (value >= 0 && value < int(goto_element.GetPointersCount()))
+      machine.Gosub(goto_element.GetPointer(value));
     else
       // If the value is not a valid pointer, simply increment.
       machine.AdvanceInstructionPointer();
@@ -296,9 +296,9 @@ struct gosub_on : public ParseGotoParametersAsExpressions {
 // etc. in turn, and control passes to the label associated with the first
 // matching value.
 struct gosub_case : public ParseGotoParametersAsExpressions {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
-    int i = evaluateCase(machine, gotoElement);
-    machine.Gosub(gotoElement.GetPointer(i));
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
+    int i = EvaluateCase(machine, goto_element);
+    machine.Gosub(goto_element.GetPointer(i));
   }
 };
 
@@ -379,24 +379,24 @@ struct rtl : public RLOp_Void_Void {
 // special data, as well as doing normal parameter parsing. Therefore, I invoke
 // the static methods on the type checking structs directly to reuse code.
 struct gosub_with : public RLOp_SpecialCase {
-  void operator()(RLMachine& machine, const CommandElement& gotoElement) {
+  void operator()(RLMachine& machine, const CommandElement& goto_element) {
     typedef Argc_T<
         Special_T<DefaultSpecialMapper, IntConstant_T, StrConstant_T>>
         ParamFormat;
 
     const ExpressionPiecesVector& parameterPieces =
-        gotoElement.GetParsedParameters();
+        goto_element.GetParsedParameters();
     unsigned int position = 0;
     ParamFormat::type data =
         ParamFormat::getData(machine, parameterPieces, position);
 
     std::vector<int> integers;
     std::vector<std::string> strings;
-    readWithData(machine, data, integers, strings);
+    ReadWithData(machine, data, integers, strings);
 
-    machine.Gosub(gotoElement.GetPointer(0));
+    machine.Gosub(goto_element.GetPointer(0));
 
-    writeWithData(machine, integers, strings);
+    WriteWithData(machine, integers, strings);
   }
 };
 
@@ -436,11 +436,11 @@ struct farcall_with
                   ParamVector withStuff) {
     std::vector<int> integers;
     std::vector<std::string> strings;
-    readWithData(machine, withStuff, integers, strings);
+    ReadWithData(machine, withStuff, integers, strings);
 
     machine.Farcall(scenario, entrypoint);
 
-    writeWithData(machine, integers, strings);
+    WriteWithData(machine, integers, strings);
   }
 };
 

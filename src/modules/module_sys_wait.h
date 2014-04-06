@@ -30,6 +30,6 @@
 
 class RLModule;
 
-void addWaitAndMouseOpcodes(RLModule& m);
+void AddWaitAndMouseOpcodes(RLModule& m);
 
 #endif  // SRC_MODULES_MODULE_SYS_WAIT_H_

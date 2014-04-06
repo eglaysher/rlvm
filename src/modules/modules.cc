@@ -57,7 +57,7 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/system.h"
 
-void addAllModules(RLMachine& rlmachine) {
+void AddAllModules(RLMachine& rlmachine) {
   // Attatch the modules for some commands
   rlmachine.AttachModule(new BgmModule);
   rlmachine.AttachModule(new BgrModule);

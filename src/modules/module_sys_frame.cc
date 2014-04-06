@@ -197,7 +197,7 @@ struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
 
 // -----------------------------------------------------------------------
 
-void addSysFrameOpcodes(RLModule& m) {
+void AddSysFrameOpcodes(RLModule& m) {
   // Normal frame counter operations
   m.AddOpcode(500, 0, "InitFrame", new InitFrame<SimpleFrameCounter>(0));
   m.AddOpcode(501, 0, "InitFrameLoop", new InitFrame<LoopFrameCounter>(0));

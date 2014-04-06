@@ -51,7 +51,7 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
                                      int delay,
                                      int type) {
   unsigned int creation_time = machine.system().event().getTicks();
-  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)();
   obj.AddObjectMutator(new OneIntObjectMutator(name_,
@@ -81,7 +81,7 @@ void Op_ObjectMutatorRepnoInt::operator()(RLMachine& machine,
                                           int delay,
                                           int type) {
   unsigned int creation_time = machine.system().event().getTicks();
-  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)(repno);
   obj.AddObjectMutator(new RepnoIntObjectMutator(name_,
@@ -118,7 +118,7 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
                                         int delay,
                                         int type) {
   unsigned int creation_time = machine.system().event().getTicks();
-  GraphicsObject& obj = getGraphicsObject(machine, this, object);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, object);
   int startval_one = (obj.*getter_one_)();
   int startval_two = (obj.*getter_two_)();
 
@@ -145,7 +145,7 @@ Op_EndObjectMutation_Normal::~Op_EndObjectMutation_Normal() {}
 void Op_EndObjectMutation_Normal::operator()(RLMachine& machine,
                                              int object,
                                              int speedup) {
-  getGraphicsObject(machine, this, object)
+  GetGraphicsObject(machine, this, object)
       .EndObjectMutatorMatching(machine, -1, name_, speedup);
 }
 
@@ -160,6 +160,6 @@ void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
                                             int object,
                                             int repno,
                                             int speedup) {
-  getGraphicsObject(machine, this, object)
+  GetGraphicsObject(machine, this, object)
       .EndObjectMutatorMatching(machine, repno, name_, speedup);
 }

@@ -80,7 +80,7 @@ struct Sys_WaitClick
 
 // -----------------------------------------------------------------------
 
-void addWaitAndMouseOpcodes(RLModule& m) {
+void AddWaitAndMouseOpcodes(RLModule& m) {
   m.AddOpcode(100, 0, "wait", new Sys_wait(false));
   m.AddOpcode(101, 0, "waitC", new Sys_wait(true));
 

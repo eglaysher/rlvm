@@ -47,7 +47,7 @@ class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
   virtual ~Obj_GetInt() {}
 
   virtual int operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     return ((obj).*(getter_))();
   }
 
@@ -67,7 +67,7 @@ struct objGetPos
                   int objNum,
                   IntReferenceIterator xIt,
                   IntReferenceIterator yIt) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     *xIt = obj.x();
     *yIt = obj.y();
   }
@@ -75,14 +75,14 @@ struct objGetPos
 
 struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.xAdjustment(repno);
   }
 };
 
 struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.yAdjustment(repno);
   }
 };
@@ -99,7 +99,7 @@ struct objGetDims : public RLOp_Void_4<IntConstant_T,
                   IntReferenceIterator widthIt,
                   IntReferenceIterator heightIt,
                   int unknown) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     *widthIt = obj.pixelWidth();
     *heightIt = obj.pixelHeight();
   }
@@ -143,7 +143,7 @@ ObjBgGettersModule::ObjBgGettersModule() : RLModule("ObjBgGetters", 1, 85) {
 // -----------------------------------------------------------------------
 
 ChildObjFgGettersModule::ChildObjFgGettersModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgGetters", 2, 84) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgGetters", 2, 84) {
   addFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -151,7 +151,7 @@ ChildObjFgGettersModule::ChildObjFgGettersModule()
 // -----------------------------------------------------------------------
 
 ChildObjBgGettersModule::ChildObjBgGettersModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjBgGetters", 2, 85) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBgGetters", 2, 85) {
   addFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }

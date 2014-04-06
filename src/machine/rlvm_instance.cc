@@ -111,7 +111,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     SDLSystem sdlSystem(gameexe);
     RLMachine rlmachine(sdlSystem, arc);
-    addAllModules(rlmachine);
+    AddAllModules(rlmachine);
     AddGameHacks(rlmachine);
 
     // Validate our font file

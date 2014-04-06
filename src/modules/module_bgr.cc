@@ -284,7 +284,7 @@ struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-BgrModule::BgrModule() : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
+BgrModule::BgrModule() : MappedRLModule(GraphicsStackMappingFun, "Bgr", 1, 40) {
   AddOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
   AddOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
   AddOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);

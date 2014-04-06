@@ -105,7 +105,7 @@ struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   explicit objGeneric_0(const DataFunction& fun) : data_fun_(fun) {}
 
   void operator()(RLMachine& machine, int buf, std::string filename) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
   }
 };
@@ -119,7 +119,7 @@ struct objGeneric_1
                   int buf,
                   std::string filename,
                   int visible) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
   }
@@ -139,7 +139,7 @@ struct objGeneric_2 : public RLOp_Void_5<IntConstant_T,
                   int visible,
                   int x,
                   int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
     obj.setX(x);
@@ -163,7 +163,7 @@ struct objGeneric_3 : public RLOp_Void_6<IntConstant_T,
                   int x,
                   int y,
                   int pattern) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
     obj.setX(x);
@@ -192,7 +192,7 @@ struct objGeneric_4 : public RLOp_Void_8<IntConstant_T,
                   int pattern,
                   int scrollX,
                   int scrollY) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
 
     data_fun_(machine, obj, filename);
     obj.setVisible(visible);
@@ -210,7 +210,7 @@ struct objOfFileGan_0
                   int buf,
                   string imgFilename,
                   string ganFilename) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(true);
   }
@@ -225,7 +225,7 @@ struct objOfFileGan_1 : public RLOp_Void_4<IntConstant_T,
                   string imgFilename,
                   string ganFilename,
                   int visible) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
   }
@@ -244,7 +244,7 @@ struct objOfFileGan_2 : public RLOp_Void_6<IntConstant_T,
                   int visible,
                   int x,
                   int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
     obj.setX(x);
@@ -267,7 +267,7 @@ struct objOfFileGan_3 : public RLOp_Void_7<IntConstant_T,
                   int x,
                   int y,
                   int pattern) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     setObjectDataToGan(machine, obj, imgFilename, ganFilename);
     obj.setVisible(visible);
     obj.setX(x);
@@ -280,7 +280,7 @@ void setObjectDataToRect(RLMachine& machine,
                          RLOperation* op,
                          int buf,
                          const Rect& r) {
-  GraphicsObject& obj = getGraphicsObject(machine, op, buf);
+  GraphicsObject& obj = GetGraphicsObject(machine, op, buf);
   obj.setObjectData(new ColourFilterObjectData(machine.system().graphics(), r));
 }
 
@@ -302,7 +302,7 @@ struct objOfArea_2
   void operator()(RLMachine& machine, int buf, Rect rect, int visible) {
     setObjectDataToRect(machine, this, buf, rect);
 
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setVisible(visible);
   }
 };
@@ -353,7 +353,7 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
     }
 
     setObjectDataToRect(machine, this, buf, data_rect);
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setVisible(visible);
   }
 };
@@ -370,7 +370,7 @@ struct objOfChild_0 : public RLOp_Void_4<IntConstant_T,
                   int count,
                   string imgFilename,
                   string ganFilename) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(true);
   }
@@ -387,7 +387,7 @@ struct objOfChild_1 : public RLOp_Void_5<IntConstant_T,
                   string imgFilename,
                   string ganFilename,
                   int visible) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(visible);
   }
@@ -408,7 +408,7 @@ struct objOfChild_2 : public RLOp_Void_7<IntConstant_T,
                   int visible,
                   int x,
                   int y) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.setObjectData(new ParentGraphicsObjectData(count));
     obj.setVisible(visible);
     obj.setX(x);
@@ -482,7 +482,7 @@ ObjBgCreationModule::ObjBgCreationModule() : RLModule("ObjBgCreation", 1, 72) {
 // -----------------------------------------------------------------------
 
 ChildObjFgCreationModule::ChildObjFgCreationModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgCreation", 2, 71) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgCreation", 2, 71) {
   addObjectCreationFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -490,7 +490,7 @@ ChildObjFgCreationModule::ChildObjFgCreationModule()
 // -----------------------------------------------------------------------
 
 ChildObjBgCreationModule::ChildObjBgCreationModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjBgCreation", 2, 72) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBgCreation", 2, 72) {
   addObjectCreationFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }

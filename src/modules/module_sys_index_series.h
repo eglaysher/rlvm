@@ -59,7 +59,7 @@ struct Sys_index_series : public RLOp_Store_4<IntConstant_T,
                  IndexList::type index_list);
 
   // Adds a single term.
-  void adder(int index,
+  void Adder(int index,
              int start,
              int end,
              int endval,
@@ -70,6 +70,6 @@ struct Sys_index_series : public RLOp_Store_4<IntConstant_T,
 };
 
 // index_series has its own file.
-void addIndexSeriesOpcode(RLModule& module);
+void AddIndexSeriesOpcode(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_INDEX_SERIES_H_
