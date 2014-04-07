@@ -53,11 +53,11 @@ HIKRenderer::HIKRenderer(System& system,
 
 HIKRenderer::~HIKRenderer() {}
 
-void HIKRenderer::execute(RLMachine& machine) {
+void HIKRenderer::Execute(RLMachine& machine) {
   machine.system().graphics().markScreenAsDirty(GUT_DRAW_HIK);
 }
 
-void HIKRenderer::render(std::ostream* tree) {
+void HIKRenderer::Render(std::ostream* tree) {
   int current_ticks = system_.event().GetTicks();
   int time_since_creation = current_ticks - creation_time_;
 

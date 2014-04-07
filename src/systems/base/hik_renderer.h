@@ -42,9 +42,9 @@ class HIKRenderer {
   ~HIKRenderer();
 
   // Run once per tick.
-  void execute(RLMachine& machine);
+  void Execute(RLMachine& machine);
 
-  void render(std::ostream* os);
+  void Render(std::ostream* os);
 
   // Advances to the next layer.
   void NextAnimationFrame();

@@ -522,7 +522,7 @@ void GraphicsSystem::drawFrame(std::ostream* tree) {
     }
     case BACKGROUND_HIK: {
       if (hik_renderer_) {
-        hik_renderer_->render(tree);
+        hik_renderer_->Render(tree);
       } else {
         getHaikei()->renderToScreen(screenRect(), screenRect(), 255);
         if (tree) {
@@ -551,7 +551,7 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
     mouse_cursor_->execute(system());
 
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
-    hik_renderer_->execute(machine);
+    hik_renderer_->Execute(machine);
 
   // Possibly update the screen shaking state
   if (!screen_shake_queue_.empty()) {
