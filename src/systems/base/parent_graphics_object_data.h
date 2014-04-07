@@ -48,22 +48,22 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
 
   LazyArray<GraphicsObject>& objects();
 
-  virtual void render(const GraphicsObject& go,
+  virtual void Render(const GraphicsObject& go,
                       const GraphicsObject* parent,
-                      std::ostream* tree);
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
-  virtual bool isAnimation() const;
-  virtual void playSet(int set);
+                      std::ostream* tree) override;
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
+  virtual bool IsAnimation() const override;
+  virtual void PlaySet(int set) override;
 
-  virtual bool isParentLayer() const { return true; }
+  virtual bool IsParentLayer() const override { return true; }
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& rp);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& rp) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   ParentGraphicsObjectData();

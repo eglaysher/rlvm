@@ -139,8 +139,8 @@ GraphicsObject::GraphicsObject() : impl_(s_empty_impl) {}
 
 GraphicsObject::GraphicsObject(const GraphicsObject& rhs) : impl_(rhs.impl_) {
   if (rhs.object_data_) {
-    object_data_.reset(rhs.object_data_->clone());
-    object_data_->setOwnedBy(*this);
+    object_data_.reset(rhs.object_data_->Clone());
+    object_data_->set_owned_by(*this);
   } else {
     object_data_.reset();
   }
@@ -155,8 +155,8 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
   impl_ = obj.impl_;
 
   if (obj.object_data_) {
-    object_data_.reset(obj.object_data_->clone());
-    object_data_->setOwnedBy(*this);
+    object_data_.reset(obj.object_data_->Clone());
+    object_data_->set_owned_by(*this);
   } else {
     object_data_.reset();
   }
@@ -166,7 +166,7 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
 
 void GraphicsObject::setObjectData(GraphicsObjectData* obj) {
   object_data_.reset(obj);
-  object_data_->setOwnedBy(*this);
+  object_data_->set_owned_by(*this);
 }
 
 void GraphicsObject::setVisible(const int in) {
@@ -264,14 +264,14 @@ int GraphicsObject::pixelWidth() const {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
   if (hasObjectData())
-    return object_data_->pixelWidth(*this);
+    return object_data_->PixelWidth(*this);
   else
     return 0;
 }
 
 int GraphicsObject::pixelHeight() const {
   if (hasObjectData())
-    return object_data_->pixelHeight(*this);
+    return object_data_->PixelHeight(*this);
   else
     return 0;
 }
@@ -841,7 +841,7 @@ void GraphicsObject::render(int objNum,
       *tree << "Object #" << objNum << ":" << std::endl;
     }
 
-    object_data_->render(*this, parent, tree);
+    object_data_->Render(*this, parent, tree);
   }
 }
 
@@ -863,7 +863,7 @@ void GraphicsObject::clearObject() {
 
 void GraphicsObject::execute(RLMachine& machine) {
   if (object_data_) {
-    object_data_->execute(machine);
+    object_data_->Execute(machine);
   }
 
   // Run each mutator. If it returns true, remove it.

@@ -56,29 +56,29 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
 
   const std::string& filename() const { return filename_; }
 
-  virtual int pixelWidth(const GraphicsObject& rp);
-  virtual int pixelHeight(const GraphicsObject& rp);
+  virtual int PixelWidth(const GraphicsObject& rp) override;
+  virtual int PixelHeight(const GraphicsObject& rp) override;
 
-  virtual GraphicsObjectData* clone() const;
+  virtual GraphicsObjectData* Clone() const override;
 
-  virtual void execute(RLMachine& machine);
+  virtual void Execute(RLMachine& machine) override;
 
-  virtual bool isAnimation() const;
-  virtual void playSet(int set);
+  virtual bool IsAnimation() const override;
+  virtual void PlaySet(int set) override;
 
  protected:
-  virtual void loopAnimation();
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual Rect srcRect(const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
+  virtual void LoopAnimation() override;
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual Rect SrcRect(const GraphicsObject& go) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   // Private constructor for cloning
   GraphicsObjectOfFile(const GraphicsObjectOfFile& obj);
 
   // Used in serialization system.
-  void loadFile();
+  void LoadFile();
 
   // Our parent system.
   System& system_;

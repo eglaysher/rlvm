@@ -53,7 +53,7 @@ LazyArray<GraphicsObject>& ParentGraphicsObjectData::objects() {
   return objects_;
 }
 
-void ParentGraphicsObjectData::render(const GraphicsObject& go,
+void ParentGraphicsObjectData::Render(const GraphicsObject& go,
                                       const GraphicsObject* parent,
                                       std::ostream* tree) {
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.begin();
@@ -63,17 +63,17 @@ void ParentGraphicsObjectData::render(const GraphicsObject& go,
   }
 }
 
-int ParentGraphicsObjectData::pixelWidth(
+int ParentGraphicsObjectData::PixelWidth(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
 
-int ParentGraphicsObjectData::pixelHeight(
+int ParentGraphicsObjectData::PixelHeight(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
 
-GraphicsObjectData* ParentGraphicsObjectData::clone() const {
+GraphicsObjectData* ParentGraphicsObjectData::Clone() const {
   int size = objects_.size();
   ParentGraphicsObjectData* cloned = new ParentGraphicsObjectData(size);
 
@@ -86,23 +86,23 @@ GraphicsObjectData* ParentGraphicsObjectData::clone() const {
   return cloned;
 }
 
-void ParentGraphicsObjectData::execute(RLMachine& machine) {
+void ParentGraphicsObjectData::Execute(RLMachine& machine) {
   for (GraphicsObject& obj : objects_)
     obj.execute(machine);
 }
 
-bool ParentGraphicsObjectData::isAnimation() const { return false; }
+bool ParentGraphicsObjectData::IsAnimation() const { return false; }
 
-void ParentGraphicsObjectData::playSet(int set) {
+void ParentGraphicsObjectData::PlaySet(int set) {
   // Deliberately empty.
 }
 
-boost::shared_ptr<const Surface> ParentGraphicsObjectData::currentSurface(
+boost::shared_ptr<const Surface> ParentGraphicsObjectData::CurrentSurface(
     const GraphicsObject& rp) {
   return boost::shared_ptr<const Surface>();
 }
 
-void ParentGraphicsObjectData::objectInfo(std::ostream& tree) {
+void ParentGraphicsObjectData::ObjectInfo(std::ostream& tree) {
   tree << "ParentGraphicsObjectData::objectInfo is a TODO";
 }
 

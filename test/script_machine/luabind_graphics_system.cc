@@ -45,7 +45,7 @@ GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
 
 GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
   GraphicsObject& obj = sys.getObject(0, parent);
-  if (obj.hasObjectData() && obj.objectData().isParentLayer()) {
+  if (obj.hasObjectData() && obj.objectData().IsParentLayer()) {
     return static_cast<ParentGraphicsObjectData&>(obj.objectData())
         .getObject(child);
   }

@@ -42,7 +42,7 @@ using libreallive::ExpressionPiece;
 
 void EnsureIsParentObject(GraphicsObject& parent, int size) {
   if (parent.hasObjectData()) {
-    if (parent.objectData().isParentLayer()) {
+    if (parent.objectData().IsParentLayer()) {
       return;
     }
   }

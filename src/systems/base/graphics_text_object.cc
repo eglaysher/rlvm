@@ -57,7 +57,7 @@ GraphicsTextObject::~GraphicsTextObject() {}
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
+void GraphicsTextObject::UpdateSurface(const GraphicsObject& rp) {
   cached_utf8_str_ = rp.textText();
 
   // Get the correct colour
@@ -92,7 +92,7 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
+bool GraphicsTextObject::NeedsUpdate(const GraphicsObject& rp) {
   return !surface_ || rp.textColour() != cached_text_colour_ ||
          rp.textShadowColour() != cached_shadow_colour_ ||
          rp.textSize() != cached_text_size_ ||
@@ -104,47 +104,47 @@ bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsTextObject::currentSurface(
+boost::shared_ptr<const Surface> GraphicsTextObject::CurrentSurface(
     const GraphicsObject& go) {
-  if (needsUpdate(go))
-    updateSurface(go);
+  if (NeedsUpdate(go))
+    UpdateSurface(go);
 
   return surface_;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::objectInfo(std::ostream& tree) {
+void GraphicsTextObject::ObjectInfo(std::ostream& tree) {
   tree << "  Text: \"" << cached_utf8_str_ << "\"" << std::endl;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelWidth(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int GraphicsTextObject::PixelWidth(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
   return int(rp.getWidthScaleFactor() * surface_->size().width());
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelHeight(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int GraphicsTextObject::PixelHeight(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
   return int(rp.getHeightScaleFactor() * surface_->size().height());
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsTextObject::clone() const {
+GraphicsObjectData* GraphicsTextObject::Clone() const {
   return new GraphicsTextObject(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::execute(RLMachine& machine) {}
+void GraphicsTextObject::Execute(RLMachine& machine) {}
 
 // -----------------------------------------------------------------------
 

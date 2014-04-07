@@ -88,8 +88,8 @@ struct WaitForGanToFinish : public LongOperation {
 
     if (obj.hasObjectData()) {
       const GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation())
-        done = !data.currentlyPlaying();
+      if (data.IsAnimation())
+        done = !data.is_currently_playing();
     }
 
     if (done) {
@@ -133,9 +133,9 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation()) {
-        data.playSet(animationSet);
-        data.setAfterAction(after_effect_);
+      if (data.IsAnimation()) {
+        data.PlaySet(animationSet);
+        data.set_after_action(after_effect_);
 
         if (block_) {
           int fgbg;
@@ -209,8 +209,8 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
 
     if (obj.hasObjectData()) {
       GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation()) {
-        if (data.animationFinished()) {
+      if (data.IsAnimation()) {
+        if (data.animation_finished()) {
           return 0;
         } else {
           return 1;
@@ -226,7 +226,7 @@ struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
     if (obj.hasObjectData())
-      obj.objectData().setCurrentlyPlaying(false);
+      obj.objectData().set_is_currently_playing(false);
   }
 };
 

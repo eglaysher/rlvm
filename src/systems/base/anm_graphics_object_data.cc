@@ -77,16 +77,16 @@ AnmGraphicsObjectData::AnmGraphicsObjectData(System& system)
 AnmGraphicsObjectData::AnmGraphicsObjectData(System& system,
                                              const std::string& file)
     : system_(system), filename_(file), current_set_(-1) {
-  loadAnmFile();
+  LoadAnmFile();
 }
 
 AnmGraphicsObjectData::~AnmGraphicsObjectData() {}
 
-bool AnmGraphicsObjectData::testFileMagic(std::unique_ptr<char[]>& anm_data) {
+bool AnmGraphicsObjectData::TestFileMagic(std::unique_ptr<char[]>& anm_data) {
   return memcmp(anm_data.get(), ANM_MAGIC, ANM_MAGIC_SIZE) != 0;
 }
 
-void AnmGraphicsObjectData::loadAnmFile() {
+void AnmGraphicsObjectData::LoadAnmFile() {
   fs::path file = system_.FindFile(filename_, ANM_FILETYPES);
   if (file.empty()) {
     std::ostringstream oss;
@@ -102,16 +102,16 @@ void AnmGraphicsObjectData::loadAnmFile() {
     throw rlvm::Exception(oss.str());
   }
 
-  if (testFileMagic(anm_data)) {
+  if (TestFileMagic(anm_data)) {
     std::ostringstream oss;
     oss << "File \"" << file << "\" does not appear to be in ANM format.";
     throw rlvm::Exception(oss.str());
   }
 
-  loadAnmFileFromData(anm_data);
+  LoadAnmFileFromData(anm_data);
 }
 
-void AnmGraphicsObjectData::loadAnmFileFromData(
+void AnmGraphicsObjectData::LoadAnmFileFromData(
     const std::unique_ptr<char[]>& anm_data) {
   const char* data = anm_data.get();
 
@@ -141,21 +141,21 @@ void AnmGraphicsObjectData::loadAnmFileFromData(
     f.dest_x = read_i32(buf + 16);
     f.dest_y = read_i32(buf + 20);
     f.time = read_i32(buf + 0x38);
-    fixAxis(f, screen_size.width(), screen_size.height());
+    FixAxis(f, screen_size.width(), screen_size.height());
     frames.push_back(f);
 
     buf += 0x60;
   }
 
-  readIntegerList(
-      data + 0xb8 + frames_len * 0x60, 0x68, framelist_len, framelist);
-  readIntegerList(data + 0xb8 + frames_len * 0x60 + framelist_len * 0x68,
+  ReadIntegerList(
+      data + 0xb8 + frames_len * 0x60, 0x68, framelist_len, framelist_);
+  ReadIntegerList(data + 0xb8 + frames_len * 0x60 + framelist_len * 0x68,
                   0x78,
                   animation_set_len,
-                  animation_set);
+                  animation_set_);
 }
 
-void AnmGraphicsObjectData::readIntegerList(
+void AnmGraphicsObjectData::ReadIntegerList(
     const char* start,
     int offset,
     int iterations,
@@ -174,7 +174,7 @@ void AnmGraphicsObjectData::readIntegerList(
   }
 }
 
-void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
+void AnmGraphicsObjectData::FixAxis(Frame& frame, int width, int height) {
   if (frame.src_x1 > frame.src_x2) {  // swap
     int tmp = frame.src_x1;
     frame.src_x1 = frame.src_x2;
@@ -195,18 +195,22 @@ void AnmGraphicsObjectData::fixAxis(Frame& frame, int width, int height) {
   }
 }
 
-void AnmGraphicsObjectData::execute(RLMachine& machine) {
-  if (currentlyPlaying())
-    advanceFrame();
+void AnmGraphicsObjectData::Execute(RLMachine& machine) {
+  if (is_currently_playing())
+    AdvanceFrame();
 }
 
-void AnmGraphicsObjectData::advanceFrame() {
+bool AnmGraphicsObjectData::IsAnimation() const {
+  return true;
+}
+
+void AnmGraphicsObjectData::AdvanceFrame() {
   // Do things that advance the state
   int time_since_last_frame_change =
       system_.event().getTicks() - time_at_last_frame_change_;
   bool done = false;
 
-  while (currentlyPlaying() && !done) {
+  while (is_currently_playing() && !done) {
     if (time_since_last_frame_change > frames[current_frame_].time) {
       time_since_last_frame_change -= frames[current_frame_].time;
       time_at_last_frame_change_ += frames[current_frame_].time;
@@ -216,10 +220,10 @@ void AnmGraphicsObjectData::advanceFrame() {
       if (cur_frame_ == cur_frame_end_) {
         cur_frame_set_++;
         if (cur_frame_set_ == cur_frame_set_end_) {
-          setCurrentlyPlaying(false);
+          set_is_currently_playing(false);
         } else {
-          cur_frame_ = framelist.at(*cur_frame_set_).begin();
-          cur_frame_end_ = framelist.at(*cur_frame_set_).end();
+          cur_frame_ = framelist_.at(*cur_frame_set_).begin();
+          cur_frame_end_ = framelist_.at(*cur_frame_set_).end();
           current_frame_ = *cur_frame_;
         }
       } else {
@@ -233,41 +237,41 @@ void AnmGraphicsObjectData::advanceFrame() {
 
 // I am not entirely sure these methods even make sense given the
 // context...
-int AnmGraphicsObjectData::pixelWidth(const GraphicsObject& rp) {
+int AnmGraphicsObjectData::PixelWidth(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int width = rect.rect.width();
   return int(rp.getWidthScaleFactor() * width);
 }
 
-int AnmGraphicsObjectData::pixelHeight(const GraphicsObject& rp) {
+int AnmGraphicsObjectData::PixelHeight(const GraphicsObject& rp) {
   const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
   int height = rect.rect.height();
   return int(rp.getHeightScaleFactor() * height);
 }
 
-GraphicsObjectData* AnmGraphicsObjectData::clone() const {
+GraphicsObjectData* AnmGraphicsObjectData::Clone() const {
   return new AnmGraphicsObjectData(*this);
 }
 
-void AnmGraphicsObjectData::playSet(int set) {
-  setCurrentlyPlaying(true);
+void AnmGraphicsObjectData::PlaySet(int set) {
+  set_is_currently_playing(true);
   time_at_last_frame_change_ = system_.event().getTicks();
 
-  cur_frame_set_ = animation_set.at(set).begin();
-  cur_frame_set_end_ = animation_set.at(set).end();
-  cur_frame_ = framelist.at(*cur_frame_set_).begin();
-  cur_frame_end_ = framelist.at(*cur_frame_set_).end();
+  cur_frame_set_ = animation_set_.at(set).begin();
+  cur_frame_set_end_ = animation_set_.at(set).end();
+  cur_frame_ = framelist_.at(*cur_frame_set_).begin();
+  cur_frame_end_ = framelist_.at(*cur_frame_set_).end();
   current_frame_ = *cur_frame_;
 
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
-boost::shared_ptr<const Surface> AnmGraphicsObjectData::currentSurface(
+boost::shared_ptr<const Surface> AnmGraphicsObjectData::CurrentSurface(
     const GraphicsObject& rp) {
   return image_;
 }
 
-Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {
+Rect AnmGraphicsObjectData::SrcRect(const GraphicsObject& go) {
   if (current_frame_ != -1) {
     const Frame& frame = frames.at(current_frame_);
     return Rect::GRP(frame.src_x1, frame.src_y1, frame.src_x2, frame.src_y2);
@@ -276,7 +280,7 @@ Rect AnmGraphicsObjectData::srcRect(const GraphicsObject& go) {
   return Rect();
 }
 
-Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go,
+Rect AnmGraphicsObjectData::DstRect(const GraphicsObject& go,
                                     const GraphicsObject* parent) {
   if (current_frame_ != -1) {
     // TODO(erg): Should this account for either |go| or |parent|?
@@ -290,7 +294,7 @@ Rect AnmGraphicsObjectData::dstRect(const GraphicsObject& go,
   return Rect();
 }
 
-void AnmGraphicsObjectData::objectInfo(std::ostream& tree) {
+void AnmGraphicsObjectData::ObjectInfo(std::ostream& tree) {
   tree << "  ANM file: " << filename_ << std::endl;
 }
 
@@ -301,7 +305,7 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
   ar& filename_;
 
   // Reconstruct the ANM data from whatever file was linked.
-  loadAnmFile();
+  LoadAnmFile();
 
   // Now load the rest of the data.
   ar& currently_playing_& current_set_;
@@ -310,13 +314,13 @@ void AnmGraphicsObjectData::load(Archive& ar, unsigned int version) {
   int cur_frame_set, current_frame;
   ar& cur_frame_set& current_frame;
 
-  cur_frame_set_ = animation_set.at(current_set_).begin();
+  cur_frame_set_ = animation_set_.at(current_set_).begin();
   advance(cur_frame_set_, cur_frame_set);
-  cur_frame_set_end_ = animation_set.at(current_set_).end();
+  cur_frame_set_end_ = animation_set_.at(current_set_).end();
 
-  cur_frame_ = framelist.at(*cur_frame_set_).begin();
+  cur_frame_ = framelist_.at(*cur_frame_set_).begin();
   advance(cur_frame_, current_frame);
-  cur_frame_end_ = framelist.at(*cur_frame_set_).end();
+  cur_frame_end_ = framelist_.at(*cur_frame_set_).end();
 }
 
 template <class Archive>
@@ -326,9 +330,9 @@ void AnmGraphicsObjectData::save(Archive& ar, unsigned int version) const {
 
   // Figure out what set we're playing, which
   int cur_frame_set =
-      distance(animation_set.at(current_set_).begin(), cur_frame_set_);
+      distance(animation_set_.at(current_set_).begin(), cur_frame_set_);
   int current_frame =
-      distance(framelist.at(*cur_frame_set_).begin(), cur_frame_);
+      distance(framelist_.at(*cur_frame_set_).begin(), cur_frame_);
 
   ar& cur_frame_set& current_frame;
 }

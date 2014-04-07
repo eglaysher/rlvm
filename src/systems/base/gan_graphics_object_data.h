@@ -55,30 +55,30 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   GanGraphicsObjectData(System& system,
                         const std::string& ganfile,
                         const std::string& imgfile);
-  ~GanGraphicsObjectData();
+  virtual ~GanGraphicsObjectData();
 
-  void load();
+  void LoadGANData();
 
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
 
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
 
-  virtual bool isAnimation() const { return true; }
-  virtual void playSet(int set);
+  virtual bool IsAnimation() const override { return true; }
+  virtual void PlaySet(int set) override;
 
  protected:
   // Resets to the first frame.
-  virtual void loopAnimation();
+  virtual void LoopAnimation() override;
 
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual Rect srcRect(const GraphicsObject& go);
-  virtual Point dstOrigin(const GraphicsObject& go);
-  virtual int getRenderingAlpha(const GraphicsObject& go,
-                                const GraphicsObject* parent);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual Rect SrcRect(const GraphicsObject& go) override;
+  virtual Point DstOrigin(const GraphicsObject& go) override;
+  virtual int GetRenderingAlpha(const GraphicsObject& go,
+                                const GraphicsObject* parent) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   struct Frame {
@@ -92,16 +92,16 @@ class GanGraphicsObjectData : public GraphicsObjectData {
 
   typedef std::vector<std::vector<Frame>> AnimationSets;
 
-  void testFileMagic(const std::string& file_name,
+  void TestFileMagic(const std::string& file_name,
                      std::unique_ptr<char[]>& gan_data,
                      int file_size);
-  void readData(const std::string& file_name,
+  void ReadData(const std::string& file_name,
                 std::unique_ptr<char[]>& gan_data,
                 int file_size);
-  Frame readSetFrame(const std::string& filename, const char*& data);
+  Frame ReadSetFrame(const std::string& filename, const char*& data);
 
   // Throws an error on bad GAN files.
-  void throwBadFormat(const std::string& filename, const std::string& error);
+  void ThrowBadFormat(const std::string& filename, const std::string& error);
 
   System& system_;
 

@@ -51,39 +51,39 @@ DigitsGraphicsObject::DigitsGraphicsObject(System& system,
 
 DigitsGraphicsObject::~DigitsGraphicsObject() {}
 
-int DigitsGraphicsObject::pixelWidth(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int DigitsGraphicsObject::PixelWidth(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
   return int(rp.getWidthScaleFactor() * surface_->size().width());
 }
 
-int DigitsGraphicsObject::pixelHeight(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int DigitsGraphicsObject::PixelHeight(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
   return int(rp.getHeightScaleFactor() * surface_->size().height());
 }
 
-GraphicsObjectData* DigitsGraphicsObject::clone() const {
+GraphicsObjectData* DigitsGraphicsObject::Clone() const {
   return new DigitsGraphicsObject(*this);
 }
 
-void DigitsGraphicsObject::execute(RLMachine& machine) {}
+void DigitsGraphicsObject::Execute(RLMachine& machine) {}
 
-boost::shared_ptr<const Surface> DigitsGraphicsObject::currentSurface(
+boost::shared_ptr<const Surface> DigitsGraphicsObject::CurrentSurface(
     const GraphicsObject& go) {
-  if (needsUpdate(go))
-    updateSurface(go);
+  if (NeedsUpdate(go))
+    UpdateSurface(go);
 
   return surface_;
 }
 
-void DigitsGraphicsObject::objectInfo(std::ostream& tree) {
+void DigitsGraphicsObject::ObjectInfo(std::ostream& tree) {
   tree << "  Digits: \"" << value_ << "\"" << std::endl;
 }
 
-void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
+void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
   value_ = rp.digitValue();
 
   // Calculate the size our canvas will have to be.
@@ -142,7 +142,7 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
   }
 }
 
-bool DigitsGraphicsObject::needsUpdate(const GraphicsObject& rp) {
+bool DigitsGraphicsObject::NeedsUpdate(const GraphicsObject& rp) {
   return !surface_ || rp.digitValue() != value_;
 }
 

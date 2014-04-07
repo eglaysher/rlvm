@@ -192,7 +192,7 @@ struct objSetRect_1
       ColourFilterObjectData* data =
           dynamic_cast<ColourFilterObjectData*>(&obj.objectData());
       if (data) {
-        data->setRect(rect);
+        data->set_rect(rect);
         machine.system().graphics().markObjectStateAsDirty();
       }
     }

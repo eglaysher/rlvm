@@ -55,22 +55,21 @@ class DriftGraphicsObject : public GraphicsObjectData {
  public:
   explicit DriftGraphicsObject(System& system);
   DriftGraphicsObject(System& system, const std::string& filename);
-
-  ~DriftGraphicsObject();
+  virtual ~DriftGraphicsObject();
 
   // Implementation of GraphicsObjectData:
-  virtual void render(const GraphicsObject& go,
+  virtual void Render(const GraphicsObject& go,
                       const GraphicsObject* parent,
-                      std::ostream* tree);
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+                      std::ostream* tree) override;
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   // Individual particle on screen.
@@ -90,7 +89,7 @@ class DriftGraphicsObject : public GraphicsObjectData {
   DriftGraphicsObject(const DriftGraphicsObject& system);
 
   // Loading step separate for de-serialization purposes.
-  void loadFile();
+  void LoadFile();
 
   // Current machine context.
   System& system_;

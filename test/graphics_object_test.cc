@@ -215,16 +215,16 @@ INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
 
 class MockGraphicsObjectData : public GraphicsObjectData {
  public:
-  MOCK_METHOD2(render, void(const GraphicsObject&, std::ostream*));
-  MOCK_METHOD1(pixelWidth, int(const GraphicsObject&));
-  MOCK_METHOD1(pixelHeight, int(const GraphicsObject&));
-  MOCK_CONST_METHOD0(clone, GraphicsObjectData*());
-  MOCK_METHOD1(execute, void(RLMachine&));
-  MOCK_METHOD0(isAnimation, bool());
-  MOCK_METHOD1(playSet, void(int));
-  MOCK_METHOD1(currentSurface,
+  MOCK_METHOD2(Render, void(const GraphicsObject&, std::ostream*));
+  MOCK_METHOD1(PixelWidth, int(const GraphicsObject&));
+  MOCK_METHOD1(PixelHeight, int(const GraphicsObject&));
+  MOCK_CONST_METHOD0(Clone, GraphicsObjectData*());
+  MOCK_METHOD1(Execute, void(RLMachine&));
+  MOCK_METHOD0(IsAnimation, bool());
+  MOCK_METHOD1(PlaySet, void(int));
+  MOCK_METHOD1(CurrentSurface,
                boost::shared_ptr<const Surface>(const GraphicsObject&));
-  MOCK_METHOD1(objectInfo, void(std::ostream&));
+  MOCK_METHOD1(ObjectInfo, void(std::ostream&));
 };
 
 TEST_F(GraphicsObjectTest, TestPixelHeightWidth) {
@@ -236,8 +236,8 @@ TEST_F(GraphicsObjectTest, TestPixelHeightWidth) {
 
   MockGraphicsObjectData* data = new MockGraphicsObjectData;
   obj.setObjectData(data);
-  EXPECT_CALL(*data, pixelWidth(Ref(obj))).Times(1).WillOnce(Return(30));
-  EXPECT_CALL(*data, pixelHeight(Ref(obj))).Times(1).WillOnce(Return(50));
+  EXPECT_CALL(*data, PixelWidth(Ref(obj))).Times(1).WillOnce(Return(30));
+  EXPECT_CALL(*data, PixelHeight(Ref(obj))).Times(1).WillOnce(Return(50));
   EXPECT_EQ(30, obj.pixelWidth());
   EXPECT_EQ(50, obj.pixelHeight());
 
@@ -277,10 +277,10 @@ TEST_F(GraphicsObjectTest, TestColourFilter) {
   EXPECT_CALL(*filter, Fill(_, two, _));
 
   // Render as is (for the first call).
-  data->render(obj, NULL, NULL);
+  data->Render(obj, NULL, NULL);
 
-  data->setRect(two);
+  data->set_rect(two);
 
   // Render with the modified rect (for the second call).
-  data->render(obj, NULL, NULL);
+  data->Render(obj, NULL, NULL);
 }

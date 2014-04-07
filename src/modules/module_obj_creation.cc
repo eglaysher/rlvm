@@ -85,7 +85,7 @@ void objOfTextBuilder(RLMachine& machine,
   obj.setTextText(utf8str);
   GraphicsTextObject* text_obj = new GraphicsTextObject(machine.system());
   obj.setObjectData(text_obj);
-  text_obj->updateSurface(obj);
+  text_obj->UpdateSurface(obj);
 }
 
 void objOfDriftLoader(RLMachine& machine,

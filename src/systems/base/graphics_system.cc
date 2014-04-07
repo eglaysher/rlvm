@@ -792,7 +792,7 @@ bool GraphicsSystem::animationsPlaying() const {
   for (GraphicsObject& object : graphics_object_impl_->foreground_objects) {
     if (object.hasObjectData()) {
       GraphicsObjectData& data = object.objectData();
-      if (data.isAnimation() && data.currentlyPlaying())
+      if (data.IsAnimation() && data.is_currently_playing())
         return true;
     }
   }

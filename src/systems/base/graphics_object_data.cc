@@ -52,14 +52,14 @@ GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
 
 GraphicsObjectData::~GraphicsObjectData() {}
 
-void GraphicsObjectData::render(const GraphicsObject& go,
+void GraphicsObjectData::Render(const GraphicsObject& go,
                                 const GraphicsObject* parent,
                                 std::ostream* tree) {
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    Rect src = srcRect(go);
-    Rect dst = dstRect(go, parent);
-    int alpha = getRenderingAlpha(go, parent);
+    Rect src = SrcRect(go);
+    Rect dst = DstRect(go, parent);
+    int alpha = GetRenderingAlpha(go, parent);
 
     if (go.buttonUsingOverides()) {
       // Tacked on side channel that lets a ButtonObjectSelectLongOperation
@@ -72,7 +72,7 @@ void GraphicsObjectData::render(const GraphicsObject& go,
     }
 
     if (tree) {
-      objectInfo(*tree);
+      ObjectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst << std::endl;
       if (parent) {
         *tree << "  Parent: ";
@@ -147,24 +147,24 @@ void GraphicsObjectData::render(const GraphicsObject& go,
   }
 }
 
-void GraphicsObjectData::loopAnimation() {}
+void GraphicsObjectData::LoopAnimation() {}
 
-void GraphicsObjectData::endAnimation() {
+void GraphicsObjectData::EndAnimation() {
   // Set first, because we may deallocate this by one of our actions
   currently_playing_ = false;
 
-  switch (afterAnimation()) {
+  switch (after_animation_) {
     case AFTER_NONE:
       animation_finished_ = true;
       break;
     case AFTER_CLEAR:
-      if (ownedBy())
-        ownedBy()->deleteObject();
+      if (owned_by_)
+        owned_by_->deleteObject();
       break;
     case AFTER_LOOP: {
       // Reset from the beginning
       currently_playing_ = true;
-      loopAnimation();
+      LoopAnimation();
       break;
     }
   }
@@ -190,16 +190,16 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
     *tree << "(yOrigin=" << go.yOrigin() << ") ";
 }
 
-Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
-  return currentSurface(go)->getPattern(go.pattNo()).rect;
+Rect GraphicsObjectData::SrcRect(const GraphicsObject& go) {
+  return CurrentSurface(go)->getPattern(go.pattNo()).rect;
 }
 
-Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
+Point GraphicsObjectData::DstOrigin(const GraphicsObject& go) {
   if (go.xOrigin() || go.yOrigin()) {
     return Point(go.xOrigin(), go.yOrigin());
   }
 
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
     return Point(surface->getPattern(go.pattNo()).originX,
                  surface->getPattern(go.pattNo()).originY);
@@ -208,10 +208,10 @@ Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
   return Point();
 }
 
-Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
+Rect GraphicsObjectData::DstRect(const GraphicsObject& go,
                                  const GraphicsObject* parent) {
-  Point origin = dstOrigin(go);
-  Rect src = srcRect(go);
+  Point origin = DstOrigin(go);
+  Rect src = SrcRect(go);
 
   int center_x =
       go.x() + go.xAdjustmentSum() - origin.x() + (src.width() / 2.0f);
@@ -241,7 +241,7 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
   return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
 }
 
-int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
+int GraphicsObjectData::GetRenderingAlpha(const GraphicsObject& go,
                                           const GraphicsObject* parent) {
   if (!parent) {
     return go.computedAlpha();
@@ -251,10 +251,8 @@ int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
   }
 }
 
-bool GraphicsObjectData::isAnimation() const { return false; }
+bool GraphicsObjectData::IsAnimation() const { return false; }
 
-void GraphicsObjectData::playSet(int set) {}
+void GraphicsObjectData::PlaySet(int set) {}
 
-bool GraphicsObjectData::animationFinished() const {
-  return animation_finished_;
-}
+bool GraphicsObjectData::IsParentLayer() const { return false; }

@@ -43,7 +43,7 @@
 
 namespace {
 
-double scaleAmplitude(int amplitude) {
+double ScaleAmplitude(int amplitude) {
   // So the amplitude of the curve in RealLive is weird. Some value close to
   // 100 means one width of the screen, 1 is a vary large amount that I can't
   // reliably measure, and values greater than 100 are increasingly smaller.  I
@@ -69,15 +69,15 @@ DriftGraphicsObject::DriftGraphicsObject(const DriftGraphicsObject& obj)
 DriftGraphicsObject::DriftGraphicsObject(System& system,
                                          const std::string& filename)
     : system_(system), filename_(filename), surface_(), last_rendered_time_(0) {
-  loadFile();
+  LoadFile();
 }
 
 DriftGraphicsObject::~DriftGraphicsObject() {}
 
-void DriftGraphicsObject::render(const GraphicsObject& go,
+void DriftGraphicsObject::Render(const GraphicsObject& go,
                                  const GraphicsObject* parent,
                                  std::ostream* tree) {
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
     int current_time = system_.event().getTicks();
     last_rendered_time_ = current_time;
@@ -99,7 +99,7 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
     }
 
     double scaled_amplitude =
-        bounding_box.size().width() * scaleAmplitude(amplitude);
+        bounding_box.size().width() * ScaleAmplitude(amplitude);
 
     // Grab the drift object
     if (particles_.size() < count) {
@@ -169,21 +169,21 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
   }
 }
 
-int DriftGraphicsObject::pixelWidth(
+int DriftGraphicsObject::PixelWidth(
     const GraphicsObject& rendering_properties) {
   return rendering_properties.driftArea().width();
 }
 
-int DriftGraphicsObject::pixelHeight(
+int DriftGraphicsObject::PixelHeight(
     const GraphicsObject& rendering_properties) {
   return rendering_properties.driftArea().height();
 }
 
-GraphicsObjectData* DriftGraphicsObject::clone() const {
+GraphicsObjectData* DriftGraphicsObject::Clone() const {
   return new DriftGraphicsObject(*this);
 }
 
-void DriftGraphicsObject::execute(RLMachine& machine) {
+void DriftGraphicsObject::Execute(RLMachine& machine) {
   // We could theoretically redraw every time around the game loop, so
   // throttle to once every 100ms.
   int current_time = system_.event().getTicks();
@@ -192,16 +192,16 @@ void DriftGraphicsObject::execute(RLMachine& machine) {
   }
 }
 
-boost::shared_ptr<const Surface> DriftGraphicsObject::currentSurface(
+boost::shared_ptr<const Surface> DriftGraphicsObject::CurrentSurface(
     const GraphicsObject& rp) {
   return surface_;
 }
 
-void DriftGraphicsObject::objectInfo(std::ostream& tree) {
+void DriftGraphicsObject::ObjectInfo(std::ostream& tree) {
   tree << "  Drift image: " << filename_ << std::endl;
 }
 
-void DriftGraphicsObject::loadFile() {
+void DriftGraphicsObject::LoadFile() {
   surface_ = system_.graphics().getSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
@@ -210,7 +210,7 @@ template <class Archive>
 void DriftGraphicsObject::load(Archive& ar, unsigned int version) {
   ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_;
 
-  loadFile();
+  LoadFile();
 }
 
 // -----------------------------------------------------------------------

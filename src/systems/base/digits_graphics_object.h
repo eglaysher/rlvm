@@ -46,20 +46,20 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   DigitsGraphicsObject(System& system, const std::string& font);
   virtual ~DigitsGraphicsObject();
 
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
 
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
-  void updateSurface(const GraphicsObject& rp);
-  bool needsUpdate(const GraphicsObject& rendering_properties);
+  void UpdateSurface(const GraphicsObject& rp);
+  bool NeedsUpdate(const GraphicsObject& rendering_properties);
 
   System& system_;
 

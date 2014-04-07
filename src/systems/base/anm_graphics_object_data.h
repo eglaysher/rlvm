@@ -48,30 +48,31 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
  public:
   explicit AnmGraphicsObjectData(System& system);
   AnmGraphicsObjectData(System& system, const std::string& file);
-  ~AnmGraphicsObjectData();
+  virtual ~AnmGraphicsObjectData();
 
-  void loadAnmFile();
+  void LoadAnmFile();
 
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
 
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
 
-  virtual bool isAnimation() const { return true; }
-  virtual void playSet(int set);
+  virtual bool IsAnimation() const override;
+  virtual void PlaySet(int set) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual Rect srcRect(const GraphicsObject& go);
-  virtual Rect dstRect(const GraphicsObject& go, const GraphicsObject* parent);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual Rect SrcRect(const GraphicsObject& go) override;
+  virtual Rect DstRect(const GraphicsObject& go,
+                       const GraphicsObject* parent) override;
 
-  virtual void objectInfo(std::ostream& tree);
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   // Advance the position in the animation.
-  void advanceFrame();
+  void AdvanceFrame();
 
   struct Frame {
     int src_x1, src_y1;
@@ -80,13 +81,13 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
     int time;
   };
 
-  bool testFileMagic(std::unique_ptr<char[]>& anm_data);
-  void readIntegerList(const char* start,
+  bool TestFileMagic(std::unique_ptr<char[]>& anm_data);
+  void ReadIntegerList(const char* start,
                        int offset,
                        int iterations,
                        std::vector<std::vector<int>>& dest);
-  void loadAnmFileFromData(const std::unique_ptr<char[]>& anm_data);
-  void fixAxis(Frame& frame, int width, int height);
+  void LoadAnmFileFromData(const std::unique_ptr<char[]>& anm_data);
+  void FixAxis(Frame& frame, int width, int height);
 
   // The system we are a part of.
   System& system_;
@@ -96,8 +97,8 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
 
   // Animation Data (This structure was stolen from xkanon.)
   std::vector<Frame> frames;
-  std::vector<std::vector<int>> framelist;
-  std::vector<std::vector<int>> animation_set;
+  std::vector<std::vector<int>> framelist_;
+  std::vector<std::vector<int>> animation_set_;
 
   // The image the above coordinates map into.
   boost::shared_ptr<const Surface> image_;

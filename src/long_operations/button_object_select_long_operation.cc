@@ -81,7 +81,7 @@ void ButtonObjectSelectLongOperation::MouseMotion(const Point& point) {
   for (ButtonPair& button_pair : buttons_) {
     if (button_pair.first->hasObjectData()) {
       GraphicsObjectData* data = &button_pair.first->objectData();
-      Rect screen_rect = data->dstRect(*button_pair.first, button_pair.second);
+      Rect screen_rect = data->DstRect(*button_pair.first, button_pair.second);
 
       if (screen_rect.contains(point))
         hovering_button = button_pair.first;
