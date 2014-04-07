@@ -47,7 +47,7 @@ FrameCounter::FrameCounter(EventSystem& event_system,
       is_active_(true),
       time_at_start_(event_system.GetTicks()),
       total_time_(milliseconds) {
-  beginTimer();
+  BeginTimer();
 
   if (milliseconds == 0) {
     // Prevent us from dividing by zero (OH SHI-)
@@ -58,21 +58,21 @@ FrameCounter::FrameCounter(EventSystem& event_system,
 
 FrameCounter::~FrameCounter() {
   if (is_active_)
-    endTimer();
+    EndTimer();
 }
 
-void FrameCounter::beginTimer() { is_active_ = true; }
+void FrameCounter::BeginTimer() { is_active_ = true; }
 
-void FrameCounter::endTimer() { is_active_ = false; }
+void FrameCounter::EndTimer() { is_active_ = false; }
 
-bool FrameCounter::isActive() {
+bool FrameCounter::IsActive() {
   // Read the counter and ignore the result so is_active_ can be updated...
-  readFrame();
+  ReadFrame();
 
   return is_active_;
 }
 
-bool FrameCounter::checkIfFinished(float new_value) {
+bool FrameCounter::CheckIfFinished(float new_value) {
   if (max_value_ > min_value_) {
     return new_value >= max_value_;
   } else {
@@ -80,7 +80,7 @@ bool FrameCounter::checkIfFinished(float new_value) {
   }
 }
 
-void FrameCounter::updateTimeValue(float num_ticks) {
+void FrameCounter::UpdateTimeValue(float num_ticks) {
   // Update the value
   if (max_value_ > min_value_)
     value_ += num_ticks;
@@ -88,31 +88,31 @@ void FrameCounter::updateTimeValue(float num_ticks) {
     value_ -= num_ticks;
 }
 
-int FrameCounter::readNormalFrameWithChangeInterval(float change_interval,
+int FrameCounter::ReadNormalFrameWithChangeInterval(float change_interval,
                                                     float& time_at_last_check) {
   if (is_active_) {
     unsigned int current_time = event_system_.GetTicks();
     float ms_elapsed = current_time - time_at_last_check;
     float num_ticks = ms_elapsed / change_interval;
 
-    updateTimeValue(num_ticks);
+    UpdateTimeValue(num_ticks);
 
     // Set the last time checked to the current_time minus the
     // remainder of ms that don't get counted in the ticks incremented
     // this time.
     time_at_last_check = current_time;
 
-    if (checkIfFinished(value_)) {
-      finished();
+    if (CheckIfFinished(value_)) {
+      Finished();
     }
   }
 
   return int(value_);
 }
 
-void FrameCounter::finished() {
+void FrameCounter::Finished() {
   value_ = max_value_;
-  endTimer();
+  EndTimer();
 }
 
 // -----------------------------------------------------------------------
@@ -128,8 +128,10 @@ SimpleFrameCounter::SimpleFrameCounter(EventSystem& es,
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
-int SimpleFrameCounter::readFrame() {
-  return readNormalFrameWithChangeInterval(change_interval_,
+SimpleFrameCounter::~SimpleFrameCounter() {}
+
+int SimpleFrameCounter::ReadFrame() {
+  return ReadNormalFrameWithChangeInterval(change_interval_,
                                            time_at_last_check_);
 }
 
@@ -146,12 +148,14 @@ LoopFrameCounter::LoopFrameCounter(EventSystem& es,
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
-int LoopFrameCounter::readFrame() {
-  return readNormalFrameWithChangeInterval(change_interval_,
+LoopFrameCounter::~LoopFrameCounter() {}
+
+int LoopFrameCounter::ReadFrame() {
+  return ReadNormalFrameWithChangeInterval(change_interval_,
                                            time_at_last_check_);
 }
 
-void LoopFrameCounter::finished() {
+void LoopFrameCounter::Finished() {
   // Don't end the timer, simply reset it
   value_ = min_value_;
 }
@@ -169,8 +173,10 @@ TurnFrameCounter::TurnFrameCounter(EventSystem& es,
   going_forward_ = frame_max >= frame_min;
 }
 
+TurnFrameCounter::~TurnFrameCounter() {}
+
 // @bug This has all the bugs of the old implementation.
-int TurnFrameCounter::readFrame() {
+int TurnFrameCounter::ReadFrame() {
   std::cerr << "BIG WARNING: TurnFrameCounter::read_frame DOESN'T DO THE SAFE "
             << " THING LIKE ALL OTHER FRAME COUNTERS. FIXME." << std::endl;
 
@@ -216,14 +222,16 @@ AcceleratingFrameCounter::AcceleratingFrameCounter(EventSystem& es,
       start_time_(es.GetTicks()),
       time_at_last_check_(start_time_) {}
 
-int AcceleratingFrameCounter::readFrame() {
+AcceleratingFrameCounter::~AcceleratingFrameCounter() {}
+
+int AcceleratingFrameCounter::ReadFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time =
         (event_system_.GetTicks() - start_time_) / float(total_time_);
     float interval = (1.1f - cur_time * 0.2f) * base_interval;
 
-    return readNormalFrameWithChangeInterval(interval, time_at_last_check_);
+    return ReadNormalFrameWithChangeInterval(interval, time_at_last_check_);
   }
 
   return int(value_);
@@ -240,14 +248,16 @@ DeceleratingFrameCounter::DeceleratingFrameCounter(EventSystem& es,
       start_time_(es.GetTicks()),
       time_at_last_check_(start_time_) {}
 
-int DeceleratingFrameCounter::readFrame() {
+DeceleratingFrameCounter::~DeceleratingFrameCounter() {}
+
+int DeceleratingFrameCounter::ReadFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time =
         (event_system_.GetTicks() - start_time_) / float(total_time_);
     float interval = (0.9f + cur_time * 0.2f) * base_interval;
 
-    return readNormalFrameWithChangeInterval(interval, time_at_last_check_);
+    return ReadNormalFrameWithChangeInterval(interval, time_at_last_check_);
   }
 
   return int(value_);

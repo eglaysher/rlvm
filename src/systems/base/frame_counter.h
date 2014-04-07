@@ -43,38 +43,38 @@ class FrameCounter {
   virtual ~FrameCounter();
 
   // Returns the current value of this frame counter, a value between
-  virtual int readFrame() = 0;
+  virtual int ReadFrame() = 0;
 
   // The converse is setting the value, which should be done after the
   // frame counter has been turned off.
-  void setValue(int value) { value_ = value; }
+  void set_value(int value) { value_ = value; }
 
   // When a timer starts, we need to tell the EventSystem that we now
   // have a near realtime event going on and to stop being nice to the
   // operating system.
-  void beginTimer();
+  void BeginTimer();
 
   // When a timer ends, there's no need to be so harsh on the
   // system. Tell the event_system that we no longer require near
   // realtime event handling.
-  void endTimer();
+  void EndTimer();
 
-  bool isActive();
-  void setActive(bool active) { is_active_ = active; }
+  bool IsActive();
+  void set_active(bool active) { is_active_ = active; }
 
-  bool checkIfFinished(float new_value);
-  void updateTimeValue(float num_ticks);
+  bool CheckIfFinished(float new_value);
+  void UpdateTimeValue(float num_ticks);
 
  protected:
-  // Implementation of readFrame(). Called by most subclasses with their own
+  // Implementation of ReadFrame(). Called by most subclasses with their own
   // data members.
-  int readNormalFrameWithChangeInterval(float change_interval,
+  int ReadNormalFrameWithChangeInterval(float change_interval,
                                         float& time_at_last_check);
 
   // Called from read_normal_frame_with_change_interval when finished. This
   // method can be overloaded to control what happens when the timer
   // has reached its end.
-  virtual void finished();
+  virtual void Finished();
 
   EventSystem& event_system_;
 
@@ -94,8 +94,9 @@ class SimpleFrameCounter : public FrameCounter {
                      int frame_min,
                      int frame_max,
                      int milliseconds);
+  virtual ~SimpleFrameCounter();
 
-  virtual int readFrame();
+  virtual int ReadFrame() override;
 
  private:
   float change_interval_;
@@ -110,9 +111,10 @@ class LoopFrameCounter : public FrameCounter {
                    int frame_min,
                    int frame_max,
                    int milliseconds);
+  virtual ~LoopFrameCounter();
 
-  virtual int readFrame();
-  virtual void finished();
+  virtual int ReadFrame() override;
+  virtual void Finished() override;
 
  private:
   float change_interval_;
@@ -127,8 +129,9 @@ class TurnFrameCounter : public FrameCounter {
                    int frame_min,
                    int frame_max,
                    int milliseconds);
+  virtual ~TurnFrameCounter();
 
-  virtual int readFrame();
+  virtual int ReadFrame() override;
 
  private:
   bool going_forward_;
@@ -144,8 +147,9 @@ class AcceleratingFrameCounter : public FrameCounter {
                            int frame_min,
                            int frame_max,
                            int milliseconds);
+  virtual ~AcceleratingFrameCounter();
 
-  virtual int readFrame();
+  virtual int ReadFrame() override;
 
  private:
   unsigned int start_time_;
@@ -160,8 +164,9 @@ class DeceleratingFrameCounter : public FrameCounter {
                            int frame_min,
                            int frame_max,
                            int milliseconds);
+  virtual ~DeceleratingFrameCounter();
 
-  virtual int readFrame();
+  virtual int ReadFrame() override;
 
  private:
   unsigned int start_time_;
