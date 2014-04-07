@@ -798,7 +798,7 @@ struct fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
     // Justification: Maiden Halo uses fill(x, 0, 0, 0) as a synanom for clear
     // and since it uses haikei, the DC0 needs to be transparent.
     if (colour.r() == 0 && colour.g() == 0 && colour.b() == 0)
-      colour.setAlpha(0);
+      colour.set_alpha(0);
 
     machine.system().graphics().getDC(dc)->fill(colour);
   }

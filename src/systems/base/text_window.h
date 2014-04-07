@@ -167,10 +167,6 @@ class TextWindow {
   void setWindowAttrMod(int i) { window_attr_mod_ = i; }
   int windowAttrMod() const { return window_attr_mod_; }
 
-  void setR(int i) { colour_.setRed(i); }
-  void setG(int i) { colour_.setGreen(i); }
-  void setB(int i) { colour_.setBlue(i); }
-  void setAlpha(int i) { colour_.setAlpha(i); }
   void setFilter(int i) { filter_ = i; }
   void setRGBAF(const std::vector<int>& rgba_values);
 

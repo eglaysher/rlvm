@@ -310,17 +310,17 @@ void GraphicsObject::setTint(const RGBColour& colour) {
 
 void GraphicsObject::setTintR(const int in) {
   makeImplUnique();
-  impl_->tint_.setRed(in);
+  impl_->tint_.set_red(in);
 }
 
 void GraphicsObject::setTintG(const int in) {
   makeImplUnique();
-  impl_->tint_.setGreen(in);
+  impl_->tint_.set_green(in);
 }
 
 void GraphicsObject::setTintB(const int in) {
   makeImplUnique();
-  impl_->tint_.setBlue(in);
+  impl_->tint_.set_blue(in);
 }
 
 void GraphicsObject::setColour(const RGBAColour& colour) {
@@ -330,22 +330,22 @@ void GraphicsObject::setColour(const RGBAColour& colour) {
 
 void GraphicsObject::setColourR(const int in) {
   makeImplUnique();
-  impl_->colour_.setRed(in);
+  impl_->colour_.set_red(in);
 }
 
 void GraphicsObject::setColourG(const int in) {
   makeImplUnique();
-  impl_->colour_.setGreen(in);
+  impl_->colour_.set_green(in);
 }
 
 void GraphicsObject::setColourB(const int in) {
   makeImplUnique();
-  impl_->colour_.setBlue(in);
+  impl_->colour_.set_blue(in);
 }
 
 void GraphicsObject::setColourLevel(const int in) {
   makeImplUnique();
-  impl_->colour_.setAlpha(in);
+  impl_->colour_.set_alpha(in);
 }
 
 void GraphicsObject::setCompositeMode(const int in) {
