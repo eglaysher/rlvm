@@ -44,7 +44,7 @@ class VoiceSample {
   virtual ~VoiceSample();
 
   // Returns waveform data, putting the size of the buffer in |size|.
-  virtual char* decode(int* size) = 0;
+  virtual char* Decode(int* size) = 0;
 
   static const char* MakeWavHeader(int rate, int ch, int bps, int size);
 };
@@ -53,12 +53,12 @@ class VoiceSample {
 // in it.
 class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
  public:
-  explicit VoiceArchive(int file_no);
+  explicit VoiceArchive(int file_number);
   virtual ~VoiceArchive();
 
-  int fileNumber() const { return file_no_; }
+  int file_number() const { return file_number_; }
 
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) = 0;
+  virtual boost::shared_ptr<VoiceSample> FindSample(int sample_num) = 0;
 
  protected:
   // A sortable list with metadata pointing into an archive.
@@ -76,12 +76,12 @@ class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
 
   // Reads and parses' VisualArt's simple audio table format into a
   // vector<Entry>.
-  void readVisualArtsTable(boost::filesystem::path file,
+  void ReadVisualArtsTable(boost::filesystem::path file,
                            int entry_length,
                            std::vector<Entry>& entries);
 
  private:
-  int file_no_;
+  int file_number_;
 };  // end of class VoiceArchive
 
 #endif  // SRC_SYSTEMS_BASE_VOICE_ARCHIVE_H_

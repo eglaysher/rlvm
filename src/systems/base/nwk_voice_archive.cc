@@ -41,10 +41,10 @@ namespace {
 class NWKVoiceSample : public VoiceSample {
  public:
   NWKVoiceSample(boost::filesystem::path file, int offset, int length);
-  ~NWKVoiceSample();
+  virtual ~NWKVoiceSample();
 
   // Overridden from VoiceSample:
-  virtual char* decode(int* size);
+  virtual char* Decode(int* size) override;
 
  private:
   FILE* stream_;
@@ -64,7 +64,7 @@ NWKVoiceSample::~NWKVoiceSample() {
     fclose(stream_);
 }
 
-char* NWKVoiceSample::decode(int* size) {
+char* NWKVoiceSample::Decode(int* size) {
   // Defined in nwatowav.cc
   return decode_koe_nwa(stream_, offset_, length_, size);
 }
@@ -73,12 +73,12 @@ char* NWKVoiceSample::decode(int* size) {
 
 NWKVoiceArchive::NWKVoiceArchive(fs::path file, int file_no)
     : VoiceArchive(file_no), file_(file) {
-  readVisualArtsTable(file, 12, entries_);
+  ReadVisualArtsTable(file, 12, entries_);
 }
 
 NWKVoiceArchive::~NWKVoiceArchive() {}
 
-boost::shared_ptr<VoiceSample> NWKVoiceArchive::findSample(int sample_num) {
+boost::shared_ptr<VoiceSample> NWKVoiceArchive::FindSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {

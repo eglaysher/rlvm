@@ -40,14 +40,14 @@ class VoiceCache {
   explicit VoiceCache(SoundSystem& sound_system);
   ~VoiceCache();
 
-  boost::shared_ptr<VoiceSample> find(int id);
+  boost::shared_ptr<VoiceSample> Find(int id);
 
  private:
   // Searches for a file archive of voices.
-  boost::shared_ptr<VoiceArchive> findArchive(int file_no) const;
+  boost::shared_ptr<VoiceArchive> FindArchive(int file_no) const;
 
   // Searches for an unarchived ogg or mp3 file.
-  boost::shared_ptr<VoiceSample> findUnpackedSample(int file_no,
+  boost::shared_ptr<VoiceSample> FindUnpackedSample(int file_no,
                                                     int index) const;
 
   SoundSystem& sound_system_;

@@ -77,7 +77,7 @@ namespace fs = boost::filesystem;
 // -----------------------------------------------------------------------
 OVKVoiceArchive::OVKVoiceArchive(fs::path file, int file_no)
     : VoiceArchive(file_no), file_(file) {
-  readVisualArtsTable(file, 16, entries_);
+  ReadVisualArtsTable(file, 16, entries_);
 }
 
 // -----------------------------------------------------------------------
@@ -86,7 +86,7 @@ OVKVoiceArchive::~OVKVoiceArchive() {}
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<VoiceSample> OVKVoiceArchive::findSample(int sample_num) {
+boost::shared_ptr<VoiceSample> OVKVoiceArchive::FindSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {

@@ -130,7 +130,7 @@ OVKVoiceSample::~OVKVoiceSample() {
     fclose(stream_);
 }
 
-char* OVKVoiceSample::decode(int* size) {
+char* OVKVoiceSample::Decode(int* size) {
   // This function has been mildly adapted from decode_koe_ogg in xclannad.
   fseek(stream_, offset_, 0);
 

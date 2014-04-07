@@ -389,7 +389,7 @@ void SDLSoundSystem::koePlayImpl(int id) {
   }
 
   // Get the VoiceSample.
-  boost::shared_ptr<VoiceSample> sample = voice_cache_.find(id);
+  boost::shared_ptr<VoiceSample> sample = voice_cache_.Find(id);
   if (!sample) {
     std::ostringstream oss;
     oss << "No sample for " << id;
@@ -397,7 +397,7 @@ void SDLSoundSystem::koePlayImpl(int id) {
   }
 
   int length;
-  char* data = sample->decode(&length);
+  char* data = sample->Decode(&length);
 
   SDLSoundChunkPtr koe = buildKoeChunk(data, length);
   setChannelVolumeImpl(KOE_CHANNEL);

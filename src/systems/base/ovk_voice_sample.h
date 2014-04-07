@@ -39,10 +39,10 @@ class OVKVoiceSample : public VoiceSample {
 
   // Creates a sample from an ogg file embeded in the archive at |file|.
   OVKVoiceSample(boost::filesystem::path file, int offset, int length);
-  ~OVKVoiceSample();
+  virtual ~OVKVoiceSample();
 
   // Overridden from VoiceSample:
-  virtual char* decode(int* size);
+  virtual char* Decode(int* size) override;
 
  private:
   static size_t ogg_readfunc(void* ptr,

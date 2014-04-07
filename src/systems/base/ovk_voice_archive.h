@@ -40,7 +40,7 @@ class OVKVoiceArchive : public VoiceArchive {
   virtual ~OVKVoiceArchive();
 
   // Overridden from VoiceArchive:
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num) override;
+  virtual boost::shared_ptr<VoiceSample> FindSample(int sample_num) override;
 
  private:
   // The file to read from
