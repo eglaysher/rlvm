@@ -53,7 +53,7 @@ WaitLongOperation::~WaitLongOperation() {}
 
 void WaitLongOperation::WaitMilliseconds(unsigned int time) {
   wait_until_target_time_ = true;
-  target_time_ = machine_.system().event().getTicks() + time;
+  target_time_ = machine_.system().event().GetTicks() + time;
 }
 
 void WaitLongOperation::BreakOnClicks() { break_on_clicks_ = true; }
@@ -104,7 +104,7 @@ bool WaitLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
 }
 
 void WaitLongOperation::RecordMouseCursorPosition() {
-  Point location = machine_.system().event().getCursorPos();
+  Point location = machine_.system().event().GetCursorPos();
   *x_ = location.x();
   *y_ = location.y();
 }
@@ -113,7 +113,7 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
   bool done = ctrl_pressed_ || machine.system().ShouldFastForward();
 
   if (!done && wait_until_target_time_) {
-    done = machine.system().event().getTicks() > target_time_;
+    done = machine.system().event().GetTicks() > target_time_;
   }
 
   if (!done && break_on_event_) {

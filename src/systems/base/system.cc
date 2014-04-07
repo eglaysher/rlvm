@@ -383,7 +383,7 @@ boost::filesystem::path System::GameSaveDirectory() {
 }
 
 bool System::ShouldFastForward() {
-  return (event().ctrlPressed() && text().ctrlKeySkip()) ||
+  return (event().CtrlPressed() && text().ctrlKeySkip()) ||
          text().currentlySkipping() || force_fast_forward_;
 }
 

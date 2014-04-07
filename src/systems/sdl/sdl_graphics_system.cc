@@ -195,7 +195,7 @@ void SDLGraphicsSystem::redrawLastFrame() {
 void SDLGraphicsSystem::drawCursor() {
   if (useCustomCursor()) {
     boost::shared_ptr<MouseCursor> cursor;
-    if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
+    if (static_cast<SDLEventSystem&>(system().event()).mouse_inside_window())
       cursor = currentCursor();
     if (cursor) {
       Point hotspot = cursorPos();
@@ -380,7 +380,7 @@ void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   }
 
   // Update the seen.
-  int current_time = machine.system().event().getTicks();
+  int current_time = machine.system().event().GetTicks();
   if ((current_time - time_of_last_titlebar_update_) > 60) {
     time_of_last_titlebar_update_ = current_time;
 

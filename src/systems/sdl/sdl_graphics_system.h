@@ -131,7 +131,7 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
   // Whether to display (SEEN####)(Line ###) in the title bar
   bool display_data_in_titlebar_;
 
-  // The last time the titlebar was updated (in getTicks())
+  // The last time the titlebar was updated (in GetTicks())
   unsigned int time_of_last_titlebar_update_;
 
   // The last seen number;

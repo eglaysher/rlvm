@@ -52,7 +52,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
   // activated)
   int numChars = text.currentPage().number_of_chars_on_page();
   automode_time_ = text.getAutoTime(numChars);
-  time_at_last_pass_ = event.getTicks();
+  time_at_last_pass_ = event.GetTicks();
   total_time_ = 0;
 
   machine_.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
@@ -79,7 +79,7 @@ bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
 
   switch (mouseButton) {
     case MOUSE_LEFT: {
-      Point pos = es.getCursorPos();
+      Point pos = es.GetCursorPos();
       // Only unhide the interface on release of the left mouse button
       if (graphics.interfaceHidden()) {
         if (!pressed) {
@@ -190,11 +190,11 @@ bool PauseLongOperation::operator()(RLMachine& machine) {
 }
 
 bool PauseLongOperation::AutomodeTimerFired() {
-  int current_time = machine_.system().event().getTicks();
+  int current_time = machine_.system().event().GetTicks();
   int time_since_last_pass = current_time - time_at_last_pass_;
   time_at_last_pass_ = current_time;
 
-  if (machine_.system().event().timeOfLastMouseMove() < (current_time - 2000)) {
+  if (machine_.system().event().TimeOfLastMouseMove() < (current_time - 2000)) {
     // If the mouse has been moved within the last two seconds, don't advance
     // the timer so the user has a chance to click on buttons.
     total_time_ += time_since_last_pass;

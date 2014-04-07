@@ -38,20 +38,20 @@ void TestEventSystem::setMockHandler(
   event_system_mock_ = handler;
 }
 
-void TestEventSystem::executeEventSystem(RLMachine& machine) {}
+void TestEventSystem::ExecuteEventSystem(RLMachine& machine) {}
 
-bool TestEventSystem::shiftPressed() const {
+bool TestEventSystem::ShiftPressed() const {
   return event_system_mock_->shiftPressed();
 }
 
-bool TestEventSystem::ctrlPressed() const {
+bool TestEventSystem::CtrlPressed() const {
   return event_system_mock_->ctrlPressed();
 }
 
-unsigned int TestEventSystem::getTicks() const {
-  return event_system_mock_->getTicks();
+unsigned int TestEventSystem::GetTicks() const {
+  return event_system_mock_->GetTicks();
 }
 
-void TestEventSystem::wait(unsigned int milliseconds) const {
+void TestEventSystem::Wait(unsigned int milliseconds) const {
   // waiting is a noop.
 }

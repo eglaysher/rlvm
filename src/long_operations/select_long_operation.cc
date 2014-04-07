@@ -214,7 +214,7 @@ bool NormalSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
 
   switch (mouseButton) {
     case MOUSE_LEFT: {
-      Point pos = es.getCursorPos();
+      Point pos = es.GetCursorPos();
       machine_.system().text().handleMouseClick(machine_, pos, pressed);
       return true;
       break;
@@ -413,7 +413,7 @@ bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
     case MOUSE_LEFT: {
       mouse_down_ = pressed;
       if (!pressed) {
-        Point pos = es.getCursorPos();
+        Point pos = es.GetCursorPos();
         for (size_t i = 0; i < buttons_.size(); i++) {
           if (buttons_[i].bounding_rect.contains(pos) && options_[i].enabled) {
             SelectByIndex(buttons_[i].id);

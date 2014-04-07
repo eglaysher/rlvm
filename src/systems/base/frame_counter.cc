@@ -45,7 +45,7 @@ FrameCounter::FrameCounter(EventSystem& event_system,
       min_value_(frame_min),
       max_value_(frame_max),
       is_active_(true),
-      time_at_start_(event_system.getTicks()),
+      time_at_start_(event_system.GetTicks()),
       total_time_(milliseconds) {
   beginTimer();
 
@@ -91,7 +91,7 @@ void FrameCounter::updateTimeValue(float num_ticks) {
 int FrameCounter::readNormalFrameWithChangeInterval(float change_interval,
                                                     float& time_at_last_check) {
   if (is_active_) {
-    unsigned int current_time = event_system_.getTicks();
+    unsigned int current_time = event_system_.GetTicks();
     float ms_elapsed = current_time - time_at_last_check;
     float num_ticks = ms_elapsed / change_interval;
 
@@ -124,7 +124,7 @@ SimpleFrameCounter::SimpleFrameCounter(EventSystem& es,
                                        int frame_max,
                                        int milliseconds)
     : FrameCounter(es, frame_min, frame_max, milliseconds),
-      time_at_last_check_(es.getTicks()) {
+      time_at_last_check_(es.GetTicks()) {
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
@@ -142,7 +142,7 @@ LoopFrameCounter::LoopFrameCounter(EventSystem& es,
                                    int frame_max,
                                    int milliseconds)
     : FrameCounter(es, frame_min, frame_max, milliseconds),
-      time_at_last_check_(es.getTicks()) {
+      time_at_last_check_(es.GetTicks()) {
   change_interval_ = float(milliseconds) / abs(frame_max - frame_min);
 }
 
@@ -164,7 +164,7 @@ TurnFrameCounter::TurnFrameCounter(EventSystem& es,
                                    int frame_max,
                                    int milliseconds)
     : FrameCounter(es, frame_min, frame_max, milliseconds),
-      time_at_last_check_(es.getTicks()) {
+      time_at_last_check_(es.GetTicks()) {
   change_interval_ = int(float(milliseconds) / abs(frame_max - frame_min));
   going_forward_ = frame_max >= frame_min;
 }
@@ -175,7 +175,7 @@ int TurnFrameCounter::readFrame() {
             << " THING LIKE ALL OTHER FRAME COUNTERS. FIXME." << std::endl;
 
   if (is_active_) {
-    unsigned int current_time = event_system_.getTicks();
+    unsigned int current_time = event_system_.GetTicks();
     unsigned int ms_elapsed = current_time - time_at_last_check_;
     unsigned int time_remainder = ms_elapsed % change_interval_;
     unsigned int num_ticks = ms_elapsed / change_interval_;
@@ -213,14 +213,14 @@ AcceleratingFrameCounter::AcceleratingFrameCounter(EventSystem& es,
                                                    int frame_max,
                                                    int milliseconds)
     : FrameCounter(es, frame_min, frame_max, milliseconds),
-      start_time_(es.getTicks()),
+      start_time_(es.GetTicks()),
       time_at_last_check_(start_time_) {}
 
 int AcceleratingFrameCounter::readFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time =
-        (event_system_.getTicks() - start_time_) / float(total_time_);
+        (event_system_.GetTicks() - start_time_) / float(total_time_);
     float interval = (1.1f - cur_time * 0.2f) * base_interval;
 
     return readNormalFrameWithChangeInterval(interval, time_at_last_check_);
@@ -237,14 +237,14 @@ DeceleratingFrameCounter::DeceleratingFrameCounter(EventSystem& es,
                                                    int frame_max,
                                                    int milliseconds)
     : FrameCounter(es, frame_min, frame_max, milliseconds),
-      start_time_(es.getTicks()),
+      start_time_(es.GetTicks()),
       time_at_last_check_(start_time_) {}
 
 int DeceleratingFrameCounter::readFrame() {
   if (is_active_) {
     float base_interval = float(total_time_) / abs(max_value_ - min_value_);
     float cur_time =
-        (event_system_.getTicks() - start_time_) / float(total_time_);
+        (event_system_.GetTicks() - start_time_) / float(total_time_);
     float interval = (0.9f + cur_time * 0.2f) * base_interval;
 
     return readNormalFrameWithChangeInterval(interval, time_at_last_check_);

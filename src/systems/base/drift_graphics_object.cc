@@ -79,7 +79,7 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
                                  std::ostream* tree) {
   boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    int current_time = system_.event().getTicks();
+    int current_time = system_.event().GetTicks();
     last_rendered_time_ = current_time;
 
     size_t count = go.driftParticleCount();
@@ -186,7 +186,7 @@ GraphicsObjectData* DriftGraphicsObject::Clone() const {
 void DriftGraphicsObject::Execute(RLMachine& machine) {
   // We could theoretically redraw every time around the game loop, so
   // throttle to once every 100ms.
-  int current_time = system_.event().getTicks();
+  int current_time = system_.event().GetTicks();
   if (current_time - last_rendered_time_ > 10) {
     system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
   }

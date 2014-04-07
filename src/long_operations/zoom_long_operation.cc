@@ -51,12 +51,12 @@ ZoomLongOperation::ZoomLongOperation(
       trect_(trect),
       drect_(drect),
       duration_(time),
-      start_time_(machine.system().event().getTicks()) {}
+      start_time_(machine.system().event().GetTicks()) {}
 
 ZoomLongOperation::~ZoomLongOperation() {}
 
 bool ZoomLongOperation::operator()(RLMachine& machine) {
-  unsigned int time = machine.system().event().getTicks();
+  unsigned int time = machine.system().event().GetTicks();
   unsigned int currentFrame = time - start_time_;
 
   bool fastForward = machine.system().ShouldFastForward();

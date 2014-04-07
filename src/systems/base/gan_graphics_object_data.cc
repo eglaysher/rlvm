@@ -244,7 +244,7 @@ GraphicsObjectData* GanGraphicsObjectData::Clone() const {
 
 void GanGraphicsObjectData::Execute(RLMachine& machine) {
   if (is_currently_playing() && current_frame_ >= 0) {
-    unsigned int current_time = system_.event().getTicks();
+    unsigned int current_time = system_.event().GetTicks();
     unsigned int time_since_last_frame_change =
         current_time - time_at_last_frame_change_;
 
@@ -321,7 +321,7 @@ void GanGraphicsObjectData::PlaySet(int set) {
   set_is_currently_playing(true);
   current_set_ = set;
   current_frame_ = 0;
-  time_at_last_frame_change_ = system_.event().getTicks();
+  time_at_last_frame_change_ = system_.event().GetTicks();
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
@@ -337,7 +337,7 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
   // mistake, but is now baked into the file format. Ask the clock for a more
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
-    time_at_last_frame_change_ = system_.event().getTicks();
+    time_at_last_frame_change_ = system_.event().GetTicks();
     system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }

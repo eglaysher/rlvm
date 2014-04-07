@@ -43,7 +43,7 @@ HIKRenderer::HIKRenderer(System& system,
                          const boost::shared_ptr<const HIKScript>& script)
     : system_(system),
       script_(script),
-      creation_time_(system_.event().getTicks()),
+      creation_time_(system_.event().GetTicks()),
       x_offset_(0),
       y_offset_(0) {
   layer_to_animation_num_.insert(layer_to_animation_num_.begin(),
@@ -58,7 +58,7 @@ void HIKRenderer::execute(RLMachine& machine) {
 }
 
 void HIKRenderer::render(std::ostream* tree) {
-  int current_ticks = system_.event().getTicks();
+  int current_ticks = system_.event().GetTicks();
   int time_since_creation = current_ticks - creation_time_;
 
   if (tree) {
@@ -169,7 +169,7 @@ void HIKRenderer::render(std::ostream* tree) {
 }
 
 void HIKRenderer::NextAnimationFrame() {
-  int time = system_.event().getTicks();
+  int time = system_.event().GetTicks();
 
   int idx = 0;
   for (std::vector<LayerData>::iterator it = layer_to_animation_num_.begin();

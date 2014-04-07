@@ -52,7 +52,7 @@ struct ResetTimer : public RLOp_Void_1<DefaultIntValue_T<0>> {
 
   void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    es.getTimer(layer_, counter).set(es);
+    es.GetTimer(layer_, counter).set(es);
   }
 };
 
@@ -61,7 +61,7 @@ bool TimerIsDone(RLMachine& machine,
                  int counter,
                  unsigned int target_time) {
   EventSystem& es = machine.system().event();
-  return es.getTimer(layer, counter).read(es) > target_time;
+  return es.GetTimer(layer, counter).read(es) > target_time;
 }
 
 struct Sys_time : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
@@ -72,7 +72,7 @@ struct Sys_time : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int time, int counter) {
     EventSystem& es = machine.system().event();
 
-    if (es.getTimer(layer_, counter).read(es) <
+    if (es.GetTimer(layer_, counter).read(es) <
         numeric_cast<unsigned int>(time)) {
       WaitLongOperation* wait_op = new WaitLongOperation(machine);
       if (in_time_c_)
@@ -90,7 +90,7 @@ struct Timer : public RLOp_Store_1<DefaultIntValue_T<0>> {
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    return es.getTimer(layer_, counter).read(es);
+    return es.GetTimer(layer_, counter).read(es);
   }
 };
 
@@ -100,7 +100,7 @@ struct CmpTimer : public RLOp_Store_2<IntConstant_T, DefaultIntValue_T<0>> {
 
   int operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
-    return es.getTimer(layer_, counter).read(es) > val;
+    return es.GetTimer(layer_, counter).read(es) > val;
   }
 };
 
@@ -110,7 +110,7 @@ struct SetTimer : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
 
   void operator()(RLMachine& machine, int val, int counter) {
     EventSystem& es = machine.system().event();
-    es.getTimer(layer_, counter).set(es, val);
+    es.GetTimer(layer_, counter).set(es, val);
   }
 };
 

@@ -37,11 +37,13 @@
 // -----------------------------------------------------------------------
 // EventSystemGlobals
 // -----------------------------------------------------------------------
-EventSystemGlobals::EventSystemGlobals() : generic1(false), generic2(false) {}
+EventSystemGlobals::EventSystemGlobals()
+    : generic1_(false), generic2_(false) {
+}
 
 EventSystemGlobals::EventSystemGlobals(Gameexe& gexe)
-    : generic1(gexe("INIT_ORIGINALSETING1_MOD").ToInt(0)),
-      generic2(gexe("INIT_ORIGINALSETING2_MOD").ToInt(0)) {}
+    : generic1_(gexe("INIT_ORIGINALSETING1_MOD").ToInt(0)),
+      generic2_(gexe("INIT_ORIGINALSETING2_MOD").ToInt(0)) {}
 
 // -----------------------------------------------------------------------
 // EventSystem
@@ -50,15 +52,20 @@ EventSystem::EventSystem(Gameexe& gexe) : globals_(gexe) {}
 
 EventSystem::~EventSystem() {}
 
-void EventSystem::setFrameCounter(int layer,
+RLTimer& EventSystem::GetTimer(int layer, int counter) {
+  // TODO(erg): Add bounds checking here.
+  return timers_[layer][counter];
+}
+
+void EventSystem::SetFrameCounter(int layer,
                                   int frame_counter,
                                   FrameCounter* counter) {
-  checkLayerAndCounter(layer, frame_counter);
+  CheckLayerAndCounter(layer, frame_counter);
   frame_counters_[layer][frame_counter].reset(counter);
 }
 
-FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
-  checkLayerAndCounter(layer, frame_counter);
+FrameCounter& EventSystem::GetFrameCounter(int layer, int frame_counter) {
+  CheckLayerAndCounter(layer, frame_counter);
 
   std::unique_ptr<FrameCounter>& counter =
       frame_counters_[layer][frame_counter];
@@ -68,18 +75,18 @@ FrameCounter& EventSystem::getFrameCounter(int layer, int frame_counter) {
   return *counter;
 }
 
-bool EventSystem::frameCounterExists(int layer, int frame_counter) {
-  checkLayerAndCounter(layer, frame_counter);
+bool EventSystem::FrameCounterExists(int layer, int frame_counter) {
+  CheckLayerAndCounter(layer, frame_counter);
   std::unique_ptr<FrameCounter>& counter =
       frame_counters_[layer][frame_counter];
   return counter.get() != NULL;
 }
 
-void EventSystem::addMouseListener(EventListener* listener) {
+void EventSystem::AddMouseListener(EventListener* listener) {
   event_listeners_.insert(listener);
 }
 
-void EventSystem::removeMouseListener(EventListener* listener) {
+void EventSystem::RemoveMouseListener(EventListener* listener) {
   event_listeners_.erase(listener);
 }
 
@@ -106,7 +113,7 @@ void EventSystem::DispatchEvent(
     event(*current_op);
 }
 
-void EventSystem::broadcastEvent(
+void EventSystem::BroadcastEvent(
     RLMachine& machine,
     const std::function<void(EventListener&)>& event) {
   for (EventListener* listener : event_listeners_)
@@ -117,7 +124,7 @@ void EventSystem::broadcastEvent(
     event(*current_op);
 }
 
-void EventSystem::checkLayerAndCounter(int layer, int frame_counter) {
+void EventSystem::CheckLayerAndCounter(int layer, int frame_counter) {
   if (layer < 0 || layer > 1)
     throw rlvm::Exception("Illegal frame counter layer!");
 

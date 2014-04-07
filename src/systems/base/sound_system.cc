@@ -202,7 +202,7 @@ SoundSystem::SoundSystem(System& system)
 SoundSystem::~SoundSystem() {}
 
 void SoundSystem::executeSoundSystem() {
-  unsigned int cur_time = system().event().getTicks();
+  unsigned int cur_time = system().event().GetTicks();
 
   ChannelAdjustmentMap::iterator it = pcm_adjustment_tasks_.begin();
   while (it != pcm_adjustment_tasks_.end()) {
@@ -258,7 +258,7 @@ void SoundSystem::setBgmVolumeScript(const int level, const int fade_in_ms) {
   if (fade_in_ms == 0) {
     bgm_volume_script_ = level;
   } else {
-    unsigned int cur_time = system().event().getTicks();
+    unsigned int cur_time = system().event().GetTicks();
 
     bgm_adjustment_task_.reset(
         new VolumeAdjustTask(cur_time, bgm_volume_script_, level, fade_in_ms));
@@ -290,7 +290,7 @@ void SoundSystem::setChannelVolume(const int channel,
   checkChannel(channel, "set_channel_volume");
   checkVolume(level, "set_channel_volume");
 
-  unsigned int cur_time = system().event().getTicks();
+  unsigned int cur_time = system().event().GetTicks();
 
   pcm_adjustment_tasks_.insert(std::make_pair(
       channel,

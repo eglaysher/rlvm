@@ -343,7 +343,7 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
                           int duration_time,
                           int delay,
                           int type) {
-    unsigned int creation_time = machine.system().event().getTicks();
+    unsigned int creation_time = machine.system().event().GetTicks();
 
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     int start_x = object.xAdjustment(repno);
@@ -570,7 +570,7 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
     const std::vector<int>& disp = gameexe("OBJDISP", param).ToIntVector();
 
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
-    unsigned int creation_time = machine.system().event().getTicks();
+    unsigned int creation_time = machine.system().event().GetTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
                                                creation_time,
@@ -614,7 +614,7 @@ struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
                   int move_len_x,
                   int move_len_y) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
-    unsigned int creation_time = machine.system().event().getTicks();
+    unsigned int creation_time = machine.system().event().GetTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
                                                creation_time,
@@ -676,7 +676,7 @@ struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
                   int sin_len,
                   int sin_count) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
-    unsigned int creation_time = machine.system().event().getTicks();
+    unsigned int creation_time = machine.system().event().GetTicks();
     object.AddObjectMutator(new DisplayMutator(machine,
                                                object,
                                                creation_time,

@@ -311,7 +311,7 @@ void GraphicsSystem::QueueShakeSpec(int spec) {
     }
 
     forceRefresh();
-    time_at_last_queue_change_ = system().event().getTicks();
+    time_at_last_queue_change_ = system().event().GetTicks();
   }
 }
 
@@ -555,7 +555,7 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
 
   // Possibly update the screen shaking state
   if (!screen_shake_queue_.empty()) {
-    unsigned int now = system().event().getTicks();
+    unsigned int now = system().event().GetTicks();
     unsigned int accumulated_ticks = now - time_at_last_queue_change_;
     while (!screen_shake_queue_.empty() &&
            accumulated_ticks > screen_shake_queue_.front().second) {

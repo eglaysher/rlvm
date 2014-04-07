@@ -38,11 +38,11 @@ RLTimer::~RLTimer() {}
 // -----------------------------------------------------------------------
 
 unsigned int RLTimer::read(EventSystem& events) {
-  return events.getTicks() - time_at_last_set_;
+  return events.GetTicks() - time_at_last_set_;
 }
 
 // -----------------------------------------------------------------------
 
 void RLTimer::set(EventSystem& events, unsigned int value) {
-  time_at_last_set_ = events.getTicks() + value;
+  time_at_last_set_ = events.GetTicks() + value;
 }

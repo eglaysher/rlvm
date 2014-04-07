@@ -49,7 +49,7 @@ MouseCursor::MouseCursor(System& system,
       count_(count),
       frame_speed_(speed / count_),
       current_frame_(0),
-      last_time_frame_incremented_(system.event().getTicks()) {
+      last_time_frame_incremented_(system.event().GetTicks()) {
   // TODO(erg): Technically, each frame might have a hotspot. In practice, the
   // hotspot is in the same place every frame.
   findHotspot();
@@ -67,7 +67,7 @@ MouseCursor::MouseCursor(System& system,
 MouseCursor::~MouseCursor() {}
 
 void MouseCursor::execute(System& system) {
-  unsigned int cur_time = system.event().getTicks();
+  unsigned int cur_time = system.event().GetTicks();
 
   if (last_time_frame_incremented_ + frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;

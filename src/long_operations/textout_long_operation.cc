@@ -201,7 +201,7 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
   if (no_wait_) {
     return DisplayAsMuchAsWeCanThenPause(machine);
   } else {
-    int current_time = machine.system().event().getTicks();
+    int current_time = machine.system().event().GetTicks();
     int time_since_last_pass = current_time - time_at_last_pass_;
     time_at_last_pass_ = current_time;
 

@@ -44,7 +44,7 @@ Effect::Effect(RLMachine& machine,
                int time)
     : screen_size_(size),
       duration_(time),
-      start_time_(machine.system().event().getTicks()),
+      start_time_(machine.system().event().GetTicks()),
       machine_(machine),
       src_surface_(src),
       dst_surface_(dst) {
@@ -56,7 +56,7 @@ Effect::~Effect() {
 }
 
 bool Effect::operator()(RLMachine& machine) {
-  unsigned int time = machine.system().event().getTicks();
+  unsigned int time = machine.system().event().GetTicks();
   unsigned int current_frame = time - start_time_;
 
   bool fast_forward = machine.system().ShouldFastForward();

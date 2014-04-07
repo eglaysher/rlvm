@@ -50,7 +50,7 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
                                      int duration_time,
                                      int delay,
                                      int type) {
-  unsigned int creation_time = machine.system().event().getTicks();
+  unsigned int creation_time = machine.system().event().GetTicks();
   GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)();
@@ -80,7 +80,7 @@ void Op_ObjectMutatorRepnoInt::operator()(RLMachine& machine,
                                           int duration_time,
                                           int delay,
                                           int type) {
-  unsigned int creation_time = machine.system().event().getTicks();
+  unsigned int creation_time = machine.system().event().GetTicks();
   GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)(repno);
@@ -117,7 +117,7 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
                                         int duration_time,
                                         int delay,
                                         int type) {
-  unsigned int creation_time = machine.system().event().getTicks();
+  unsigned int creation_time = machine.system().event().GetTicks();
   GraphicsObject& obj = GetGraphicsObject(machine, this, object);
   int startval_one = (obj.*getter_one_)();
   int startval_two = (obj.*getter_two_)();

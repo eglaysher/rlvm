@@ -156,11 +156,11 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
       // Run the rlmachine through as many instructions as we can in a 10ms time
       // slice. Bail out if we switch to long operation mode, or if the screen
       // is marked as dirty.
-      unsigned int start_ticks = sdlSystem.event().getTicks();
+      unsigned int start_ticks = sdlSystem.event().GetTicks();
       unsigned int end_ticks = start_ticks;
       do {
         rlmachine.ExecuteNextInstruction();
-        end_ticks = sdlSystem.event().getTicks();
+        end_ticks = sdlSystem.event().GetTicks();
       } while (!rlmachine.CurrentLongOperation() &&
                !sdlSystem.force_wait() &&
                (end_ticks - start_ticks < 10));
@@ -171,7 +171,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
         int real_sleep_time = 10 - (end_ticks - start_ticks);
         if (real_sleep_time < 1)
           real_sleep_time = 1;
-        sdlSystem.event().wait(real_sleep_time);
+        sdlSystem.event().Wait(real_sleep_time);
       }
 
       sdlSystem.set_force_wait(false);

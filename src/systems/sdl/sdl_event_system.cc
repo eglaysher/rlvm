@@ -45,14 +45,14 @@ SDLEventSystem::SDLEventSystem(SDLSystem& sys, Gameexe& gexe)
       ctrl_pressed_(false),
       mouse_inside_window_(true),
       mouse_pos_(),
-      m_button1State(0),
-      m_button2State(0),
+      button1_state_(0),
+      button2_state_(0),
       last_get_currsor_time_(0),
       last_mouse_move_time_(0),
       system_(sys),
       raw_handler_(NULL) {}
 
-void SDLEventSystem::executeEventSystem(RLMachine& machine) {
+void SDLEventSystem::ExecuteEventSystem(RLMachine& machine) {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
@@ -60,20 +60,20 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
         if (raw_handler_)
           raw_handler_->pushInput(event);
         else
-          handleKeyDown(machine, event);
+          HandleKeyDown(machine, event);
         break;
       }
       case SDL_KEYUP: {
         if (raw_handler_)
           raw_handler_->pushInput(event);
         else
-          handleKeyUp(machine, event);
+          HandleKeyUp(machine, event);
         break;
       }
       case SDL_MOUSEMOTION: {
         if (raw_handler_)
           raw_handler_->pushInput(event);
-        handleMouseMotion(machine, event);
+        HandleMouseMotion(machine, event);
         break;
       }
       case SDL_MOUSEBUTTONDOWN:
@@ -81,7 +81,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
         if (raw_handler_)
           raw_handler_->pushInput(event);
         else
-          handleMouseButtonEvent(machine, event);
+          HandleMouseButtonEvent(machine, event);
         break;
       }
       case SDL_QUIT:
@@ -90,7 +90,7 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
       case SDL_ACTIVEEVENT:
         if (raw_handler_)
           raw_handler_->pushInput(event);
-        handleActiveEvent(machine, event);
+        HandleActiveEvent(machine, event);
         break;
       case SDL_VIDEOEXPOSE: {
         machine.system().graphics().forceRefresh();
@@ -100,62 +100,64 @@ void SDLEventSystem::executeEventSystem(RLMachine& machine) {
   }
 }
 
-bool SDLEventSystem::ctrlPressed() const {
+bool SDLEventSystem::CtrlPressed() const {
   return system_.force_fast_forward() || ctrl_pressed_;
 }
 
-Point SDLEventSystem::getCursorPos() {
-  preventCursorPosSpinning();
+Point SDLEventSystem::GetCursorPos() {
+  PreventCursorPosSpinning();
   return mouse_pos_;
 }
 
-void SDLEventSystem::getCursorPos(Point& position, int& button1, int& button2) {
-  preventCursorPosSpinning();
+void SDLEventSystem::GetCursorPos(Point& position, int& button1, int& button2) {
+  PreventCursorPosSpinning();
   position = mouse_pos_;
-  button1 = m_button1State;
-  button2 = m_button2State;
+  button1 = button1_state_;
+  button2 = button2_state_;
 }
 
-void SDLEventSystem::flushMouseClicks() {
-  m_button1State = 0;
-  m_button2State = 0;
+void SDLEventSystem::FlushMouseClicks() {
+  button1_state_ = 0;
+  button2_state_ = 0;
 }
 
-unsigned int SDLEventSystem::timeOfLastMouseMove() {
+unsigned int SDLEventSystem::TimeOfLastMouseMove() {
   return last_mouse_move_time_;
 }
 
-unsigned int SDLEventSystem::getTicks() const { return SDL_GetTicks(); }
+unsigned int SDLEventSystem::GetTicks() const { return SDL_GetTicks(); }
 
-void SDLEventSystem::wait(unsigned int milliseconds) const {
+void SDLEventSystem::Wait(unsigned int milliseconds) const {
   SDL_Delay(milliseconds);
 }
 
-void SDLEventSystem::injectMouseMovement(RLMachine& machine, const Point& loc) {
+bool SDLEventSystem::ShiftPressed() const { return shift_pressed_; }
+
+void SDLEventSystem::InjectMouseMovement(RLMachine& machine, const Point& loc) {
   mouse_pos_ = loc;
-  broadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
+  BroadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
 }
 
-void SDLEventSystem::injectMouseDown(RLMachine& machine) {
-  m_button1State = 1;
-  m_button2State = 0;
+void SDLEventSystem::InjectMouseDown(RLMachine& machine) {
+  button1_state_ = 1;
+  button2_state_ = 0;
 
   DispatchEvent(
       machine,
       bind(&EventListener::MouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
 
-void SDLEventSystem::injectMouseUp(RLMachine& machine) {
-  m_button1State = 2;
-  m_button2State = 0;
+void SDLEventSystem::InjectMouseUp(RLMachine& machine) {
+  button1_state_ = 2;
+  button2_state_ = 0;
 
   DispatchEvent(
       machine,
       bind(&EventListener::MouseButtonStateChanged, _1, MOUSE_LEFT, 1));
 }
 
-void SDLEventSystem::preventCursorPosSpinning() {
-  unsigned int newTime = getTicks();
+void SDLEventSystem::PreventCursorPosSpinning() {
+  unsigned int newTime = GetTicks();
 
   if ((system_.graphics().screenUpdateMode() !=
        GraphicsSystem::SCREENUPDATEMODE_MANUAL) &&
@@ -170,7 +172,7 @@ void SDLEventSystem::preventCursorPosSpinning() {
   last_get_currsor_time_ = newTime;
 }
 
-void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
+void SDLEventSystem::HandleKeyDown(RLMachine& machine, SDL_Event& event) {
   switch (event.key.keysym.sym) {
     case SDLK_LSHIFT:
     case SDLK_RSHIFT: {
@@ -203,7 +205,7 @@ void SDLEventSystem::handleKeyDown(RLMachine& machine, SDL_Event& event) {
   DispatchEvent(machine, bind(&EventListener::KeyStateChanged, _1, code, true));
 }
 
-void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
+void SDLEventSystem::HandleKeyUp(RLMachine& machine, SDL_Event& event) {
   switch (event.key.keysym.sym) {
     case SDLK_LSHIFT:
     case SDLK_RSHIFT: {
@@ -232,26 +234,26 @@ void SDLEventSystem::handleKeyUp(RLMachine& machine, SDL_Event& event) {
                 bind(&EventListener::KeyStateChanged, _1, code, false));
 }
 
-void SDLEventSystem::handleMouseMotion(RLMachine& machine, SDL_Event& event) {
+void SDLEventSystem::HandleMouseMotion(RLMachine& machine, SDL_Event& event) {
   if (mouse_inside_window_) {
     mouse_pos_ = Point(event.motion.x, event.motion.y);
-    last_mouse_move_time_ = getTicks();
+    last_mouse_move_time_ = GetTicks();
 
     // Handle this somehow.
-    broadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
+    BroadcastEvent(machine, bind(&EventListener::MouseMotion, _1, mouse_pos_));
   }
 }
 
-void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
+void SDLEventSystem::HandleMouseButtonEvent(RLMachine& machine,
                                             SDL_Event& event) {
   if (mouse_inside_window_) {
     bool pressed = event.type == SDL_MOUSEBUTTONDOWN;
     int press_code = pressed ? 1 : 2;
 
     if (event.button.button == SDL_BUTTON_LEFT)
-      m_button1State = press_code;
+      button1_state_ = press_code;
     else if (event.button.button == SDL_BUTTON_RIGHT)
-      m_button2State = press_code;
+      button2_state_ = press_code;
 
     MouseButton button = MOUSE_NONE;
     switch (event.button.button) {
@@ -280,7 +282,7 @@ void SDLEventSystem::handleMouseButtonEvent(RLMachine& machine,
   }
 }
 
-void SDLEventSystem::handleActiveEvent(RLMachine& machine, SDL_Event& event) {
+void SDLEventSystem::HandleActiveEvent(RLMachine& machine, SDL_Event& event) {
   if (event.active.state & SDL_APPINPUTFOCUS) {
     // Assume the mouse is inside the window. Actually checking the mouse
     // state doesn't work in the case where we mouse click on another window

@@ -91,7 +91,7 @@ struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
                   IntReferenceIterator button2It) {
     Point pos;
     int button1, button2;
-    machine.system().event().getCursorPos(pos, button1, button2);
+    machine.system().event().GetCursorPos(pos, button1, button2);
     *xit = pos.x();
     *yit = pos.y();
     *button1It = button1;
@@ -103,7 +103,7 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator xit,
                   IntReferenceIterator yit) {
-    Point pos = machine.system().event().getCursorPos();
+    Point pos = machine.system().event().GetCursorPos();
     *xit = pos.x();
     *yit = pos.y();
   }
@@ -352,7 +352,7 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(0, 0, "title", new title);
   AddOpcode(2, 0, "GetTitle", new GetTitle);
 
-  AddOpcode(130, 0, "FlushClick", CallFunction(&EventSystem::flushMouseClicks));
+  AddOpcode(130, 0, "FlushClick", CallFunction(&EventSystem::FlushMouseClicks));
   AddOpcode(133, 0, "GetCursorPos", new GetCursorPos_gc1);
 
   AddOpcode(202, 0, "GetCursorPos", new GetCursorPos_gc2);
@@ -397,8 +397,8 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
             0,
             "CtrlKeySkipOff",
             CallFunctionWith(&TextSystem::setCtrlKeySkip, 0));
-  AddOpcode(353, 0, "CtrlPressed", ReturnIntValue(&EventSystem::ctrlPressed));
-  AddOpcode(354, 0, "ShiftPressed", ReturnIntValue(&EventSystem::shiftPressed));
+  AddOpcode(353, 0, "CtrlPressed", ReturnIntValue(&EventSystem::CtrlPressed));
+  AddOpcode(354, 0, "ShiftPressed", ReturnIntValue(&EventSystem::ShiftPressed));
 
   AddOpcode(364, 0, "PauseCursor", new PauseCursor);
 
@@ -581,13 +581,13 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddUnsupportedOpcode(2059, 0, "SetSoundQuality");
   AddUnsupportedOpcode(2009, 0, "SoundQuality");
 
-  AddOpcode(2221, 0, "SetGeneric1", CallFunction(&EventSystem::setGeneric1));
+  AddOpcode(2221, 0, "SetGeneric1", CallFunction(&EventSystem::set_generic1));
   AddOpcode(2620,
             0,
             "DefGeneric1",
             new ReturnGameexeInt("INIT_ORIGINALSETING1_MOD", 0));
   AddOpcode(2321, 0, "Generic1", ReturnIntValue(&EventSystem::generic1));
-  AddOpcode(2222, 0, "SetGeneric2", CallFunction(&EventSystem::setGeneric2));
+  AddOpcode(2222, 0, "SetGeneric2", CallFunction(&EventSystem::set_generic2));
   AddOpcode(2621,
             0,
             "DefGeneric2",

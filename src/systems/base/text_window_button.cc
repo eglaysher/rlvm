@@ -281,12 +281,12 @@ void RepeatActionWhileHoldingWindowButton::buttonPressed() {
   held_down_ = true;
 
   callback_();
-  last_invocation_ = system_.event().getTicks();
+  last_invocation_ = system_.event().GetTicks();
 }
 
 void RepeatActionWhileHoldingWindowButton::execute() {
   if (held_down_) {
-    unsigned int cur_time = system_.event().getTicks();
+    unsigned int cur_time = system_.event().GetTicks();
 
     if (last_invocation_ + time_between_invocations_ > cur_time) {
       callback_();

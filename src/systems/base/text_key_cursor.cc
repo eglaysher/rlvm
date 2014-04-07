@@ -47,7 +47,7 @@ using std::vector;
 TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
     : cursor_number_(in_curosr_number),
       current_frame_(0),
-      last_time_frame_incremented_(system.event().getTicks()),
+      last_time_frame_incremented_(system.event().GetTicks()),
       system_(system) {
   Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
@@ -67,7 +67,7 @@ TextKeyCursor::~TextKeyCursor() {}
 // -----------------------------------------------------------------------
 
 void TextKeyCursor::execute() {
-  unsigned int cur_time = system_.event().getTicks();
+  unsigned int cur_time = system_.event().GetTicks();
 
   if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;

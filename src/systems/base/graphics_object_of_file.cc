@@ -114,7 +114,7 @@ GraphicsObjectData* GraphicsObjectOfFile::Clone() const {
 
 void GraphicsObjectOfFile::Execute(RLMachine& machine) {
   if (is_currently_playing()) {
-    unsigned int current_time = system_.event().getTicks();
+    unsigned int current_time = system_.event().GetTicks();
     unsigned int time_since_last_frame_change =
         current_time - time_at_last_frame_change_;
 
@@ -181,7 +181,7 @@ void GraphicsObjectOfFile::PlaySet(int frame_time) {
     frame_time_ = 10;
   }
 
-  time_at_last_frame_change_ = system_.event().getTicks();
+  time_at_last_frame_change_ = system_.event().GetTicks();
   system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
@@ -198,7 +198,7 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
   // mistake, but is now baked into the file format. Ask the clock for a more
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
-    time_at_last_frame_change_ = system_.event().getTicks();
+    time_at_last_frame_change_ = system_.event().GetTicks();
     system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }

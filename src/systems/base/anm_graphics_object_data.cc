@@ -207,7 +207,7 @@ bool AnmGraphicsObjectData::IsAnimation() const {
 void AnmGraphicsObjectData::AdvanceFrame() {
   // Do things that advance the state
   int time_since_last_frame_change =
-      system_.event().getTicks() - time_at_last_frame_change_;
+      system_.event().GetTicks() - time_at_last_frame_change_;
   bool done = false;
 
   while (is_currently_playing() && !done) {
@@ -255,7 +255,7 @@ GraphicsObjectData* AnmGraphicsObjectData::Clone() const {
 
 void AnmGraphicsObjectData::PlaySet(int set) {
   set_is_currently_playing(true);
-  time_at_last_frame_change_ = system_.event().getTicks();
+  time_at_last_frame_change_ = system_.event().GetTicks();
 
   cur_frame_set_ = animation_set_.at(set).begin();
   cur_frame_set_end_ = animation_set_.at(set).end();

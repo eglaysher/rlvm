@@ -149,14 +149,14 @@ class GCNPlatformBlocker : public LongOperation,
                      GraphicsSystem& graphics,
                      const boost::shared_ptr<GCNPlatform>& platform)
       : event_system_(system), graphics_system_(graphics), platform_(platform) {
-    event_system_.setRawSDLInputHandler(this);
+    event_system_.set_raw_sdl_input_handler(this);
     graphics_system_.addRenderable(this);
     platform_->blocker_ = this;
   }
 
   ~GCNPlatformBlocker() {
     graphics_system_.removeRenderable(this);
-    event_system_.setRawSDLInputHandler(NULL);
+    event_system_.set_raw_sdl_input_handler(NULL);
     platform_->blocker_ = NULL;
   }
 

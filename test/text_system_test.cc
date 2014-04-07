@@ -51,7 +51,7 @@ using ::testing::_;
 class IncrementingTickCounter : public EventSystemMockHandler {
  public:
   IncrementingTickCounter() : ticks(0) {}
-  virtual unsigned int getTicks() const { return ticks++; }
+  virtual unsigned int GetTicks() const { return ticks++; }
 
  private:
   mutable unsigned int ticks;

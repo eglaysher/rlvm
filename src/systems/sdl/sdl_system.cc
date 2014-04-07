@@ -58,15 +58,15 @@ SDLSystem::SDLSystem(Gameexe& gameexe) : System(), gameexe_(gameexe) {
   text_system_.reset(new SDLTextSystem(*this, gameexe));
   sound_system_.reset(new SDLSoundSystem(*this));
 
-  event_system_->addMouseListener(graphics_system_.get());
-  event_system_->addMouseListener(text_system_.get());
+  event_system_->AddMouseListener(graphics_system_.get());
+  event_system_->AddMouseListener(text_system_.get());
 }
 
 // -----------------------------------------------------------------------
 
 SDLSystem::~SDLSystem() {
-  event_system_->removeMouseListener(text_system_.get());
-  event_system_->removeMouseListener(graphics_system_.get());
+  event_system_->RemoveMouseListener(text_system_.get());
+  event_system_->RemoveMouseListener(graphics_system_.get());
 
   // Some combinations of SDL and FT on the Mac require us to destroy the
   // Platform first. This will crash on Tiger if this isn't here, but it won't
@@ -87,7 +87,7 @@ SDLSystem::~SDLSystem() {
 
 void SDLSystem::run(RLMachine& machine) {
   // Give the event handler a chance to run.
-  event_system_->executeEventSystem(machine);
+  event_system_->ExecuteEventSystem(machine);
   text_system_->executeTextSystem();
   sound_system_->executeSoundSystem();
   graphics_system_->executeGraphicsSystem(machine);
