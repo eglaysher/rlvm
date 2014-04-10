@@ -99,6 +99,12 @@ const XorKey snow_standard_edition_xor_mask[] = {
      256, 257},
     {{0x0}, -1, -1}};
 
+const XorKey kud_wafter_xor_mask[] = {
+    {{0x67, 0x1c, 0x21, 0xbe, 0x6f, 0xef, 0xb5, 0x16, 0x4a, 0x82, 0x39, 0x2b,
+      0xad, 0x3a, 0x71, 0x3f},
+     256, 257},
+    {{0x0}, -1, -1}};
+
 // -----------------------------------------------------------------------
 
 // Decompress an archived file.

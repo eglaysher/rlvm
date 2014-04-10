@@ -77,6 +77,12 @@ Archive::Archive(const std::string& filename, const std::string& regname)
   } else if (regname == "StudioMebius\\SNOWSE") {
     second_level_xor_key_ =
         libreallive::compression::snow_standard_edition_xor_mask;
+  } else if (regname ==
+             "\x4b\x45\x59\x5c\x83\x4e\x83\x68\x82\xed\x82\xd3\x82"
+             "\xbd\x81\x5b") {
+    // "KEY\<Kud Wafter in hiragana>"
+    second_level_xor_key_ =
+        libreallive::compression::kud_wafter_xor_mask;
   }
 }
 
