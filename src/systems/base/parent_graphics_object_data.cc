@@ -59,7 +59,7 @@ void ParentGraphicsObjectData::Render(const GraphicsObject& go,
   AllocatedLazyArrayIterator<GraphicsObject> it = objects_.begin();
   AllocatedLazyArrayIterator<GraphicsObject> end = objects_.end();
   for (; it != end; ++it) {
-    it->render(it.pos(), &go, tree);
+    it->Render(it.pos(), &go, tree);
   }
 }
 
@@ -88,7 +88,7 @@ GraphicsObjectData* ParentGraphicsObjectData::Clone() const {
 
 void ParentGraphicsObjectData::Execute(RLMachine& machine) {
   for (GraphicsObject& obj : objects_)
-    obj.execute(machine);
+    obj.Execute(machine);
 }
 
 bool ParentGraphicsObjectData::IsAnimation() const { return false; }

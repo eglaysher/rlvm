@@ -177,7 +177,7 @@ class TextWindow {
   const RGBAColour& colour() const { return colour_; }
   int filter() const { return filter_; }
 
-  void setVisible(int in) { is_visible_ = in; }
+  void SetVisible(int in) { is_visible_ = in; }
   bool isVisible() const { return is_visible_; }
 
   void setActionOnPause(const int i) { action_on_pause_ = i; }

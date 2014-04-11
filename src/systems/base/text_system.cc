@@ -189,14 +189,14 @@ void TextSystem::render(std::ostream* tree) {
 void TextSystem::hideTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    it->second->setVisible(0);
+    it->second->SetVisible(0);
   }
 }
 
 void TextSystem::hideAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->setVisible(0);
+    it->second->SetVisible(0);
   }
 }
 
@@ -204,7 +204,7 @@ void TextSystem::hideAllTextWindowsExcept(int i) {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
     if (it->first != i) {
-      it->second->setVisible(0);
+      it->second->SetVisible(0);
     }
   }
 }
@@ -212,14 +212,14 @@ void TextSystem::hideAllTextWindowsExcept(int i) {
 void TextSystem::showTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    it->second->setVisible(1);
+    it->second->SetVisible(1);
   }
 }
 
 void TextSystem::showAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->setVisible(1);
+    it->second->SetVisible(1);
   }
 }
 

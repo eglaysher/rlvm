@@ -216,7 +216,7 @@ int GanGraphicsObjectData::PixelWidth(
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return int(rendering_properties.getWidthScaleFactor() *
+      return int(rendering_properties.GetWidthScaleFactor() *
                  rect.rect.width());
     }
   }
@@ -230,7 +230,7 @@ int GanGraphicsObjectData::PixelHeight(
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
       const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return int(rendering_properties.getHeightScaleFactor() *
+      return int(rendering_properties.GetHeightScaleFactor() *
                  rect.rect.height());
     }
   }
@@ -302,13 +302,13 @@ int GanGraphicsObjectData::GetRenderingAlpha(const GraphicsObject& go,
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
     // alpha.
-    float parent_alpha = parent ? (parent->computedAlpha() / 255.0f) : 1;
-    return int(((frame.alpha / 255.0f) * (go.computedAlpha() / 255.0f) *
+    float parent_alpha = parent ? (parent->GetComputedAlpha() / 255.0f) : 1;
+    return int(((frame.alpha / 255.0f) * (go.GetComputedAlpha() / 255.0f) *
                 parent_alpha) *
                255);
   } else {
     // Should never happen.
-    return go.computedAlpha();
+    return go.GetComputedAlpha();
   }
 }
 

@@ -75,20 +75,20 @@ struct objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct objClear_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.clearObject();
+    obj.ClearObject();
   }
 };
 
 struct objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   // I highly suspect that this has range semantics like
-  // setWipeCopyTo_1, but none of the games I own use this
+  // SetWipeCopyTo_1, but none of the games I own use this
   // function.
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
 
     for (int i = min; i < max; ++i) {
-      GetGraphicsObject(machine, this, i).clearObject();
+      GetGraphicsObject(machine, this, i).ClearObject();
     }
   }
 };
@@ -96,7 +96,7 @@ struct objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct objDelete_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.deleteObject();
+    obj.DeleteObject();
   }
 };
 
@@ -106,37 +106,37 @@ struct objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     max++;
 
     for (int i = min; i < max; ++i) {
-      GetGraphicsObject(machine, this, i).deleteObject();
+      GetGraphicsObject(machine, this, i).DeleteObject();
     }
   }
 };
 
-struct setWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
+struct SetWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
   int val_;
-  explicit setWipeCopyTo_0(int value) : val_(value) {}
+  explicit SetWipeCopyTo_0(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int buf) {
-    GetGraphicsObject(machine, this, buf).setWipeCopy(val_);
+    GetGraphicsObject(machine, this, buf).SetWipeCopy(val_);
   }
 };
 
-struct setWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct SetWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int val_;
-  explicit setWipeCopyTo_1(int value) : val_(value) {}
+  explicit SetWipeCopyTo_1(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int min, int numObjsToSet) {
     int maxObj = min + numObjsToSet;
     for (int i = min; i < maxObj; ++i) {
-      GetGraphicsObject(machine, this, i).setWipeCopy(val_);
+      GetGraphicsObject(machine, this, i).SetWipeCopy(val_);
     }
   }
 };
 
 void addObjManagementFunctions(RLModule& m) {
-  m.AddOpcode(4, 0, "objWipeCopyOn", new setWipeCopyTo_0(1));
-  m.AddOpcode(4, 1, "objWipeCopyOn", new setWipeCopyTo_1(1));
-  m.AddOpcode(5, 0, "objWipeCopyOff", new setWipeCopyTo_0(0));
-  m.AddOpcode(5, 1, "objWipeCopyOff", new setWipeCopyTo_1(0));
+  m.AddOpcode(4, 0, "objWipeCopyOn", new SetWipeCopyTo_0(1));
+  m.AddOpcode(4, 1, "objWipeCopyOn", new SetWipeCopyTo_1(1));
+  m.AddOpcode(5, 0, "objWipeCopyOff", new SetWipeCopyTo_0(0));
+  m.AddOpcode(5, 1, "objWipeCopyOff", new SetWipeCopyTo_1(0));
 
   m.AddOpcode(10, 0, "objClear", new objClear_0);
   m.AddOpcode(10, 1, "objClear", new objClear_1);
@@ -161,7 +161,7 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
       // Pick out the object data.
       ParentGraphicsObjectData& parent =
-          static_cast<ParentGraphicsObjectData&>(go.objectData());
+          static_cast<ParentGraphicsObjectData&>(go.GetObjectData());
 
       GraphicsObject& src_obj = parent.getObject(sbuf);
       parent.setObject(dbuf, src_obj);
@@ -174,9 +174,9 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
-  AddOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::clearObject));
+  AddOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::ClearObject));
 
-  AddOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
+  AddOpcode(1, 0, "objEraseWipeCopy", new SetWipeCopyTo_0(0));
 
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.

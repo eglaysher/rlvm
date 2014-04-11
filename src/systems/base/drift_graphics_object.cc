@@ -82,18 +82,18 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
     int current_time = system_.event().GetTicks();
     last_rendered_time_ = current_time;
 
-    size_t count = go.driftParticleCount();
-    bool use_animation = go.driftUseAnimation();
-    int start_pattern = go.driftStartPattern();
-    int end_pattern = go.driftEndPattern();
-    int animation_time = go.driftAnimationTime();
-    int yspeed = go.driftYSpeed();
-    int period = go.driftPeriod();
-    int amplitude = go.driftAmplitude();
-    int use_drift = go.driftUseDrift();
-    int drift_speed = go.driftDriftSpeed();
+    size_t count = go.GetDriftParticleCount();
+    bool use_animation = go.GetDriftUseAnimation();
+    int start_pattern = go.GetDriftStartPattern();
+    int end_pattern = go.GetDriftEndPattern();
+    int animation_time = go.GetDriftAnimationTime();
+    int yspeed = go.GetDriftYSpeed();
+    int period = go.GetDriftPeriod();
+    int amplitude = go.GetDriftAmplitude();
+    int use_drift = go.GetDriftUseDrift();
+    int drift_speed = go.GetDriftDriftSpeed();
 
-    Rect bounding_box = go.driftArea();
+    Rect bounding_box = go.GetDriftArea();
     if (bounding_box.x() == -1) {
       bounding_box = system_.graphics().screenRect();
     }
@@ -161,8 +161,8 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
         dest_y %= bounding_box.size().height();
       Rect dest(bounding_box.origin() + Size(dest_x, dest_y), src.size());
 
-      if (go.hasClip())
-        ClipDestination(go.clipRect(), src, dest);
+      if (go.has_clip_rect())
+        ClipDestination(go.clip_rect(), src, dest);
 
       surface->renderToScreen(src, dest, particle.alpha);
     }
@@ -171,12 +171,12 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
 
 int DriftGraphicsObject::PixelWidth(
     const GraphicsObject& rendering_properties) {
-  return rendering_properties.driftArea().width();
+  return rendering_properties.GetDriftArea().width();
 }
 
 int DriftGraphicsObject::PixelHeight(
     const GraphicsObject& rendering_properties) {
-  return rendering_properties.driftArea().height();
+  return rendering_properties.GetDriftArea().height();
 }
 
 GraphicsObjectData* DriftGraphicsObject::Clone() const {

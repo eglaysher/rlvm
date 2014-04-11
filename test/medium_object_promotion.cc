@@ -77,15 +77,15 @@ TEST_P(PromotionTest, BgLayerPromotion) {
 
   // Build a dummy object into the background slot.
   GraphicsObject& obj = gs.getObject(OBJ_BG, 0);
-  obj.setTextText("String");
-  obj.setObjectData(new GraphicsTextObject(system));
+  obj.SetTextText("String");
+  obj.SetObjectData(new GraphicsTextObject(system));
 
   // Run the graphics command.
   rlmachine.exe(get<0>(data), get<1>(data), get<2>(data));
 
   // Whether the object was promoted to the fg layer.
   EXPECT_EQ(get<3>(data) & SHOULD_PROMOTE_BG,
-            !gs.getObject(OBJ_FG, 0).isCleared());
+            !gs.getObject(OBJ_FG, 0).is_cleared());
 }
 
 std::vector<PromotionData> data = {

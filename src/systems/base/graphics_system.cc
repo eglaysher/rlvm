@@ -545,7 +545,7 @@ void GraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
   // Check to see if any of the graphics objects are reporting that
   // they want to force a redraw
   for (GraphicsObject& obj : foregroundObjects())
-    obj.execute(machine);
+    obj.Execute(machine);
 
   if (mouse_cursor_)
     mouse_cursor_->execute(system());
@@ -709,13 +709,13 @@ void GraphicsSystem::clearAndPromoteObjects() {
   FullIterator fg = graphics_object_impl_->foreground_objects.full_begin();
   FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
   for (; bg != bg_end && fg != fg_end; bg++, fg++) {
-    if (fg.valid() && !fg->wipeCopy()) {
-      fg->clearObject();
+    if (fg.valid() && !fg->wipe_copy()) {
+      fg->ClearObject();
     }
 
     if (bg.valid()) {
       *fg = *bg;
-      bg->clearObject();
+      bg->ClearObject();
     }
   }
 }
@@ -746,7 +746,7 @@ void GraphicsSystem::setObject(int layer, int obj_number, GraphicsObject& obj) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::clearObject(int obj_number) {
+void GraphicsSystem::ClearObject(int obj_number) {
   graphics_object_impl_->foreground_objects.DeleteAt(obj_number);
   graphics_object_impl_->background_objects.DeleteAt(obj_number);
 }
@@ -762,10 +762,10 @@ void GraphicsSystem::clearAllObjects() {
 
 void GraphicsSystem::resetAllObjectsProperties() {
   for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
-    object.resetProperties();
+    object.ResetProperties();
 
   for (GraphicsObject& object : graphics_object_impl_->background_objects)
-    object.resetProperties();
+    object.ResetProperties();
 }
 
 // -----------------------------------------------------------------------
@@ -790,8 +790,8 @@ LazyArray<GraphicsObject>& GraphicsSystem::foregroundObjects() {
 
 bool GraphicsSystem::animationsPlaying() const {
   for (GraphicsObject& object : graphics_object_impl_->foreground_objects) {
-    if (object.hasObjectData()) {
-      GraphicsObjectData& data = object.objectData();
+    if (object.has_object_data()) {
+      GraphicsObjectData& data = object.GetObjectData();
       if (data.IsAnimation() && data.is_currently_playing())
         return true;
     }
@@ -844,7 +844,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
       continue;
 
     to_render.push_back(std::make_tuple(
-        it->zOrder(), it->zLayer(), it->zDepth(), it.pos(), &*it));
+        it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it));
   }
 
   // Sort by all the ordering values.
@@ -852,7 +852,7 @@ void GraphicsSystem::renderObjects(std::ostream* tree) {
 
   for (ToRenderVec::iterator it = to_render.begin(); it != to_render.end();
        ++it) {
-    get<4>(*it)->render(get<3>(*it), NULL, tree);
+    get<4>(*it)->Render(get<3>(*it), NULL, tree);
   }
 }
 

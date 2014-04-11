@@ -86,8 +86,8 @@ struct WaitForGanToFinish : public LongOperation {
     GraphicsObject& obj = getObject(machine);
     bool done = true;
 
-    if (obj.hasObjectData()) {
-      const GraphicsObjectData& data = obj.objectData();
+    if (obj.has_object_data()) {
+      const GraphicsObjectData& data = obj.GetObjectData();
       if (data.IsAnimation())
         done = !data.is_currently_playing();
     }
@@ -106,7 +106,7 @@ struct WaitForGanToFinish : public LongOperation {
     if (parent_ != -1) {
       GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
       EnsureIsParentObject(parent, graphics.objectLayerSize());
-      return static_cast<ParentGraphicsObjectData&>(parent.objectData())
+      return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
           .getObject(buf_);
     } else {
       return graphics.getObject(fgbg_, buf_);
@@ -131,8 +131,8 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int animationSet) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
 
-    if (obj.hasObjectData()) {
-      GraphicsObjectData& data = obj.objectData();
+    if (obj.has_object_data()) {
+      GraphicsObjectData& data = obj.GetObjectData();
       if (data.IsAnimation()) {
         data.PlaySet(animationSet);
         data.set_after_action(after_effect_);
@@ -207,8 +207,8 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, gan_num);
 
-    if (obj.hasObjectData()) {
-      GraphicsObjectData& data = obj.objectData();
+    if (obj.has_object_data()) {
+      GraphicsObjectData& data = obj.GetObjectData();
       if (data.IsAnimation()) {
         if (data.animation_finished()) {
           return 0;
@@ -225,8 +225,8 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
 struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
-    if (obj.hasObjectData())
-      obj.objectData().set_is_currently_playing(false);
+    if (obj.has_object_data())
+      obj.GetObjectData().set_is_currently_playing(false);
   }
 };
 

@@ -383,7 +383,7 @@ class GraphicsSystem : public EventListener {
   GraphicsObject& getObject(int layer, int obj_number);
   void setObject(int layer, int obj_number, GraphicsObject& object);
 
-  void clearObject(int obj_number);
+  void ClearObject(int obj_number);
 
   // Deallocates all graphics objects.
   void clearAllObjects();

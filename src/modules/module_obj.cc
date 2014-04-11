@@ -41,13 +41,13 @@ using libreallive::IntegerConstant;
 using libreallive::ExpressionPiece;
 
 void EnsureIsParentObject(GraphicsObject& parent, int size) {
-  if (parent.hasObjectData()) {
-    if (parent.objectData().IsParentLayer()) {
+  if (parent.has_object_data()) {
+    if (parent.GetObjectData().IsParentLayer()) {
       return;
     }
   }
 
-  parent.setObjectData(new ParentGraphicsObjectData(size));
+  parent.SetObjectData(new ParentGraphicsObjectData(size));
 }
 
 GraphicsObject& GetGraphicsObject(RLMachine& machine,
@@ -63,7 +63,7 @@ GraphicsObject& GetGraphicsObject(RLMachine& machine,
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     EnsureIsParentObject(parent, graphics.objectLayerSize());
-    return static_cast<ParentGraphicsObjectData&>(parent.objectData())
+    return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
         .getObject(obj);
   } else {
     return graphics.getObject(fgbg, obj);
@@ -84,7 +84,7 @@ void SetGraphicsObject(RLMachine& machine,
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
     GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
     EnsureIsParentObject(parent, graphics.objectLayerSize());
-    static_cast<ParentGraphicsObjectData&>(parent.objectData())
+    static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
         .setObject(obj, gobj);
   } else {
     graphics.setObject(fgbg, obj, gobj);

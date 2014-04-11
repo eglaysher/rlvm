@@ -148,10 +148,10 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs) : impl_(rhs.impl_) {
   // Note: we don't copy the currently running object mutators.
 }
 
-GraphicsObject::~GraphicsObject() { deleteObjectMutators(); }
+GraphicsObject::~GraphicsObject() { DeleteObjectMutators(); }
 
 GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
-  deleteObjectMutators();
+  DeleteObjectMutators();
   impl_ = obj.impl_;
 
   if (obj.object_data_) {
@@ -164,258 +164,258 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
   return *this;
 }
 
-void GraphicsObject::setObjectData(GraphicsObjectData* obj) {
+void GraphicsObject::SetObjectData(GraphicsObjectData* obj) {
   object_data_.reset(obj);
   object_data_->set_owned_by(*this);
 }
 
-void GraphicsObject::setVisible(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetVisible(const int in) {
+  MakeImplUnique();
   impl_->visible_ = in;
 }
 
-void GraphicsObject::setX(const int x) {
-  makeImplUnique();
+void GraphicsObject::SetX(const int x) {
+  MakeImplUnique();
   impl_->x_ = x;
 }
 
-void GraphicsObject::setY(const int y) {
-  makeImplUnique();
+void GraphicsObject::SetY(const int y) {
+  MakeImplUnique();
   impl_->y_ = y;
 }
 
-int GraphicsObject::xAdjustmentSum() const {
+int GraphicsObject::GetXAdjustmentSum() const {
   return std::accumulate(impl_->adjust_x_, impl_->adjust_x_ + 8, 0);
 }
 
-void GraphicsObject::setXAdjustment(int idx, int x) {
-  makeImplUnique();
+void GraphicsObject::SetXAdjustment(int idx, int x) {
+  MakeImplUnique();
   impl_->adjust_x_[idx] = x;
 }
 
-int GraphicsObject::yAdjustmentSum() const {
+int GraphicsObject::GetYAdjustmentSum() const {
   return std::accumulate(impl_->adjust_y_, impl_->adjust_y_ + 8, 0);
 }
 
-void GraphicsObject::setYAdjustment(int idx, int y) {
-  makeImplUnique();
+void GraphicsObject::SetYAdjustment(int idx, int y) {
+  MakeImplUnique();
   impl_->adjust_y_[idx] = y;
 }
 
-void GraphicsObject::setVert(const int vert) {
-  makeImplUnique();
+void GraphicsObject::SetVert(const int vert) {
+  MakeImplUnique();
   impl_->whatever_adjust_vert_operates_on_ = vert;
 }
 
-void GraphicsObject::setXOrigin(const int x) {
-  makeImplUnique();
+void GraphicsObject::SetOriginX(const int x) {
+  MakeImplUnique();
   impl_->origin_x_ = x;
 }
 
-void GraphicsObject::setYOrigin(const int y) {
-  makeImplUnique();
+void GraphicsObject::SetOriginY(const int y) {
+  MakeImplUnique();
   impl_->origin_y_ = y;
 }
 
-void GraphicsObject::setXRepOrigin(const int x) {
-  makeImplUnique();
+void GraphicsObject::SetRepOriginX(const int x) {
+  MakeImplUnique();
   impl_->rep_origin_x_ = x;
 }
 
-void GraphicsObject::setYRepOrigin(const int y) {
-  makeImplUnique();
+void GraphicsObject::SetRepOriginY(const int y) {
+  MakeImplUnique();
   impl_->rep_origin_y_ = y;
 }
 
-void GraphicsObject::setWidth(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetWidth(const int in) {
+  MakeImplUnique();
   impl_->width_ = in;
 }
 
-void GraphicsObject::setHeight(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetHeight(const int in) {
+  MakeImplUnique();
   impl_->height_ = in;
 }
 
-void GraphicsObject::setHqWidth(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetHqWidth(const int in) {
+  MakeImplUnique();
   impl_->hq_width_ = in;
 }
 
-void GraphicsObject::setHqHeight(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetHqHeight(const int in) {
+  MakeImplUnique();
   impl_->hq_height_ = in;
 }
 
-float GraphicsObject::getWidthScaleFactor() const {
+float GraphicsObject::GetWidthScaleFactor() const {
   return (impl_->width_ / 100.0f) * (impl_->hq_width_ / 1000.0f);
 }
 
-float GraphicsObject::getHeightScaleFactor() const {
+float GraphicsObject::GetHeightScaleFactor() const {
   return (impl_->height_ / 100.0f) * (impl_->hq_height_ / 1000.0f);
 }
 
-void GraphicsObject::setRotation(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetRotation(const int in) {
+  MakeImplUnique();
   impl_->rotation_ = in;
 }
 
-int GraphicsObject::pixelWidth() const {
+int GraphicsObject::PixelWidth() const {
   // Calculate out the pixel width of the current object taking in the
   // width() scaling.
-  if (hasObjectData())
+  if (has_object_data())
     return object_data_->PixelWidth(*this);
   else
     return 0;
 }
 
-int GraphicsObject::pixelHeight() const {
-  if (hasObjectData())
+int GraphicsObject::PixelHeight() const {
+  if (has_object_data())
     return object_data_->PixelHeight(*this);
   else
     return 0;
 }
 
-int GraphicsObject::pattNo() const {
-  if (buttonUsingOverides())
-    return buttonPatternOverride();
+int GraphicsObject::GetPattNo() const {
+  if (GetButtonUsingOverides())
+    return GetButtonPatternOverride();
 
   return impl_->patt_no_;
 }
 
-void GraphicsObject::setPattNo(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetPattNo(const int in) {
+  MakeImplUnique();
   impl_->patt_no_ = in;
 }
 
-void GraphicsObject::setMono(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetMono(const int in) {
+  MakeImplUnique();
   impl_->mono_ = in;
 }
 
-void GraphicsObject::setInvert(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetInvert(const int in) {
+  MakeImplUnique();
   impl_->invert_ = in;
 }
 
-void GraphicsObject::setLight(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetLight(const int in) {
+  MakeImplUnique();
   impl_->light_ = in;
 }
 
-void GraphicsObject::setTint(const RGBColour& colour) {
-  makeImplUnique();
+void GraphicsObject::SetTint(const RGBColour& colour) {
+  MakeImplUnique();
   impl_->tint_ = colour;
 }
 
-void GraphicsObject::setTintR(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetTintRed(const int in) {
+  MakeImplUnique();
   impl_->tint_.set_red(in);
 }
 
-void GraphicsObject::setTintG(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetTintGreen(const int in) {
+  MakeImplUnique();
   impl_->tint_.set_green(in);
 }
 
-void GraphicsObject::setTintB(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetTintBlue(const int in) {
+  MakeImplUnique();
   impl_->tint_.set_blue(in);
 }
 
-void GraphicsObject::setColour(const RGBAColour& colour) {
-  makeImplUnique();
+void GraphicsObject::SetColour(const RGBAColour& colour) {
+  MakeImplUnique();
   impl_->colour_ = colour;
 }
 
-void GraphicsObject::setColourR(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetColourRed(const int in) {
+  MakeImplUnique();
   impl_->colour_.set_red(in);
 }
 
-void GraphicsObject::setColourG(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetColourGreen(const int in) {
+  MakeImplUnique();
   impl_->colour_.set_green(in);
 }
 
-void GraphicsObject::setColourB(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetColourBlue(const int in) {
+  MakeImplUnique();
   impl_->colour_.set_blue(in);
 }
 
-void GraphicsObject::setColourLevel(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetColourLevel(const int in) {
+  MakeImplUnique();
   impl_->colour_.set_alpha(in);
 }
 
-void GraphicsObject::setCompositeMode(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetCompositeMode(const int in) {
+  MakeImplUnique();
   impl_->composite_mode_ = in;
 }
 
-void GraphicsObject::setScrollRateX(const int x) {
-  makeImplUnique();
+void GraphicsObject::SetScrollRateX(const int x) {
+  MakeImplUnique();
   impl_->scroll_rate_x_ = x;
 }
 
-void GraphicsObject::setScrollRateY(const int y) {
-  makeImplUnique();
+void GraphicsObject::SetScrollRateY(const int y) {
+  MakeImplUnique();
   impl_->scroll_rate_y_ = y;
 }
 
-void GraphicsObject::setZOrder(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetZOrder(const int in) {
+  MakeImplUnique();
   impl_->z_order_ = in;
 }
 
-void GraphicsObject::setZLayer(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetZLayer(const int in) {
+  MakeImplUnique();
   impl_->z_layer_ = in;
 }
 
-void GraphicsObject::setZDepth(const int in) {
-  makeImplUnique();
+void GraphicsObject::SetZDepth(const int in) {
+  MakeImplUnique();
   impl_->z_depth_ = in;
 }
 
-int GraphicsObject::computedAlpha() const {
+int GraphicsObject::GetComputedAlpha() const {
   int alpha = impl_->alpha_;
   for (int i = 0; i < 8; ++i)
     alpha = (alpha * impl_->adjust_alpha_[i]) / 255;
   return alpha;
 }
 
-void GraphicsObject::setAlpha(const int alpha) {
-  makeImplUnique();
+void GraphicsObject::SetAlpha(const int alpha) {
+  MakeImplUnique();
   impl_->alpha_ = alpha;
 }
 
-void GraphicsObject::setAlphaAdjustment(int idx, int alpha) {
-  makeImplUnique();
+void GraphicsObject::SetAlphaAdjustment(int idx, int alpha) {
+  MakeImplUnique();
   impl_->adjust_alpha_[idx] = alpha;
 }
 
-void GraphicsObject::clearClip() {
-  makeImplUnique();
+void GraphicsObject::ClearClipRect() {
+  MakeImplUnique();
   impl_->clip_ = EMPTY_CLIP;
 }
 
-void GraphicsObject::setClip(const Rect& rect) {
-  makeImplUnique();
+void GraphicsObject::SetClipRect(const Rect& rect) {
+  MakeImplUnique();
   impl_->clip_ = rect;
 }
 
-void GraphicsObject::clearOwnClip() {
-  makeImplUnique();
+void GraphicsObject::ClearOwnClipRect() {
+  MakeImplUnique();
   impl_->own_clip_ = EMPTY_CLIP;
 }
 
-void GraphicsObject::setOwnClip(const Rect& rect) {
-  makeImplUnique();
+void GraphicsObject::SetOwnClipRect(const Rect& rect) {
+  MakeImplUnique();
   impl_->own_clip_ = rect;
 }
 
-GraphicsObjectData& GraphicsObject::objectData() {
+GraphicsObjectData& GraphicsObject::GetObjectData() {
   if (object_data_) {
     return *object_data_;
   } else {
@@ -423,18 +423,18 @@ GraphicsObjectData& GraphicsObject::objectData() {
   }
 }
 
-void GraphicsObject::setWipeCopy(const int wipe_copy) {
-  makeImplUnique();
+void GraphicsObject::SetWipeCopy(const int wipe_copy) {
+  MakeImplUnique();
   impl_->wipe_copy_ = wipe_copy;
 }
 
-void GraphicsObject::setTextText(const std::string& utf8str) {
-  makeImplUnique();
-  impl_->makeSureHaveTextProperties();
+void GraphicsObject::SetTextText(const std::string& utf8str) {
+  MakeImplUnique();
+  impl_->MakeSureHaveTextProperties();
   impl_->text_properties_->value = utf8str;
 }
 
-const std::string& GraphicsObject::textText() const {
+const std::string& GraphicsObject::GetTextText() const {
   static const std::string empty = "";
 
   if (impl_->text_properties_)
@@ -443,57 +443,57 @@ const std::string& GraphicsObject::textText() const {
     return empty;
 }
 
-int GraphicsObject::textSize() const {
+int GraphicsObject::GetTextSize() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->text_size;
   else
     return DEFAULT_TEXT_SIZE;
 }
 
-int GraphicsObject::textXSpace() const {
+int GraphicsObject::GetTextXSpace() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->xspace;
   else
     return DEFAULT_TEXT_XSPACE;
 }
 
-int GraphicsObject::textYSpace() const {
+int GraphicsObject::GetTextYSpace() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->yspace;
   else
     return DEFAULT_TEXT_YSPACE;
 }
 
-int GraphicsObject::textCharCount() const {
+int GraphicsObject::GetTextCharCount() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->char_count;
   else
     return DEFAULT_TEXT_CHAR_COUNT;
 }
 
-int GraphicsObject::textColour() const {
+int GraphicsObject::GetTextColour() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->colour;
   else
     return DEFAULT_TEXT_COLOUR;
 }
 
-int GraphicsObject::textShadowColour() const {
+int GraphicsObject::GetTextShadowColour() const {
   if (impl_->text_properties_)
     return impl_->text_properties_->shadow_colour;
   else
     return DEFAULT_TEXT_SHADOWCOLOUR;
 }
 
-void GraphicsObject::setTextOps(int size,
+void GraphicsObject::SetTextOps(int size,
                                 int xspace,
                                 int yspace,
                                 int char_count,
                                 int colour,
                                 int shadow) {
-  makeImplUnique();
+  MakeImplUnique();
 
-  impl_->makeSureHaveTextProperties();
+  impl_->MakeSureHaveTextProperties();
   impl_->text_properties_->text_size = size;
   impl_->text_properties_->xspace = xspace;
   impl_->text_properties_->yspace = yspace;
@@ -502,7 +502,7 @@ void GraphicsObject::setTextOps(int size,
   impl_->text_properties_->shadow_colour = shadow;
 }
 
-void GraphicsObject::setDriftOpts(int count,
+void GraphicsObject::SetDriftOpts(int count,
                                   int use_animation,
                                   int start_pattern,
                                   int end_pattern,
@@ -514,9 +514,9 @@ void GraphicsObject::setDriftOpts(int count,
                                   int unknown_drift_property,
                                   int driftspeed,
                                   Rect driftarea) {
-  makeImplUnique();
+  MakeImplUnique();
 
-  impl_->makeSureHaveDriftProperties();
+  impl_->MakeSureHaveDriftProperties();
   impl_->drift_properties_->count = count;
   impl_->drift_properties_->use_animation = use_animation;
   impl_->drift_properties_->start_pattern = start_pattern;
@@ -531,104 +531,104 @@ void GraphicsObject::setDriftOpts(int count,
   impl_->drift_properties_->drift_area = driftarea;
 }
 
-int GraphicsObject::driftParticleCount() const {
+int GraphicsObject::GetDriftParticleCount() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->count;
   else
     return DEFAULT_DRIFT_COUNT;
 }
 
-int GraphicsObject::driftUseAnimation() const {
+int GraphicsObject::GetDriftUseAnimation() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->use_animation;
   else
     return DEFAULT_DRIFT_USE_ANIMATION;
 }
 
-int GraphicsObject::driftStartPattern() const {
+int GraphicsObject::GetDriftStartPattern() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->start_pattern;
   else
     return DEFAULT_DRIFT_START_PATTERN;
 }
 
-int GraphicsObject::driftEndPattern() const {
+int GraphicsObject::GetDriftEndPattern() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->end_pattern;
   else
     return DEFAULT_DRIFT_END_PATTERN;
 }
 
-int GraphicsObject::driftAnimationTime() const {
+int GraphicsObject::GetDriftAnimationTime() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->total_animation_time_ms;
   else
     return DEFAULT_DRIFT_ANIMATION_TIME;
 }
 
-int GraphicsObject::driftYSpeed() const {
+int GraphicsObject::GetDriftYSpeed() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->yspeed;
   else
     return DEFAULT_DRIFT_YSPEED;
 }
 
-int GraphicsObject::driftPeriod() const {
+int GraphicsObject::GetDriftPeriod() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->period;
   else
     return DEFAULT_DRIFT_PERIOD;
 }
 
-int GraphicsObject::driftAmplitude() const {
+int GraphicsObject::GetDriftAmplitude() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->amplitude;
   else
     return DEFAULT_DRIFT_AMPLITUDE;
 }
 
-int GraphicsObject::driftUseDrift() const {
+int GraphicsObject::GetDriftUseDrift() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->use_drift;
   else
     return DEFAULT_DRIFT_USE_DRIFT;
 }
 
-int GraphicsObject::driftUnknown() const {
+int GraphicsObject::GetDriftUnknown() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->unknown_drift_property;
   else
     return DEFAULT_DRIFT_UNKNOWN_PROP;
 }
 
-int GraphicsObject::driftDriftSpeed() const {
+int GraphicsObject::GetDriftDriftSpeed() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->driftspeed;
   else
     return DEFAULT_DRIFT_UNKNOWN_PROP;
 }
 
-Rect GraphicsObject::driftArea() const {
+Rect GraphicsObject::GetDriftArea() const {
   if (impl_->drift_properties_)
     return impl_->drift_properties_->drift_area;
   else
     return Rect();
 }
 
-void GraphicsObject::setDigitValue(int value) {
-  makeImplUnique();
-  impl_->makeSureHaveDigitProperties();
+void GraphicsObject::SetDigitValue(int value) {
+  MakeImplUnique();
+  impl_->MakeSureHaveDigitProperties();
   impl_->digit_properties_->value = value;
 }
 
-void GraphicsObject::setDigitOpts(int digits,
+void GraphicsObject::SetDigitOpts(int digits,
                                   int zero,
                                   int sign,
                                   int pack,
                                   int space) {
-  makeImplUnique();
+  MakeImplUnique();
 
-  impl_->makeSureHaveDigitProperties();
+  impl_->MakeSureHaveDigitProperties();
   impl_->digit_properties_->digits = digits;
   impl_->digit_properties_->zero = zero;
   impl_->digit_properties_->sign = sign;
@@ -636,54 +636,54 @@ void GraphicsObject::setDigitOpts(int digits,
   impl_->digit_properties_->space = space;
 }
 
-int GraphicsObject::digitValue() const {
+int GraphicsObject::GetDigitValue() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->value;
   else
     return DEFAULT_DIGITS_VALUE;
 }
 
-int GraphicsObject::digitDigits() const {
+int GraphicsObject::GetDigitDigits() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->digits;
   else
     return DEFAULT_DIGITS_DIGITS;
 }
 
-int GraphicsObject::digitZero() const {
+int GraphicsObject::GetDigitZero() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->zero;
   else
     return DEFAULT_DIGITS_ZERO;
 }
 
-int GraphicsObject::digitSign() const {
+int GraphicsObject::GetDigitSign() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->sign;
   else
     return DEFAULT_DIGITS_SIGN;
 }
 
-int GraphicsObject::digitPack() const {
+int GraphicsObject::GetDigitPack() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->pack;
   else
     return DEFAULT_DIGITS_PACK;
 }
 
-int GraphicsObject::digitSpace() const {
+int GraphicsObject::GetDigitSpace() const {
   if (impl_->digit_properties_)
     return impl_->digit_properties_->space;
   else
     return DEFAULT_DIGITS_SPACE;
 }
 
-void GraphicsObject::setButtonOpts(int action,
+void GraphicsObject::SetButtonOpts(int action,
                                    int se,
                                    int group,
                                    int button_number) {
-  makeImplUnique();
-  impl_->makeSureHaveButtonProperties();
+  MakeImplUnique();
+  impl_->MakeSureHaveButtonProperties();
   impl_->button_properties_->is_button = true;
   impl_->button_properties_->action = action;
   impl_->button_properties_->se = se;
@@ -691,93 +691,93 @@ void GraphicsObject::setButtonOpts(int action,
   impl_->button_properties_->button_number = button_number;
 }
 
-void GraphicsObject::setButtonState(int state) {
-  makeImplUnique();
-  impl_->makeSureHaveButtonProperties();
+void GraphicsObject::SetButtonState(int state) {
+  MakeImplUnique();
+  impl_->MakeSureHaveButtonProperties();
   impl_->button_properties_->state = state;
 }
 
-int GraphicsObject::isButton() const {
+int GraphicsObject::IsButton() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->is_button;
   else
     return DEFAULT_BUTTON_IS_BUTTON;
 }
 
-int GraphicsObject::buttonAction() const {
+int GraphicsObject::GetButtonAction() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->action;
   else
     return DEFAULT_BUTTON_ACTION;
 }
 
-int GraphicsObject::buttonSe() const {
+int GraphicsObject::GetButtonSe() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->se;
   else
     return DEFAULT_BUTTON_SE;
 }
 
-int GraphicsObject::buttonGroup() const {
+int GraphicsObject::GetButtonGroup() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->group;
   else
     return DEFAULT_BUTTON_GROUP;
 }
 
-int GraphicsObject::buttonNumber() const {
+int GraphicsObject::GetButtonNumber() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->button_number;
   else
     return DEFAULT_BUTTON_NUMBER;
 }
 
-int GraphicsObject::buttonState() const {
+int GraphicsObject::GetButtonState() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->state;
   else
     return DEFAULT_BUTTON_STATE;
 }
 
-void GraphicsObject::setButtonOverrides(int override_pattern,
+void GraphicsObject::SetButtonOverrides(int override_pattern,
                                         int override_x_offset,
                                         int override_y_offset) {
-  makeImplUnique();
-  impl_->makeSureHaveButtonProperties();
+  MakeImplUnique();
+  impl_->MakeSureHaveButtonProperties();
   impl_->button_properties_->using_overides = true;
   impl_->button_properties_->pattern_override = override_pattern;
   impl_->button_properties_->x_offset_override = override_x_offset;
   impl_->button_properties_->y_offset_override = override_y_offset;
 }
 
-void GraphicsObject::clearButtonOverrides() {
-  makeImplUnique();
-  impl_->makeSureHaveButtonProperties();
+void GraphicsObject::ClearButtonOverrides() {
+  MakeImplUnique();
+  impl_->MakeSureHaveButtonProperties();
   impl_->button_properties_->using_overides = false;
 }
 
-bool GraphicsObject::buttonUsingOverides() const {
+bool GraphicsObject::GetButtonUsingOverides() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->using_overides;
   else
     return DEFAULT_BUTTON_USING_OVERRIDES;
 }
 
-int GraphicsObject::buttonPatternOverride() const {
+int GraphicsObject::GetButtonPatternOverride() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->pattern_override;
   else
     return DEFAULT_BUTTON_PATTERN_OVERRIDE;
 }
 
-int GraphicsObject::buttonXOffsetOverride() const {
+int GraphicsObject::GetButtonXOffsetOverride() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->x_offset_override;
   else
     return DEFAULT_BUTTON_X_OFFSET;
 }
 
-int GraphicsObject::buttonYOffsetOverride() const {
+int GraphicsObject::GetButtonYOffsetOverride() const {
   if (impl_->button_properties_)
     return impl_->button_properties_->y_offset_override;
   else
@@ -785,7 +785,7 @@ int GraphicsObject::buttonYOffsetOverride() const {
 }
 
 void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
-  makeImplUnique();
+  MakeImplUnique();
   // TODO(erg): If we have an equivalent mutator, remove it first.
   object_mutators_.emplace_back(mutator);
 }
@@ -823,17 +823,17 @@ void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
   }
 }
 
-void GraphicsObject::makeImplUnique() {
+void GraphicsObject::MakeImplUnique() {
   if (!impl_.unique()) {
     impl_.reset(new Impl(*impl_));
   }
 }
 
-void GraphicsObject::deleteObjectMutators() {
+void GraphicsObject::DeleteObjectMutators() {
   object_mutators_.clear();
 }
 
-void GraphicsObject::render(int objNum,
+void GraphicsObject::Render(int objNum,
                             const GraphicsObject* parent,
                             std::ostream* tree) {
   if (object_data_ && visible()) {
@@ -845,23 +845,23 @@ void GraphicsObject::render(int objNum,
   }
 }
 
-void GraphicsObject::deleteObject() {
+void GraphicsObject::DeleteObject() {
   object_data_.reset();
-  deleteObjectMutators();
+  DeleteObjectMutators();
 }
 
-void GraphicsObject::resetProperties() {
+void GraphicsObject::ResetProperties() {
   impl_ = s_empty_impl;
-  deleteObjectMutators();
+  DeleteObjectMutators();
 }
 
-void GraphicsObject::clearObject() {
+void GraphicsObject::ClearObject() {
   impl_ = s_empty_impl;
-  deleteObjectMutators();
+  DeleteObjectMutators();
   object_data_.reset();
 }
 
-void GraphicsObject::execute(RLMachine& machine) {
+void GraphicsObject::Execute(RLMachine& machine) {
   if (object_data_) {
     object_data_->Execute(machine);
   }
@@ -1036,25 +1036,25 @@ GraphicsObject::Impl& GraphicsObject::Impl::operator=(
   return *this;
 }
 
-void GraphicsObject::Impl::makeSureHaveTextProperties() {
+void GraphicsObject::Impl::MakeSureHaveTextProperties() {
   if (!text_properties_) {
     text_properties_.reset(new Impl::TextProperties());
   }
 }
 
-void GraphicsObject::Impl::makeSureHaveDriftProperties() {
+void GraphicsObject::Impl::MakeSureHaveDriftProperties() {
   if (!drift_properties_) {
     drift_properties_.reset(new Impl::DriftProperties());
   }
 }
 
-void GraphicsObject::Impl::makeSureHaveDigitProperties() {
+void GraphicsObject::Impl::MakeSureHaveDigitProperties() {
   if (!digit_properties_) {
     digit_properties_.reset(new Impl::DigitProperties());
   }
 }
 
-void GraphicsObject::Impl::makeSureHaveButtonProperties() {
+void GraphicsObject::Impl::MakeSureHaveButtonProperties() {
   if (!button_properties_) {
     button_properties_.reset(new Impl::ButtonProperties());
   }

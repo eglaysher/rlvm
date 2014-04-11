@@ -45,16 +45,16 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
       currently_pressed_button_(NULL) {
   GraphicsSystem& graphics = machine.system().graphics();
   for (GraphicsObject& obj : graphics.foregroundObjects()) {
-    if (obj.isButton() && obj.buttonGroup() == group_) {
+    if (obj.IsButton() && obj.GetButtonGroup() == group_) {
       buttons_.push_back(
           std::make_pair(&obj, static_cast<GraphicsObject*>(NULL)));
-    } else if (obj.hasObjectData()) {
+    } else if (obj.has_object_data()) {
       ParentGraphicsObjectData* parent =
-          dynamic_cast<ParentGraphicsObjectData*>(&obj.objectData());
+          dynamic_cast<ParentGraphicsObjectData*>(&obj.GetObjectData());
 
       if (parent) {
         for (GraphicsObject& child : parent->objects()) {
-          if (child.isButton() && child.buttonGroup() == group_) {
+          if (child.IsButton() && child.GetButtonGroup() == group_) {
             buttons_.push_back(std::make_pair(&child, &obj));
           }
         }
@@ -71,7 +71,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
 ButtonObjectSelectLongOperation::~ButtonObjectSelectLongOperation() {
   // Disable overrides on all graphics objects we've dealt with.
   for (ButtonPair& button_pair : buttons_) {
-    button_pair.first->clearButtonOverrides();
+    button_pair.first->ClearButtonOverrides();
   }
 }
 
@@ -79,8 +79,8 @@ void ButtonObjectSelectLongOperation::MouseMotion(const Point& point) {
   GraphicsObject* hovering_button = NULL;
 
   for (ButtonPair& button_pair : buttons_) {
-    if (button_pair.first->hasObjectData()) {
-      GraphicsObjectData* data = &button_pair.first->objectData();
+    if (button_pair.first->has_object_data()) {
+      GraphicsObjectData* data = &button_pair.first->GetObjectData();
       Rect screen_rect = data->DstRect(*button_pair.first, button_pair.second);
 
       if (screen_rect.contains(point))
@@ -115,7 +115,7 @@ bool ButtonObjectSelectLongOperation::MouseButtonStateChanged(
       if (currently_hovering_button_ &&
           currently_hovering_button_ == currently_pressed_button_) {
         has_return_value_ = true;
-        return_value_ = currently_pressed_button_->buttonNumber();
+        return_value_ = currently_pressed_button_->GetButtonNumber();
         SetButtonOverride(currently_pressed_button_, "HIT");
       }
     }
@@ -144,11 +144,11 @@ bool ButtonObjectSelectLongOperation::operator()(RLMachine& machine) {
 
 void ButtonObjectSelectLongOperation::SetButtonOverride(GraphicsObject* object,
                                                         const char* type) {
-  int action = object->buttonAction();
+  int action = object->GetButtonAction();
 
   GameexeInterpretObject key = gameexe_("BTNOBJ.ACTION", action, type);
   if (key.Exists()) {
     const std::vector<int>& ints = key.ToIntVector();
-    object->setButtonOverrides(ints[0], ints[2], ints[3]);
+    object->SetButtonOverrides(ints[0], ints[2], ints[3]);
   }
 }

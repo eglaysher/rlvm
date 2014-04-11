@@ -647,8 +647,8 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
     int height = fdy2 - fdy1;
 
     // Rotate the texture around the point (origin + position + reporigin)
-    float x_rep = (width / 2.0f) + go.xRepOrigin();
-    float y_rep = (height / 2.0f) + go.yRepOrigin();
+    float x_rep = (width / 2.0f) + go.rep_origin_x();
+    float y_rep = (height / 2.0f) + go.rep_origin_y();
 
     glTranslatef(x_rep, y_rep, 0);
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
@@ -684,7 +684,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
 
     // Make this so that when we have composite 1, we're doing a pure
     // additive blend, (ignoring the alpha channel?)
-    switch (go.compositeMode()) {
+    switch (go.composite_mode()) {
       case 0:
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         break;
@@ -698,7 +698,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
       }
       default: {
         std::ostringstream oss;
-        oss << "Invalid composite_mode in render: " << go.compositeMode();
+        oss << "Invalid composite_mode in render: " << go.composite_mode();
         throw SystemError(oss.str());
       }
     }

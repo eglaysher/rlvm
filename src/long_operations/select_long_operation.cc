@@ -178,7 +178,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     : SelectLongOperation(machine, commandElement),
       text_window_(machine.system().text().currentWindow()) {
   machine.system().text().setInSelectionMode(true);
-  text_window_->setVisible(true);
+  text_window_->SetVisible(true);
   text_window_->startSelectionMode();
   text_window_->setSelectionCallback(
       std::bind(&NormalSelectLongOperation::SelectByIndex, this, _1));

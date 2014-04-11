@@ -521,7 +521,7 @@ bool TextWindow::character(const std::string& current,
   if (isFull())
     return false;
 
-  setVisible(true);
+  SetVisible(true);
 
   if (current != "") {
     int cur_codepoint = Codepoint(current);

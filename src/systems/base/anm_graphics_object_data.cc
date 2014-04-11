@@ -238,15 +238,15 @@ void AnmGraphicsObjectData::AdvanceFrame() {
 // I am not entirely sure these methods even make sense given the
 // context...
 int AnmGraphicsObjectData::PixelWidth(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = image_->getPattern(rp.GetPattNo());
   int width = rect.rect.width();
-  return int(rp.getWidthScaleFactor() * width);
+  return int(rp.GetWidthScaleFactor() * width);
 }
 
 int AnmGraphicsObjectData::PixelHeight(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = image_->getPattern(rp.pattNo());
+  const Surface::GrpRect& rect = image_->getPattern(rp.GetPattNo());
   int height = rect.rect.height();
-  return int(rp.getHeightScaleFactor() * height);
+  return int(rp.GetHeightScaleFactor() * height);
 }
 
 GraphicsObjectData* AnmGraphicsObjectData::Clone() const {

@@ -76,14 +76,14 @@ struct objGetPos
 struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
-    return obj.xAdjustment(repno);
+    return obj.x_adjustment(repno);
   }
 };
 
 struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
-    return obj.yAdjustment(repno);
+    return obj.y_adjustment(repno);
   }
 };
 
@@ -100,8 +100,8 @@ struct objGetDims : public RLOp_Void_4<IntConstant_T,
                   IntReferenceIterator heightIt,
                   int unknown) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
-    *widthIt = obj.pixelWidth();
-    *heightIt = obj.pixelHeight();
+    *widthIt = obj.PixelWidth();
+    *heightIt = obj.PixelHeight();
   }
 };
 
@@ -110,7 +110,7 @@ void addFunctions(RLModule& m) {
   m.AddOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
   m.AddOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
   m.AddOpcode(
-      1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::rawAlpha));
+      1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::raw_alpha));
   m.AddOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
 
   m.AddOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
@@ -119,7 +119,8 @@ void addFunctions(RLModule& m) {
   m.AddOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
   m.AddOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
 
-  m.AddOpcode(1039, 0, "objGetPattNo", new Obj_GetInt(&GraphicsObject::pattNo));
+  m.AddOpcode(1039, 0, "objGetPattNo",
+              new Obj_GetInt(&GraphicsObject::GetPattNo));
   m.AddOpcode(1100, 0, "objGetDims", new objGetDims);
   m.AddOpcode(1100, 1, "objGetDims", new objGetDims);
 }
