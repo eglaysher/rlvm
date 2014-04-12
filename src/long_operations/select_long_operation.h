@@ -125,11 +125,12 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   virtual ~ButtonSelectLongOperation();
 
   // Overridden from EventListener:
-  virtual void MouseMotion(const Point&);
-  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual void MouseMotion(const Point&) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton,
+                                       bool pressed) override;
 
   // Overridden from Renderable:
-  virtual void render(std::ostream* tree);
+  virtual void Render(std::ostream* tree) override;
 
  private:
   struct ButtonOption {

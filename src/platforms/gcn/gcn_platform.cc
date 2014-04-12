@@ -169,7 +169,7 @@ class GCNPlatformBlocker : public LongOperation,
   }
 
   // Overridden from LongOperation:
-  virtual bool operator()(RLMachine& machine) {
+  virtual bool operator()(RLMachine& machine) override {
     while (delayed_tasks_.size()) {
       delayed_tasks_.front()();
       delayed_tasks_.pop();
@@ -186,10 +186,10 @@ class GCNPlatformBlocker : public LongOperation,
   }
 
   // Overridden from Renderable:
-  virtual void render(std::ostream* tree) { platform_->render(); }
+  virtual void Render(std::ostream* tree) override { platform_->render(); }
 
   // Overridden from RawSDLInputHandler:
-  virtual void pushInput(SDL_Event event) {
+  virtual void pushInput(SDL_Event event) override {
     platform_->sdl_input_->pushInput(event);
   }
 

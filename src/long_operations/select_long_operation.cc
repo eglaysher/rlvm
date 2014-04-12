@@ -439,7 +439,7 @@ bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-void ButtonSelectLongOperation::render(std::ostream* tree) {
+void ButtonSelectLongOperation::Render(std::ostream* tree) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     int frame = normal_frame_;
     Point offset = normal_frame_offset_;

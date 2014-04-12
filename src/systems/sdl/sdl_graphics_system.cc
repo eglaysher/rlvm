@@ -122,7 +122,7 @@ void SDLGraphicsSystem::EndFrame() {
   FinalRenderers::iterator it = renderer_begin();
   FinalRenderers::iterator end = renderer_end();
   for (; it != end; ++it) {
-    (*it)->render(NULL);
+    (*it)->Render(NULL);
   }
 
   if (screen_update_mode() == SCREENUPDATEMODE_MANUAL) {
