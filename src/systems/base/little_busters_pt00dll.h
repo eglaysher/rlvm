@@ -44,8 +44,8 @@ class LittleBustersPT00DLL : public RealLiveDLL {
                       int arg1,
                       int arg2,
                       int arg3,
-                      int arg4);
-  virtual const std::string& GetDLLName() const;
+                      int arg4) override;
+  virtual const std::string& GetDLLName() const override;
 };
 
 #endif  // SRC_SYSTEMS_BASE_LITTLE_BUSTERS_PT00DLL_H_
