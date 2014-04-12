@@ -54,18 +54,18 @@ SelectionElement::SelectionElement(
 
 SelectionElement::~SelectionElement() {}
 
-void SelectionElement::setSelectionCallback(
+void SelectionElement::SetSelectionCallback(
     const std::function<void(int)>& func) {
   selection_callback_ = func;
 }
 
-bool SelectionElement::isHighlighted(const Point& p) {
+bool SelectionElement::IsHighlighted(const Point& p) {
   return Rect(pos_, normal_image_->size()).Contains(p);
 }
 
-void SelectionElement::setMousePosition(const Point& pos) {
+void SelectionElement::SetMousePosition(const Point& pos) {
   bool start_value = is_highlighted_;
-  is_highlighted_ = isHighlighted(pos);
+  is_highlighted_ = IsHighlighted(pos);
 
   if (start_value != is_highlighted_) {
     system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
@@ -74,8 +74,8 @@ void SelectionElement::setMousePosition(const Point& pos) {
   }
 }
 
-bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {
-  if (pressed == false && isHighlighted(pos)) {
+bool SelectionElement::HandleMouseClick(const Point& pos, bool pressed) {
+  if (pressed == false && IsHighlighted(pos)) {
     // Released within the button
     if (selection_callback_)
       selection_callback_(id_);
@@ -86,7 +86,7 @@ bool SelectionElement::handleMouseClick(const Point& pos, bool pressed) {
   }
 }
 
-void SelectionElement::render() {
+void SelectionElement::Render() {
   boost::shared_ptr<Surface> target;
 
   if (is_highlighted_)

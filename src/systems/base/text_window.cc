@@ -432,7 +432,7 @@ void TextWindow::render(std::ostream* tree) {
 
     if (inSelectionMode()) {
       for_each(selections_.begin(), selections_.end(),
-               [](SelectionElement& e) { e.render(); });
+               [](SelectionElement& e) { e.Render(); });
     } else {
       boost::shared_ptr<Surface> name_surface = nameSurface();
       if (name_surface) {
@@ -681,7 +681,7 @@ void TextWindow::setMousePosition(const Point& pos) {
   if (inSelectionMode()) {
     for_each(selections_.begin(),
              selections_.end(),
-             [&](SelectionElement& e) { e.setMousePosition(pos); });
+             [&](SelectionElement& e) { e.SetMousePosition(pos); });
   }
 
   textbox_waku_->setMousePosition(pos);
@@ -694,7 +694,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
     bool found =
       find_if(selections_.begin(), selections_.end(),
               [&](SelectionElement &e) {
-                return e.handleMouseClick(pos, pressed);
+                return e.HandleMouseClick(pos, pressed);
               }) != selections_.end();
 
     if (found)
