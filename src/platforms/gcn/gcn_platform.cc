@@ -222,7 +222,7 @@ GCNPlatform::~GCNPlatform() {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::run(RLMachine& machine) { guichan_gui_->logic(); }
+void GCNPlatform::Run(RLMachine& machine) { guichan_gui_->logic(); }
 
 // -----------------------------------------------------------------------
 
@@ -245,14 +245,14 @@ void GCNPlatform::render() {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::showNativeSyscomMenu(RLMachine& machine) {
+void GCNPlatform::ShowNativeSyscomMenu(RLMachine& machine) {
   pushBlocker(machine);
   buildSyscomMenuFor("", SYCOM_MAIN_MENU, machine);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
+void GCNPlatform::InvokeSyscomStandardUI(RLMachine& machine, int syscom) {
   pushBlocker(machine);
   if (syscom == SYSCOM_SAVE)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
@@ -262,7 +262,7 @@ void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
+void GCNPlatform::ShowSystemInfo(RLMachine& machine, const RlvmInfo& info) {
   pushBlocker(machine);
   pushWindowOntoStack(new GCNInfoWindow(machine, info, this));
 }
@@ -294,13 +294,13 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event) {
   } else if (event == MENU_RETURN_MENU_EVENT) {
     blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
                                   this,
-                                  syscomString("MENU_RETURN_MESS_STR"),
+                                  GetSyscomString("MENU_RETURN_MESS_STR"),
                                   MENU_RETURN_MENU,
                                   _1));
   } else if (event == EXIT_GAME_MENU_EVENT) {
     blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
                                   this,
-                                  syscomString("GAME_END_MESS_STR"),
+                                  GetSyscomString("GAME_END_MESS_STR"),
                                   EXIT_GAME_MENU,
                                   _1));
   }
@@ -395,7 +395,7 @@ void GCNPlatform::buildSyscomMenuFor(const std::string& label,
       button_definition.separator = true;
       buttons.push_back(button_definition);
     } else if (menu_items[i].syscom_id == MENU) {
-      button_definition.label = syscomString(menu_items[i].label);
+      button_definition.label = GetSyscomString(menu_items[i].label);
       button_definition.action = menu_items[i].event_name;
       button_definition.enabled = true;
       buttons.push_back(button_definition);
@@ -407,9 +407,9 @@ void GCNPlatform::buildSyscomMenuFor(const std::string& label,
         labelss << std::setw(3) << std::setfill('0') << id;
 
         if (menu_items[i].label == NULL)
-          button_definition.label = syscomString(labelss.str());
+          button_definition.label = GetSyscomString(labelss.str());
         else
-          button_definition.label = syscomString(menu_items[i].label);
+          button_definition.label = GetSyscomString(menu_items[i].label);
 
         if (menu_items[i].event_name == NULL)
           button_definition.action = SYSCOM_EVENTS[id];

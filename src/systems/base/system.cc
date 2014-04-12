@@ -221,7 +221,7 @@ void System::ShowSyscomMenu(RLMachine& machine) {
       machine.Farcall(cancelcall.at(0), cancelcall.at(1));
     }
   } else if (platform_) {
-    platform_->showNativeSyscomMenu(machine);
+    platform_->ShowNativeSyscomMenu(machine);
   } else {
     std::cerr << "(We don't deal with non-custom SYSCOM calls yet.)"
               << std::endl;
@@ -250,7 +250,7 @@ void System::InvokeSyscom(RLMachine& machine, int syscom) {
     case SYSCOM_USE_KOE:
     case SYSCOM_DISPLAY_VERSION: {
       if (platform_)
-        platform_->invokeSyscomStandardUI(machine, syscom);
+        platform_->InvokeSyscomStandardUI(machine, syscom);
       break;
     }
     case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
@@ -323,7 +323,7 @@ void System::ShowSystemInfo(RLMachine& machine) {
     info.rlbabel_loaded = machine.DllLoaded("rlBabel");
     info.text_transformation = machine.GetTextEncoding();
 
-    platform_->showSystemInfo(machine, info);
+    platform_->ShowSystemInfo(machine, info);
   }
 }
 
@@ -433,7 +433,7 @@ void System::InvokeSaveOrLoad(RLMachine& machine,
     machine.PushLongOperation(new RestoreTextSystemVisibility);
     machine.Farcall(scenario, entrypoint);
   } else if (platform_) {
-    platform_->invokeSyscomStandardUI(machine, syscom);
+    platform_->InvokeSyscomStandardUI(machine, syscom);
   }
 }
 

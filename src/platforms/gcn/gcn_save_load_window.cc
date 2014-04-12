@@ -154,11 +154,11 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine,
   action_button_ = new GCNButton();
   if (type == DO_SAVE) {
     action_button_->setCaption(
-        platform->syscomString("DLGSAVEMESSAGE_OK_BUTTON_STR"));
+        platform->GetSyscomString("DLGSAVEMESSAGE_OK_BUTTON_STR"));
     action_button_->setActionEventId(EVENT_SAVE);
   } else {
     action_button_->setCaption(
-        platform->syscomString("DLGLOADMESSAGE_OK_BUTTON_STR"));
+        platform->GetSyscomString("DLGLOADMESSAGE_OK_BUTTON_STR"));
     action_button_->setActionEventId(EVENT_LOAD);
   }
   action_button_->addActionListener(this);
@@ -167,7 +167,7 @@ GCNSaveLoadWindow::GCNSaveLoadWindow(RLMachine& machine,
   action_button_->setEnabled(false);
 
   // 030 == CANCEL
-  gcn::Button* button = new GCNButton(platform->syscomString("030"));
+  gcn::Button* button = new GCNButton(platform->GetSyscomString("030"));
   button->setActionEventId(EVENT_CANCEL);
   button->addActionListener(this);
   button->setEnabled(true);

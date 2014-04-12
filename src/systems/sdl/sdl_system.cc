@@ -93,7 +93,7 @@ void SDLSystem::run(RLMachine& machine) {
   graphics_system_->ExecuteGraphicsSystem(machine);
 
   if (platform())
-    platform()->run(machine);
+    platform()->Run(machine);
 }
 
 // -----------------------------------------------------------------------

@@ -71,16 +71,17 @@ class GCNPlatform : public Platform,
   void loadEvent(int slot);
 
   // Overridden from Platform:
-  virtual void run(RLMachine& machine);
-  virtual void showNativeSyscomMenu(RLMachine& machine);
-  virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom);
-  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info);
+  virtual void Run(RLMachine& machine) override;
+  virtual void ShowNativeSyscomMenu(RLMachine& machine) override;
+  virtual void InvokeSyscomStandardUI(RLMachine& machine, int syscom) override;
+  virtual void ShowSystemInfo(RLMachine& machine,
+                              const RlvmInfo& info) override;
 
   // Overridden from gcn::MouseListener:
-  virtual void mouseClicked(gcn::MouseEvent& mouseEvent);
+  virtual void mouseClicked(gcn::MouseEvent& mouseEvent) override;
 
   // Overridden from gcn::KeyListener:
-  virtual void keyReleased(gcn::KeyEvent& keyEvent);
+  virtual void keyReleased(gcn::KeyEvent& keyEvent) override;
 
  private:
   // Blocks the world until we're done.
