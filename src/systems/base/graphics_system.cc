@@ -521,7 +521,7 @@ void GraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
     obj.Execute(machine);
 
   if (mouse_cursor_)
-    mouse_cursor_->execute(system());
+    mouse_cursor_->Execute(system());
 
   if (hik_renderer_ && background_type_ == BACKGROUND_HIK)
     hik_renderer_->Execute(machine);

@@ -52,7 +52,7 @@ MouseCursor::MouseCursor(System& system,
       last_time_frame_incremented_(system.event().GetTicks()) {
   // TODO(erg): Technically, each frame might have a hotspot. In practice, the
   // hotspot is in the same place every frame.
-  findHotspot();
+  FindHotspot();
 
   int alphaR, alphaG, alphaB;
   cursor_surface->GetDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
@@ -66,7 +66,7 @@ MouseCursor::MouseCursor(System& system,
 
 MouseCursor::~MouseCursor() {}
 
-void MouseCursor::execute(System& system) {
+void MouseCursor::Execute(System& system) {
   unsigned int cur_time = system.event().GetTicks();
 
   if (last_time_frame_incremented_ + frame_speed_ < cur_time) {
@@ -80,8 +80,8 @@ void MouseCursor::execute(System& system) {
   }
 }
 
-void MouseCursor::renderHotspotAt(const Point& mouse_location) {
-  Point render_point = getTopLeftForHotspotAt(mouse_location);
+void MouseCursor::RenderHotspotAt(const Point& mouse_location) {
+  Point render_point = GetTopLeftForHotspotAt(mouse_location);
   cursor_surface_->renderToScreen(
       Rect(current_frame_ * CURSOR_SIZE_INT, 0, CURSOR_SIZE),
       Rect(render_point, CURSOR_SIZE));
@@ -91,11 +91,11 @@ void MouseCursor::renderHotspotAt(const Point& mouse_location) {
 // MouseCursor (private)
 // -----------------------------------------------------------------------
 
-Point MouseCursor::getTopLeftForHotspotAt(const Point& mouse_location) {
+Point MouseCursor::GetTopLeftForHotspotAt(const Point& mouse_location) {
   return mouse_location - hotspot_offset_;
 }
 
-void MouseCursor::findHotspot() {
+void MouseCursor::FindHotspot() {
   int r, g, b;
 
   for (int x = HOTSPOTMASK_X_OFFSET; x < HOTSPOTMASK_X_OFFSET + CURSOR_SIZE_INT;

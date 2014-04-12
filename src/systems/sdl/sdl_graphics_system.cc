@@ -199,7 +199,7 @@ void SDLGraphicsSystem::drawCursor() {
       cursor = GetCurrentCursor();
     if (cursor) {
       Point hotspot = cursor_pos();
-      cursor->renderHotspotAt(hotspot);
+      cursor->RenderHotspotAt(hotspot);
     }
   }
 }

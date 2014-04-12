@@ -45,18 +45,18 @@ class MouseCursor {
   ~MouseCursor();
 
   // Updates the MouseCursor.
-  void execute(System& system);
+  void Execute(System& system);
 
   // Renders the cursor to the screen, taking the hotspot offset into account.
-  void renderHotspotAt(const Point& mouse_pt);
+  void RenderHotspotAt(const Point& mouse_pt);
 
  private:
   // Returns (renderX, renderY) which is the upper left corner of where the
   // cursor is to be rendered for the incoming mouse location (mouseX, mouseY).
-  Point getTopLeftForHotspotAt(const Point& mouse_location);
+  Point GetTopLeftForHotspotAt(const Point& mouse_location);
 
   // Sets hotspot_[XY] to the white pixel in the
-  void findHotspot();
+  void FindHotspot();
 
   // The raw image read from the PDT.
   boost::shared_ptr<const Surface> cursor_surface_;
