@@ -104,8 +104,8 @@ void Clamp(float& var, float min, float max) {
 }
 
 void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest) {
-  Rect intersection = clip_rect.intersection(dest);
-  if (intersection.size().isEmpty()) {
+  Rect intersection = clip_rect.Intersection(dest);
+  if (intersection.size().is_empty()) {
     src = Rect();
     dest = Rect();
     return;

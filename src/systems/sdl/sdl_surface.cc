@@ -227,8 +227,8 @@ SDLSurface::TextureRecord::TextureRecord(SDL_Surface* surface,
 void SDLSurface::TextureRecord::reupload(SDL_Surface* surface,
                                          const Rect& dirty) {
   if (texture) {
-    Rect i = Rect::REC(x_, y_, w_, h_).intersection(dirty);
-    if (!i.isEmpty()) {
+    Rect i = Rect::REC(x_, y_, w_, h_).Intersection(dirty);
+    if (!i.is_empty()) {
       texture->reupload(surface,
                         i.x() - x_,
                         i.y() - y_,
@@ -822,7 +822,7 @@ void SDLSurface::markWrittenTo(const Rect& written_rect) {
   }
 
   // Mark that the texture needs reuploading
-  dirty_rectangle_ = dirty_rectangle_.rectUnion(written_rect);
+  dirty_rectangle_ = dirty_rectangle_.RectUnion(written_rect);
   texture_is_valid_ = false;
 }
 

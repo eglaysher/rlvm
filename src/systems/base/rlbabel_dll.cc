@@ -103,7 +103,7 @@ Gloss::~Gloss() {}
 
 bool Gloss::Contains(const Point& point) {
   return std::find_if(link_areas_.begin(), link_areas_.end(), [&](Rect& r) {
-           return r.contains(point);
+           return r.Contains(point);
          }) != link_areas_.end();
 }
 

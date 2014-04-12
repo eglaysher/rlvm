@@ -72,9 +72,9 @@ void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   if (dc == 1) {
     boost::shared_ptr<MockSurface> dc0 = display_contexts_[0];
     if (size.width() < dc0->size().width())
-      size.setWidth(dc0->size().width());
+      size.set_width(dc0->size().width());
     if (size.height() < dc0->size().height())
-      size.setHeight(dc0->size().height());
+      size.set_height(dc0->size().height());
   }
 
   // Allocate a new obj.

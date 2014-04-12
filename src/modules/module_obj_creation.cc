@@ -322,7 +322,7 @@ struct objOfRect_1 : public RLOp_Void_5<IntConstant_T,
     // width height are not, we hack with the INT_MIN value).
     if (width == INT_MIN) {
       Rect screen(0, 0, GetScreenSize(machine.system().gameexe()));
-      SetObjectDataToRect(machine, this, buf, Size(x, y).centeredIn(screen));
+      SetObjectDataToRect(machine, this, buf, Size(x, y).CenteredIn(screen));
     } else {
       SetObjectDataToRect(machine, this, buf, Rect(x, y, Size(width, height)));
     }
@@ -345,7 +345,7 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
     Rect data_rect;
     if (height == INT_MIN) {
       Rect screen(0, 0, GetScreenSize(machine.system().gameexe()));
-      data_rect = Size(x, y).centeredIn(screen);
+      data_rect = Size(x, y).CenteredIn(screen);
       // Crazy optionality here.
       visible = width;
     } else {

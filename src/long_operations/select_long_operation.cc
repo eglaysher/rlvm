@@ -390,7 +390,7 @@ ButtonSelectLongOperation::~ButtonSelectLongOperation() {
 
 void ButtonSelectLongOperation::MouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
-    if (buttons_[i].bounding_rect.contains(p)) {
+    if (buttons_[i].bounding_rect.Contains(p)) {
       if (options_[i].enabled) {
         if (highlighted_item_ != i && machine_.system().sound().hasSe(0)) {
           machine_.system().sound().playSe(0);
@@ -415,7 +415,7 @@ bool ButtonSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
       if (!pressed) {
         Point pos = es.GetCursorPos();
         for (size_t i = 0; i < buttons_.size(); i++) {
-          if (buttons_[i].bounding_rect.contains(pos) && options_[i].enabled) {
+          if (buttons_[i].bounding_rect.Contains(pos) && options_[i].enabled) {
             SelectByIndex(buttons_[i].id);
             break;
           }
@@ -482,6 +482,6 @@ void ButtonSelectLongOperation::RenderTextSurface(
     const boost::shared_ptr<Surface>& text_surface,
     const Rect& bounding_rect) {
   // Render the correct text in the correct place.
-  Rect text_bounding_rect = text_surface->size().centeredIn(bounding_rect);
+  Rect text_bounding_rect = text_surface->size().CenteredIn(bounding_rect);
   text_surface->renderToScreen(text_surface->rect(), text_bounding_rect);
 }

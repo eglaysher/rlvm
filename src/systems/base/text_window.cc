@@ -374,7 +374,7 @@ void TextWindow::setKeycurMod(const vector<int>& keycur) {
 Point TextWindow::keycursorPosition(const Size& cursor_size) const {
   switch (keycursor_type_) {
     case 0:
-      return textSurfaceRect().lowerRight() - cursor_size;
+      return textSurfaceRect().lower_right() - cursor_size;
     case 1:
       return textSurfaceRect().origin() +
              Point(text_insertion_point_x_, text_insertion_point_y_);
@@ -707,7 +707,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
        ++it) {
     Rect r = Rect(textSurfaceRect().origin() + it->first,
                   koe_replay_info_->icon->size());
-    if (r.contains(pos)) {
+    if (r.Contains(pos)) {
       // We only want to actually replay the voice clip once, but we want to
       // catch both clicks.
       if (pressed)

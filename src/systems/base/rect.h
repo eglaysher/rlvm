@@ -40,11 +40,11 @@ class Point {
   Point(int x, int y) : x_(x), y_(y) {}
 
   int x() const { return x_; }
-  void setX(const int in) { x_ = in; }
+  void set_x(const int in) { x_ = in; }
   int y() const { return y_; }
-  void setY(const int in) { y_ = in; }
+  void set_y(const int in) { y_ = in; }
 
-  bool isEmpty() const { return x_ == 0 && y_ == 0; }
+  bool is_empty() const { return x_ == 0 && y_ == 0; }
 
   Point& operator+=(const Point& rhs) {
     x_ += rhs.x_;
@@ -95,14 +95,14 @@ class Size {
   int width() const { return width_; }
   int height() const { return height_; }
 
-  void setWidth(const int width) { width_ = width; }
-  void setHeight(const int height) { height_ = height; }
+  void set_width(const int width) { width_ = width; }
+  void set_height(const int height) { height_ = height; }
 
-  bool isEmpty() const { return width_ == 0 && height_ == 0; }
+  bool is_empty() const { return width_ == 0 && height_ == 0; }
 
   // Returns a rect of our size that is centered in rect |r|. Can return a rect
   // larger than |r|.
-  Rect centeredIn(const Rect& r) const;
+  Rect CenteredIn(const Rect& r) const;
 
   Size& operator+=(const Size& rhs) {
     width_ += rhs.width_;
@@ -142,7 +142,7 @@ class Size {
   }
 
   // Returns a size that is the max of both size's widths and heights.
-  Size sizeUnion(const Size& rhs) const;
+  Size SizeUnion(const Size& rhs) const;
 
  private:
   int width_;
@@ -175,41 +175,41 @@ class Rect {
   }
 
   int x() const { return origin_.x(); }
-  void setX(const int in) { origin_.setX(in); }
+  void set_x(const int in) { origin_.set_x(in); }
   int y() const { return origin_.y(); }
 
-  void setY(const int in) { origin_.setY(in); }
+  void set_y(const int in) { origin_.set_y(in); }
   int x2() const { return origin_.x() + size_.width(); }
-  void setX2(const int in) { size_.setWidth(in - origin_.x()); }
+  void set_x2(const int in) { size_.set_width(in - origin_.x()); }
   int y2() const { return origin_.y() + size_.height(); }
-  void setY2(const int in) { size_.setHeight(in - origin_.y()); }
+  void set_y2(const int in) { size_.set_height(in - origin_.y()); }
 
   int width() const { return size_.width(); }
   int height() const { return size_.height(); }
-  const Point lowerRight() const { return origin_ + size_; }
+  const Point lower_right() const { return origin_ + size_; }
 
   const Size& size() const { return size_; }
   const Point& origin() const { return origin_; }
 
-  bool isEmpty() const { return origin_.isEmpty() && size_.isEmpty(); }
+  bool is_empty() const { return origin_.is_empty() && size_.is_empty(); }
 
   // Whether loc is inside this Rect.
-  bool contains(const Point& loc);
+  bool Contains(const Point& loc);
 
   // Whether we intersect with |rhs|.
-  bool intersects(const Rect& rhs) const;
+  bool Intersects(const Rect& rhs) const;
 
   // Contains the intersection of two overlapping (or subsumed) rectangles.
-  Rect intersection(const Rect& rhs) const;
+  Rect Intersection(const Rect& rhs) const;
 
   // Contains the union of two overlapping rectangles.
-  Rect rectUnion(const Rect& rhs) const;
+  Rect RectUnion(const Rect& rhs) const;
 
   // Calculate the rectangle |rhs| in terms of this rectangle as the origin.
-  Rect getInsetRectangle(const Rect& rhs) const;
+  Rect GetInsetRectangle(const Rect& rhs) const;
 
   // Apply the inset rect to our rect.
-  Rect applyInset(const Rect& inset) const;
+  Rect ApplyInset(const Rect& inset) const;
 
   bool operator==(const Rect& rhs) const {
     return origin_ == rhs.origin_ && size_ == rhs.size_;

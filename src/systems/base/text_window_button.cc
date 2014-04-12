@@ -126,7 +126,7 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
 
   if (isValid()) {
     int orig_state = state_;
-    bool in_box = location(window).contains(pos);
+    bool in_box = location(window).Contains(pos);
     if (in_box && state_ == BUTTONSTATE_NORMAL)
       state_ = BUTTONSTATE_HIGHLIGHTED;
     else if (!in_box && state_ == BUTTONSTATE_HIGHLIGHTED)
@@ -147,7 +147,7 @@ bool TextWindowButton::handleMouseClick(RLMachine& machine,
     return false;
 
   if (isValid()) {
-    bool in_box = location(window).contains(pos);
+    bool in_box = location(window).Contains(pos);
 
     if (in_box) {
       // Perform any activation
@@ -173,7 +173,7 @@ void TextWindowButton::render(TextWindow& window,
                               int base_pattern) {
   if (isValid()) {
     Surface::GrpRect rect = buttons->getPattern(base_pattern + state_);
-    if (!(rect.rect.isEmpty())) {
+    if (!(rect.rect.is_empty())) {
       Rect dest = Rect(location(window).origin(), rect.rect.size());
       buttons->renderToScreen(rect.rect, dest, 255);
     }

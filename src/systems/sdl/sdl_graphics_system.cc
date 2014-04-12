@@ -454,9 +454,9 @@ void SDLGraphicsSystem::AllocateDC(int dc, Size size) {
   if (dc == 1) {
     SDL_Surface* dc0 = *(display_contexts_[0]);
     if (size.width() < dc0->w)
-      size.setWidth(dc0->w);
+      size.set_width(dc0->w);
     if (size.height() < dc0->h)
-      size.setHeight(dc0->h);
+      size.set_height(dc0->h);
   }
 
   // Allocate a new obj.
@@ -470,7 +470,7 @@ void SDLGraphicsSystem::SetMinimumSizeForDC(int dc, Size size) {
     Size current = display_contexts_[dc]->size();
     if (current.width() < size.width() || current.height() < size.height()) {
       // Make a new surface of the maximum size.
-      Size maxSize = current.sizeUnion(size);
+      Size maxSize = current.SizeUnion(size);
 
       boost::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
       newdc->allocate(maxSize);

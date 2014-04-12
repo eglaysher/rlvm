@@ -99,10 +99,10 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
           Rect(parent_start + parent->own_clip_rect().origin(),
                parent->own_clip_rect().size());
 
-      Rect clipped_dest = dst.intersection(full_parent_clip);
-      Rect inset = dst.getInsetRectangle(clipped_dest);
+      Rect clipped_dest = dst.Intersection(full_parent_clip);
+      Rect inset = dst.GetInsetRectangle(clipped_dest);
       dst = clipped_dest;
-      src = src.applyInset(inset);
+      src = src.ApplyInset(inset);
 
       if (tree) {
         *tree << "  Parent Own Clipping Rect: " << parent->own_clip_rect()
@@ -112,8 +112,8 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
     }
 
     if (go.has_own_clip_rect()) {
-      dst = dst.applyInset(go.own_clip_rect());
-      src = src.applyInset(go.own_clip_rect());
+      dst = dst.ApplyInset(go.own_clip_rect());
+      src = src.ApplyInset(go.own_clip_rect());
 
       if (tree) {
         *tree << "  Internal Clipping Rect: " << go.own_clip_rect() << std::endl
@@ -124,17 +124,17 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
 
     // Perform the object clipping.
     if (go.has_clip_rect()) {
-      Rect clipped_dest = dst.intersection(go.clip_rect());
+      Rect clipped_dest = dst.Intersection(go.clip_rect());
 
       // Do nothing if object falls wholly outside clip area
-      if (clipped_dest.isEmpty())
+      if (clipped_dest.is_empty())
         return;
 
       // Adjust the source rectangle
-      Rect inset = dst.getInsetRectangle(clipped_dest);
+      Rect inset = dst.GetInsetRectangle(clipped_dest);
 
       dst = clipped_dest;
-      src = src.applyInset(inset);
+      src = src.ApplyInset(inset);
 
       if (tree) {
         *tree << "  Clipping Rect: " << go.clip_rect() << std::endl
