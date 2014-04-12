@@ -56,9 +56,9 @@ class RLTimer {
 
   // Returns the current value of this frame counter. This value represents the
   // number of milliseconds since the timer was initialized.
-  unsigned int read(EventSystem& events);
+  unsigned int Read(EventSystem& events);
 
-  void set(EventSystem& events, unsigned int value = 0);
+  void Set(EventSystem& events, unsigned int value = 0);
 
  private:
   unsigned int time_at_last_set_;
