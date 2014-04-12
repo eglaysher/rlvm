@@ -104,13 +104,13 @@ CGMTable::CGMTable(Gameexe& gameexe) {
     throw rlvm::Exception(oss.str());
   }
 
+  int record_size = 36;
   if (data[7] == '2') {
-    // Kud Wafter has some sort of new CGM file that makes Extract2k corrupt
-    // memory. The first entry prints correctly if we put a printf in the for
-    // loop below, but then glib kills us due to memory corruption detected.
-    std::cerr << "CAN NOT READ CGM FILE. PROGRESS WILL NOT BE RECORDED."
-              << std::endl;
-    return;
+    // I'm not sure when this started, but in Kud Wafter, the record size for
+    // an entry in a CGM file seems to have changed. Possibly as a version 2
+    // for the file? None of the rest of the added bytes appear to be set,
+    // though.
+    record_size = 60;
   }
 
   int cgm_size = read_little_endian_int(data.get() + 0x10);
@@ -118,15 +118,15 @@ CGMTable::CGMTable(Gameexe& gameexe) {
     data[i + 0x20] ^= cgm_xor_key[i & 0xff];
   }
 
-  int dest_size = cgm_size * 36;
+  int dest_size = cgm_size * record_size;
   std::unique_ptr<char[]> dest_orig(new char[dest_size + 1024]);
   char* dest = dest_orig.get();
   char* src = data.get() + 0x28;
   ARCINFO::Extract2k(dest, src, dest + dest_size, data.get() + size);
   dest = dest_orig.get();
   for (int i = 0; i < cgm_size; i++) {
-    char* s = dest + i * 36;
-    int n = read_little_endian_int(dest + i * 36 + 32);
+    char* s = dest + i * record_size;
+    int n = read_little_endian_int(dest + i * record_size + 32);
     cgm_info_[s] = n;
   }
 }
