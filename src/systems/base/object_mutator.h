@@ -93,8 +93,9 @@ class OneIntObjectMutator : public ObjectMutator {
   virtual ~OneIntObjectMutator();
 
  private:
-  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object);
-  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object);
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual void PerformSetting(RLMachine& machine,
+                              GraphicsObject& object) override;
 
   int startval_;
   int endval_;
@@ -120,8 +121,9 @@ class RepnoIntObjectMutator : public ObjectMutator {
   virtual ~RepnoIntObjectMutator();
 
  private:
-  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object);
-  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object);
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual void PerformSetting(RLMachine& machine,
+                              GraphicsObject& object) override;
 
   int repno_;
   int startval_;
@@ -150,8 +152,9 @@ class TwoIntObjectMutator : public ObjectMutator {
   virtual ~TwoIntObjectMutator();
 
  private:
-  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object);
-  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object);
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual void PerformSetting(RLMachine& machine,
+                              GraphicsObject& object) override;
 
   int startval_one_;
   int endval_one_;
