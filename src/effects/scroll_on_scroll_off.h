@@ -74,7 +74,7 @@ class ScrollSquashSlideBaseEffect : public Effect {
 
  private:
   // Calculates the amount_visible passed into composeEffectsFor().
-  int CalculateAmountVisible(int current_time, int screenSize);
+  int CalculateAmountVisible(int current_time, int screen_size);
 
   // Don't blit the original image.
   virtual bool BlitOriginalImage() const override;

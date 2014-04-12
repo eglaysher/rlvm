@@ -45,8 +45,8 @@ class TestGraphicsSystem : public GraphicsSystem {
   TestGraphicsSystem(System& system, Gameexe& gexe);
   virtual ~TestGraphicsSystem();
 
-  virtual void executeGraphicsSystem(RLMachine& machine) {
-    GraphicsSystem::executeGraphicsSystem(machine);
+  virtual void ExecuteGraphicsSystem(RLMachine& machine) {
+    GraphicsSystem::ExecuteGraphicsSystem(machine);
   }
 
   int screenWidth() const { return 640; }
@@ -55,39 +55,27 @@ class TestGraphicsSystem : public GraphicsSystem {
   void injectSurface(const std::string& short_filename,
                      const boost::shared_ptr<Surface>& surface);
 
-  virtual Size screenSize() const { return Size(640, 480); }
-  virtual void allocateDC(int dc, Size s);
-  virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */
+  virtual Size screen_size() const { return Size(640, 480); }
+  virtual void AllocateDC(int dc, Size s);
+  virtual void SetMinimumSizeForDC(int, Size) { /* noop for now. */
   }
-  virtual void freeDC(int dc);
+  virtual void FreeDC(int dc);
 
-  virtual void clearAndPromoteObjects();
+  virtual void ClearAndPromoteObjects();
 
-  virtual GraphicsObject& getObject(int layer, int obj_number);
+  virtual GraphicsObject& GetObject(int layer, int obj_number);
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
-      const std::string& short_filename);
-  virtual boost::shared_ptr<Surface> getHaikei();
-  virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
-  virtual ColourFilter* BuildColourFiller();
+  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+      const std::string& short_filename) override;
+  virtual boost::shared_ptr<Surface> GetHaikei() override;
+  virtual boost::shared_ptr<Surface> GetDC(int dc) override;
+  virtual boost::shared_ptr<Surface> BuildSurface(const Size& s) override;
+  virtual ColourFilter* BuildColourFiller() override;
 
-  virtual void blitSurfaceToDC(Surface& source_obj,
-                               int target_dc,
-                               int srcX,
-                               int srcY,
-                               int src_width,
-                               int src_height,
-                               int destX,
-                               int destY,
-                               int dest_width,
-                               int dest_height,
-                               int alpha = 255);
-
-  virtual void beginFrame() {}
-  virtual void endFrame() {}
-  virtual boost::shared_ptr<Surface> endFrameToSurface() {
+  virtual void BeginFrame() {}
+  virtual void EndFrame() {}
+  virtual boost::shared_ptr<Surface> EndFrameToSurface() {
     return boost::shared_ptr<Surface>();
   }
 

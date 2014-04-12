@@ -122,10 +122,10 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
 
   GraphicsSystem& graphics = machine.system().graphics();
   if (mouse_moved_) {
-    graphics.markScreenAsDirty(GUT_MOUSE_MOTION);
+    graphics.MarkScreenAsDirty(GUT_MOUSE_MOTION);
     mouse_moved_ = false;
-  } else if (graphics.objectStateDirty()) {
-    graphics.markScreenAsDirty(GUT_DISPLAY_OBJ);
+  } else if (graphics.object_state_dirty()) {
+    graphics.MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 
   if (break_on_clicks_) {

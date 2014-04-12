@@ -201,8 +201,8 @@ void RLMachine::HardResetMemory() {
 void RLMachine::MarkSavepoint() {
   savepoint_call_stack_ = call_stack_;
   memory_->TakeSavepointSnapshot();
-  system().graphics().takeSavepointSnapshot();
-  system().text().takeSavepointSnapshot();
+  system().graphics().TakeSavepointSnapshot();
+  system().text().TakeSavepointSnapshot();
 }
 
 bool RLMachine::SavepointDecide(AttributeFunction func,

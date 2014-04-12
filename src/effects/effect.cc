@@ -48,11 +48,11 @@ Effect::Effect(RLMachine& machine,
       machine_(machine),
       src_surface_(src),
       dst_surface_(dst) {
-  machine.system().graphics().setIsResponsibleForUpdate(false);
+  machine.system().graphics().set_is_responsible_for_update(false);
 }
 
 Effect::~Effect() {
-  machine_.system().graphics().setIsResponsibleForUpdate(true);
+  machine_.system().graphics().set_is_responsible_for_update(true);
 }
 
 bool Effect::operator()(RLMachine& machine) {
@@ -65,7 +65,7 @@ bool Effect::operator()(RLMachine& machine) {
     return true;
   } else {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.beginFrame();
+    graphics.BeginFrame();
 
     if (BlitOriginalImage()) {
       dst_surface().renderToScreen(
@@ -74,7 +74,7 @@ bool Effect::operator()(RLMachine& machine) {
 
     PerformEffectForTime(machine, current_frame);
 
-    graphics.endFrame();
+    graphics.EndFrame();
     return false;
   }
 }
@@ -101,5 +101,5 @@ void BlitAfterEffectFinishes::PerformAfterLongOperation(RLMachine& machine) {
   src_surface_->blitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
 
   // Now force a screen refresh
-  machine.system().graphics().forceRefresh();
+  machine.system().graphics().ForceRefresh();
 }

@@ -48,8 +48,8 @@ SDL_Surface* buildNewSurface(const Size& size);
 // graphics system.
 //
 // Some SDLSurfaces will own their underlying SDL_Surface, for
-// example, anything returned from getSurfaceNamedAndMarkViewed(), while others
-// don't own their surfaces (SDLSurfaces returned by getDC()
+// example, anything returned from GetSurfaceNamedAndMarkViewed(), while others
+// don't own their surfaces (SDLSurfaces returned by GetDC()
 class SDLSurface : public Surface, public NotificationObserver {
  public:
   explicit SDLSurface(SDLGraphicsSystem* system);
@@ -137,7 +137,7 @@ class SDLSurface : public Surface, public NotificationObserver {
 
   SDL_Surface* surface() { return surface_; }
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const;
+  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const;
   virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
                                                      int r,
                                                      int g,

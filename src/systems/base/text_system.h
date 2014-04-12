@@ -214,7 +214,7 @@ class TextSystem : public EventListener {
   bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   // Save pieces of state that would be saved to disk.
-  void takeSavepointSnapshot();
+  void TakeSavepointSnapshot();
 
   // Returns a surface with |utf8str| rendered with the other specified
   // properties. Will search |utf8str| for object text syntax and will change

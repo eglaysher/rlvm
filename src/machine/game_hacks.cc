@@ -44,7 +44,7 @@ void PBRIDE_ResetAutoMode(RLMachine& machine) {
   // doesn't automatically get reset to DrawAuto. RealLive.exe takes care of
   // this (draw mode on the stack, perhaps?), but until we know what causes
   // this, hack.
-  machine.system().graphics().setScreenUpdateMode(
+  machine.system().graphics().SetScreenUpdateMode(
       GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
 }
 

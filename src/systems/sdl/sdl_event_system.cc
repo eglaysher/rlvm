@@ -93,7 +93,7 @@ void SDLEventSystem::ExecuteEventSystem(RLMachine& machine) {
         HandleActiveEvent(machine, event);
         break;
       case SDL_VIDEOEXPOSE: {
-        machine.system().graphics().forceRefresh();
+        machine.system().graphics().ForceRefresh();
         break;
       }
     }
@@ -159,7 +159,7 @@ void SDLEventSystem::InjectMouseUp(RLMachine& machine) {
 void SDLEventSystem::PreventCursorPosSpinning() {
   unsigned int newTime = GetTicks();
 
-  if ((system_.graphics().screenUpdateMode() !=
+  if ((system_.graphics().screen_update_mode() !=
        GraphicsSystem::SCREENUPDATEMODE_MANUAL) &&
       (newTime - last_get_currsor_time_) < 20) {
     // Prevent spinning on input. When we're not in manual mode, we don't get
@@ -188,7 +188,7 @@ void SDLEventSystem::HandleKeyDown(RLMachine& machine, SDL_Event& event) {
     case SDLK_f: {
       if ((event.key.keysym.mod & KMOD_ALT) ||
           (event.key.keysym.mod & KMOD_META)) {
-        machine.system().graphics().toggleFullscreen();
+        machine.system().graphics().ToggleFullscreen();
 
         // Stop processing because we don't want to Dispatch this event, which
         // might advance the text.
@@ -289,11 +289,11 @@ void SDLEventSystem::HandleActiveEvent(RLMachine& machine, SDL_Event& event) {
     // that's partially covered by rlvm's window and then alt-tab back.
     mouse_inside_window_ = true;
 
-    machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+    machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
   } else if (event.active.state & SDL_APPMOUSEFOCUS) {
     mouse_inside_window_ = event.active.gain == 1;
 
     // Force a mouse refresh:
-    machine.system().graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+    machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
   }
 }

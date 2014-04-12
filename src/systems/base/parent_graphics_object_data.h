@@ -43,8 +43,8 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   explicit ParentGraphicsObjectData(int size);
   virtual ~ParentGraphicsObjectData();
 
-  GraphicsObject& getObject(int obj_number);
-  void setObject(int obj_number, GraphicsObject& object);
+  GraphicsObject& GetObject(int obj_number);
+  void SetObject(int obj_number, GraphicsObject& object);
 
   LazyArray<GraphicsObject>& objects();
 

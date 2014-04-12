@@ -40,11 +40,11 @@ ParentGraphicsObjectData::ParentGraphicsObjectData(int size) : objects_(size) {}
 
 ParentGraphicsObjectData::~ParentGraphicsObjectData() {}
 
-GraphicsObject& ParentGraphicsObjectData::getObject(int obj_number) {
+GraphicsObject& ParentGraphicsObjectData::GetObject(int obj_number) {
   return objects_[obj_number];
 }
 
-void ParentGraphicsObjectData::setObject(int obj_number,
+void ParentGraphicsObjectData::SetObject(int obj_number,
                                          GraphicsObject& object) {
   objects_[obj_number] = object;
 }

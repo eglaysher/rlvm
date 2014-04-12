@@ -69,14 +69,14 @@ namespace {
 
 struct title : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string subtitle) {
-    machine.system().graphics().setWindowSubtitle(subtitle,
+    machine.system().graphics().SetWindowSubtitle(subtitle,
                                                   machine.GetTextEncoding());
   }
 };
 
 struct GetTitle : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = machine.system().graphics().windowSubtitle();
+    *dest = machine.system().graphics().window_subtitle();
   }
 };
 
@@ -329,13 +329,13 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   // Render the screen as is.
-  boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
-  boost::shared_ptr<Surface> before = graphics.renderToSurface();
+  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+  boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
   // Clear everything
   machine.LocalReset();
 
-  boost::shared_ptr<Surface> after = graphics.renderToSurface();
+  boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();
@@ -368,13 +368,13 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(204,
             0,
             "ShowCursor",
-            CallFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 1));
+            CallFunctionWith(&GraphicsSystem::set_show_cursor_from_bytecode, 1));
   AddOpcode(205,
             0,
             "HideCursor",
-            CallFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 0));
+            CallFunctionWith(&GraphicsSystem::set_show_cursor_from_bytecode, 0));
   AddOpcode(206, 0, "GetMouseCursor", ReturnIntValue(&GraphicsSystem::cursor));
-  AddOpcode(207, 0, "MouseCursor", CallFunction(&GraphicsSystem::setCursor));
+  AddOpcode(207, 0, "MouseCursor", CallFunction(&GraphicsSystem::SetCursor));
 
   AddUnsupportedOpcode(330, 0, "EnableSkipMode");
   AddUnsupportedOpcode(331, 0, "DisableSkipMode");
@@ -459,19 +459,19 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(1130,
             0,
             "DefaultGrp",
-            returnStringValue(&GraphicsSystem::defaultGrpName));
+            returnStringValue(&GraphicsSystem::default_grp_name));
   AddOpcode(1131,
             0,
             "SetDefaultGrp",
-            CallFunction(&GraphicsSystem::setDefaultGrpName));
+            CallFunction(&GraphicsSystem::set_default_grp_name));
   AddOpcode(1132,
             0,
             "DefaultBgr",
-            returnStringValue(&GraphicsSystem::defaultBgrName));
+            returnStringValue(&GraphicsSystem::default_bgr_name));
   AddOpcode(1133,
             0,
             "SetDefaultBgr",
-            CallFunction(&GraphicsSystem::setDefaultBgrName));
+            CallFunction(&GraphicsSystem::set_default_bgr_name));
 
   AddUnsupportedOpcode(1302, 0, "nwSingle");
   AddUnsupportedOpcode(1303, 0, "nwMulti");
@@ -489,11 +489,11 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(2051,
             0,
             "SetSkipAnimations",
-            CallFunction(&GraphicsSystem::setSkipAnimations));
+            CallFunction(&GraphicsSystem::set_should_skip_animations));
   AddOpcode(2001,
             0,
             "SkipAnimations",
-            ReturnIntValue(&GraphicsSystem::skipAnimations));
+            ReturnIntValue(&GraphicsSystem::should_skip_animations));
   AddOpcode(2052, 0, "SetLowPriority", CallFunction(&System::set_low_priority));
   AddOpcode(2002, 0, "LowPriority", ReturnIntValue(&System::low_priority));
 
@@ -618,8 +618,8 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(
       2374, 0, "UseKoe", ReturnIntValue(&SoundSystem::useKoeForCharacter));
   AddOpcode(
-      2275, 0, "SetScreenMode", CallFunction(&GraphicsSystem::setScreenMode));
-  AddOpcode(2375, 0, "ScreenMode", ReturnIntValue(&GraphicsSystem::screenMode));
+      2275, 0, "SetScreenMode", CallFunction(&GraphicsSystem::SetScreenMode));
+  AddOpcode(2375, 0, "ScreenMode", ReturnIntValue(&GraphicsSystem::screen_mode));
 
   AddOpcode(2360, 0, "WindowAttrR", ReturnIntValue(&TextSystem::windowAttrR));
   AddOpcode(2361, 0, "WindowAttrG", ReturnIntValue(&TextSystem::windowAttrG));
@@ -638,17 +638,17 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(2617, 0, "DefWindowAttr", new DefWindowAttr);
 
   AddOpcode(
-      2270, 0, "SetShowObject1", CallFunction(&GraphicsSystem::setShowObject1));
+      2270, 0, "SetShowObject1", CallFunction(&GraphicsSystem::set_should_show_object1));
   AddOpcode(
-      2370, 0, "ShowObject1", ReturnIntValue(&GraphicsSystem::showObject1));
+      2370, 0, "ShowObject1", ReturnIntValue(&GraphicsSystem::should_show_object1));
   AddOpcode(
-      2271, 0, "SetShowObject2", CallFunction(&GraphicsSystem::setShowObject2));
+      2271, 0, "SetShowObject2", CallFunction(&GraphicsSystem::set_should_show_object2));
   AddOpcode(
-      2371, 0, "ShowObject2", ReturnIntValue(&GraphicsSystem::showObject2));
+      2371, 0, "ShowObject2", ReturnIntValue(&GraphicsSystem::should_show_object2));
   AddOpcode(
-      2272, 0, "SetShowWeather", CallFunction(&GraphicsSystem::setShowWeather));
+      2272, 0, "SetShowWeather", CallFunction(&GraphicsSystem::set_should_show_weather));
   AddOpcode(
-      2372, 0, "ShowWeather", ReturnIntValue(&GraphicsSystem::showWeather));
+      2372, 0, "ShowWeather", ReturnIntValue(&GraphicsSystem::should_show_weather));
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.

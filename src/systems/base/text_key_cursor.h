@@ -63,10 +63,10 @@ class TextKeyCursor {
 
   // Convenience setters which set properties directly from
   // Gameexe.ini data.
-  void setCursorImage(System& system, const std::string& file);
-  void setCursorSize(const std::vector<int>& image_size);
-  void setCursorFrameCount(const int frame_count);
-  void setCursorFrameSpeed(const int frame_speed);
+  void SetCursorImage(System& system, const std::string& file);
+  void SetCursorSize(const std::vector<int>& image_size);
+  void SetCursorFrameCount(const int frame_count);
+  void SetCursorFrameSpeed(const int frame_speed);
 
  private:
   // Keep track of which cursor we are as an optimization

@@ -181,7 +181,7 @@ TextWindow::TextWindow(System& system, int window_num)
 TextWindow::~TextWindow() {}
 
 void TextWindow::execute() {
-  if (isVisible() && !system_.graphics().interfaceHidden()) {
+  if (isVisible() && !system_.graphics().is_interface_hidden()) {
     textbox_waku_->execute();
   }
 }
@@ -388,7 +388,7 @@ Point TextWindow::keycursorPosition(const Size& cursor_size) const {
 void TextWindow::faceOpen(const std::string& filename, int index) {
   if (face_slot_[index]) {
     face_slot_[index]->face_surface =
-        system_.graphics().getSurfaceNamed(filename);
+        system_.graphics().GetSurfaceNamed(filename);
 
     if (face_slot_[index]->hide_other_windows) {
       system_.text().hideAllTextWindowsExcept(windowNumber());
@@ -583,7 +583,7 @@ bool TextWindow::character(const std::string& current,
   // When we aren't rendering a piece of text with a ruby gloss, mark
   // the screen as dirty so that this character renders.
   if (ruby_begin_point_ == -1) {
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
   }
 
   last_token_was_name_ = false;
@@ -645,7 +645,7 @@ void TextWindow::koeMarker(int id) {
     GameexeInterpretObject replay_icon(gexe("KOEREPLAYICON"));
 
     koe_replay_info_->icon =
-        system_.graphics().getSurfaceNamed(replay_icon("NAME"));
+        system_.graphics().GetSurfaceNamed(replay_icon("NAME"));
     std::vector<int> reppos = replay_icon("REPPOS");
     if (reppos.size() == 2)
       koe_replay_info_->repos = Size(reppos[0], reppos[1]);
@@ -716,7 +716,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
     }
   }
 
-  if (isVisible() && !machine.system().graphics().interfaceHidden()) {
+  if (isVisible() && !machine.system().graphics().is_interface_hidden()) {
     return textbox_waku_->handleMouseClick(machine, pos, pressed);
   }
 

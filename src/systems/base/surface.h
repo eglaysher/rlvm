@@ -115,7 +115,7 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   virtual int numPatterns() const;
   virtual const GrpRect& getPattern(int patt_no) const;
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
+  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
 
   virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
                                                      int r,

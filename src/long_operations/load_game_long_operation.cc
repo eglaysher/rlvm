@@ -39,12 +39,12 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.renderToSurface();
+  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
+  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
   dc0->fill(RGBAColour::Black());
 
   machine.PushLongOperation(this);
@@ -64,12 +64,12 @@ bool LoadGameLongOperation::operator()(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.renderToSurface();
+  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
   Size s = currentWindow->size();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
+  boost::shared_ptr<Surface> blankScreen = graphics.BuildSurface(s);
   blankScreen->fill(RGBAColour::Black());
 
   machine.PushLongOperation(

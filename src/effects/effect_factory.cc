@@ -80,7 +80,7 @@ Effect* EffectFactory::Build(RLMachine& machine,
                              int a,
                              int b,
                              int c) {
-  Size screen_size = machine.system().graphics().screenSize();
+  Size screen_size = machine.system().graphics().screen_size();
 
   // Ensure that both of our images are on the graphics card so we don't
   // stutter during the loop. These can be NULL in unit tests.

@@ -51,8 +51,8 @@ struct objWaitAll : public RLOp_Void_Void {
   static bool WaitUntilDone(RLMachine& machine) {
     // Clannad puts us in DrawManual() right before calling us so we force
     // refreshes.
-    machine.system().graphics().forceRefresh();
-    return !machine.system().graphics().animationsPlaying();
+    machine.system().graphics().ForceRefresh();
+    return !machine.system().graphics().AnimationsPlaying();
   }
 
   void operator()(RLMachine& machine) {
@@ -75,15 +75,15 @@ struct objWaitAll : public RLOp_Void_Void {
 struct WaitForGanToFinish : public LongOperation {
   WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent, int inBuf)
       : system_(system),
-        mode_(system_.screenUpdateMode()),
+        mode_(system_.screen_update_mode()),
         fgbg_(fgbg),
         parent_(parent),
         buf_(inBuf) {
-    system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+    system_.SetScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
   }
 
   bool operator()(RLMachine& machine) {
-    GraphicsObject& obj = getObject(machine);
+    GraphicsObject& obj = GetObject(machine);
     bool done = true;
 
     if (obj.has_object_data()) {
@@ -94,22 +94,22 @@ struct WaitForGanToFinish : public LongOperation {
 
     if (done) {
       // Restore whatever mode we were in before.
-      system_.setScreenUpdateMode(mode_);
+      system_.SetScreenUpdateMode(mode_);
     }
 
     return done;
   }
 
-  GraphicsObject& getObject(RLMachine& machine) {
+  GraphicsObject& GetObject(RLMachine& machine) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     if (parent_ != -1) {
-      GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
-      EnsureIsParentObject(parent, graphics.objectLayerSize());
+      GraphicsObject& parent = graphics.GetObject(fgbg_, parent_);
+      EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
       return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
-          .getObject(buf_);
+          .GetObject(buf_);
     } else {
-      return graphics.getObject(fgbg_, buf_);
+      return graphics.GetObject(fgbg_, buf_);
     }
   }
 

@@ -126,7 +126,7 @@ void AnmGraphicsObjectData::LoadAnmFileFromData(
 
   // Read the corresponding image file we read from, and load the image.
   string raw_file_name = data + 0x1c;
-  image_ = system_.graphics().getSurfaceNamed(raw_file_name);
+  image_ = system_.graphics().GetSurfaceNamed(raw_file_name);
   image_->EnsureUploaded();
 
   // Read the frame list
@@ -214,7 +214,7 @@ void AnmGraphicsObjectData::AdvanceFrame() {
     if (time_since_last_frame_change > frames[current_frame_].time) {
       time_since_last_frame_change -= frames[current_frame_].time;
       time_at_last_frame_change_ += frames[current_frame_].time;
-      system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+      system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 
       cur_frame_++;
       if (cur_frame_ == cur_frame_end_) {
@@ -263,7 +263,7 @@ void AnmGraphicsObjectData::PlaySet(int set) {
   cur_frame_end_ = framelist_.at(*cur_frame_set_).end();
   current_frame_ = *cur_frame_;
 
-  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 boost::shared_ptr<const Surface> AnmGraphicsObjectData::CurrentSurface(

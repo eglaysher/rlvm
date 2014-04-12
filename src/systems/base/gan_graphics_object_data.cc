@@ -84,7 +84,7 @@ GanGraphicsObjectData::GanGraphicsObjectData(System& system,
 GanGraphicsObjectData::~GanGraphicsObjectData() {}
 
 void GanGraphicsObjectData::LoadGANData() {
-  image_ = system_.graphics().getSurfaceNamed(img_filename_);
+  image_ = system_.graphics().GetSurfaceNamed(img_filename_);
   image_->EnsureUploaded();
 
   fs::path gan_file_path = system_.FindFile(gan_filename_, GAN_FILETYPES);
@@ -259,7 +259,7 @@ void GanGraphicsObjectData::Execute(RLMachine& machine) {
         EndAnimation();
       } else {
         time_at_last_frame_change_ = current_time;
-        system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+        system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
       }
     }
   }
@@ -322,7 +322,7 @@ void GanGraphicsObjectData::PlaySet(int set) {
   current_set_ = set;
   current_frame_ = 0;
   time_at_last_frame_change_ = system_.event().GetTicks();
-  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 template <class Archive>
@@ -338,7 +338,7 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
     time_at_last_frame_change_ = system_.event().GetTicks();
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 

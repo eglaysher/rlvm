@@ -179,7 +179,7 @@ bool TextoutLongOperation::DisplayOneMoreCharacter(RLMachine& machine,
       // Call the pause operation if we've filled up the current page.
       if (page.IsFull()) {
         paused = true;
-        machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+        machine.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
         machine.PushLongOperation(
             new NewPageAfterLongop(new PauseLongOperation(machine)));
       }

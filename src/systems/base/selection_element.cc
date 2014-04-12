@@ -68,7 +68,7 @@ void SelectionElement::setMousePosition(const Point& pos) {
   is_highlighted_ = isHighlighted(pos);
 
   if (start_value != is_highlighted_) {
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
     if (is_highlighted_ && system_.sound().hasSe(0))
       system_.sound().playSe(0);
   }

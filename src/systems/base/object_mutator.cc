@@ -52,7 +52,7 @@ bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
   unsigned int ticks = machine.system().event().GetTicks();
   if (ticks > (creation_time_ + delay_)) {
     PerformSetting(machine, object);
-    machine.system().graphics().markObjectStateAsDirty();
+    machine.system().graphics().mark_object_state_as_dirty();
   }
   return ticks > (creation_time_ + delay_ + duration_time_);
 }

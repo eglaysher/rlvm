@@ -490,7 +490,7 @@ bool TextSystem::handleMouseClick(RLMachine& machine,
   return false;
 }
 
-void TextSystem::takeSavepointSnapshot() {
+void TextSystem::TakeSavepointSnapshot() {
   savepoint_active_window_ = activeWindow();
   savepoint_cursor_number_ = cursorNumber();
 }
@@ -632,7 +632,7 @@ boost::shared_ptr<Surface> TextSystem::renderText(const std::string& utf8str,
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
   boost::shared_ptr<Surface> surface(
-      system().graphics().buildSurface(Size(max_width, total_height)));
+      system().graphics().BuildSurface(Size(max_width, total_height)));
   surface->fill(RGBAColour::Clear());
 
   RGBColour current_colour = colour;

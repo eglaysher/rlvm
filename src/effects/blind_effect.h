@@ -36,7 +36,7 @@ class BlindEffect : public Effect {
   BlindEffect(RLMachine& machine,
               boost::shared_ptr<Surface> src,
               boost::shared_ptr<Surface> dst,
-              const Size& screenSize,
+              const Size& screen_size,
               int time,
               int blindSize);
   virtual ~BlindEffect();
@@ -60,7 +60,7 @@ class BlindTopToBottomEffect : public BlindEffect {
   BlindTopToBottomEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize,
+                         const Size& screen_size,
                          int time,
                          int blindSize);
   virtual ~BlindTopToBottomEffect();
@@ -76,7 +76,7 @@ class BlindBottomToTopEffect : public BlindEffect {
   BlindBottomToTopEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize,
+                         const Size& screen_size,
                          int time,
                          int blindSize);
   virtual ~BlindBottomToTopEffect();
@@ -92,7 +92,7 @@ class BlindLeftToRightEffect : public BlindEffect {
   BlindLeftToRightEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize,
+                         const Size& screen_size,
                          int time,
                          int blindSize);
   virtual ~BlindLeftToRightEffect();
@@ -108,7 +108,7 @@ class BlindRightToLeftEffect : public BlindEffect {
   BlindRightToLeftEffect(RLMachine& machine,
                          boost::shared_ptr<Surface> src,
                          boost::shared_ptr<Surface> dst,
-                         const Size& screenSize,
+                         const Size& screen_size,
                          int time,
                          int blindSize);
   virtual ~BlindRightToLeftEffect();

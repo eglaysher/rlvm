@@ -90,7 +90,7 @@ void SDLSystem::run(RLMachine& machine) {
   event_system_->ExecuteEventSystem(machine);
   text_system_->executeTextSystem();
   sound_system_->executeSoundSystem();
-  graphics_system_->executeGraphicsSystem(machine);
+  graphics_system_->ExecuteGraphicsSystem(machine);
 
   if (platform())
     platform()->run(machine);

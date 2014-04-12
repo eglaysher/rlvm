@@ -44,7 +44,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
       currently_hovering_button_(NULL),
       currently_pressed_button_(NULL) {
   GraphicsSystem& graphics = machine.system().graphics();
-  for (GraphicsObject& obj : graphics.foregroundObjects()) {
+  for (GraphicsObject& obj : graphics.GetForegroundObjects()) {
     if (obj.IsButton() && obj.GetButtonGroup() == group_) {
       buttons_.push_back(
           std::make_pair(&obj, static_cast<GraphicsObject*>(NULL)));
@@ -122,7 +122,7 @@ bool ButtonObjectSelectLongOperation::MouseButtonStateChanged(
 
     // Changes override properties doesn't automatically refresh the screen the
     // way mouse movement does.
-    machine_.system().graphics().forceRefresh();
+    machine_.system().graphics().ForceRefresh();
 
     return true;
   } else if (mouseButton == MOUSE_RIGHT && !pressed && cancelable_) {

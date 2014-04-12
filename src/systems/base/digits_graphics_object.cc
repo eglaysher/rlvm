@@ -47,7 +47,7 @@ DigitsGraphicsObject::DigitsGraphicsObject(System& system,
     : system_(system),
       value_(0),
       font_name_(font),
-      font_(system.graphics().getSurfaceNamed(font)) {}
+      font_(system.graphics().GetSurfaceNamed(font)) {}
 
 DigitsGraphicsObject::~DigitsGraphicsObject() {}
 
@@ -100,7 +100,7 @@ void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
 
   int total_pixel_width = (num_chars + num_extra) * digit_pixel_width;
 
-  surface_ = system_.graphics().buildSurface(
+  surface_ = system_.graphics().BuildSurface(
       Size(total_pixel_width, font_->getPattern(0).rect.size().height()));
   surface_->fill(RGBAColour::Clear());
 
@@ -154,7 +154,7 @@ void DigitsGraphicsObject::load(Archive& ar, unsigned int version) {
 
   value_ = 0;
   surface_.reset();
-  font_ = system_.graphics().getSurfaceNamed(font_name_);
+  font_ = system_.graphics().GetSurfaceNamed(font_name_);
 }
 
 template <class Archive>

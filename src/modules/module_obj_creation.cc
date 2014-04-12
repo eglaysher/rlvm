@@ -74,7 +74,7 @@ typedef std::function<void(RLMachine&, GraphicsObject& obj, const string&)>
 void objOfFileLoader(RLMachine& machine,
                      GraphicsObject& obj,
                      const std::string& val) {
-  obj.SetObjectData(machine.system().graphics().buildObjOfFile(val));
+  obj.SetObjectData(machine.system().graphics().BuildObjOfFile(val));
 }
 
 void objOfTextBuilder(RLMachine& machine,

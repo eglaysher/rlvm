@@ -237,7 +237,7 @@ void HIKScript::LoadHikFile(System& system, const fs::path& file) {
       case 40100: {
         Frame& frame = CurrentFrame();
         frame.image = consume_string(curpointer);
-        frame.surface = system.graphics().getSurfaceNamed(frame.image);
+        frame.surface = system.graphics().GetSurfaceNamed(frame.image);
         if (!frame.surface) {
           std::ostringstream oss;
           oss << "Could not load image " << frame.image << " for HIK";

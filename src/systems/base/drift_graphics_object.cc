@@ -95,7 +95,7 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
 
     Rect bounding_box = go.GetDriftArea();
     if (bounding_box.x() == -1) {
-      bounding_box = system_.graphics().screenRect();
+      bounding_box = system_.graphics().screen_rect();
     }
 
     double scaled_amplitude =
@@ -188,7 +188,7 @@ void DriftGraphicsObject::Execute(RLMachine& machine) {
   // throttle to once every 100ms.
   int current_time = system_.event().GetTicks();
   if (current_time - last_rendered_time_ > 10) {
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 
@@ -202,7 +202,7 @@ void DriftGraphicsObject::ObjectInfo(std::ostream& tree) {
 }
 
 void DriftGraphicsObject::LoadFile() {
-  surface_ = system_.graphics().getSurfaceNamed(filename_);
+  surface_ = system_.graphics().GetSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
 

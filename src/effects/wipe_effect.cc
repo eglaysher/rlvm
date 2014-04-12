@@ -42,10 +42,10 @@
 WipeEffect::WipeEffect(RLMachine& machine,
                        boost::shared_ptr<Surface> src,
                        boost::shared_ptr<Surface> dst,
-                       const Size& screenSize,
+                       const Size& screen_size,
                        int time,
                        int interpolation)
-    : Effect(machine, src, dst, screenSize, time),
+    : Effect(machine, src, dst, screen_size, time),
       interpolation_(interpolation),
       interpolation_in_pixels_(0) {
   if (interpolation_)
@@ -92,10 +92,10 @@ bool WipeEffect::BlitOriginalImage() const { return true; }
 WipeTopToBottomEffect::WipeTopToBottomEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
 WipeTopToBottomEffect::~WipeTopToBottomEffect() {}
 
@@ -133,10 +133,10 @@ void WipeTopToBottomEffect::PerformEffectForTime(RLMachine& machine,
 WipeBottomToTopEffect::WipeBottomToTopEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
 WipeBottomToTopEffect::~WipeBottomToTopEffect() {}
 
@@ -175,10 +175,10 @@ void WipeBottomToTopEffect::PerformEffectForTime(RLMachine& machine,
 WipeLeftToRightEffect::WipeLeftToRightEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
 WipeLeftToRightEffect::~WipeLeftToRightEffect() {}
 
@@ -217,10 +217,10 @@ void WipeLeftToRightEffect::PerformEffectForTime(RLMachine& machine,
 WipeRightToLeftEffect::WipeRightToLeftEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
 WipeRightToLeftEffect::~WipeRightToLeftEffect() {}
 

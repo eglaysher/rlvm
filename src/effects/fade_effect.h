@@ -36,7 +36,7 @@ class FadeEffect : public Effect {
   FadeEffect(RLMachine& machine,
              boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
-             const Size& screenSize,
+             const Size& screen_size,
              int time);
   virtual ~FadeEffect();
 

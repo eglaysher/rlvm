@@ -195,7 +195,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     }
   }
 
-  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  machine.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 }
 
 NormalSelectLongOperation::~NormalSelectLongOperation() {
@@ -247,7 +247,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
       push_frame_(0),
       dontsel_frame_(0),
       mouse_down_(false) {
-  machine.system().graphics().addRenderable(this);
+  machine.system().graphics().AddRenderable(this);
 
   // Load all the data about this #SELBTN from the Gameexe.ini file.
   Gameexe& gexe = machine.system().gameexe();
@@ -282,9 +282,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   GraphicsSystem& gs = machine.system().graphics();
   if (selbtn("NAME").Exists() && selbtn("NAME").ToString() != "")
-    name_surface_ = gs.getSurfaceNamed(selbtn("NAME"));
+    name_surface_ = gs.GetSurfaceNamed(selbtn("NAME"));
   if (selbtn("BACK").Exists() && selbtn("BACK").ToString() != "")
-    back_surface_ = gs.getSurfaceNamed(selbtn("BACK"));
+    back_surface_ = gs.GetSurfaceNamed(selbtn("BACK"));
 
   std::vector<int> tmp;
   if (selbtn("NORMAL").Exists()) {
@@ -322,7 +322,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
       options_.begin(), options_.end(), [&](Option& o) { return o.shown; });
 
   // Calculate out the bounding rectangles for all the options.
-  Size screen_size = machine.system().graphics().screenSize();
+  Size screen_size = machine.system().graphics().screen_size();
   int baseposx = 0;
   if (center_x) {
     int totalwidth = ((shown_option_count - 1) * reppos_x_);
@@ -381,11 +381,11 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
     }
   }
 
-  machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  machine.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 }
 
 ButtonSelectLongOperation::~ButtonSelectLongOperation() {
-  machine_.system().graphics().removeRenderable(this);
+  machine_.system().graphics().RemoveRenderable(this);
 }
 
 void ButtonSelectLongOperation::MouseMotion(const Point& p) {

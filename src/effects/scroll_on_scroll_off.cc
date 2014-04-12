@@ -78,7 +78,7 @@ ScrollSquashSlideDrawer::~ScrollSquashSlideDrawer() {}
 // ------------------------------------------------- [ TopToBottomDrawer ]
 
 int TopToBottomDrawer::GetMaxSize(GraphicsSystem& gs) {
-  return gs.screenSize().height();
+  return gs.screen_size().height();
 }
 
 void TopToBottomDrawer::ScrollOff(GraphicsSystem& graphics,
@@ -127,7 +127,7 @@ void TopToBottomDrawer::SquashOn(GraphicsSystem& graphics,
 // ------------------------------------------------- [ BottomToTopDrawer ]
 
 int BottomToTopDrawer::GetMaxSize(GraphicsSystem& gs) {
-  return gs.screenSize().height();
+  return gs.screen_size().height();
 }
 
 void BottomToTopDrawer::ScrollOn(GraphicsSystem& graphics,
@@ -177,7 +177,7 @@ void BottomToTopDrawer::SquashOff(GraphicsSystem& graphics,
 // ------------------------------------------------- [ LeftToRightDrawer ]
 
 int LeftToRightDrawer::GetMaxSize(GraphicsSystem& gs) {
-  return gs.screenSize().width();
+  return gs.screen_size().width();
 }
 
 void LeftToRightDrawer::ScrollOn(GraphicsSystem& graphics,
@@ -226,7 +226,7 @@ void LeftToRightDrawer::SquashOff(GraphicsSystem& graphics,
 // ------------------------------------------------- [ RightToLeftDrawer ]
 
 int RightToLeftDrawer::GetMaxSize(GraphicsSystem& gs) {
-  return gs.screenSize().width();
+  return gs.screen_size().width();
 }
 
 void RightToLeftDrawer::ScrollOff(GraphicsSystem& graphics,
@@ -283,7 +283,7 @@ void ScrollOnScrollOff::ComposeEffectsFor(GraphicsSystem& system,
                                           ScrollSquashSlideBaseEffect& effect,
                                           ScrollSquashSlideDrawer& drawer,
                                           int amount_visible) {
-  Size s = system.screenSize();
+  Size s = system.screen_size();
   drawer.ScrollOn(system, effect, amount_visible, s.width(), s.height());
   drawer.ScrollOff(system, effect, amount_visible, s.width(), s.height());
 }
@@ -292,7 +292,7 @@ void ScrollOnSquashOff::ComposeEffectsFor(GraphicsSystem& system,
                                           ScrollSquashSlideBaseEffect& effect,
                                           ScrollSquashSlideDrawer& drawer,
                                           int amount_visible) {
-  Size s = system.screenSize();
+  Size s = system.screen_size();
   drawer.ScrollOn(system, effect, amount_visible, s.width(), s.height());
   drawer.SquashOff(system, effect, amount_visible, s.width(), s.height());
 }
@@ -301,7 +301,7 @@ void SquashOnScrollOff::ComposeEffectsFor(GraphicsSystem& system,
                                           ScrollSquashSlideBaseEffect& effect,
                                           ScrollSquashSlideDrawer& drawer,
                                           int amount_visible) {
-  Size s = system.screenSize();
+  Size s = system.screen_size();
   drawer.SquashOn(system, effect, amount_visible, s.width(), s.height());
   drawer.ScrollOff(system, effect, amount_visible, s.width(), s.height());
 }
@@ -310,7 +310,7 @@ void SquashOnSquashOff::ComposeEffectsFor(GraphicsSystem& system,
                                           ScrollSquashSlideBaseEffect& effect,
                                           ScrollSquashSlideDrawer& drawer,
                                           int amount_visible) {
-  Size s = system.screenSize();
+  Size s = system.screen_size();
   drawer.SquashOn(system, effect, amount_visible, s.width(), s.height());
   drawer.SquashOff(system, effect, amount_visible, s.width(), s.height());
 }
@@ -319,8 +319,8 @@ void SlideOn::ComposeEffectsFor(GraphicsSystem& system,
                                 ScrollSquashSlideBaseEffect& effect,
                                 ScrollSquashSlideDrawer& drawer,
                                 int amount_visible) {
-  Size s = system.screenSize();
-  Rect screen_rect = system.screenRect();
+  Size s = system.screen_size();
+  Rect screen_rect = system.screen_rect();
 
   // Draw the old image
   effect.dst_surface().renderToScreen(screen_rect, screen_rect, 255);
@@ -332,8 +332,8 @@ void SlideOff::ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& effect,
                                  ScrollSquashSlideDrawer& drawer,
                                  int amount_visible) {
-  Size s = system.screenSize();
-  Rect screen_rect = system.screenRect();
+  Size s = system.screen_size();
+  Rect screen_rect = system.screen_rect();
 
   effect.src_surface().renderToScreen(screen_rect, screen_rect, 255);
 

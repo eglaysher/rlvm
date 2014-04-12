@@ -257,13 +257,13 @@ void System::InvokeSyscom(RLMachine& machine, int syscom) {
       RestoreSelectionSnapshot(machine);
       break;
     case SYSCOM_SHOW_WEATHER:
-      graphics().setShowWeather(!graphics().showWeather());
+      graphics().set_should_show_weather(!graphics().should_show_weather());
       break;
     case SYSCOM_SHOW_OBJECT_1:
-      graphics().setShowObject1(!graphics().showObject1());
+      graphics().set_should_show_object1(!graphics().should_show_object1());
       break;
     case SYSCOM_SHOW_OBJECT_2:
-      graphics().setShowObject2(!graphics().showObject2());
+      graphics().set_should_show_object2(!graphics().should_show_object2());
       break;
     case SYSCOM_CLASSIFY_TEXT:
       std::cerr << "We have no idea what classifying text even means!"
@@ -289,7 +289,7 @@ void System::InvokeSyscom(RLMachine& machine, int syscom) {
       machine.Halt();
       break;
     case SYSCOM_SHOW_BACKGROUND:
-      graphics().toggleInterfaceHidden();
+      graphics().ToggleInterfaceHidden();
       break;
     case SYSCOM_HIDE_MENU:
       // Do nothing. The menu will be hidden on its own.
@@ -361,7 +361,7 @@ void System::Reset() {
   EnableSyscom();
 
   sound().reset();
-  graphics().reset();
+  graphics().Reset();
   text().reset();
 }
 
@@ -393,7 +393,7 @@ void System::DumpRenderTree(RLMachine& machine) {
       << machine.SceneNumber() << "_Line" << machine.line_number() << ".txt";
 
   std::ofstream tree(oss.str().c_str());
-  graphics().refresh(&tree);
+  graphics().Refresh(&tree);
 }
 
 boost::filesystem::path System::GetHomeDirectory() {

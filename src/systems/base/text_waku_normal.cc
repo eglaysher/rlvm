@@ -197,7 +197,7 @@ void TextWakuNormal::loadWindowWaku() {
         system_,
         ts.windowClearUse(),
         waku("CLEAR_BOX"),
-        std::bind(&GraphicsSystem::toggleInterfaceHidden, std::ref(gs))));
+        std::bind(&GraphicsSystem::ToggleInterfaceHidden, std::ref(gs))));
   }
   if (waku("MSGBKLEFT_BOX").Exists()) {
     button_map_[1].reset(new RepeatActionWhileHoldingWindowButton(
@@ -273,14 +273,14 @@ void TextWakuNormal::loadWindowWaku() {
 
 void TextWakuNormal::setWakuMain(const std::string& name) {
   if (name != "")
-    waku_main_ = system_.graphics().getSurfaceNamed(name);
+    waku_main_ = system_.graphics().GetSurfaceNamed(name);
   else
     waku_main_.reset();
 }
 
 void TextWakuNormal::setWakuBacking(const std::string& name) {
   if (name != "") {
-    waku_backing_.reset(system_.graphics().getSurfaceNamed(name)->clone());
+    waku_backing_.reset(system_.graphics().GetSurfaceNamed(name)->clone());
     waku_backing_->setIsMask(true);
   } else {
     waku_backing_.reset();
@@ -289,7 +289,7 @@ void TextWakuNormal::setWakuBacking(const std::string& name) {
 
 void TextWakuNormal::setWakuButton(const std::string& name) {
   if (name != "")
-    waku_button_ = system_.graphics().getSurfaceNamed(name);
+    waku_button_ = system_.graphics().GetSurfaceNamed(name);
   else
     waku_button_.reset();
 }

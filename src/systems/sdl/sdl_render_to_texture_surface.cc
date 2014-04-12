@@ -129,12 +129,12 @@ void SDLRenderToTextureSurface::applyColour(const RGBColour& colour,
       "Unsupported operation applyColour on SDLRenderToTextureSurface!");
 }
 
-void SDLRenderToTextureSurface::getDCPixel(const Point& pos,
+void SDLRenderToTextureSurface::GetDCPixel(const Point& pos,
                                            int& r,
                                            int& g,
                                            int& b) const {
   throw SystemError(
-      "Unsupported operation getDCPixel on SDLRenderToTextureSurface!");
+      "Unsupported operation GetDCPixel on SDLRenderToTextureSurface!");
 }
 
 Size SDLRenderToTextureSurface::size() const {

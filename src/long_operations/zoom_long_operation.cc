@@ -66,7 +66,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine) {
   } else {
     // Render to the screen
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.beginFrame();
+    graphics.BeginFrame();
 
     // First blit the original dc0 to the screen
     orig_surface_->renderToScreen(
@@ -79,7 +79,7 @@ bool ZoomLongOperation::operator()(RLMachine& machine) {
 
     src_surface_->renderToScreen(Rect(zPt, zSize), drect_, 255);
 
-    graphics.endFrame();
+    graphics.EndFrame();
     return false;
   }
 }

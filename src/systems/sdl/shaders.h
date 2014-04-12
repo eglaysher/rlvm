@@ -45,20 +45,20 @@ class Shaders {
   static GLint getColorMaskUniformMask();
 
   // Returns the shader that implements tint/light/colour on objects.
-  static GLuint getObjectProgram();
+  static GLuint GetObjectProgram();
 
   // Returns the parameters to the object program.
-  static GLint getObjectUniformImage();
-  static GLint getObjectUniformAlpha();
+  static GLint GetObjectUniformImage();
+  static GLint GetObjectUniformAlpha();
 
   // Set the colour/tint/light/mono/invert properties from |go|. (Individual
   // setters also exposed.)
   static void loadObjectUniformFromGraphicsObject(const GraphicsObject& go);
-  static GLint getObjectUniformColour();
-  static GLint getObjectUniformTint();
-  static GLint getObjectUniformLight();
-  static GLint getObjectUniformMono();
-  static GLint getObjectUniformInvert();
+  static GLint GetObjectUniformColour();
+  static GLint GetObjectUniformTint();
+  static GLint GetObjectUniformLight();
+  static GLint GetObjectUniformMono();
+  static GLint GetObjectUniformInvert();
 
  private:
   // Compiles and links the text program in |shader| into a shader and program

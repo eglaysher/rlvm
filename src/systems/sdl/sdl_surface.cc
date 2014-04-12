@@ -752,7 +752,7 @@ std::vector<int> SDLSurface::segmentPicture(int size_remainging) {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) const {
+void SDLSurface::GetDCPixel(const Point& pos, int& r, int& g, int& b) const {
   SDL_Color colour;
   Uint32 col = 0;
 
@@ -818,7 +818,7 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(const Rect& clip_rect,
 void SDLSurface::markWrittenTo(const Rect& written_rect) {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if (is_dc0_ && graphics_system_) {
-    graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
+    graphics_system_->MarkScreenAsDirty(GUT_DRAW_DC0);
   }
 
   // Mark that the texture needs reuploading

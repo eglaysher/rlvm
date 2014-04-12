@@ -140,7 +140,7 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str) {
         255);
     SDL_FreeSurface(tmp);
 
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
     ruby_begin_point_ = -1;
   }

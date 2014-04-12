@@ -36,9 +36,9 @@
 FadeEffect::FadeEffect(RLMachine& machine,
                        boost::shared_ptr<Surface> src,
                        boost::shared_ptr<Surface> dst,
-                       const Size& screenSize,
+                       const Size& screen_size,
                        int time)
-    : Effect(machine, src, dst, screenSize, time) {}
+    : Effect(machine, src, dst, screen_size, time) {}
 
 FadeEffect::~FadeEffect() {}
 

@@ -150,12 +150,12 @@ class GCNPlatformBlocker : public LongOperation,
                      const boost::shared_ptr<GCNPlatform>& platform)
       : event_system_(system), graphics_system_(graphics), platform_(platform) {
     event_system_.set_raw_sdl_input_handler(this);
-    graphics_system_.addRenderable(this);
+    graphics_system_.AddRenderable(this);
     platform_->blocker_ = this;
   }
 
   ~GCNPlatformBlocker() {
-    graphics_system_.removeRenderable(this);
+    graphics_system_.RemoveRenderable(this);
     event_system_.set_raw_sdl_input_handler(NULL);
     platform_->blocker_ = NULL;
   }
@@ -180,7 +180,7 @@ class GCNPlatformBlocker : public LongOperation,
       delayed_rlmachine_tasks_.pop();
     }
 
-    machine.system().graphics().forceRefresh();
+    machine.system().graphics().ForceRefresh();
 
     return platform_->window_stack_.size() == 0;
   }

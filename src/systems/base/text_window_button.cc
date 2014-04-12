@@ -135,7 +135,7 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
       state_ = BUTTONSTATE_NORMAL;
 
     if (orig_state != state_)
-      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+      system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
   }
 }
 
@@ -159,7 +159,7 @@ bool TextWindowButton::handleMouseClick(RLMachine& machine,
         buttonReleased(machine);
       }
 
-      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+      system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
       return true;
     }

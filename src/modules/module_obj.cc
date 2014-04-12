@@ -61,12 +61,12 @@ GraphicsObject& GetGraphicsObject(RLMachine& machine,
 
   int parentobj;
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
-    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    EnsureIsParentObject(parent, graphics.objectLayerSize());
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
     return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
-        .getObject(obj);
+        .GetObject(obj);
   } else {
-    return graphics.getObject(fgbg, obj);
+    return graphics.GetObject(fgbg, obj);
   }
 }
 
@@ -82,12 +82,12 @@ void SetGraphicsObject(RLMachine& machine,
 
   int parentobj;
   if (op->GetProperty(P_PARENTOBJ, parentobj)) {
-    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    EnsureIsParentObject(parent, graphics.objectLayerSize());
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
     static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
-        .setObject(obj, gobj);
+        .SetObject(obj, gobj);
   } else {
-    graphics.setObject(fgbg, obj, gobj);
+    graphics.SetObject(fgbg, obj, gobj);
   }
 }
 
@@ -240,7 +240,7 @@ void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
   GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
   ((obj).*(setter))(incoming);
 
-  machine.system().graphics().markObjectStateAsDirty();
+  machine.system().graphics().mark_object_state_as_dirty();
 }
 
 // -----------------------------------------------------------------------
@@ -260,5 +260,5 @@ void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);
 
-  machine.system().graphics().markObjectStateAsDirty();
+  machine.system().graphics().mark_object_state_as_dirty();
 }

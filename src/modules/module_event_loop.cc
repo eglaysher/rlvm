@@ -59,7 +59,7 @@ EventLoopModule::EventLoopModule() : RLModule("EventLoop", 0, 4) {
   AddOpcode(1000,
             0,
             "ShowBackground",
-            CallFunction(&GraphicsSystem::toggleInterfaceHidden));
+            CallFunction(&GraphicsSystem::ToggleInterfaceHidden));
   AddOpcode(
       1100, 0, "SetSkipMode", CallFunctionWith(&TextSystem::setSkipMode, 1));
   AddOpcode(

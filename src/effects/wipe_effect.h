@@ -42,7 +42,7 @@ class WipeEffect : public Effect {
   WipeEffect(RLMachine& machine,
              boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
-             const Size& screenSize,
+             const Size& screen_size,
              int time,
              int interpolation);
   virtual ~WipeEffect();
@@ -66,7 +66,7 @@ class WipeTopToBottomEffect : public WipeEffect {
   WipeTopToBottomEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
   virtual ~WipeTopToBottomEffect();
@@ -82,7 +82,7 @@ class WipeBottomToTopEffect : public WipeEffect {
   WipeBottomToTopEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
   virtual ~WipeBottomToTopEffect();
@@ -98,7 +98,7 @@ class WipeLeftToRightEffect : public WipeEffect {
   WipeLeftToRightEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
   virtual ~WipeLeftToRightEffect();
@@ -114,7 +114,7 @@ class WipeRightToLeftEffect : public WipeEffect {
   WipeRightToLeftEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
   virtual ~WipeRightToLeftEffect();

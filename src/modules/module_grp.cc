@@ -75,19 +75,19 @@ const std::string GRP_OPENBG = "grpOpenBg";
 void blitDC1toDC0(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> src = graphics.getDC(1);
-  boost::shared_ptr<Surface> dst = graphics.getDC(0);
+  boost::shared_ptr<Surface> src = graphics.GetDC(1);
+  boost::shared_ptr<Surface> dst = graphics.GetDC(0);
 
   // Blit DC1 onto DC0, with full opacity, and end the operation
   src->blitToSurface(*dst, src->rect(), dst->rect(), 255);
 
   // Mark that the background should be DC0 instead of the Haikei.
-  graphics.setGraphicsBackground(BACKGROUND_DC0);
+  graphics.set_graphics_background(BACKGROUND_DC0);
 
   // Promote the objects if we're in normal mode. If we're restoring the
   // graphics stack, we already have our layers promoted.
   if (!machine.replaying_graphics_stack())
-    graphics.clearAndPromoteObjects();
+    graphics.ClearAndPromoteObjects();
 }
 
 // Performs half the grunt work of a recOpen command; Copies DC0 to DC1, loads
@@ -105,10 +105,10 @@ void loadImageToDC1(RLMachine& machine,
 
   if (name != "?") {
     if (name == "???")
-      name = graphics.defaultGrpName();
+      name = graphics.default_grp_name();
 
-    boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
-    boost::shared_ptr<Surface> dc1 = graphics.getDC(1);
+    boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+    boost::shared_ptr<Surface> dc1 = graphics.GetDC(1);
 
     // Inclusive ranges are a monstrosity to computer people
     Size size = srcRect.size() + Size(1, 1);
@@ -117,8 +117,8 @@ void loadImageToDC1(RLMachine& machine,
 
     // Load the section of the image file on top of dc1
     boost::shared_ptr<const Surface> surface(
-        graphics.getSurfaceNamedAndMarkViewed(machine, name));
-    surface->blitToSurface(*graphics.getDC(1),
+        graphics.GetSurfaceNamedAndMarkViewed(machine, name));
+    surface->blitToSurface(*graphics.GetDC(1),
                            Rect(srcRect.origin(), size),
                            Rect(dest, size),
                            opacity,
@@ -132,8 +132,8 @@ void loadDCToDC1(RLMachine& machine,
                  const Point& dest,
                  int opacity) {
   GraphicsSystem& graphics = machine.system().graphics();
-  boost::shared_ptr<Surface> dc1 = graphics.getDC(1);
-  boost::shared_ptr<Surface> src = graphics.getDC(srcDc);
+  boost::shared_ptr<Surface> dc1 = graphics.GetDC(1);
+  boost::shared_ptr<Surface> src = graphics.GetDC(srcDc);
 
   // Inclusive ranges are a monstrosity to computer people
   Size size = srcRect.size() + Size(1, 1);
@@ -193,10 +193,10 @@ void performHideAllTextWindows(RLMachine& machine) {
 void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
   if (!boost::starts_with(filename, "?")) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setDefaultGrpName(filename);
+    graphics.set_default_grp_name(filename);
 
     // Only clear the stack when we are the command setting the background.
-    graphics.clearStack();
+    graphics.ClearStack();
   }
 }
 
@@ -208,7 +208,7 @@ void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
 struct allocDC
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int width, int height) {
-    machine.system().graphics().allocateDC(dc, Size(width, height));
+    machine.system().graphics().AllocateDC(dc, Size(width, height));
   }
 };
 
@@ -220,7 +220,7 @@ struct wipe : public RLOp_Void_4<IntConstant_T,
                                  IntConstant_T,
                                  IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().getDC(dc)->fill(RGBAColour(r, g, b));
+    machine.system().graphics().GetDC(dc)->fill(RGBAColour(r, g, b));
   }
 };
 
@@ -258,13 +258,13 @@ struct load_1
     GraphicsSystem& graphics = machine.system().graphics();
 
     boost::shared_ptr<const Surface> surface(
-        graphics.getSurfaceNamedAndMarkViewed(machine, filename));
+        graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
 
     if (dc != 0 && dc != 1) {
-      graphics.allocateDC(dc, surface->size());
+      graphics.AllocateDC(dc, surface->size());
     }
 
-    surface->blitToSurface(*graphics.getDC(dc),
+    surface->blitToSurface(*graphics.GetDC(dc),
                            surface->rect(),
                            surface->rect(),
                            opacity,
@@ -294,16 +294,16 @@ struct load_3 : public RLOp_Void_5<StrConstant_T,
                   int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
     boost::shared_ptr<const Surface> surface(
-        graphics.getSurfaceNamedAndMarkViewed(machine, filename));
+        graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
 
     Rect destRect = Rect(dest, srcRect.size());
 
     if (dc != 0 && dc != 1) {
-      graphics.setMinimumSizeForDC(dc, surface->size());
+      graphics.SetMinimumSizeForDC(dc, surface->size());
     }
 
     surface->blitToSurface(
-        *graphics.getDC(dc), srcRect, destRect, opacity, use_alpha_);
+        *graphics.GetDC(dc), srcRect, destRect, opacity, use_alpha_);
   }
 };
 
@@ -320,12 +320,12 @@ struct display_1
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadDCToDC1(machine, dc, src, dest, opacity);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
   }
 };
@@ -353,12 +353,12 @@ struct display_3 : public RLOp_Void_5<IntConstant_T,
                   int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
   }
 };
@@ -406,12 +406,12 @@ struct display_4 : public RLOp_Void_13<IntConstant_T,
                   int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadDCToDC1(machine, dc, srcRect, dest, opacity);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine,
                   after,
                   before,
@@ -453,12 +453,12 @@ struct open_1
     GetSELPointAndRect(machine, effectNum, src, dest);
 
     GraphicsSystem& graphics = machine.system().graphics();
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadImageToDC1(machine, filename, src, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -496,14 +496,14 @@ struct open_3 : public RLOp_Void_5<StrConstant_T,
                   int opacity) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
     loadImageToDC1(machine, filename, srcRect, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -564,14 +564,14 @@ struct open_4 : public RLOp_Void_13<StrConstant_T,
                   int c) {
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     // Kanon uses the recOpen('?', ...) form for rendering Last Regrets. This
     // isn't documented in the rldev manual.
     loadImageToDC1(machine, fileName, srcRect, dest, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine,
                   after,
                   before,
@@ -601,12 +601,12 @@ struct openBg_1
 
     OpenBgPrelude(machine, fileName);
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPoint, opacity, false);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -640,12 +640,12 @@ struct openBg_3 : public RLOp_Void_5<StrConstant_T,
     OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine, after, before, effectNum);
     performHideAllTextWindows(machine);
   }
@@ -702,13 +702,13 @@ struct openBg_4 : public RLOp_Void_13<StrConstant_T,
     OpenBgPrelude(machine, fileName);
 
     // Set the long operation for the correct transition long operation
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
     loadImageToDC1(machine, fileName, srcRect, destPt, opacity, use_alpha_);
     blitDC1toDC0(machine);
 
     // Render the screen to a temporary
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     performEffect(machine,
                   after,
                   before,
@@ -749,13 +749,13 @@ struct copy_3 : public RLOp_Void_5<Rect_T<SPACE>,
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.GetDC(src);
 
     if (dst != 0 && dst != 1) {
-      graphics.setMinimumSizeForDC(dst, srcRect.size());
+      graphics.SetMinimumSizeForDC(dst, srcRect.size());
     }
 
-    sourceSurface->blitToSurface(*graphics.getDC(dst),
+    sourceSurface->blitToSurface(*graphics.GetDC(dst),
                                  srcRect,
                                  Rect(destPoint, srcRect.size()),
                                  opacity,
@@ -775,13 +775,13 @@ struct copy_1
 
     GraphicsSystem& graphics = machine.system().graphics();
 
-    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.GetDC(src);
 
     if (dst != 0 && dst != 1) {
-      graphics.setMinimumSizeForDC(dst, sourceSurface->size());
+      graphics.SetMinimumSizeForDC(dst, sourceSurface->size());
     }
 
-    sourceSurface->blitToSurface(*graphics.getDC(dst),
+    sourceSurface->blitToSurface(*graphics.GetDC(dst),
                                  sourceSurface->rect(),
                                  sourceSurface->rect(),
                                  opacity,
@@ -800,13 +800,13 @@ struct fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
     if (colour.r() == 0 && colour.g() == 0 && colour.b() == 0)
       colour.set_alpha(0);
 
-    machine.system().graphics().getDC(dc)->fill(colour);
+    machine.system().graphics().GetDC(dc)->fill(colour);
   }
 };
 
 struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
-    machine.system().graphics().getDC(dc)->fill(colour);
+    machine.system().graphics().GetDC(dc)->fill(colour);
   }
 };
 
@@ -817,13 +817,13 @@ struct fill_3
                   Rect destRect,
                   int dc,
                   RGBAColour colour) {
-    machine.system().graphics().getDC(dc)->fill(colour, destRect);
+    machine.system().graphics().GetDC(dc)->fill(colour, destRect);
   }
 };
 
 struct invert_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->invert(surface->rect());
   }
 };
@@ -831,13 +831,13 @@ struct invert_1 : public RLOp_Void_1<IntConstant_T> {
 template <typename SPACE>
 struct invert_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
-    machine.system().graphics().getDC(dc)->invert(rect);
+    machine.system().graphics().GetDC(dc)->invert(rect);
   }
 };
 
 struct mono_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->mono(surface->rect());
   }
 };
@@ -845,13 +845,13 @@ struct mono_1 : public RLOp_Void_1<IntConstant_T> {
 template <typename SPACE>
 struct mono_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
-    machine.system().graphics().getDC(dc)->mono(rect);
+    machine.system().graphics().GetDC(dc)->mono(rect);
   }
 };
 
 struct colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->applyColour(colour.rgb(), surface->rect());
   }
 };
@@ -860,14 +860,14 @@ template <typename SPACE>
 struct colour_2
     : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, RGBAColour colour) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->applyColour(colour.rgb(), rect);
   }
 };
 
 struct light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int level) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->applyColour(RGBColour(level, level, level), surface->rect());
   }
 };
@@ -876,7 +876,7 @@ template <typename SPACE>
 struct light_2
     : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, int level) {
-    boost::shared_ptr<Surface> surface = machine.system().graphics().getDC(dc);
+    boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->applyColour(RGBColour(level, level, level), rect);
   }
 };
@@ -890,9 +890,9 @@ struct fade_7
     : public RLOp_Void_3<Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, Rect rect, RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
-    graphics.getDC(0)->fill(colour, rect);
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
+    graphics.GetDC(0)->fill(colour, rect);
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
     if (time > 0) {
       performEffect(machine, after, before, time, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -916,8 +916,8 @@ struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, RGBAColour colour, int time) {
-    Size screenSize = machine.system().graphics().screenSize();
-    delegate_(machine, Rect(0, 0, screenSize), colour, time);
+    Size screen_size = machine.system().graphics().screen_size();
+    delegate_(machine, Rect(0, 0, screen_size), colour, time);
   }
 };
 
@@ -925,10 +925,10 @@ struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int colour_num, int time) {
-    Size screenSize = machine.system().graphics().screenSize();
+    Size screen_size = machine.system().graphics().screen_size();
     Gameexe& gexe = machine.system().gameexe();
     const std::vector<int>& rgb = gexe("COLOR_TABLE", colour_num).ToIntVector();
-    delegate_(machine, Rect(0, 0, screenSize), RGBAColour(rgb), time);
+    delegate_(machine, Rect(0, 0, screen_size), RGBAColour(rgb), time);
   }
 };
 
@@ -955,14 +955,14 @@ struct stretchBlit_1 : public RLOp_Void_5<Rect_T<SPACE>,
       return;
 
     GraphicsSystem& graphics = machine.system().graphics();
-    boost::shared_ptr<Surface> sourceSurface = graphics.getDC(src);
+    boost::shared_ptr<Surface> sourceSurface = graphics.GetDC(src);
 
     if (dst != 0 && dst != 1) {
-      graphics.setMinimumSizeForDC(dst, sourceSurface->size());
+      graphics.SetMinimumSizeForDC(dst, sourceSurface->size());
     }
 
     sourceSurface->blitToSurface(
-        *graphics.getDC(dst), src_rect, dst_rect, opacity, use_alpha_);
+        *graphics.GetDC(dst), src_rect, dst_rect, opacity, use_alpha_);
   }
 };
 
@@ -979,12 +979,12 @@ struct zoom : public RLOp_Void_5<Rect_T<SPACE>,
                   Rect drect,
                   int time) {
     GraphicsSystem& gs = machine.system().graphics();
-    gs.setGraphicsBackground(BACKGROUND_DC0);
+    gs.set_graphics_background(BACKGROUND_DC0);
 
     LongOperation* zoomOp = new ZoomLongOperation(
-        machine, gs.getDC(0), gs.getDC(srcDC), frect, trect, drect, time);
+        machine, gs.GetDC(0), gs.GetDC(srcDC), frect, trect, drect, time);
     BlitAfterEffectFinishes* blitOp = new BlitAfterEffectFinishes(
-        zoomOp, gs.getDC(srcDC), gs.getDC(0), trect, drect);
+        zoomOp, gs.GetDC(srcDC), gs.GetDC(0), trect, drect);
     machine.PushLongOperation(blitOp);
   }
 };
@@ -1179,7 +1179,7 @@ class GrpStackAdapter : public RLOp_SpecialCase {
     operation->DispatchFunction(machine, ff);
 
     // Record this command's reallive bytecode form onto the graphics stack.
-    machine.system().graphics().addGraphicsStackCommand(
+    machine.system().graphics().AddGraphicsStackCommand(
         ff.GetSerializedCommand(machine));
   }
 
@@ -1198,7 +1198,7 @@ GrpModule::GrpModule() : MappedRLModule(GraphicsStackMappingFun, "Grp", 1, 33) {
   using rect_impl::REC;
 
   AddOpcode(15, 0, "allocDC", new allocDC);
-  AddOpcode(16, 0, "freeDC", CallFunction(&GraphicsSystem::freeDC));
+  AddOpcode(16, 0, "FreeDC", CallFunction(&GraphicsSystem::FreeDC));
 
   AddUnsupportedOpcode(20, 0, "grpLoadMask");
   // AddOpcode(30, 0, new grpTextout);

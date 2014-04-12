@@ -63,7 +63,7 @@ TextSystem& GetSystemObj(RLMachine& machine);
 template <>
 SoundSystem& GetSystemObj(RLMachine& machine);
 
-// Equivalent to machine.system().graphics().cgTable().
+// Equivalent to machine.system().graphics().cg_table().
 template <>
 CGMTable& GetSystemObj(RLMachine& machine);
 

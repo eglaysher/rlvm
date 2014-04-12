@@ -55,7 +55,7 @@ MouseCursor::MouseCursor(System& system,
   findHotspot();
 
   int alphaR, alphaG, alphaB;
-  cursor_surface->getDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
+  cursor_surface->GetDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
 
   cursor_surface_ = cursor_surface->clipAsColorMask(
       Rect(8, 8, Size(CURSOR_SIZE_INT * count_, CURSOR_SIZE_INT)),
@@ -72,7 +72,7 @@ void MouseCursor::execute(System& system) {
   if (last_time_frame_incremented_ + frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;
 
-    system.graphics().markScreenAsDirty(GUT_MOUSE_MOTION);
+    system.graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
 
     current_frame_++;
     if (current_frame_ >= count_)
@@ -103,7 +103,7 @@ void MouseCursor::findHotspot() {
     for (int y = HOTSPOTMASK_Y_OFFSET;
          y < HOTSPOTMASK_Y_OFFSET + CURSOR_SIZE_INT;
          ++y) {
-      cursor_surface_->getDCPixel(Point(x, y), r, g, b);
+      cursor_surface_->GetDCPixel(Point(x, y), r, g, b);
 
       if (r == 255 && g == 255 && b == 255) {
         hotspot_offset_ =

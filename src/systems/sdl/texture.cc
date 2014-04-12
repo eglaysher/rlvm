@@ -665,14 +665,14 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
       glActiveTexture(GL_TEXTURE0_ARB);
       glEnable(GL_TEXTURE_2D);
       glBindTexture(GL_TEXTURE_2D, texture_id_);
-      glUseProgramObjectARB(Shaders::getObjectProgram());
-      glUniform1iARB(Shaders::getObjectUniformImage(), 0);
+      glUseProgramObjectARB(Shaders::GetObjectProgram());
+      glUniform1iARB(Shaders::GetObjectUniformImage(), 0);
 
       // Colour/Tint/Etc.
       Shaders::loadObjectUniformFromGraphicsObject(go);
 
       // Alpha.
-      glUniform1fARB(Shaders::getObjectUniformAlpha(), alpha / 255.0f);
+      glUniform1fARB(Shaders::GetObjectUniformAlpha(), alpha / 255.0f);
 
       // Our final blending color has to be all white here.
       using_shader = true;

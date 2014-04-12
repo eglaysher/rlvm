@@ -54,7 +54,7 @@ HIKRenderer::HIKRenderer(System& system,
 HIKRenderer::~HIKRenderer() {}
 
 void HIKRenderer::Execute(RLMachine& machine) {
-  machine.system().graphics().markScreenAsDirty(GUT_DRAW_HIK);
+  machine.system().graphics().MarkScreenAsDirty(GUT_DRAW_HIK);
 }
 
 void HIKRenderer::Render(std::ostream* tree) {

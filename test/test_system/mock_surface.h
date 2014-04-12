@@ -69,7 +69,7 @@ class MockSurface : public Surface {
   MOCK_METHOD1(mono, void(const Rect&));
   MOCK_METHOD2(applyColour, void(const RGBColour&, const Rect&));
 
-  MOCK_CONST_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
+  MOCK_CONST_METHOD4(GetDCPixel, void(const Point&, int&, int&, int&));
 
   // Concrete implementations of the cloning methods.
   virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& rect,

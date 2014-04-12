@@ -63,7 +63,7 @@ class ToneCurve {
   // file
   int getEffectCount() const;
 
-  // Return the effect at the given index (used by Surface in toneCurve()).  The
+  // Return the effect at the given index (used by Surface in tone_curve()).  The
   // effects are indexed from 0 to effect_count - 1
   ToneCurveRGBMap getEffect(int index);
 

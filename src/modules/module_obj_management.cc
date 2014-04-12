@@ -45,8 +45,8 @@ namespace {
 struct objCopyFgToBg_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsSystem& sys = machine.system().graphics();
-    GraphicsObject& go = sys.getObject(OBJ_FG, buf);
-    sys.setObject(OBJ_BG, buf, go);
+    GraphicsObject& go = sys.GetObject(OBJ_FG, buf);
+    sys.SetObject(OBJ_BG, buf, go);
   }
 };
 
@@ -55,8 +55,8 @@ struct objCopyFgToBg_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     GraphicsSystem& sys = machine.system().graphics();
 
     for (int i = start; i <= end; ++i) {
-      GraphicsObject& go = sys.getObject(OBJ_FG, i);
-      sys.setObject(OBJ_BG, i, go);
+      GraphicsObject& go = sys.GetObject(OBJ_FG, i);
+      sys.SetObject(OBJ_BG, i, go);
     }
   }
 };
@@ -67,8 +67,8 @@ struct objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
     GraphicsSystem& sys = machine.system().graphics();
-    GraphicsObject& go = sys.getObject(from_fgbg_, sbuf);
-    sys.setObject(to_fgbg_, dbuf, go);
+    GraphicsObject& go = sys.GetObject(from_fgbg_, sbuf);
+    sys.SetObject(to_fgbg_, dbuf, go);
   }
 };
 
@@ -156,15 +156,15 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     // object.
     int parentobj;
     if (GetProperty(P_PARENTOBJ, parentobj)) {
-      GraphicsObject& go = sys.getObject(fgbg_, parentobj);
-      EnsureIsParentObject(go, sys.objectLayerSize());
+      GraphicsObject& go = sys.GetObject(fgbg_, parentobj);
+      EnsureIsParentObject(go, sys.GetObjectLayerSize());
 
       // Pick out the object data.
       ParentGraphicsObjectData& parent =
           static_cast<ParentGraphicsObjectData&>(go.GetObjectData());
 
-      GraphicsObject& src_obj = parent.getObject(sbuf);
-      parent.setObject(dbuf, src_obj);
+      GraphicsObject& src_obj = parent.GetObject(sbuf);
+      parent.SetObject(dbuf, src_obj);
     }
   }
 };
@@ -184,16 +184,16 @@ ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
   AddOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
   AddOpcode(
-      100, 0, "objClearAll", CallFunction(&GraphicsSystem::clearAllObjects));
+      100, 0, "objClearAll", CallFunction(&GraphicsSystem::ClearAllObjects));
   AddOpcode(110,
             0,
             "objResetPropertiesAll",
-            CallFunction(&GraphicsSystem::resetAllObjectsProperties));
+            CallFunction(&GraphicsSystem::ResetAllObjectsProperties));
 
   // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
   // op<1:60:100, 0>. May have differences?
   AddOpcode(
-      111, 0, "objClearAll2", CallFunction(&GraphicsSystem::clearAllObjects));
+      111, 0, "objClearAll2", CallFunction(&GraphicsSystem::ClearAllObjects));
 }
 
 // -----------------------------------------------------------------------

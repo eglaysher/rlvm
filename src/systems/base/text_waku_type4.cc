@@ -207,7 +207,7 @@ bool TextWakuType4::handleMouseClick(RLMachine& machine,
 
 void TextWakuType4::setWakuMain(const std::string& name) {
   if (name != "") {
-    waku_main_ = system_.graphics().getSurfaceNamed(name);
+    waku_main_ = system_.graphics().GetSurfaceNamed(name);
 
     top_left = waku_main_->getPattern(TOP_LEFT_CORNER);
     top_center = waku_main_->getPattern(TOP_CENTER);
@@ -227,7 +227,7 @@ void TextWakuType4::setWakuMain(const std::string& name) {
 const boost::shared_ptr<Surface>& TextWakuType4::getWakuBackingOfSize(
     Size size) {
   if (!cached_backing_ || cached_backing_->size() != size) {
-    cached_backing_ = system_.graphics().buildSurface(size);
+    cached_backing_ = system_.graphics().BuildSurface(size);
     cached_backing_->fill(RGBAColour::Black());
   }
 

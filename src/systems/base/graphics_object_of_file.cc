@@ -84,7 +84,7 @@ GraphicsObjectOfFile::~GraphicsObjectOfFile() {}
 // -----------------------------------------------------------------------
 
 void GraphicsObjectOfFile::LoadFile() {
-  surface_ = system_.graphics().getSurfaceNamed(filename_);
+  surface_ = system_.graphics().GetSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
 
@@ -127,7 +127,7 @@ void GraphicsObjectOfFile::Execute(RLMachine& machine) {
 
       time_at_last_frame_change_ += frame_time_;
       time_since_last_frame_change = current_time - time_at_last_frame_change_;
-      system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+      system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }
@@ -182,7 +182,7 @@ void GraphicsObjectOfFile::PlaySet(int frame_time) {
   }
 
   time_at_last_frame_change_ = system_.event().GetTicks();
-  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------
@@ -199,7 +199,7 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
     time_at_last_frame_change_ = system_.event().GetTicks();
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 

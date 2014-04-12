@@ -78,7 +78,7 @@ class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
   virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& rect);
   virtual void applyColour(const RGBColour& colour, const Rect& area);
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const;
+  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const;
 
   virtual Size size() const;
 

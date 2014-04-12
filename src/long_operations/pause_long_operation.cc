@@ -55,7 +55,7 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
   time_at_last_pass_ = event.GetTicks();
   total_time_ = 0;
 
-  machine_.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  machine_.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
   // We undo this in the destructor
   text.setInPauseState(true);
@@ -81,9 +81,9 @@ bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
     case MOUSE_LEFT: {
       Point pos = es.GetCursorPos();
       // Only unhide the interface on release of the left mouse button
-      if (graphics.interfaceHidden()) {
+      if (graphics.is_interface_hidden()) {
         if (!pressed) {
-          graphics.toggleInterfaceHidden();
+          graphics.ToggleInterfaceHidden();
           return true;
         }
       } else if (!text.handleMouseClick(machine_, pos, pressed)) {
@@ -136,8 +136,8 @@ bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed) {
     GraphicsSystem& graphics = machine_.system().graphics();
 
-    if (graphics.interfaceHidden()) {
-      graphics.toggleInterfaceHidden();
+    if (graphics.is_interface_hidden()) {
+      graphics.ToggleInterfaceHidden();
       handled = true;
     } else {
       TextSystem& text = machine_.system().text();
@@ -147,7 +147,7 @@ bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
         is_done_ = true;
         handled = true;
       } else if (keyCode == RLKEY_SPACE) {
-        graphics.toggleInterfaceHidden();
+        graphics.ToggleInterfaceHidden();
         handled = true;
       } else if (keyCode == RLKEY_UP) {
         text.backPage();

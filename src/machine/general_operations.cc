@@ -67,7 +67,7 @@ SoundSystem& GetSystemObj(RLMachine& machine) {
 
 template <>
 CGMTable& GetSystemObj(RLMachine& machine) {
-  return machine.system().graphics().cgTable();
+  return machine.system().graphics().cg_table();
 }
 
 template <>
