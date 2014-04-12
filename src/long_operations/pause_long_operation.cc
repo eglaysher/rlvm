@@ -172,7 +172,7 @@ bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
 bool PauseLongOperation::operator()(RLMachine& machine) {
   // Check to see if we're done because of the auto mode timer
   if (machine_.system().text().autoMode()) {
-    if (AutomodeTimerFired() && !machine_.system().sound().koePlaying())
+    if (AutomodeTimerFired() && !machine_.system().sound().KoePlaying())
       is_done_ = true;
   }
 
@@ -183,7 +183,7 @@ bool PauseLongOperation::operator()(RLMachine& machine) {
 
   if (is_done_) {
     // Stop all voices before continuing.
-    machine_.system().sound().koeStop();
+    machine_.system().sound().KoeStop();
   }
 
   return is_done_;

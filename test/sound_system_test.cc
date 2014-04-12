@@ -46,9 +46,9 @@ TEST(SoundSystem, CanParseKOEONOFFKeys) {
   SoundSystem& sys = top.sound();
 
   // Test the UseKoe side of things
-  EXPECT_EQ(1, sys.useKoeForCharacter(0));
-  EXPECT_EQ(0, sys.useKoeForCharacter(7));
-  EXPECT_EQ(1, sys.useKoeForCharacter(8));
+  EXPECT_EQ(1, sys.ShouldUseKoeForCharacter(0));
+  EXPECT_EQ(0, sys.ShouldUseKoeForCharacter(7));
+  EXPECT_EQ(1, sys.ShouldUseKoeForCharacter(8));
 
   // Test the koePlay side of things
   EXPECT_EQ(5, sys.globals().character_koe_enabled.size());
@@ -64,16 +64,16 @@ TEST(SoundSystem, SetUseKoeCorrectly) {
   TestSystem top(locateTestCase("Gameexe_data/Gameexe_koeonoff.ini"));
   SoundSystem& sys = top.sound();
 
-  sys.setUseKoeForCharacter(0, 0);
-  sys.setUseKoeForCharacter(7, 1);
-  sys.setUseKoeForCharacter(8, 0);
+  sys.SetUseKoeForCharacter(0, 0);
+  sys.SetUseKoeForCharacter(7, 1);
+  sys.SetUseKoeForCharacter(8, 0);
 
   // Make sure all values are flipped from the previous test.
 
   // Test the UseKoe side of things
-  EXPECT_EQ(0, sys.useKoeForCharacter(0));
-  EXPECT_EQ(1, sys.useKoeForCharacter(7));
-  EXPECT_EQ(0, sys.useKoeForCharacter(8));
+  EXPECT_EQ(0, sys.ShouldUseKoeForCharacter(0));
+  EXPECT_EQ(1, sys.ShouldUseKoeForCharacter(7));
+  EXPECT_EQ(0, sys.ShouldUseKoeForCharacter(8));
 
   // Test the koePlay side of things
   EXPECT_EQ(5, sys.globals().character_koe_enabled.size());
@@ -93,9 +93,9 @@ TEST(SoundSystem, SetUseKoeSerialization) {
     SoundSystem& sys = top.sound();
 
     // Reverse the values as in <2>.
-    sys.setUseKoeForCharacter(0, 0);
-    sys.setUseKoeForCharacter(7, 1);
-    sys.setUseKoeForCharacter(8, 0);
+    sys.SetUseKoeForCharacter(0, 0);
+    sys.SetUseKoeForCharacter(7, 1);
+    sys.SetUseKoeForCharacter(8, 0);
 
     boost::archive::text_oarchive oa(ss);
     oa << const_cast<const SoundSystemGlobals&>(sys.globals());
@@ -110,9 +110,9 @@ TEST(SoundSystem, SetUseKoeSerialization) {
     // Do the flip tests as in <2>
 
     // Test the UseKoe side of things
-    EXPECT_EQ(0, sys.useKoeForCharacter(0));
-    EXPECT_EQ(1, sys.useKoeForCharacter(7));
-    EXPECT_EQ(0, sys.useKoeForCharacter(8));
+    EXPECT_EQ(0, sys.ShouldUseKoeForCharacter(0));
+    EXPECT_EQ(1, sys.ShouldUseKoeForCharacter(7));
+    EXPECT_EQ(0, sys.ShouldUseKoeForCharacter(8));
 
     // Test the koePlay side of things
     EXPECT_EQ(5, sys.globals().character_koe_enabled.size());

@@ -39,42 +39,43 @@ class TestSoundSystem : public SoundSystem {
   explicit TestSoundSystem(System& system);
   ~TestSoundSystem();
 
-  virtual int bgmStatus() const;
+  virtual int BgmStatus() const override;
 
-  virtual void bgmPlay(const std::string& bgm_name, bool loop);
-  virtual void bgmPlay(const std::string& bgm_name, bool loop, int fade_in_ms);
-  virtual void bgmPlay(const std::string& bgm_name,
+  virtual void BgmPlay(const std::string& bgm_name, bool loop) override;
+  virtual void BgmPlay(const std::string& bgm_name, bool loop,
+                       int fade_in_ms) override;
+  virtual void BgmPlay(const std::string& bgm_name,
                        bool loop,
                        int fade_in_ms,
-                       int fade_out_ms);
-  virtual void bgmStop();
-  virtual void bgmPause();
-  virtual void bgmUnPause();
-  virtual void bgmFadeOut(int fade_out_ms);
-  virtual std::string bgmName() const;
-  virtual bool bgmLooping() const;
+                       int fade_out_ms) override;
+  virtual void BgmStop() override;
+  virtual void BgmPause() override;
+  virtual void BgmUnPause() override;
+  virtual void BgmFadeOut(int fade_out_ms) override;
+  virtual std::string GetBgmName() const override;
+  virtual bool BgmLooping() const override;
 
-  virtual void wavPlay(const std::string& wav_file, bool loop);
-  virtual void wavPlay(const std::string& wav_file,
+  virtual void WavPlay(const std::string& wav_file, bool loop) override;
+  virtual void WavPlay(const std::string& wav_file,
                        bool loop,
-                       const int channel);
-  virtual void wavPlay(const std::string& wav_file,
+                       const int channel) override;
+  virtual void WavPlay(const std::string& wav_file,
                        bool loop,
                        const int channel,
-                       const int fadein_ms);
-  virtual bool wavPlaying(const int channel);
-  virtual void wavStop(const int channel);
-  virtual void wavStopAll();
-  virtual void wavFadeOut(const int channel, const int fadetime);
+                       const int fadein_ms) override;
+  virtual bool WavPlaying(const int channel) override;
+  virtual void WavStop(const int channel) override;
+  virtual void WavStopAll() override;
+  virtual void WavFadeOut(const int channel, const int fadetime) override;
 
-  virtual void playSe(const int se_num);
-  virtual bool hasSe(const int se_num);
+  virtual void PlaySe(const int se_num) override;
+  virtual bool HasSe(const int se_num) override;
 
-  virtual bool koePlaying() const;
-  virtual void koeStop();
+  virtual bool KoePlaying() const override;
+  virtual void KoeStop() override;
 
  private:
-  virtual void koePlayImpl(int id);
+  virtual void KoePlayImpl(int id) override;
 
   std::string bgm_name_;
 };  // end of class TestSoundSystem

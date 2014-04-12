@@ -43,7 +43,7 @@
 namespace {
 
 bool BgmWait(RLMachine& machine) {
-  return machine.system().sound().bgmStatus() == 0;
+  return machine.system().sound().BgmStatus() == 0;
 }
 
 LongOperation* MakeBgmWait(RLMachine& machine) {
@@ -54,19 +54,19 @@ LongOperation* MakeBgmWait(RLMachine& machine) {
 
 struct LongOp_bgmWait : public LongOperation {
   bool operator()(RLMachine& machine) {
-    return machine.system().sound().bgmStatus() == 0;
+    return machine.system().sound().BgmStatus() == 0;
   }
 };
 
 struct bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
-    machine.system().sound().bgmPlay(filename, true);
+    machine.system().sound().BgmPlay(filename, true);
   }
 };
 
 struct bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
-    machine.system().sound().bgmPlay(filename, true, fadein);
+    machine.system().sound().BgmPlay(filename, true, fadein);
   }
 };
 
@@ -76,19 +76,19 @@ struct bgmLoop_2
                   string filename,
                   int fadein,
                   int fadeout) {
-    machine.system().sound().bgmPlay(filename, true, fadein, fadeout);
+    machine.system().sound().BgmPlay(filename, true, fadein, fadeout);
   }
 };
 
 struct bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
-    machine.system().sound().bgmPlay(filename, false);
+    machine.system().sound().BgmPlay(filename, false);
   }
 };
 
 struct bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
-    machine.system().sound().bgmPlay(filename, false, fadein);
+    machine.system().sound().BgmPlay(filename, false, fadein);
   }
 };
 
@@ -98,7 +98,7 @@ struct bgmPlay_2
                   string filename,
                   int fadein,
                   int fadeout) {
-    machine.system().sound().bgmPlay(filename, false, fadein, fadeout);
+    machine.system().sound().BgmPlay(filename, false, fadein, fadeout);
   }
 };
 
@@ -110,32 +110,32 @@ struct bgmWait : public RLOp_Void_Void {
 
 struct bgmPlaying : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    return machine.system().sound().bgmStatus() == 1;
+    return machine.system().sound().BgmStatus() == 1;
   }
 };
 
 struct bgmSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int vol) {
-    machine.system().sound().setBgmVolumeScript(vol, 0);
+    machine.system().sound().SetBgmVolumeScript(vol, 0);
   }
 };
 
 struct bgmFadeOutEx : public RLOp_Void_1<DefaultIntValue_T<1000>> {
   void operator()(RLMachine& machine, int fadeout) {
-    machine.system().sound().bgmFadeOut(fadeout);
+    machine.system().sound().BgmFadeOut(fadeout);
     machine.PushLongOperation(MakeBgmWait(machine));
   }
 };
 
 struct bgmUnMute_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int fadein) {
-    machine.system().sound().setBgmVolumeScript(255, fadein);
+    machine.system().sound().SetBgmVolumeScript(255, fadein);
   }
 };
 
 struct bgmMute_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int fadein) {
-    machine.system().sound().setBgmVolumeScript(0, fadein);
+    machine.system().sound().SetBgmVolumeScript(0, fadein);
   }
 };
 
@@ -157,29 +157,29 @@ BgmModule::BgmModule() : RLModule("Bgm", 1, 20) {
 
   AddOpcode(3, 0, "bgmWait", new bgmWait);
   AddOpcode(4, 0, "bgmPlaying", new bgmPlaying);
-  AddOpcode(5, 0, "bgmStop", CallFunction(&SoundSystem::bgmStop));
-  AddOpcode(6, 0, "bgmStop2", CallFunction(&SoundSystem::bgmStop));
-  AddOpcode(7, 0, "bgmStatus", ReturnIntValue(&SoundSystem::bgmStatus));
+  AddOpcode(5, 0, "bgmStop", CallFunction(&SoundSystem::BgmStop));
+  AddOpcode(6, 0, "bgmStop2", CallFunction(&SoundSystem::BgmStop));
+  AddOpcode(7, 0, "bgmStatus", ReturnIntValue(&SoundSystem::BgmStatus));
   AddUnsupportedOpcode(8, 0, "bgmRewind");
-  AddOpcode(9, 0, "bgmPause", CallFunction(&SoundSystem::bgmPause));
-  AddOpcode(10, 0, "bgmUnPause", CallFunction(&SoundSystem::bgmUnPause));
-  AddOpcode(11, 0, "bgmVolume", ReturnIntValue(&SoundSystem::bgmVolumeScript));
+  AddOpcode(9, 0, "bgmPause", CallFunction(&SoundSystem::BgmPause));
+  AddOpcode(10, 0, "bgmUnPause", CallFunction(&SoundSystem::BgmUnPause));
+  AddOpcode(11, 0, "bgmVolume", ReturnIntValue(&SoundSystem::bgm_volume_script));
 
   AddOpcode(12, 0, "bgmSetVolume", new bgmSetVolume_0);
   AddOpcode(
-      12, 1, "bgmSetVolume", CallFunction(&SoundSystem::setBgmVolumeScript));
+      12, 1, "bgmSetVolume", CallFunction(&SoundSystem::SetBgmVolumeScript));
   AddOpcode(13,
             0,
             "bgmUnMute",
-            CallFunctionWith(&SoundSystem::setBgmVolumeScript, 255, 0));
+            CallFunctionWith(&SoundSystem::SetBgmVolumeScript, 255, 0));
   AddOpcode(13, 1, "bgmUnMute", new bgmUnMute_1);
   AddOpcode(14,
             0,
             "bgmMute",
-            CallFunctionWith(&SoundSystem::setBgmVolumeScript, 0, 0));
+            CallFunctionWith(&SoundSystem::SetBgmVolumeScript, 0, 0));
   AddOpcode(14, 1, "bgmMute", new bgmMute_1);
 
-  AddOpcode(105, 0, "bgmFadeOut", CallFunction(&SoundSystem::bgmFadeOut));
+  AddOpcode(105, 0, "bgmFadeOut", CallFunction(&SoundSystem::BgmFadeOut));
 
   AddOpcode(106, 0, "bgmFadeOutEx", new bgmFadeOutEx);
   AddOpcode(106, 1, "bgmFadeOutEx", new bgmFadeOutEx);

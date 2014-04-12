@@ -131,8 +131,8 @@ SelectLongOperation::SelectLongOperation(RLMachine& machine,
 SelectLongOperation::~SelectLongOperation() {}
 
 void SelectLongOperation::SelectByIndex(int num) {
-  if (machine_.system().sound().hasSe(1))
-    machine_.system().sound().playSe(1);
+  if (machine_.system().sound().HasSe(1))
+    machine_.system().sound().PlaySe(1);
   machine_.system().TakeSelectionSnapshot(machine_);
   return_value_ = num;
 }
@@ -392,8 +392,8 @@ void ButtonSelectLongOperation::MouseMotion(const Point& p) {
   for (size_t i = 0; i < buttons_.size(); i++) {
     if (buttons_[i].bounding_rect.Contains(p)) {
       if (options_[i].enabled) {
-        if (highlighted_item_ != i && machine_.system().sound().hasSe(0)) {
-          machine_.system().sound().playSe(0);
+        if (highlighted_item_ != i && machine_.system().sound().HasSe(0)) {
+          machine_.system().sound().PlaySe(0);
         }
 
         highlighted_item_ = i;

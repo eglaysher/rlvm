@@ -536,40 +536,40 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
             new ReturnGameexeInt("MESSAGE_KEY_WAIT_TIME", 0));
 
   AddOpcode(2225, 0, "SetKoeMode", CallFunction(&SoundSystem::setKoeMode));
-  AddOpcode(2325, 0, "KoeMode", ReturnIntValue(&SoundSystem::koeMode));
+  AddOpcode(2325, 0, "KoeMode", ReturnIntValue(&SoundSystem::koe_mode));
   AddOpcode(2226,
             0,
             "SetBgmKoeFadeVol",
-            CallFunction(&SoundSystem::setBgmKoeFadeVolume));
+            CallFunction(&SoundSystem::set_bgm_koe_fadeVolume));
   AddOpcode(
-      2326, 0, "BgmKoeFadeVol", ReturnIntValue(&SoundSystem::bgmKoeFadeVolume));
+      2326, 0, "BgmKoeFadeVol", ReturnIntValue(&SoundSystem::bgm_koe_fadeVolume));
   AddUnsupportedOpcode(2602, 0, "DefBgmKoeFadeVol");
   AddOpcode(
-      2227, 0, "SetBgmKoeFade", CallFunction(&SoundSystem::setBgmKoeFade));
-  AddOpcode(2327, 0, "BgmKoeFade", ReturnIntValue(&SoundSystem::bgmKoeFade));
+      2227, 0, "SetBgmKoeFade", CallFunction(&SoundSystem::set_bgm_koe_fade));
+  AddOpcode(2327, 0, "BgmKoeFade", ReturnIntValue(&SoundSystem::bgm_koe_fade));
   AddUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
   AddOpcode(
-      2230, 0, "SetBgmVolMod", CallFunction(&SoundSystem::setBgmVolumeMod));
-  AddOpcode(2330, 0, "BgmVolMod", ReturnIntValue(&SoundSystem::bgmVolumeMod));
+      2230, 0, "SetBgmVolMod", CallFunction(&SoundSystem::SetBgmVolumeMod));
+  AddOpcode(2330, 0, "BgmVolMod", ReturnIntValue(&SoundSystem::bgm_volume_mod));
   AddOpcode(
-      2231, 0, "SetKoeVolMod", CallFunction(&SoundSystem::setKoeVolumeMod));
-  AddOpcode(2331, 0, "KoeVolMod", ReturnIntValue(&SoundSystem::koeVolumeMod));
+      2231, 0, "SetKoeVolMod", CallFunction(&SoundSystem::SetKoeVolumeMod));
+  AddOpcode(2331, 0, "KoeVolMod", ReturnIntValue(&SoundSystem::GetKoeVolume_mod));
   AddOpcode(
-      2232, 0, "SetPcmVolMod", CallFunction(&SoundSystem::setPcmVolumeMod));
-  AddOpcode(2332, 0, "PcmVolMod", ReturnIntValue(&SoundSystem::pcmVolumeMod));
-  AddOpcode(2233, 0, "SetSeVolMod", CallFunction(&SoundSystem::setSeVolumeMod));
-  AddOpcode(2333, 0, "SeVolMod", ReturnIntValue(&SoundSystem::seVolumeMod));
+      2232, 0, "SetPcmVolMod", CallFunction(&SoundSystem::SetPcmVolumeMod));
+  AddOpcode(2332, 0, "PcmVolMod", ReturnIntValue(&SoundSystem::pcm_volume_mod));
+  AddOpcode(2233, 0, "SetSeVolMod", CallFunction(&SoundSystem::SetSeVolumeMod));
+  AddOpcode(2333, 0, "SeVolMod", ReturnIntValue(&SoundSystem::se_volume_mod));
   AddOpcode(
-      2240, 0, "SetBgmEnabled", CallFunction(&SoundSystem::setBgmEnabled));
-  AddOpcode(2340, 0, "BgmEnabled", ReturnIntValue(&SoundSystem::bgmEnabled));
+      2240, 0, "SetBgmEnabled", CallFunction(&SoundSystem::SetBgmEnabled));
+  AddOpcode(2340, 0, "BgmEnabled", ReturnIntValue(&SoundSystem::bgm_enabled));
   AddOpcode(
-      2241, 0, "SetKoeEnabled", CallFunction(&SoundSystem::setKoeEnabled));
-  AddOpcode(2341, 0, "KoeEnabled", ReturnIntValue(&SoundSystem::koeEnabled));
+      2241, 0, "SetKoeEnabled", CallFunction(&SoundSystem::SetKoeEnabled));
+  AddOpcode(2341, 0, "KoeEnabled", ReturnIntValue(&SoundSystem::is_koe_enabled));
   AddOpcode(
-      2242, 0, "SetPcmEnabled", CallFunction(&SoundSystem::setPcmEnabled));
-  AddOpcode(2342, 0, "PcmEnabled", ReturnIntValue(&SoundSystem::pcmEnabled));
-  AddOpcode(2243, 0, "SetSeEnabled", CallFunction(&SoundSystem::setSeEnabled));
-  AddOpcode(2343, 0, "SeEnabled", ReturnIntValue(&SoundSystem::seEnabled));
+      2242, 0, "SetPcmEnabled", CallFunction(&SoundSystem::SetIsPcmEnabled));
+  AddOpcode(2342, 0, "PcmEnabled", ReturnIntValue(&SoundSystem::is_pcm_enabled));
+  AddOpcode(2243, 0, "SetSeEnabled", CallFunction(&SoundSystem::SetIsSeEnabled));
+  AddOpcode(2343, 0, "SeEnabled", ReturnIntValue(&SoundSystem::is_se_enabled));
 
   AddOpcode(2256, 0, "SetFontWeight", CallFunction(&TextSystem::setFontWeight));
   AddOpcode(2356, 0, "FontWeight", ReturnIntValue(&TextSystem::fontWeight));
@@ -610,13 +610,13 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddUnsupportedOpcode(2273, 0, "SetClassifyText");
   AddUnsupportedOpcode(2373, 0, "ClassifyText");
   AddOpcode(
-      2274, 0, "SetUseKoe", CallFunction(&SoundSystem::setUseKoeForCharacter));
+      2274, 0, "SetUseKoe", CallFunction(&SoundSystem::SetUseKoeForCharacter));
   // Note: I don't understand how this overload differs, but CLANNAD_FV treats
   // it just like the previous one.
   AddOpcode(
-      2274, 1, "SetUseKoe", CallFunction(&SoundSystem::setUseKoeForCharacter));
+      2274, 1, "SetUseKoe", CallFunction(&SoundSystem::SetUseKoeForCharacter));
   AddOpcode(
-      2374, 0, "UseKoe", ReturnIntValue(&SoundSystem::useKoeForCharacter));
+      2374, 0, "UseKoe", ReturnIntValue(&SoundSystem::ShouldUseKoeForCharacter));
   AddOpcode(
       2275, 0, "SetScreenMode", CallFunction(&GraphicsSystem::SetScreenMode));
   AddOpcode(2375, 0, "ScreenMode", ReturnIntValue(&GraphicsSystem::screen_mode));

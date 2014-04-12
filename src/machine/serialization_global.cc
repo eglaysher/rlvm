@@ -159,7 +159,7 @@ void loadGlobalMemoryFrom(std::istream& iss, RLMachine& machine) {
 
     // Restore options which may have System specific implementations. (This
     // will probably expand as more of RealLive is implemented).
-    sys.sound().restoreFromGlobals();
+    sys.sound().RestoreFromGlobals();
   }
 }
 

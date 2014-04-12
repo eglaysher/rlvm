@@ -95,7 +95,7 @@ struct SoundSystemGlobals {
   bool koe_enabled;
 
   // Volume of the koe relative to other sound playback.
-  int koe_volume_mod;
+  int GetKoeVolume_mod;
 
   // Whether we fade the background music when a voiceover is playing.
   bool bgm_koe_fade;
@@ -114,7 +114,7 @@ struct SoundSystemGlobals {
         se_enabled& se_volume_mod;
 
     if (version >= 1) {
-      ar& koe_mode& koe_enabled& koe_volume_mod& bgm_koe_fade& bgm_koe_fade_vol&
+      ar& koe_mode& koe_enabled& GetKoeVolume_mod& bgm_koe_fade& bgm_koe_fade_vol&
           character_koe_enabled;
     }
   }
@@ -193,121 +193,113 @@ class SoundSystem {
   //
   // Overriders MUST call SoundSystem::execute_sound_system because we rely on
   // it to handle volume adjustment tasks.
-  virtual void executeSoundSystem();
+  virtual void ExecuteSoundSystem();
 
   // ---------------------------------------------------------------------
 
   // Sets how much sound hertz.
-  virtual void setSoundQuality(const int quality) {
-    globals_.sound_quality = quality;
-  }
+  virtual void SetSoundQuality(const int quality);
 
-  int soundQuality() const { return globals_.sound_quality; }
+  int sound_quality() const { return globals_.sound_quality; }
 
   SoundSystemGlobals& globals() { return globals_; }
 
   // After loading global memory, there may be a mismatch between global state
   // and what subclasses of SoundSystem think because they overloaded a setter,
   // so set all values from the data in globals().
-  void restoreFromGlobals();
+  void RestoreFromGlobals();
 
   // ---------------------------------------------------------------------
 
   // BGM functions
-  virtual void setBgmEnabled(const int in);
-  int bgmEnabled() const;
+  int bgm_enabled() const { return globals_.bgm_enabled; }
+  virtual void SetBgmEnabled(const int in);
 
   // User configured volume setting
-  virtual void setBgmVolumeMod(const int in);
-  int bgmVolumeMod() const;
+  int bgm_volume_mod() const { return globals_.bgm_volume_mod; }
+  virtual void SetBgmVolumeMod(const int in);
 
   // Programmer configured volume setting
-  virtual void setBgmVolumeScript(const int level, const int fade_in_ms);
-  int bgmVolumeScript() const;
+  int bgm_volume_script() const { return bgm_volume_script_; }
+  virtual void SetBgmVolumeScript(const int level, const int fade_in_ms);
 
   // Status of the music subsystem
   //
   // - 0 Idle
   // - 1 Playing music
   // - 2 Fading out music
-  virtual int bgmStatus() const = 0;
+  virtual int BgmStatus() const = 0;
 
-  virtual void bgmPlay(const std::string& bgm_name, bool loop) = 0;
-  virtual void bgmPlay(const std::string& bgm_name,
+  virtual void BgmPlay(const std::string& bgm_name, bool loop) = 0;
+  virtual void BgmPlay(const std::string& bgm_name,
                        bool loop,
                        int fade_in_ms) = 0;
-  virtual void bgmPlay(const std::string& bgm_name,
+  virtual void BgmPlay(const std::string& bgm_name,
                        bool loop,
                        int fade_in_ms,
                        int fade_out_ms) = 0;
-  virtual void bgmStop() = 0;
-  virtual void bgmPause() = 0;
-  virtual void bgmUnPause() = 0;
-  virtual void bgmFadeOut(int fade_out_ms) = 0;
+  virtual void BgmStop() = 0;
+  virtual void BgmPause() = 0;
+  virtual void BgmUnPause() = 0;
+  virtual void BgmFadeOut(int fade_out_ms) = 0;
 
-  virtual std::string bgmName() const = 0;
-  virtual bool bgmLooping() const = 0;
+  virtual std::string GetBgmName() const = 0;
+  virtual bool BgmLooping() const = 0;
 
   // ---------------------------------------------------------------------
 
   // @name PCM/Wave functions
 
   // Sets whether the wav* functions play
-  virtual void setPcmEnabled(const int in);
+  int is_pcm_enabled() const { return globals_.pcm_enabled; }
+  virtual void SetIsPcmEnabled(const int in);
 
-  // Whether the wav* functions play
-  int pcmEnabled() const;
-
-  virtual void setPcmVolumeMod(const int in);
-  int pcmVolumeMod() const;
+  int pcm_volume_mod() const { return globals_.pcm_volume_mod; }
+  virtual void SetPcmVolumeMod(const int in);
 
   // Sets an individual channel volume
-  virtual void setChannelVolume(const int channel, const int level);
+  virtual void SetChannelVolume(const int channel, const int level);
 
   // Change the volume smoothly; the change from the current volume to level
   // will take fade_time_in_ms
-  void setChannelVolume(const int channel,
+  void SetChannelVolume(const int channel,
                         const int level,
                         const int fade_time_in_ms);
 
   // Fetches an individual channel volume
-  int channelVolume(const int channel) const;
+  int GetChannelVolume(const int channel) const;
 
-  virtual void wavPlay(const std::string& wav_file, bool loop) = 0;
-  virtual void wavPlay(const std::string& wav_file,
+  virtual void WavPlay(const std::string& wav_file, bool loop) = 0;
+  virtual void WavPlay(const std::string& wav_file,
                        bool loop,
                        const int channel) = 0;
-  virtual void wavPlay(const std::string& wav_file,
+  virtual void WavPlay(const std::string& wav_file,
                        bool loop,
                        const int channel,
                        const int fadein_ms) = 0;
-  virtual bool wavPlaying(const int channel) = 0;
-  virtual void wavStop(const int channel) = 0;
-  virtual void wavStopAll() = 0;
-  virtual void wavFadeOut(const int channel, const int fadetime) = 0;
+  virtual bool WavPlaying(const int channel) = 0;
+  virtual void WavStop(const int channel) = 0;
+  virtual void WavStopAll() = 0;
+  virtual void WavFadeOut(const int channel, const int fadetime) = 0;
 
   // ---------------------------------------------------------------------
 
   // Sound Effect functions
 
-  // Sets whether we should have interface sound effects
-  virtual void setSeEnabled(const int in);
+  // Whether we should have interface sound effects
+  int is_se_enabled() const { return globals_.se_enabled; }
+  virtual void SetIsSeEnabled(const int in);
 
-  // Returns whether (interface) sound effects are enabled
-  int seEnabled() const;
-
-  // Sets the volume of interface sound effects relative to other
-  // sound playback. (0-255)
-  virtual void setSeVolumeMod(const int in);
-
-  // Gets the current sound effect volume.
-  int seVolumeMod() const;
+  // The volume of interface sound effects relative to other sound
+  // playback. (0-255)
+  int se_volume_mod() const { return globals_.se_volume_mod; }
+  virtual void SetSeVolumeMod(const int in);
 
   // Plays an interface sound effect. |se_num| is an index into the #SE table.
-  virtual void playSe(const int se_num) = 0;
+  virtual void PlaySe(const int se_num) = 0;
 
   // Returns whether there is a sound effect |se_num| in the table.
-  virtual bool hasSe(const int se_num) = 0;
+  virtual bool HasSe(const int se_num) = 0;
 
   // ---------------------------------------------------------------------
 
@@ -321,76 +313,66 @@ class SoundSystem {
   // - 2: Voice only
   //
   // TODO(erg): We keep track of this value, but we don't really USE it yet.
-  void setKoeMode(const int in);
+  int koe_mode() const { return globals_.koe_mode; }
+  void setKoeMode(const int in) { globals_.koe_mode = in; }
 
-  // Returns the current value set with setKoeMode().
-  int koeMode() const;
-
-  // Sets whether we should play voices (in general).
-  virtual void setKoeEnabled(const int in);
-
-  // Returns whether we should play any voices.
-  int koeEnabled() const;
+  // Whether we should play voices (in general).
+  int is_koe_enabled() const { return globals_.koe_enabled; }
+  virtual void SetKoeEnabled(const int in);
 
   // Sets whether we play voices for certain characters.
-  void setUseKoeForCharacter(const int usekoe_id, const int enabled);
+  void SetUseKoeForCharacter(const int usekoe_id, const int enabled);
 
   // Returns whether we should play voices for certain characters. This
   // function is tied to UseKoe() family of functions and should not be queried
   // from within rlvm; use the |globals_.character_koe_enabled| map instead.
-  int useKoeForCharacter(const int usekoe_id) const;
+  int ShouldUseKoeForCharacter(const int usekoe_id) const;
 
-  virtual void setKoeVolumeMod(const int level);
+  int GetKoeVolume_mod() const { return globals_.GetKoeVolume_mod; }
+  virtual void SetKoeVolumeMod(const int level);
 
-  int koeVolumeMod() const;
-
-  // Sets the volume for all voice levels (0-255). If |fadetime| is non-zero,
+  // The volume for all voice levels (0-255). If |fadetime| is non-zero,
   // the volume will change smoothly, with the change taking |fadetime| ms,
   // otherwise it will change instantly.
-  virtual void setKoeVolume(const int level, const int fadetime);
+  int GetKoeVolume() const;
+  virtual void SetKoeVolume(const int level, const int fadetime);
 
-  // Returns the volume for voice relative to other sound effects.
-  int koeVolume() const;
-
-  // Sets whether we fade the background when playing a voiceover.
-  void setBgmKoeFade(const int in);
-
-  // Returns whether we fade the background when playing a voiceover.
-  int bgmKoeFade() const;
+  // Whether we fade the background when playing a voiceover.
+  int bgm_koe_fade() const { return globals_.bgm_koe_fade; }
+  void set_bgm_koe_fade(const int in) { globals_.bgm_koe_fade = in; }
 
   // Sets the amount by which the music volume is modified when the music/voice
   // fade flag is active.
-  void setBgmKoeFadeVolume(const int level);
+  int bgm_koe_fadeVolume() const;
+  void set_bgm_koe_fadeVolume(const int level);
 
-  // Returns the amount to change the bgm volume.
-  int bgmKoeFadeVolume() const;
+  void KoePlay(int id);
+  void KoePlay(int id, int charid);
 
-  void koePlay(int id);
-  void koePlay(int id, int charid);
+  virtual bool KoePlaying() const = 0;
+  virtual void KoeStop() = 0;
 
-  virtual bool koePlaying() const = 0;
-  virtual void koeStop() = 0;
-
-  virtual void reset();
+  virtual void Reset();
 
   System& system() { return system_; }
 
  protected:
-  SeTable& seTable() { return se_table_; }
-  const DSTable& getDSTable() { return ds_tracks_; }
-  const CDTable& getCDTable() { return cd_tracks_; }
+  SeTable& se_table() { return se_table_; }
+  const DSTable& ds_table() { return ds_tracks_; }
+  const CDTable& cd_table() { return cd_tracks_; }
 
   // Computes the actual volume for a channel based on the per channel
   // and the per system volume.
-  int computeChannelVolume(const int channel_volume, const int system_volume) {
+  int compute_channel_volume(const int channel_volume,
+                             const int system_volume) {
     return (channel_volume * system_volume) / 255;
   }
 
   // Plays a voice sample.
-  virtual void koePlayImpl(int id) = 0;
+  virtual void KoePlayImpl(int id) = 0;
 
-  static void checkChannel(int channel, const char* function_name);
-  static void checkVolume(int level, const char* function_name);
+  static void CheckChannel(int channel, const char* function_name);
+  static void CheckVolume(int level, const char* function_name);
 
   VoiceCache voice_cache_;
 

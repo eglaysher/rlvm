@@ -711,7 +711,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
       // We only want to actually replay the voice clip once, but we want to
       // catch both clicks.
       if (pressed)
-        system_.sound().koePlay(it->second);
+        system_.sound().KoePlay(it->second);
       return true;
     }
   }

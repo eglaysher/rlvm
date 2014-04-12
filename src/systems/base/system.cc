@@ -360,7 +360,7 @@ void System::Reset() {
 
   EnableSyscom();
 
-  sound().reset();
+  sound().Reset();
   graphics().Reset();
   text().reset();
 }
