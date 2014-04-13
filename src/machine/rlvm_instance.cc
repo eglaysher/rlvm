@@ -151,7 +151,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
-      sdlSystem.run(rlmachine);
+      sdlSystem.Run(rlmachine);
 
       // Run the rlmachine through as many instructions as we can in a 10ms time
       // slice. Bail out if we switch to long operation mode, or if the screen

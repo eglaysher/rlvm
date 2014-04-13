@@ -37,14 +37,15 @@ class TestSystem : public System {
  public:
   explicit TestSystem(const std::string& path_to_gameexe);
   TestSystem();
+  virtual ~TestSystem();
 
   // Implementation of System:
-  virtual void run(RLMachine& machine);
-  virtual TestGraphicsSystem& graphics();
-  virtual EventSystem& event();
-  virtual Gameexe& gameexe();
-  virtual TextSystem& text();
-  virtual SoundSystem& sound();
+  virtual void Run(RLMachine& machine) override;
+  virtual TestGraphicsSystem& graphics() override;
+  virtual EventSystem& event() override;
+  virtual Gameexe& gameexe() override;
+  virtual TextSystem& text() override;
+  virtual SoundSystem& sound() override;
 
  private:
   Gameexe gameexe_;

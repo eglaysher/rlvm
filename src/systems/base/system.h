@@ -145,8 +145,8 @@ class System {
   bool low_priority() const { return globals_.low_priority_; }
   void set_low_priority(const int in) { globals_.low_priority_ = in; }
 
-  void SetPlatform(const boost::shared_ptr<Platform>& platform);
   boost::shared_ptr<Platform> platform() { return platform_; }
+  void SetPlatform(const boost::shared_ptr<Platform>& platform);
 
   // Whether we're currently forcing fast forward (only used during game tests
   // to zoom through).
@@ -264,7 +264,7 @@ class System {
   void DumpRenderTree(RLMachine& machine);
 
   // Called once per gameloop.
-  virtual void run(RLMachine& machine) = 0;
+  virtual void Run(RLMachine& machine) = 0;
 
   // Returns the specific subclasses.
   virtual GraphicsSystem& graphics() = 0;

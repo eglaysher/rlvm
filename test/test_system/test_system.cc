@@ -52,8 +52,9 @@ TestSystem::TestSystem()
   gameexe_("FOLDNAME.G00") = "G00";
 }
 
-void TestSystem::run(RLMachine& machine) { /* do nothing */
-}
+TestSystem::~TestSystem() {}
+
+void TestSystem::Run(RLMachine& machine) {}
 
 TestGraphicsSystem& TestSystem::graphics() { return null_graphics_system; }
 EventSystem& TestSystem::event() { return null_event_system; }

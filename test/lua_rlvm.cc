@@ -250,7 +250,7 @@ int main(int argc, char* argv[]) {
     while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
-      sdlSystem.run(rlmachine);
+      sdlSystem.Run(rlmachine);
 
       // Run the rlmachine through another instruction
       rlmachine.ExecuteNextInstruction();
