@@ -176,8 +176,8 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     RLMachine& machine,
     const libreallive::SelectElement& commandElement)
     : SelectLongOperation(machine, commandElement),
-      text_window_(machine.system().text().currentWindow()) {
-  machine.system().text().setInSelectionMode(true);
+      text_window_(machine.system().text().GetCurrentWindow()) {
+  machine.system().text().set_in_selection_mode(true);
   text_window_->SetVisible(true);
   text_window_->startSelectionMode();
   text_window_->setSelectionCallback(
@@ -200,12 +200,12 @@ NormalSelectLongOperation::NormalSelectLongOperation(
 
 NormalSelectLongOperation::~NormalSelectLongOperation() {
   text_window_->endSelectionMode();
-  machine_.system().text().setInSelectionMode(false);
+  machine_.system().text().set_in_selection_mode(false);
 }
 
 void NormalSelectLongOperation::MouseMotion(const Point& pos) {
   // Tell the text system about the move
-  machine_.system().text().setMousePosition(pos);
+  machine_.system().text().SetMousePosition(pos);
 }
 
 bool NormalSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
@@ -215,7 +215,7 @@ bool NormalSelectLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
   switch (mouseButton) {
     case MOUSE_LEFT: {
       Point pos = es.GetCursorPos();
-      machine_.system().text().handleMouseClick(machine_, pos, pressed);
+      machine_.system().text().HandleMouseClick(machine_, pos, pressed);
       return true;
       break;
     }
@@ -269,7 +269,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
 
   // Retrieve the parameters needed to render as a color mask.
   boost::shared_ptr<TextWindow> window =
-      machine.system().text().currentWindow();
+      machine.system().text().GetCurrentWindow();
   window_bg_colour_ = window->colour();
   window_filter_ = window->filter();
 
@@ -364,8 +364,8 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
       o.id = i;
       o.enabled = options_[i].enabled;
       o.default_surface =
-          ts.renderText(text, moji_size_, 0, 0, text_colour, &shadow_colour, 0);
-      o.select_surface = ts.renderText(
+          ts.RenderText(text, moji_size_, 0, 0, text_colour, &shadow_colour, 0);
+      o.select_surface = ts.RenderText(
           text, moji_size_, 0, 0, text_selection_colour, &shadow_colour, 0);
       if (back_surface_) {
         o.bounding_rect = Rect(baseposx, baseposy, back_surface_->GetSize());

@@ -69,7 +69,7 @@ TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
-  if (machine.system().text().currentPage().in_ruby_gloss())
+  if (machine.system().text().GetCurrentPage().in_ruby_gloss())
     no_wait_ = true;
 }
 
@@ -138,7 +138,7 @@ bool TextoutLongOperation::DisplayName(RLMachine& machine) {
     current_position_ = it;
   }
 
-  TextPage& page = machine.system().text().currentPage();
+  TextPage& page = machine.system().text().GetCurrentPage();
   page.Name(name, current_char_);
 
   // Stop if this was the end of input
@@ -158,7 +158,7 @@ bool TextoutLongOperation::DisplayOneMoreCharacter(RLMachine& machine,
 
     if (it != strend) {
       int codepoint = utf8::next(it, strend);
-      TextPage& page = machine.system().text().currentPage();
+      TextPage& page = machine.system().text().GetCurrentPage();
       if (codepoint) {
         string rest(current_position_, strend);
         bool rendered = page.Character(current_char_, rest);
@@ -186,7 +186,7 @@ bool TextoutLongOperation::DisplayOneMoreCharacter(RLMachine& machine,
 
       return false;
     } else {
-      machine.system().text().currentPage().Character(current_char_, "");
+      machine.system().text().GetCurrentPage().Character(current_char_, "");
 
       return true;
     }
@@ -195,7 +195,7 @@ bool TextoutLongOperation::DisplayOneMoreCharacter(RLMachine& machine,
 
 bool TextoutLongOperation::operator()(RLMachine& machine) {
   // Check to make sure we're not trying to do a textout (impossible!)
-  if (!machine.system().text().systemVisible())
+  if (!machine.system().text().system_visible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
   if (no_wait_) {
@@ -208,7 +208,7 @@ bool TextoutLongOperation::operator()(RLMachine& machine) {
     next_character_countdown_ -= time_since_last_pass;
     if (next_character_countdown_ <= 0) {
       bool paused = false;
-      next_character_countdown_ = machine.system().text().messageSpeed();
+      next_character_countdown_ = machine.system().text().message_speed();
       return DisplayOneMoreCharacter(machine, paused);
     } else {
       // Let's sleep a bit and then try again.

@@ -43,7 +43,7 @@
 namespace {
 
 void addKoeIcon(RLMachine& machine, int id) {
-  machine.system().text().currentPage().KoeMarker(id);
+  machine.system().text().GetCurrentPage().KoeMarker(id);
 }
 
 bool koeIsPlaying(RLMachine& machine) {

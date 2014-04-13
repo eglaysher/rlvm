@@ -40,7 +40,7 @@ struct setOverride : public RLOp_Void_1<IntConstant_T> {
   explicit setOverride(int value) : value_(value) {}
 
   void operator()(RLMachine& machine, int window) {
-    machine.system().text().setVisualOverride(window, value_);
+    machine.system().text().SetVisualOverride(window, value_);
   }
 };
 
@@ -61,10 +61,10 @@ EventLoopModule::EventLoopModule() : RLModule("EventLoop", 0, 4) {
             "ShowBackground",
             CallFunction(&GraphicsSystem::ToggleInterfaceHidden));
   AddOpcode(
-      1100, 0, "SetSkipMode", CallFunctionWith(&TextSystem::setSkipMode, 1));
+      1100, 0, "SetSkipMode", CallFunctionWith(&TextSystem::SetSkipMode, 1));
   AddOpcode(
-      1101, 0, "ClearSkipMode", CallFunctionWith(&TextSystem::setSkipMode, 0));
-  AddOpcode(1102, 0, "SkipMode", ReturnIntValue(&TextSystem::skipMode));
+      1101, 0, "ClearSkipMode", CallFunctionWith(&TextSystem::SetSkipMode, 0));
+  AddOpcode(1102, 0, "SkipMode", ReturnIntValue(&TextSystem::skip_mode));
 
   // opcode<0:4:1202, 0> and opcode<0:4:1200, 0> are used in the CLANNAD menu
   // system; no idea what they do.
@@ -72,14 +72,14 @@ EventLoopModule::EventLoopModule() : RLModule("EventLoop", 0, 4) {
   AddOpcode(1200,
             2,
             "TextwindowOverrideShow",
-            CallFunctionWith(&TextSystem::setVisualOverrideAll, true));
+            CallFunctionWith(&TextSystem::SetVisualOverrideAll, true));
   AddOpcode(1201, 0, "TextwindowOverrideHide", new setOverride(false));
   AddOpcode(1201,
             2,
             "TextwindowOverrideHide",
-            CallFunctionWith(&TextSystem::setVisualOverrideAll, false));
+            CallFunctionWith(&TextSystem::SetVisualOverrideAll, false));
   AddOpcode(1202,
             0,
             "ClearTextwindowOverrides",
-            CallFunction(&TextSystem::clearVisualOverrides));
+            CallFunction(&TextSystem::ClearVisualOverrides));
 }

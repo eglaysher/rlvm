@@ -584,7 +584,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
 
         // Notify the TextSystem that the next character that will be printed
         // should be printed in italics.
-        TextPage& page = machine.system().text().currentPage();
+        TextPage& page = machine.system().text().GetCurrentPage();
         page.NextCharIsItalic();
       }
     }

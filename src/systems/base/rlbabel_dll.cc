@@ -578,7 +578,7 @@ int RlBabelDLL::GetCharWidth(uint16_t cp932_char, bool as_xmod) {
   boost::shared_ptr<TextWindow> window = GetWindow(-1);
   int font_size = window->fontSizeInPixels();
   // TODO(erg): Can I somehow modify this to try to do proper kerning?
-  int width = machine_.system().text().charWidth(font_size, unicode_codepoint);
+  int width = machine_.system().text().GetCharWidth(font_size, unicode_codepoint);
   return as_xmod ? window->insertionPointX() + width : width;
 }
 
@@ -694,8 +694,8 @@ StringReferenceIterator RlBabelDLL::GetSvar(int addr) {
 boost::shared_ptr<TextWindow> RlBabelDLL::GetWindow(int id) {
   TextSystem& text_system = machine_.system().text();
   if (id >= 0) {
-    return text_system.textWindow(id);
+    return text_system.GetTextWindow(id);
   } else {
-    return text_system.currentWindow();
+    return text_system.GetCurrentWindow();
   }
 }

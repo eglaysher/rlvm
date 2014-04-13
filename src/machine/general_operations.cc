@@ -72,7 +72,7 @@ CGMTable& GetSystemObj(RLMachine& machine) {
 
 template <>
 TextPage& GetSystemObj(RLMachine& machine) {
-  return machine.system().text().currentPage();
+  return machine.system().text().GetCurrentPage();
 }
 
 }  // namespace getSystemObjImpl

@@ -46,9 +46,9 @@ TextWaku* TextWaku::Create(System& system,
 
 TextWaku::~TextWaku() {}
 
-void TextWaku::setMousePosition(const Point& pos) {}
+void TextWaku::SetMousePosition(const Point& pos) {}
 
-bool TextWaku::handleMouseClick(RLMachine& machine,
+bool TextWaku::HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed) {
   return false;

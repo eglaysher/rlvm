@@ -185,7 +185,7 @@ void performEffect(RLMachine& machine,
 // window won't be undone like it normally is!
 void performHideAllTextWindows(RLMachine& machine) {
   if (!machine.replaying_graphics_stack()) {
-    machine.system().text().hideAllTextWindows();
+    machine.system().text().HideAllTextWindows();
   }
 }
 

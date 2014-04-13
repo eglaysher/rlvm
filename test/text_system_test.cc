@@ -63,7 +63,7 @@ class TextSystemTest : public FullSystemTest {
     event_mock.reset(new IncrementingTickCounter);
     dynamic_cast<TestEventSystem&>(system.event()).setMockHandler(event_mock);
 
-    system.text().setActiveWindow(0);
+    system.text().set_active_window(0);
   }
 
   TestTextSystem& getTextSystem() {
@@ -75,10 +75,10 @@ class TextSystemTest : public FullSystemTest {
   }
 
   MockTextWindow& getTextWindow(int twn) {
-    return dynamic_cast<MockTextWindow&>(*system.text().textWindow(twn));
+    return dynamic_cast<MockTextWindow&>(*system.text().GetTextWindow(twn));
   }
 
-  TextPage& currentPage() { return system.text().currentPage(); }
+  TextPage& GetCurrentPage() { return system.text().GetCurrentPage(); }
 
   void writeString(const std::string& text, bool nowait) {
     unique_ptr<TextoutLongOperation> tolo(
@@ -93,9 +93,9 @@ class TextSystemTest : public FullSystemTest {
 
   void snapshotAndClear() {
     TextSystem& text = rlmachine.system().text();
-    text.snapshot();
-    text.textWindow(0)->clearWin();
-    text.newPageOnWindow(0);
+    text.Snapshot();
+    text.GetTextWindow(0)->clearWin();
+    text.NewPageOnWindow(0);
   }
 
   boost::shared_ptr<EventSystemMockHandler> event_mock;
@@ -129,39 +129,39 @@ TEST_F(TextSystemTest, BackLogFunctionality) {
 
   EXPECT_EQ("Page four.", getTextWindow(0).currentContents())
       << "We're on the final page!";
-  EXPECT_FALSE(text.isReadingBacklog()) << "We're not reading the backlog.";
+  EXPECT_FALSE(text.IsReadingBacklog()) << "We're not reading the backlog.";
 
   // Reply our way back to the front
-  text.backPage();
+  text.BackPage();
   EXPECT_EQ("Page three.", getTextWindow(0).currentContents())
       << "We're on the 3rd page!";
-  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
+  EXPECT_TRUE(text.IsReadingBacklog()) << "We're reading the backlog.";
 
-  text.backPage();
+  text.BackPage();
   EXPECT_EQ("Page two.", getTextWindow(0).currentContents())
       << "We're on the 2nd page!";
-  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
+  EXPECT_TRUE(text.IsReadingBacklog()) << "We're reading the backlog.";
 
-  text.backPage();
+  text.BackPage();
   EXPECT_EQ("Page one.", getTextWindow(0).currentContents())
       << "We're on the 1st page!";
-  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
+  EXPECT_TRUE(text.IsReadingBacklog()) << "We're reading the backlog.";
 
   // Trying to go back past the first page doesn't do anything.
-  text.backPage();
+  text.BackPage();
   EXPECT_EQ("Page one.", getTextWindow(0).currentContents())
       << "We're still on the 1st page!";
-  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
+  EXPECT_TRUE(text.IsReadingBacklog()) << "We're reading the backlog.";
 
-  text.forwardPage();
+  text.ForwardPage();
   EXPECT_EQ("Page two.", getTextWindow(0).currentContents())
       << "We're back to the 2nd page!";
-  EXPECT_TRUE(text.isReadingBacklog()) << "We're reading the backlog.";
+  EXPECT_TRUE(text.IsReadingBacklog()) << "We're reading the backlog.";
 
-  text.stopReadingBacklog();
+  text.StopReadingBacklog();
   EXPECT_EQ("Page four.", getTextWindow(0).currentContents())
       << "We're back to the current page!";
-  EXPECT_FALSE(text.isReadingBacklog())
+  EXPECT_FALSE(text.IsReadingBacklog())
       << "We're no longer reading the backlog.";
 }
 
@@ -172,13 +172,13 @@ TEST_F(TextSystemTest, RepeatsTextPageName) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
   EXPECT_CALL(win, setName("Bob", "")).Times(1);
-  currentPage().Name("Bob", "");
+  GetCurrentPage().Name("Bob", "");
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
   EXPECT_CALL(win, setName("Bob", _)).Times(1);
-  getTextSystem().backPage();
+  getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
@@ -189,13 +189,13 @@ TEST_F(TextSystemTest, TextPageHardBreakRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
   EXPECT_CALL(win, hardBrake()).Times(1);
-  currentPage().HardBrake();
+  GetCurrentPage().HardBrake();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
   EXPECT_CALL(win, hardBrake()).Times(1);
-  getTextSystem().backPage();
+  getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
@@ -208,13 +208,13 @@ TEST_F(TextSystemTest, TextPageResetIndentationRepeats) {
   writeString("test", true);
 
   EXPECT_CALL(win, resetIndentation()).Times(1);
-  currentPage().ResetIndentation();
+  GetCurrentPage().ResetIndentation();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
   EXPECT_CALL(win, resetIndentation()).Times(1);
-  getTextSystem().backPage();
+  getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
@@ -226,13 +226,13 @@ TEST_F(TextSystemTest, TextPageFontColorRepeats) {
   MockTextWindow& win = getTextWindow(0);
 
   EXPECT_CALL(win, setFontColor(_)).Times(1);
-  currentPage().FontColour(0);
+  GetCurrentPage().FontColour(0);
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // The scrollback shouldn't be colored.
   EXPECT_CALL(win, setFontColor(_)).Times(0);
-  getTextSystem().backPage();
+  getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
@@ -245,16 +245,16 @@ TEST_F(TextSystemTest, RubyRepeats) {
 
   EXPECT_CALL(win, markRubyBegin()).Times(1);
   EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
-  currentPage().MarkRubyBegin();
+  GetCurrentPage().MarkRubyBegin();
   writeString("With Ruby", true);
-  currentPage().DisplayRubyText("ruby");
+  GetCurrentPage().DisplayRubyText("ruby");
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
   EXPECT_CALL(win, markRubyBegin()).Times(1);
   EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
-  getTextSystem().backPage();
+  getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
@@ -263,7 +263,7 @@ TEST_F(TextSystemTest, RubyRepeats) {
 TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("One", 20, 0, 0, RGBColour::White(), NULL, 3);
+      sys.RenderText("One", 20, 0, 0, RGBColour::White(), NULL, 3);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
   EXPECT_EQ(20, text_surface->GetSize().height());
@@ -272,7 +272,7 @@ TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
 TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("A Very Long String That Goes On And On",
+      sys.RenderText("A Very Long String That Goes On And On",
                      20,
                      0,
                      0,
@@ -287,7 +287,7 @@ TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
 TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("OneTwo", 20, 0, 0, RGBColour::White(), NULL, 3);
+      sys.RenderText("OneTwo", 20, 0, 0, RGBColour::White(), NULL, 3);
   EXPECT_EQ(40, text_surface->GetSize().height());
 
   // Tests the location of rendered glyphs.
@@ -314,7 +314,7 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
 TEST_F(TextSystemTest, DontCrashWithNoEmojiFile) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("One＃Ａ００Two", 20, 0, 0, RGBColour::White(), NULL, -1);
+      sys.RenderText("One＃Ａ００Two", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_EQ(20, text_surface->GetSize().height());
 }
 
@@ -338,7 +338,7 @@ TEST_F(TextSystemTest, TestEmoji) {
 
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("E＃Ａ０２E", 20, 0, 0, RGBColour::White(), NULL, -1);
+      sys.RenderText("E＃Ａ０２E", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_EQ(20, text_surface->GetSize().height());
 
   // Tests the location of rendered glyphs.
@@ -362,7 +362,7 @@ TEST_F(TextSystemTest, TestEmoji) {
 TEST_F(TextSystemTest, TestEmptyString) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
-      sys.renderText("", 20, 0, 0, RGBColour::White(), NULL, -1);
+      sys.RenderText("", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_GT(text_surface->GetSize().width(), 0);
   EXPECT_GT(text_surface->GetSize().height(), 0);
 }

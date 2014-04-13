@@ -580,8 +580,8 @@ void RLMachine::PerformTextout(const std::string& cp932str) {
       new TextoutLongOperation(*this, utf8str));
 
   if (system().ShouldFastForward() ||
-      ts.messageNoWait() ||
-      ts.scriptMessageNowait()) {
+      ts.message_no_wait() ||
+      ts.script_message_nowait()) {
     ptr->set_no_wait();
   }
 
@@ -595,11 +595,11 @@ void RLMachine::PerformTextout(const std::string& cp932str) {
 void RLMachine::SetKidokuMarker(int kidoku_number) {
   // Check to see if we mark savepoints on textout
   if (ShouldSetMessageSavepoint() &&
-      system_.text().currentPage().number_of_chars_on_page() == 0)
+      system_.text().GetCurrentPage().number_of_chars_on_page() == 0)
     MarkSavepoint();
 
   // Mark if we've previously read this piece of text.
-  system_.text().setKidokuRead(
+  system_.text().SetKidokuRead(
       memory().HasBeenRead(SceneNumber(), kidoku_number));
 
   // Record the kidoku pair in global memory.

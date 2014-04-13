@@ -117,7 +117,7 @@ TextWindow::TextWindow(System& system, int window_num)
   // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
   window_attr_mod_ = window("ATTR_MOD");
   if (window_attr_mod_ == 0)
-    setRGBAF(system.text().windowAttr());
+    setRGBAF(system.text().window_attr());
   else
     setRGBAF(window("ATTR"));
 
@@ -391,7 +391,7 @@ void TextWindow::faceOpen(const std::string& filename, int index) {
         system_.graphics().GetSurfaceNamed(filename);
 
     if (face_slot_[index]->hide_other_windows) {
-      system_.text().hideAllTextWindowsExcept(windowNumber());
+      system_.text().HideAllTextWindowsExcept(windowNumber());
     }
   }
 }
@@ -401,7 +401,7 @@ void TextWindow::faceClose(int index) {
     face_slot_[index]->face_surface.reset();
 
     if (face_slot_[index]->hide_other_windows) {
-      system_.text().hideAllTextWindowsExcept(windowNumber());
+      system_.text().HideAllTextWindowsExcept(windowNumber());
     }
   }
 }
@@ -563,7 +563,7 @@ bool TextWindow::character(const std::string& current,
     }
 
     RGBColour shadow = RGBAColour::Black().rgb();
-    text_system_.renderGlyphOnto(current,
+    text_system_.RenderGlyphOnto(current,
                                  fontSizeInPixels(),
                                  next_char_italic_,
                                  font_colour_,
@@ -592,7 +592,7 @@ bool TextWindow::character(const std::string& current,
 }
 
 bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
-  int char_width = system().text().charWidth(fontSizeInPixels(), cur_codepoint);
+  int char_width = system().text().GetCharWidth(fontSizeInPixels(), cur_codepoint);
   bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint);
   int normal_width =
       x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_);
@@ -677,17 +677,17 @@ void TextWindow::setRGBAF(const vector<int>& attr) {
   setFilter(attr.at(4));
 }
 
-void TextWindow::setMousePosition(const Point& pos) {
+void TextWindow::SetMousePosition(const Point& pos) {
   if (inSelectionMode()) {
     for_each(selections_.begin(),
              selections_.end(),
              [&](SelectionElement& e) { e.SetMousePosition(pos); });
   }
 
-  textbox_waku_->setMousePosition(pos);
+  textbox_waku_->SetMousePosition(pos);
 }
 
-bool TextWindow::handleMouseClick(RLMachine& machine,
+bool TextWindow::HandleMouseClick(RLMachine& machine,
                                   const Point& pos,
                                   bool pressed) {
   if (inSelectionMode()) {
@@ -717,7 +717,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
   }
 
   if (isVisible() && !machine.system().graphics().is_interface_hidden()) {
-    return textbox_waku_->handleMouseClick(machine, pos, pressed);
+    return textbox_waku_->HandleMouseClick(machine, pos, pressed);
   }
 
   return false;

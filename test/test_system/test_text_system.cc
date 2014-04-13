@@ -40,7 +40,8 @@ TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
 
 TestTextSystem::~TestTextSystem() {}
 
-boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
+boost::shared_ptr<TextWindow> TestTextSystem::GetTextWindow(
+    int text_window_num) {
   WindowMap::iterator it = text_window_.find(text_window_num);
   if (it == text_window_.end()) {
     it = text_window_.insert(std::make_pair(
@@ -54,7 +55,7 @@ boost::shared_ptr<TextWindow> TestTextSystem::textWindow(int text_window_num) {
   return it->second;
 }
 
-Size TestTextSystem::renderGlyphOnto(
+Size TestTextSystem::RenderGlyphOnto(
     const std::string& current,
     int font_size,
     bool italic,

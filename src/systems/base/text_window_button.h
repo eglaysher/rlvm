@@ -60,9 +60,9 @@ class TextWindowButton {
   bool isValid() const;
 
   // Track the mouse position to see if we need to alter our state
-  void setMousePosition(TextWindow& window, const Point& pos);
+  void SetMousePosition(TextWindow& window, const Point& pos);
 
-  bool handleMouseClick(RLMachine& machine,
+  bool HandleMouseClick(RLMachine& machine,
                         TextWindow& window,
                         const Point& pos,
                         bool pressed);

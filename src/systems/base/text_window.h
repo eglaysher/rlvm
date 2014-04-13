@@ -132,10 +132,10 @@ class TextWindow {
   // The size of the writable text area.
   Size nameboxTextArea() const;
 
-  // TODO(erg): What's setMousePosition and how does it differ from mouse
+  // TODO(erg): What's SetMousePosition and how does it differ from mouse
   // listeners?
-  virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine,
+  virtual void SetMousePosition(const Point& pos);
+  virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed);
 

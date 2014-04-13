@@ -40,11 +40,11 @@ class MediumMsgLoopTest : public FullSystemTest {
 };
 
 TEST_F(MediumMsgLoopTest, TestFastText) {
-  system.text().setFastTextMode(0);
+  system.text().set_fast_text_mode(0);
 
   rlmachine.exe("FastText", 0);
-  EXPECT_TRUE(system.text().fastTextMode());
+  EXPECT_TRUE(system.text().fast_text_mode());
 
   rlmachine.exe("NormalText", 0);
-  EXPECT_FALSE(system.text().fastTextMode());
+  EXPECT_FALSE(system.text().fast_text_mode());
 }

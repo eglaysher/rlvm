@@ -509,7 +509,7 @@ void GraphicsSystem::DrawFrame(std::ostream* tree) {
 
   // Render text
   if (!is_interface_hidden())
-    system().text().render(tree);
+    system().text().Render(tree);
 }
 
 // -----------------------------------------------------------------------

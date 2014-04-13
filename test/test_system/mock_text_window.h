@@ -42,7 +42,7 @@ class MockTextWindow : public TestTextWindow {
   MOCK_METHOD0(execute, void());
   MOCK_METHOD1(setFontColor, void(const std::vector<int>&));
   MOCK_METHOD2(character, bool(const std::string&, const std::string&));
-  MOCK_METHOD1(charWidth, int(uint16_t));
+  MOCK_METHOD1(GetCharWidth, int(uint16_t));
   MOCK_METHOD0(textSurface, boost::shared_ptr<Surface>());
   MOCK_METHOD1(renderNameInBox, void(const std::string&));
   MOCK_METHOD0(clearWin, void());
@@ -63,7 +63,7 @@ class MockTextWindow : public TestTextWindow {
   }
 
   int ConcreteCharWidth(uint16_t codepoint) const {
-    return TestTextWindow::charWidth(codepoint);
+    return TestTextWindow::GetCharWidth(codepoint);
   }
 
   boost::shared_ptr<Surface> ConcreteTextSurface() {

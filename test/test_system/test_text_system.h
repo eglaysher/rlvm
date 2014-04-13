@@ -44,27 +44,27 @@ class TestTextSystem : public TextSystem {
   TestTextSystem(System& system, Gameexe& gexe);
   ~TestTextSystem();
 
-  void executeTextSystem(RLMachine& machine) {}
+  void ExecuteTextSystem(RLMachine& machine) {}
   void render(RLMachine& machine) {}
 
   MockTextWindow& getMockTextWindowAt(int text_window_number);
-  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
+  virtual boost::shared_ptr<TextWindow> GetTextWindow(int text_window_number) override;
 
   // We can safely ignore mouse clicks...for now.
-  void setMousePosition(RLMachine& machine, const Point& pos) {}
-  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed) {
+  void SetMousePosition(RLMachine& machine, const Point& pos) {}
+  bool HandleMouseClick(RLMachine& machine, const Point& pos, bool pressed) {
     return false;
   }
 
-  virtual Size renderGlyphOnto(const std::string& current,
+  virtual Size RenderGlyphOnto(const std::string& current,
                                int font_size,
                                bool italic,
                                const RGBColour& font_colour,
                                const RGBColour* shadow_colour,
                                int insertion_point_x,
                                int insertion_point_y,
-                               const boost::shared_ptr<Surface>& destination);
-  int charWidth(int size, uint16_t codepoint) { return 20; }
+                               const boost::shared_ptr<Surface>& destination) override;
+  virtual int GetCharWidth(int size, uint16_t codepoint) override { return 20; }
 
   const std::vector<std::tuple<std::string, int, int>>& glyphs() {
     return rendered_glyps_;

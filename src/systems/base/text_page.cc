@@ -314,7 +314,7 @@ void TextPage::Replay(bool is_active_page) {
     Gameexe& gexe = system_->gameexe();
     GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
     if (colour.Exists()) {
-      system_->text().textWindow(window_num_)->setFontColor(colour);
+      system_->text().GetTextWindow(window_num_)->setFontColor(colour);
     }
   }
 
@@ -412,7 +412,7 @@ void TextPage::NextCharIsItalic() {
 }
 
 bool TextPage::IsFull() const {
-  return system_->text().textWindow(window_num_)->isFull();
+  return system_->text().GetTextWindow(window_num_)->isFull();
 }
 
 void TextPage::AddAction(const Command& command) {
@@ -421,13 +421,13 @@ void TextPage::AddAction(const Command& command) {
 }
 
 bool TextPage::CharacterImpl(const string& c, const string& rest) {
-  return system_->text().textWindow(window_num_)->character(c, rest);
+  return system_->text().GetTextWindow(window_num_)->character(c, rest);
 }
 
 void TextPage::RunTextPageCommand(const Command& command,
                                   bool is_active_page) {
   boost::shared_ptr<TextWindow> window =
-      system_->text().textWindow(window_num_);
+      system_->text().GetTextWindow(window_num_);
 
   switch (command.command) {
     case TYPE_CHARACTERS:

@@ -80,7 +80,7 @@ void GraphicsTextObject::UpdateSurface(const GraphicsObject& rp) {
   cached_y_space_ = rp.GetTextYSpace();
   cached_char_count_ = rp.GetTextCharCount();
 
-  surface_ = system_.text().renderText(cached_utf8_str_,
+  surface_ = system_.text().RenderText(cached_utf8_str_,
                                        rp.GetTextSize(),
                                        rp.GetTextXSpace(),
                                        rp.GetTextYSpace(),

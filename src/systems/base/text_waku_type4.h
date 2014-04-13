@@ -57,8 +57,8 @@ class TextWakuType4 : public TextWaku {
   // plumbing of events so that these aren't routed through TextWindow, but are
   // instead some sort of listener. I'm currently thinking that the individual
   // buttons that need to handle events should be listeners.
-  virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine,
+  virtual void SetMousePosition(const Point& pos);
+  virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed);
 

@@ -158,7 +158,7 @@ int System::IsSyscomEnabled(int syscom) {
 
   // Special cases where state of the interpreter would override the
   // programmatically set (or user set) values.
-  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidokuRead()) {
+  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidoku_read()) {
     // Skip mode should be grayed out when there's no text to read
     if (syscom_status_[syscom] == SYSCOM_VISIBLE)
       return SYSCOM_GREYED_OUT;
@@ -273,10 +273,10 @@ void System::InvokeSyscom(RLMachine& machine, int syscom) {
       std::cerr << "Opening manual path..." << std::endl;
       break;
     case SYSCOM_SET_SKIP_MODE:
-      text().setSkipMode(!text().skipMode());
+      text().SetSkipMode(!text().skip_mode());
       break;
     case SYSCOM_AUTO_MODE:
-      text().setAutoMode(!text().autoMode());
+      text().SetAutoMode(!text().auto_mode());
       break;
     case SYSCOM_MENU_RETURN:
       // This is a hack since we probably have a bunch of crap on the stack.
@@ -362,7 +362,7 @@ void System::Reset() {
 
   sound().Reset();
   graphics().Reset();
-  text().reset();
+  text().Reset();
 }
 
 std::string System::Regname() {
@@ -383,8 +383,8 @@ boost::filesystem::path System::GameSaveDirectory() {
 }
 
 bool System::ShouldFastForward() {
-  return (event().CtrlPressed() && text().ctrlKeySkip()) ||
-         text().currentlySkipping() || force_fast_forward_;
+  return (event().CtrlPressed() && text().ctrl_key_skip()) ||
+         text().CurrentlySkipping() || force_fast_forward_;
 }
 
 void System::DumpRenderTree(RLMachine& machine) {
@@ -429,7 +429,7 @@ void System::InvokeSaveOrLoad(RLMachine& machine,
     int scenario = raw_ints.at(0);
     int entrypoint = raw_ints.at(1);
 
-    text().setSystemVisible(false);
+    text().set_system_visible(false);
     machine.PushLongOperation(new RestoreTextSystemVisibility);
     machine.Farcall(scenario, entrypoint);
   } else if (platform_) {

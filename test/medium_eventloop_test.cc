@@ -40,12 +40,12 @@ TEST_F(MediumEventLoopTest, TestSkipMode) {
   rlmachine.set_store_register(20);
 
   rlmachine.exe("SetSkipMode", 0);
-  EXPECT_TRUE(system.text().skipMode());
+  EXPECT_TRUE(system.text().skip_mode());
   rlmachine.exe("SkipMode", 0);
   EXPECT_EQ(1, rlmachine.store_register());
 
   rlmachine.exe("ClearSkipMode", 0);
-  EXPECT_FALSE(system.text().skipMode());
+  EXPECT_FALSE(system.text().skip_mode());
   rlmachine.exe("SkipMode", 0);
   EXPECT_EQ(0, rlmachine.store_register());
 }

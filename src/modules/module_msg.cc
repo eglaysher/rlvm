@@ -48,7 +48,7 @@ namespace {
 
 struct par : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.ResetIndentation();
     page.HardBrake();
   }
@@ -57,8 +57,8 @@ struct par : public RLOp_Void_Void {
 struct Msg_pause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    int windowNum = text.activeWindow();
-    boost::shared_ptr<TextWindow> textWindow = text.textWindow(windowNum);
+    int windowNum = text.active_window();
+    boost::shared_ptr<TextWindow> textWindow = text.GetTextWindow(windowNum);
 
     if (textWindow->actionOnPause()) {
       machine.PushLongOperation(
@@ -72,14 +72,14 @@ struct Msg_pause : public RLOp_Void_Void {
 
 struct Msg_TextWindow : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int window) {
-    machine.system().text().setActiveWindow(window);
+    machine.system().text().set_active_window(window);
   }
 };
 
 struct FontColour
     : public RLOp_Void_2<DefaultIntValue_T<0>, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum, int shadowColorNum) {
-    machine.system().text().currentPage().FontColour(textColorNum);
+    machine.system().text().GetCurrentPage().FontColour(textColorNum);
   }
 };
 
@@ -87,7 +87,7 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
     if (gexe("COLOR_TABLE", textColorNum).Exists()) {
-      machine.system().text().currentWindow()->setDefaultTextColor(
+      machine.system().text().GetCurrentWindow()->setDefaultTextColor(
           gexe("COLOR_TABLE", textColorNum));
     }
   }
@@ -96,16 +96,16 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
 struct doruby_display : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string cpStr) {
     std::string utf8str = cp932toUTF8(cpStr, machine.GetTextEncoding());
-    machine.system().text().currentPage().DisplayRubyText(utf8str);
+    machine.system().text().GetCurrentPage().DisplayRubyText(utf8str);
   }
 };
 
 struct msgHide : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int unknown) {
     TextSystem& text = machine.system().text();
-    int winNum = text.activeWindow();
-    text.hideTextWindow(winNum);
-    text.newPageOnWindow(winNum);
+    int winNum = text.active_window();
+    text.HideTextWindow(winNum);
+    text.NewPageOnWindow(winNum);
   }
 };
 
@@ -113,9 +113,9 @@ struct msgHideAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
 
-    for (int window : text.activeWindows()) {
-      text.hideTextWindow(window);
-      text.newPageOnWindow(window);
+    for (int window : text.GetActiveWindows()) {
+      text.HideTextWindow(window);
+      text.NewPageOnWindow(window);
     }
   }
 };
@@ -123,23 +123,25 @@ struct msgHideAll : public RLOp_Void_Void {
 struct msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    int activeWindow = text.activeWindow();
-    text.snapshot();
-    text.textWindow(activeWindow)->clearWin();
-    text.newPageOnWindow(activeWindow);
+    int active_window = text.active_window();
+    text.Snapshot();
+    text.GetTextWindow(active_window)->clearWin();
+    text.NewPageOnWindow(active_window);
   }
 };
 
 struct msgClearAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    std::vector<int> activeWindows = text.activeWindows();
-    int activeWindow = text.activeWindow();
+    std::vector<int> active_windows = text.GetActiveWindows();
+    int active_window = text.active_window();
 
-    text.snapshot();
-    for (int window : activeWindows) {
-      text.textWindow(activeWindow)->clearWin();
-      text.newPageOnWindow(window);
+    text.Snapshot();
+    for (int window : active_windows) {
+      // TODO(erg): Found this during refactoring? Just entirely wrong? Dates
+      // all the way back to 2007 in 6938e517e8423e391eeba0fe4b294ad64434243d.
+      text.GetTextWindow(active_window)->clearWin();
+      text.NewPageOnWindow(window);
     }
   }
 };
@@ -159,7 +161,7 @@ struct page : public RLOp_Void_Void {
 
 struct TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.SetInsertionPointX(x);
     page.SetInsertionPointY(y);
   }
@@ -170,7 +172,7 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     boost::shared_ptr<TextWindow> textWindow =
-        machine.system().text().currentWindow();
+        machine.system().text().GetCurrentWindow();
 
     if (textWindow) {
       *x = textWindow->insertionPointX();
@@ -181,7 +183,7 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
 
 struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.OffsetInsertionPointX(x);
     page.OffsetInsertionPointY(y);
   }
@@ -189,14 +191,14 @@ struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, std::string file, int index) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceOpen(file, index);
   }
 };
 
 struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int index) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceClose(index);
   }
 };
@@ -218,9 +220,9 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   AddOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
   AddOpcode(
-      103, 0, "FastText", CallFunctionWith(&TextSystem::setFastTextMode, 1));
+      103, 0, "FastText", CallFunctionWith(&TextSystem::set_fast_text_mode, 1));
   AddOpcode(
-      104, 0, "NormalText", CallFunctionWith(&TextSystem::setFastTextMode, 0));
+      104, 0, "NormalText", CallFunctionWith(&TextSystem::set_fast_text_mode, 0));
 
   AddOpcode(105, 0, "FontColor", new FontColour);
   AddOpcode(105, 1, "FontColor", new FontColour);
@@ -234,14 +236,14 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
 
   AddOpcode(109,
             0,
-            "messageNoWaitOn",
-            CallFunctionWith(&TextSystem::setScriptMessageNowait, 1));
+            "message_no_waitOn",
+            CallFunctionWith(&TextSystem::set_script_message_nowait, 1));
   AddOpcode(110,
             0,
-            "messageNoWaitOff",
-            CallFunctionWith(&TextSystem::setScriptMessageNowait, 0));
+            "message_no_waitOff",
+            CallFunctionWith(&TextSystem::set_script_message_nowait, 0));
 
-  AddOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::activeWindow));
+  AddOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::active_window));
 
   AddOpcode(120, 0, "__doruby_on", new doruby_display);
   AddOpcode(120, 1, "__doruby_off", CallFunction(&TextPage::MarkRubyBegin));

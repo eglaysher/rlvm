@@ -60,8 +60,8 @@ class TextWaku {
                                const Size& surface_size,
                                bool center) const = 0;
 
-  virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine,
+  virtual void SetMousePosition(const Point& pos);
+  virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed);
 };

@@ -194,11 +194,11 @@ Point TextWakuType4::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-void TextWakuType4::setMousePosition(const Point& pos) {
+void TextWakuType4::SetMousePosition(const Point& pos) {
   // Noop
 }
 
-bool TextWakuType4::handleMouseClick(RLMachine& machine,
+bool TextWakuType4::HandleMouseClick(RLMachine& machine,
                                      const Point& pos,
                                      bool pressed) {
   // Noop; this window won't do anything with mouse clicks.

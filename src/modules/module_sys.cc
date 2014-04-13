@@ -118,14 +118,14 @@ struct CallStackPop : RLOp_Void_1<DefaultIntValue_T<1>> {
 
 struct PauseCursor : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int newCursor) {
-    machine.system().text().setKeyCursor(newCursor);
+    machine.system().text().SetKeyCursor(newCursor);
   }
 };
 
 struct GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     boost::shared_ptr<TextWindow> window =
-        machine.system().text().currentWindow();
+        machine.system().text().GetCurrentWindow();
     return window->wakuSet();
   }
 };
@@ -273,7 +273,7 @@ struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
     attr[3] = a;
     attr[4] = f;
 
-    machine.system().text().setDefaultWindowAttr(attr);
+    machine.system().text().SetDefaultWindowAttr(attr);
   }
 };
 
@@ -290,11 +290,11 @@ struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
                   IntReferenceIterator f) {
     TextSystem& text = machine.system().text();
 
-    *r = text.windowAttrR();
-    *g = text.windowAttrG();
-    *b = text.windowAttrB();
-    *a = text.windowAttrA();
-    *f = text.windowAttrF();
+    *r = text.window_attr_r();
+    *g = text.window_attr_g();
+    *b = text.window_attr_b();
+    *a = text.window_attr_a();
+    *f = text.window_attr_f();
   }
 };
 
@@ -378,25 +378,25 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
 
   AddUnsupportedOpcode(330, 0, "EnableSkipMode");
   AddUnsupportedOpcode(331, 0, "DisableSkipMode");
-  AddOpcode(332, 0, "LocalSkipMode", ReturnIntValue(&TextSystem::skipMode));
+  AddOpcode(332, 0, "LocalSkipMode", ReturnIntValue(&TextSystem::skip_mode));
   AddOpcode(333,
             0,
             "SetLocalSkipMode",
-            CallFunctionWith(&TextSystem::setSkipMode, 1));
+            CallFunctionWith(&TextSystem::SetSkipMode, 1));
   AddOpcode(334,
             0,
             "ClearLocalSkipMode",
-            CallFunctionWith(&TextSystem::setSkipMode, 0));
+            CallFunctionWith(&TextSystem::SetSkipMode, 0));
 
-  AddOpcode(350, 0, "CtrlKeyShip", ReturnIntValue(&TextSystem::ctrlKeySkip));
+  AddOpcode(350, 0, "CtrlKeyShip", ReturnIntValue(&TextSystem::ctrl_key_skip));
   AddOpcode(351,
             0,
             "CtrlKeySkipOn",
-            CallFunctionWith(&TextSystem::setCtrlKeySkip, 1));
+            CallFunctionWith(&TextSystem::set_ctrl_key_skip, 1));
   AddOpcode(352,
             0,
             "CtrlKeySkipOff",
-            CallFunctionWith(&TextSystem::setCtrlKeySkip, 0));
+            CallFunctionWith(&TextSystem::set_ctrl_key_skip, 0));
   AddOpcode(353, 0, "CtrlPressed", ReturnIntValue(&EventSystem::CtrlPressed));
   AddOpcode(354, 0, "ShiftPressed", ReturnIntValue(&EventSystem::ShiftPressed));
 
@@ -498,29 +498,29 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(2002, 0, "LowPriority", ReturnIntValue(&System::low_priority));
 
   AddOpcode(
-      2223, 0, "SetMessageSpeed", CallFunction(&TextSystem::setMessageSpeed));
-  AddOpcode(2323, 0, "MessageSpeed", ReturnIntValue(&TextSystem::messageSpeed));
+      2223, 0, "SetMessageSpeed", CallFunction(&TextSystem::set_message_speed));
+  AddOpcode(2323, 0, "MessageSpeed", ReturnIntValue(&TextSystem::message_speed));
   AddOpcode(2600,
             0,
             "DefaultMessageSpeed",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
   AddOpcode(
-      2224, 0, "SetMessageNoWait", CallFunction(&TextSystem::setMessageNoWait));
+      2224, 0, "SetMessageNoWait", CallFunction(&TextSystem::set_message_no_wait));
   AddOpcode(
-      2324, 0, "MessageNoWait", ReturnIntValue(&TextSystem::messageNoWait));
+      2324, 0, "MessageNoWait", ReturnIntValue(&TextSystem::message_no_wait));
   AddOpcode(2601,
             0,
             "DefMessageNoWait",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED_MOD", 0));
 
-  AddOpcode(2250, 0, "SetAutoMode", CallFunction(&TextSystem::setAutoMode));
-  AddOpcode(2350, 0, "AutoMode", ReturnIntValue(&TextSystem::autoMode));
+  AddOpcode(2250, 0, "SetAutoMode", CallFunction(&TextSystem::SetAutoMode));
+  AddOpcode(2350, 0, "AutoMode", ReturnIntValue(&TextSystem::auto_mode));
   AddOpcode(
       2604, 0, "DefAutoMode", new ReturnGameexeInt("MESSAGE_KEY_WAIT_USE", 0));
 
   AddOpcode(
-      2251, 0, "SetAutoCharTime", CallFunction(&TextSystem::setAutoCharTime));
+      2251, 0, "SetAutoCharTime", CallFunction(&TextSystem::set_auto_char_time));
   AddOpcode(2351, 0, "AutoCharTime", ReturnIntValue(&TextSystem::autoCharTime));
   AddOpcode(2605,
             0,
@@ -528,8 +528,8 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
   AddOpcode(
-      2252, 0, "SetAutoBaseTime", CallFunction(&TextSystem::setAutoBaseTime));
-  AddOpcode(2352, 0, "AutoBaseTime", ReturnIntValue(&TextSystem::autoBaseTime));
+      2252, 0, "SetAutoBaseTime", CallFunction(&TextSystem::set_auto_base_time));
+  AddOpcode(2352, 0, "AutoBaseTime", ReturnIntValue(&TextSystem::auto_base_time));
   AddOpcode(2606,
             0,
             "DefAutoBaseTime",
@@ -571,10 +571,10 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(2243, 0, "SetSeEnabled", CallFunction(&SoundSystem::SetIsSeEnabled));
   AddOpcode(2343, 0, "SeEnabled", ReturnIntValue(&SoundSystem::is_se_enabled));
 
-  AddOpcode(2256, 0, "SetFontWeight", CallFunction(&TextSystem::setFontWeight));
-  AddOpcode(2356, 0, "FontWeight", ReturnIntValue(&TextSystem::fontWeight));
-  AddOpcode(2257, 0, "SetFontShadow", CallFunction(&TextSystem::setFontShadow));
-  AddOpcode(2357, 0, "FontShadow", ReturnIntValue(&TextSystem::fontShadow));
+  AddOpcode(2256, 0, "SetFontWeight", CallFunction(&TextSystem::set_font_weight));
+  AddOpcode(2356, 0, "FontWeight", ReturnIntValue(&TextSystem::font_weight));
+  AddOpcode(2257, 0, "SetFontShadow", CallFunction(&TextSystem::set_font_shadow));
+  AddOpcode(2357, 0, "FontShadow", ReturnIntValue(&TextSystem::font_shadow));
 
   AddUnsupportedOpcode(2054, 0, "SetReduceDistortion");
   AddUnsupportedOpcode(2004, 0, "ReduceDistortion");
@@ -595,15 +595,15 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddOpcode(2322, 0, "Generic2", ReturnIntValue(&EventSystem::generic2));
 
   AddOpcode(
-      2260, 0, "SetWindowAttrR", CallFunction(&TextSystem::setWindowAttrR));
+      2260, 0, "SetWindowAttrR", CallFunction(&TextSystem::SetWindowAttrR));
   AddOpcode(
-      2261, 0, "SetWindowAttrG", CallFunction(&TextSystem::setWindowAttrG));
+      2261, 0, "SetWindowAttrG", CallFunction(&TextSystem::SetWindowAttrG));
   AddOpcode(
-      2262, 0, "SetWindowAttrB", CallFunction(&TextSystem::setWindowAttrB));
+      2262, 0, "SetWindowAttrB", CallFunction(&TextSystem::SetWindowAttrB));
   AddOpcode(
-      2263, 0, "SetWindowAttrA", CallFunction(&TextSystem::setWindowAttrA));
+      2263, 0, "SetWindowAttrA", CallFunction(&TextSystem::SetWindowAttrA));
   AddOpcode(
-      2264, 0, "SetWindowAttrF", CallFunction(&TextSystem::setWindowAttrF));
+      2264, 0, "SetWindowAttrF", CallFunction(&TextSystem::SetWindowAttrF));
 
   AddOpcode(2267, 0, "SetWindowAttr", new SetWindowAttr);
 
@@ -621,11 +621,11 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
       2275, 0, "SetScreenMode", CallFunction(&GraphicsSystem::SetScreenMode));
   AddOpcode(2375, 0, "ScreenMode", ReturnIntValue(&GraphicsSystem::screen_mode));
 
-  AddOpcode(2360, 0, "WindowAttrR", ReturnIntValue(&TextSystem::windowAttrR));
-  AddOpcode(2361, 0, "WindowAttrG", ReturnIntValue(&TextSystem::windowAttrG));
-  AddOpcode(2362, 0, "WindowAttrB", ReturnIntValue(&TextSystem::windowAttrB));
-  AddOpcode(2363, 0, "WindowAttrA", ReturnIntValue(&TextSystem::windowAttrA));
-  AddOpcode(2364, 0, "WindowAttrF", ReturnIntValue(&TextSystem::windowAttrF));
+  AddOpcode(2360, 0, "WindowAttrR", ReturnIntValue(&TextSystem::window_attr_r));
+  AddOpcode(2361, 0, "WindowAttrG", ReturnIntValue(&TextSystem::window_attr_g));
+  AddOpcode(2362, 0, "WindowAttrB", ReturnIntValue(&TextSystem::window_attr_b));
+  AddOpcode(2363, 0, "WindowAttrA", ReturnIntValue(&TextSystem::window_attr_a));
+  AddOpcode(2364, 0, "WindowAttrF", ReturnIntValue(&TextSystem::window_attr_f));
 
   AddOpcode(2367, 0, "GetWindowAttr", new GetWindowAttr);
 

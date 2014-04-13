@@ -88,7 +88,7 @@ SDLSystem::~SDLSystem() {
 void SDLSystem::Run(RLMachine& machine) {
   // Give the event handler a chance to run.
   event_system_->ExecuteEventSystem(machine);
-  text_system_->executeTextSystem();
+  text_system_->ExecuteTextSystem();
   sound_system_->ExecuteSoundSystem();
   graphics_system_->ExecuteGraphicsSystem(machine);
 

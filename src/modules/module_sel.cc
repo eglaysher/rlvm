@@ -89,8 +89,8 @@ struct ClearAndRestoreWindow : public LongOperation {
   explicit ClearAndRestoreWindow(int in) : to_restore_(in) {}
 
   bool operator()(RLMachine& machine) {
-    machine.system().text().hideAllTextWindows();
-    machine.system().text().setActiveWindow(to_restore_);
+    machine.system().text().HideAllTextWindows();
+    machine.system().text().set_active_window(to_restore_);
     return true;
   }
 };
@@ -117,9 +117,9 @@ struct Sel_select_w : public RLOp_SpecialCase {
 
     // Restore the previous text state after the select operation completes.
     TextSystem& text = machine.system().text();
-    int active_window = text.activeWindow();
-    text.hideAllTextWindows();
-    text.setActiveWindow(window);
+    int active_window = text.active_window();
+    text.HideAllTextWindows();
+    text.set_active_window(window);
     machine.PushLongOperation(new ClearAndRestoreWindow(active_window));
 
     machine.PushLongOperation(new NormalSelectLongOperation(machine, element));

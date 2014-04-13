@@ -161,20 +161,20 @@ Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-void TextWakuNormal::setMousePosition(const Point& pos) {
+void TextWakuNormal::SetMousePosition(const Point& pos) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->setMousePosition(window_, pos);
+      button_map_[i]->SetMousePosition(window_, pos);
     }
   }
 }
 
-bool TextWakuNormal::handleMouseClick(RLMachine& machine,
+bool TextWakuNormal::HandleMouseClick(RLMachine& machine,
                                       const Point& pos,
                                       bool pressed) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      if (button_map_[i]->handleMouseClick(machine, window_, pos, pressed))
+      if (button_map_[i]->HandleMouseClick(machine, window_, pos, pressed))
         return true;
     }
   }
@@ -195,24 +195,24 @@ void TextWakuNormal::loadWindowWaku() {
   if (waku("CLEAR_BOX").Exists()) {
     button_map_[0].reset(new ActionTextWindowButton(
         system_,
-        ts.windowClearUse(),
+        ts.window_clear_use(),
         waku("CLEAR_BOX"),
         std::bind(&GraphicsSystem::ToggleInterfaceHidden, std::ref(gs))));
   }
   if (waku("MSGBKLEFT_BOX").Exists()) {
     button_map_[1].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
-        ts.windowMsgbkleftUse(),
+        ts.window_msgbkleft_use(),
         waku("MSGBKLEFT_BOX"),
-        std::bind(&TextSystem::backPage, std::ref(ts)),
+        std::bind(&TextSystem::BackPage, std::ref(ts)),
         250));
   }
   if (waku("MSGBKRIGHT_BOX").Exists()) {
     button_map_[2].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
-        ts.windowMsgbkrightUse(),
+        ts.window_msgbkright_use(),
         waku("MSGBKRIGHT_BOX"),
-        std::bind(&TextSystem::forwardPage, std::ref(ts)),
+        std::bind(&TextSystem::ForwardPage, std::ref(ts)),
         250));
   }
 
@@ -222,16 +222,16 @@ void TextWakuNormal::loadWindowWaku() {
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
     if (waku(oss.str()).Exists()) {
       button_map_[3 + i].reset(new ExbtnWindowButton(
-          system_, ts.windowExbtnUse(), waku(oss.str()), wbcall));
+          system_, ts.window_exbtn_use(), waku(oss.str()), wbcall));
     }
   }
 
   if (waku("READJUMP_BOX").Exists()) {
     ActivationTextWindowButton* readjump_box = new ActivationTextWindowButton(
         system_,
-        ts.windowReadJumpUse(),
+        ts.window_read_jump_use(),
         waku("READJUMP_BOX"),
-        std::bind(&TextSystem::setSkipMode, std::ref(ts), _1));
+        std::bind(&TextSystem::SetSkipMode, std::ref(ts), _1));
     readjump_box->setEnabledNotification(
         NotificationType::SKIP_MODE_ENABLED_CHANGED);
     readjump_box->setChangeNotification(
@@ -239,7 +239,7 @@ void TextWakuNormal::loadWindowWaku() {
 
     // Set the initial enabled state. If true, we'll get a signal enabling it
     // immediately.
-    readjump_box->setEnabled(ts.kidokuRead());
+    readjump_box->setEnabled(ts.kidoku_read());
 
     button_map_[10].reset(readjump_box);
   }
@@ -248,9 +248,9 @@ void TextWakuNormal::loadWindowWaku() {
     ActivationTextWindowButton* automode_button =
         new ActivationTextWindowButton(
             system_,
-            ts.windowAutomodeUse(),
+            ts.window_automode_use(),
             waku("AUTOMODE_BOX"),
-            std::bind(&TextSystem::setAutoMode, std::ref(ts), _1));
+            std::bind(&TextSystem::SetAutoMode, std::ref(ts), _1));
     automode_button->setChangeNotification(
         NotificationType::AUTO_MODE_STATE_CHANGED);
 
@@ -263,11 +263,11 @@ void TextWakuNormal::loadWindowWaku() {
    *
   string key = "MOVE_BOX";
   button_map_.insert(
-    key, new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
+    key, new TextWindowButton(ts.window_move_use(), waku("MOVE_BOX")));
 
   key = string("MSGBK_BOX");
   button_map_.insert(
-    key, new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
+    key, new TextWindowButton(ts.window_msgbk_use(), waku("MSGBK_BOX")));
   */
 }
 

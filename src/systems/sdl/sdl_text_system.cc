@@ -61,7 +61,7 @@ SDLTextSystem::~SDLTextSystem() {
   // reference so we'll just leak the FreeType structures.
 }
 
-boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
+boost::shared_ptr<TextWindow> SDLTextSystem::GetTextWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
     it =
@@ -74,7 +74,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   return it->second;
 }
 
-Size SDLTextSystem::renderGlyphOnto(
+Size SDLTextSystem::RenderGlyphOnto(
     const std::string& current,
     int font_size,
     bool italic,
@@ -106,7 +106,7 @@ Size SDLTextSystem::renderGlyphOnto(
   }
 
   boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour && sdl_system_.text().fontShadow()) {
+  if (shadow_colour && sdl_system_.text().font_shadow()) {
     SDL_Color sdl_shadow_colour;
     RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
 
@@ -135,7 +135,7 @@ Size SDLTextSystem::renderGlyphOnto(
   return size;
 }
 
-int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
+int SDLTextSystem::GetCharWidth(int size, uint16_t codepoint) {
   boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics(font.get(), codepoint, &minx, &maxx, &miny, &maxy, &advance);

@@ -120,7 +120,7 @@ bool TextWindowButton::isValid() const {
            location_[3] == 0 && location_[4] == 0);
 }
 
-void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
+void TextWindowButton::SetMousePosition(TextWindow& window, const Point& pos) {
   if (state_ == BUTTONSTATE_DISABLED)
     return;
 
@@ -139,7 +139,7 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
   }
 }
 
-bool TextWindowButton::handleMouseClick(RLMachine& machine,
+bool TextWindowButton::HandleMouseClick(RLMachine& machine,
                                         TextWindow& window,
                                         const Point& pos,
                                         bool pressed) {
@@ -321,7 +321,7 @@ ExbtnWindowButton::~ExbtnWindowButton() {}
 
 void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
   // Hide all text boxes when entering an Exbtn
-  machine.system().text().setSystemVisible(false);
+  machine.system().text().set_system_visible(false);
 
   // Push a LongOperation onto the stack which will restore
   // visibility when we return from this Exbtn call
