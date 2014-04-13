@@ -60,7 +60,7 @@ void SelectionElement::SetSelectionCallback(
 }
 
 bool SelectionElement::IsHighlighted(const Point& p) {
-  return Rect(pos_, normal_image_->size()).Contains(p);
+  return Rect(pos_, normal_image_->GetSize()).Contains(p);
 }
 
 void SelectionElement::SetMousePosition(const Point& pos) {
@@ -94,7 +94,7 @@ void SelectionElement::Render() {
   else
     target = normal_image_;
 
-  Size s = target->size();
+  Size s = target->GetSize();
 
-  target->renderToScreen(Rect(Point(0, 0), s), Rect(pos_, s), 255);
+  target->RenderToScreen(Rect(Point(0, 0), s), Rect(pos_, s), 255);
 }

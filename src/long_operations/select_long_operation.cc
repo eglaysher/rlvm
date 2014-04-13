@@ -327,9 +327,9 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   if (center_x) {
     int totalwidth = ((shown_option_count - 1) * reppos_x_);
     if (back_surface_)
-      totalwidth += back_surface_->size().width();
+      totalwidth += back_surface_->GetSize().width();
     else
-      totalwidth += name_surface_->getPattern(normal_frame_).rect.width();
+      totalwidth += name_surface_->GetPattern(normal_frame_).rect.width();
     baseposx = (screen_size.width() / 2) - (totalwidth / 2);
   } else {
     baseposx = basepos_x_;
@@ -339,7 +339,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   if (center_y) {
     int totalheight = ((shown_option_count - 1) * reppos_y_);
     if (back_surface_)
-      totalheight += back_surface_->size().height();
+      totalheight += back_surface_->GetSize().height();
     baseposy = (screen_size.height() / 2) - (totalheight / 2);
   } else {
     baseposy = basepos_y_;
@@ -368,10 +368,10 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
       o.select_surface = ts.renderText(
           text, moji_size_, 0, 0, text_selection_colour, &shadow_colour, 0);
       if (back_surface_) {
-        o.bounding_rect = Rect(baseposx, baseposy, back_surface_->size());
+        o.bounding_rect = Rect(baseposx, baseposy, back_surface_->GetSize());
       } else {
         o.bounding_rect =
-            Rect(baseposx, baseposy, name_surface_->getPattern(0).rect.size());
+            Rect(baseposx, baseposy, name_surface_->GetPattern(0).rect.size());
       }
 
       buttons_.push_back(o);
@@ -460,13 +460,13 @@ void ButtonSelectLongOperation::Render(std::ostream* tree) {
     bounding_rect = Rect(bounding_rect.origin() + offset, bounding_rect.size());
 
     if (back_surface_) {
-      back_surface_->renderToScreenAsColorMask(back_surface_->rect(),
+      back_surface_->RenderToScreenAsColorMask(back_surface_->GetRect(),
                                                bounding_rect,
                                                window_bg_colour_,
                                                window_filter_);
     }
     if (name_surface_) {
-      name_surface_->renderToScreen(name_surface_->getPattern(frame).rect,
+      name_surface_->RenderToScreen(name_surface_->GetPattern(frame).rect,
                                     bounding_rect);
     }
 
@@ -482,6 +482,6 @@ void ButtonSelectLongOperation::RenderTextSurface(
     const boost::shared_ptr<Surface>& text_surface,
     const Rect& bounding_rect) {
   // Render the correct text in the correct place.
-  Rect text_bounding_rect = text_surface->size().CenteredIn(bounding_rect);
-  text_surface->renderToScreen(text_surface->rect(), text_bounding_rect);
+  Rect text_bounding_rect = text_surface->GetSize().CenteredIn(bounding_rect);
+  text_surface->RenderToScreen(text_surface->GetRect(), text_bounding_rect);
 }

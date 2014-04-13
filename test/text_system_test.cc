@@ -266,7 +266,7 @@ TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
       sys.renderText("One", 20, 0, 0, RGBColour::White(), NULL, 3);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
-  EXPECT_EQ(20, text_surface->size().height());
+  EXPECT_EQ(20, text_surface->GetSize().height());
 }
 
 TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
@@ -281,14 +281,14 @@ TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
                      0);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
-  EXPECT_EQ(20, text_surface->size().height());
+  EXPECT_EQ(20, text_surface->GetSize().height());
 }
 
 TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
       sys.renderText("OneTwo", 20, 0, 0, RGBColour::White(), NULL, 3);
-  EXPECT_EQ(40, text_surface->size().height());
+  EXPECT_EQ(40, text_surface->GetSize().height());
 
   // Tests the location of rendered glyphs.
   struct {
@@ -315,7 +315,7 @@ TEST_F(TextSystemTest, DontCrashWithNoEmojiFile) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
       sys.renderText("One＃Ａ００Two", 20, 0, 0, RGBColour::White(), NULL, -1);
-  EXPECT_EQ(20, text_surface->size().height());
+  EXPECT_EQ(20, text_surface->GetSize().height());
 }
 
 TEST_F(TextSystemTest, TestEmoji) {
@@ -330,7 +330,7 @@ TEST_F(TextSystemTest, TestEmoji) {
 
   // Our mock surface should render its icon between the Es.
   EXPECT_CALL(*mock,
-              blitToSurface(_,
+              BlitToSurface(_,
                             Rect(24 * 2, 0, Size(24, 24)),
                             Rect(20, 0, Size(24, 24)),
                             255,
@@ -339,7 +339,7 @@ TEST_F(TextSystemTest, TestEmoji) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
       sys.renderText("E＃Ａ０２E", 20, 0, 0, RGBColour::White(), NULL, -1);
-  EXPECT_EQ(20, text_surface->size().height());
+  EXPECT_EQ(20, text_surface->GetSize().height());
 
   // Tests the location of rendered glyphs.
   struct {
@@ -363,6 +363,6 @@ TEST_F(TextSystemTest, TestEmptyString) {
   TestTextSystem& sys = getTextSystem();
   boost::shared_ptr<Surface> text_surface =
       sys.renderText("", 20, 0, 0, RGBColour::White(), NULL, -1);
-  EXPECT_GT(text_surface->size().width(), 0);
-  EXPECT_GT(text_surface->size().height(), 0);
+  EXPECT_GT(text_surface->GetSize().width(), 0);
+  EXPECT_GT(text_surface->GetSize().height(), 0);
 }

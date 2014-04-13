@@ -68,7 +68,7 @@ bool Effect::operator()(RLMachine& machine) {
     graphics.BeginFrame();
 
     if (BlitOriginalImage()) {
-      dst_surface().renderToScreen(
+      dst_surface().RenderToScreen(
           Rect(Point(0, 0), size()), Rect(Point(0, 0), size()), 255);
     }
 
@@ -98,7 +98,7 @@ BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
 void BlitAfterEffectFinishes::PerformAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
-  src_surface_->blitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
+  src_surface_->BlitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
 
   // Now force a screen refresh
   machine.system().graphics().ForceRefresh();

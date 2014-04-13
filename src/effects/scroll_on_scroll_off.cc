@@ -86,7 +86,7 @@ void TopToBottomDrawer::ScrollOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height - amount_visible),
       Rect::GRP(0, amount_visible, width, height),
       255);
@@ -97,7 +97,7 @@ void TopToBottomDrawer::ScrollOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(0, height - amount_visible, width, height),
       Rect::GRP(0, 0, width, amount_visible),
       255);
@@ -108,7 +108,7 @@ void TopToBottomDrawer::SquashOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(0, amount_visible, width, height),
       255);
@@ -119,7 +119,7 @@ void TopToBottomDrawer::SquashOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(Rect::GRP(0, 0, width, height),
+  effect.src_surface().RenderToScreen(Rect::GRP(0, 0, width, height),
                                       Rect::GRP(0, 0, width, amount_visible),
                                       255);
 }
@@ -135,7 +135,7 @@ void BottomToTopDrawer::ScrollOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(0, 0, width, amount_visible),
       Rect::GRP(0, height - amount_visible, width, height),
       255);
@@ -146,7 +146,7 @@ void BottomToTopDrawer::ScrollOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, amount_visible, width, height),
       Rect::GRP(0, 0, width, height - amount_visible),
       255);
@@ -157,7 +157,7 @@ void BottomToTopDrawer::SquashOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(0, height - amount_visible, width, height),
       255);
@@ -168,7 +168,7 @@ void BottomToTopDrawer::SquashOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(0, 0, width, height - amount_visible),
       255);
@@ -185,7 +185,7 @@ void LeftToRightDrawer::ScrollOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(width - amount_visible, 0, width, height),
       Rect::GRP(0, 0, amount_visible, height),
       255);
@@ -196,7 +196,7 @@ void LeftToRightDrawer::ScrollOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width - amount_visible, height),
       Rect::GRP(amount_visible, 0, width, height),
       255);
@@ -207,7 +207,7 @@ void LeftToRightDrawer::SquashOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(Rect::GRP(0, 0, width, height),
+  effect.src_surface().RenderToScreen(Rect::GRP(0, 0, width, height),
                                       Rect::GRP(0, 0, amount_visible, height),
                                       255);
 }
@@ -217,7 +217,7 @@ void LeftToRightDrawer::SquashOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(amount_visible, 0, width, height),
       255);
@@ -234,7 +234,7 @@ void RightToLeftDrawer::ScrollOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(amount_visible, 0, width, height),
       Rect::GRP(0, 0, width - amount_visible, height),
       255);
@@ -245,7 +245,7 @@ void RightToLeftDrawer::ScrollOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(0, 0, amount_visible, height),
       Rect::GRP(width - amount_visible, 0, width, height),
       255);
@@ -256,7 +256,7 @@ void RightToLeftDrawer::SquashOff(GraphicsSystem& graphics,
                                   int amount_visible,
                                   int width,
                                   int height) {
-  effect.dst_surface().renderToScreen(
+  effect.dst_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(0, 0, width - amount_visible, height),
       255);
@@ -267,7 +267,7 @@ void RightToLeftDrawer::SquashOn(GraphicsSystem& graphics,
                                  int amount_visible,
                                  int width,
                                  int height) {
-  effect.src_surface().renderToScreen(
+  effect.src_surface().RenderToScreen(
       Rect::GRP(0, 0, width, height),
       Rect::GRP(width - amount_visible, 0, width, height),
       255);
@@ -323,7 +323,7 @@ void SlideOn::ComposeEffectsFor(GraphicsSystem& system,
   Rect screen_rect = system.screen_rect();
 
   // Draw the old image
-  effect.dst_surface().renderToScreen(screen_rect, screen_rect, 255);
+  effect.dst_surface().RenderToScreen(screen_rect, screen_rect, 255);
 
   drawer.ScrollOn(system, effect, amount_visible, s.width(), s.height());
 }
@@ -335,7 +335,7 @@ void SlideOff::ComposeEffectsFor(GraphicsSystem& system,
   Size s = system.screen_size();
   Rect screen_rect = system.screen_rect();
 
-  effect.src_surface().renderToScreen(screen_rect, screen_rect, 255);
+  effect.src_surface().RenderToScreen(screen_rect, screen_rect, 255);
 
   drawer.ScrollOff(system, effect, amount_visible, s.width(), s.height());
 }

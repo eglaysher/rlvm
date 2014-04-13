@@ -44,50 +44,53 @@ class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLRenderToTextureSurface();
 
-  virtual void dump();
+  virtual void Dump() override;
 
   // Blits to another surface
-  virtual void blitToSurface(Surface& surface,
+  virtual void BlitToSurface(Surface& surface,
                              const Rect& src,
                              const Rect& dst,
                              int alpha = 255,
                              bool use_src_alpha = true) const;
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
                               int alpha = 255) const;
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
                               const int opacity[4]) const;
 
-  virtual void renderToScreenAsColorMask(const Rect& src,
+  virtual void RenderToScreenAsColorMask(const Rect& src,
                                          const Rect& dst,
                                          const RGBAColour& rgba,
                                          int filter) const;
 
-  virtual void renderToScreenAsObject(const GraphicsObject& rp,
+  virtual void RenderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
                                       int alpha) const;
 
-  virtual void fill(const RGBAColour& colour);
-  virtual void fill(const RGBAColour& colour, const Rect& rect);
-  virtual void invert(const Rect& rect);
-  virtual void mono(const Rect& area);
-  virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& rect);
-  virtual void applyColour(const RGBColour& colour, const Rect& area);
+  virtual void Fill(const RGBAColour& colour) override;
+  virtual void Fill(const RGBAColour& colour, const Rect& rect) override;
+  virtual void Invert(const Rect& rect) override;
+  virtual void Mono(const Rect& area) override;
+  virtual void ToneCurve(const ToneCurveRGBMap effect,
+                         const Rect& rect) override;
+  virtual void ApplyColour(const RGBColour& colour,
+                           const Rect& area) override;
 
-  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const;
+  virtual void GetDCPixel(const Point& pos, int& r, int& g,
+                          int& b) const override;
 
-  virtual Size size() const;
+  virtual Size GetSize() const override;
 
-  virtual Surface* clone() const;
+  virtual Surface* Clone() const override;
 
   // NotificationObserver:
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
-                       const NotificationDetails& details);
+                       const NotificationDetails& details) override;
 
  private:
   // The SDLTexture which wraps one or more OpenGL textures

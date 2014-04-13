@@ -143,7 +143,7 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
     }
 
     // TODO(erg): Do we want to skip this if no alpha?
-    surface->renderToScreenAsObject(go, src, dst, alpha);
+    surface->RenderToScreenAsObject(go, src, dst, alpha);
   }
 }
 
@@ -191,7 +191,7 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
 }
 
 Rect GraphicsObjectData::SrcRect(const GraphicsObject& go) {
-  return CurrentSurface(go)->getPattern(go.GetPattNo()).rect;
+  return CurrentSurface(go)->GetPattern(go.GetPattNo()).rect;
 }
 
 Point GraphicsObjectData::DstOrigin(const GraphicsObject& go) {
@@ -201,8 +201,8 @@ Point GraphicsObjectData::DstOrigin(const GraphicsObject& go) {
 
   boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    return Point(surface->getPattern(go.GetPattNo()).originX,
-                 surface->getPattern(go.GetPattNo()).originY);
+    return Point(surface->GetPattern(go.GetPattNo()).originX,
+                 surface->GetPattern(go.GetPattNo()).originY);
   }
 
   return Point();

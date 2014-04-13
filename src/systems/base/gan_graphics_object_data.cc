@@ -215,7 +215,7 @@ int GanGraphicsObjectData::PixelWidth(
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
+      const Surface::GrpRect& rect = image_->GetPattern(frame.pattern);
       return int(rendering_properties.GetWidthScaleFactor() *
                  rect.rect.width());
     }
@@ -229,7 +229,7 @@ int GanGraphicsObjectData::PixelHeight(
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
+      const Surface::GrpRect& rect = image_->GetPattern(frame.pattern);
       return int(rendering_properties.GetHeightScaleFactor() *
                  rect.rect.height());
     }
@@ -285,7 +285,7 @@ boost::shared_ptr<const Surface> GanGraphicsObjectData::CurrentSurface(
 Rect GanGraphicsObjectData::SrcRect(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
-    return image_->getPattern(frame.pattern).rect;
+    return image_->GetPattern(frame.pattern).rect;
   }
 
   return Rect();

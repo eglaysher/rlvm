@@ -57,7 +57,7 @@ MouseCursor::MouseCursor(System& system,
   int alphaR, alphaG, alphaB;
   cursor_surface->GetDCPixel(Point(0, 0), alphaR, alphaG, alphaB);
 
-  cursor_surface_ = cursor_surface->clipAsColorMask(
+  cursor_surface_ = cursor_surface->ClipAsColorMask(
       Rect(8, 8, Size(CURSOR_SIZE_INT * count_, CURSOR_SIZE_INT)),
       alphaR,
       alphaG,
@@ -82,7 +82,7 @@ void MouseCursor::Execute(System& system) {
 
 void MouseCursor::RenderHotspotAt(const Point& mouse_location) {
   Point render_point = GetTopLeftForHotspotAt(mouse_location);
-  cursor_surface_->renderToScreen(
+  cursor_surface_->RenderToScreen(
       Rect(current_frame_ * CURSOR_SIZE_INT, 0, CURSOR_SIZE),
       Rect(render_point, CURSOR_SIZE));
 }

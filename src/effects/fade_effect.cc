@@ -46,7 +46,7 @@ void FadeEffect::PerformEffectForTime(RLMachine& machine, int currentTime) {
   // Blit the source image to the screen with the opacity
   int opacity = int((float(currentTime) / duration()) * 255);
 
-  src_surface().renderToScreen(Rect(0, 0, size()), Rect(0, 0, size()), opacity);
+  src_surface().RenderToScreen(Rect(0, 0, size()), Rect(0, 0, size()), opacity);
 }
 
 bool FadeEffect::BlitOriginalImage() const { return true; }

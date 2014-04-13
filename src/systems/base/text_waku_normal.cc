@@ -102,8 +102,8 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_backing_) {
-    Size backing_size = waku_backing_->size();
-    waku_backing_->renderToScreenAsColorMask(Rect(Point(0, 0), backing_size),
+    Size backing_size = waku_backing_->GetSize();
+    waku_backing_->RenderToScreenAsColorMask(Rect(Point(0, 0), backing_size),
                                              Rect(box_location, backing_size),
                                              window_.colour(),
                                              window_.filter());
@@ -115,8 +115,8 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_main_) {
-    Size main_size = waku_main_->size();
-    waku_main_->renderToScreen(
+    Size main_size = waku_main_->GetSize();
+    waku_main_->RenderToScreen(
         Rect(Point(0, 0), main_size), Rect(box_location, main_size), 255);
 
     if (tree) {
@@ -138,9 +138,9 @@ void TextWakuNormal::renderButtons() {
 
 Size TextWakuNormal::getSize(const Size& text_surface) const {
   if (waku_main_)
-    return waku_main_->size();
+    return waku_main_->GetSize();
   else if (waku_backing_)
-    return waku_backing_->size();
+    return waku_backing_->GetSize();
   else
     return text_surface;
 }
@@ -280,8 +280,8 @@ void TextWakuNormal::setWakuMain(const std::string& name) {
 
 void TextWakuNormal::setWakuBacking(const std::string& name) {
   if (name != "") {
-    waku_backing_.reset(system_.graphics().GetSurfaceNamed(name)->clone());
-    waku_backing_->setIsMask(true);
+    waku_backing_.reset(system_.graphics().GetSurfaceNamed(name)->Clone());
+    waku_backing_->SetIsMask(true);
   } else {
     waku_backing_.reset();
   }

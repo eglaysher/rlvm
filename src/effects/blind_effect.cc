@@ -104,7 +104,7 @@ void BlindTopToBottomEffect::PerformEffectForTime(RLMachine& machine,
 }
 
 void BlindTopToBottomEffect::RenderPolygon(int polyStart, int polyEnd) {
-  src_surface().renderToScreen(Rect::GRP(0, polyStart, width(), polyEnd),
+  src_surface().RenderToScreen(Rect::GRP(0, polyStart, width(), polyEnd),
                                Rect::GRP(0, polyStart, width(), polyEnd),
                                255);
 }
@@ -130,7 +130,7 @@ void BlindBottomToTopEffect::PerformEffectForTime(RLMachine& machine,
 
 void BlindBottomToTopEffect::RenderPolygon(int polyStart, int polyEnd) {
   // Render polygon
-  src_surface().renderToScreen(Rect::GRP(0, polyEnd, width(), polyStart),
+  src_surface().RenderToScreen(Rect::GRP(0, polyEnd, width(), polyStart),
                                Rect::GRP(0, polyEnd, width(), polyStart),
                                255);
 }
@@ -155,7 +155,7 @@ void BlindLeftToRightEffect::PerformEffectForTime(RLMachine& machine,
 }
 
 void BlindLeftToRightEffect::RenderPolygon(int polyStart, int polyEnd) {
-  src_surface().renderToScreen(Rect::GRP(polyStart, 0, polyEnd, height()),
+  src_surface().RenderToScreen(Rect::GRP(polyStart, 0, polyEnd, height()),
                                Rect::GRP(polyStart, 0, polyEnd, height()),
                                255);
 }
@@ -180,7 +180,7 @@ void BlindRightToLeftEffect::PerformEffectForTime(RLMachine& machine,
 }
 
 void BlindRightToLeftEffect::RenderPolygon(int polyStart, int polyEnd) {
-  src_surface().renderToScreen(Rect::GRP(polyEnd, 0, polyStart, height()),
+  src_surface().RenderToScreen(Rect::GRP(polyEnd, 0, polyStart, height()),
                                Rect::GRP(polyEnd, 0, polyStart, height()),
                                255);
 }

@@ -80,20 +80,20 @@ class Texture {
   int height() { return logical_height_; }
   GLuint textureId() { return texture_id_; }
 
-  void renderToScreenAsObject(const GraphicsObject& go,
+  void RenderToScreenAsObject(const GraphicsObject& go,
                               const SDLSurface& surface,
                               const Rect& srcRect,
                               const Rect& dstRect,
                               int alpha);
 
-  void renderToScreen(const Rect& src, const Rect& dst, int opacity);
+  void RenderToScreen(const Rect& src, const Rect& dst, int opacity);
 
-  void renderToScreenAsColorMask(const Rect& src,
+  void RenderToScreenAsColorMask(const Rect& src,
                                  const Rect& dst,
                                  const RGBAColour& rgba,
                                  int filter);
 
-  void renderToScreen(const Rect& src, const Rect& dst, const int opacity[4]);
+  void RenderToScreen(const Rect& src, const Rect& dst, const int opacity[4]);
 
  private:
   // Returns a shared buffer of at least size. This is not thread safe

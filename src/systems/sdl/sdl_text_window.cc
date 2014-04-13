@@ -66,7 +66,7 @@ void SDLTextWindow::clearWin() {
   // Allocate the text window surface
   if (!surface_)
     surface_.reset(new SDLSurface(getSDLGraphics(system()), textSurfaceSize()));
-  surface_->fill(RGBAColour::Clear());
+  surface_->Fill(RGBAColour::Clear());
 
   name_surface_.reset();
 }

@@ -53,17 +53,17 @@ void MockSurface::allocate(const Size& size) {
 
 void MockSurface::deallocate() { allocated_ = false; }
 
-Size MockSurface::size() const { return size_; }
+Size MockSurface::GetSize() const { return size_; }
 
-boost::shared_ptr<Surface> MockSurface::clipAsColorMask(const Rect& rect,
+boost::shared_ptr<Surface> MockSurface::ClipAsColorMask(const Rect& rect,
                                                         int r,
                                                         int g,
-                                                        int b) {
+                                                        int b) const {
   return boost::shared_ptr<Surface>(new ::testing::NiceMock<MockSurface>(
       "Clip of " + surface_name_, rect.size()));
 }
 
-Surface* MockSurface::clone() const {
+Surface* MockSurface::Clone() const {
   return new ::testing::NiceMock<MockSurface>("Copy of " + surface_name_,
                                               size_);
 }

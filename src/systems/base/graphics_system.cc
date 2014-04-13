@@ -486,7 +486,7 @@ void GraphicsSystem::DrawFrame(std::ostream* tree) {
   switch (background_type_) {
     case BACKGROUND_DC0: {
       // Display DC0
-      GetDC(0)->renderToScreen(screen_rect(), screen_rect(), 255);
+      GetDC(0)->RenderToScreen(screen_rect(), screen_rect(), 255);
       if (tree) {
         // TODO(erg): How do we print the new graphics stack?
         *tree << "Graphic Stack: UNDER CONSTRUCTION" << endl;
@@ -497,7 +497,7 @@ void GraphicsSystem::DrawFrame(std::ostream* tree) {
       if (hik_renderer_) {
         hik_renderer_->Render(tree);
       } else {
-        GetHaikei()->renderToScreen(screen_rect(), screen_rect(), 255);
+        GetHaikei()->RenderToScreen(screen_rect(), screen_rect(), 255);
         if (tree) {
           *tree << "[Haikei bitmap: " << default_bgr_name_ << "]" << endl;
         }
@@ -785,7 +785,7 @@ void GraphicsSystem::TakeSavepointSnapshot() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::ClearAllDCs() {
-  GetDC(0)->fill(RGBAColour::Black());
+  GetDC(0)->Fill(RGBAColour::Black());
 
   for (int i = 1; i < 16; ++i)
     FreeDC(i);

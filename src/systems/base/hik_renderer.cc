@@ -145,14 +145,14 @@ void HIKRenderer::Render(std::ostream* tree) {
     if (frame.grp_pattern != -1)
       pattern_to_use = frame.grp_pattern;
 
-    Rect src_rect = frame.surface->getPattern(pattern_to_use).rect;
+    Rect src_rect = frame.surface->GetPattern(pattern_to_use).rect;
     src_rect =
         Rect(src_rect.origin() + Size(x_offset_, y_offset_), src_rect.size());
     Rect dest_rect(dest_point, src_rect.size());
     if (it->use_clip_area)
       ClipDestination(it->clip_area, src_rect, dest_rect);
 
-    frame.surface->renderToScreen(src_rect, dest_rect, frame.opacity);
+    frame.surface->RenderToScreen(src_rect, dest_rect, frame.opacity);
 
     if (tree) {
       *tree << "    [L:" << (std::distance(script_->layers().begin(), it) + 1)

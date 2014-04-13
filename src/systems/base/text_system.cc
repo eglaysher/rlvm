@@ -633,7 +633,7 @@ boost::shared_ptr<Surface> TextSystem::renderText(const std::string& utf8str,
   // black, right?
   boost::shared_ptr<Surface> surface(
       system().graphics().BuildSurface(Size(max_width, total_height)));
-  surface->fill(RGBAColour::Clear());
+  surface->Fill(RGBAColour::Clear());
 
   RGBColour current_colour = colour;
   int currentX = 0;
@@ -755,10 +755,10 @@ boost::shared_ptr<Surface> TextSystem::renderText(const std::string& utf8str,
         // Emoji surfaces don't have internal pattnos. Instead, assume that
         // icons are square and laid out to the right, sort of like mouse
         // cursors.
-        int height = emoji_surface->size().height();
+        int height = emoji_surface->GetSize().height();
         Rect src = Rect(height * emoji_id, 0, Size(height, height));
         Rect dst = Rect(currentX, currentY, Size(height, height));
-        emoji_surface->blitToSurface(*surface, src, dst, 255, false);
+        emoji_surface->BlitToSurface(*surface, src, dst, 255, false);
       }
 
       currentX += size + xspace;

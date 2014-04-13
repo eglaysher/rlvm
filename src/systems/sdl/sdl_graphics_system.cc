@@ -467,7 +467,7 @@ void SDLGraphicsSystem::SetMinimumSizeForDC(int dc, Size size) {
   if (display_contexts_[dc] == NULL || !display_contexts_[dc]->allocated()) {
     AllocateDC(dc, size);
   } else {
-    Size current = display_contexts_[dc]->size();
+    Size current = display_contexts_[dc]->GetSize();
     if (current.width() < size.width() || current.height() < size.height()) {
       // Make a new surface of the maximum size.
       Size maxSize = current.SizeUnion(size);
@@ -475,8 +475,9 @@ void SDLGraphicsSystem::SetMinimumSizeForDC(int dc, Size size) {
       boost::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
       newdc->allocate(maxSize);
 
-      display_contexts_[dc]->blitToSurface(
-          *newdc, display_contexts_[dc]->rect(), display_contexts_[dc]->rect());
+      display_contexts_[dc]->BlitToSurface(
+          *newdc, display_contexts_[dc]->GetRect(),
+          display_contexts_[dc]->GetRect());
 
       display_contexts_[dc] = newdc;
     }
@@ -488,7 +489,7 @@ void SDLGraphicsSystem::FreeDC(int dc) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
-    GetDC(1)->fill(RGBAColour::Black());
+    GetDC(1)->Fill(RGBAColour::Black());
   } else {
     display_contexts_[dc]->deallocate();
   }
@@ -658,7 +659,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
       oss << "Tone curve index " << effect_no << " is invalid.";
       throw rlvm::Exception(oss.str());
     }
-    surface_to_ret.get()->toneCurve(
+    surface_to_ret.get()->ToneCurve(
         globals().tone_curves.getEffect(effect_no / 10 - 1),
         Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
   }
@@ -679,7 +680,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
 
   // If requesting a DC that doesn't exist, allocate it first.
   if (display_contexts_[dc]->rawSurface() == NULL)
-    AllocateDC(dc, display_contexts_[0]->size());
+    AllocateDC(dc, display_contexts_[0]->GetSize());
 
   return display_contexts_[dc];
 }

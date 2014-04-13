@@ -67,18 +67,18 @@ class SDLSurface : public Surface, public NotificationObserver {
   SDLSurface(SDLGraphicsSystem* system, const Size& size);
   ~SDLSurface();
 
-  virtual void EnsureUploaded() const;
+  virtual void EnsureUploaded() const override;
 
   void registerForNotification(GraphicsSystem* system);
 
   // Whether we have an underlying allocated surface.
   bool allocated() { return surface_; }
 
-  virtual void setIsMask(const bool is) { is_mask_ = is; }
+  virtual void SetIsMask(const bool is) override { is_mask_ = is; }
 
   void buildRegionTable(const Size& size);
 
-  void dump();
+  virtual void Dump() override;
 
   void allocate(const Size& size);
   void allocate(const Size& size, bool is_dc0);
@@ -88,11 +88,11 @@ class SDLSurface : public Surface, public NotificationObserver {
 
   SDL_Surface* rawSurface() { return surface_; }
 
-  virtual void blitToSurface(Surface& dest_surface,
+  virtual void BlitToSurface(Surface& dest_surface,
                              const Rect& src,
                              const Rect& dst,
                              int alpha = 255,
-                             bool use_src_alpha = true) const;
+                             bool use_src_alpha = true) const override;
 
   void blitFROMSurface(SDL_Surface* src_surface,
                        const Rect& src,
@@ -100,50 +100,50 @@ class SDLSurface : public Surface, public NotificationObserver {
                        int alpha = 255,
                        bool use_src_alpha = true);
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
-                              int alpha = 255) const;
+                              int alpha = 255) const override;
 
-  virtual void renderToScreenAsColorMask(const Rect& src,
+  virtual void RenderToScreenAsColorMask(const Rect& src,
                                          const Rect& dst,
                                          const RGBAColour& rgba,
-                                         int filter) const;
+                                         int filter) const override;
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
-                              const int opacity[4]) const;
+                              const int opacity[4]) const override;
 
   // Used internally; not exposed to the general graphics system
-  virtual void renderToScreenAsObject(const GraphicsObject& rp,
+  virtual void RenderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
-                                      int alpha) const;
+                                      int alpha) const override;
 
-  virtual int numPatterns() const;
+  virtual int GetNumPatterns() const override;
 
   // Returns pattern information.
-  virtual const GrpRect& getPattern(int patt_no) const;
+  virtual const GrpRect& GetPattern(int patt_no) const override;
 
   // -----------------------------------------------------------------------
 
-  virtual Size size() const;
+  virtual Size GetSize() const override;
 
-  virtual void fill(const RGBAColour& colour);
-  virtual void fill(const RGBAColour& colour, const Rect& area);
-  virtual void invert(const Rect& rect);
-  virtual void mono(const Rect& area);
-  virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& area);
-  virtual void applyColour(const RGBColour& colour, const Rect& area);
+  virtual void Fill(const RGBAColour& colour) override;
+  virtual void Fill(const RGBAColour& colour, const Rect& area) override;
+  virtual void ToneCurve(const ToneCurveRGBMap effect, const Rect& area) override;
+  virtual void Invert(const Rect& rect) override;
+  virtual void Mono(const Rect& area) override;
+  virtual void ApplyColour(const RGBColour& colour, const Rect& area) override;
 
   SDL_Surface* surface() { return surface_; }
 
-  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const;
-  virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
+  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const override;
+  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
                                                      int r,
                                                      int g,
-                                                     int b) const;
+                                                     int b) const override;
 
-  virtual Surface* clone() const;
+  virtual Surface* Clone() const;
 
   void interpretAsColorMask(int r, int g, int b, int alpha);
 

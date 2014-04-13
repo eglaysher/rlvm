@@ -172,10 +172,10 @@ void TextWindowButton::render(TextWindow& window,
                               const boost::shared_ptr<const Surface>& buttons,
                               int base_pattern) {
   if (isValid()) {
-    Surface::GrpRect rect = buttons->getPattern(base_pattern + state_);
+    Surface::GrpRect rect = buttons->GetPattern(base_pattern + state_);
     if (!(rect.rect.is_empty())) {
       Rect dest = Rect(location(window).origin(), rect.rect.size());
-      buttons->renderToScreen(rect.rect, dest, 255);
+      buttons->RenderToScreen(rect.rect, dest, 255);
     }
   }
 }

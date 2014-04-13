@@ -71,10 +71,11 @@ void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   // the screen.
   if (dc == 1) {
     boost::shared_ptr<MockSurface> dc0 = display_contexts_[0];
-    if (size.width() < dc0->size().width())
-      size.set_width(dc0->size().width());
-    if (size.height() < dc0->size().height())
-      size.set_height(dc0->size().height());
+    Size dc0_size = dc0->GetSize();
+    if (size.width() < dc0_size.width())
+      size.set_width(dc0_size.width());
+    if (size.height() < dc0_size.height())
+      size.set_height(dc0_size.height());
   }
 
   // Allocate a new obj.
@@ -86,7 +87,7 @@ void TestGraphicsSystem::FreeDC(int dc) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
-    display_contexts_[1]->fill(RGBAColour::Black());
+    display_contexts_[1]->Fill(RGBAColour::Black());
   } else {
     display_contexts_[dc]->deallocate();
   }

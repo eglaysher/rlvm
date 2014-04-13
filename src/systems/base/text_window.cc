@@ -416,7 +416,7 @@ void TextWindow::render(std::ostream* tree) {
   boost::shared_ptr<Surface> text_surface = textSurface();
 
   if (text_surface && isVisible()) {
-    Size surface_size = text_surface->size();
+    Size surface_size = text_surface->GetSize();
 
     // POINT
     Point box = windowRect().origin();
@@ -447,11 +447,11 @@ void TextWindow::render(std::ostream* tree) {
         Point insertion_point = namebox_waku_->insertionPoint(
             r,
             Size(horizontal_namebox_padding_, vertical_namebox_padding_),
-            name_surface->size(),
+            name_surface->GetSize(),
             namebox_centering_);
-        name_surface->renderToScreen(
-            name_surface->rect(),
-            Rect(insertion_point, name_surface->size()),
+        name_surface->RenderToScreen(
+            name_surface->GetRect(),
+            Rect(insertion_point, name_surface->GetSize()),
             255);
 
         if (tree) {
@@ -462,7 +462,7 @@ void TextWindow::render(std::ostream* tree) {
       renderFaces(tree, 0);
       renderKoeReplayButtons(tree);
 
-      text_surface->renderToScreen(
+      text_surface->RenderToScreen(
           Rect(Point(0, 0), surface_size), Rect(textOrigin, surface_size), 255);
 
       if (tree) {
@@ -481,8 +481,8 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
 
       Rect dest(windowRect().x() + face_slot_[i]->x,
                 windowRect().y() + face_slot_[i]->y,
-                surface->size());
-      surface->renderToScreen(surface->rect(), dest, 255);
+                surface->GetSize());
+      surface->RenderToScreen(surface->GetRect(), dest, 255);
 
       if (tree) {
         *tree << "    Face Slot #" << i << ": " << dest << endl;
@@ -496,10 +496,10 @@ void TextWindow::renderKoeReplayButtons(std::ostream* tree) {
            koe_replay_button_.begin();
        it != koe_replay_button_.end();
        ++it) {
-    koe_replay_info_->icon->renderToScreen(
-        Rect(Point(0, 0), koe_replay_info_->icon->size()),
+    koe_replay_info_->icon->RenderToScreen(
+        Rect(Point(0, 0), koe_replay_info_->icon->GetSize()),
         Rect(textSurfaceRect().origin() + it->first,
-             koe_replay_info_->icon->size()),
+             koe_replay_info_->icon->GetSize()),
         255);
   }
 }
@@ -706,7 +706,7 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
        it != koe_replay_button_.end();
        ++it) {
     Rect r = Rect(textSurfaceRect().origin() + it->first,
-                  koe_replay_info_->icon->size());
+                  koe_replay_info_->icon->GetSize());
     if (r.Contains(pos)) {
       // We only want to actually replay the voice clip once, but we want to
       // catch both clicks.

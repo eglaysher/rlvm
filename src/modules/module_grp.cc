@@ -79,7 +79,7 @@ void blitDC1toDC0(RLMachine& machine) {
   boost::shared_ptr<Surface> dst = graphics.GetDC(0);
 
   // Blit DC1 onto DC0, with full opacity, and end the operation
-  src->blitToSurface(*dst, src->rect(), dst->rect(), 255);
+  src->BlitToSurface(*dst, src->GetRect(), dst->GetRect(), 255);
 
   // Mark that the background should be DC0 instead of the Haikei.
   graphics.set_graphics_background(BACKGROUND_DC0);
@@ -113,12 +113,12 @@ void loadImageToDC1(RLMachine& machine,
     // Inclusive ranges are a monstrosity to computer people
     Size size = srcRect.size() + Size(1, 1);
 
-    dc0->blitToSurface(*dc1, dc0->rect(), dc0->rect(), 255);
+    dc0->BlitToSurface(*dc1, dc0->GetRect(), dc0->GetRect(), 255);
 
     // Load the section of the image file on top of dc1
     boost::shared_ptr<const Surface> surface(
         graphics.GetSurfaceNamedAndMarkViewed(machine, name));
-    surface->blitToSurface(*graphics.GetDC(1),
+    surface->BlitToSurface(*graphics.GetDC(1),
                            Rect(srcRect.origin(), size),
                            Rect(dest, size),
                            opacity,
@@ -138,7 +138,7 @@ void loadDCToDC1(RLMachine& machine,
   // Inclusive ranges are a monstrosity to computer people
   Size size = srcRect.size() + Size(1, 1);
 
-  src->blitToSurface(
+  src->BlitToSurface(
       *dc1, Rect(srcRect.origin(), size), Rect(dest, size), opacity, false);
 }
 
@@ -220,7 +220,7 @@ struct wipe : public RLOp_Void_4<IntConstant_T,
                                  IntConstant_T,
                                  IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
-    machine.system().graphics().GetDC(dc)->fill(RGBAColour(r, g, b));
+    machine.system().graphics().GetDC(dc)->Fill(RGBAColour(r, g, b));
   }
 };
 
@@ -261,12 +261,12 @@ struct load_1
         graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
 
     if (dc != 0 && dc != 1) {
-      graphics.AllocateDC(dc, surface->size());
+      graphics.AllocateDC(dc, surface->GetSize());
     }
 
-    surface->blitToSurface(*graphics.GetDC(dc),
-                           surface->rect(),
-                           surface->rect(),
+    surface->BlitToSurface(*graphics.GetDC(dc),
+                           surface->GetRect(),
+                           surface->GetRect(),
                            opacity,
                            use_alpha_);
   }
@@ -299,10 +299,10 @@ struct load_3 : public RLOp_Void_5<StrConstant_T,
     Rect destRect = Rect(dest, srcRect.size());
 
     if (dc != 0 && dc != 1) {
-      graphics.SetMinimumSizeForDC(dc, surface->size());
+      graphics.SetMinimumSizeForDC(dc, surface->GetSize());
     }
 
-    surface->blitToSurface(
+    surface->BlitToSurface(
         *graphics.GetDC(dc), srcRect, destRect, opacity, use_alpha_);
   }
 };
@@ -755,7 +755,7 @@ struct copy_3 : public RLOp_Void_5<Rect_T<SPACE>,
       graphics.SetMinimumSizeForDC(dst, srcRect.size());
     }
 
-    sourceSurface->blitToSurface(*graphics.GetDC(dst),
+    sourceSurface->BlitToSurface(*graphics.GetDC(dst),
                                  srcRect,
                                  Rect(destPoint, srcRect.size()),
                                  opacity,
@@ -778,12 +778,12 @@ struct copy_1
     boost::shared_ptr<Surface> sourceSurface = graphics.GetDC(src);
 
     if (dst != 0 && dst != 1) {
-      graphics.SetMinimumSizeForDC(dst, sourceSurface->size());
+      graphics.SetMinimumSizeForDC(dst, sourceSurface->GetSize());
     }
 
-    sourceSurface->blitToSurface(*graphics.GetDC(dst),
-                                 sourceSurface->rect(),
-                                 sourceSurface->rect(),
+    sourceSurface->BlitToSurface(*graphics.GetDC(dst),
+                                 sourceSurface->GetRect(),
+                                 sourceSurface->GetRect(),
                                  opacity,
                                  use_alpha_);
   }
@@ -800,13 +800,13 @@ struct fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
     if (colour.r() == 0 && colour.g() == 0 && colour.b() == 0)
       colour.set_alpha(0);
 
-    machine.system().graphics().GetDC(dc)->fill(colour);
+    machine.system().graphics().GetDC(dc)->Fill(colour);
   }
 };
 
 struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
-    machine.system().graphics().GetDC(dc)->fill(colour);
+    machine.system().graphics().GetDC(dc)->Fill(colour);
   }
 };
 
@@ -817,42 +817,42 @@ struct fill_3
                   Rect destRect,
                   int dc,
                   RGBAColour colour) {
-    machine.system().graphics().GetDC(dc)->fill(colour, destRect);
+    machine.system().graphics().GetDC(dc)->Fill(colour, destRect);
   }
 };
 
 struct invert_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->invert(surface->rect());
+    surface->Invert(surface->GetRect());
   }
 };
 
 template <typename SPACE>
 struct invert_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
-    machine.system().graphics().GetDC(dc)->invert(rect);
+    machine.system().graphics().GetDC(dc)->Invert(rect);
   }
 };
 
 struct mono_1 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->mono(surface->rect());
+    surface->Mono(surface->GetRect());
   }
 };
 
 template <typename SPACE>
 struct mono_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
-    machine.system().graphics().GetDC(dc)->mono(rect);
+    machine.system().graphics().GetDC(dc)->Mono(rect);
   }
 };
 
 struct colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->applyColour(colour.rgb(), surface->rect());
+    surface->ApplyColour(colour.rgb(), surface->GetRect());
   }
 };
 
@@ -861,14 +861,14 @@ struct colour_2
     : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, RGBAColour colour) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->applyColour(colour.rgb(), rect);
+    surface->ApplyColour(colour.rgb(), rect);
   }
 };
 
 struct light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int level) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->applyColour(RGBColour(level, level, level), surface->rect());
+    surface->ApplyColour(RGBColour(level, level, level), surface->GetRect());
   }
 };
 
@@ -877,7 +877,7 @@ struct light_2
     : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, int level) {
     boost::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
-    surface->applyColour(RGBColour(level, level, level), rect);
+    surface->ApplyColour(RGBColour(level, level, level), rect);
   }
 };
 
@@ -891,7 +891,7 @@ struct fade_7
   void operator()(RLMachine& machine, Rect rect, RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
     boost::shared_ptr<Surface> before = graphics.RenderToSurface();
-    graphics.GetDC(0)->fill(colour, rect);
+    graphics.GetDC(0)->Fill(colour, rect);
     boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
     if (time > 0) {
@@ -958,10 +958,10 @@ struct stretchBlit_1 : public RLOp_Void_5<Rect_T<SPACE>,
     boost::shared_ptr<Surface> sourceSurface = graphics.GetDC(src);
 
     if (dst != 0 && dst != 1) {
-      graphics.SetMinimumSizeForDC(dst, sourceSurface->size());
+      graphics.SetMinimumSizeForDC(dst, sourceSurface->GetSize());
     }
 
-    sourceSurface->blitToSurface(
+    sourceSurface->BlitToSurface(
         *graphics.GetDC(dst), src_rect, dst_rect, opacity, use_alpha_);
   }
 };

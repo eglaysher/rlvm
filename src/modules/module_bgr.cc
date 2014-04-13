@@ -68,7 +68,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
     graphics.set_graphics_background(BACKGROUND_HIK);
 
     boost::shared_ptr<Surface> before = graphics.RenderToSurface();
-    graphics.GetHaikei()->fill(RGBAColour::Clear());
+    graphics.GetHaikei()->Fill(RGBAColour::Clear());
 
     if (!machine.replaying_graphics_stack())
       graphics.ClearAndPromoteObjects();
@@ -105,8 +105,8 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
         boost::shared_ptr<const Surface> source(
             graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
         boost::shared_ptr<Surface> haikei = graphics.GetHaikei();
-        source->blitToSurface(
-            *haikei, source->rect(), source->rect(), 255, true);
+        source->BlitToSurface(
+            *haikei, source->GetRect(), source->GetRect(), 255, true);
       }
 
       // Promote the objects if we're in normal mode. If we're restoring the
@@ -191,8 +191,8 @@ struct bgrMulti_1
     // Load "filename" as the background.
     boost::shared_ptr<const Surface> surface(
         graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
-    surface->blitToSurface(
-        *graphics.GetHaikei(), surface->rect(), surface->rect(), 255, true);
+    surface->BlitToSurface(
+        *graphics.GetHaikei(), surface->GetRect(), surface->GetRect(), 255, true);
 
     // TODO(erg): Unsure about the alpha in these implementation.
     for (BgrMultiCommand::type::const_iterator it = commands.begin();
@@ -202,9 +202,9 @@ struct bgrMulti_1
         case 0: {
           // 0:copy(strC 'filename')
           surface = graphics.GetSurfaceNamedAndMarkViewed(machine, it->first);
-          surface->blitToSurface(*graphics.GetHaikei(),
-                                 surface->rect(),
-                                 surface->rect(),
+          surface->BlitToSurface(*graphics.GetHaikei(),
+                                 surface->GetRect(),
+                                 surface->GetRect(),
                                  255,
                                  true);
           break;
@@ -219,7 +219,7 @@ struct bgrMulti_1
               graphics.GetSurfaceNamedAndMarkViewed(machine,
                                                     std::get<0>(it->third));
           Rect destRect = Rect(dest, srcRect.size());
-          surface->blitToSurface(
+          surface->BlitToSurface(
               *graphics.GetHaikei(), srcRect, destRect, 255, true);
           break;
         }

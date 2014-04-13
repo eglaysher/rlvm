@@ -39,30 +39,30 @@ Surface::~Surface() {}
 
 // -----------------------------------------------------------------------
 
-Rect Surface::rect() const { return Rect(Point(0, 0), size()); }
+Rect Surface::GetRect() const { return Rect(Point(0, 0), GetSize()); }
 
 // -----------------------------------------------------------------------
 
-void Surface::dump() {
-  throw rlvm::Exception("Unimplemented function Surface::dump()");
+void Surface::Dump() {
+  throw rlvm::Exception("Unimplemented function Surface::Dump()");
 }
 
 // -----------------------------------------------------------------------
 
-int Surface::numPatterns() const { return 1; }
+int Surface::GetNumPatterns() const { return 1; }
 
 // -----------------------------------------------------------------------
 
-const Surface::GrpRect& Surface::getPattern(int patt_no) const {
+const Surface::GrpRect& Surface::GetPattern(int patt_no) const {
   static GrpRect rect;
   return rect;
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> Surface::clipAsColorMask(const Rect& clip_rect,
+boost::shared_ptr<Surface> Surface::ClipAsColorMask(const Rect& clip_rect,
                                                     int r,
                                                     int g,
                                                     int b) const {
-  throw rlvm::Exception("Unimplemented function Surface::clipAsColorMask()");
+  throw rlvm::Exception("Unimplemented function Surface::ClipAsColorMask()");
 }

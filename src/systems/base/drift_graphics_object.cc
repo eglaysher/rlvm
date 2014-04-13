@@ -123,7 +123,7 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
                            number_of_patterns;
         pattern = start_pattern + frame_number;
       }
-      Rect src = surface->getPattern(pattern).rect;
+      Rect src = surface->GetPattern(pattern).rect;
 
       int dest_x = particle.x;
       int dest_y = particle.y;
@@ -164,7 +164,7 @@ void DriftGraphicsObject::Render(const GraphicsObject& go,
       if (go.has_clip_rect())
         ClipDestination(go.clip_rect(), src, dest);
 
-      surface->renderToScreen(src, dest, particle.alpha);
+      surface->RenderToScreen(src, dest, particle.alpha);
     }
   }
 }

@@ -91,7 +91,7 @@ void GraphicsObjectOfFile::LoadFile() {
 // -----------------------------------------------------------------------
 
 int GraphicsObjectOfFile::PixelWidth(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = surface_->getPattern(rp.GetPattNo());
+  const Surface::GrpRect& rect = surface_->GetPattern(rp.GetPattNo());
   int width = rect.rect.width();
   return int(rp.GetWidthScaleFactor() * width);
 }
@@ -99,7 +99,7 @@ int GraphicsObjectOfFile::PixelWidth(const GraphicsObject& rp) {
 // -----------------------------------------------------------------------
 
 int GraphicsObjectOfFile::PixelHeight(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = surface_->getPattern(rp.GetPattNo());
+  const Surface::GrpRect& rect = surface_->GetPattern(rp.GetPattNo());
   int height = rect.rect.height();
   return int(rp.GetHeightScaleFactor() * height);
 }
@@ -120,7 +120,7 @@ void GraphicsObjectOfFile::Execute(RLMachine& machine) {
 
     while (time_since_last_frame_change > frame_time_) {
       current_frame_++;
-      if (current_frame_ == surface_->numPatterns()) {
+      if (current_frame_ == surface_->GetNumPatterns()) {
         current_frame_--;
         EndAnimation();
       }
@@ -135,7 +135,7 @@ void GraphicsObjectOfFile::Execute(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 bool GraphicsObjectOfFile::IsAnimation() const {
-  return surface_->numPatterns();
+  return surface_->GetNumPatterns();
 }
 
 // -----------------------------------------------------------------------
@@ -155,7 +155,7 @@ Rect GraphicsObjectOfFile::SrcRect(const GraphicsObject& go) {
   if (time_at_last_frame_change_ != 0) {
     // If we've ever been treated as an animation, we need to continue acting
     // as an animation even if we've stopped.
-    return surface_->getPattern(current_frame_).rect;
+    return surface_->GetPattern(current_frame_).rect;
   }
 
   return GraphicsObjectData::SrcRect(go);

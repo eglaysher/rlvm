@@ -315,7 +315,7 @@ void printARBLog(GLhandleARB obj) {
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
-void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
+void Texture::RenderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -356,7 +356,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
 
 // TODO(erg): A function of this hairiness needs super more amounts of
 // documentation.
-void Texture::renderToScreenAsColorMask(const Rect& src,
+void Texture::RenderToScreenAsColorMask(const Rect& src,
                                         const Rect& dst,
                                         const RGBAColour& rgba,
                                         int filter) {
@@ -566,7 +566,7 @@ void Texture::render_to_screen_as_colour_mask_additive(const Rect& src,
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreen(const Rect& src,
+void Texture::RenderToScreen(const Rect& src,
                              const Rect& dst,
                              const int opacity[4]) {
   // For the time being, we are dumb and assume that it's one texture
@@ -609,7 +609,7 @@ void Texture::renderToScreen(const Rect& src,
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreenAsObject(const GraphicsObject& go,
+void Texture::RenderToScreenAsObject(const GraphicsObject& go,
                                      const SDLSurface& surface,
                                      const Rect& srcRect,
                                      const Rect& dstRect,

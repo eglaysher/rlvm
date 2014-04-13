@@ -55,14 +55,14 @@ int DigitsGraphicsObject::PixelWidth(const GraphicsObject& rp) {
   if (NeedsUpdate(rp))
     UpdateSurface(rp);
 
-  return int(rp.GetWidthScaleFactor() * surface_->size().width());
+  return int(rp.GetWidthScaleFactor() * surface_->GetSize().width());
 }
 
 int DigitsGraphicsObject::PixelHeight(const GraphicsObject& rp) {
   if (NeedsUpdate(rp))
     UpdateSurface(rp);
 
-  return int(rp.GetHeightScaleFactor() * surface_->size().height());
+  return int(rp.GetHeightScaleFactor() * surface_->GetSize().height());
 }
 
 GraphicsObjectData* DigitsGraphicsObject::Clone() const {
@@ -89,7 +89,7 @@ void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
   // Calculate the size our canvas will have to be.
   int digit_pixel_width = rp.GetDigitSpace()
                               ? rp.GetDigitSpace()
-                              : font_->getPattern(0).rect.size().width();
+                              : font_->GetPattern(0).rect.size().width();
   int num_chars = 0;
   for (int a = value_; a > 0; a = a / 10, num_chars++) {}
   num_chars = std::max(num_chars, rp.GetDigitDigits());
@@ -101,8 +101,8 @@ void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
   int total_pixel_width = (num_chars + num_extra) * digit_pixel_width;
 
   surface_ = system_.graphics().BuildSurface(
-      Size(total_pixel_width, font_->getPattern(0).rect.size().height()));
-  surface_->fill(RGBAColour::Clear());
+      Size(total_pixel_width, font_->GetPattern(0).rect.size().height()));
+  surface_->Fill(RGBAColour::Clear());
 
   // We draw glyphs onto the canvas from right to left so we can use the
   // obvious div/mod method to get the current digit to display.
@@ -112,9 +112,9 @@ void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
   int printed = 0;
   do {
     int digit = i % 10;
-    const Surface::GrpRect& grp = font_->getPattern(digit);
+    const Surface::GrpRect& grp = font_->GetPattern(digit);
 
-    font_->blitToSurface(
+    font_->BlitToSurface(
         *surface_, grp.rect, Rect(x_offset, 0, grp.rect.size()), 255, false);
 
     i = i / 10;
@@ -122,11 +122,11 @@ void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
     x_offset -= digit_pixel_width;
   } while (i > 0);
 
-  const Surface::GrpRect& zero_grp = font_->getPattern(0);
+  const Surface::GrpRect& zero_grp = font_->GetPattern(0);
   bool print_zeros = rp.GetDigitZero();
   while (printed < num_chars) {
     if (print_zeros) {
-      font_->blitToSurface(*surface_,
+      font_->BlitToSurface(*surface_,
                            zero_grp.rect,
                            Rect(x_offset, 0, zero_grp.rect.size()),
                            255,
