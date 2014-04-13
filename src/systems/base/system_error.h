@@ -39,7 +39,7 @@ class SystemError : public std::exception {
  public:
   explicit SystemError(std::string what);
   virtual ~SystemError() throw();
-  virtual const char* what() const throw();
+  virtual const char* what() const throw() override;
 
  private:
   std::string description;
