@@ -81,12 +81,12 @@ TextWakuNormal::TextWakuNormal(System& system,
                                int setno,
                                int no)
     : system_(system), window_(window), setno_(setno), no_(no) {
-  loadWindowWaku();
+  LoadWindowWaku();
 }
 
 TextWakuNormal::~TextWakuNormal() {}
 
-void TextWakuNormal::execute() {
+void TextWakuNormal::Execute() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
       button_map_[i]->execute();
@@ -94,7 +94,7 @@ void TextWakuNormal::execute() {
   }
 }
 
-void TextWakuNormal::render(std::ostream* tree,
+void TextWakuNormal::Render(std::ostream* tree,
                             Point box_location,
                             Size namebox_size) {
   if (tree) {
@@ -125,10 +125,10 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_button_)
-    renderButtons();
+    RenderButtons();
 }
 
-void TextWakuNormal::renderButtons() {
+void TextWakuNormal::RenderButtons() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
       button_map_[i]->render(window_, waku_button_, BUTTON_INFO[i].waku_offset);
@@ -136,7 +136,7 @@ void TextWakuNormal::renderButtons() {
   }
 }
 
-Size TextWakuNormal::getSize(const Size& text_surface) const {
+Size TextWakuNormal::GetSize(const Size& text_surface) const {
   if (waku_main_)
     return waku_main_->GetSize();
   else if (waku_backing_)
@@ -145,7 +145,7 @@ Size TextWakuNormal::getSize(const Size& text_surface) const {
     return text_surface;
 }
 
-Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
+Point TextWakuNormal::InsertionPoint(const Rect& waku_rect,
                                      const Size& padding,
                                      const Size& surface_size,
                                      bool center) const {
@@ -182,12 +182,12 @@ bool TextWakuNormal::HandleMouseClick(RLMachine& machine,
   return false;
 }
 
-void TextWakuNormal::loadWindowWaku() {
+void TextWakuNormal::LoadWindowWaku() {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
 
-  setWakuMain(waku("NAME").ToString(""));
-  setWakuBacking(waku("BACK").ToString(""));
-  setWakuButton(waku("BTN").ToString(""));
+  SetWakuMain(waku("NAME").ToString(""));
+  SetWakuBacking(waku("BACK").ToString(""));
+  SetWakuButton(waku("BTN").ToString(""));
 
   TextSystem& ts = system_.text();
   GraphicsSystem& gs = system_.graphics();
@@ -271,14 +271,14 @@ void TextWakuNormal::loadWindowWaku() {
   */
 }
 
-void TextWakuNormal::setWakuMain(const std::string& name) {
+void TextWakuNormal::SetWakuMain(const std::string& name) {
   if (name != "")
     waku_main_ = system_.graphics().GetSurfaceNamed(name);
   else
     waku_main_.reset();
 }
 
-void TextWakuNormal::setWakuBacking(const std::string& name) {
+void TextWakuNormal::SetWakuBacking(const std::string& name) {
   if (name != "") {
     waku_backing_.reset(system_.graphics().GetSurfaceNamed(name)->Clone());
     waku_backing_->SetIsMask(true);
@@ -287,7 +287,7 @@ void TextWakuNormal::setWakuBacking(const std::string& name) {
   }
 }
 
-void TextWakuNormal::setWakuButton(const std::string& name) {
+void TextWakuNormal::SetWakuButton(const std::string& name) {
   if (name != "")
     waku_button_ = system_.graphics().GetSurfaceNamed(name);
   else

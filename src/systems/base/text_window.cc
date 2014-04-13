@@ -182,7 +182,7 @@ TextWindow::~TextWindow() {}
 
 void TextWindow::execute() {
   if (isVisible() && !system_.graphics().is_interface_hidden()) {
-    textbox_waku_->execute();
+    textbox_waku_->Execute();
   }
 }
 
@@ -274,7 +274,7 @@ Rect TextWindow::windowRect() const {
   // pixels. The image is still centered perfectly, even though it's supposed
   // to be shifted 78 pixels right since the origin is the bottom
   // left. Expanding this number didn't change the position offscreen.
-  Size boxSize = textbox_waku_->getSize(textSurfaceSize());
+  Size boxSize = textbox_waku_->GetSize(textSurfaceSize());
 
   int x, y;
   switch (origin_) {
@@ -333,7 +333,7 @@ Rect TextWindow::textSurfaceRect() const {
 Rect TextWindow::nameboxWakuRect() const {
   // Like the main windowRect(), we need to ask the waku what size it wants to
   // be.
-  Size boxSize = namebox_waku_->getSize(nameboxTextArea());
+  Size boxSize = namebox_waku_->GetSize(nameboxTextArea());
 
   // The waku is offset from the top left corner of the text window.
   Rect r = windowRect();
@@ -427,7 +427,7 @@ void TextWindow::render(std::ostream* tree) {
 
     Point textOrigin = textSurfaceRect().origin();
 
-    textbox_waku_->render(tree, box, surface_size);
+    textbox_waku_->Render(tree, box, surface_size);
     renderFaces(tree, 1);
 
     if (inSelectionMode()) {
@@ -441,10 +441,10 @@ void TextWindow::render(std::ostream* tree) {
         if (namebox_waku_) {
           // TODO(erg): The waku needs to be adjusted to be the minimum size of
           // the window in characters
-          namebox_waku_->render(tree, r.origin(), nameboxTextArea());
+          namebox_waku_->Render(tree, r.origin(), nameboxTextArea());
         }
 
-        Point insertion_point = namebox_waku_->insertionPoint(
+        Point insertion_point = namebox_waku_->InsertionPoint(
             r,
             Size(horizontal_namebox_padding_, vertical_namebox_padding_),
             name_surface->GetSize(),

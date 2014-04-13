@@ -69,7 +69,7 @@ TextWakuType4::TextWakuType4(System& system,
       area_left_(0),
       area_right_(0) {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
-  setWakuMain(waku("NAME").ToString(""));
+  SetWakuMain(waku("NAME").ToString(""));
 
   std::vector<int> area = waku("AREA");
   if (area.size() >= 1)
@@ -84,9 +84,9 @@ TextWakuType4::TextWakuType4(System& system,
 
 TextWakuType4::~TextWakuType4() {}
 
-void TextWakuType4::execute() {}
+void TextWakuType4::Execute() {}
 
-void TextWakuType4::render(std::ostream* tree,
+void TextWakuType4::Render(std::ostream* tree,
                            Point box_location,
                            Size content_size) {
   if (tree) {
@@ -100,7 +100,7 @@ void TextWakuType4::render(std::ostream* tree,
         Size(area_left_, area_top_);
     Size backing_size =
         content_size + Size(area_left_ + area_right_, area_top_ + area_bottom_);
-    boost::shared_ptr<Surface> backing = getWakuBackingOfSize(backing_size);
+    boost::shared_ptr<Surface> backing = GetWakuBackingOfSize(backing_size);
     backing->RenderToScreenAsColorMask(backing->GetRect(),
                                        Rect(backing_point, backing_size),
                                        window_.colour(),
@@ -167,13 +167,13 @@ void TextWakuType4::render(std::ostream* tree,
   }
 }
 
-Size TextWakuType4::getSize(const Size& text_surface) const {
+Size TextWakuType4::GetSize(const Size& text_surface) const {
   Size padding = Size(left_side.rect.width() + right_side.rect.width(),
                       top_center.rect.height() + bottom_center.rect.height());
   return text_surface + padding;
 }
 
-Point TextWakuType4::insertionPoint(const Rect& waku_rect,
+Point TextWakuType4::InsertionPoint(const Rect& waku_rect,
                                     const Size& padding,
                                     const Size& surface_size,
                                     bool center) const {
@@ -205,7 +205,7 @@ bool TextWakuType4::HandleMouseClick(RLMachine& machine,
   return false;
 }
 
-void TextWakuType4::setWakuMain(const std::string& name) {
+void TextWakuType4::SetWakuMain(const std::string& name) {
   if (name != "") {
     waku_main_ = system_.graphics().GetSurfaceNamed(name);
 
@@ -224,7 +224,7 @@ void TextWakuType4::setWakuMain(const std::string& name) {
   }
 }
 
-const boost::shared_ptr<Surface>& TextWakuType4::getWakuBackingOfSize(
+const boost::shared_ptr<Surface>& TextWakuType4::GetWakuBackingOfSize(
     Size size) {
   if (!cached_backing_ || cached_backing_->GetSize() != size) {
     cached_backing_ = system_.graphics().BuildSurface(size);

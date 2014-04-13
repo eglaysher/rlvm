@@ -49,43 +49,43 @@ class TextWindowButton;
 class TextWakuNormal : public TextWaku {
  public:
   TextWakuNormal(System& system, TextWindow& window, int setno, int no);
-  ~TextWakuNormal();
+  virtual ~TextWakuNormal();
 
-  virtual void execute();
-  virtual void render(std::ostream* tree,
+  virtual void Execute() override;
+  virtual void Render(std::ostream* tree,
                       Point box_location,
-                      Size namebox_size);
-  virtual Size getSize(const Size& text_surface) const;
-  virtual Point insertionPoint(const Rect& waku_rect,
+                      Size namebox_size) override;
+  virtual Size GetSize(const Size& text_surface) const override;
+  virtual Point InsertionPoint(const Rect& waku_rect,
                                const Size& padding,
                                const Size& surface_size,
-                               bool center) const;
+                               bool center) const override;
 
   // TODO(erg): These two methods shouldn't really exist; I need to redo
   // plumbing of events so that these aren't routed through TextWindow, but are
   // instead some sort of listener. I'm currently thinking that the individual
   // buttons that need to handle events should be listeners.
-  virtual void SetMousePosition(const Point& pos);
+  virtual void SetMousePosition(const Point& pos) override;
   virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
-                                bool pressed);
+                                bool pressed) override;
 
  private:
   // Renders all the buttons in |button_map_|.
-  void renderButtons();
+  void RenderButtons();
 
   // Loads all bitmaps and sets up all window buttons for this waku.
-  void loadWindowWaku();
+  void LoadWindowWaku();
 
-  void setWakuMain(const std::string& name);
+  void SetWakuMain(const std::string& name);
 
   // Loads the graphics file name as the mask for represents the areas
   // of the text window that should be shaded.
-  void setWakuBacking(const std::string& name);
+  void SetWakuBacking(const std::string& name);
 
   // Loads the graphics file name as the image with all the button
   // images used when drawing
-  void setWakuButton(const std::string& name);
+  void SetWakuButton(const std::string& name);
 
   // The system we are a part of.
   System& system_;
