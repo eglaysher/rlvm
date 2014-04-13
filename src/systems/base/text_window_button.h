@@ -54,10 +54,10 @@ class TextWindowButton {
   virtual ~TextWindowButton();
 
   // Returns the absolute screen coordinate of this button.
-  Rect location(TextWindow& window);
+  Rect Location(TextWindow& window);
 
   // Checks to see if this is a valid, used button
-  bool isValid() const;
+  bool IsValid() const;
 
   // Track the mouse position to see if we need to alter our state
   void SetMousePosition(TextWindow& window, const Point& pos);
@@ -68,19 +68,19 @@ class TextWindowButton {
                         bool pressed);
 
   //
-  void render(TextWindow& window,
+  void Render(TextWindow& window,
               const boost::shared_ptr<const Surface>& buttons,
               int base_pattern);
 
   // Called when the button is pressed
-  virtual void buttonPressed() {}
+  virtual void ButtonPressed() {}
 
   // Called by other execute() calls while the System object has its
   // turn to do any updating
-  virtual void execute() {}
+  virtual void Execute() {}
 
   // Called when the button is released
-  virtual void buttonReleased(RLMachine& machine) {}
+  virtual void ButtonReleased(RLMachine& machine) {}
 
  protected:
   System& system_;
@@ -102,7 +102,7 @@ class ActionTextWindowButton : public TextWindowButton {
                          CallbackFunction action);
   virtual ~ActionTextWindowButton();
 
-  virtual void buttonReleased(RLMachine& machine);
+  virtual void ButtonReleased(RLMachine& machine) override;
 
  private:
   CallbackFunction action_;
@@ -122,20 +122,20 @@ class ActivationTextWindowButton : public TextWindowButton,
                              CallbackFunction setter);
   virtual ~ActivationTextWindowButton();
 
-  virtual void buttonReleased(RLMachine& machine);
+  virtual void ButtonReleased(RLMachine& machine) override;
 
-  void setEnabled(bool enabled);
+  void SetEnabled(bool enabled);
 
-  void setEnabledNotification(NotificationType enabled_listener);
-  void setChangeNotification(NotificationType change_listener);
+  void SetEnabledNotification(NotificationType enabled_listener);
+  void SetChangeNotification(NotificationType change_listener);
 
  private:
-  void setState();
+  void SetState();
 
   // NotificationObserver:
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
-                       const NotificationDetails& details);
+                       const NotificationDetails& details) override;
 
   CallbackFunction on_set_;
   bool on_;
@@ -161,9 +161,9 @@ class RepeatActionWhileHoldingWindowButton : public TextWindowButton {
                                        unsigned int time_between_invocations);
   virtual ~RepeatActionWhileHoldingWindowButton();
 
-  virtual void buttonPressed();
-  virtual void execute();
-  virtual void buttonReleased(RLMachine& machine);
+  virtual void ButtonPressed() override;
+  virtual void Execute() override;
+  virtual void ButtonReleased(RLMachine& machine) override;
 
  private:
   CallbackFunction callback_;
@@ -182,7 +182,7 @@ class ExbtnWindowButton : public TextWindowButton {
                     GameexeInterpretObject to_call);
   virtual ~ExbtnWindowButton();
 
-  virtual void buttonReleased(RLMachine& machine);
+  virtual void ButtonReleased(RLMachine& machine) override;
 
  private:
   int scenario_;

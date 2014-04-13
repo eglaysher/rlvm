@@ -89,7 +89,7 @@ TextWakuNormal::~TextWakuNormal() {}
 void TextWakuNormal::Execute() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->execute();
+      button_map_[i]->Execute();
     }
   }
 }
@@ -131,7 +131,7 @@ void TextWakuNormal::Render(std::ostream* tree,
 void TextWakuNormal::RenderButtons() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->render(window_, waku_button_, BUTTON_INFO[i].waku_offset);
+      button_map_[i]->Render(window_, waku_button_, BUTTON_INFO[i].waku_offset);
     }
   }
 }
@@ -232,14 +232,14 @@ void TextWakuNormal::LoadWindowWaku() {
         ts.window_read_jump_use(),
         waku("READJUMP_BOX"),
         std::bind(&TextSystem::SetSkipMode, std::ref(ts), _1));
-    readjump_box->setEnabledNotification(
+    readjump_box->SetEnabledNotification(
         NotificationType::SKIP_MODE_ENABLED_CHANGED);
-    readjump_box->setChangeNotification(
+    readjump_box->SetChangeNotification(
         NotificationType::SKIP_MODE_STATE_CHANGED);
 
     // Set the initial enabled state. If true, we'll get a signal enabling it
     // immediately.
-    readjump_box->setEnabled(ts.kidoku_read());
+    readjump_box->SetEnabled(ts.kidoku_read());
 
     button_map_[10].reset(readjump_box);
   }
@@ -251,7 +251,7 @@ void TextWakuNormal::LoadWindowWaku() {
             ts.window_automode_use(),
             waku("AUTOMODE_BOX"),
             std::bind(&TextSystem::SetAutoMode, std::ref(ts), _1));
-    automode_button->setChangeNotification(
+    automode_button->SetChangeNotification(
         NotificationType::AUTO_MODE_STATE_CHANGED);
 
     button_map_[11].reset(automode_button);
