@@ -52,14 +52,14 @@ class TextKeyCursor {
   // Updates the key cursor properties during the System::execute()
   // phase. This should run once every game loop while a key cursor is
   // displayed on the screen.
-  void execute();
+  void Execute();
 
   // Render this key cursor to the specified window, which owns
   // positional information.
-  void render(TextWindow& text_window, std::ostream* tree);
+  void Render(TextWindow& text_window, std::ostream* tree);
 
   // Returns which cursor we are.
-  int cursorNumber() const { return cursor_number_; }
+  int cursor_number() const { return cursor_number_; }
 
   // Convenience setters which set properties directly from
   // Gameexe.ini data.

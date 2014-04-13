@@ -145,7 +145,7 @@ void TextSystem::executeTextSystem() {
       if (!text_key_cursor_)
         setKeyCursor(0);
 
-      text_key_cursor_->execute();
+      text_key_cursor_->Execute();
     }
   }
 
@@ -180,7 +180,7 @@ void TextSystem::render(std::ostream* tree) {
         if (!text_key_cursor_)
           setKeyCursor(0);
 
-        text_key_cursor_->render(*it->second, tree);
+        text_key_cursor_->Render(*it->second, tree);
       }
     }
   }
@@ -404,14 +404,14 @@ void TextSystem::setKeyCursor(int new_cursor) {
   if (new_cursor == -1) {
     text_key_cursor_.reset();
   } else if (!text_key_cursor_ ||
-             text_key_cursor_->cursorNumber() != new_cursor) {
+             text_key_cursor_->cursor_number() != new_cursor) {
     text_key_cursor_.reset(new TextKeyCursor(system(), new_cursor));
   }
 }
 
 int TextSystem::cursorNumber() const {
   if (text_key_cursor_)
-    return text_key_cursor_->cursorNumber();
+    return text_key_cursor_->cursor_number();
   else
     return -1;
 }

@@ -66,7 +66,7 @@ TextKeyCursor::~TextKeyCursor() {}
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::execute() {
+void TextKeyCursor::Execute() {
   unsigned int cur_time = system_.event().GetTicks();
 
   if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time) {
@@ -82,7 +82,7 @@ void TextKeyCursor::execute() {
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
+void TextKeyCursor::Render(TextWindow& text_window, std::ostream* tree) {
   if (cursor_image_) {
     // Get the location to render from text_window
     Point keycur = text_window.keycursorPosition(frame_size_);
