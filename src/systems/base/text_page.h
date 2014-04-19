@@ -50,11 +50,11 @@ class TextPage {
   TextPage(const TextPage& rhs);
   ~TextPage();
 
-  // Returns the number of characters printed with character() and name().
+  // Returns the number of characters printed with Character() and Name().
   int number_of_chars_on_page() const { return number_of_chars_on_page_; }
 
   // Queries to see if there has been an invocation of
-  // markRubyBegin(), but not the closing displayRubyText().
+  // MarkRubyBegin(), but not the closing DisplayRubyText().
   bool in_ruby_gloss() const { return in_ruby_gloss_; }
 
   bool empty() const { return elements_to_replay_.empty(); }
@@ -97,13 +97,13 @@ class TextPage {
   void MarkRubyBegin();
 
   // Display the incoming phrase as the rubytext for the text since
-  // markRubyBegin() was called.
+  // MarkRubyBegin() was called.
   void DisplayRubyText(const std::string& utf8str);
 
   void SetInsertionPointX(int x);
   void SetInsertionPointY(int y);
-  void OffsetInsertionPointX(int offset);
-  void OffsetInsertionPointY(int offset);
+  void Offset_insertion_point_x(int offset);
+  void Offset_insertion_point_y(int offset);
 
   // Sets the face in slot |index| to filename.
   void FaceOpen(const std::string& filename, int index);
@@ -141,7 +141,7 @@ class TextPage {
   // Number of characters on this page (used in automode)
   int number_of_chars_on_page_;
 
-  // Whether markRubyBegin() was called but displayRubyText() hasn't yet been
+  // Whether MarkRubyBegin() was called but DisplayRubyText() hasn't yet been
   // called.
   bool in_ruby_gloss_;
 

@@ -178,9 +178,9 @@ NormalSelectLongOperation::NormalSelectLongOperation(
     : SelectLongOperation(machine, commandElement),
       text_window_(machine.system().text().GetCurrentWindow()) {
   machine.system().text().set_in_selection_mode(true);
-  text_window_->SetVisible(true);
-  text_window_->startSelectionMode();
-  text_window_->setSelectionCallback(
+  text_window_->set_is_visible(true);
+  text_window_->StartSelectionMode();
+  text_window_->SetSelectionCallback(
       std::bind(&NormalSelectLongOperation::SelectByIndex, this, _1));
 
   for (size_t i = 0; i < options_.size(); ++i) {
@@ -191,7 +191,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
              << endl;
       }
 
-      text_window_->addSelectionItem(options_[i].str, i);
+      text_window_->AddSelectionItem(options_[i].str, i);
     }
   }
 
@@ -199,7 +199,7 @@ NormalSelectLongOperation::NormalSelectLongOperation(
 }
 
 NormalSelectLongOperation::~NormalSelectLongOperation() {
-  text_window_->endSelectionMode();
+  text_window_->EndSelectionMode();
   machine_.system().text().set_in_selection_mode(false);
 }
 

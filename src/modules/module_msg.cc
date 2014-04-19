@@ -60,7 +60,7 @@ struct Msg_pause : public RLOp_Void_Void {
     int windowNum = text.active_window();
     boost::shared_ptr<TextWindow> textWindow = text.GetTextWindow(windowNum);
 
-    if (textWindow->actionOnPause()) {
+    if (textWindow->action_on_pause()) {
       machine.PushLongOperation(
           new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     } else {
@@ -87,7 +87,7 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
     if (gexe("COLOR_TABLE", textColorNum).Exists()) {
-      machine.system().text().GetCurrentWindow()->setDefaultTextColor(
+      machine.system().text().GetCurrentWindow()->SetDefaultTextColor(
           gexe("COLOR_TABLE", textColorNum));
     }
   }
@@ -125,7 +125,7 @@ struct msgClear : public RLOp_Void_Void {
     TextSystem& text = machine.system().text();
     int active_window = text.active_window();
     text.Snapshot();
-    text.GetTextWindow(active_window)->clearWin();
+    text.GetTextWindow(active_window)->ClearWin();
     text.NewPageOnWindow(active_window);
   }
 };
@@ -140,7 +140,7 @@ struct msgClearAll : public RLOp_Void_Void {
     for (int window : active_windows) {
       // TODO(erg): Found this during refactoring? Just entirely wrong? Dates
       // all the way back to 2007 in 6938e517e8423e391eeba0fe4b294ad64434243d.
-      text.GetTextWindow(active_window)->clearWin();
+      text.GetTextWindow(active_window)->ClearWin();
       text.NewPageOnWindow(window);
     }
   }
@@ -175,8 +175,8 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
         machine.system().text().GetCurrentWindow();
 
     if (textWindow) {
-      *x = textWindow->insertionPointX();
-      *y = textWindow->insertionPointY();
+      *x = textWindow->insertion_point_x();
+      *y = textWindow->insertion_point_y();
     }
   }
 };
@@ -184,8 +184,8 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
 struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().GetCurrentPage();
-    page.OffsetInsertionPointX(x);
-    page.OffsetInsertionPointY(y);
+    page.Offset_insertion_point_x(x);
+    page.Offset_insertion_point_y(y);
   }
 };
 
@@ -268,9 +268,9 @@ MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
   AddOpcode(312, 0, "TextPosY", CallFunction(&TextPage::SetInsertionPointY));
   AddOpcode(320, 0, "TextOffset", new TextOffset);
   AddOpcode(
-      321, 0, "TextOffsetX", CallFunction(&TextPage::OffsetInsertionPointX));
+      321, 0, "TextOffsetX", CallFunction(&TextPage::Offset_insertion_point_x));
   AddOpcode(
-      322, 0, "TextOffsetY", CallFunction(&TextPage::OffsetInsertionPointY));
+      322, 0, "TextOffsetY", CallFunction(&TextPage::Offset_insertion_point_y));
   AddOpcode(330, 0, "GetTextPos", new GetTextPos);
 
   AddUnsupportedOpcode(340, 0, "WindowLen");

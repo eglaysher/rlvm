@@ -86,14 +86,14 @@ Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
              int x2,
              int y2)
     : text_(cp932_src) {
-  int line_height = window->lineHeight();
+  int line_height = window->line_height();
   while (y1 < y2) {
     // Special case for multi-line links.  Hopefully these will be rare...
     link_areas_.push_back(
-        Rect::GRP(x1, y1, window->textWindowSize().width(), y1 + line_height));
+        Rect::GRP(x1, y1, window->GetTextWindowSize().width(), y1 + line_height));
 
     y1 += line_height;
-    x1 = window->currentIndentation();
+    x1 = window->current_indentation();
   }
 
   link_areas_.push_back(Rect::GRP(x1, y1, x2, y2 + line_height));
@@ -143,14 +143,14 @@ int RlBabelDLL::CallDLL(RLMachine& machine,
       return StartNewScreen(*GetSvar(arg1));
     case dllSetNameMod: {
       boost::shared_ptr<TextWindow> textWindow = GetWindow(arg1);
-      int original_mod = textWindow->nameMod();
-      textWindow->setNameMod(arg2);
+      int original_mod = textWindow->name_mod();
+      textWindow->set_name_mod(arg2);
       return original_mod;
     }
     case dllGetNameMod:
-      return GetWindow(arg1)->nameMod();
+      return GetWindow(arg1)->name_mod();
     case dllGetTextWindow:
-      return GetWindow(-1)->windowNumber();
+      return GetWindow(-1)->window_number();
     case dllSetWindowName:
       return SetCurrentWindowName(GetSvar(arg1));
     case endSetWindowName:
@@ -168,7 +168,7 @@ int RlBabelDLL::CallDLL(RLMachine& machine,
     case dllTestGlosses:
       return TestGlosses(arg1, arg2, GetSvar(arg3), arg4);
     case dllGetRCommandMod: {
-      int window = GetWindow(arg1)->windowNumber();
+      int window = GetWindow(arg1)->window_number();
       return machine.system().gameexe()("WINDOW")(window)("R_COMMAND_MOD");
     }
     case dllMessageBox:
@@ -275,13 +275,13 @@ int RlBabelDLL::TextoutLineBreak(StringReferenceIterator buf) {
 
   // If there's room on this page, break the line, otherwise break
   // the page.
-  if (window->lineHeight() <
-      window->textWindowSize().height() - window->insertionPointY()) {
+  if (window->line_height() <
+      window->GetTextWindowSize().height() - window->insertion_point_y()) {
     return getcNewLine;
   } else {
     // TODO(erg): This will be harder then it looks.
-    // - Need to redo setName so that conversion from cp932 is done at the
-    //   absolute last minute, after (inside?) TextWindow::setName().
+    // - Need to redo SetName so that conversion from cp932 is done at the
+    //   absolute last minute, after (inside?) TextWindow::SetName().
     // - Need to record the cp932 name.
     // - Need accessors (none written)
     // - Pipe to here.
@@ -353,7 +353,7 @@ int RlBabelDLL::TextoutGetChar(StringReferenceIterator buffer,
 
         // If name display is not inline, skip the token to avoid
         // rendering it inline.
-        if (GetWindow(-1)->nameMod() >= 1)
+        if (GetWindow(-1)->name_mod() >= 1)
           text_index = end_token_index;
 
         // Set the window name.
@@ -406,7 +406,7 @@ int RlBabelDLL::TextoutGetChar(StringReferenceIterator buffer,
       }
       case 4: {
         // Set indent code
-        if (GetWindow(-1)->useIndentation()) {
+        if (GetWindow(-1)->use_indentation()) {
           unsigned char index = end_token();
           if (index < kCodeMapSize)
             rv = codemap[index];
@@ -523,7 +523,7 @@ int RlBabelDLL::SetCurrentWindowName(StringReferenceIterator buffer) {
   // Haeleth's implementation of SetCurrentWindowName in rlBabel goes through
   // some monstrous hacks, including temporarily rewriting the bytecode at the
   // instruction pointer. I *think* I can get away with a simple:
-  GetWindow(-1)->setNameWithoutDisplay(*buffer);
+  GetWindow(-1)->SetNameWithoutDisplay(*buffer);
   return 1;
 }
 
@@ -534,8 +534,8 @@ int RlBabelDLL::ClearGlosses() {
 
 int RlBabelDLL::NewGloss() {
   boost::shared_ptr<TextWindow> window = GetWindow(-1);
-  gloss_start_x_ = window->insertionPointX();
-  gloss_start_y_ = window->insertionPointY();
+  gloss_start_x_ = window->insertion_point_x();
+  gloss_start_y_ = window->insertion_point_y();
   return 1;
 }
 
@@ -545,8 +545,8 @@ int RlBabelDLL::AddGloss(const std::string& cp932_gloss_text) {
                            cp932_gloss_text,
                            gloss_start_x_,
                            gloss_start_y_,
-                           window->insertionPointX(),
-                           window->insertionPointY()));
+                           window->insertion_point_x(),
+                           window->insertion_point_y()));
   return 1;
 }
 
@@ -556,7 +556,7 @@ int RlBabelDLL::TestGlosses(int x,
                             int globalwaku) {
   // Does this handle all cases?
   boost::shared_ptr<TextWindow> window = GetWindow(-1);
-  Point textOrigin = window->textSurfaceRect().origin();
+  Point textOrigin = window->GetTextSurfaceRect().origin();
   x -= textOrigin.x();
   y -= textOrigin.y();
 
@@ -576,10 +576,10 @@ int RlBabelDLL::GetCharWidth(uint16_t cp932_char, bool as_xmod) {
   uint16_t native_char = cp.JisDecode(cp932_char);
   uint16_t unicode_codepoint = cp.Convert(native_char);
   boost::shared_ptr<TextWindow> window = GetWindow(-1);
-  int font_size = window->fontSizeInPixels();
+  int font_size = window->font_size_in_pixels();
   // TODO(erg): Can I somehow modify this to try to do proper kerning?
   int width = machine_.system().text().GetCharWidth(font_size, unicode_codepoint);
-  return as_xmod ? window->insertionPointX() + width : width;
+  return as_xmod ? window->insertion_point_x() + width : width;
 }
 
 bool RlBabelDLL::LineBreakRequired() {
@@ -592,12 +592,12 @@ bool RlBabelDLL::LineBreakRequired() {
     if (text_index < end_token_index) {
       width += GetCharWidth(cp932_char, false);
     } else {
-      width += window->fontSizeInPixels();
+      width += window->font_size_in_pixels();
     }
   }
 
-  int max_space = window->textWindowSize().width();
-  int remaining_space = max_space - window->insertionPointX();
+  int max_space = window->GetTextWindowSize().width();
+  int remaining_space = max_space - window->insertion_point_x();
 
   // If the token will fit on the current line, no line break is required.
   if (width < remaining_space) {
@@ -605,7 +605,7 @@ bool RlBabelDLL::LineBreakRequired() {
   }
 
   // If the token will not fit on the next line either, truncate it.
-  max_space -= window->currentIndentation();
+  max_space -= window->current_indentation();
   if (width >= max_space) {
     ptr = text_index;
     uint16_t cp932_char = ConsumeNextCharacter(ptr);

@@ -98,7 +98,7 @@ class RLOperation {
   // Destructor
   virtual ~RLOperation();
 
-  void setName(const char* name) { name_ = name; }
+  void set_name(const char* name) { name_ = name; }
   const char* name() const { return name_; }
 
   RLOperation* SetProperty(int property, int value);

@@ -85,7 +85,7 @@ void TextKeyCursor::Execute() {
 void TextKeyCursor::Render(TextWindow& text_window, std::ostream* tree) {
   if (cursor_image_) {
     // Get the location to render from text_window
-    Point keycur = text_window.keycursorPosition(frame_size_);
+    Point keycur = text_window.KeycursorPosition(frame_size_);
 
     cursor_image_->RenderToScreen(
         Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),

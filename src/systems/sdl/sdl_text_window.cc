@@ -49,38 +49,38 @@
 
 SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
     : TextWindow(system, window_num), sdl_system_(system) {
-  clearWin();
+  ClearWin();
 }
 
 SDLTextWindow::~SDLTextWindow() {}
 
-boost::shared_ptr<Surface> SDLTextWindow::textSurface() { return surface_; }
+boost::shared_ptr<Surface> SDLTextWindow::GetTextSurface() { return surface_; }
 
-boost::shared_ptr<Surface> SDLTextWindow::nameSurface() {
+boost::shared_ptr<Surface> SDLTextWindow::GetNameSurface() {
   return name_surface_;
 }
 
-void SDLTextWindow::clearWin() {
-  TextWindow::clearWin();
+void SDLTextWindow::ClearWin() {
+  TextWindow::ClearWin();
 
   // Allocate the text window surface
   if (!surface_)
-    surface_.reset(new SDLSurface(getSDLGraphics(system()), textSurfaceSize()));
+    surface_.reset(new SDLSurface(getSDLGraphics(system()), GetTextSurfaceSize()));
   surface_->Fill(RGBAColour::Clear());
 
   name_surface_.reset();
 }
 
-void SDLTextWindow::renderNameInBox(const std::string& utf8str) {
+void SDLTextWindow::RenderNameInBox(const std::string& utf8str) {
   RGBColour shadow = RGBAColour::Black().rgb();
   name_surface_ = system_.text().RenderText(
-      utf8str, fontSizeInPixels(), 0, 0, font_colour_, &shadow, 0);
+      utf8str, font_size_in_pixels(), 0, 0, font_colour_, &shadow, 0);
 }
 
-void SDLTextWindow::addSelectionItem(const std::string& utf8str,
+void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
                                      int selection_id) {
   boost::shared_ptr<TTF_Font> font =
-      sdl_system_.text().getFontOfSize(fontSizeInPixels());
+      sdl_system_.text().getFontOfSize(font_size_in_pixels());
 
   // Render the incoming string for both selected and not-selected.
   SDL_Color colour;
@@ -93,7 +93,7 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   SDL_Surface* inverted = AlphaInvert(normal);
 
   // Figure out xpos and ypos
-  Point position = textSurfaceRect().origin() +
+  Point position = GetTextSurfaceRect().origin() +
                    Size(text_insertion_point_x_, text_insertion_point_y_);
 
   SelectionElement* element =
@@ -110,10 +110,10 @@ void SDLTextWindow::addSelectionItem(const std::string& utf8str,
   selections_.push_back(element);
 }
 
-void SDLTextWindow::displayRubyText(const std::string& utf8str) {
+void SDLTextWindow::DisplayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {
     boost::shared_ptr<TTF_Font> font =
-        sdl_system_.text().getFontOfSize(rubyTextSize());
+        sdl_system_.text().getFontOfSize(ruby_text_size());
     int end_point = text_insertion_point_x_ - x_spacing_;
 
     if (ruby_begin_point_ > end_point) {
@@ -129,7 +129,7 @@ void SDLTextWindow::displayRubyText(const std::string& utf8str) {
     // Render glyph to surface
     int w = tmp->w;
     int h = tmp->h;
-    int height_location = text_insertion_point_y_ - rubyTextSize();
+    int height_location = text_insertion_point_y_ - ruby_text_size();
     int width_start =
         int(ruby_begin_point_ + ((end_point - ruby_begin_point_) * 0.5f) -
             (w * 0.5f));

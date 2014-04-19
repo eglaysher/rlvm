@@ -126,7 +126,7 @@ struct GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     boost::shared_ptr<TextWindow> window =
         machine.system().text().GetCurrentWindow();
-    return window->wakuSet();
+    return window->waku_set();
   }
 };
 

@@ -94,7 +94,7 @@ class TextSystemTest : public FullSystemTest {
   void snapshotAndClear() {
     TextSystem& text = rlmachine.system().text();
     text.Snapshot();
-    text.GetTextWindow(0)->clearWin();
+    text.GetTextWindow(0)->ClearWin();
     text.NewPageOnWindow(0);
   }
 
@@ -171,13 +171,13 @@ TEST_F(TextSystemTest, BackLogFunctionality) {
 TEST_F(TextSystemTest, RepeatsTextPageName) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
-  EXPECT_CALL(win, setName("Bob", "")).Times(1);
+  EXPECT_CALL(win, SetName("Bob", "")).Times(1);
   GetCurrentPage().Name("Bob", "");
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
-  EXPECT_CALL(win, setName("Bob", _)).Times(1);
+  EXPECT_CALL(win, SetName("Bob", _)).Times(1);
   getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
@@ -188,32 +188,32 @@ TEST_F(TextSystemTest, RepeatsTextPageName) {
 TEST_F(TextSystemTest, TextPageHardBreakRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
-  EXPECT_CALL(win, hardBrake()).Times(1);
+  EXPECT_CALL(win, HardBrake()).Times(1);
   GetCurrentPage().HardBrake();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
-  EXPECT_CALL(win, hardBrake()).Times(1);
+  EXPECT_CALL(win, HardBrake()).Times(1);
   getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
 
 // -----------------------------------------------------------------------
 
-// Tests that the TextPage::resetIndentation construct repeats correctly.
+// Tests that the TextPage::ResetIndentation construct repeats correctly.
 TEST_F(TextSystemTest, TextPageResetIndentationRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
   writeString("test", true);
 
-  EXPECT_CALL(win, resetIndentation()).Times(1);
+  EXPECT_CALL(win, ResetIndentation()).Times(1);
   GetCurrentPage().ResetIndentation();
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
-  EXPECT_CALL(win, resetIndentation()).Times(1);
+  EXPECT_CALL(win, ResetIndentation()).Times(1);
   getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
@@ -225,13 +225,13 @@ TEST_F(TextSystemTest, TextPageFontColorRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
 
-  EXPECT_CALL(win, setFontColor(_)).Times(1);
+  EXPECT_CALL(win, SetFontColor(_)).Times(1);
   GetCurrentPage().FontColour(0);
   snapshotAndClear();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // The scrollback shouldn't be colored.
-  EXPECT_CALL(win, setFontColor(_)).Times(0);
+  EXPECT_CALL(win, SetFontColor(_)).Times(0);
   getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }
@@ -243,8 +243,8 @@ TEST_F(TextSystemTest, RubyRepeats) {
   TestTextSystem& sys = getTextSystem();
   MockTextWindow& win = getTextWindow(0);
 
-  EXPECT_CALL(win, markRubyBegin()).Times(1);
-  EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
+  EXPECT_CALL(win, MarkRubyBegin()).Times(1);
+  EXPECT_CALL(win, DisplayRubyText("ruby")).Times(1);
   GetCurrentPage().MarkRubyBegin();
   writeString("With Ruby", true);
   GetCurrentPage().DisplayRubyText("ruby");
@@ -252,8 +252,8 @@ TEST_F(TextSystemTest, RubyRepeats) {
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 
   // Replay it:
-  EXPECT_CALL(win, markRubyBegin()).Times(1);
-  EXPECT_CALL(win, displayRubyText("ruby")).Times(1);
+  EXPECT_CALL(win, MarkRubyBegin()).Times(1);
+  EXPECT_CALL(win, DisplayRubyText("ruby")).Times(1);
   getTextSystem().BackPage();
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(&win));
 }

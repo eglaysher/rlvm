@@ -39,56 +39,49 @@ class MockTextWindow : public TestTextWindow {
   MockTextWindow(System& system, int win);
   virtual ~MockTextWindow();
 
-  MOCK_METHOD0(execute, void());
-  MOCK_METHOD1(setFontColor, void(const std::vector<int>&));
-  MOCK_METHOD2(character, bool(const std::string&, const std::string&));
-  MOCK_METHOD1(GetCharWidth, int(uint16_t));
-  MOCK_METHOD0(textSurface, boost::shared_ptr<Surface>());
-  MOCK_METHOD1(renderNameInBox, void(const std::string&));
+  MOCK_METHOD1(SetFontColor, void(const std::vector<int>&));
+  MOCK_METHOD2(DisplayCharacter, bool(const std::string&, const std::string&));
+  MOCK_METHOD0(GetTextSurface, boost::shared_ptr<Surface>());
+  MOCK_METHOD1(RenderNameInBox, void(const std::string&));
   MOCK_METHOD0(clearWin, void());
-  MOCK_METHOD2(setName, void(const std::string&, const std::string&));
-  MOCK_METHOD0(hardBrake, void());
-  MOCK_METHOD0(resetIndentation, void());
-  MOCK_METHOD0(markRubyBegin, void());
-  MOCK_METHOD1(displayRubyText, void(const std::string&));
+  MOCK_METHOD2(SetName, void(const std::string&, const std::string&));
+  MOCK_METHOD0(HardBrake, void());
+  MOCK_METHOD0(ResetIndentation, void());
+  MOCK_METHOD0(MarkRubyBegin, void());
+  MOCK_METHOD1(DisplayRubyText, void(const std::string&));
 
   // Calls to the parent class.
-  void ConcreteExecute() { TestTextWindow::execute(); }
   void ConcreteSetFontColor(const std::vector<int>& colour_data) {
-    TestTextWindow::setFontColor(colour_data);
+    TestTextWindow::SetFontColor(colour_data);
   }
   bool ConcreteDisplayChar(const std::string& current,
                            const std::string& next) {
-    return TestTextWindow::character(current, next);
-  }
-
-  int ConcreteCharWidth(uint16_t codepoint) const {
-    return TestTextWindow::GetCharWidth(codepoint);
+    return TestTextWindow::DisplayCharacter(current, next);
   }
 
   boost::shared_ptr<Surface> ConcreteTextSurface() {
-    return TestTextWindow::textSurface();
+    return TestTextWindow::GetTextSurface();
   }
 
   void ConcreteRenderNameInBox(const std::string& utf8str) {
-    TestTextWindow::renderNameInBox(utf8str);
+    TestTextWindow::RenderNameInBox(utf8str);
   }
 
-  void ConcreteClearWin() { TestTextWindow::clearWin(); }
+  void ConcreteClearWin() { TestTextWindow::ClearWin(); }
 
   void ConcreteSetName(const std::string& utf8name,
                        const std::string& next_char) {
-    TestTextWindow::setName(utf8name, next_char);
+    TestTextWindow::SetName(utf8name, next_char);
   }
 
-  void ConcreteHardBrake() { TestTextWindow::hardBrake(); }
+  void ConcreteHardBrake() { TestTextWindow::HardBrake(); }
 
-  void ConcreteResetIndentation() { TestTextWindow::resetIndentation(); }
+  void ConcreteResetIndentation() { TestTextWindow::ResetIndentation(); }
 
-  void ConcreteMarkRubyBegin() { TestTextWindow::markRubyBegin(); }
+  void ConcreteMarkRubyBegin() { TestTextWindow::MarkRubyBegin(); }
 
   void ConcreteDisplayRubyText(const std::string& utf8str) {
-    TestTextWindow::displayRubyText(utf8str);
+    TestTextWindow::DisplayRubyText(utf8str);
   }
 };
 

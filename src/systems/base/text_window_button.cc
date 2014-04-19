@@ -76,7 +76,7 @@ TextWindowButton::~TextWindowButton() {}
 Rect TextWindowButton::Location(TextWindow& window) {
   int type = location_.at(0);
   Size size(location_.at(3), location_.at(4));
-  Rect win_rect = window.windowRect();
+  Rect win_rect = window.GetWindowRect();
 
   switch (type) {
     case 0: {

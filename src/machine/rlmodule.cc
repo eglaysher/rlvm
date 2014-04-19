@@ -67,7 +67,7 @@ void RLModule::AddOpcode(int opcode,
                          const char* name,
                          RLOperation* op) {
   int packed_opcode = PackOpcodeNumber(opcode, overload);
-  op->setName(name);
+  op->set_name(name);
   op->module_ = this;
 #ifndef NDEBUG
   OpcodeMap::iterator it = stored_operations_.find(packed_opcode);

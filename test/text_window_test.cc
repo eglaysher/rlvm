@@ -127,17 +127,17 @@ class TextWindowTest : public ::testing::Test {
 };
 
 // Tests that a text box like the one in Kanon (origin 0, left aligned, etc)
-// has its windowRect() calculated correctly from the gameexe data.
+// has its GetWindowRect() calculated correctly from the gameexe data.
 TEST_F(TextWindowTest, KanonLikePositioning) {
   kanonLikeTextbox();
 
   TestTextWindow window(system, 0);
 
-  EXPECT_EQ(Rect(0, 344, Size(640, 122)), window.windowRect());
+  EXPECT_EQ(Rect(0, 344, Size(640, 122)), window.GetWindowRect());
 }
 
 // Tests that a text box like the one in Princess Brave (origin 2, positioned
-// significantly offscreen) has its windowRect() calculated correctly from the
+// significantly offscreen) has its GetWindowRect() calculated correctly from the
 // gameexe data.
 TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
   const std::string gameexe_data =
@@ -175,7 +175,7 @@ TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
 
   TestTextWindow window(system, 2);
 
-  EXPECT_EQ(Rect(0, 292, Size(800, 300)), window.windowRect());
+  EXPECT_EQ(Rect(0, 292, Size(800, 300)), window.GetWindowRect());
 }
 
 // Tests normal line breaking by trying to fit a line of "<two kanji name>
@@ -187,7 +187,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
   TestTextWindow window(system, 0);
 
   // "彼女", "「"
-  window.setName(kGirl, kOpenQuote);
+  window.SetName(kGirl, kOpenQuote);
 
   // "「", 20x"あ", "」"
   std::string str = kOpenQuote;
@@ -196,7 +196,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
   str += kCloseQuote;
 
   PrintTextToFunction(
-      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
+      bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
@@ -207,7 +207,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
 }
 
 // Like NormalLineBreaking, but should have 19 Hiragana 'A's to make sure we
-// don't call hardBrake() and squeeze the final close quote onto the first
+// don't call HardBrake() and squeeze the final close quote onto the first
 // line.
 TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
   kanonLikeTextbox();
@@ -215,7 +215,7 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
   TestTextWindow window(system, 0);
 
   // "彼女", "「"
-  window.setName(kGirl, kOpenQuote);
+  window.SetName(kGirl, kOpenQuote);
 
   // "「", 19x"あ", "」"
   std::string str = kOpenQuote;
@@ -224,7 +224,7 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
   str += kCloseQuote;
 
   PrintTextToFunction(
-      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
+      bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
@@ -244,7 +244,7 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   TestTextWindow window(system, 0);
 
   // "彼女", "「"
-  window.setName(kGirl, kOpenQuote);
+  window.SetName(kGirl, kOpenQuote);
 
   // "「", 19x"あ", "」"
   std::string str = kOpenQuote;
@@ -254,7 +254,7 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   str += kCloseQuote;
 
   PrintTextToFunction(
-      bind(&TextWindow::character, std::ref(window), _1, _2), str, "");
+      bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
   EXPECT_EQ(window.currentContents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"

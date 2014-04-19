@@ -42,15 +42,15 @@ class SelectionElement;
 class SDLTextWindow : public TextWindow {
  public:
   SDLTextWindow(SDLSystem& system, int window);
-  ~SDLTextWindow();
+  virtual ~SDLTextWindow();
 
-  virtual boost::shared_ptr<Surface> textSurface();
-  virtual boost::shared_ptr<Surface> nameSurface();
-  virtual void clearWin();
-  virtual void renderNameInBox(const std::string& utf8str);
-  virtual void displayRubyText(const std::string& utf8str);
+  virtual boost::shared_ptr<Surface> GetTextSurface() override;
+  virtual boost::shared_ptr<Surface> GetNameSurface() override;
+  virtual void ClearWin() override;
+  virtual void RenderNameInBox(const std::string& utf8str);
+  virtual void DisplayRubyText(const std::string& utf8str);
 
-  virtual void addSelectionItem(const std::string& utf8str, int selection_id);
+  virtual void AddSelectionItem(const std::string& utf8str, int selection_id);
 
  private:
   SDLSystem& sdl_system_;

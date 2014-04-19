@@ -140,7 +140,7 @@ void TextSystem::ExecuteTextSystem() {
   // Check to see if the cursor is displayed
   if (ShowWindow(active_window_)) {
     WindowMap::iterator it = text_window_.find(active_window_);
-    if (it != text_window_.end() && it->second->isVisible() &&
+    if (it != text_window_.end() && it->second->is_visible() &&
         in_pause_state_ && !IsReadingBacklog()) {
       if (!text_key_cursor_)
         SetKeyCursor(0);
@@ -153,7 +153,7 @@ void TextSystem::ExecuteTextSystem() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
     if (ShowWindow(it->first)) {
-      it->second->execute();
+      it->second->Execute();
     }
   }
 }
@@ -168,14 +168,14 @@ void TextSystem::Render(std::ostream* tree) {
          it != text_window_.end();
          ++it) {
       if (ShowWindow(it->first)) {
-        it->second->render(tree);
+        it->second->Render(tree);
       }
     }
 
     if (ShowWindow(active_window_)) {
       WindowMap::iterator it = text_window_.find(active_window_);
 
-      if (it != text_window_.end() && it->second->isVisible() &&
+      if (it != text_window_.end() && it->second->is_visible() &&
           in_pause_state_ && !IsReadingBacklog()) {
         if (!text_key_cursor_)
           SetKeyCursor(0);
@@ -189,14 +189,14 @@ void TextSystem::Render(std::ostream* tree) {
 void TextSystem::HideTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    it->second->SetVisible(0);
+    it->second->set_is_visible(0);
   }
 }
 
 void TextSystem::HideAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->SetVisible(0);
+    it->second->set_is_visible(0);
   }
 }
 
@@ -204,7 +204,7 @@ void TextSystem::HideAllTextWindowsExcept(int i) {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
     if (it->first != i) {
-      it->second->SetVisible(0);
+      it->second->set_is_visible(0);
     }
   }
 }
@@ -212,21 +212,21 @@ void TextSystem::HideAllTextWindowsExcept(int i) {
 void TextSystem::ShowTextWindow(int win_number) {
   WindowMap::iterator it = text_window_.find(win_number);
   if (it != text_window_.end()) {
-    it->second->SetVisible(1);
+    it->second->set_is_visible(1);
   }
 }
 
 void TextSystem::ShowAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->SetVisible(1);
+    it->second->set_is_visible(1);
   }
 }
 
 void TextSystem::ClearAllTextWindows() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
-    it->second->clearWin();
+    it->second->ClearWin();
   }
 }
 
@@ -421,7 +421,7 @@ void TextSystem::UpdateWindowsForChangeToWindowAttr() {
   for (WindowMap::iterator it = text_window_.begin(); it != text_window_.end();
        ++it) {
     if (!it->second->windowAttrMod())
-      it->second->setRGBAF(window_attr());
+      it->second->SetRGBAF(window_attr());
   }
 }
 
