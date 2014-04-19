@@ -56,26 +56,26 @@
 // wavfile.{cc,h}, and some binding code.
 class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
  public:
-  ~SDLMusic();
+  virtual ~SDLMusic();
 
   // Whether we were told to loop when we were play()ed.
-  bool isLooping() const;
+  bool IsLooping() const;
 
   // Whether we are currently fading out.
-  bool isFading() const;
+  bool IsFading() const;
 
   // TODO(erg): Now that I understand wtf is going on, redo this part here.
-  void play(bool loop);
-  void stop();
-  void fadeIn(bool loop, int fade_in_ms);
-  void fadeOut(int fade_out_ms);
-  void pause();
-  void unpause();
-  std::string name() const;
+  void Play(bool loop);
+  void Stop();
+  void FadeIn(bool loop, int fade_in_ms);
+  void FadeOut(int fade_out_ms);
+  void Pause();
+  void Unpause();
+  std::string GetName() const;
 
   // Returns the current playing status of the current track. Uses the
   // same return codes as SoundSystem::bgmStatus().
-  int bgmStatus() const;
+  int BgmStatus() const;
 
   // Creates a MusicImpl object from the incoming description of the
   // music.
