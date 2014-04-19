@@ -105,6 +105,13 @@ const XorKey kud_wafter_xor_mask[] = {
      256, 257},
     {{0x0}, -1, -1}};
 
+const XorKey kud_wafter_all_ages_xor_mask[] = {
+    {{0xaf, 0x3f, 0xe6, 0x63, 0xad, 0x3a, 0x69, 0x18, 0x85, 0x45, 0xe5, 0x40,
+      0x1e, 0x7e, 0xb9, 0xe0},
+     256, 257},
+    {{0x0}, -1, -1}};
+
+
 // -----------------------------------------------------------------------
 
 // Decompress an archived file.

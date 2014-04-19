@@ -83,6 +83,12 @@ Archive::Archive(const std::string& filename, const std::string& regname)
     // "KEY\<Kud Wafter in hiragana>"
     second_level_xor_key_ =
         libreallive::compression::kud_wafter_xor_mask;
+  } else if (regname ==
+             "\x4b\x45\x59\x5c\x83\x4e\x83\x68\x82\xed\x82\xd3\x82"
+             "\xbd\x81\x5b\x81\x79\x91\x53\x94\x4e\x97\xee\x91\xce"
+             "\x8f\xdb\x94\xc5\x81\x7a") {
+    second_level_xor_key_ =
+        libreallive::compression::kud_wafter_all_ages_xor_mask;
   }
 }
 

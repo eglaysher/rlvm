@@ -50,6 +50,7 @@ extern const XorKey clannad_full_voice_xor_mask[];
 extern const XorKey little_busters_ex_xor_mask[];
 extern const XorKey snow_standard_edition_xor_mask[];
 extern const XorKey kud_wafter_xor_mask[];
+extern const XorKey kud_wafter_all_ages_xor_mask[];
 
 void decompress(const char* src, size_t src_len, char* dst, size_t dst_len,
                 const XorKey* per_game_xor_key);
