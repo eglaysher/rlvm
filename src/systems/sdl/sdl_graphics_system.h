@@ -68,8 +68,8 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   virtual void EndFrame() override;
 
-  void redrawLastFrame();
-  void drawCursor();
+  void RedrawLastFrame();
+  void DrawCursor();
 
   virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
 
@@ -100,24 +100,20 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
   virtual void Reset() override;
 
  private:
-  void setupVideo();
+  void SetupVideo();
 
   // Makes sure that a passed in dc number is valid.
   //
   // @exception Error Throws when dc is greater then the maximum.
   // @exception Error Throws when dc is unallocated.
-  void verifySurfaceExists(int dc, const std::string& caller);
+  void VerifySurfaceExists(int dc, const std::string& caller);
 
-  // Makes sure that a surface we just allocated was, in fact,
-  // allocated.
-  void verifyDCAllocation(int dc, const std::string& caller);
-
-  void setWindowTitle();
+  void SetWindowTitle();
 
   // NotificationObserver:
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
-                       const NotificationDetails& details);
+                       const NotificationDetails& details) override;
 
   // ---------------------------------------------------------------------
 

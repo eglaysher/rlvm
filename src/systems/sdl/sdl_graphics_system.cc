@@ -144,7 +144,7 @@ void SDLGraphicsSystem::EndFrame() {
     screen_contents_texture_valid_ = false;
   }
 
-  drawCursor();
+  DrawCursor();
 
   // Swap the buffers
   glFlush();
@@ -152,7 +152,7 @@ void SDLGraphicsSystem::EndFrame() {
   ShowGLErrors();
 }
 
-void SDLGraphicsSystem::redrawLastFrame() {
+void SDLGraphicsSystem::RedrawLastFrame() {
   // We won't redraw the screen between when the DrawManual() command is issued
   // by the bytecode and the first refresh() is called since we need a valid
   // copy of the screen to work with and we only snapshot the screen during
@@ -182,7 +182,7 @@ void SDLGraphicsSystem::redrawLastFrame() {
     }
     glEnd();
 
-    drawCursor();
+    DrawCursor();
 
     glFlush();
 
@@ -192,7 +192,7 @@ void SDLGraphicsSystem::redrawLastFrame() {
   }
 }
 
-void SDLGraphicsSystem::drawCursor() {
+void SDLGraphicsSystem::DrawCursor() {
   if (ShouldUseCustomCursor()) {
     boost::shared_ptr<MouseCursor> cursor;
     if (static_cast<SDLEventSystem&>(system().event()).mouse_inside_window())
@@ -235,14 +235,14 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   int name_enc = gameexe("NAME_ENC").ToInt(0);
   caption_title_ = cp932toUTF8(cp932caption, name_enc);
 
-  setupVideo();
+  SetupVideo();
 
   // Now we allocate the first two display contexts with equal size to
   // the display
   display_contexts_[0]->allocate(screen_size(), true);
   display_contexts_[1]->allocate(screen_size());
 
-  setWindowTitle();
+  SetWindowTitle();
 
 #if defined(__linux__)
   // We only set the icon on linux because OSX will use the icns file
@@ -267,7 +267,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
                  Source<GraphicsSystem>(static_cast<GraphicsSystem*>(this)));
 }
 
-void SDLGraphicsSystem::setupVideo() {
+void SDLGraphicsSystem::SetupVideo() {
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
   SDL_WM_SetCaption("rlvm", "rlvm");
@@ -375,7 +375,7 @@ void SDLGraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
     OnScreenRefreshed();
     redraw_last_frame_ = false;
   } else if (is_responsible_for_update() && redraw_last_frame_) {
-    redrawLastFrame();
+    RedrawLastFrame();
     redraw_last_frame_ = false;
   }
 
@@ -388,14 +388,14 @@ void SDLGraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
         machine.line_number() != last_line_number_) {
       last_seen_number_ = machine.SceneNumber();
       last_line_number_ = machine.line_number();
-      setWindowTitle();
+      SetWindowTitle();
     }
   }
 
   GraphicsSystem::ExecuteGraphicsSystem(machine);
 }
 
-void SDLGraphicsSystem::setWindowTitle() {
+void SDLGraphicsSystem::SetWindowTitle() {
   std::ostringstream oss;
   oss << caption_title_;
 
@@ -434,7 +434,7 @@ void SDLGraphicsSystem::SetWindowSubtitle(const std::string& cp932str,
 void SDLGraphicsSystem::SetScreenMode(const int in) {
   GraphicsSystem::SetScreenMode(in);
 
-  setupVideo();
+  SetupVideo();
 }
 
 void SDLGraphicsSystem::AllocateDC(int dc, Size size) {
@@ -495,7 +495,7 @@ void SDLGraphicsSystem::FreeDC(int dc) {
   }
 }
 
-void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
+void SDLGraphicsSystem::VerifySurfaceExists(int dc, const std::string& caller) {
   if (dc >= 16) {
     std::ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
@@ -506,15 +506,6 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
     std::ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
     throw rlvm::Exception(ss.str());
-  }
-}
-
-void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
-  if (display_contexts_[dc] == NULL) {
-    std::ostringstream ss;
-    ss << "Couldn't allocate DC[" << dc << "] in " << caller << ": "
-       << SDL_GetError();
-    throw SystemError(ss.str());
   }
 }
 
@@ -676,7 +667,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::GetHaikei() {
 }
 
 boost::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
-  verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
+  VerifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
 
   // If requesting a DC that doesn't exist, allocate it first.
   if (display_contexts_[dc]->rawSurface() == NULL)
