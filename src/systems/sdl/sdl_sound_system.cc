@@ -98,7 +98,7 @@ void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
     SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
     SetChannelVolumeImpl(channel);
     int loop_num = loop ? -1 : 0;
-    sample->playChunkOn(channel, loop_num);
+    sample->PlayChunkOn(channel, loop_num);
   }
 }
 
@@ -236,7 +236,7 @@ void SDLSoundSystem::WavPlay(const std::string& wav_file,
     SetChannelVolumeImpl(channel);
 
     int loop_num = loop ? -1 : 0;
-    sample->fadeInChunkOn(channel, loop_num, fadein_ms);
+    sample->FadeInChunkOn(channel, loop_num, fadein_ms);
   }
 }
 
@@ -290,7 +290,7 @@ void SDLSoundSystem::PlaySe(const int se_num) {
 
     // SE chunks have no volume other than the modifier.
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(se_volume_mod()));
-    sample->playChunkOn(channel, 0);
+    sample->PlayChunkOn(channel, 0);
   }
 }
 
@@ -399,7 +399,7 @@ void SDLSoundSystem::KoePlayImpl(int id) {
 
   SDLSoundChunkPtr koe = buildKoeChunk(data, length);
   SetChannelVolumeImpl(KOE_CHANNEL);
-  koe->playChunkOn(KOE_CHANNEL, 0);
+  koe->PlayChunkOn(KOE_CHANNEL, 0);
 }
 
 void SDLSoundSystem::Reset() {
