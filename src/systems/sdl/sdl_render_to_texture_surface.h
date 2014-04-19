@@ -42,7 +42,7 @@ class Texture;
 class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
  public:
   SDLRenderToTextureSurface(SDLGraphicsSystem* system, const Size& size);
-  ~SDLRenderToTextureSurface();
+  virtual ~SDLRenderToTextureSurface();
 
   virtual void Dump() override;
 
@@ -51,25 +51,25 @@ class SDLRenderToTextureSurface : public Surface, public NotificationObserver {
                              const Rect& src,
                              const Rect& dst,
                              int alpha = 255,
-                             bool use_src_alpha = true) const;
+                             bool use_src_alpha = true) const override;
 
   virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
-                              int alpha = 255) const;
+                              int alpha = 255) const override;
 
   virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
-                              const int opacity[4]) const;
+                              const int opacity[4]) const override;
 
   virtual void RenderToScreenAsColorMask(const Rect& src,
                                          const Rect& dst,
                                          const RGBAColour& rgba,
-                                         int filter) const;
+                                         int filter) const override;
 
   virtual void RenderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
-                                      int alpha) const;
+                                      int alpha) const override;
 
   virtual void Fill(const RGBAColour& colour) override;
   virtual void Fill(const RGBAColour& colour, const Rect& rect) override;
