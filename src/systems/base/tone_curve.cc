@@ -105,10 +105,10 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   }
 }
 
-int ToneCurve::getEffectCount() const { return effect_count_; }
+int ToneCurve::GetEffectCount() const { return effect_count_; }
 
-ToneCurveRGBMap ToneCurve::getEffect(int index) {
-  if (index >= getEffectCount() || index < 0) {
+ToneCurveRGBMap ToneCurve::GetEffect(int index) {
+  if (index >= GetEffectCount() || index < 0) {
     std::ostringstream oss;
     oss << "Requested tone curve index " << index
         << " exceeds the amount of effects in the tone curve file.";

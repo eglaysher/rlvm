@@ -61,11 +61,11 @@ class ToneCurve {
 
   // Returns the total number of tone curve effects available in the tone curve
   // file
-  int getEffectCount() const;
+  int GetEffectCount() const;
 
   // Return the effect at the given index (used by Surface in tone_curve()).  The
   // effects are indexed from 0 to effect_count - 1
-  ToneCurveRGBMap getEffect(int index);
+  ToneCurveRGBMap GetEffect(int index);
 
  private:
   // Array of tone curve effects

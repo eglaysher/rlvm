@@ -651,16 +651,16 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
     std::string effect_no_str =
         short_filename.substr(short_filename.find("?") + 1);
     int effect_no = std::stoi(effect_no_str);
-    // the effect number is an index that goes from 10 to getEffectCount() * 10,
+    // the effect number is an index that goes from 10 to GetEffectCount() * 10,
     // so keep that in mind here
-    if ((effect_no / 10) > globals().tone_curves.getEffectCount() ||
+    if ((effect_no / 10) > globals().tone_curves.GetEffectCount() ||
         effect_no < 10) {
       std::ostringstream oss;
       oss << "Tone curve index " << effect_no << " is invalid.";
       throw rlvm::Exception(oss.str());
     }
     surface_to_ret.get()->ToneCurve(
-        globals().tone_curves.getEffect(effect_no / 10 - 1),
+        globals().tone_curves.GetEffect(effect_no / 10 - 1),
         Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
   }
 
