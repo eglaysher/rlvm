@@ -90,7 +90,7 @@ class SDLSoundSystem : public SoundSystem {
 
   // Wrapper around SDL_mixer's hook function. We do this because we need to
   // have our own default music mixing function which is set at startup.
-  void setMusicHook(void (*mix_func)(void* udata, Uint8* stream, int len));
+  void SetMusicHook(void (*mix_func)(void* udata, Uint8* stream, int len));
 
  private:
   typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
@@ -101,13 +101,13 @@ class SDLSoundSystem : public SoundSystem {
 
   // Retrieves a sound chunk from the passed in cache (or loads it if
   // it's not in the cache and then stuffs it into the cache.)
-  SDLSoundChunkPtr getSoundChunk(const std::string& file_name,
+  SDLSoundChunkPtr GetSoundChunk(const std::string& file_name,
                                  SoundChunkCache& cache);
 
   // Builds a SoundChunk from a piece of memory. This is used for playing
   // voice. These chunks are not put in a SoundChunkCache since there's no
   // string to cache on.
-  static SDLSoundChunkPtr buildKoeChunk(char* data, int length);
+  static SDLSoundChunkPtr BuildKoeChunk(char* data, int length);
 
   // Implementation to play a wave file. Two wavPlay() versions use this
   // underlying implementation, which is split out so the one that takes a raw
@@ -115,7 +115,7 @@ class SDLSoundSystem : public SoundSystem {
   //
   // Both NUM_BASE_CHANNELS and NUM_EXTRA_WAVPLAY_CHANNELS are legal inputs for
   // |channel|.
-  void wavPlayImpl(const std::string& wav_file, const int channel, bool loop);
+  void WavPlayImpl(const std::string& wav_file, const int channel, bool loop);
 
   // Computes and passes a volume to SDL_mixer for |channel|.
   void SetChannelVolumeImpl(int channel);

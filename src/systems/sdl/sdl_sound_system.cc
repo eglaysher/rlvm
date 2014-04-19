@@ -67,7 +67,7 @@ static RealLiveSoundQualities s_real_live_sound_qualities[] = {
 // -----------------------------------------------------------------------
 // SDLSoundSystem (private)
 // -----------------------------------------------------------------------
-SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
+SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::GetSoundChunk(
     const std::string& file_name,
     SoundChunkCache& cache) {
   SDLSoundChunkPtr sample = cache.fetch(file_name);
@@ -86,16 +86,16 @@ SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::getSoundChunk(
   return sample;
 }
 
-SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::buildKoeChunk(char* data,
+SDLSoundSystem::SDLSoundChunkPtr SDLSoundSystem::BuildKoeChunk(char* data,
                                                                int length) {
   return SDLSoundChunkPtr(new SDLSoundChunk(data, length));
 }
 
-void SDLSoundSystem::wavPlayImpl(const std::string& wav_file,
+void SDLSoundSystem::WavPlayImpl(const std::string& wav_file,
                                  const int channel,
                                  bool loop) {
   if (is_pcm_enabled()) {
-    SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
+    SDLSoundChunkPtr sample = GetSoundChunk(wav_file, wav_cache_);
     SetChannelVolumeImpl(channel);
     int loop_num = loop ? -1 : 0;
     sample->PlayChunkOn(channel, loop_num);
@@ -163,7 +163,7 @@ SDLSoundSystem::SDLSoundSystem(System& system)
 
   Mix_ChannelFinished(&SDLSoundChunk::SoundChunkFinishedPlayback);
 
-  setMusicHook(NULL);
+  SetMusicHook(NULL);
 }
 
 SDLSoundSystem::~SDLSoundSystem() {
@@ -215,14 +215,14 @@ void SDLSoundSystem::WavPlay(const std::string& wav_file, bool loop) {
     throw std::runtime_error(oss.str());
   }
 
-  wavPlayImpl(wav_file, channel_number, loop);
+  WavPlayImpl(wav_file, channel_number, loop);
 }
 
 void SDLSoundSystem::WavPlay(const std::string& wav_file,
                              bool loop,
                              const int channel) {
   CheckChannel(channel, "SDLSoundSystem::wav_play");
-  wavPlayImpl(wav_file, channel, loop);
+  WavPlayImpl(wav_file, channel, loop);
 }
 
 void SDLSoundSystem::WavPlay(const std::string& wav_file,
@@ -232,7 +232,7 @@ void SDLSoundSystem::WavPlay(const std::string& wav_file,
   CheckChannel(channel, "SDLSoundSystem::wav_play");
 
   if (is_pcm_enabled()) {
-    SDLSoundChunkPtr sample = getSoundChunk(wav_file, wav_cache_);
+    SDLSoundChunkPtr sample = GetSoundChunk(wav_file, wav_cache_);
     SetChannelVolumeImpl(channel);
 
     int loop_num = loop ? -1 : 0;
@@ -286,7 +286,7 @@ void SDLSoundSystem::PlaySe(const int se_num) {
       return;
     }
 
-    SDLSoundChunkPtr sample = getSoundChunk(file_name, wav_cache_);
+    SDLSoundChunkPtr sample = GetSoundChunk(file_name, wav_cache_);
 
     // SE chunks have no volume other than the modifier.
     Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(se_volume_mod()));
@@ -397,7 +397,7 @@ void SDLSoundSystem::KoePlayImpl(int id) {
   int length;
   char* data = sample->Decode(&length);
 
-  SDLSoundChunkPtr koe = buildKoeChunk(data, length);
+  SDLSoundChunkPtr koe = BuildKoeChunk(data, length);
   SetChannelVolumeImpl(KOE_CHANNEL);
   koe->PlayChunkOn(KOE_CHANNEL, 0);
 }
@@ -409,7 +409,7 @@ void SDLSoundSystem::Reset() {
   SoundSystem::Reset();
 }
 
-void SDLSoundSystem::setMusicHook(void (*mix_func)(void* udata,
+void SDLSoundSystem::SetMusicHook(void (*mix_func)(void* udata,
                                                    Uint8* stream,
                                                    int len)) {
   if (!mix_func)
