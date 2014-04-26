@@ -92,7 +92,6 @@ GCNMenu::GCNMenu(const std::string& title,
   for (gcn::Button* button : buttons) {
     button->setWidth(max_button_size);
     button->setAlignment(gcn::Graphics::CENTER);
-    // TODO(erg): Leak
   }
 
   setSize((MENU_PADDING * 2) + max_button_size, top_offset);

@@ -53,7 +53,10 @@ EventSystem::EventSystem(Gameexe& gexe) : globals_(gexe) {}
 EventSystem::~EventSystem() {}
 
 RLTimer& EventSystem::GetTimer(int layer, int counter) {
-  // TODO(erg): Add bounds checking here.
+  if (layer >= 2)
+    throw rlvm::Exception("Invalid layer in EventSystem::GetTimer.");
+  if (counter >= 255)
+    throw rlvm::Exception("Invalid counter in EventSystem::GetTimer.");
   return timers_[layer][counter];
 }
 

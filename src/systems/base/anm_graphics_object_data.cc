@@ -28,10 +28,6 @@
 
 // The code in this file has been modified from the file anm.cc in
 // Jagarl's xkanon project.
-//
-// TODO(erg): Reading the data into memory and then acessing it by byte offset
-// isn't secure; there needs to be some sort of check against the length of the
-// array if we're going to do that.
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>

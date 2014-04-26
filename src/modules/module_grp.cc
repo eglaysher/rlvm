@@ -1030,8 +1030,6 @@ typedef Argc_T<Special_T<
 // In the end, this operation struct simply Dispatches the Special/Complex
 // commands to functions and other operation structs that are clearer in
 // purpose.
-//
-// TODO(erg): Finish this operation; it's in an incomplete, but compiling state.
 
 // All work is applied to DC 1.
 const int MULTI_TARGET_DC = 1;

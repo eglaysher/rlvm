@@ -362,7 +362,6 @@ BOOL setIncomingFilename(NSString* filename)
     /* Hand off to main application code */
     gCalledAppMainline = TRUE;
 
-    // TODO(erg): Share parameter parsing code and make this go away.
     fs::path gamerootPath = instance.SelectGameDirectory();
     if (gamerootPath.empty())
       exit(-1);

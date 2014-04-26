@@ -77,8 +77,6 @@ class SaveGameListModel : public gcn::ListModel {
 
 SaveGameListModel::SaveGameListModel(const std::string& no_data,
                                      RLMachine& machine) {
-  // TODO(erg): Can I make this faster instead of trying to see if every game
-  // exists?
   int latestSlot = -1;
   time_t latestTime = std::numeric_limits<time_t>::min();
 
@@ -209,7 +207,6 @@ void GCNSaveLoadWindow::action(const gcn::ActionEvent& actionEvent) {
   if (actionEvent.getId() == EVENT_CANCEL) {
     platform_->windowCanceled(this);
   } else if (actionEvent.getId() == EVENT_SAVE) {
-    // TODO(erg): Use selection listener?
     platform_->saveEvent(listbox_->getSelected());
   } else if (actionEvent.getId() == EVENT_LOAD) {
     platform_->loadEvent(listbox_->getSelected());
