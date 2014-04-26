@@ -34,8 +34,8 @@
 class BlindEffect : public Effect {
  public:
   BlindEffect(RLMachine& machine,
-              boost::shared_ptr<Surface> src,
-              boost::shared_ptr<Surface> dst,
+              std::shared_ptr<Surface> src,
+              std::shared_ptr<Surface> dst,
               const Size& screen_size,
               int time,
               int blindSize);
@@ -58,8 +58,8 @@ class BlindEffect : public Effect {
 class BlindTopToBottomEffect : public BlindEffect {
  public:
   BlindTopToBottomEffect(RLMachine& machine,
-                         boost::shared_ptr<Surface> src,
-                         boost::shared_ptr<Surface> dst,
+                         std::shared_ptr<Surface> src,
+                         std::shared_ptr<Surface> dst,
                          const Size& screen_size,
                          int time,
                          int blindSize);
@@ -74,8 +74,8 @@ class BlindTopToBottomEffect : public BlindEffect {
 class BlindBottomToTopEffect : public BlindEffect {
  public:
   BlindBottomToTopEffect(RLMachine& machine,
-                         boost::shared_ptr<Surface> src,
-                         boost::shared_ptr<Surface> dst,
+                         std::shared_ptr<Surface> src,
+                         std::shared_ptr<Surface> dst,
                          const Size& screen_size,
                          int time,
                          int blindSize);
@@ -90,8 +90,8 @@ class BlindBottomToTopEffect : public BlindEffect {
 class BlindLeftToRightEffect : public BlindEffect {
  public:
   BlindLeftToRightEffect(RLMachine& machine,
-                         boost::shared_ptr<Surface> src,
-                         boost::shared_ptr<Surface> dst,
+                         std::shared_ptr<Surface> src,
+                         std::shared_ptr<Surface> dst,
                          const Size& screen_size,
                          int time,
                          int blindSize);
@@ -106,8 +106,8 @@ class BlindLeftToRightEffect : public BlindEffect {
 class BlindRightToLeftEffect : public BlindEffect {
  public:
   BlindRightToLeftEffect(RLMachine& machine,
-                         boost::shared_ptr<Surface> src,
-                         boost::shared_ptr<Surface> dst,
+                         std::shared_ptr<Surface> src,
+                         std::shared_ptr<Surface> dst,
                          const Size& screen_size,
                          int time,
                          int blindSize);

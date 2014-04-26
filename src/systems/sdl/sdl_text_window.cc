@@ -54,9 +54,9 @@ SDLTextWindow::SDLTextWindow(SDLSystem& system, int window_num)
 
 SDLTextWindow::~SDLTextWindow() {}
 
-boost::shared_ptr<Surface> SDLTextWindow::GetTextSurface() { return surface_; }
+std::shared_ptr<Surface> SDLTextWindow::GetTextSurface() { return surface_; }
 
-boost::shared_ptr<Surface> SDLTextWindow::GetNameSurface() {
+std::shared_ptr<Surface> SDLTextWindow::GetNameSurface() {
   return name_surface_;
 }
 
@@ -79,7 +79,7 @@ void SDLTextWindow::RenderNameInBox(const std::string& utf8str) {
 
 void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
                                      int selection_id) {
-  boost::shared_ptr<TTF_Font> font =
+  std::shared_ptr<TTF_Font> font =
       sdl_system_.text().GetFontOfSize(font_size_in_pixels());
 
   // Render the incoming string for both selected and not-selected.
@@ -98,9 +98,9 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
 
   SelectionElement* element =
       new SelectionElement(system(),
-                           boost::shared_ptr<Surface>(new SDLSurface(
+                           std::shared_ptr<Surface>(new SDLSurface(
                                getSDLGraphics(system()), normal)),
-                           boost::shared_ptr<Surface>(new SDLSurface(
+                           std::shared_ptr<Surface>(new SDLSurface(
                                getSDLGraphics(system()), inverted)),
                            selectionCallback(),
                            selection_id,
@@ -112,7 +112,7 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
 
 void SDLTextWindow::DisplayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {
-    boost::shared_ptr<TTF_Font> font =
+    std::shared_ptr<TTF_Font> font =
         sdl_system_.text().GetFontOfSize(ruby_text_size());
     int end_point = text_insertion_point_x_ - x_spacing_;
 

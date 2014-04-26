@@ -28,19 +28,18 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 #define SRC_SYSTEMS_SDL_SDL_SOUND_CHUNK_H_
 
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include <SDL/SDL_mixer.h>
 
 #include <map>
+#include <memory>
 
 // -----------------------------------------------------------------------
 
 // Encapsulates a Mix_Chunk object. We do this so we can refcounting
 // properly.
-class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
+class SDLSoundChunk : public std::enable_shared_from_this<SDLSoundChunk> {
  public:
   // Builds a Mix_Chunk from a file.
   explicit SDLSoundChunk(const boost::filesystem::path& path);
@@ -81,7 +80,7 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
   // to make sure that SDLSoundChunk object isn't deallocated. The
   // SDL_mixer callback, SoundChunkFinishedPlayback(), will reset the
   // associate smart pointer.
-  typedef std::map<int, boost::shared_ptr<SDLSoundChunk>> PlayingTable;
+  typedef std::map<int, std::shared_ptr<SDLSoundChunk>> PlayingTable;
   static PlayingTable s_playing_table;
 
   // Wrapped chunk

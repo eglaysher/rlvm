@@ -30,11 +30,11 @@
 
 #include "modules/module_obj_fg_bg.h"
 
-#include <boost/shared_ptr.hpp>
 #include <cmath>
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>

@@ -30,9 +30,9 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -72,7 +72,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   // Resets to the first frame.
   virtual void LoopAnimation() override;
 
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual Rect SrcRect(const GraphicsObject& go) override;
   virtual Point DstOrigin(const GraphicsObject& go) override;
@@ -115,7 +115,7 @@ class GanGraphicsObjectData : public GraphicsObjectData {
   int time_at_last_frame_change_;
 
   // The image the above coordinates map into.
-  boost::shared_ptr<const Surface> image_;
+  std::shared_ptr<const Surface> image_;
 
   friend class boost::serialization::access;
 

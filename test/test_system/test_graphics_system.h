@@ -32,9 +32,8 @@
 #include "systems/base/surface.h"
 
 #include <map>
+#include <memory>
 #include <string>
-
-#include <boost/shared_ptr.hpp>
 
 class System;
 class MockSurface;
@@ -46,35 +45,35 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual ~TestGraphicsSystem();
 
   void InjectSurface(const std::string& short_filename,
-                     const boost::shared_ptr<Surface>& surface);
+                     const std::shared_ptr<Surface>& surface);
 
   virtual void AllocateDC(int dc, Size s) override;
   virtual void SetMinimumSizeForDC(int, Size) override;
   virtual void FreeDC(int dc) override;
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+  virtual std::shared_ptr<const Surface> LoadSurfaceFromFile(
       const std::string& short_filename) override;
-  virtual boost::shared_ptr<Surface> GetHaikei() override;
-  virtual boost::shared_ptr<Surface> GetDC(int dc) override;
-  virtual boost::shared_ptr<Surface> BuildSurface(const Size& s) override;
+  virtual std::shared_ptr<Surface> GetHaikei() override;
+  virtual std::shared_ptr<Surface> GetDC(int dc) override;
+  virtual std::shared_ptr<Surface> BuildSurface(const Size& s) override;
   virtual ColourFilter* BuildColourFiller() override;
 
   virtual void BeginFrame() override;
   virtual void EndFrame() override;
-  virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
+  virtual std::shared_ptr<Surface> EndFrameToSurface() override;
 
   // Needed because of covariant issues.
   MockSurface& GetMockDC(int dc);
 
  private:
-  boost::shared_ptr<MockSurface> haikei_;
+  std::shared_ptr<MockSurface> haikei_;
 
   // Map between device contexts number and their surface.
-  boost::shared_ptr<MockSurface> display_contexts_[16];
+  std::shared_ptr<MockSurface> display_contexts_[16];
 
   // A list of user injected surfaces to hand back for named files.
-  std::map<std::string, boost::shared_ptr<const Surface>> named_surfaces_;
+  std::map<std::string, std::shared_ptr<const Surface>> named_surfaces_;
 };
 
 #endif  // TEST_TEST_SYSTEM_TEST_GRAPHICS_SYSTEM_H_

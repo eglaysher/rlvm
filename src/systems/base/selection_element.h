@@ -28,9 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_SELECTION_ELEMENT_H_
 #define SRC_SYSTEMS_BASE_SELECTION_ELEMENT_H_
 
-#include <boost/shared_ptr.hpp>
-
 #include <functional>
+#include <memory>
 
 #include "systems/base/rect.h"
 
@@ -41,8 +40,8 @@ class System;
 class SelectionElement {
  public:
   SelectionElement(System& system,
-                   const boost::shared_ptr<Surface>& normal_image,
-                   const boost::shared_ptr<Surface>& highlighted_image,
+                   const std::shared_ptr<Surface>& normal_image,
+                   const std::shared_ptr<Surface>& highlighted_image,
                    const std::function<void(int)>& selection_callback,
                    int id,
                    const Point& pos);
@@ -65,8 +64,8 @@ class SelectionElement {
   // Upper right location of the button
   Point pos_;
 
-  boost::shared_ptr<Surface> normal_image_;
-  boost::shared_ptr<Surface> highlighted_image_;
+  std::shared_ptr<Surface> normal_image_;
+  std::shared_ptr<Surface> highlighted_image_;
 
   // Callback function for when item is selected.
   std::function<void(int)> selection_callback_;

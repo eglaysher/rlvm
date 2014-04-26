@@ -26,6 +26,7 @@
 
 #include "platforms/gcn/gcn_menu.h"
 
+#include <boost/checked_delete.hpp>
 #include <guichan/widgets/button.hpp>
 
 #include <algorithm>

@@ -28,8 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_KEY_CURSOR_H_
 #define SRC_SYSTEMS_BASE_TEXT_KEY_CURSOR_H_
 
-#include <boost/shared_ptr.hpp>
-
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -73,7 +72,7 @@ class TextKeyCursor {
   int cursor_number_;
 
   // The surface containing the cursor
-  boost::shared_ptr<const Surface> cursor_image_;
+  std::shared_ptr<const Surface> cursor_image_;
 
   // The cursor image file
   std::string cursor_image_file_;

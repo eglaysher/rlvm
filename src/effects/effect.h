@@ -28,7 +28,7 @@
 #ifndef SRC_EFFECTS_EFFECT_H_
 #define SRC_EFFECTS_EFFECT_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "machine/long_operation.h"
 #include "systems/base/rect.h"
@@ -60,8 +60,8 @@ class Effect : public LongOperation {
   // Sets up all other variables, adding 1 to both width and height; RL is the
   // only system I know of where ranges are inclusive...
   Effect(RLMachine& machine,
-         boost::shared_ptr<Surface> src,
-         boost::shared_ptr<Surface> dst,
+         std::shared_ptr<Surface> src,
+         std::shared_ptr<Surface> dst,
          Size size,
          int time);
 
@@ -108,10 +108,10 @@ class Effect : public LongOperation {
 
   // The source surface (previously known as DC1, before I realized
   // that temporary surfaces could in fact be part of effects)
-  boost::shared_ptr<Surface> src_surface_;
+  std::shared_ptr<Surface> src_surface_;
 
   // The destination surface (previously known as DC0)
-  boost::shared_ptr<Surface> dst_surface_;
+  std::shared_ptr<Surface> dst_surface_;
 };
 
 // LongOperationDecorator used in cases where we need to blit an image
@@ -122,8 +122,8 @@ class Effect : public LongOperation {
 class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
  public:
   BlitAfterEffectFinishes(LongOperation* in,
-                          boost::shared_ptr<Surface> src,
-                          boost::shared_ptr<Surface> dst,
+                          std::shared_ptr<Surface> src,
+                          std::shared_ptr<Surface> dst,
                           const Rect& srcRect,
                           const Rect& destRect);
 
@@ -134,10 +134,10 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
 
   // The source surface (previously known as DC1, before I realized
   // that temporary surfaces could in fact be part of effects)
-  boost::shared_ptr<Surface> src_surface_;
+  std::shared_ptr<Surface> src_surface_;
 
   // The destination surface (previously known as DC0)
-  boost::shared_ptr<Surface> dst_surface_;
+  std::shared_ptr<Surface> dst_surface_;
 
   Rect src_rect_, dest_rect_;
 };

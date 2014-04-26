@@ -108,7 +108,7 @@ void SDLSoundSystem::SetChannelVolumeImpl(int channel) {
   Mix_Volume(channel, realLiveVolumeToSDLMixerVolume(adjusted));
 }
 
-boost::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
+std::shared_ptr<SDLMusic> SDLSoundSystem::LoadMusic(
     const std::string& bgm_name) {
   DSTable::const_iterator ds_it = ds_table().find(boost::to_lower_copy(bgm_name));
   if (ds_it != ds_table().end())
@@ -300,7 +300,7 @@ bool SDLSoundSystem::HasSe(const int se_num) {
 }
 
 int SDLSoundSystem::BgmStatus() const {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing) {
     return currently_playing->BgmStatus();
   } else {
@@ -310,7 +310,7 @@ int SDLSoundSystem::BgmStatus() const {
 
 void SDLSoundSystem::BgmPlay(const std::string& bgm_name, bool loop) {
   if (!boost::iequals(GetBgmName(), bgm_name)) {
-    boost::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
+    std::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
     bgm->Play(loop);
   }
 }
@@ -319,7 +319,7 @@ void SDLSoundSystem::BgmPlay(const std::string& bgm_name,
                              bool loop,
                              int fade_in_ms) {
   if (!boost::iequals(GetBgmName(), bgm_name)) {
-    boost::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
+    std::shared_ptr<SDLMusic> bgm = LoadMusic(bgm_name);
     bgm->FadeIn(loop, fade_in_ms);
   }
 }
@@ -338,31 +338,31 @@ void SDLSoundSystem::BgmPlay(const std::string& bgm_name,
 }
 
 void SDLSoundSystem::BgmStop() {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     currently_playing->Stop();
 }
 
 void SDLSoundSystem::BgmPause() {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     currently_playing->Pause();
 }
 
 void SDLSoundSystem::BgmUnPause() {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     currently_playing->Unpause();
 }
 
 void SDLSoundSystem::BgmFadeOut(int fade_out_ms) {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     currently_playing->FadeOut(fade_out_ms);
 }
 
 std::string SDLSoundSystem::GetBgmName() const {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     return currently_playing->GetName();
   else
@@ -370,7 +370,7 @@ std::string SDLSoundSystem::GetBgmName() const {
 }
 
 bool SDLSoundSystem::BgmLooping() const {
-  boost::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
+  std::shared_ptr<SDLMusic> currently_playing = SDLMusic::CurrnetlyPlaying();
   if (currently_playing)
     return currently_playing->IsLooping();
   else
@@ -387,7 +387,7 @@ void SDLSoundSystem::KoePlayImpl(int id) {
   }
 
   // Get the VoiceSample.
-  boost::shared_ptr<VoiceSample> sample = voice_cache_.Find(id);
+  std::shared_ptr<VoiceSample> sample = voice_cache_.Find(id);
   if (!sample) {
     std::ostringstream oss;
     oss << "No sample for " << id;

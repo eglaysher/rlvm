@@ -69,18 +69,18 @@ const std::vector<std::string> ALL_FILETYPES = {"g00", "pdt", "anm", "gan",
 
 struct LoadingGameFromStream : public LoadGameLongOperation {
   LoadingGameFromStream(RLMachine& machine,
-                        const boost::shared_ptr<std::stringstream>& selection)
+                        const std::shared_ptr<std::stringstream>& selection)
       : LoadGameLongOperation(machine), selection_(selection) {}
 
   virtual void Load(RLMachine& machine) override {
     // We need to copy data here onto the stack because the action of loading
     // will deallocate this object.
-    boost::shared_ptr<std::stringstream> s = selection_;
+    std::shared_ptr<std::stringstream> s = selection_;
     Serialization::loadGameFrom(*s, machine);
     // Warning: |this| is an invalid pointer now.
   }
 
-  boost::shared_ptr<std::stringstream> selection_;
+  std::shared_ptr<std::stringstream> selection_;
 };
 
 }  // namespace
@@ -132,7 +132,7 @@ System::System()
 
 System::~System() {}
 
-void System::SetPlatform(const boost::shared_ptr<Platform>& platform) {
+void System::SetPlatform(const std::shared_ptr<Platform>& platform) {
   platform_ = platform;
 }
 
@@ -145,7 +145,7 @@ void System::RestoreSelectionSnapshot(RLMachine& machine) {
   // We need to reference this on the stack because it will call
   // System::reset() to get the black screen. (We'll reset again inside
   // LoadingGameFromStream.)
-  boost::shared_ptr<std::stringstream> s = previous_selection_;
+  std::shared_ptr<std::stringstream> s = previous_selection_;
   if (s) {
     // LoadingGameFromStream adds itself to the callstack of |machine| due to
     // subtle timing issues.

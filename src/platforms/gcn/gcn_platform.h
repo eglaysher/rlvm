@@ -27,13 +27,12 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 #define SRC_PLATFORMS_GCN_GCN_PLATFORM_H_
 
-#include <boost/enable_shared_from_this.hpp>
-
 #include <guichan.hpp>
 #include <guichan/opengl.hpp>
 #include <guichan/sdl.hpp>
 #include <guichan/opengl/openglsdlimageloader.hpp>
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -59,7 +58,7 @@ extern const char* EVENT_CANCEL;
 class GCNPlatform : public Platform,
                     public gcn::MouseListener,
                     public gcn::KeyListener,
-                    public boost::enable_shared_from_this<GCNPlatform> {
+                    public std::enable_shared_from_this<GCNPlatform> {
  public:
   GCNPlatform(System& system, const Rect& screen_size);
   ~GCNPlatform();

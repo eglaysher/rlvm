@@ -60,7 +60,7 @@ const Surface::GrpRect& Surface::GetPattern(int patt_no) const {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> Surface::ClipAsColorMask(const Rect& clip_rect,
+std::shared_ptr<Surface> Surface::ClipAsColorMask(const Rect& clip_rect,
                                                     int r,
                                                     int g,
                                                     int b) const {

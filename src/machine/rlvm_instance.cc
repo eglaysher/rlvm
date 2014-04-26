@@ -126,7 +126,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     // Initialize our platform dialogs (we have to do this after
     // looking for a font because we use that font internally).
-    boost::shared_ptr<Platform> platform(
+    std::shared_ptr<Platform> platform(
         new GCNPlatform(sdlSystem, sdlSystem.graphics().screen_rect()));
     sdlSystem.SetPlatform(platform);
 

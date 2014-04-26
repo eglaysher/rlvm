@@ -30,8 +30,8 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <boost/shared_ptr.hpp>
 
+#include <memory>
 #include <string>
 
 #include "machine/rlmachine.h"
@@ -68,7 +68,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
 
  protected:
   virtual void LoopAnimation() override;
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual Rect SrcRect(const GraphicsObject& go) override;
   virtual void ObjectInfo(std::ostream& tree) override;
@@ -87,7 +87,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   std::string filename_;
 
   // The encapsulated surface to render
-  boost::shared_ptr<const Surface> surface_;
+  std::shared_ptr<const Surface> surface_;
 
   // Number of miliseconds to spend on a single frame in the
   // animation

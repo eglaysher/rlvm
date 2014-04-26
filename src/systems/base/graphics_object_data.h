@@ -29,7 +29,8 @@
 #define SRC_SYSTEMS_BASE_GRAPHICS_OBJECT_DATA_H_
 
 #include <boost/serialization/access.hpp>
-#include <boost/shared_ptr.hpp>
+
+#include <memory>
 
 class GraphicsObject;
 class Point;
@@ -95,7 +96,7 @@ class GraphicsObjectData {
 
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& rp) = 0;
 
   // Returns the rectangle in currentSurface() to draw to the screen. Override

@@ -27,10 +27,9 @@
 #ifndef SRC_SYSTEMS_BASE_VOICE_ARCHIVE_H_
 #define SRC_SYSTEMS_BASE_VOICE_ARCHIVE_H_
 
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
+#include <memory>
 #include <vector>
 
 class VoiceArchive;
@@ -51,14 +50,14 @@ class VoiceSample {
 
 // Abstract representation of an archive on disk with a bunch of voice samples
 // in it.
-class VoiceArchive : public boost::enable_shared_from_this<VoiceArchive> {
+class VoiceArchive : public std::enable_shared_from_this<VoiceArchive> {
  public:
   explicit VoiceArchive(int file_number);
   virtual ~VoiceArchive();
 
   int file_number() const { return file_number_; }
 
-  virtual boost::shared_ptr<VoiceSample> FindSample(int sample_num) = 0;
+  virtual std::shared_ptr<VoiceSample> FindSample(int sample_num) = 0;
 
  protected:
   // A sortable list with metadata pointing into an archive.

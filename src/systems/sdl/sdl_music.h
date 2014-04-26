@@ -28,11 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 #define SRC_SYSTEMS_SDL_SDL_MUSIC_H_
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-
 #include <SDL/SDL_mixer.h>
 
+#include <memory>
 #include <string>
 
 #include "systems/base/sound_system.h"
@@ -54,7 +52,7 @@
 //
 // So instead of taking just jagarl's nwatowav.cc, I'm also stealing
 // wavfile.{cc,h}, and some binding code.
-class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
+class SDLMusic : public std::enable_shared_from_this<SDLMusic> {
  public:
   virtual ~SDLMusic();
 
@@ -79,13 +77,13 @@ class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
 
   // Creates a MusicImpl object from the incoming description of the
   // music.
-  static boost::shared_ptr<SDLMusic> CreateMusic(
+  static std::shared_ptr<SDLMusic> CreateMusic(
       System& system,
       const SoundSystem::DSTrack& track);
 
   // Returns the currently playing SDLMusic object. Returns NULL if no
   // music is currently playing.
-  static boost::shared_ptr<SDLMusic> CurrnetlyPlaying() {
+  static std::shared_ptr<SDLMusic> CurrnetlyPlaying() {
     return s_currently_playing;
   }
 
@@ -135,7 +133,7 @@ class SDLMusic : public boost::enable_shared_from_this<SDLMusic> {
   bool music_paused_;
 
   // The currently playing track.
-  static boost::shared_ptr<SDLMusic> s_currently_playing;
+  static std::shared_ptr<SDLMusic> s_currently_playing;
 
   // Whether we should even be playing music.
   static bool s_bgm_enabled;

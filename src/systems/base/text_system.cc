@@ -242,7 +242,7 @@ void TextSystem::SetVisualOverrideAll(bool show_window) {
 
 void TextSystem::ClearVisualOverrides() { window_visual_override_.clear(); }
 
-boost::shared_ptr<TextWindow> TextSystem::GetCurrentWindow() {
+std::shared_ptr<TextWindow> TextSystem::GetCurrentWindow() {
   return GetTextWindow(active_window_);
 }
 
@@ -512,7 +512,7 @@ bool parseInteger(std::string::const_iterator& begin,
   return true;
 }
 
-boost::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
+std::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
                                                   int size,
                                                   int xspace,
                                                   int yspace,
@@ -631,7 +631,7 @@ boost::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
 
   // TODO(erg): Surely there's a way to allocate with something other than
   // black, right?
-  boost::shared_ptr<Surface> surface(
+  std::shared_ptr<Surface> surface(
       system().graphics().BuildSurface(Size(max_width, total_height)));
   surface->Fill(RGBAColour::Clear());
 
@@ -648,7 +648,7 @@ boost::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
     bool add_char = true;
     bool is_emoji = false;
     int emoji_id = 0;
-    boost::shared_ptr<const Surface> emoji_surface;
+    std::shared_ptr<const Surface> emoji_surface;
 
     if (codepoint == '#') {
       add_char = false;

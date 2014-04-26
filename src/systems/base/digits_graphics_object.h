@@ -27,9 +27,9 @@
 #ifndef SRC_SYSTEMS_BASE_DIGITS_GRAPHICS_OBJECT_H_
 #define SRC_SYSTEMS_BASE_DIGITS_GRAPHICS_OBJECT_H_
 
-#include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 
+#include <memory>
 #include <string>
 
 #include "machine/rlmachine.h"
@@ -53,7 +53,7 @@ class DigitsGraphicsObject : public GraphicsObjectData {
   virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual void ObjectInfo(std::ostream& tree) override;
 
@@ -68,10 +68,10 @@ class DigitsGraphicsObject : public GraphicsObjectData {
 
   // The source font.
   std::string font_name_;
-  boost::shared_ptr<const Surface> font_;
+  std::shared_ptr<const Surface> font_;
 
   // The current composited surface.
-  boost::shared_ptr<Surface> surface_;
+  std::shared_ptr<Surface> surface_;
 
   // boost::serialization support
   friend class boost::serialization::access;

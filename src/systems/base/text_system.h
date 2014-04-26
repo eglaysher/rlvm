@@ -32,9 +32,9 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -113,8 +113,8 @@ class TextSystem : public EventListener {
   void SetVisualOverride(int win_number, bool show_window);
   void SetVisualOverrideAll(bool show_window);
   void ClearVisualOverrides();
-  virtual boost::shared_ptr<TextWindow> GetTextWindow(int text_window_number) = 0;
-  boost::shared_ptr<TextWindow> GetCurrentWindow();
+  virtual std::shared_ptr<TextWindow> GetTextWindow(int text_window_number) = 0;
+  std::shared_ptr<TextWindow> GetCurrentWindow();
 
   void set_in_pause_state(bool in) { in_pause_state_ = in; }
 
@@ -219,7 +219,7 @@ class TextSystem : public EventListener {
   // Returns a surface with |utf8str| rendered with the other specified
   // properties. Will search |utf8str| for object text syntax and will change
   // various properties based on that syntax.
-  boost::shared_ptr<Surface> RenderText(const std::string& utf8str,
+  std::shared_ptr<Surface> RenderText(const std::string& utf8str,
                                         int size,
                                         int xspace,
                                         int yspace,
@@ -236,7 +236,7 @@ class TextSystem : public EventListener {
       const RGBColour* shadow_colour,
       int insertion_point_x,
       int insertion_point_y,
-      const boost::shared_ptr<Surface>& destination) = 0;
+      const std::shared_ptr<Surface>& destination) = 0;
 
   virtual int GetCharWidth(int size, uint16_t codepoint) = 0;
 
@@ -289,7 +289,7 @@ class TextSystem : public EventListener {
   int active_window_;
 
   // Type of the Window storage
-  typedef std::map<int, boost::shared_ptr<TextWindow>> WindowMap;
+  typedef std::map<int, std::shared_ptr<TextWindow>> WindowMap;
 
   // Storage of active windows
   WindowMap text_window_;
@@ -313,7 +313,7 @@ class TextSystem : public EventListener {
   // Whether we are in a state where the interpreter is pause()d.
   bool in_pause_state_;
 
-  boost::shared_ptr<TextKeyCursor> text_key_cursor_;
+  std::shared_ptr<TextKeyCursor> text_key_cursor_;
 
   bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
       msgbkleft_use_, msgbkright_use_, exbtn_use_;

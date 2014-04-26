@@ -39,7 +39,7 @@ class KOEPACVoiceArchive : public VoiceArchive {
   virtual ~KOEPACVoiceArchive();
 
   // Overridden from VoiceArchive:
-  virtual boost::shared_ptr<VoiceSample> FindSample(int sample_num) override;
+  virtual std::shared_ptr<VoiceSample> FindSample(int sample_num) override;
 
  private:
   void ReadTable(boost::filesystem::path file);

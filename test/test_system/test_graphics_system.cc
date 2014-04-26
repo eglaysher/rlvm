@@ -72,7 +72,7 @@ void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   // DC 1 is a special case and must always be at least the size of
   // the screen.
   if (dc == 1) {
-    boost::shared_ptr<MockSurface> dc0 = display_contexts_[0];
+    std::shared_ptr<MockSurface> dc0 = display_contexts_[0];
     Size dc0_size = dc0->GetSize();
     if (size.width() < dc0_size.width())
       size.set_width(dc0_size.width());
@@ -101,36 +101,36 @@ void TestGraphicsSystem::FreeDC(int dc) {
 
 void TestGraphicsSystem::InjectSurface(
     const std::string& short_filename,
-    const boost::shared_ptr<Surface>& surface) {
+    const std::shared_ptr<Surface>& surface) {
   named_surfaces_[short_filename] = surface;
 }
 
-boost::shared_ptr<const Surface> TestGraphicsSystem::LoadSurfaceFromFile(
+std::shared_ptr<const Surface> TestGraphicsSystem::LoadSurfaceFromFile(
     const std::string& short_filename) {
   // If we have an injected surface, return it instead of a fresh surface.
-  std::map<std::string, boost::shared_ptr<const Surface>>::iterator it =
+  std::map<std::string, std::shared_ptr<const Surface>>::iterator it =
       named_surfaces_.find(short_filename);
   if (it != named_surfaces_.end()) {
     return it->second;
   }
 
   // We don't have an injected surface so make a surface.
-  return boost::shared_ptr<const Surface>(
+  return std::shared_ptr<const Surface>(
       MockSurface::Create(short_filename, Size(50, 50)));
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::GetHaikei() { return haikei_; }
+std::shared_ptr<Surface> TestGraphicsSystem::GetHaikei() { return haikei_; }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::GetDC(int dc) {
+std::shared_ptr<Surface> TestGraphicsSystem::GetDC(int dc) {
   return display_contexts_[dc];
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::BuildSurface(const Size& s) {
+std::shared_ptr<Surface> TestGraphicsSystem::BuildSurface(const Size& s) {
   static int surface_num = 0;
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;
 
-  return boost::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
+  return std::shared_ptr<Surface>(MockSurface::Create(oss.str(), s));
 }
 
 ColourFilter* TestGraphicsSystem::BuildColourFiller() {
@@ -141,8 +141,8 @@ void TestGraphicsSystem::BeginFrame() {}
 
 void TestGraphicsSystem::EndFrame() {}
 
-boost::shared_ptr<Surface> TestGraphicsSystem::EndFrameToSurface() {
-  return boost::shared_ptr<Surface>();
+std::shared_ptr<Surface> TestGraphicsSystem::EndFrameToSurface() {
+  return std::shared_ptr<Surface>();
 }
 
 MockSurface& TestGraphicsSystem::GetMockDC(int dc) {

@@ -27,8 +27,6 @@
 
 #include "modules/module_gan.h"
 
-#include <boost/shared_ptr.hpp>
-
 #include "long_operations/wait_long_operation.h"
 #include "machine/long_operation.h"
 #include "machine/properties.h"

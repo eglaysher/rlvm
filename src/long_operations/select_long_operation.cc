@@ -26,11 +26,10 @@
 
 #include "long_operations/select_long_operation.h"
 
-#include <boost/shared_ptr.hpp>
-
 #include <iostream>
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "machine/long_operation.h"
 #include "machine/rlmachine.h"
@@ -268,7 +267,7 @@ ButtonSelectLongOperation::ButtonSelectLongOperation(
   moji_size_ = selbtn("MOJISIZE");
 
   // Retrieve the parameters needed to render as a color mask.
-  boost::shared_ptr<TextWindow> window =
+  std::shared_ptr<TextWindow> window =
       machine.system().text().GetCurrentWindow();
   window_bg_colour_ = window->colour();
   window_filter_ = window->filter();
@@ -479,7 +478,7 @@ void ButtonSelectLongOperation::Render(std::ostream* tree) {
 }
 
 void ButtonSelectLongOperation::RenderTextSurface(
-    const boost::shared_ptr<Surface>& text_surface,
+    const std::shared_ptr<Surface>& text_surface,
     const Rect& bounding_rect) {
   // Render the correct text in the correct place.
   Rect text_bounding_rect = text_surface->GetSize().CenteredIn(bounding_rect);

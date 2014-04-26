@@ -31,10 +31,10 @@
 #include <boost/dynamic_bitset.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <algorithm>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -270,7 +270,7 @@ class Memory {
   // be) multiple Memory instances (this is how we implement
   // GetSaveFlag), we don't really need to duplicate this data
   // structure and can simply pass a pointer to it.
-  boost::shared_ptr<GlobalMemory> global_;
+  std::shared_ptr<GlobalMemory> global_;
 
   // Local memory to a save file
   LocalMemory local_;

@@ -138,7 +138,7 @@ class SDLSurface : public Surface, public NotificationObserver {
   SDL_Surface* surface() { return surface_; }
 
   virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const override;
-  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
+  virtual std::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
                                                      int r,
                                                      int g,
                                                      int b) const override;
@@ -181,7 +181,7 @@ class SDLSurface : public Surface, public NotificationObserver {
     void forceUnload();
 
     // The actual texture.
-    boost::shared_ptr<Texture> texture;
+    std::shared_ptr<Texture> texture;
 
     int x_, y_, w_, h_;
     unsigned int bytes_per_pixel_;

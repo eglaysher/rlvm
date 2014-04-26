@@ -28,7 +28,7 @@
 #ifndef SRC_EFFECTS_EFFECT_FACTORY_H_
 #define SRC_EFFECTS_EFFECT_FACTORY_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class RLMachine;
 
@@ -48,8 +48,8 @@ class EffectFactory {
   // y1, x2, y2), are converted to rec* format and then based to the
   // build() method.
   static Effect* BuildFromSEL(RLMachine& machine,
-                              boost::shared_ptr<Surface> src,
-                              boost::shared_ptr<Surface> dst,
+                              std::shared_ptr<Surface> src,
+                              std::shared_ptr<Surface> dst,
                               int selnum);
 
   // Returns a constructed LongOperation with the following properties
@@ -57,8 +57,8 @@ class EffectFactory {
   // the rec* coordinate system (x, y, width, height) instead of the
   // grp* coordinate system (x1, y1, x2, y2) .
   static Effect* Build(RLMachine& machine,
-                       boost::shared_ptr<Surface> src,
-                       boost::shared_ptr<Surface> dst,
+                       std::shared_ptr<Surface> src,
+                       std::shared_ptr<Surface> dst,
                        int time,
                        int style,
                        int direction,
@@ -72,8 +72,8 @@ class EffectFactory {
  private:
   // Creates a specific subclass of WipeEffect for \#SEL #10, Wipe.
   static Effect* BuildWipeEffect(RLMachine& machine,
-                                 boost::shared_ptr<Surface> src,
-                                 boost::shared_ptr<Surface> dst,
+                                 std::shared_ptr<Surface> src,
+                                 std::shared_ptr<Surface> dst,
                                  const Size& screen_size,
                                  int time,
                                  int direction,
@@ -81,8 +81,8 @@ class EffectFactory {
 
   // Creates a specific subclass of BlindEffect for \#SEL #120, Blind.
   static Effect* BuildBlindEffect(RLMachine& machine,
-                                  boost::shared_ptr<Surface> src,
-                                  boost::shared_ptr<Surface> dst,
+                                  std::shared_ptr<Surface> src,
+                                  std::shared_ptr<Surface> dst,
                                   const Size& screen_size,
                                   int time,
                                   int direction,

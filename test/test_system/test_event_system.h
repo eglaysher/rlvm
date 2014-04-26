@@ -30,7 +30,7 @@
 
 #include "systems/base/event_system.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 // Provides behaviour for the TestEventSystem.
 class EventSystemMockHandler {
@@ -51,7 +51,7 @@ class EventSystemMockHandler {
 class TestEventSystem : public EventSystem {
  public:
   explicit TestEventSystem(Gameexe& gexe);
-  void SetMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
+  void SetMockHandler(const std::shared_ptr<EventSystemMockHandler>& handler);
 
   // Implementation of EventSystem:
   virtual void ExecuteEventSystem(RLMachine& machine) override;
@@ -72,7 +72,7 @@ class TestEventSystem : public EventSystem {
 
  private:
   // Defines test specific behaviour for the TestEventSystem
-  boost::shared_ptr<EventSystemMockHandler> event_system_mock_;
+  std::shared_ptr<EventSystemMockHandler> event_system_mock_;
 };
 
 #endif  // TEST_TEST_SYSTEM_TEST_EVENT_SYSTEM_H_

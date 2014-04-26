@@ -23,12 +23,12 @@
 #ifndef TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_
 #define TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_
 
-#include <stdint.h>
+#include <cstdint>
+#include <memory>
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include "systems/base/text_window.h"
-
 #include <vector>
+
+#include "systems/base/text_window.h"
 
 class TestTextWindow : public TextWindow {
  public:
@@ -37,8 +37,8 @@ class TestTextWindow : public TextWindow {
 
   // Overridden from TextWindow:
   virtual void SetFontColor(const std::vector<int>& colour_data) override;
-  virtual boost::shared_ptr<Surface> GetTextSurface() override;
-  virtual boost::shared_ptr<Surface> GetNameSurface() override;
+  virtual std::shared_ptr<Surface> GetTextSurface() override;
+  virtual std::shared_ptr<Surface> GetNameSurface() override;
   virtual bool DisplayCharacter(const std::string& current,
                                 const std::string& next) override;
 
@@ -61,7 +61,7 @@ class TestTextWindow : public TextWindow {
  private:
   std::string current_contents_;
 
-  boost::shared_ptr<Surface> name_surface_;
+  std::shared_ptr<Surface> name_surface_;
 };
 
 #endif  // TEST_TEST_SYSTEM_TEST_TEXT_WINDOW_H_

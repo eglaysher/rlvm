@@ -267,7 +267,7 @@ void GanGraphicsObjectData::Execute(RLMachine& machine) {
 
 void GanGraphicsObjectData::LoopAnimation() { current_frame_ = 0; }
 
-boost::shared_ptr<const Surface> GanGraphicsObjectData::CurrentSurface(
+std::shared_ptr<const Surface> GanGraphicsObjectData::CurrentSurface(
     const GraphicsObject& go) {
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
@@ -279,7 +279,7 @@ boost::shared_ptr<const Surface> GanGraphicsObjectData::CurrentSurface(
     }
   }
 
-  return boost::shared_ptr<const Surface>();
+  return std::shared_ptr<const Surface>();
 }
 
 Rect GanGraphicsObjectData::SrcRect(const GraphicsObject& go) {

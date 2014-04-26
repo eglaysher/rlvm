@@ -61,13 +61,13 @@ SDLTextSystem::~SDLTextSystem() {
   // reference so we'll just leak the FreeType structures.
 }
 
-boost::shared_ptr<TextWindow> SDLTextSystem::GetTextWindow(int text_window) {
+std::shared_ptr<TextWindow> SDLTextSystem::GetTextWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
     it =
         text_window_.insert(std::make_pair(
                                 text_window,
-                                boost::shared_ptr<TextWindow>(new SDLTextWindow(
+                                std::shared_ptr<TextWindow>(new SDLTextWindow(
                                     sdl_system_, text_window)))).first;
   }
 
@@ -82,10 +82,10 @@ Size SDLTextSystem::RenderGlyphOnto(
     const RGBColour* shadow_colour,
     int insertion_point_x,
     int insertion_point_y,
-    const boost::shared_ptr<Surface>& destination) {
+    const std::shared_ptr<Surface>& destination) {
   SDLSurface* sdl_surface = static_cast<SDLSurface*>(destination.get());
 
-  boost::shared_ptr<TTF_Font> font = GetFontOfSize(font_size);
+  std::shared_ptr<TTF_Font> font = GetFontOfSize(font_size);
 
   if (italic) {
     TTF_SetFontStyle(font.get(), TTF_STYLE_ITALIC);
@@ -93,7 +93,7 @@ Size SDLTextSystem::RenderGlyphOnto(
 
   SDL_Color sdl_colour;
   RGBColourToSDLColor(font_colour, &sdl_colour);
-  boost::shared_ptr<SDL_Surface> character(
+  std::shared_ptr<SDL_Surface> character(
       TTF_RenderUTF8_Blended(font.get(), current.c_str(), sdl_colour),
       SDL_FreeSurface);
 
@@ -105,7 +105,7 @@ Size SDLTextSystem::RenderGlyphOnto(
     return Size(0, 0);
   }
 
-  boost::shared_ptr<SDL_Surface> shadow;
+  std::shared_ptr<SDL_Surface> shadow;
   if (shadow_colour && sdl_system_.text().font_shadow()) {
     SDL_Color sdl_shadow_colour;
     RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
@@ -136,13 +136,13 @@ Size SDLTextSystem::RenderGlyphOnto(
 }
 
 int SDLTextSystem::GetCharWidth(int size, uint16_t codepoint) {
-  boost::shared_ptr<TTF_Font> font = GetFontOfSize(size);
+  std::shared_ptr<TTF_Font> font = GetFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics(font.get(), codepoint, &minx, &maxx, &miny, &maxy, &advance);
   return advance;
 }
 
-boost::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
+std::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
     std::string filename = FindFontFile(system()).native();
@@ -156,7 +156,7 @@ boost::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
     TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
 
     // Build a smart_ptr to own this font, and set a deleter function.
-    boost::shared_ptr<TTF_Font> font(f, TTF_CloseFont);
+    std::shared_ptr<TTF_Font> font(f, TTF_CloseFont);
 
     map_[size] = font;
     return font;

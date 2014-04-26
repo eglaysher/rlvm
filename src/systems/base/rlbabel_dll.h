@@ -28,9 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_RLBABEL_DLL_H_
 #define SRC_SYSTEMS_BASE_RLBABEL_DLL_H_
 
-#include <boost/shared_ptr.hpp>
-
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -78,7 +77,7 @@ enum getcReturn {
 // Clickable on screen areas that display a message.
 class Gloss {
  public:
-  Gloss(const boost::shared_ptr<TextWindow>& window,
+  Gloss(const std::shared_ptr<TextWindow>& window,
         const std::string& cp932_src,
         int x1,
         int y1,
@@ -216,7 +215,7 @@ class RlBabelDLL : public RealLiveDLL {
   // corresponding piece of integer memory.
   StringReferenceIterator GetSvar(int addr);
 
-  boost::shared_ptr<TextWindow> GetWindow(int id);
+  std::shared_ptr<TextWindow> GetWindow(int id);
 
   // Whether text being added is italicized.
   bool add_is_italic;

@@ -79,7 +79,7 @@ inline bool token_delimiter(char val) {
 // -----------------------------------------------------------------------
 // Gloss
 // -----------------------------------------------------------------------
-Gloss::Gloss(const boost::shared_ptr<TextWindow>& window,
+Gloss::Gloss(const std::shared_ptr<TextWindow>& window,
              const std::string& cp932_src,
              int x1,
              int y1,
@@ -142,7 +142,7 @@ int RlBabelDLL::CallDLL(RLMachine& machine,
     case dllTextoutNewScreen:
       return StartNewScreen(*GetSvar(arg1));
     case dllSetNameMod: {
-      boost::shared_ptr<TextWindow> textWindow = GetWindow(arg1);
+      std::shared_ptr<TextWindow> textWindow = GetWindow(arg1);
       int original_mod = textWindow->name_mod();
       textWindow->set_name_mod(arg2);
       return original_mod;
@@ -271,7 +271,7 @@ void RlBabelDLL::TextoutClear() {
 }
 
 int RlBabelDLL::TextoutLineBreak(StringReferenceIterator buf) {
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
 
   // If there's room on this page, break the line, otherwise break
   // the page.
@@ -533,14 +533,14 @@ int RlBabelDLL::ClearGlosses() {
 }
 
 int RlBabelDLL::NewGloss() {
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
   gloss_start_x_ = window->insertion_point_x();
   gloss_start_y_ = window->insertion_point_y();
   return 1;
 }
 
 int RlBabelDLL::AddGloss(const std::string& cp932_gloss_text) {
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
   glosses_.push_back(Gloss(window,
                            cp932_gloss_text,
                            gloss_start_x_,
@@ -555,7 +555,7 @@ int RlBabelDLL::TestGlosses(int x,
                             StringReferenceIterator text,
                             int globalwaku) {
   // Does this handle all cases?
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
   Point textOrigin = window->GetTextSurfaceRect().origin();
   x -= textOrigin.x();
   y -= textOrigin.y();
@@ -575,7 +575,7 @@ int RlBabelDLL::GetCharWidth(uint16_t cp932_char, bool as_xmod) {
   Codepage& cp = Cp::instance(machine_.GetTextEncoding());
   uint16_t native_char = cp.JisDecode(cp932_char);
   uint16_t unicode_codepoint = cp.Convert(native_char);
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
   int font_size = window->font_size_in_pixels();
   // TODO(erg): Can I somehow modify this to try to do proper kerning?
   int width = machine_.system().text().GetCharWidth(font_size, unicode_codepoint);
@@ -583,7 +583,7 @@ int RlBabelDLL::GetCharWidth(uint16_t cp932_char, bool as_xmod) {
 }
 
 bool RlBabelDLL::LineBreakRequired() {
-  boost::shared_ptr<TextWindow> window = GetWindow(-1);
+  std::shared_ptr<TextWindow> window = GetWindow(-1);
 
   int width = 0;
   std::string::size_type ptr = text_index;
@@ -691,7 +691,7 @@ StringReferenceIterator RlBabelDLL::GetSvar(int addr) {
   return StringReferenceIterator(m, libreallive::STRS_LOCATION, 0);
 }
 
-boost::shared_ptr<TextWindow> RlBabelDLL::GetWindow(int id) {
+std::shared_ptr<TextWindow> RlBabelDLL::GetWindow(int id) {
   TextSystem& text_system = machine_.system().text();
   if (id >= 0) {
     return text_system.GetTextWindow(id);

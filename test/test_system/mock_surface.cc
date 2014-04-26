@@ -55,11 +55,11 @@ void MockSurface::Deallocate() { allocated_ = false; }
 
 Size MockSurface::GetSize() const { return size_; }
 
-boost::shared_ptr<Surface> MockSurface::ClipAsColorMask(const Rect& rect,
+std::shared_ptr<Surface> MockSurface::ClipAsColorMask(const Rect& rect,
                                                         int r,
                                                         int g,
                                                         int b) const {
-  return boost::shared_ptr<Surface>(new ::testing::NiceMock<MockSurface>(
+  return std::shared_ptr<Surface>(new ::testing::NiceMock<MockSurface>(
       "Clip of " + surface_name_, rect.size()));
 }
 

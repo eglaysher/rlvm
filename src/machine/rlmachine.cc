@@ -515,13 +515,13 @@ void RLMachine::LocalReset() {
   system().Reset();
 }
 
-boost::shared_ptr<LongOperation> RLMachine::CurrentLongOperation() const {
+std::shared_ptr<LongOperation> RLMachine::CurrentLongOperation() const {
   if (call_stack_.size() &&
       call_stack_.back().frame_type == StackFrame::TYPE_LONGOP) {
     return call_stack_.back().long_op;
   }
 
-  return boost::shared_ptr<LongOperation>();
+  return std::shared_ptr<LongOperation>();
 }
 
 void RLMachine::ClearCallstack() {

@@ -194,7 +194,7 @@ void SDLGraphicsSystem::RedrawLastFrame() {
 
 void SDLGraphicsSystem::DrawCursor() {
   if (ShouldUseCustomCursor()) {
-    boost::shared_ptr<MouseCursor> cursor;
+    std::shared_ptr<MouseCursor> cursor;
     if (static_cast<SDLEventSystem&>(system().event()).mouse_inside_window())
       cursor = GetCurrentCursor();
     if (cursor) {
@@ -204,8 +204,8 @@ void SDLGraphicsSystem::DrawCursor() {
   }
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::EndFrameToSurface() {
-  return boost::shared_ptr<Surface>(
+std::shared_ptr<Surface> SDLGraphicsSystem::EndFrameToSurface() {
+  return std::shared_ptr<Surface>(
       new SDLRenderToTextureSurface(this, screen_size()));
 }
 
@@ -472,7 +472,7 @@ void SDLGraphicsSystem::SetMinimumSizeForDC(int dc, Size size) {
       // Make a new surface of the maximum size.
       Size maxSize = current.SizeUnion(size);
 
-      boost::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
+      std::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
       newdc->allocate(maxSize);
 
       display_contexts_[dc]->BlitToSurface(
@@ -566,7 +566,7 @@ static SDLSurface::GrpRect xclannadRegionToGrpRect(
   return rect;
 }
 
-boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
+std::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
     const std::string& short_filename) {
   boost::filesystem::path filename =
       system().FindFile(short_filename, IMAGE_FILETYPES);
@@ -635,7 +635,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
     region_table.push_back(rect);
   }
 
-  boost::shared_ptr<Surface> surface_to_ret(
+  std::shared_ptr<Surface> surface_to_ret(
       new SDLSurface(this, s, region_table));
   // handle tone curve effect loading
   if (short_filename.find("?") != short_filename.npos) {
@@ -658,7 +658,7 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
   return surface_to_ret;
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::GetHaikei() {
+std::shared_ptr<Surface> SDLGraphicsSystem::GetHaikei() {
   if (haikei_->rawSurface() == NULL) {
     haikei_->allocate(screen_size(), true);
   }
@@ -666,7 +666,7 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::GetHaikei() {
   return haikei_;
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
+std::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
   VerifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
 
   // If requesting a DC that doesn't exist, allocate it first.
@@ -676,8 +676,8 @@ boost::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
   return display_contexts_[dc];
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::BuildSurface(const Size& size) {
-  return boost::shared_ptr<Surface>(new SDLSurface(this, size));
+std::shared_ptr<Surface> SDLGraphicsSystem::BuildSurface(const Size& size) {
+  return std::shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
 ColourFilter* SDLGraphicsSystem::BuildColourFiller() {

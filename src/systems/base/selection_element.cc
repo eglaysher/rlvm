@@ -39,8 +39,8 @@
 // -----------------------------------------------------------------------
 SelectionElement::SelectionElement(
     System& system,
-    const boost::shared_ptr<Surface>& normal_image,
-    const boost::shared_ptr<Surface>& highlighted_image,
+    const std::shared_ptr<Surface>& normal_image,
+    const std::shared_ptr<Surface>& highlighted_image,
     const std::function<void(int)>& selection_callback,
     int id,
     const Point& pos)
@@ -87,7 +87,7 @@ bool SelectionElement::HandleMouseClick(const Point& pos, bool pressed) {
 }
 
 void SelectionElement::Render() {
-  boost::shared_ptr<Surface> target;
+  std::shared_ptr<Surface> target;
 
   if (is_highlighted_)
     target = highlighted_image_;

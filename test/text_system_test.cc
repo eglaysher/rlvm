@@ -98,7 +98,7 @@ class TextSystemTest : public FullSystemTest {
     text.NewPageOnWindow(0);
   }
 
-  boost::shared_ptr<EventSystemMockHandler> event_mock;
+  std::shared_ptr<EventSystemMockHandler> event_mock;
 };
 
 TEST_F(TextSystemTest, NormalTextDisplay) {
@@ -262,7 +262,7 @@ TEST_F(TextSystemTest, RubyRepeats) {
 
 TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("One", 20, 0, 0, RGBColour::White(), NULL, 3);
   // Ensure that when the number of characters equals the max number of
   // characters, we only use one line.
@@ -271,7 +271,7 @@ TEST_F(TextSystemTest, RenderGlyphOntoOneLine) {
 
 TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("A Very Long String That Goes On And On",
                      20,
                      0,
@@ -286,7 +286,7 @@ TEST_F(TextSystemTest, RenderGlyphNoRestriction) {
 
 TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("OneTwo", 20, 0, 0, RGBColour::White(), NULL, 3);
   EXPECT_EQ(40, text_surface->GetSize().height());
 
@@ -313,7 +313,7 @@ TEST_F(TextSystemTest, RenderGlyphOntoTwoLines) {
 
 TEST_F(TextSystemTest, DontCrashWithNoEmojiFile) {
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("One＃Ａ００Two", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_EQ(20, text_surface->GetSize().height());
 }
@@ -324,7 +324,7 @@ TEST_F(TextSystemTest, TestEmoji) {
 
   // Inject a fake surface of (24*5, 24). We will expect this to blit to the
   // text surface.
-  boost::shared_ptr<MockSurface> mock(
+  std::shared_ptr<MockSurface> mock(
       MockSurface::Create("emoji_file", Size(24 * 5, 24)));
   GetGraphicsSystem().InjectSurface("emoji_file", mock);
 
@@ -337,7 +337,7 @@ TEST_F(TextSystemTest, TestEmoji) {
                             false));
 
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("E＃Ａ０２E", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_EQ(20, text_surface->GetSize().height());
 
@@ -361,7 +361,7 @@ TEST_F(TextSystemTest, TestEmoji) {
 // doesn't return an empty surface.
 TEST_F(TextSystemTest, TestEmptyString) {
   TestTextSystem& sys = GetTextSystem();
-  boost::shared_ptr<Surface> text_surface =
+  std::shared_ptr<Surface> text_surface =
       sys.RenderText("", 20, 0, 0, RGBColour::White(), NULL, -1);
   EXPECT_GT(text_surface->GetSize().width(), 0);
   EXPECT_GT(text_surface->GetSize().height(), 0);

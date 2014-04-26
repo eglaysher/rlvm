@@ -28,10 +28,10 @@
 #ifndef SRC_MACHINE_STACK_FRAME_H_
 #define SRC_MACHINE_STACK_FRAME_H_
 
-#include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 
+#include <memory>
 #include <string>
 
 #include "libreallive/scenario.h"
@@ -58,7 +58,7 @@ struct StackFrame {
   libreallive::Scenario::const_iterator ip;
 
   // Pointer to the owned LongOperation if this is of TYPE_LONGOP.
-  boost::shared_ptr<LongOperation> long_op;
+  std::shared_ptr<LongOperation> long_op;
 
   // Parameter passing integer bank
   int intL[40];

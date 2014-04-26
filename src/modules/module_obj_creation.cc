@@ -27,10 +27,9 @@
 
 #include "modules/module_obj_creation.h"
 
-#include <boost/shared_ptr.hpp>
-
-#include <string>
 #include <cmath>
+#include <memory>
+#include <string>
 
 #include "machine/properties.h"
 #include "machine/rlmachine.h"

@@ -34,7 +34,7 @@ TestEventSystem::TestEventSystem(Gameexe& gexe)
     : EventSystem(gexe), event_system_mock_(new EventSystemMockHandler) {}
 
 void TestEventSystem::SetMockHandler(
-    const boost::shared_ptr<EventSystemMockHandler>& handler) {
+    const std::shared_ptr<EventSystemMockHandler>& handler) {
   event_system_mock_ = handler;
 }
 

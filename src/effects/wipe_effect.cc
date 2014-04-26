@@ -27,7 +27,6 @@
 
 #include "effects/wipe_effect.h"
 
-#include <boost/shared_ptr.hpp>
 #include <cmath>
 
 #include "machine/rlmachine.h"
@@ -40,8 +39,8 @@
 // -----------------------------------------------------------------------
 
 WipeEffect::WipeEffect(RLMachine& machine,
-                       boost::shared_ptr<Surface> src,
-                       boost::shared_ptr<Surface> dst,
+                       std::shared_ptr<Surface> src,
+                       std::shared_ptr<Surface> dst,
                        const Size& screen_size,
                        int time,
                        int interpolation)
@@ -90,8 +89,8 @@ bool WipeEffect::BlitOriginalImage() const { return true; }
 // -----------------------------------------------------------------------
 
 WipeTopToBottomEffect::WipeTopToBottomEffect(RLMachine& machine,
-                                             boost::shared_ptr<Surface> src,
-                                             boost::shared_ptr<Surface> dst,
+                                             std::shared_ptr<Surface> src,
+                                             std::shared_ptr<Surface> dst,
                                              const Size& screen_size,
                                              int time,
                                              int interpolation)
@@ -131,8 +130,8 @@ void WipeTopToBottomEffect::PerformEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeBottomToTopEffect::WipeBottomToTopEffect(RLMachine& machine,
-                                             boost::shared_ptr<Surface> src,
-                                             boost::shared_ptr<Surface> dst,
+                                             std::shared_ptr<Surface> src,
+                                             std::shared_ptr<Surface> dst,
                                              const Size& screen_size,
                                              int time,
                                              int interpolation)
@@ -173,8 +172,8 @@ void WipeBottomToTopEffect::PerformEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeLeftToRightEffect::WipeLeftToRightEffect(RLMachine& machine,
-                                             boost::shared_ptr<Surface> src,
-                                             boost::shared_ptr<Surface> dst,
+                                             std::shared_ptr<Surface> src,
+                                             std::shared_ptr<Surface> dst,
                                              const Size& screen_size,
                                              int time,
                                              int interpolation)
@@ -215,8 +214,8 @@ void WipeLeftToRightEffect::PerformEffectForTime(RLMachine& machine,
 // -----------------------------------------------------------------------
 
 WipeRightToLeftEffect::WipeRightToLeftEffect(RLMachine& machine,
-                                             boost::shared_ptr<Surface> src,
-                                             boost::shared_ptr<Surface> dst,
+                                             std::shared_ptr<Surface> src,
+                                             std::shared_ptr<Surface> dst,
                                              const Size& screen_size,
                                              int time,
                                              int interpolation)

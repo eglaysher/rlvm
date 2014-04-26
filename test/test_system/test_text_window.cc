@@ -27,7 +27,7 @@
 
 #include "test_system/test_text_window.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -40,13 +40,13 @@ TestTextWindow::TestTextWindow(System& system, int x) : TextWindow(system, x) {}
 
 TestTextWindow::~TestTextWindow() {}
 
-boost::shared_ptr<Surface> TestTextWindow::GetTextSurface() {
+std::shared_ptr<Surface> TestTextWindow::GetTextSurface() {
   // TODO(erg): May need to use a real size?
-  return boost::shared_ptr<Surface>(
+  return std::shared_ptr<Surface>(
       MockSurface::Create("Text Surface", Size(640, 480)));
 }
 
-boost::shared_ptr<Surface> TestTextWindow::GetNameSurface() {
+std::shared_ptr<Surface> TestTextWindow::GetNameSurface() {
   return name_surface_;
 }
 

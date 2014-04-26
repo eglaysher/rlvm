@@ -49,7 +49,7 @@ const int STOP_NOW = -2;
 
 const int DEFAULT_FADE_MS = 10;
 
-boost::shared_ptr<SDLMusic> SDLMusic::s_currently_playing;
+std::shared_ptr<SDLMusic> SDLMusic::s_currently_playing;
 bool SDLMusic::s_bgm_enabled = true;
 int SDLMusic::s_computed_bgm_vol = 128;
 
@@ -200,7 +200,7 @@ WAVFILE* BuildMusicImplementation(FILE* file, int size) {
   return WAVFILE::MakeConverter(new TYPE(file, size));
 }
 
-boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
+std::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     System& system,
     const SoundSystem::DSTrack& track) {
   typedef std::vector<
@@ -233,7 +233,7 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
 
       WAVFILE* w = it->second(f, size);
       if (w)
-        return boost::shared_ptr<SDLMusic>(new SDLMusic(track, w));
+        return std::shared_ptr<SDLMusic>(new SDLMusic(track, w));
     }
   }
 

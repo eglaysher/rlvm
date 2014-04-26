@@ -28,9 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_BUTTON_H_
 
-#include <boost/shared_ptr.hpp>
-
 #include <functional>
+#include <memory>
 #include <vector>
 
 #include "base/notification_observer.h"
@@ -69,7 +68,7 @@ class TextWindowButton {
 
   //
   void Render(TextWindow& window,
-              const boost::shared_ptr<const Surface>& buttons,
+              const std::shared_ptr<const Surface>& buttons,
               int base_pattern);
 
   // Called when the button is pressed

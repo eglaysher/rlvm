@@ -30,10 +30,10 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <boost/shared_ptr.hpp>
 
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "machine/rlmachine.h"
 #include "systems/base/graphics_object_data.h"
@@ -62,7 +62,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   virtual void PlaySet(int set) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual Rect SrcRect(const GraphicsObject& go) override;
   virtual Rect DstRect(const GraphicsObject& go,
@@ -101,7 +101,7 @@ class AnmGraphicsObjectData : public GraphicsObjectData {
   std::vector<std::vector<int>> animation_set_;
 
   // The image the above coordinates map into.
-  boost::shared_ptr<const Surface> image_;
+  std::shared_ptr<const Surface> image_;
 
   bool currently_playing_;
 

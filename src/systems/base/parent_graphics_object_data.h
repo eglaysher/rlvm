@@ -61,7 +61,7 @@ class ParentGraphicsObjectData : public GraphicsObjectData {
   virtual bool IsParentLayer() const override { return true; }
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& rp) override;
   virtual void ObjectInfo(std::ostream& tree) override;
 

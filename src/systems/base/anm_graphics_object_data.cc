@@ -266,7 +266,7 @@ void AnmGraphicsObjectData::PlaySet(int set) {
   system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
-boost::shared_ptr<const Surface> AnmGraphicsObjectData::CurrentSurface(
+std::shared_ptr<const Surface> AnmGraphicsObjectData::CurrentSurface(
     const GraphicsObject& rp) {
   return image_;
 }

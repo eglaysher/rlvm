@@ -49,8 +49,8 @@
 // -----------------------------------------------------------------------
 
 Effect* EffectFactory::BuildFromSEL(RLMachine& machine,
-                                    boost::shared_ptr<Surface> src,
-                                    boost::shared_ptr<Surface> dst,
+                                    std::shared_ptr<Surface> src,
+                                    std::shared_ptr<Surface> dst,
                                     int selNum) {
   std::vector<int> sel_params = GetSELEffect(machine, selNum);
 
@@ -69,8 +69,8 @@ Effect* EffectFactory::BuildFromSEL(RLMachine& machine,
 }
 
 Effect* EffectFactory::Build(RLMachine& machine,
-                             boost::shared_ptr<Surface> src,
-                             boost::shared_ptr<Surface> dst,
+                             std::shared_ptr<Surface> src,
+                             std::shared_ptr<Surface> dst,
                              int time,
                              int style,
                              int direction,
@@ -133,8 +133,8 @@ enum ScreenDirection {
 };
 
 Effect* EffectFactory::BuildWipeEffect(RLMachine& machine,
-                                       boost::shared_ptr<Surface> src,
-                                       boost::shared_ptr<Surface> dst,
+                                       std::shared_ptr<Surface> src,
+                                       std::shared_ptr<Surface> dst,
                                        const Size& screen_size,
                                        int time,
                                        int direction,
@@ -162,8 +162,8 @@ Effect* EffectFactory::BuildWipeEffect(RLMachine& machine,
 }
 
 Effect* EffectFactory::BuildBlindEffect(RLMachine& machine,
-                                        boost::shared_ptr<Surface> src,
-                                        boost::shared_ptr<Surface> dst,
+                                        std::shared_ptr<Surface> src,
+                                        std::shared_ptr<Surface> dst,
                                         const Size& screen_size,
                                         int time,
                                         int direction,

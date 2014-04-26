@@ -28,7 +28,7 @@
 #ifndef SRC_LONG_OPERATIONS_ZOOM_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_ZOOM_LONG_OPERATION_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "machine/long_operation.h"
 #include "systems/base/rect.h"
@@ -39,8 +39,8 @@ class Surface;
 class ZoomLongOperation : public LongOperation {
  public:
   ZoomLongOperation(RLMachine& machine,
-                    const boost::shared_ptr<Surface>& orig_surface_,
-                    const boost::shared_ptr<Surface>& src_surface_,
+                    const std::shared_ptr<Surface>& orig_surface_,
+                    const std::shared_ptr<Surface>& src_surface_,
                     const Rect& frect_,
                     const Rect& trect_,
                     const Rect& drect_,
@@ -50,8 +50,8 @@ class ZoomLongOperation : public LongOperation {
   virtual bool operator()(RLMachine& machine);
 
  private:
-  boost::shared_ptr<Surface> orig_surface_;
-  boost::shared_ptr<Surface> src_surface_;
+  std::shared_ptr<Surface> orig_surface_;
+  std::shared_ptr<Surface> src_surface_;
 
   const Rect frect_;
   const Rect trect_;

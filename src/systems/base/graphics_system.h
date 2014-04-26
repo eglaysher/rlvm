@@ -32,9 +32,10 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
-#include <boost/shared_ptr.hpp>
+
 #include <iosfwd>
 #include <map>
+#include <memory>
 #include <queue>
 #include <set>
 #include <string>
@@ -331,14 +332,14 @@ class GraphicsSystem : public EventListener {
 
   virtual void BeginFrame() = 0;
   virtual void EndFrame() = 0;
-  virtual boost::shared_ptr<Surface> EndFrameToSurface() = 0;
+  virtual std::shared_ptr<Surface> EndFrameToSurface() = 0;
 
   // Performs a full redraw of the screen.
   void Refresh(std::ostream* tree);
 
   // Draws the screen (as if refresh() was called), but draw to the returned
   // surface instead of the screen.
-  boost::shared_ptr<Surface> RenderToSurface();
+  std::shared_ptr<Surface> RenderToSurface();
 
   // Called from the game loop; Does everything that's needed to keep
   // things up.
@@ -357,20 +358,20 @@ class GraphicsSystem : public EventListener {
 
   // Loads an image, optionally marking that this image has been loaded (if it
   // is in the game's CGM table).
-  boost::shared_ptr<const Surface> GetSurfaceNamedAndMarkViewed(
+  std::shared_ptr<const Surface> GetSurfaceNamedAndMarkViewed(
       RLMachine& machine,
       const std::string& short_filename);
 
   // Just loads an image. This shouldn't be used for images that are destined
   // for one of the DCs, since those can be CGs.
-  boost::shared_ptr<const Surface> GetSurfaceNamed(
+  std::shared_ptr<const Surface> GetSurfaceNamed(
       const std::string& short_filename);
 
-  virtual boost::shared_ptr<Surface> GetHaikei() = 0;
+  virtual std::shared_ptr<Surface> GetHaikei() = 0;
 
-  virtual boost::shared_ptr<Surface> GetDC(int dc) = 0;
+  virtual std::shared_ptr<Surface> GetDC(int dc) = 0;
 
-  virtual boost::shared_ptr<Surface> BuildSurface(const Size& size) = 0;
+  virtual std::shared_ptr<Surface> BuildSurface(const Size& size) = 0;
 
   virtual ColourFilter* BuildColourFiller() = 0;
 
@@ -433,7 +434,7 @@ class GraphicsSystem : public EventListener {
   ToneCurve& tone_curve() { return globals_.tone_curves; }
 
   // Gets the emoji surface, if any.
-  boost::shared_ptr<const Surface> GetEmojiSurface();
+  std::shared_ptr<const Surface> GetEmojiSurface();
 
   // We have a cache of HIK scripts. This is done so we can load HIKScripts
   // outside of loops.
@@ -443,7 +444,7 @@ class GraphicsSystem : public EventListener {
                         const boost::filesystem::path& file);
   void ClearPreloadedHIKScript(int slot);
   void ClearAllPreloadedHIKScripts();
-  boost::shared_ptr<HIKScript> GetHIKScript(
+  std::shared_ptr<HIKScript> GetHIKScript(
       System& system,
       const std::string& name,
       const boost::filesystem::path& file);
@@ -452,7 +453,7 @@ class GraphicsSystem : public EventListener {
   void PreloadG00(int slot, const std::string& name);
   void ClearPreloadedG00(int slot);
   void ClearAllPreloadedG00();
-  boost::shared_ptr<const Surface> GetPreloadedG00(const std::string& name);
+  std::shared_ptr<const Surface> GetPreloadedG00(const std::string& name);
 
  protected:
   typedef std::set<Renderable*> FinalRenderers;
@@ -462,7 +463,7 @@ class GraphicsSystem : public EventListener {
 
   const Point& cursor_pos() const { return cursor_pos_; }
 
-  boost::shared_ptr<MouseCursor> GetCurrentCursor();
+  std::shared_ptr<MouseCursor> GetCurrentCursor();
 
   void SetScreenSize(const Size& size);
 
@@ -470,7 +471,7 @@ class GraphicsSystem : public EventListener {
 
  private:
   // Gets a platform appropriate surface loaded.
-  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+  virtual std::shared_ptr<const Surface> LoadSurfaceFromFile(
       const std::string& short_filename) = 0;
 
   // Default grp name (used in grp* and rec* functions where filename
@@ -548,11 +549,11 @@ class GraphicsSystem : public EventListener {
   Point cursor_pos_;
 
   // Current mouse cursor
-  boost::shared_ptr<MouseCursor> mouse_cursor_;
+  std::shared_ptr<MouseCursor> mouse_cursor_;
 
   // MouseCursor construction is nontrivial so cache everything we
   // build:
-  typedef std::map<int, boost::shared_ptr<MouseCursor>> MouseCursorCache;
+  typedef std::map<int, std::shared_ptr<MouseCursor>> MouseCursorCache;
   MouseCursorCache cursor_cache_;
 
   // A set of renderers
@@ -562,19 +563,19 @@ class GraphicsSystem : public EventListener {
   System& system_;
 
   // Preloaded HIKScripts.
-  typedef std::pair<std::string, boost::shared_ptr<HIKScript>> HIKArrayItem;
+  typedef std::pair<std::string, std::shared_ptr<HIKScript>> HIKArrayItem;
   typedef LazyArray<HIKArrayItem> HIKScriptList;
   HIKScriptList preloaded_hik_scripts_;
 
   // Preloaded G00 images.
-  typedef std::pair<std::string, boost::shared_ptr<const Surface>> G00ArrayItem;
+  typedef std::pair<std::string, std::shared_ptr<const Surface>> G00ArrayItem;
   typedef LazyArray<G00ArrayItem> G00ScriptList;
   G00ScriptList preloaded_g00_;
 
   // LRU cache filled with the last fifteen accessed images.
   //
   // This cache's contents are assumed to be immutable.
-  LRUCache<std::string, boost::shared_ptr<const Surface>> image_cache_;
+  LRUCache<std::string, std::shared_ptr<const Surface>> image_cache_;
 
   // Possible background script which drives graphics to the screen.
   std::unique_ptr<HIKRenderer> hik_renderer_;

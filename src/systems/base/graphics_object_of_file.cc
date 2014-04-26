@@ -31,9 +31,9 @@
 
 #include "systems/base/graphics_object_of_file.h"
 
-#include <boost/shared_ptr.hpp>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include "machine/serialization.h"
 #include "systems/base/event_system.h"
@@ -144,7 +144,7 @@ void GraphicsObjectOfFile::LoopAnimation() { current_frame_ = 0; }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsObjectOfFile::CurrentSurface(
+std::shared_ptr<const Surface> GraphicsObjectOfFile::CurrentSurface(
     const GraphicsObject& rp) {
   return surface_;
 }

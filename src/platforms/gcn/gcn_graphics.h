@@ -27,9 +27,10 @@
 #ifndef SRC_PLATFORMS_GCN_GCN_GRAPHICS_H_
 #define SRC_PLATFORMS_GCN_GCN_GRAPHICS_H_
 
-#include <boost/shared_ptr.hpp>
 #include <guichan/opengl/openglgraphics.hpp>
 #include <guichan/image.hpp>
+
+#include <memory>
 
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
@@ -80,7 +81,7 @@ struct ImageRect : public NotificationObserver {
   ThemeImage resource_id_;
   Rect rect_[9];
 
-  boost::shared_ptr<gcn::Image> image_;
+  std::shared_ptr<gcn::Image> image_;
 
   NotificationRegistrar registrar_;
 };

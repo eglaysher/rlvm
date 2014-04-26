@@ -45,7 +45,7 @@ class TestTextSystem : public TextSystem {
   virtual ~TestTextSystem();
 
   // Overridden from TextSystem:
-  virtual boost::shared_ptr<TextWindow> GetTextWindow(
+  virtual std::shared_ptr<TextWindow> GetTextWindow(
       int text_window_number) override;
   virtual Size RenderGlyphOnto(const std::string& current,
                                int font_size,
@@ -54,7 +54,7 @@ class TestTextSystem : public TextSystem {
                                const RGBColour* shadow_colour,
                                int insertion_point_x,
                                int insertion_point_y,
-                               const boost::shared_ptr<Surface>& destination) override;
+                               const std::shared_ptr<Surface>& destination) override;
   virtual int GetCharWidth(int size, uint16_t codepoint) override;
 
   const std::vector<std::tuple<std::string, int, int>>& glyphs() {

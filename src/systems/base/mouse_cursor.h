@@ -28,7 +28,8 @@
 #ifndef SRC_SYSTEMS_BASE_MOUSE_CURSOR_H_
 #define SRC_SYSTEMS_BASE_MOUSE_CURSOR_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
+
 #include "systems/base/rect.h"
 
 class Surface;
@@ -39,7 +40,7 @@ class RLMachine;
 class MouseCursor {
  public:
   explicit MouseCursor(System& system,
-                       const boost::shared_ptr<const Surface>& cursor_surface,
+                       const std::shared_ptr<const Surface>& cursor_surface,
                        int count,
                        int speed);
   ~MouseCursor();
@@ -59,7 +60,7 @@ class MouseCursor {
   void FindHotspot();
 
   // The raw image read from the PDT.
-  boost::shared_ptr<const Surface> cursor_surface_;
+  std::shared_ptr<const Surface> cursor_surface_;
 
   // The number of frames in cursor.
   int count_;

@@ -28,9 +28,9 @@
 #ifndef SRC_SYSTEMS_BASE_GRAPHICS_TEXT_OBJECT_H_
 #define SRC_SYSTEMS_BASE_GRAPHICS_TEXT_OBJECT_H_
 
-#include <boost/shared_ptr.hpp>
 #include <boost/serialization/split_member.hpp>
 
+#include <memory>
 #include <string>
 
 #include "machine/rlmachine.h"
@@ -58,7 +58,7 @@ class GraphicsTextObject : public GraphicsObjectData {
   virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual void ObjectInfo(std::ostream& tree) override;
 
@@ -74,7 +74,7 @@ class GraphicsTextObject : public GraphicsObjectData {
   int cached_char_count_;
   std::string cached_utf8_str_;
 
-  boost::shared_ptr<Surface> surface_;
+  std::shared_ptr<Surface> surface_;
 
   bool NeedsUpdate(const GraphicsObject& rendering_properties);
 

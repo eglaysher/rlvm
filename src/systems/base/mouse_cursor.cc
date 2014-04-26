@@ -42,7 +42,7 @@ const int HOTSPOTMASK_Y_OFFSET = 48;
 // MouseCursor (public)
 // -----------------------------------------------------------------------
 MouseCursor::MouseCursor(System& system,
-                         const boost::shared_ptr<const Surface>& cursor_surface,
+                         const std::shared_ptr<const Surface>& cursor_surface,
                          int count,
                          int speed)
     : cursor_surface_(cursor_surface),

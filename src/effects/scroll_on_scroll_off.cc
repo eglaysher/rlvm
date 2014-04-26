@@ -39,8 +39,8 @@
 // -----------------------------------------------------------------------
 ScrollSquashSlideBaseEffect::ScrollSquashSlideBaseEffect(
     RLMachine& machine,
-    boost::shared_ptr<Surface> src,
-    boost::shared_ptr<Surface> dst,
+    std::shared_ptr<Surface> src,
+    std::shared_ptr<Surface> dst,
     ScrollSquashSlideDrawer* drawer,
     ScrollSquashSlideEffectTypeBase* effect_type,
     const Size& s,

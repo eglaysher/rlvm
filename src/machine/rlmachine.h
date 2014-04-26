@@ -29,10 +29,10 @@
 #define SRC_MACHINE_RLMACHINE_H_
 
 #include <boost/serialization/split_member.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -194,7 +194,7 @@ class RLMachine {
 
   // Returns a pointer to the currently running LongOperation when the top of
   // the call stack is a LongOperation. NULL otherwise.
-  boost::shared_ptr<LongOperation> CurrentLongOperation() const;
+  std::shared_ptr<LongOperation> CurrentLongOperation() const;
 
   // Clears the callstack, properly freeing any LongOperations.
   void ClearCallstack();

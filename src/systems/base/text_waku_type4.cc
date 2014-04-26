@@ -100,7 +100,7 @@ void TextWakuType4::Render(std::ostream* tree,
         Size(area_left_, area_top_);
     Size backing_size =
         content_size + Size(area_left_ + area_right_, area_top_ + area_bottom_);
-    boost::shared_ptr<Surface> backing = GetWakuBackingOfSize(backing_size);
+    std::shared_ptr<Surface> backing = GetWakuBackingOfSize(backing_size);
     backing->RenderToScreenAsColorMask(backing->GetRect(),
                                        Rect(backing_point, backing_size),
                                        window_.colour(),
@@ -224,7 +224,7 @@ void TextWakuType4::SetWakuMain(const std::string& name) {
   }
 }
 
-const boost::shared_ptr<Surface>& TextWakuType4::GetWakuBackingOfSize(
+const std::shared_ptr<Surface>& TextWakuType4::GetWakuBackingOfSize(
     Size size) {
   if (!cached_backing_ || cached_backing_->GetSize() != size) {
     cached_backing_ = system_.graphics().BuildSurface(size);

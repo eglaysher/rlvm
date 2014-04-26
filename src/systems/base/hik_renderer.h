@@ -27,8 +27,7 @@
 #ifndef SRC_SYSTEMS_BASE_HIK_RENDERER_H_
 #define SRC_SYSTEMS_BASE_HIK_RENDERER_H_
 
-#include <boost/shared_ptr.hpp>
-
+#include <memory>
 #include <vector>
 
 class HIKScript;
@@ -38,7 +37,7 @@ class System;
 // Displays a HIKScript at a certain time to the screen.
 class HIKRenderer {
  public:
-  HIKRenderer(System& system, const boost::shared_ptr<const HIKScript>& script);
+  HIKRenderer(System& system, const std::shared_ptr<const HIKScript>& script);
   ~HIKRenderer();
 
   // Run once per tick.
@@ -58,7 +57,7 @@ class HIKRenderer {
   System& system_;
 
   // The script data.
-  boost::shared_ptr<const HIKScript> script_;
+  std::shared_ptr<const HIKScript> script_;
 
   // Time when this HIK renderer was loaded (in ms since startup). Used for
   // animation.

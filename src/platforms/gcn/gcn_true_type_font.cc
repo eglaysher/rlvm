@@ -26,11 +26,11 @@
 
 #include "platforms/gcn/gcn_true_type_font.h"
 
-#include <boost/shared_ptr.hpp>
 #include <guichan/color.hpp>
 #include <guichan/exception.hpp>
 #include <guichan/graphics.hpp>
 #include <guichan/opengl/openglimage.hpp>
+#include <memory>
 #include <string>
 
 #include "base/notification_service.h"
@@ -89,7 +89,7 @@ void GCNTrueTypeFont::drawString(gcn::Graphics* graphics,
   colstr += static_cast<char>(col.g);
   colstr += static_cast<char>(col.b);
 
-  boost::shared_ptr<gcn::OpenGLImage> image =
+  std::shared_ptr<gcn::OpenGLImage> image =
       image_cache_.fetch(make_pair(text, colstr));
   if (!image) {
     SDL_Color sdlCol;

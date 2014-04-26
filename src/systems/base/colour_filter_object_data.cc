@@ -99,9 +99,9 @@ void ColourFilterObjectData::PlaySet(int set) {
   // No op
 }
 
-boost::shared_ptr<const Surface> ColourFilterObjectData::CurrentSurface(
+std::shared_ptr<const Surface> ColourFilterObjectData::CurrentSurface(
     const GraphicsObject& rp) {
-  return boost::shared_ptr<const Surface>();
+  return std::shared_ptr<const Surface>();
 }
 
 void ColourFilterObjectData::ObjectInfo(std::ostream& tree) {

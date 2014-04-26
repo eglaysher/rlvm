@@ -147,7 +147,7 @@ class GCNPlatformBlocker : public LongOperation,
  public:
   GCNPlatformBlocker(SDLEventSystem& system,
                      GraphicsSystem& graphics,
-                     const boost::shared_ptr<GCNPlatform>& platform)
+                     const std::shared_ptr<GCNPlatform>& platform)
       : event_system_(system), graphics_system_(graphics), platform_(platform) {
     event_system_.set_raw_sdl_input_handler(this);
     graphics_system_.AddRenderable(this);
@@ -196,7 +196,7 @@ class GCNPlatformBlocker : public LongOperation,
  private:
   SDLEventSystem& event_system_;
   GraphicsSystem& graphics_system_;
-  boost::shared_ptr<GCNPlatform> platform_;
+  std::shared_ptr<GCNPlatform> platform_;
 
   std::queue<std::function<void(void)>> delayed_tasks_;
   std::queue<std::function<void(RLMachine&)>> delayed_rlmachine_tasks_;

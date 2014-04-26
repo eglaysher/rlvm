@@ -41,7 +41,7 @@ class MockTextWindow : public TestTextWindow {
 
   MOCK_METHOD1(SetFontColor, void(const std::vector<int>&));
   MOCK_METHOD2(DisplayCharacter, bool(const std::string&, const std::string&));
-  MOCK_METHOD0(GetTextSurface, boost::shared_ptr<Surface>());
+  MOCK_METHOD0(GetTextSurface, std::shared_ptr<Surface>());
   MOCK_METHOD1(RenderNameInBox, void(const std::string&));
   MOCK_METHOD0(clearWin, void());
   MOCK_METHOD2(SetName, void(const std::string&, const std::string&));
@@ -59,7 +59,7 @@ class MockTextWindow : public TestTextWindow {
     return TestTextWindow::DisplayCharacter(current, next);
   }
 
-  boost::shared_ptr<Surface> ConcreteTextSurface() {
+  std::shared_ptr<Surface> ConcreteTextSurface() {
     return TestTextWindow::GetTextSurface();
   }
 

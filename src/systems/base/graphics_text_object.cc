@@ -104,7 +104,7 @@ bool GraphicsTextObject::NeedsUpdate(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsTextObject::CurrentSurface(
+std::shared_ptr<const Surface> GraphicsTextObject::CurrentSurface(
     const GraphicsObject& go) {
   if (NeedsUpdate(go))
     UpdateSurface(go);

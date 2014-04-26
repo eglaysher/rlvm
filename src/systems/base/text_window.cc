@@ -81,7 +81,7 @@ struct TextWindow::FaceSlot {
   int unknown;
 
   // The current face loaded. NULL whenever no face is loaded.
-  boost::shared_ptr<const Surface> face_surface;
+  std::shared_ptr<const Surface> face_surface;
 };
 
 // -----------------------------------------------------------------------
@@ -414,7 +414,7 @@ void TextWindow::NextCharIsItalic() {
 // TODO(erg): Make this pass the #WINDOW_ATTR colour off wile rendering the
 // waku_backing.
 void TextWindow::Render(std::ostream* tree) {
-  boost::shared_ptr<Surface> text_surface = GetTextSurface();
+  std::shared_ptr<Surface> text_surface = GetTextSurface();
 
   if (text_surface && is_visible()) {
     Size surface_size = text_surface->GetSize();
@@ -435,7 +435,7 @@ void TextWindow::Render(std::ostream* tree) {
       for_each(selections_.begin(), selections_.end(),
                [](SelectionElement& e) { e.Render(); });
     } else {
-      boost::shared_ptr<Surface> name_surface = GetNameSurface();
+      std::shared_ptr<Surface> name_surface = GetNameSurface();
       if (name_surface) {
         Rect r = GetNameboxWakuRect();
 
@@ -477,7 +477,7 @@ void TextWindow::RenderFaces(std::ostream* tree, int behind) {
   for (int i = 0; i < kNumFaceSlots; ++i) {
     if (face_slot_[i] && face_slot_[i]->face_surface &&
         face_slot_[i]->behind == behind) {
-      const boost::shared_ptr<const Surface>& surface =
+      const std::shared_ptr<const Surface>& surface =
           face_slot_[i]->face_surface;
 
       Rect dest(GetWindowRect().x() + face_slot_[i]->x,

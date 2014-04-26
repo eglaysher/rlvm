@@ -37,7 +37,7 @@
 
 #include "test_utils.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 using namespace testing;
 
@@ -59,14 +59,14 @@ class EffectTest : public FullSystemTest {
         .SetMockHandler(event_system_impl);
   }
 
-  boost::shared_ptr<EffectEventSystemTest> event_system_impl;
+  std::shared_ptr<EffectEventSystemTest> event_system_impl;
 };
 
 class MockEffect : public Effect {
  public:
   MockEffect(RLMachine& machine,
-             boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst,
+             std::shared_ptr<Surface> src,
+             std::shared_ptr<Surface> dst,
              Size size,
              int time)
       : Effect(machine, src, dst, size, time) {}
@@ -76,8 +76,8 @@ class MockEffect : public Effect {
 };
 
 TEST_F(EffectTest, TestBase) {
-  boost::shared_ptr<Surface> src(MockSurface::Create("src"));
-  boost::shared_ptr<Surface> dst(MockSurface::Create("dst"));
+  std::shared_ptr<Surface> src(MockSurface::Create("src"));
+  std::shared_ptr<Surface> dst(MockSurface::Create("dst"));
 
   std::unique_ptr<MockEffect> effect(
       new MockEffect(rlmachine, src, dst, Size(640, 480), 2));
@@ -100,8 +100,8 @@ TEST_F(EffectTest, TestBase) {
 class MockBlitTopToBottom : public BlindTopToBottomEffect {
  public:
   MockBlitTopToBottom(RLMachine& machine,
-                      boost::shared_ptr<Surface> src,
-                      boost::shared_ptr<Surface> dst,
+                      std::shared_ptr<Surface> src,
+                      std::shared_ptr<Surface> dst,
                       int width,
                       int height,
                       int time,
@@ -118,8 +118,8 @@ class MockBlitTopToBottom : public BlindTopToBottomEffect {
 };
 
 TEST_F(EffectTest, BlindTopToBottomEffect) {
-  boost::shared_ptr<MockSurface> src(MockSurface::Create("src"));
-  boost::shared_ptr<MockSurface> dst(MockSurface::Create("dst"));
+  std::shared_ptr<MockSurface> src(MockSurface::Create("src"));
+  std::shared_ptr<MockSurface> dst(MockSurface::Create("dst"));
 
   const int DURATION = 100;
   const int BLIND_SIZE = 50;

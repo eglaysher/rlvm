@@ -124,7 +124,7 @@ struct PauseCursor : public RLOp_Void_1<IntConstant_T> {
 
 struct GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    boost::shared_ptr<TextWindow> window =
+    std::shared_ptr<TextWindow> window =
         machine.system().text().GetCurrentWindow();
     return window->waku_set();
   }
@@ -329,13 +329,13 @@ void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   // Render the screen as is.
-  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
-  boost::shared_ptr<Surface> before = graphics.RenderToSurface();
+  std::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+  std::shared_ptr<Surface> before = graphics.RenderToSurface();
 
   // Clear everything
   machine.LocalReset();
 
-  boost::shared_ptr<Surface> after = graphics.RenderToSurface();
+  std::shared_ptr<Surface> after = graphics.RenderToSurface();
 
   // First, we jump the instruction pointer to the new location.
   int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();

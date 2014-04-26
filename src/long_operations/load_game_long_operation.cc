@@ -26,7 +26,7 @@
 
 #include "long_operations/load_game_long_operation.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "effects/fade_effect.h"
 #include "machine/rlmachine.h"
@@ -39,12 +39,12 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
+  std::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
   Size s = currentWindow->GetSize();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+  std::shared_ptr<Surface> dc0 = graphics.GetDC(0);
   dc0->Fill(RGBAColour::Black());
 
   machine.PushLongOperation(this);
@@ -64,12 +64,12 @@ bool LoadGameLongOperation::operator()(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
+  std::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
   Size s = currentWindow->GetSize();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> blankScreen = graphics.BuildSurface(s);
+  std::shared_ptr<Surface> blankScreen = graphics.BuildSurface(s);
   blankScreen->Fill(RGBAColour::Black());
 
   machine.PushLongOperation(

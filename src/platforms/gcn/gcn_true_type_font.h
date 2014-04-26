@@ -28,9 +28,9 @@
 #define SRC_PLATFORMS_GCN_GCN_TRUE_TYPE_FONT_H_
 
 #include <SDL/SDL_ttf.h>
-#include <boost/shared_ptr.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -107,7 +107,7 @@ class GCNTrueTypeFont : public gcn::Font, public NotificationObserver {
   bool anti_alias_;
 
   LRUCache<std::pair<std::string, std::string>,
-           boost::shared_ptr<gcn::OpenGLImage>> image_cache_;
+           std::shared_ptr<gcn::OpenGLImage>> image_cache_;
 
   NotificationRegistrar registrar_;
 };

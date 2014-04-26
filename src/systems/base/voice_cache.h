@@ -27,7 +27,7 @@
 #ifndef SRC_SYSTEMS_BASE_VOICE_CACHE_H_
 #define SRC_SYSTEMS_BASE_VOICE_CACHE_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "lru_cache.hpp"
 
@@ -40,20 +40,20 @@ class VoiceCache {
   explicit VoiceCache(SoundSystem& sound_system);
   ~VoiceCache();
 
-  boost::shared_ptr<VoiceSample> Find(int id);
+  std::shared_ptr<VoiceSample> Find(int id);
 
  private:
   // Searches for a file archive of voices.
-  boost::shared_ptr<VoiceArchive> FindArchive(int file_no) const;
+  std::shared_ptr<VoiceArchive> FindArchive(int file_no) const;
 
   // Searches for an unarchived ogg or mp3 file.
-  boost::shared_ptr<VoiceSample> FindUnpackedSample(int file_no,
+  std::shared_ptr<VoiceSample> FindUnpackedSample(int file_no,
                                                     int index) const;
 
   SoundSystem& sound_system_;
 
   // A mapping between a file id number and the underlying file object.
-  LRUCache<int, boost::shared_ptr<VoiceArchive>> file_cache_;
+  LRUCache<int, std::shared_ptr<VoiceArchive>> file_cache_;
 };  // class VoiceCache
 
 #endif  // SRC_SYSTEMS_BASE_VOICE_CACHE_H_

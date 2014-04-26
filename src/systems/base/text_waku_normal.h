@@ -27,9 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 #define SRC_SYSTEMS_BASE_TEXT_WAKU_NORMAL_H_
 
-#include <boost/shared_ptr.hpp>
-
 #include <iosfwd>
+#include <memory>
 #include <string>
 
 #include "systems/base/text_waku.h"
@@ -96,9 +95,9 @@ class TextWakuNormal : public TextWaku {
 
   int setno_, no_;
 
-  boost::shared_ptr<const Surface> waku_main_;
-  boost::shared_ptr<Surface> waku_backing_;
-  boost::shared_ptr<const Surface> waku_button_;
+  std::shared_ptr<const Surface> waku_main_;
+  std::shared_ptr<Surface> waku_backing_;
+  std::shared_ptr<const Surface> waku_button_;
 
   // Attached action buttons defined in the
   // #WAKU.index1.index2.XXX_BOX properties. These actions represent

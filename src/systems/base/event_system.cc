@@ -108,7 +108,7 @@ void EventSystem::DispatchEvent(
   }
 
   // Try to pass the event on to the top of the call stack.
-  boost::shared_ptr<LongOperation> current_op = machine.CurrentLongOperation();
+  std::shared_ptr<LongOperation> current_op = machine.CurrentLongOperation();
   if (current_op)
     event(*current_op);
 }
@@ -119,7 +119,7 @@ void EventSystem::BroadcastEvent(
   for (EventListener* listener : event_listeners_)
     event(*listener);
 
-  boost::shared_ptr<LongOperation> current_op = machine.CurrentLongOperation();
+  std::shared_ptr<LongOperation> current_op = machine.CurrentLongOperation();
   if (current_op)
     event(*current_op);
 }

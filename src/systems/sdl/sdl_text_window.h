@@ -28,9 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_
 
-#include <boost/shared_ptr.hpp>
 #include <SDL/SDL_ttf.h>
 
+#include <memory>
 #include <string>
 
 #include "systems/base/text_window.h"
@@ -45,8 +45,8 @@ class SDLTextWindow : public TextWindow {
   virtual ~SDLTextWindow();
 
   // Overridden from TextWindow:
-  virtual boost::shared_ptr<Surface> GetTextSurface() override;
-  virtual boost::shared_ptr<Surface> GetNameSurface() override;
+  virtual std::shared_ptr<Surface> GetTextSurface() override;
+  virtual std::shared_ptr<Surface> GetNameSurface() override;
   virtual void ClearWin() override;
   virtual void RenderNameInBox(const std::string& utf8str) override;
   virtual void DisplayRubyText(const std::string& utf8str) override;
@@ -56,8 +56,8 @@ class SDLTextWindow : public TextWindow {
  private:
   SDLSystem& sdl_system_;
 
-  boost::shared_ptr<SDLSurface> surface_;
-  boost::shared_ptr<Surface> name_surface_;
+  std::shared_ptr<SDLSurface> surface_;
+  std::shared_ptr<Surface> name_surface_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDL_TEXT_WINDOW_H_

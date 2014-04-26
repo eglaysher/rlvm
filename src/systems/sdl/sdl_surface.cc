@@ -778,7 +778,7 @@ void SDLSurface::GetDCPixel(const Point& pos, int& r, int& g, int& b) const {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLSurface::ClipAsColorMask(const Rect& clip_rect,
+std::shared_ptr<Surface> SDLSurface::ClipAsColorMask(const Rect& clip_rect,
                                                        int r,
                                                        int g,
                                                        int b) const {
@@ -810,7 +810,7 @@ boost::shared_ptr<Surface> SDLSurface::ClipAsColorMask(const Rect& clip_rect,
 
   SDL_FreeSurface(tmp_surface);
 
-  return boost::shared_ptr<Surface>(new SDLSurface(graphics_system_, surface));
+  return std::shared_ptr<Surface>(new SDLSurface(graphics_system_, surface));
 }
 
 // -----------------------------------------------------------------------

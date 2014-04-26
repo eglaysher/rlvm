@@ -40,7 +40,7 @@ HIKRenderer::LayerData::LayerData(int time)
     : animation_num_(0), animation_start_time_(time) {}
 
 HIKRenderer::HIKRenderer(System& system,
-                         const boost::shared_ptr<const HIKScript>& script)
+                         const std::shared_ptr<const HIKScript>& script)
     : system_(system),
       script_(script),
       creation_time_(system_.event().GetTicks()),

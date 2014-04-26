@@ -476,7 +476,7 @@ void GraphicsSystem::Refresh(std::ostream* tree) {
   EndFrame();
 }
 
-boost::shared_ptr<Surface> GraphicsSystem::RenderToSurface() {
+std::shared_ptr<Surface> GraphicsSystem::RenderToSurface() {
   BeginFrame();
   DrawFrame(NULL);
   return EndFrameToSurface();
@@ -565,18 +565,18 @@ void GraphicsSystem::Reset() {
   interface_hidden_ = false;
 }
 
-boost::shared_ptr<const Surface> GraphicsSystem::GetEmojiSurface() {
+std::shared_ptr<const Surface> GraphicsSystem::GetEmojiSurface() {
   GameexeFilteringIterator it = system().gameexe().filtering_begin("E_MOJI.");
   GameexeFilteringIterator end = system().gameexe().filtering_end();
   for (; it != end; ++it) {
     // Try to interpret each key as a filename.
     std::string file_name = it->ToString("");
-    boost::shared_ptr<const Surface> surface = GetSurfaceNamed(file_name);
+    std::shared_ptr<const Surface> surface = GetSurfaceNamed(file_name);
     if (surface)
       return surface;
   }
 
-  return boost::shared_ptr<const Surface>();
+  return std::shared_ptr<const Surface>();
 }
 
 void GraphicsSystem::PreloadHIKScript(
@@ -588,19 +588,19 @@ void GraphicsSystem::PreloadHIKScript(
   script->EnsureUploaded();
 
   preloaded_hik_scripts_[slot] =
-      std::make_pair(name, boost::shared_ptr<HIKScript>(script));
+      std::make_pair(name, std::shared_ptr<HIKScript>(script));
 }
 
 void GraphicsSystem::ClearPreloadedHIKScript(int slot) {
   preloaded_hik_scripts_[slot] =
-      std::make_pair("", boost::shared_ptr<HIKScript>());
+      std::make_pair("", std::shared_ptr<HIKScript>());
 }
 
 void GraphicsSystem::ClearAllPreloadedHIKScripts() {
   preloaded_hik_scripts_.Clear();
 }
 
-boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
+std::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
     System& system,
     const std::string& name,
     const boost::filesystem::path& file_path) {
@@ -609,12 +609,12 @@ boost::shared_ptr<HIKScript> GraphicsSystem::GetHIKScript(
       return item.second;
   }
 
-  return boost::shared_ptr<HIKScript>(new HIKScript(system, file_path));
+  return std::shared_ptr<HIKScript>(new HIKScript(system, file_path));
 }
 
 void GraphicsSystem::PreloadG00(int slot, const std::string& name) {
   // We first check our implicit cache just in case so we don't load it twice.
-  boost::shared_ptr<const Surface> surface = image_cache_.fetch(name);
+  std::shared_ptr<const Surface> surface = image_cache_.fetch(name);
   if (!surface)
     surface = LoadSurfaceFromFile(name);
 
@@ -625,24 +625,24 @@ void GraphicsSystem::PreloadG00(int slot, const std::string& name) {
 }
 
 void GraphicsSystem::ClearPreloadedG00(int slot) {
-  preloaded_g00_[slot] = std::make_pair("", boost::shared_ptr<const Surface>());
+  preloaded_g00_[slot] = std::make_pair("", std::shared_ptr<const Surface>());
 }
 
 void GraphicsSystem::ClearAllPreloadedG00() { preloaded_g00_.Clear(); }
 
-boost::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
+std::shared_ptr<const Surface> GraphicsSystem::GetPreloadedG00(
     const std::string& name) {
   for (G00ArrayItem& item : preloaded_g00_) {
     if (item.first == name)
       return item.second;
   }
 
-  return boost::shared_ptr<const Surface>();
+  return std::shared_ptr<const Surface>();
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamedAndMarkViewed(
+std::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamedAndMarkViewed(
     RLMachine& machine,
     const std::string& short_filename) {
   // Record that we viewed this CG.
@@ -653,10 +653,10 @@ boost::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamedAndMarkViewed(
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamed(
+std::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamed(
     const std::string& short_filename) {
   // Check if this is in the script controlled cache.
-  boost::shared_ptr<const Surface> cached_surface =
+  std::shared_ptr<const Surface> cached_surface =
       GetPreloadedG00(short_filename);
   if (cached_surface)
     return cached_surface;
@@ -666,7 +666,7 @@ boost::shared_ptr<const Surface> GraphicsSystem::GetSurfaceNamed(
   if (cached_surface)
     return cached_surface;
 
-  boost::shared_ptr<const Surface> surface_to_ret =
+  std::shared_ptr<const Surface> surface_to_ret =
       LoadSurfaceFromFile(short_filename);
   image_cache_.insert(short_filename, surface_to_ret);
   return surface_to_ret;
@@ -831,16 +831,16 @@ void GraphicsSystem::RenderObjects(std::ostream* tree) {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<MouseCursor> GraphicsSystem::GetCurrentCursor() {
+std::shared_ptr<MouseCursor> GraphicsSystem::GetCurrentCursor() {
   if (!use_custom_mouse_cursor_ || !show_cursor_from_bytecode_)
-    return boost::shared_ptr<MouseCursor>();
+    return std::shared_ptr<MouseCursor>();
 
   if (use_custom_mouse_cursor_ && !mouse_cursor_) {
     MouseCursorCache::iterator it = cursor_cache_.find(cursor_);
     if (it != cursor_cache_.end()) {
       mouse_cursor_ = it->second;
     } else {
-      boost::shared_ptr<const Surface> cursor_surface;
+      std::shared_ptr<const Surface> cursor_surface;
       GameexeInterpretObject cursor =
           system().gameexe()("MOUSE_CURSOR", cursor_);
       GameexeInterpretObject name_key = cursor("NAME");

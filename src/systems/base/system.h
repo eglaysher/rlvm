@@ -145,8 +145,8 @@ class System {
   bool low_priority() const { return globals_.low_priority_; }
   void set_low_priority(const int in) { globals_.low_priority_ = in; }
 
-  boost::shared_ptr<Platform> platform() { return platform_; }
-  void SetPlatform(const boost::shared_ptr<Platform>& platform);
+  std::shared_ptr<Platform> platform() { return platform_; }
+  void SetPlatform(const std::shared_ptr<Platform>& platform);
 
   // Whether we're currently forcing fast forward (only used during game tests
   // to zoom through).
@@ -276,7 +276,7 @@ class System {
  protected:
   // Native widget drawer. Can be NULL. This field is protected instead of
   // private because we need to be destroy the Platform before we destroy SDL.
-  boost::shared_ptr<Platform> platform_;
+  std::shared_ptr<Platform> platform_;
 
  private:
   typedef std::multimap<std::string,
@@ -327,7 +327,7 @@ class System {
 
   // A stream with the save game data at the time of the last selection. Used
   // for the Return to Previous Selection feature.
-  boost::shared_ptr<std::stringstream> previous_selection_;
+  std::shared_ptr<std::stringstream> previous_selection_;
 
   // Implementation detail which resets in_menu_;
   friend class MenuReseter;

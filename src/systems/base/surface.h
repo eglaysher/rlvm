@@ -28,8 +28,7 @@
 #ifndef SRC_SYSTEMS_BASE_SURFACE_H_
 #define SRC_SYSTEMS_BASE_SURFACE_H_
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "systems/base/rect.h"
 #include "systems/base/tone_curve.h"
@@ -41,7 +40,7 @@ struct GraphicsObjectOverride;
 
 // Abstract surface used in rlvm. Various systems graphics systems should
 // provide a subclass of Surface that implement all the following primitives.
-class Surface : public boost::enable_shared_from_this<Surface> {
+class Surface : public std::enable_shared_from_this<Surface> {
  public:
   struct GrpRect {
     Rect rect;
@@ -117,7 +116,7 @@ class Surface : public boost::enable_shared_from_this<Surface> {
 
   virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
 
-  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
+  virtual std::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
                                                      int r,
                                                      int g,
                                                      int b) const;

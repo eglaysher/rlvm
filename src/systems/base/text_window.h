@@ -28,10 +28,10 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 
-#include <boost/shared_ptr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #include <functional>
+#include <memory>
 #include <vector>
 #include <string>
 #include <utility>
@@ -199,8 +199,8 @@ class TextWindow {
   void Render(std::ostream* tree);
 
   // Returns a surface that is the text.
-  virtual boost::shared_ptr<Surface> GetTextSurface() = 0;
-  virtual boost::shared_ptr<Surface> GetNameSurface() = 0;
+  virtual std::shared_ptr<Surface> GetTextSurface() = 0;
+  virtual std::shared_ptr<Surface> GetNameSurface() = 0;
 
   // Clears the text window of all text and resets the insertion
   // point.
@@ -406,7 +406,7 @@ class TextWindow {
 
   // We lazily parse and load data about displaying the koe icon on demand.
   struct KoeReplayInfo {
-    boost::shared_ptr<const Surface> icon;
+    std::shared_ptr<const Surface> icon;
     Size repos;
   };
   std::unique_ptr<KoeReplayInfo> koe_replay_info_;

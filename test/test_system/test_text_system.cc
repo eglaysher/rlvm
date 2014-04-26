@@ -27,8 +27,8 @@
 
 #include "test_system/test_text_system.h"
 
+#include <memory>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 #include "test_system/mock_surface.h"
 #include "test_system/mock_text_window.h"
@@ -40,13 +40,13 @@ TestTextSystem::TestTextSystem(System& system, Gameexe& gexe)
 
 TestTextSystem::~TestTextSystem() {}
 
-boost::shared_ptr<TextWindow> TestTextSystem::GetTextWindow(
+std::shared_ptr<TextWindow> TestTextSystem::GetTextWindow(
     int text_window_num) {
   WindowMap::iterator it = text_window_.find(text_window_num);
   if (it == text_window_.end()) {
     it = text_window_.insert(std::make_pair(
                                  text_window_num,
-                                 boost::shared_ptr<TextWindow>(
+                                 std::shared_ptr<TextWindow>(
                                      new ::testing::NiceMock<MockTextWindow>(
                                          ::testing::ByRef(system()),
                                          text_window_num)))).first;
@@ -63,7 +63,7 @@ Size TestTextSystem::RenderGlyphOnto(
     const RGBColour* shadow_colour,
     int insertion_point_x,
     int insertion_point_y,
-    const boost::shared_ptr<Surface>& destination) {
+    const std::shared_ptr<Surface>& destination) {
   // Keep track of the incoming data:
   rendered_glyps_.push_back(
       std::make_tuple(current, insertion_point_x, insertion_point_y));

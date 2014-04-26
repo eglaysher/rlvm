@@ -27,10 +27,9 @@
 #ifndef SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
 #define SRC_LONG_OPERATIONS_SELECT_LONG_OPERATION_H_
 
-#include <boost/shared_ptr.hpp>
-
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "machine/long_operation.h"
 #include "systems/base/colour.h"
@@ -108,7 +107,7 @@ class NormalSelectLongOperation : public SelectLongOperation {
   virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed) override;
 
  private:
-  boost::shared_ptr<TextWindow> text_window_;
+  std::shared_ptr<TextWindow> text_window_;
 };
 
 // Selection LongOperation for #SELBTN based selections. Most of the work is
@@ -141,14 +140,14 @@ class ButtonSelectLongOperation : public SelectLongOperation,
     bool enabled;
 
     // Text representations to blit to the screen.
-    boost::shared_ptr<Surface> default_surface;
-    boost::shared_ptr<Surface> select_surface;
+    std::shared_ptr<Surface> default_surface;
+    std::shared_ptr<Surface> select_surface;
 
     // Where to render the above surface to.
     Rect bounding_rect;
   };
 
-  void RenderTextSurface(const boost::shared_ptr<Surface>& text_surface,
+  void RenderTextSurface(const std::shared_ptr<Surface>& text_surface,
                          const Rect& bounding_rect);
 
   // ????
@@ -184,10 +183,10 @@ class ButtonSelectLongOperation : public SelectLongOperation,
   bool mouse_down_;
 
   // Surface loaded from #SELBTN.xxx.NAME.
-  boost::shared_ptr<const Surface> name_surface_;
+  std::shared_ptr<const Surface> name_surface_;
 
   // Surface loaded from #SELBTN.xxx.BACK.
-  boost::shared_ptr<const Surface> back_surface_;
+  std::shared_ptr<const Surface> back_surface_;
 
   std::vector<ButtonOption> buttons_;
 };

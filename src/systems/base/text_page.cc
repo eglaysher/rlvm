@@ -426,7 +426,7 @@ bool TextPage::CharacterImpl(const string& c, const string& rest) {
 
 void TextPage::RunTextPageCommand(const Command& command,
                                   bool is_active_page) {
-  boost::shared_ptr<TextWindow> window =
+  std::shared_ptr<TextWindow> window =
       system_->text().GetTextWindow(window_num_);
 
   switch (command.command) {

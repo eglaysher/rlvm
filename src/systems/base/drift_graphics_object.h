@@ -29,7 +29,8 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <boost/shared_ptr.hpp>
+
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -67,7 +68,7 @@ class DriftGraphicsObject : public GraphicsObjectData {
   virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& go) override;
   virtual void ObjectInfo(std::ostream& tree) override;
 
@@ -98,7 +99,7 @@ class DriftGraphicsObject : public GraphicsObjectData {
   std::string filename_;
 
   // The encapsulated surface to render
-  boost::shared_ptr<const Surface> surface_;
+  std::shared_ptr<const Surface> surface_;
 
   // The individual particles that make up this drift object.
   std::vector<Particle> particles_;

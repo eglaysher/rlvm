@@ -55,7 +55,7 @@ GraphicsObjectData::~GraphicsObjectData() {}
 void GraphicsObjectData::Render(const GraphicsObject& go,
                                 const GraphicsObject* parent,
                                 std::ostream* tree) {
-  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
+  std::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
     Rect src = SrcRect(go);
     Rect dst = DstRect(go, parent);
@@ -199,7 +199,7 @@ Point GraphicsObjectData::DstOrigin(const GraphicsObject& go) {
     return Point(go.origin_x(), go.origin_y());
   }
 
-  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
+  std::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
     return Point(surface->GetPattern(go.GetPattNo()).originX,
                  surface->GetPattern(go.GetPattNo()).originY);

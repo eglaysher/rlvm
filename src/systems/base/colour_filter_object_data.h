@@ -28,7 +28,8 @@
 #define SRC_SYSTEMS_BASE_COLOUR_FILTER_OBJECT_DATA_H_
 
 #include <boost/serialization/access.hpp>
-#include <boost/shared_ptr.hpp>
+
+#include <memory>
 
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
@@ -64,7 +65,7 @@ class ColourFilterObjectData : public GraphicsObjectData {
   virtual void PlaySet(int set) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> CurrentSurface(
+  virtual std::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& rp) override;
   virtual void ObjectInfo(std::ostream& tree) override;
 

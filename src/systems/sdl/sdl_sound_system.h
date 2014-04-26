@@ -28,10 +28,10 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_SOUND_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_SOUND_SYSTEM_H_
 
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <SDL/SDL.h>
 
+#include <memory>
 #include <string>
 
 #include "systems/base/sound_system.h"
@@ -93,8 +93,8 @@ class SDLSoundSystem : public SoundSystem {
   void SetMusicHook(void (*mix_func)(void* udata, Uint8* stream, int len));
 
  private:
-  typedef boost::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
-  typedef boost::shared_ptr<SDLMusic> SDLMusicPtr;
+  typedef std::shared_ptr<SDLSoundChunk> SDLSoundChunkPtr;
+  typedef std::shared_ptr<SDLMusic> SDLMusicPtr;
   typedef LRUCache<std::string, SDLSoundChunkPtr> SoundChunkCache;
 
   virtual void KoePlayImpl(int id) override;
@@ -122,7 +122,7 @@ class SDLSoundSystem : public SoundSystem {
 
   // Creates an SDLMusic object from a name. Throws if the bgm isn't
   // found.
-  boost::shared_ptr<SDLMusic> LoadMusic(const std::string& bgm_name);
+  std::shared_ptr<SDLMusic> LoadMusic(const std::string& bgm_name);
 
   SoundChunkCache se_cache_;
   SoundChunkCache wav_cache_;

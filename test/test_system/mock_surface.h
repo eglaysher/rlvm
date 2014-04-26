@@ -72,7 +72,7 @@ class MockSurface : public Surface {
   MOCK_CONST_METHOD4(GetDCPixel, void(const Point&, int&, int&, int&));
 
   // Concrete implementations of the cloning methods.
-  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& rect,
+  virtual std::shared_ptr<Surface> ClipAsColorMask(const Rect& rect,
                                                      int r,
                                                      int g,
                                                      int b) const override;

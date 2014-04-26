@@ -26,6 +26,7 @@
 
 #include "platforms/gcn/gcn_info_window.h"
 
+#include <algorithm>
 #include <vector>
 
 #include "platforms/gcn/gcn_button.h"
@@ -42,7 +43,7 @@ const int PADDING = 5;
 namespace {
 
 int max_space(const std::vector<gcn::Label*>& labels) {
-  std::vector<gcn::Label*>::const_iterator it = max_element(
+  std::vector<gcn::Label*>::const_iterator it = std::max_element(
       labels.begin(), labels.end(), [](gcn::Label* one, gcn::Label* two) {
         return one->getWidth() < two->getWidth();
       });

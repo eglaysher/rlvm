@@ -97,9 +97,9 @@ void ParentGraphicsObjectData::PlaySet(int set) {
   // Deliberately empty.
 }
 
-boost::shared_ptr<const Surface> ParentGraphicsObjectData::CurrentSurface(
+std::shared_ptr<const Surface> ParentGraphicsObjectData::CurrentSurface(
     const GraphicsObject& rp) {
-  return boost::shared_ptr<const Surface>();
+  return std::shared_ptr<const Surface>();
 }
 
 void ParentGraphicsObjectData::ObjectInfo(std::ostream& tree) {

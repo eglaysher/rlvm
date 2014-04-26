@@ -28,9 +28,9 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 
-#include <boost/shared_ptr.hpp>
 #include <SDL/SDL_opengl.h>
 
+#include <memory>
 #include <set>
 #include <string>
 
@@ -71,7 +71,7 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
   void RedrawLastFrame();
   void DrawCursor();
 
-  virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
+  virtual std::shared_ptr<Surface> EndFrameToSurface() override;
 
   virtual void ExecuteGraphicsSystem(RLMachine& machine) override;
 
@@ -79,12 +79,12 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
   virtual void SetMinimumSizeForDC(int dc, Size size) override;
   virtual void FreeDC(int dc) override;
 
-  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+  virtual std::shared_ptr<const Surface> LoadSurfaceFromFile(
       const std::string& short_filename) override;
 
-  virtual boost::shared_ptr<Surface> GetHaikei() override;
-  virtual boost::shared_ptr<Surface> GetDC(int dc) override;
-  virtual boost::shared_ptr<Surface> BuildSurface(const Size& size) override;
+  virtual std::shared_ptr<Surface> GetHaikei() override;
+  virtual std::shared_ptr<Surface> GetDC(int dc) override;
+  virtual std::shared_ptr<Surface> BuildSurface(const Size& size) override;
 
   virtual ColourFilter* BuildColourFiller() override;
 
@@ -119,8 +119,8 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   SDL_Surface* screen_;
 
-  boost::shared_ptr<SDLSurface> haikei_;
-  boost::shared_ptr<SDLSurface> display_contexts_[16];
+  std::shared_ptr<SDLSurface> haikei_;
+  std::shared_ptr<SDLSurface> display_contexts_[16];
 
   bool redraw_last_frame_;
 

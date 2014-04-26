@@ -27,7 +27,7 @@
 
 #include "modules/module_msg.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -58,7 +58,7 @@ struct Msg_pause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int windowNum = text.active_window();
-    boost::shared_ptr<TextWindow> textWindow = text.GetTextWindow(windowNum);
+    std::shared_ptr<TextWindow> textWindow = text.GetTextWindow(windowNum);
 
     if (textWindow->action_on_pause()) {
       machine.PushLongOperation(
@@ -171,7 +171,7 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
-    boost::shared_ptr<TextWindow> textWindow =
+    std::shared_ptr<TextWindow> textWindow =
         machine.system().text().GetCurrentWindow();
 
     if (textWindow) {

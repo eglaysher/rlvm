@@ -28,7 +28,7 @@
 #ifndef SRC_EFFECTS_WIPE_EFFECT_H_
 #define SRC_EFFECTS_WIPE_EFFECT_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "effects/effect.h"
 
@@ -40,8 +40,8 @@ class GraphicsSystem;
 class WipeEffect : public Effect {
  public:
   WipeEffect(RLMachine& machine,
-             boost::shared_ptr<Surface> src,
-             boost::shared_ptr<Surface> dst,
+             std::shared_ptr<Surface> src,
+             std::shared_ptr<Surface> dst,
              const Size& screen_size,
              int time,
              int interpolation);
@@ -64,8 +64,8 @@ class WipeEffect : public Effect {
 class WipeTopToBottomEffect : public WipeEffect {
  public:
   WipeTopToBottomEffect(RLMachine& machine,
-                        boost::shared_ptr<Surface> src,
-                        boost::shared_ptr<Surface> dst,
+                        std::shared_ptr<Surface> src,
+                        std::shared_ptr<Surface> dst,
                         const Size& screen_size,
                         int time,
                         int interpolation);
@@ -80,8 +80,8 @@ class WipeTopToBottomEffect : public WipeEffect {
 class WipeBottomToTopEffect : public WipeEffect {
  public:
   WipeBottomToTopEffect(RLMachine& machine,
-                        boost::shared_ptr<Surface> src,
-                        boost::shared_ptr<Surface> dst,
+                        std::shared_ptr<Surface> src,
+                        std::shared_ptr<Surface> dst,
                         const Size& screen_size,
                         int time,
                         int interpolation);
@@ -96,8 +96,8 @@ class WipeBottomToTopEffect : public WipeEffect {
 class WipeLeftToRightEffect : public WipeEffect {
  public:
   WipeLeftToRightEffect(RLMachine& machine,
-                        boost::shared_ptr<Surface> src,
-                        boost::shared_ptr<Surface> dst,
+                        std::shared_ptr<Surface> src,
+                        std::shared_ptr<Surface> dst,
                         const Size& screen_size,
                         int time,
                         int interpolation);
@@ -112,8 +112,8 @@ class WipeLeftToRightEffect : public WipeEffect {
 class WipeRightToLeftEffect : public WipeEffect {
  public:
   WipeRightToLeftEffect(RLMachine& machine,
-                        boost::shared_ptr<Surface> src,
-                        boost::shared_ptr<Surface> dst,
+                        std::shared_ptr<Surface> src,
+                        std::shared_ptr<Surface> dst,
                         const Size& screen_size,
                         int time,
                         int interpolation);

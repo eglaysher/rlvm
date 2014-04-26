@@ -263,11 +263,11 @@ KOEPACVoiceArchive::~KOEPACVoiceArchive() {}
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::FindSample(int sample_num) {
+std::shared_ptr<VoiceSample> KOEPACVoiceArchive::FindSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {
-    return boost::shared_ptr<VoiceSample>(
+    return std::shared_ptr<VoiceSample>(
         new KOEPACVoiceSample(file_, it->offset, it->length, rate_));
   }
 

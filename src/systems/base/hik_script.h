@@ -28,8 +28,8 @@
 #define SRC_SYSTEMS_BASE_HIK_SCRIPT_H_
 
 #include <boost/filesystem.hpp>
-#include <boost/shared_ptr.hpp>
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -54,7 +54,7 @@ class HIKScript {
   struct Frame {
     int opacity;
     std::string image;
-    boost::shared_ptr<const Surface> surface;
+    std::shared_ptr<const Surface> surface;
 
     int grp_pattern;
     int frame_length_ms;
