@@ -85,7 +85,7 @@ Size SDLTextSystem::RenderGlyphOnto(
     const boost::shared_ptr<Surface>& destination) {
   SDLSurface* sdl_surface = static_cast<SDLSurface*>(destination.get());
 
-  boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
+  boost::shared_ptr<TTF_Font> font = GetFontOfSize(font_size);
 
   if (italic) {
     TTF_SetFontStyle(font.get(), TTF_STYLE_ITALIC);
@@ -136,13 +136,13 @@ Size SDLTextSystem::RenderGlyphOnto(
 }
 
 int SDLTextSystem::GetCharWidth(int size, uint16_t codepoint) {
-  boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
+  boost::shared_ptr<TTF_Font> font = GetFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics(font.get(), codepoint, &minx, &maxx, &miny, &maxy, &advance);
   return advance;
 }
 
-boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
+boost::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
     std::string filename = FindFontFile(system()).native();

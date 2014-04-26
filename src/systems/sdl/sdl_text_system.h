@@ -59,7 +59,7 @@ class SDLTextSystem : public TextSystem {
   virtual int GetCharWidth(int size, uint16_t codepoint) override;
 
   // Returns (and caches) a SDL_ttf font object for a font of |size|.
-  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
+  boost::shared_ptr<TTF_Font> GetFontOfSize(int size);
 
  private:
   // Font storage.

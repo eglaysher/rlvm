@@ -80,7 +80,7 @@ void SDLTextWindow::RenderNameInBox(const std::string& utf8str) {
 void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
                                      int selection_id) {
   boost::shared_ptr<TTF_Font> font =
-      sdl_system_.text().getFontOfSize(font_size_in_pixels());
+      sdl_system_.text().GetFontOfSize(font_size_in_pixels());
 
   // Render the incoming string for both selected and not-selected.
   SDL_Color colour;
@@ -113,7 +113,7 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
 void SDLTextWindow::DisplayRubyText(const std::string& utf8str) {
   if (ruby_begin_point_ != -1) {
     boost::shared_ptr<TTF_Font> font =
-        sdl_system_.text().getFontOfSize(ruby_text_size());
+        sdl_system_.text().GetFontOfSize(ruby_text_size());
     int end_point = text_insertion_point_x_ - x_spacing_;
 
     if (ruby_begin_point_ > end_point) {
