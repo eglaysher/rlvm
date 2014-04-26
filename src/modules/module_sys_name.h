@@ -34,6 +34,6 @@ class System;
 
 // Public access to the name variable operations. Meant to be called
 // from the constructor of SysModule.
-void addSysNameOpcodes(RLModule& module);
+void AddSysNameOpcodes(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_NAME_H_

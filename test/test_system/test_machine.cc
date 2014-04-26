@@ -42,39 +42,39 @@ using std::make_pair;
 TestMachine::TestMachine(System& in_system, libreallive::Archive& in_archive)
     : RLMachine(in_system, in_archive) {}
 
-void TestMachine::attachModule(RLModule* module) {
+void TestMachine::AttachModule(RLModule* module) {
   for (RLModule::OpcodeMap::iterator it = module->begin(); it != module->end();
        ++it) {
     int opcode = -1;
     unsigned char overload = 0;
-    RLModule::unpackOpcodeNumber(it->first, opcode, overload);
+    RLModule::UnpackOpcodeNumber(it->first, opcode, overload);
 
     RLOperation* op = it->second.get();
     registry_.insert(make_pair(make_pair(it->second->name(), overload), op));
   }
 
-  RLMachine::attachModule(module);
+  RLMachine::AttachModule(module);
 }
 
-void TestMachine::exe(const std::string& name, unsigned char overload) {
-  runOpcode(name, overload, 0, "");
+void TestMachine::Exe(const std::string& name, unsigned char overload) {
+  RunOpcode(name, overload, 0, "");
 }
 
-void TestMachine::exe(const std::string& name,
+void TestMachine::Exe(const std::string& name,
                       unsigned char overload,
                       const ExeArgument& arguments) {
-  runOpcode(name, overload, arguments.first, arguments.second);
+  RunOpcode(name, overload, arguments.first, arguments.second);
 }
 
 // static
-void TestMachine::addEntity(std::string& output, const std::string& arg) {
+void TestMachine::AddEntity(std::string& output, const std::string& arg) {
   output += "\"";
   output += arg;
   output += "\"";
 }
 
 // static
-void TestMachine::addEntity(std::string& output, const int arg) {
+void TestMachine::AddEntity(std::string& output, const int arg) {
   char buf[6];
   buf[0] = '$';
   buf[1] = 0xff;
@@ -82,7 +82,7 @@ void TestMachine::addEntity(std::string& output, const int arg) {
   output.append(buf, 6);
 }
 
-void TestMachine::runOpcode(const std::string& name,
+void TestMachine::RunOpcode(const std::string& name,
                             unsigned char overload,
                             int argc,
                             const std::string& argument_string) {
@@ -101,7 +101,7 @@ void TestMachine::runOpcode(const std::string& name,
 
   RLOperation* op = registry_[make_pair(name, overload)];
   if (op) {
-    op->dispatchFunction(*this, *element.get());
+    op->DispatchFunction(*this, *element.get());
   } else {
     throw rlvm::Exception("Illegal opcode TestMachine::runOpcode");
   }

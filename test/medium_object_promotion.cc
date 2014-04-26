@@ -58,7 +58,7 @@ class PromotionTest : public ::testing::TestWithParam<PromotionData> {
       : arc(locateTestCase("Module_Str_SEEN/strcpy_0.TXT")),
         system(locateTestCase("Gameexe_data/Gameexe.ini")),
         rlmachine(system, arc) {
-    rlmachine.attachModule(new GrpModule);
+    rlmachine.AttachModule(new GrpModule);
   }
 
   // Use any old test case; it isn't getting executed
@@ -76,16 +76,16 @@ TEST_P(PromotionTest, BgLayerPromotion) {
   GraphicsSystem& gs = system.graphics();
 
   // Build a dummy object into the background slot.
-  GraphicsObject& obj = gs.getObject(OBJ_BG, 0);
-  obj.setTextText("String");
-  obj.setObjectData(new GraphicsTextObject(system));
+  GraphicsObject& obj = gs.GetObject(OBJ_BG, 0);
+  obj.SetTextText("String");
+  obj.SetObjectData(new GraphicsTextObject(system));
 
   // Run the graphics command.
-  rlmachine.exe(get<0>(data), get<1>(data), get<2>(data));
+  rlmachine.Exe(get<0>(data), get<1>(data), get<2>(data));
 
   // Whether the object was promoted to the fg layer.
   EXPECT_EQ(get<3>(data) & SHOULD_PROMOTE_BG,
-            !gs.getObject(OBJ_FG, 0).isCleared());
+            !gs.GetObject(OBJ_FG, 0).is_cleared());
 }
 
 std::vector<PromotionData> data = {

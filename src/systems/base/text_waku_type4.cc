@@ -69,7 +69,7 @@ TextWakuType4::TextWakuType4(System& system,
       area_left_(0),
       area_right_(0) {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
-  setWakuMain(waku("NAME").to_string(""));
+  SetWakuMain(waku("NAME").ToString(""));
 
   std::vector<int> area = waku("AREA");
   if (area.size() >= 1)
@@ -84,9 +84,9 @@ TextWakuType4::TextWakuType4(System& system,
 
 TextWakuType4::~TextWakuType4() {}
 
-void TextWakuType4::execute() {}
+void TextWakuType4::Execute() {}
 
-void TextWakuType4::render(std::ostream* tree,
+void TextWakuType4::Render(std::ostream* tree,
                            Point box_location,
                            Size content_size) {
   if (tree) {
@@ -100,8 +100,8 @@ void TextWakuType4::render(std::ostream* tree,
         Size(area_left_, area_top_);
     Size backing_size =
         content_size + Size(area_left_ + area_right_, area_top_ + area_bottom_);
-    boost::shared_ptr<Surface> backing = getWakuBackingOfSize(backing_size);
-    backing->renderToScreenAsColorMask(backing->rect(),
+    boost::shared_ptr<Surface> backing = GetWakuBackingOfSize(backing_size);
+    backing->RenderToScreenAsColorMask(backing->GetRect(),
                                        Rect(backing_point, backing_size),
                                        window_.colour(),
                                        window_.filter());
@@ -113,37 +113,37 @@ void TextWakuType4::render(std::ostream* tree,
         Size(right_side.rect.width(), bottom_center.rect.height());
 
     // Top row
-    waku_main_->renderToScreen(top_left.rect,
+    waku_main_->RenderToScreen(top_left.rect,
                                Rect(box_location, top_left.rect.size()));
 
     const Point top_center_p = box_location + Size(top_left.rect.width(), 0);
     int top_center_width =
         total_size.width() - top_left.rect.width() - top_right.rect.width();
     const Size top_center_s = Size(top_center_width, top_center.rect.height());
-    waku_main_->renderToScreen(top_center.rect,
+    waku_main_->RenderToScreen(top_center.rect,
                                Rect(top_center_p, top_center_s));
 
     const Point top_right_p = top_center_p + Size(top_center_width, 0);
-    waku_main_->renderToScreen(top_right.rect,
+    waku_main_->RenderToScreen(top_right.rect,
                                Rect(top_right_p, top_right.rect.size()));
 
     // Center row
     const Point left_side_p = box_location + Size(0, top_left.rect.height());
     int left_side_height = content_size.height();
     const Size left_side_s = Size(left_side.rect.width(), left_side_height);
-    waku_main_->renderToScreen(left_side.rect, Rect(left_side_p, left_side_s));
+    waku_main_->RenderToScreen(left_side.rect, Rect(left_side_p, left_side_s));
 
     const Point right_side_p =
         box_location + Size(total_size.width() - right_side.rect.width(),
                             top_right.rect.height());
     int right_side_height = content_size.height();
     const Size right_side_s = Size(right_side.rect.width(), right_side_height);
-    waku_main_->renderToScreen(right_side.rect,
+    waku_main_->RenderToScreen(right_side.rect,
                                Rect(right_side_p, right_side_s));
 
     // Bottom row
     const Point bottom_left_p = left_side_p + Size(0, left_side_height);
-    waku_main_->renderToScreen(bottom_left.rect,
+    waku_main_->RenderToScreen(bottom_left.rect,
                                Rect(bottom_left_p, bottom_left.rect.size()));
 
     // Sometimes |top_center_width| != |bottom_center_width| (for example, when
@@ -154,11 +154,11 @@ void TextWakuType4::render(std::ostream* tree,
                               bottom_right.rect.width();
     const Size bottom_center_s =
         Size(bottom_center_width, bottom_center.rect.height());
-    waku_main_->renderToScreen(bottom_center.rect,
+    waku_main_->RenderToScreen(bottom_center.rect,
                                Rect(bottom_center_p, bottom_center_s));
 
     const Point bottom_right_p = bottom_center_p + Size(bottom_center_width, 0);
-    waku_main_->renderToScreen(bottom_right.rect,
+    waku_main_->RenderToScreen(bottom_right.rect,
                                Rect(bottom_right_p, bottom_right.rect.size()));
 
     if (tree) {
@@ -167,13 +167,13 @@ void TextWakuType4::render(std::ostream* tree,
   }
 }
 
-Size TextWakuType4::getSize(const Size& text_surface) const {
+Size TextWakuType4::GetSize(const Size& text_surface) const {
   Size padding = Size(left_side.rect.width() + right_side.rect.width(),
                       top_center.rect.height() + bottom_center.rect.height());
   return text_surface + padding;
 }
 
-Point TextWakuType4::insertionPoint(const Rect& waku_rect,
+Point TextWakuType4::InsertionPoint(const Rect& waku_rect,
                                     const Size& padding,
                                     const Size& surface_size,
                                     bool center) const {
@@ -194,41 +194,41 @@ Point TextWakuType4::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-void TextWakuType4::setMousePosition(const Point& pos) {
+void TextWakuType4::SetMousePosition(const Point& pos) {
   // Noop
 }
 
-bool TextWakuType4::handleMouseClick(RLMachine& machine,
+bool TextWakuType4::HandleMouseClick(RLMachine& machine,
                                      const Point& pos,
                                      bool pressed) {
   // Noop; this window won't do anything with mouse clicks.
   return false;
 }
 
-void TextWakuType4::setWakuMain(const std::string& name) {
+void TextWakuType4::SetWakuMain(const std::string& name) {
   if (name != "") {
-    waku_main_ = system_.graphics().getSurfaceNamed(name);
+    waku_main_ = system_.graphics().GetSurfaceNamed(name);
 
-    top_left = waku_main_->getPattern(TOP_LEFT_CORNER);
-    top_center = waku_main_->getPattern(TOP_CENTER);
-    top_right = waku_main_->getPattern(TOP_RIGHT_CORNER);
+    top_left = waku_main_->GetPattern(TOP_LEFT_CORNER);
+    top_center = waku_main_->GetPattern(TOP_CENTER);
+    top_right = waku_main_->GetPattern(TOP_RIGHT_CORNER);
 
-    left_side = waku_main_->getPattern(LEFT_SIDE);
-    right_side = waku_main_->getPattern(RIGHT_SIDE);
+    left_side = waku_main_->GetPattern(LEFT_SIDE);
+    right_side = waku_main_->GetPattern(RIGHT_SIDE);
 
-    bottom_left = waku_main_->getPattern(BOTTOM_LEFT_CORNER);
-    bottom_center = waku_main_->getPattern(BOTTOM_CENTER);
-    bottom_right = waku_main_->getPattern(BOTTOM_RIGHT_CORNER);
+    bottom_left = waku_main_->GetPattern(BOTTOM_LEFT_CORNER);
+    bottom_center = waku_main_->GetPattern(BOTTOM_CENTER);
+    bottom_right = waku_main_->GetPattern(BOTTOM_RIGHT_CORNER);
   } else {
     waku_main_.reset();
   }
 }
 
-const boost::shared_ptr<Surface>& TextWakuType4::getWakuBackingOfSize(
+const boost::shared_ptr<Surface>& TextWakuType4::GetWakuBackingOfSize(
     Size size) {
-  if (!cached_backing_ || cached_backing_->size() != size) {
-    cached_backing_ = system_.graphics().buildSurface(size);
-    cached_backing_->fill(RGBAColour::Black());
+  if (!cached_backing_ || cached_backing_->GetSize() != size) {
+    cached_backing_ = system_.graphics().BuildSurface(size);
+    cached_backing_->Fill(RGBAColour::Black());
   }
 
   return cached_backing_;

@@ -41,7 +41,7 @@ void on_selection_changed(GtkFileChooser* chooser) {
   gchar* name = gtk_file_chooser_get_filename(chooser);
   if (name) {
     boost::filesystem::path path =
-        correctPathCase(fs::path(name) / fs::path("Gameexe.ini"));
+        CorrectPathCase(fs::path(name) / fs::path("Gameexe.ini"));
     gtk_dialog_set_response_sensitive(
         GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT, fs::exists(path));
     g_free(name);

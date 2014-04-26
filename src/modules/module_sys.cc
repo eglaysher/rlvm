@@ -69,14 +69,14 @@ namespace {
 
 struct title : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string subtitle) {
-    machine.system().graphics().setWindowSubtitle(subtitle,
-                                                  machine.getTextEncoding());
+    machine.system().graphics().SetWindowSubtitle(subtitle,
+                                                  machine.GetTextEncoding());
   }
 };
 
 struct GetTitle : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = machine.system().graphics().windowSubtitle();
+    *dest = machine.system().graphics().window_subtitle();
   }
 };
 
@@ -91,7 +91,7 @@ struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
                   IntReferenceIterator button2It) {
     Point pos;
     int button1, button2;
-    machine.system().event().getCursorPos(pos, button1, button2);
+    machine.system().event().GetCursorPos(pos, button1, button2);
     *xit = pos.x();
     *yit = pos.y();
     *button1It = button1;
@@ -103,7 +103,7 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator xit,
                   IntReferenceIterator yit) {
-    Point pos = machine.system().event().getCursorPos();
+    Point pos = machine.system().event().GetCursorPos();
     *xit = pos.x();
     *yit = pos.y();
   }
@@ -112,21 +112,21 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
 struct CallStackPop : RLOp_Void_1<DefaultIntValue_T<1>> {
   void operator()(RLMachine& machine, int frames_to_pop) {
     for (int i = 0; i < frames_to_pop; ++i)
-      machine.popStackFrame();
+      machine.PopStackFrame();
   }
 };
 
 struct PauseCursor : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int newCursor) {
-    machine.system().text().setKeyCursor(newCursor);
+    machine.system().text().SetKeyCursor(newCursor);
   }
 };
 
 struct GetWakuAll : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
     boost::shared_ptr<TextWindow> window =
-        machine.system().text().currentWindow();
-    return window->wakuSet();
+        machine.system().text().GetCurrentWindow();
+    return window->waku_set();
   }
 };
 
@@ -243,20 +243,20 @@ struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
 // This method also resets a LOT of the game state, though this isn't mentioned
 // in the rldev manual.
 struct ReturnMenu : public RLOp_Void_Void {
-  virtual bool advanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
-    int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-    machine.localReset();
-    machine.jump(scenario, 0);
+    int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();
+    machine.LocalReset();
+    machine.Jump(scenario, 0);
   }
 };
 
 struct ReturnPrevSelect : public RLOp_Void_Void {
-  virtual bool advanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
-    machine.system().restoreSelectionSnapshot(machine);
+    machine.system().RestoreSelectionSnapshot(machine);
   }
 };
 
@@ -273,7 +273,7 @@ struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
     attr[3] = a;
     attr[4] = f;
 
-    machine.system().text().setDefaultWindowAttr(attr);
+    machine.system().text().SetDefaultWindowAttr(attr);
   }
 };
 
@@ -290,11 +290,11 @@ struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
                   IntReferenceIterator f) {
     TextSystem& text = machine.system().text();
 
-    *r = text.windowAttrR();
-    *g = text.windowAttrG();
-    *b = text.windowAttrB();
-    *a = text.windowAttrA();
-    *f = text.windowAttrF();
+    *r = text.window_attr_r();
+    *g = text.window_attr_g();
+    *b = text.window_attr_b();
+    *a = text.window_attr_a();
+    *f = text.window_attr_f();
   }
 };
 
@@ -322,341 +322,343 @@ struct DefWindowAttr : public RLOp_Void_5<IntReference_T,
 
 }  // namespace
 
+bool Sys_MenuReturn::AdvanceInstructionPointer() { return false; }
+
 // Implementation isn't in anonymous namespace since it is used elsewhere.
 void Sys_MenuReturn::operator()(RLMachine& machine) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   // Render the screen as is.
-  boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
-  boost::shared_ptr<Surface> before = graphics.renderToSurface();
+  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+  boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
   // Clear everything
-  machine.localReset();
+  machine.LocalReset();
 
-  boost::shared_ptr<Surface> after = graphics.renderToSurface();
+  boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
   // First, we jump the instruction pointer to the new location.
-  int scenario = machine.system().gameexe()("SEEN_MENU").to_int();
-  machine.jump(scenario, 0);
+  int scenario = machine.system().gameexe()("SEEN_MENU").ToInt();
+  machine.Jump(scenario, 0);
 
   // Now we push a LongOperation on top of the stack; when this
   // ends, we'll be at SEEN_MENU.
   LongOperation* effect =
-      new FadeEffect(machine, after, before, after->size(), 1000);
-  machine.pushLongOperation(effect);
+      new FadeEffect(machine, after, before, after->GetSize(), 1000);
+  machine.PushLongOperation(effect);
 }
 
 SysModule::SysModule() : RLModule("Sys", 1, 004) {
-  addOpcode(0, 0, "title", new title);
-  addOpcode(2, 0, "GetTitle", new GetTitle);
+  AddOpcode(0, 0, "title", new title);
+  AddOpcode(2, 0, "GetTitle", new GetTitle);
 
-  addOpcode(130, 0, "FlushClick", callFunction(&EventSystem::flushMouseClicks));
-  addOpcode(133, 0, "GetCursorPos", new GetCursorPos_gc1);
+  AddOpcode(130, 0, "FlushClick", CallFunction(&EventSystem::FlushMouseClicks));
+  AddOpcode(133, 0, "GetCursorPos", new GetCursorPos_gc1);
 
-  addOpcode(202, 0, "GetCursorPos", new GetCursorPos_gc2);
+  AddOpcode(202, 0, "GetCursorPos", new GetCursorPos_gc2);
 
-  addUnsupportedOpcode(320, 0, "CallStackClear");
-  addUnsupportedOpcode(321, 0, "CallStackNop");
-  addUnsupportedOpcode(321, 1, "CallStackNop");
-  addOpcode(322, 0, "CallStackPop", new CallStackPop);
-  addOpcode(322, 1, "CallStackPop", new CallStackPop);
-  addUnsupportedOpcode(323, 0, "CallStackSize");
-  addUnsupportedOpcode(324, 0, "CallStackTrunc");
+  AddUnsupportedOpcode(320, 0, "CallStackClear");
+  AddUnsupportedOpcode(321, 0, "CallStackNop");
+  AddUnsupportedOpcode(321, 1, "CallStackNop");
+  AddOpcode(322, 0, "CallStackPop", new CallStackPop);
+  AddOpcode(322, 1, "CallStackPop", new CallStackPop);
+  AddUnsupportedOpcode(323, 0, "CallStackSize");
+  AddUnsupportedOpcode(324, 0, "CallStackTrunc");
 
-  addOpcode(204,
+  AddOpcode(204,
             0,
             "ShowCursor",
-            callFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 1));
-  addOpcode(205,
+            CallFunctionWith(&GraphicsSystem::set_show_cursor_from_bytecode, 1));
+  AddOpcode(205,
             0,
             "HideCursor",
-            callFunctionWith(&GraphicsSystem::setShowCursorFromBytecode, 0));
-  addOpcode(206, 0, "GetMouseCursor", returnIntValue(&GraphicsSystem::cursor));
-  addOpcode(207, 0, "MouseCursor", callFunction(&GraphicsSystem::setCursor));
+            CallFunctionWith(&GraphicsSystem::set_show_cursor_from_bytecode, 0));
+  AddOpcode(206, 0, "GetMouseCursor", ReturnIntValue(&GraphicsSystem::cursor));
+  AddOpcode(207, 0, "MouseCursor", CallFunction(&GraphicsSystem::SetCursor));
 
-  addUnsupportedOpcode(330, 0, "EnableSkipMode");
-  addUnsupportedOpcode(331, 0, "DisableSkipMode");
-  addOpcode(332, 0, "LocalSkipMode", returnIntValue(&TextSystem::skipMode));
-  addOpcode(333,
+  AddUnsupportedOpcode(330, 0, "EnableSkipMode");
+  AddUnsupportedOpcode(331, 0, "DisableSkipMode");
+  AddOpcode(332, 0, "LocalSkipMode", ReturnIntValue(&TextSystem::skip_mode));
+  AddOpcode(333,
             0,
             "SetLocalSkipMode",
-            callFunctionWith(&TextSystem::setSkipMode, 1));
-  addOpcode(334,
+            CallFunctionWith(&TextSystem::SetSkipMode, 1));
+  AddOpcode(334,
             0,
             "ClearLocalSkipMode",
-            callFunctionWith(&TextSystem::setSkipMode, 0));
+            CallFunctionWith(&TextSystem::SetSkipMode, 0));
 
-  addOpcode(350, 0, "CtrlKeyShip", returnIntValue(&TextSystem::ctrlKeySkip));
-  addOpcode(351,
+  AddOpcode(350, 0, "CtrlKeyShip", ReturnIntValue(&TextSystem::ctrl_key_skip));
+  AddOpcode(351,
             0,
             "CtrlKeySkipOn",
-            callFunctionWith(&TextSystem::setCtrlKeySkip, 1));
-  addOpcode(352,
+            CallFunctionWith(&TextSystem::set_ctrl_key_skip, 1));
+  AddOpcode(352,
             0,
             "CtrlKeySkipOff",
-            callFunctionWith(&TextSystem::setCtrlKeySkip, 0));
-  addOpcode(353, 0, "CtrlPressed", returnIntValue(&EventSystem::ctrlPressed));
-  addOpcode(354, 0, "ShiftPressed", returnIntValue(&EventSystem::shiftPressed));
+            CallFunctionWith(&TextSystem::set_ctrl_key_skip, 0));
+  AddOpcode(353, 0, "CtrlPressed", ReturnIntValue(&EventSystem::CtrlPressed));
+  AddOpcode(354, 0, "ShiftPressed", ReturnIntValue(&EventSystem::ShiftPressed));
 
-  addOpcode(364, 0, "PauseCursor", new PauseCursor);
+  AddOpcode(364, 0, "PauseCursor", new PauseCursor);
 
-  addUnsupportedOpcode(400, 0, "GetWindowPos");
-  addUnsupportedOpcode(401, 0, "SetWindowPos");
-  addUnsupportedOpcode(402, 0, "WindowResetPos");
-  addUnsupportedOpcode(403, 0, "GetDefaultWindowPos");
-  addUnsupportedOpcode(404, 0, "SetDefaultWindowPos");
-  addUnsupportedOpcode(405, 0, "DefaultWindowResetPos");
+  AddUnsupportedOpcode(400, 0, "GetWindowPos");
+  AddUnsupportedOpcode(401, 0, "SetWindowPos");
+  AddUnsupportedOpcode(402, 0, "WindowResetPos");
+  AddUnsupportedOpcode(403, 0, "GetDefaultWindowPos");
+  AddUnsupportedOpcode(404, 0, "SetDefaultWindowPos");
+  AddUnsupportedOpcode(405, 0, "DefaultWindowResetPos");
 
-  addOpcode(410, 0, "GetWakuAll", new GetWakuAll);
-  addUnsupportedOpcode(411, 0, "SetWakuAll");
-  addUnsupportedOpcode(412, 0, "GetWaku");
-  addUnsupportedOpcode(413, 0, "SetWaku");
-  addUnsupportedOpcode(414, 0, "GetWakuMod");
-  addUnsupportedOpcode(415, 0, "SetWakuMod__dwm");
-  addUnsupportedOpcode(416, 0, "SetWakuMod__ewm");
+  AddOpcode(410, 0, "GetWakuAll", new GetWakuAll);
+  AddUnsupportedOpcode(411, 0, "SetWakuAll");
+  AddUnsupportedOpcode(412, 0, "GetWaku");
+  AddUnsupportedOpcode(413, 0, "SetWaku");
+  AddUnsupportedOpcode(414, 0, "GetWakuMod");
+  AddUnsupportedOpcode(415, 0, "SetWakuMod__dwm");
+  AddUnsupportedOpcode(416, 0, "SetWakuMod__ewm");
 
-  addUnsupportedOpcode(460, 0, "EnableWindowAnm");
-  addUnsupportedOpcode(461, 0, "DisableWindowAnm");
-  addUnsupportedOpcode(462, 0, "GetOpenAnmMod");
-  addUnsupportedOpcode(463, 0, "SetOpenAnmMod");
-  addUnsupportedOpcode(464, 0, "GetOpenAnmTime");
-  addUnsupportedOpcode(465, 0, "SetOpenAnmTime");
-  addUnsupportedOpcode(466, 0, "GetCloseAnmMod");
-  addUnsupportedOpcode(467, 0, "SetCloseAnmMod");
-  addUnsupportedOpcode(468, 0, "GetCloseAnmTime");
-  addUnsupportedOpcode(469, 0, "SetCloseAnmTime");
+  AddUnsupportedOpcode(460, 0, "EnableWindowAnm");
+  AddUnsupportedOpcode(461, 0, "DisableWindowAnm");
+  AddUnsupportedOpcode(462, 0, "GetOpenAnmMod");
+  AddUnsupportedOpcode(463, 0, "SetOpenAnmMod");
+  AddUnsupportedOpcode(464, 0, "GetOpenAnmTime");
+  AddUnsupportedOpcode(465, 0, "SetOpenAnmTime");
+  AddUnsupportedOpcode(466, 0, "GetCloseAnmMod");
+  AddUnsupportedOpcode(467, 0, "SetCloseAnmMod");
+  AddUnsupportedOpcode(468, 0, "GetCloseAnmTime");
+  AddUnsupportedOpcode(469, 0, "SetCloseAnmTime");
 
-  addOpcode(1000, 0, "rnd", new rnd_0);
-  addOpcode(1000, 1, "rnd", new rnd_1);
-  addOpcode(1001, 0, "pcnt", new pcnt);
-  addOpcode(1002, 0, "abs", new Sys_abs);
-  addOpcode(1003, 0, "power", new power_0);
-  addOpcode(1003, 1, "power", new power_1);
-  addOpcode(1004, 0, "sin", new sin_0);
-  addOpcode(1004, 1, "sin", new sin_1);
-  addOpcode(1005, 0, "modulus", new Sys_modulus);
-  addOpcode(1006, 0, "angle", new angle);
-  addOpcode(1007, 0, "min", new Sys_min);
-  addOpcode(1008, 0, "max", new Sys_max);
-  addOpcode(1009, 0, "constrain", new constrain);
-  addOpcode(1010, 0, "cos", new cos_0);
-  addOpcode(1010, 1, "cos", new cos_1);
+  AddOpcode(1000, 0, "rnd", new rnd_0);
+  AddOpcode(1000, 1, "rnd", new rnd_1);
+  AddOpcode(1001, 0, "pcnt", new pcnt);
+  AddOpcode(1002, 0, "abs", new Sys_abs);
+  AddOpcode(1003, 0, "power", new power_0);
+  AddOpcode(1003, 1, "power", new power_1);
+  AddOpcode(1004, 0, "sin", new sin_0);
+  AddOpcode(1004, 1, "sin", new sin_1);
+  AddOpcode(1005, 0, "modulus", new Sys_modulus);
+  AddOpcode(1006, 0, "angle", new angle);
+  AddOpcode(1007, 0, "min", new Sys_min);
+  AddOpcode(1008, 0, "max", new Sys_max);
+  AddOpcode(1009, 0, "constrain", new constrain);
+  AddOpcode(1010, 0, "cos", new cos_0);
+  AddOpcode(1010, 1, "cos", new cos_1);
   // sign 01011
   // (unknown) 01012
   // (unknown) 01013
 
-  addOpcode(1120, 0, "SceneNum", returnIntValue(&RLMachine::sceneNumber));
+  AddOpcode(1120, 0, "SceneNum", ReturnIntValue(&RLMachine::SceneNumber));
 
-  addOpcode(1200, 0, "end", callFunction(&RLMachine::halt));
-  addOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
-  addOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
-  addOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
-  addOpcode(1204, 0, "ReturnPrevSelect", new ReturnPrevSelect);
-  addOpcode(1205, 0, "ReturnPrevSelect2", new ReturnPrevSelect);
+  AddOpcode(1200, 0, "end", CallFunction(&RLMachine::Halt));
+  AddOpcode(1201, 0, "MenuReturn", new Sys_MenuReturn);
+  AddOpcode(1202, 0, "MenuReturn2", new Sys_MenuReturn);
+  AddOpcode(1203, 0, "ReturnMenu", new ReturnMenu);
+  AddOpcode(1204, 0, "ReturnPrevSelect", new ReturnPrevSelect);
+  AddOpcode(1205, 0, "ReturnPrevSelect2", new ReturnPrevSelect);
 
-  addOpcode(1130,
+  AddOpcode(1130,
             0,
             "DefaultGrp",
-            returnStringValue(&GraphicsSystem::defaultGrpName));
-  addOpcode(1131,
+            returnStringValue(&GraphicsSystem::default_grp_name));
+  AddOpcode(1131,
             0,
             "SetDefaultGrp",
-            callFunction(&GraphicsSystem::setDefaultGrpName));
-  addOpcode(1132,
+            CallFunction(&GraphicsSystem::set_default_grp_name));
+  AddOpcode(1132,
             0,
             "DefaultBgr",
-            returnStringValue(&GraphicsSystem::defaultBgrName));
-  addOpcode(1133,
+            returnStringValue(&GraphicsSystem::default_bgr_name));
+  AddOpcode(1133,
             0,
             "SetDefaultBgr",
-            callFunction(&GraphicsSystem::setDefaultBgrName));
+            CallFunction(&GraphicsSystem::set_default_bgr_name));
 
-  addUnsupportedOpcode(1302, 0, "nwSingle");
-  addUnsupportedOpcode(1303, 0, "nwMulti");
-  addUnsupportedOpcode(1312, 0, "nwSingleLocal");
-  addUnsupportedOpcode(1313, 0, "nwMultiLocal");
+  AddUnsupportedOpcode(1302, 0, "nwSingle");
+  AddUnsupportedOpcode(1303, 0, "nwMulti");
+  AddUnsupportedOpcode(1312, 0, "nwSingleLocal");
+  AddUnsupportedOpcode(1313, 0, "nwMultiLocal");
 
-  addOpcode(1500, 0, "cgGetTotal", returnIntValue(&CGMTable::getTotal));
-  addOpcode(1501, 0, "cgGetViewed", returnIntValue(&CGMTable::getViewed));
-  addOpcode(1502, 0, "cgGetViewedPcnt", returnIntValue(&CGMTable::getPercent));
-  addOpcode(1503, 0, "cgGetFlag", returnIntValue(&CGMTable::getFlag));
-  addOpcode(1504, 0, "cgStatus", returnIntValue(&CGMTable::getStatus));
+  AddOpcode(1500, 0, "cgGetTotal", ReturnIntValue(&CGMTable::GetTotal));
+  AddOpcode(1501, 0, "cgGetViewed", ReturnIntValue(&CGMTable::GetViewed));
+  AddOpcode(1502, 0, "cgGetViewedPcnt", ReturnIntValue(&CGMTable::GetPercent));
+  AddOpcode(1503, 0, "cgGetFlag", ReturnIntValue(&CGMTable::GetFlag));
+  AddOpcode(1504, 0, "cgStatus", ReturnIntValue(&CGMTable::GetStatus));
 
-  addUnsupportedOpcode(2050, 0, "SetCursorMono");
-  addUnsupportedOpcode(2000, 0, "CursorMono");
-  addOpcode(2051,
+  AddUnsupportedOpcode(2050, 0, "SetCursorMono");
+  AddUnsupportedOpcode(2000, 0, "CursorMono");
+  AddOpcode(2051,
             0,
             "SetSkipAnimations",
-            callFunction(&GraphicsSystem::setSkipAnimations));
-  addOpcode(2001,
+            CallFunction(&GraphicsSystem::set_should_skip_animations));
+  AddOpcode(2001,
             0,
             "SkipAnimations",
-            returnIntValue(&GraphicsSystem::skipAnimations));
-  addOpcode(2052, 0, "SetLowPriority", callFunction(&System::setLowPriority));
-  addOpcode(2002, 0, "LowPriority", returnIntValue(&System::lowPriority));
+            ReturnIntValue(&GraphicsSystem::should_skip_animations));
+  AddOpcode(2052, 0, "SetLowPriority", CallFunction(&System::set_low_priority));
+  AddOpcode(2002, 0, "LowPriority", ReturnIntValue(&System::low_priority));
 
-  addOpcode(
-      2223, 0, "SetMessageSpeed", callFunction(&TextSystem::setMessageSpeed));
-  addOpcode(2323, 0, "MessageSpeed", returnIntValue(&TextSystem::messageSpeed));
-  addOpcode(2600,
+  AddOpcode(
+      2223, 0, "SetMessageSpeed", CallFunction(&TextSystem::set_message_speed));
+  AddOpcode(2323, 0, "MessageSpeed", ReturnIntValue(&TextSystem::message_speed));
+  AddOpcode(2600,
             0,
             "DefaultMessageSpeed",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
-  addOpcode(
-      2224, 0, "SetMessageNoWait", callFunction(&TextSystem::setMessageNoWait));
-  addOpcode(
-      2324, 0, "MessageNoWait", returnIntValue(&TextSystem::messageNoWait));
-  addOpcode(2601,
+  AddOpcode(
+      2224, 0, "SetMessageNoWait", CallFunction(&TextSystem::set_message_no_wait));
+  AddOpcode(
+      2324, 0, "MessageNoWait", ReturnIntValue(&TextSystem::message_no_wait));
+  AddOpcode(2601,
             0,
             "DefMessageNoWait",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED_MOD", 0));
 
-  addOpcode(2250, 0, "SetAutoMode", callFunction(&TextSystem::setAutoMode));
-  addOpcode(2350, 0, "AutoMode", returnIntValue(&TextSystem::autoMode));
-  addOpcode(
+  AddOpcode(2250, 0, "SetAutoMode", CallFunction(&TextSystem::SetAutoMode));
+  AddOpcode(2350, 0, "AutoMode", ReturnIntValue(&TextSystem::auto_mode));
+  AddOpcode(
       2604, 0, "DefAutoMode", new ReturnGameexeInt("MESSAGE_KEY_WAIT_USE", 0));
 
-  addOpcode(
-      2251, 0, "SetAutoCharTime", callFunction(&TextSystem::setAutoCharTime));
-  addOpcode(2351, 0, "AutoCharTime", returnIntValue(&TextSystem::autoCharTime));
-  addOpcode(2605,
+  AddOpcode(
+      2251, 0, "SetAutoCharTime", CallFunction(&TextSystem::set_auto_char_time));
+  AddOpcode(2351, 0, "AutoCharTime", ReturnIntValue(&TextSystem::autoCharTime));
+  AddOpcode(2605,
             0,
             "DefAutoCharTime",
             new ReturnGameexeInt("INIT_MESSAGE_SPEED", 0));
 
-  addOpcode(
-      2252, 0, "SetAutoBaseTime", callFunction(&TextSystem::setAutoBaseTime));
-  addOpcode(2352, 0, "AutoBaseTime", returnIntValue(&TextSystem::autoBaseTime));
-  addOpcode(2606,
+  AddOpcode(
+      2252, 0, "SetAutoBaseTime", CallFunction(&TextSystem::set_auto_base_time));
+  AddOpcode(2352, 0, "AutoBaseTime", ReturnIntValue(&TextSystem::auto_base_time));
+  AddOpcode(2606,
             0,
             "DefAutoBaseTime",
             new ReturnGameexeInt("MESSAGE_KEY_WAIT_TIME", 0));
 
-  addOpcode(2225, 0, "SetKoeMode", callFunction(&SoundSystem::setKoeMode));
-  addOpcode(2325, 0, "KoeMode", returnIntValue(&SoundSystem::koeMode));
-  addOpcode(2226,
+  AddOpcode(2225, 0, "SetKoeMode", CallFunction(&SoundSystem::setKoeMode));
+  AddOpcode(2325, 0, "KoeMode", ReturnIntValue(&SoundSystem::koe_mode));
+  AddOpcode(2226,
             0,
             "SetBgmKoeFadeVol",
-            callFunction(&SoundSystem::setBgmKoeFadeVolume));
-  addOpcode(
-      2326, 0, "BgmKoeFadeVol", returnIntValue(&SoundSystem::bgmKoeFadeVolume));
-  addUnsupportedOpcode(2602, 0, "DefBgmKoeFadeVol");
-  addOpcode(
-      2227, 0, "SetBgmKoeFade", callFunction(&SoundSystem::setBgmKoeFade));
-  addOpcode(2327, 0, "BgmKoeFade", returnIntValue(&SoundSystem::bgmKoeFade));
-  addUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
-  addOpcode(
-      2230, 0, "SetBgmVolMod", callFunction(&SoundSystem::setBgmVolumeMod));
-  addOpcode(2330, 0, "BgmVolMod", returnIntValue(&SoundSystem::bgmVolumeMod));
-  addOpcode(
-      2231, 0, "SetKoeVolMod", callFunction(&SoundSystem::setKoeVolumeMod));
-  addOpcode(2331, 0, "KoeVolMod", returnIntValue(&SoundSystem::koeVolumeMod));
-  addOpcode(
-      2232, 0, "SetPcmVolMod", callFunction(&SoundSystem::setPcmVolumeMod));
-  addOpcode(2332, 0, "PcmVolMod", returnIntValue(&SoundSystem::pcmVolumeMod));
-  addOpcode(2233, 0, "SetSeVolMod", callFunction(&SoundSystem::setSeVolumeMod));
-  addOpcode(2333, 0, "SeVolMod", returnIntValue(&SoundSystem::seVolumeMod));
-  addOpcode(
-      2240, 0, "SetBgmEnabled", callFunction(&SoundSystem::setBgmEnabled));
-  addOpcode(2340, 0, "BgmEnabled", returnIntValue(&SoundSystem::bgmEnabled));
-  addOpcode(
-      2241, 0, "SetKoeEnabled", callFunction(&SoundSystem::setKoeEnabled));
-  addOpcode(2341, 0, "KoeEnabled", returnIntValue(&SoundSystem::koeEnabled));
-  addOpcode(
-      2242, 0, "SetPcmEnabled", callFunction(&SoundSystem::setPcmEnabled));
-  addOpcode(2342, 0, "PcmEnabled", returnIntValue(&SoundSystem::pcmEnabled));
-  addOpcode(2243, 0, "SetSeEnabled", callFunction(&SoundSystem::setSeEnabled));
-  addOpcode(2343, 0, "SeEnabled", returnIntValue(&SoundSystem::seEnabled));
+            CallFunction(&SoundSystem::set_bgm_koe_fadeVolume));
+  AddOpcode(
+      2326, 0, "BgmKoeFadeVol", ReturnIntValue(&SoundSystem::bgm_koe_fadeVolume));
+  AddUnsupportedOpcode(2602, 0, "DefBgmKoeFadeVol");
+  AddOpcode(
+      2227, 0, "SetBgmKoeFade", CallFunction(&SoundSystem::set_bgm_koe_fade));
+  AddOpcode(2327, 0, "BgmKoeFade", ReturnIntValue(&SoundSystem::bgm_koe_fade));
+  AddUnsupportedOpcode(2603, 0, "DefBgmKoeFade");
+  AddOpcode(
+      2230, 0, "SetBgmVolMod", CallFunction(&SoundSystem::SetBgmVolumeMod));
+  AddOpcode(2330, 0, "BgmVolMod", ReturnIntValue(&SoundSystem::bgm_volume_mod));
+  AddOpcode(
+      2231, 0, "SetKoeVolMod", CallFunction(&SoundSystem::SetKoeVolumeMod));
+  AddOpcode(2331, 0, "KoeVolMod", ReturnIntValue(&SoundSystem::GetKoeVolume_mod));
+  AddOpcode(
+      2232, 0, "SetPcmVolMod", CallFunction(&SoundSystem::SetPcmVolumeMod));
+  AddOpcode(2332, 0, "PcmVolMod", ReturnIntValue(&SoundSystem::pcm_volume_mod));
+  AddOpcode(2233, 0, "SetSeVolMod", CallFunction(&SoundSystem::SetSeVolumeMod));
+  AddOpcode(2333, 0, "SeVolMod", ReturnIntValue(&SoundSystem::se_volume_mod));
+  AddOpcode(
+      2240, 0, "SetBgmEnabled", CallFunction(&SoundSystem::SetBgmEnabled));
+  AddOpcode(2340, 0, "BgmEnabled", ReturnIntValue(&SoundSystem::bgm_enabled));
+  AddOpcode(
+      2241, 0, "SetKoeEnabled", CallFunction(&SoundSystem::SetKoeEnabled));
+  AddOpcode(2341, 0, "KoeEnabled", ReturnIntValue(&SoundSystem::is_koe_enabled));
+  AddOpcode(
+      2242, 0, "SetPcmEnabled", CallFunction(&SoundSystem::SetIsPcmEnabled));
+  AddOpcode(2342, 0, "PcmEnabled", ReturnIntValue(&SoundSystem::is_pcm_enabled));
+  AddOpcode(2243, 0, "SetSeEnabled", CallFunction(&SoundSystem::SetIsSeEnabled));
+  AddOpcode(2343, 0, "SeEnabled", ReturnIntValue(&SoundSystem::is_se_enabled));
 
-  addOpcode(2256, 0, "SetFontWeight", callFunction(&TextSystem::setFontWeight));
-  addOpcode(2356, 0, "FontWeight", returnIntValue(&TextSystem::fontWeight));
-  addOpcode(2257, 0, "SetFontShadow", callFunction(&TextSystem::setFontShadow));
-  addOpcode(2357, 0, "FontShadow", returnIntValue(&TextSystem::fontShadow));
+  AddOpcode(2256, 0, "SetFontWeight", CallFunction(&TextSystem::set_font_weight));
+  AddOpcode(2356, 0, "FontWeight", ReturnIntValue(&TextSystem::font_weight));
+  AddOpcode(2257, 0, "SetFontShadow", CallFunction(&TextSystem::set_font_shadow));
+  AddOpcode(2357, 0, "FontShadow", ReturnIntValue(&TextSystem::font_shadow));
 
-  addUnsupportedOpcode(2054, 0, "SetReduceDistortion");
-  addUnsupportedOpcode(2004, 0, "ReduceDistortion");
-  addUnsupportedOpcode(2059, 0, "SetSoundQuality");
-  addUnsupportedOpcode(2009, 0, "SoundQuality");
+  AddUnsupportedOpcode(2054, 0, "SetReduceDistortion");
+  AddUnsupportedOpcode(2004, 0, "ReduceDistortion");
+  AddUnsupportedOpcode(2059, 0, "SetSoundQuality");
+  AddUnsupportedOpcode(2009, 0, "SoundQuality");
 
-  addOpcode(2221, 0, "SetGeneric1", callFunction(&EventSystem::setGeneric1));
-  addOpcode(2620,
+  AddOpcode(2221, 0, "SetGeneric1", CallFunction(&EventSystem::set_generic1));
+  AddOpcode(2620,
             0,
             "DefGeneric1",
             new ReturnGameexeInt("INIT_ORIGINALSETING1_MOD", 0));
-  addOpcode(2321, 0, "Generic1", returnIntValue(&EventSystem::generic1));
-  addOpcode(2222, 0, "SetGeneric2", callFunction(&EventSystem::setGeneric2));
-  addOpcode(2621,
+  AddOpcode(2321, 0, "Generic1", ReturnIntValue(&EventSystem::generic1));
+  AddOpcode(2222, 0, "SetGeneric2", CallFunction(&EventSystem::set_generic2));
+  AddOpcode(2621,
             0,
             "DefGeneric2",
             new ReturnGameexeInt("INIT_ORIGINALSETING2_MOD", 0));
-  addOpcode(2322, 0, "Generic2", returnIntValue(&EventSystem::generic2));
+  AddOpcode(2322, 0, "Generic2", ReturnIntValue(&EventSystem::generic2));
 
-  addOpcode(
-      2260, 0, "SetWindowAttrR", callFunction(&TextSystem::setWindowAttrR));
-  addOpcode(
-      2261, 0, "SetWindowAttrG", callFunction(&TextSystem::setWindowAttrG));
-  addOpcode(
-      2262, 0, "SetWindowAttrB", callFunction(&TextSystem::setWindowAttrB));
-  addOpcode(
-      2263, 0, "SetWindowAttrA", callFunction(&TextSystem::setWindowAttrA));
-  addOpcode(
-      2264, 0, "SetWindowAttrF", callFunction(&TextSystem::setWindowAttrF));
+  AddOpcode(
+      2260, 0, "SetWindowAttrR", CallFunction(&TextSystem::SetWindowAttrR));
+  AddOpcode(
+      2261, 0, "SetWindowAttrG", CallFunction(&TextSystem::SetWindowAttrG));
+  AddOpcode(
+      2262, 0, "SetWindowAttrB", CallFunction(&TextSystem::SetWindowAttrB));
+  AddOpcode(
+      2263, 0, "SetWindowAttrA", CallFunction(&TextSystem::SetWindowAttrA));
+  AddOpcode(
+      2264, 0, "SetWindowAttrF", CallFunction(&TextSystem::SetWindowAttrF));
 
-  addOpcode(2267, 0, "SetWindowAttr", new SetWindowAttr);
+  AddOpcode(2267, 0, "SetWindowAttr", new SetWindowAttr);
 
-  addUnsupportedOpcode(2273, 0, "SetClassifyText");
-  addUnsupportedOpcode(2373, 0, "ClassifyText");
-  addOpcode(
-      2274, 0, "SetUseKoe", callFunction(&SoundSystem::setUseKoeForCharacter));
+  AddUnsupportedOpcode(2273, 0, "SetClassifyText");
+  AddUnsupportedOpcode(2373, 0, "ClassifyText");
+  AddOpcode(
+      2274, 0, "SetUseKoe", CallFunction(&SoundSystem::SetUseKoeForCharacter));
   // Note: I don't understand how this overload differs, but CLANNAD_FV treats
   // it just like the previous one.
-  addOpcode(
-      2274, 1, "SetUseKoe", callFunction(&SoundSystem::setUseKoeForCharacter));
-  addOpcode(
-      2374, 0, "UseKoe", returnIntValue(&SoundSystem::useKoeForCharacter));
-  addOpcode(
-      2275, 0, "SetScreenMode", callFunction(&GraphicsSystem::setScreenMode));
-  addOpcode(2375, 0, "ScreenMode", returnIntValue(&GraphicsSystem::screenMode));
+  AddOpcode(
+      2274, 1, "SetUseKoe", CallFunction(&SoundSystem::SetUseKoeForCharacter));
+  AddOpcode(
+      2374, 0, "UseKoe", ReturnIntValue(&SoundSystem::ShouldUseKoeForCharacter));
+  AddOpcode(
+      2275, 0, "SetScreenMode", CallFunction(&GraphicsSystem::SetScreenMode));
+  AddOpcode(2375, 0, "ScreenMode", ReturnIntValue(&GraphicsSystem::screen_mode));
 
-  addOpcode(2360, 0, "WindowAttrR", returnIntValue(&TextSystem::windowAttrR));
-  addOpcode(2361, 0, "WindowAttrG", returnIntValue(&TextSystem::windowAttrG));
-  addOpcode(2362, 0, "WindowAttrB", returnIntValue(&TextSystem::windowAttrB));
-  addOpcode(2363, 0, "WindowAttrA", returnIntValue(&TextSystem::windowAttrA));
-  addOpcode(2364, 0, "WindowAttrF", returnIntValue(&TextSystem::windowAttrF));
+  AddOpcode(2360, 0, "WindowAttrR", ReturnIntValue(&TextSystem::window_attr_r));
+  AddOpcode(2361, 0, "WindowAttrG", ReturnIntValue(&TextSystem::window_attr_g));
+  AddOpcode(2362, 0, "WindowAttrB", ReturnIntValue(&TextSystem::window_attr_b));
+  AddOpcode(2363, 0, "WindowAttrA", ReturnIntValue(&TextSystem::window_attr_a));
+  AddOpcode(2364, 0, "WindowAttrF", ReturnIntValue(&TextSystem::window_attr_f));
 
-  addOpcode(2367, 0, "GetWindowAttr", new GetWindowAttr);
+  AddOpcode(2367, 0, "GetWindowAttr", new GetWindowAttr);
 
-  addOpcode(2610, 0, "DefWindowAttrR", new ReturnGameexeInt("WINDOW_ATTR", 0));
-  addOpcode(2611, 0, "DefWindowAttrG", new ReturnGameexeInt("WINDOW_ATTR", 1));
-  addOpcode(2612, 0, "DefWindowAttrB", new ReturnGameexeInt("WINDOW_ATTR", 2));
-  addOpcode(2613, 0, "DefWindowAttrA", new ReturnGameexeInt("WINDOW_ATTR", 3));
-  addOpcode(2614, 0, "DefWindowAttrF", new ReturnGameexeInt("WINDOW_ATTR", 4));
+  AddOpcode(2610, 0, "DefWindowAttrR", new ReturnGameexeInt("WINDOW_ATTR", 0));
+  AddOpcode(2611, 0, "DefWindowAttrG", new ReturnGameexeInt("WINDOW_ATTR", 1));
+  AddOpcode(2612, 0, "DefWindowAttrB", new ReturnGameexeInt("WINDOW_ATTR", 2));
+  AddOpcode(2613, 0, "DefWindowAttrA", new ReturnGameexeInt("WINDOW_ATTR", 3));
+  AddOpcode(2614, 0, "DefWindowAttrF", new ReturnGameexeInt("WINDOW_ATTR", 4));
 
-  addOpcode(2617, 0, "DefWindowAttr", new DefWindowAttr);
+  AddOpcode(2617, 0, "DefWindowAttr", new DefWindowAttr);
 
-  addOpcode(
-      2270, 0, "SetShowObject1", callFunction(&GraphicsSystem::setShowObject1));
-  addOpcode(
-      2370, 0, "ShowObject1", returnIntValue(&GraphicsSystem::showObject1));
-  addOpcode(
-      2271, 0, "SetShowObject2", callFunction(&GraphicsSystem::setShowObject2));
-  addOpcode(
-      2371, 0, "ShowObject2", returnIntValue(&GraphicsSystem::showObject2));
-  addOpcode(
-      2272, 0, "SetShowWeather", callFunction(&GraphicsSystem::setShowWeather));
-  addOpcode(
-      2372, 0, "ShowWeather", returnIntValue(&GraphicsSystem::showWeather));
+  AddOpcode(
+      2270, 0, "SetShowObject1", CallFunction(&GraphicsSystem::set_should_show_object1));
+  AddOpcode(
+      2370, 0, "ShowObject1", ReturnIntValue(&GraphicsSystem::should_show_object1));
+  AddOpcode(
+      2271, 0, "SetShowObject2", CallFunction(&GraphicsSystem::set_should_show_object2));
+  AddOpcode(
+      2371, 0, "ShowObject2", ReturnIntValue(&GraphicsSystem::should_show_object2));
+  AddOpcode(
+      2272, 0, "SetShowWeather", CallFunction(&GraphicsSystem::set_should_show_weather));
+  AddOpcode(
+      2372, 0, "ShowWeather", ReturnIntValue(&GraphicsSystem::should_show_weather));
 
   // Sys is hueg liek xbox, so lets group some of the operations by
   // what they do.
-  addWaitAndMouseOpcodes(*this);
-  addSysTimerOpcodes(*this);
-  addSysFrameOpcodes(*this);
-  addSysSaveOpcodes(*this);
-  addSysSyscomOpcodes(*this);
-  addSysDateOpcodes(*this);
-  addSysNameOpcodes(*this);
-  addIndexSeriesOpcode(*this);
-  addTimetable2Opcode(*this);
+  AddWaitAndMouseOpcodes(*this);
+  AddSysTimerOpcodes(*this);
+  AddSysFrameOpcodes(*this);
+  AddSysSaveOpcodes(*this);
+  AddSysSyscomOpcodes(*this);
+  AddSysDateOpcodes(*this);
+  AddSysNameOpcodes(*this);
+  AddIndexSeriesOpcode(*this);
+  AddTimetable2Opcode(*this);
 }

@@ -48,13 +48,13 @@ TEST(LargeModuleSysTest, SceneNum) {
   libreallive::Archive arc(locateTestCase("Module_Sys_SEEN/SceneNum.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new SysModule);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new SysModule);
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
   int values[3];
   for (int i = 0; i < 3; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef(0, i));
+    values[i] = rlmachine.GetIntValue(IntMemRef(0, i));
 
   EXPECT_EQ(1, values[0]) << "SceneNum::SEEN0001 didn't set value";
   EXPECT_EQ(248, values[1]) << "SceneNum::SEEN0248 didn't set value";
@@ -66,12 +66,12 @@ TEST(LargeModuleSysTest, BuiltIns) {
   libreallive::Archive arc(locateTestCase("Module_Sys_SEEN/builtins.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new SysModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new SysModule);
+  rlmachine.ExecuteUntilHalted();
 
   int values[6];
   for (int i = 0; i < sizeof(values) / sizeof(values[0]); ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
+    values[i] = rlmachine.GetIntValue(IntMemRef('A', i));
 
   // 5.6.1  Integer built-ins
   EXPECT_EQ(0, values[0]) << "Incorrect value for intA[0]";

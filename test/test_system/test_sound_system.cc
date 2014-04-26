@@ -37,65 +37,65 @@ TestSoundSystem::TestSoundSystem(System& system) : SoundSystem(system) {}
 
 TestSoundSystem::~TestSoundSystem() {}
 
-int TestSoundSystem::bgmStatus() const { return 0; }
+int TestSoundSystem::BgmStatus() const { return 0; }
 
-void TestSoundSystem::bgmPlay(const std::string& bgm_name, bool loop) {
+void TestSoundSystem::BgmPlay(const std::string& bgm_name, bool loop) {
   bgm_name_ = bgm_name;
 }
 
-void TestSoundSystem::bgmPlay(const std::string& bgm_name,
+void TestSoundSystem::BgmPlay(const std::string& bgm_name,
                               bool loop,
                               int fade_in_ms) {
   bgm_name_ = bgm_name;
 }
 
-void TestSoundSystem::bgmPlay(const std::string& bgm_name,
+void TestSoundSystem::BgmPlay(const std::string& bgm_name,
                               bool loop,
                               int fade_in_ms,
                               int fade_out_ms) {
   bgm_name_ = bgm_name;
 }
 
-void TestSoundSystem::bgmStop() {}
+void TestSoundSystem::BgmStop() {}
 
-void TestSoundSystem::bgmPause() {}
+void TestSoundSystem::BgmPause() {}
 
-void TestSoundSystem::bgmUnPause() {}
+void TestSoundSystem::BgmUnPause() {}
 
-void TestSoundSystem::bgmFadeOut(int fade_out_ms) {}
+void TestSoundSystem::BgmFadeOut(int fade_out_ms) {}
 
-std::string TestSoundSystem::bgmName() const { return bgm_name_; }
+std::string TestSoundSystem::GetBgmName() const { return bgm_name_; }
 
-bool TestSoundSystem::bgmLooping() const { return false; }
+bool TestSoundSystem::BgmLooping() const { return false; }
 
-void TestSoundSystem::wavPlay(const std::string& wav_file, bool loop) {}
+void TestSoundSystem::WavPlay(const std::string& wav_file, bool loop) {}
 
-void TestSoundSystem::wavPlay(const std::string& wav_file,
+void TestSoundSystem::WavPlay(const std::string& wav_file,
                               bool loop,
                               const int channel) {}
 
-void TestSoundSystem::wavPlay(const std::string& wav_file,
+void TestSoundSystem::WavPlay(const std::string& wav_file,
                               bool loop,
                               const int channel,
                               const int fadein_ms) {}
 
-bool TestSoundSystem::wavPlaying(const int channel) {
+bool TestSoundSystem::WavPlaying(const int channel) {
   // TODO: Might want to do something about this eventually.
   return false;
 }
 
-void TestSoundSystem::wavStop(const int channel) {}
+void TestSoundSystem::WavStop(const int channel) {}
 
-void TestSoundSystem::wavStopAll() {}
+void TestSoundSystem::WavStopAll() {}
 
-void TestSoundSystem::wavFadeOut(const int channel, const int fadetime) {}
+void TestSoundSystem::WavFadeOut(const int channel, const int fadetime) {}
 
-void TestSoundSystem::playSe(const int se_num) {}
+void TestSoundSystem::PlaySe(const int se_num) {}
 
-bool TestSoundSystem::hasSe(const int se_num) { return false; }
+bool TestSoundSystem::HasSe(const int se_num) { return false; }
 
-bool TestSoundSystem::koePlaying() const { return false; }
+bool TestSoundSystem::KoePlaying() const { return false; }
 
-void TestSoundSystem::koeStop() {}
+void TestSoundSystem::KoeStop() {}
 
-void TestSoundSystem::koePlayImpl(int id) {}
+void TestSoundSystem::KoePlayImpl(int id) {}

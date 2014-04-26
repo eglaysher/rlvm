@@ -33,19 +33,19 @@
 
 class MediumEventLoopTest : public FullSystemTest {
  protected:
-  MediumEventLoopTest() { rlmachine.attachModule(new EventLoopModule); }
+  MediumEventLoopTest() { rlmachine.AttachModule(new EventLoopModule); }
 };
 
 TEST_F(MediumEventLoopTest, TestSkipMode) {
-  rlmachine.setStoreRegister(20);
+  rlmachine.set_store_register(20);
 
-  rlmachine.exe("SetSkipMode", 0);
-  EXPECT_TRUE(system.text().skipMode());
-  rlmachine.exe("SkipMode", 0);
-  EXPECT_EQ(1, rlmachine.getStoreRegisterValue());
+  rlmachine.Exe("SetSkipMode", 0);
+  EXPECT_TRUE(system.text().skip_mode());
+  rlmachine.Exe("SkipMode", 0);
+  EXPECT_EQ(1, rlmachine.store_register());
 
-  rlmachine.exe("ClearSkipMode", 0);
-  EXPECT_FALSE(system.text().skipMode());
-  rlmachine.exe("SkipMode", 0);
-  EXPECT_EQ(0, rlmachine.getStoreRegisterValue());
+  rlmachine.Exe("ClearSkipMode", 0);
+  EXPECT_FALSE(system.text().skip_mode());
+  rlmachine.Exe("SkipMode", 0);
+  EXPECT_EQ(0, rlmachine.store_register());
 }

@@ -43,7 +43,7 @@
 
 namespace {
 
-double scaleAmplitude(int amplitude) {
+double ScaleAmplitude(int amplitude) {
   // So the amplitude of the curve in RealLive is weird. Some value close to
   // 100 means one width of the screen, 1 is a vary large amount that I can't
   // reliably measure, and values greater than 100 are increasingly smaller.  I
@@ -69,37 +69,37 @@ DriftGraphicsObject::DriftGraphicsObject(const DriftGraphicsObject& obj)
 DriftGraphicsObject::DriftGraphicsObject(System& system,
                                          const std::string& filename)
     : system_(system), filename_(filename), surface_(), last_rendered_time_(0) {
-  loadFile();
+  LoadFile();
 }
 
 DriftGraphicsObject::~DriftGraphicsObject() {}
 
-void DriftGraphicsObject::render(const GraphicsObject& go,
+void DriftGraphicsObject::Render(const GraphicsObject& go,
                                  const GraphicsObject* parent,
                                  std::ostream* tree) {
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    int current_time = system_.event().getTicks();
+    int current_time = system_.event().GetTicks();
     last_rendered_time_ = current_time;
 
-    size_t count = go.driftParticleCount();
-    bool use_animation = go.driftUseAnimation();
-    int start_pattern = go.driftStartPattern();
-    int end_pattern = go.driftEndPattern();
-    int animation_time = go.driftAnimationTime();
-    int yspeed = go.driftYSpeed();
-    int period = go.driftPeriod();
-    int amplitude = go.driftAmplitude();
-    int use_drift = go.driftUseDrift();
-    int drift_speed = go.driftDriftSpeed();
+    size_t count = go.GetDriftParticleCount();
+    bool use_animation = go.GetDriftUseAnimation();
+    int start_pattern = go.GetDriftStartPattern();
+    int end_pattern = go.GetDriftEndPattern();
+    int animation_time = go.GetDriftAnimationTime();
+    int yspeed = go.GetDriftYSpeed();
+    int period = go.GetDriftPeriod();
+    int amplitude = go.GetDriftAmplitude();
+    int use_drift = go.GetDriftUseDrift();
+    int drift_speed = go.GetDriftDriftSpeed();
 
-    Rect bounding_box = go.driftArea();
+    Rect bounding_box = go.GetDriftArea();
     if (bounding_box.x() == -1) {
-      bounding_box = system_.graphics().screenRect();
+      bounding_box = system_.graphics().screen_rect();
     }
 
     double scaled_amplitude =
-        bounding_box.size().width() * scaleAmplitude(amplitude);
+        bounding_box.size().width() * ScaleAmplitude(amplitude);
 
     // Grab the drift object
     if (particles_.size() < count) {
@@ -123,7 +123,7 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
                            number_of_patterns;
         pattern = start_pattern + frame_number;
       }
-      Rect src = surface->getPattern(pattern).rect;
+      Rect src = surface->GetPattern(pattern).rect;
 
       int dest_x = particle.x;
       int dest_y = particle.y;
@@ -161,48 +161,48 @@ void DriftGraphicsObject::render(const GraphicsObject& go,
         dest_y %= bounding_box.size().height();
       Rect dest(bounding_box.origin() + Size(dest_x, dest_y), src.size());
 
-      if (go.hasClip())
-        ClipDestination(go.clipRect(), src, dest);
+      if (go.has_clip_rect())
+        ClipDestination(go.clip_rect(), src, dest);
 
-      surface->renderToScreen(src, dest, particle.alpha);
+      surface->RenderToScreen(src, dest, particle.alpha);
     }
   }
 }
 
-int DriftGraphicsObject::pixelWidth(
+int DriftGraphicsObject::PixelWidth(
     const GraphicsObject& rendering_properties) {
-  return rendering_properties.driftArea().width();
+  return rendering_properties.GetDriftArea().width();
 }
 
-int DriftGraphicsObject::pixelHeight(
+int DriftGraphicsObject::PixelHeight(
     const GraphicsObject& rendering_properties) {
-  return rendering_properties.driftArea().height();
+  return rendering_properties.GetDriftArea().height();
 }
 
-GraphicsObjectData* DriftGraphicsObject::clone() const {
+GraphicsObjectData* DriftGraphicsObject::Clone() const {
   return new DriftGraphicsObject(*this);
 }
 
-void DriftGraphicsObject::execute(RLMachine& machine) {
+void DriftGraphicsObject::Execute(RLMachine& machine) {
   // We could theoretically redraw every time around the game loop, so
   // throttle to once every 100ms.
-  int current_time = system_.event().getTicks();
+  int current_time = system_.event().GetTicks();
   if (current_time - last_rendered_time_ > 10) {
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 
-boost::shared_ptr<const Surface> DriftGraphicsObject::currentSurface(
+boost::shared_ptr<const Surface> DriftGraphicsObject::CurrentSurface(
     const GraphicsObject& rp) {
   return surface_;
 }
 
-void DriftGraphicsObject::objectInfo(std::ostream& tree) {
+void DriftGraphicsObject::ObjectInfo(std::ostream& tree) {
   tree << "  Drift image: " << filename_ << std::endl;
 }
 
-void DriftGraphicsObject::loadFile() {
-  surface_ = system_.graphics().getSurfaceNamed(filename_);
+void DriftGraphicsObject::LoadFile() {
+  surface_ = system_.graphics().GetSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
 
@@ -210,7 +210,7 @@ template <class Archive>
 void DriftGraphicsObject::load(Archive& ar, unsigned int version) {
   ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_;
 
-  loadFile();
+  LoadFile();
 }
 
 // -----------------------------------------------------------------------

@@ -73,16 +73,16 @@ void saveOriginalValue(int* bank,
 
 }  // namespace
 
-int Memory::getIntValue(const IntMemRef& ref) {
+int Memory::GetIntValue(const IntMemRef& ref) {
   int type = ref.type();
   int index = ref.bank();
   int location = ref.location();
 
   int* bank = NULL;
   if (index == 8) {
-    bank = machine_.currentIntLBank();
+    bank = machine_.CurrentIntLBank();
   } else if (index < 0 || index > NUMBER_OF_INT_LOCATIONS) {
-    throwIllegalIndex(ref, "RLMachine::getIntValue()");
+    throwIllegalIndex(ref, "RLMachine::GetIntValue()");
   } else {
     bank = int_var[index];
   }
@@ -90,7 +90,7 @@ int Memory::getIntValue(const IntMemRef& ref) {
   if (type == 0) {
     // A[]..G[], Z[] を直に読む
     if ((unsigned int)(location) >= 2000)
-      throwIllegalIndex(ref, "RLMachine::getIntValue()");
+      throwIllegalIndex(ref, "RLMachine::GetIntValue()");
 
     return bank[location];
   } else {
@@ -98,14 +98,14 @@ int Memory::getIntValue(const IntMemRef& ref) {
     int factor = 1 << (type - 1);
     int eltsize = 32 / factor;
     if ((unsigned int)(location) >= (64000u / factor))
-      throwIllegalIndex(ref, "RLMachine::getIntValue()");
+      throwIllegalIndex(ref, "RLMachine::GetIntValue()");
 
     return (bank[location / eltsize] >> ((location % eltsize) * factor)) &
            ((1 << factor) - 1);
   }
 }
 
-void Memory::setIntValue(const IntMemRef& ref, int value) {
+void Memory::SetIntValue(const IntMemRef& ref, int value) {
   int type = ref.type();
   int index = ref.bank();
   int location = ref.location();
@@ -113,9 +113,9 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
   int* bank = NULL;
   std::map<int, int>* original_bank = NULL;
   if (index == 8) {
-    bank = machine_.currentIntLBank();
+    bank = machine_.CurrentIntLBank();
   } else if (index < 0 || index > NUMBER_OF_INT_LOCATIONS) {
-    throwIllegalIndex(ref, "RLMachine::setIntValue()");
+    throwIllegalIndex(ref, "RLMachine::SetIntValue()");
   } else {
     bank = int_var[index];
     original_bank = original_int_var[index];
@@ -124,7 +124,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
   if (type == 0) {
     // A[]..G[], Z[] を直に書く
     if ((unsigned int)(location) >= 2000)
-      throwIllegalIndex(ref, "RLMachine::setIntValue()");
+      throwIllegalIndex(ref, "RLMachine::SetIntValue()");
     saveOriginalValue(bank, original_bank, location);
     bank[location] = value;
   } else {
@@ -134,7 +134,7 @@ void Memory::setIntValue(const IntMemRef& ref, int value) {
     int eltmask = (1 << factor) - 1;
     int shift = (location % eltsize) * factor;
     if ((unsigned int)(location) >= (64000u / factor))
-      throwIllegalIndex(ref, "RLMachine::setIntValue()");
+      throwIllegalIndex(ref, "RLMachine::SetIntValue()");
 
     saveOriginalValue(bank, original_bank, location / eltsize);
     bank[location / eltsize] =

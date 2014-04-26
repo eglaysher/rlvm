@@ -66,8 +66,8 @@ class RLOperation;
 // FakeModule::FakeModule()
 //   : RLModule("Fake", 0, 0)
 // {
-//   addOpcode(0, 0, new Fake_fake_operation_0);
-//   addOpcode(0, 1, new Fake_fake_operation_1);
+//   AddOpcode(0, 0, new Fake_fake_operation_0);
+//   AddOpcode(0, 1, new Fake_fake_operation_1);
 // }
 // @endcode
 //
@@ -76,7 +76,7 @@ class RLOperation;
 //
 // @code
 // RLMachine machine(some_archive_object);
-// machine.attachModule(new FakeModule);
+// machine.AttachModule(new FakeModule);
 // @endcode
 //
 // For information on how to write an RLOperation subclass, see the
@@ -102,39 +102,39 @@ class RLModule {
 
   // Used in derived Module constructors to declare all the
   // operations the module handles. Takes ownership |op|.
-  virtual void addOpcode(int opcode,
+  virtual void AddOpcode(int opcode,
                          unsigned char overload,
                          const char* name,
                          RLOperation* op);
 
   // Adds an UndefinedFunction object to this module.
-  void addUnsupportedOpcode(int opcode,
+  void AddUnsupportedOpcode(int opcode,
                             unsigned char overload,
                             const std::string& name);
 
   // Accessor that returns this module's type number
-  int moduleType() const { return module_type_; }
+  int module_type() const { return module_type_; }
 
   // Accessor that returns this modules's identification number
-  int moduleNumber() const { return module_number_; }
+  int module_number() const { return module_number_; }
 
   // Accessor that returns this module's mnemonic nmae
-  const std::string& moduleName() const { return module_name_; }
+  const std::string& module_name() const { return module_name_; }
 
-  void setProperty(int property, int value);
-  bool getProperty(int property, int& value) const;
+  void SetProperty(int property, int value);
+  bool GetProperty(int property, int& value) const;
 
   // Using the bytecode element CommandElement f, try to find an
   // RLOperation implementation of the instruction in this module, and
   // execute it.
-  void dispatchFunction(RLMachine& machine,
+  void DispatchFunction(RLMachine& machine,
                         const libreallive::CommandElement& f);
 
   OpcodeMap::iterator begin() { return stored_operations_.begin(); }
   OpcodeMap::iterator end() { return stored_operations_.end(); }
 
-  static int packOpcodeNumber(int opcode, unsigned char overload);
-  static void unpackOpcodeNumber(int packed_opcode,
+  static int PackOpcodeNumber(int opcode, unsigned char overload);
+  static void UnpackOpcodeNumber(int packed_opcode,
                                  int& opcode,
                                  unsigned char& overload);
 
@@ -147,9 +147,9 @@ class RLModule {
   typedef std::pair<int, int> Property;
   typedef std::vector<Property> PropertyList;
 
-  PropertyList::iterator findProperty(int property) const;
+  PropertyList::iterator FindProperty(int property) const;
 
-  PropertyList* property_list_;
+  std::unique_ptr<PropertyList> property_list_;
 
   int module_type_;
   int module_number_;

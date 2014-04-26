@@ -42,7 +42,7 @@ static int random_dirtable[] = {0, 2, 1, 3, 0, 2, 1, 3, 1, 3, 2, 0, 1, 3, 2, 0,
 
 }  // namespace
 
-int LittleBustersEF00DLL::callDLL(RLMachine& machine,
+int LittleBustersEF00DLL::CallDLL(RLMachine& machine,
                                   int func,
                                   int arg1,
                                   int arg2,
@@ -50,10 +50,10 @@ int LittleBustersEF00DLL::callDLL(RLMachine& machine,
                                   int arg4) {
   switch (func) {
     case 0:
-      configureEffect(arg1, arg2, arg3, arg4);
+      ConfigureEffect(arg1, arg2, arg3, arg4);
       break;
     case 1:
-      performCalculations(machine, arg1);
+      PerformCalculations(machine, arg1);
       break;
     default:
       std::cerr << "LittleBustersEF00DLL::callDLL(): Invalid function: " << func
@@ -63,7 +63,7 @@ int LittleBustersEF00DLL::callDLL(RLMachine& machine,
   return 0;
 }
 
-void LittleBustersEF00DLL::configureEffect(int arg1,
+void LittleBustersEF00DLL::ConfigureEffect(int arg1,
                                            int arg2,
                                            int arg3,
                                            int arg4) {
@@ -146,13 +146,13 @@ void LittleBustersEF00DLL::configureEffect(int arg1,
   }
 }
 
-void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
+void LittleBustersEF00DLL::PerformCalculations(RLMachine& machine, int index) {
   if (!lb_ef_param) {
     throw rlvm::Exception("Effect calculation was called before setting");
   }
 
   int v5_1154 =
-      machine.getIntValue(IntMemRef(libreallive::INTF_LOCATION, 1154 + index));
+      machine.GetIntValue(IntMemRef(libreallive::INTF_LOCATION, 1154 + index));
   int j = ((v5_1154) & 0x1f) + index * 0x20;
   int k = ((v5_1154 + 1) & 0x1f) + index * 0x20;
   int l = ((v5_1154 + 2) & 0x1f) + index * 0x20;
@@ -164,7 +164,7 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
 
   // 0 < x < 1
   // va - vd は 0-1 の範囲で対称性を持つ３次関数
-  double x = double(machine.getIntValue(
+  double x = double(machine.GetIntValue(
                  IntMemRef(libreallive::INTF_LOCATION, 1162 + index))) *
              0.001;
   double va = (x * x * x) / 6;
@@ -183,12 +183,12 @@ void LittleBustersEF00DLL::performCalculations(RLMachine& machine, int index) {
     r3 = r3 * 700 / (400 - r1);
   }
 
-  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1151), r2);
-  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1152), r3);
-  machine.setIntValue(IntMemRef(libreallive::INTF_LOCATION, 1153), r1);
+  machine.SetIntValue(IntMemRef(libreallive::INTF_LOCATION, 1151), r2);
+  machine.SetIntValue(IntMemRef(libreallive::INTF_LOCATION, 1152), r3);
+  machine.SetIntValue(IntMemRef(libreallive::INTF_LOCATION, 1153), r1);
 }
 
-const std::string& LittleBustersEF00DLL::name() const {
+const std::string& LittleBustersEF00DLL::GetDLLName() const {
   static std::string n("EF00");
   return n;
 }

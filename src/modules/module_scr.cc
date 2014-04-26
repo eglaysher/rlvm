@@ -42,7 +42,7 @@ struct stackNop : public RLOp_Void_1<IntConstant_T> {
     GraphicsSystem& sys = machine.system().graphics();
 
     for (int i = 0; i < numberOfNops; ++i) {
-      sys.addGraphicsStackCommand("");
+      sys.AddGraphicsStackCommand("");
     }
   }
 };
@@ -50,7 +50,7 @@ struct stackNop : public RLOp_Void_1<IntConstant_T> {
 struct stackTrunc : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int count) {
     GraphicsSystem& sys = machine.system().graphics();
-    sys.stackPop(sys.stackSize() - count);
+    sys.StackPop(sys.StackSize() - count);
   }
 };
 
@@ -68,7 +68,7 @@ struct GetDCPixel : public RLOp_Void_6<IntConstant_T,
                   IntReferenceIterator g,
                   IntReferenceIterator b) {
     int rval, gval, bval;
-    machine.system().graphics().getDC(dc)->getDCPixel(
+    machine.system().graphics().GetDC(dc)->GetDCPixel(
         Point(x, y), rval, gval, bval);
     *r = rval;
     *g = gval;
@@ -81,27 +81,27 @@ struct GetDCPixel : public RLOp_Void_6<IntConstant_T,
 // -----------------------------------------------------------------------
 
 ScrModule::ScrModule() : RLModule("Scr", 1, 30) {
-  addOpcode(0, 0, "stackClear", callFunction(&GraphicsSystem::clearStack));
-  addOpcode(1, 0, "stackNop", new stackNop);
-  addOpcode(2, 0, "stackPop", callFunction(&GraphicsSystem::stackPop));
-  addOpcode(3, 0, "stackSize", returnIntValue(&GraphicsSystem::stackSize));
-  addOpcode(4, 0, "stackTrunc", new stackTrunc);
+  AddOpcode(0, 0, "stackClear", CallFunction(&GraphicsSystem::ClearStack));
+  AddOpcode(1, 0, "stackNop", new stackNop);
+  AddOpcode(2, 0, "StackPop", CallFunction(&GraphicsSystem::StackPop));
+  AddOpcode(3, 0, "StackSize", ReturnIntValue(&GraphicsSystem::StackSize));
+  AddOpcode(4, 0, "stackTrunc", new stackTrunc);
 
-  addOpcode(20,
+  AddOpcode(20,
             0,
             "DrawAuto",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::SetScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC));
-  addOpcode(21,
+  AddOpcode(21,
             0,
             "DrawSemiAuto",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::SetScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_SEMIAUTOMATIC));
-  addOpcode(22,
+  AddOpcode(22,
             0,
             "DrawManual",
-            callFunctionWith(&GraphicsSystem::setScreenUpdateMode,
+            CallFunctionWith(&GraphicsSystem::SetScreenUpdateMode,
                              GraphicsSystem::SCREENUPDATEMODE_MANUAL));
 
-  addOpcode(31, 0, "GetDCPixel", new GetDCPixel);
+  AddOpcode(31, 0, "GetDCPixel", new GetDCPixel);
 }

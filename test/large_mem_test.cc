@@ -51,16 +51,16 @@ TEST(LargeMemTest, setarray_0) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/setarray_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setarray returned wrong value for intA[0]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setarray returned wrong value for intA[1]";
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setarray returned wrong value for intA[2]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setarray touched the value in intA[3]!!";
 }
 
@@ -75,18 +75,18 @@ TEST(LargeMemTest, setrng_0) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setrng returned wrong value for intA[0]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setrng returned wrong value for intA[1]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setrng returned wrong value for intA[2]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setrng returned wrong value for intA[3]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "setrng touched the value in intA[4]!!!";
 }
 
@@ -99,18 +99,18 @@ TEST(LargeMemTest, setrng_1) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/setrng_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(4, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(4, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setrng returned wrong value for intA[0]";
-  EXPECT_EQ(4, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(4, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setrng returned wrong value for intA[1]";
-  EXPECT_EQ(4, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(4, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setrng returned wrong value for intA[2]";
-  EXPECT_EQ(4, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(4, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setrng returned wrong value for intA[3]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "setrng touched the value in intA[4]!!!";
 }
 
@@ -119,23 +119,23 @@ TEST(LargeMemTest, cpyrng_0) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyrng_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure setarray did what we expected it to...
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setarray returned wrong value for intA[0]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setarray returned wrong value for intA[1]";
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setarray returned wrong value for intA[2]";
 
   // Now make sure cpyrng did its job.
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('B', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('B', 0)))
       << "cpyrng returned wrong value for intB[0]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('B', 1)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('B', 1)))
       << "cpyrng returned wrong value for intB[1]";
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('B', 2)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('B', 2)))
       << "cpyrng returned wrong value for intB[2]";
 }
 
@@ -149,22 +149,22 @@ TEST(LargeMemTest, setarray_stepped_0) {
       locateTestCase("Module_Mem_SEEN/setarray_stepped_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure setarray_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setarray_stepped returned wrong value for intA[0]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setarray_stepped touched the value of intA[1]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setarray_stepped returned wrong value for intA[2]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setarray_stepped touched the value for intA[3]";
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "setarray_stepped returned wrong value for intA[4]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 5)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 5)))
       << "setarray_stepped touched the value for intA[5]";
 }
 
@@ -178,22 +178,22 @@ TEST(LargeMemTest, setrng_stepped_0) {
       locateTestCase("Module_Mem_SEEN/setrng_stepped_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure setrng_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setrng_stepped returned wrong value for intA[0]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setrng_stepped touched the value of intA[1]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setrng_stepped returned wrong value for intA[2]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setrng_stepped touched the value for intA[3]";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "setrng_stepped returned wrong value for intA[4]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 5)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 5)))
       << "setrng_stepped touched the value for intA[5]";
 }
 
@@ -207,22 +207,22 @@ TEST(LargeMemTest, setrng_stepped_1) {
       locateTestCase("Module_Mem_SEEN/setrng_stepped_1.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure setrng_stepped did what we expected it to, and that it
   // didn't overwrite the work of setrng
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "setrng_stepped returned wrong value for intA[0]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "setrng_stepped touched the value of intA[1]";
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "setrng_stepped returned wrong value for intA[2]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 3)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 3)))
       << "setrng_stepped touched the value for intA[3]";
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 4)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 4)))
       << "setrng_stepped returned wrong value for intA[4]";
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 5)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 5)))
       << "setrng_stepped touched the value for intA[5]";
 }
 
@@ -236,15 +236,15 @@ TEST(LargeMemTest, cpyvars) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/cpyvars_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure cpyvars did what we expected it to...
-  EXPECT_EQ(5, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(5, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "cpyvars set wrong value for intA[0]";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "cpyvars set wrong value for intA[1]";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('A', 2)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('A', 2)))
       << "cpyvars set wrong value for intA[2]";
 }
 
@@ -260,10 +260,10 @@ TEST(LargeMemTest, sum_0) {
   libreallive::Archive arc(locateTestCase("Module_Mem_SEEN/sum_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new MemModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new MemModule);
+  rlmachine.ExecuteUntilHalted();
 
   // First make sure sum did what we expected it to...
-  EXPECT_EQ(6, rlmachine.getIntValue(IntMemRef('A', 10)))
+  EXPECT_EQ(6, rlmachine.GetIntValue(IntMemRef('A', 10)))
       << "sum returned the wrong value for intA[10]";
 }

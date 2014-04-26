@@ -33,29 +33,25 @@ using ::testing::Invoke;
 
 MockTextWindow::MockTextWindow(System& system, int win)
     : TestTextWindow(system, win) {
-  ON_CALL(*this, execute())
-      .WillByDefault(Invoke(this, &MockTextWindow::ConcreteExecute));
-  ON_CALL(*this, setFontColor(_))
+  ON_CALL(*this, SetFontColor(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteSetFontColor));
-  ON_CALL(*this, character(_, _))
+  ON_CALL(*this, DisplayCharacter(_, _))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteDisplayChar));
-  ON_CALL(*this, charWidth(_))
-      .WillByDefault(Invoke(this, &MockTextWindow::ConcreteCharWidth));
-  ON_CALL(*this, textSurface())
+  ON_CALL(*this, GetTextSurface())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteTextSurface));
-  ON_CALL(*this, renderNameInBox(_))
+  ON_CALL(*this, RenderNameInBox(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteRenderNameInBox));
   ON_CALL(*this, clearWin())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteClearWin));
-  ON_CALL(*this, setName(_, _))
+  ON_CALL(*this, SetName(_, _))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteSetName));
-  ON_CALL(*this, hardBrake())
+  ON_CALL(*this, HardBrake())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteHardBrake));
-  ON_CALL(*this, resetIndentation())
+  ON_CALL(*this, ResetIndentation())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteResetIndentation));
-  ON_CALL(*this, markRubyBegin())
+  ON_CALL(*this, MarkRubyBegin())
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteMarkRubyBegin));
-  ON_CALL(*this, displayRubyText(_))
+  ON_CALL(*this, DisplayRubyText(_))
       .WillByDefault(Invoke(this, &MockTextWindow::ConcreteDisplayRubyText));
 }
 

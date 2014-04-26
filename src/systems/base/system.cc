@@ -72,7 +72,7 @@ struct LoadingGameFromStream : public LoadGameLongOperation {
                         const boost::shared_ptr<std::stringstream>& selection)
       : LoadGameLongOperation(machine), selection_(selection) {}
 
-  virtual void load(RLMachine& machine) {
+  virtual void Load(RLMachine& machine) override {
     // We need to copy data here onto the stack because the action of loading
     // will deallocate this object.
     boost::shared_ptr<std::stringstream> s = selection_;
@@ -132,12 +132,16 @@ System::System()
 
 System::~System() {}
 
-void System::takeSelectionSnapshot(RLMachine& machine) {
+void System::SetPlatform(const boost::shared_ptr<Platform>& platform) {
+  platform_ = platform;
+}
+
+void System::TakeSelectionSnapshot(RLMachine& machine) {
   previous_selection_.reset(new std::stringstream);
   Serialization::saveGameTo(*previous_selection_, machine);
 }
 
-void System::restoreSelectionSnapshot(RLMachine& machine) {
+void System::RestoreSelectionSnapshot(RLMachine& machine) {
   // We need to reference this on the stack because it will call
   // System::reset() to get the black screen. (We'll reset again inside
   // LoadingGameFromStream.)
@@ -149,12 +153,12 @@ void System::restoreSelectionSnapshot(RLMachine& machine) {
   }
 }
 
-int System::isSyscomEnabled(int syscom) {
-  checkSyscomIndex(syscom, "System::is_syscom_enabled");
+int System::IsSyscomEnabled(int syscom) {
+  CheckSyscomIndex(syscom, "System::is_syscom_enabled");
 
   // Special cases where state of the interpreter would override the
   // programmatically set (or user set) values.
-  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidokuRead()) {
+  if (syscom == SYSCOM_SET_SKIP_MODE && !text().kidoku_read()) {
     // Skip mode should be grayed out when there's no text to read
     if (syscom_status_[syscom] == SYSCOM_VISIBLE)
       return SYSCOM_GREYED_OUT;
@@ -166,44 +170,44 @@ int System::isSyscomEnabled(int syscom) {
   return syscom_status_[syscom];
 }
 
-void System::hideSyscom() {
+void System::HideSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_INVISIBLE);
 }
 
-void System::hideSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::hide_system");
+void System::HideSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::hide_system");
   syscom_status_[syscom] = SYSCOM_INVISIBLE;
 }
 
-void System::enableSyscom() {
+void System::EnableSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_VISIBLE);
 }
 
-void System::enableSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::enable_system");
+void System::EnableSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::enable_system");
   syscom_status_[syscom] = SYSCOM_VISIBLE;
 }
 
-void System::disableSyscom() {
+void System::DisableSyscom() {
   std::fill(syscom_status_,
             syscom_status_ + NUM_SYSCOM_ENTRIES,
             SYSCOM_GREYED_OUT);
 }
 
-void System::disableSyscomEntry(int syscom) {
-  checkSyscomIndex(syscom, "System::disable_system");
+void System::DisableSyscomEntry(int syscom) {
+  CheckSyscomIndex(syscom, "System::disable_system");
   syscom_status_[syscom] = SYSCOM_GREYED_OUT;
 }
 
-int System::readSyscom(int syscom) {
+int System::ReadSyscom(int syscom) {
   throw rlvm::Exception("ReadSyscom unimplemented!");
 }
 
-void System::showSyscomMenu(RLMachine& machine) {
+void System::ShowSyscomMenu(RLMachine& machine) {
   Gameexe& gexe = machine.system().gameexe();
 
   if (gexe("CANCELCALL_MOD") == 1) {
@@ -211,27 +215,27 @@ void System::showSyscomMenu(RLMachine& machine) {
       // Multiple right clicks shouldn't spawn multiple copies of the menu
       // system on top of each other.
       in_menu_ = true;
-      machine.pushLongOperation(new MenuReseter(*this));
+      machine.PushLongOperation(new MenuReseter(*this));
 
       std::vector<int> cancelcall = gexe("CANCELCALL");
-      machine.farcall(cancelcall.at(0), cancelcall.at(1));
+      machine.Farcall(cancelcall.at(0), cancelcall.at(1));
     }
   } else if (platform_) {
-    platform_->showNativeSyscomMenu(machine);
+    platform_->ShowNativeSyscomMenu(machine);
   } else {
     std::cerr << "(We don't deal with non-custom SYSCOM calls yet.)"
               << std::endl;
   }
 }
 
-void System::invokeSyscom(RLMachine& machine, int syscom) {
+void System::InvokeSyscom(RLMachine& machine, int syscom) {
   switch (syscom) {
     case SYSCOM_SAVE:
-      invokeSaveOrLoad(
+      InvokeSaveOrLoad(
           machine, syscom, "SYSTEMCALL_SAVE_MOD", "SYSTEMCALL_SAVE");
       break;
     case SYSCOM_LOAD:
-      invokeSaveOrLoad(
+      InvokeSaveOrLoad(
           machine, syscom, "SYSTEMCALL_LOAD_MOD", "SYSTEMCALL_LOAD");
       break;
     case SYSCOM_MESSAGE_SPEED:
@@ -246,20 +250,20 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
     case SYSCOM_USE_KOE:
     case SYSCOM_DISPLAY_VERSION: {
       if (platform_)
-        platform_->invokeSyscomStandardUI(machine, syscom);
+        platform_->InvokeSyscomStandardUI(machine, syscom);
       break;
     }
     case SYSCOM_RETURN_TO_PREVIOUS_SELECTION:
-      restoreSelectionSnapshot(machine);
+      RestoreSelectionSnapshot(machine);
       break;
     case SYSCOM_SHOW_WEATHER:
-      graphics().setShowWeather(!graphics().showWeather());
+      graphics().set_should_show_weather(!graphics().should_show_weather());
       break;
     case SYSCOM_SHOW_OBJECT_1:
-      graphics().setShowObject1(!graphics().showObject1());
+      graphics().set_should_show_object1(!graphics().should_show_object1());
       break;
     case SYSCOM_SHOW_OBJECT_2:
-      graphics().setShowObject2(!graphics().showObject2());
+      graphics().set_should_show_object2(!graphics().should_show_object2());
       break;
     case SYSCOM_CLASSIFY_TEXT:
       std::cerr << "We have no idea what classifying text even means!"
@@ -269,23 +273,23 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
       std::cerr << "Opening manual path..." << std::endl;
       break;
     case SYSCOM_SET_SKIP_MODE:
-      text().setSkipMode(!text().skipMode());
+      text().SetSkipMode(!text().skip_mode());
       break;
     case SYSCOM_AUTO_MODE:
-      text().setAutoMode(!text().autoMode());
+      text().SetAutoMode(!text().auto_mode());
       break;
     case SYSCOM_MENU_RETURN:
       // This is a hack since we probably have a bunch of crap on the stack.
-      machine.clearLongOperationsOffBackOfStack();
+      machine.ClearLongOperationsOffBackOfStack();
 
       // Simulate a MenuReturn.
       Sys_MenuReturn()(machine);
       break;
     case SYSCOM_EXIT_GAME:
-      machine.halt();
+      machine.Halt();
       break;
     case SYSCOM_SHOW_BACKGROUND:
-      graphics().toggleInterfaceHidden();
+      graphics().ToggleInterfaceHidden();
       break;
     case SYSCOM_HIDE_MENU:
       // Do nothing. The menu will be hidden on its own.
@@ -299,11 +303,11 @@ void System::invokeSyscom(RLMachine& machine, int syscom) {
   }
 }
 
-void System::showSystemInfo(RLMachine& machine) {
+void System::ShowSystemInfo(RLMachine& machine) {
   if (platform_) {
     RlvmInfo info;
 
-    std::string regname = gameexe()("REGNAME").to_string("");
+    std::string regname = gameexe()("REGNAME").ToString("");
     size_t pos = regname.find('\\');
     if (pos != string::npos) {
       info.game_brand = regname.substr(0, pos);
@@ -313,21 +317,21 @@ void System::showSystemInfo(RLMachine& machine) {
       info.game_name = regname;
     }
 
-    info.game_version = gameexe()("VERSION_STR").to_string("");
-    info.game_path = gameexe()("__GAMEPATH").to_string("");
-    info.rlvm_version = rlvm_version();
-    info.rlbabel_loaded = machine.dllLoaded("rlBabel");
-    info.text_transformation = machine.getTextEncoding();
+    info.game_version = gameexe()("VERSION_STR").ToString("");
+    info.game_path = gameexe()("__GAMEPATH").ToString("");
+    info.rlvm_version = GetRlvmVersionString();
+    info.rlbabel_loaded = machine.DllLoaded("rlBabel");
+    info.text_transformation = machine.GetTextEncoding();
 
-    platform_->showSystemInfo(machine, info);
+    platform_->ShowSystemInfo(machine, info);
   }
 }
 
-boost::filesystem::path System::findFile(
+boost::filesystem::path System::FindFile(
     const std::string& file_name,
     const std::vector<std::string>& extensions) {
   if (filesystem_cache_.empty())
-    buildFileSystemCache();
+    BuildFileSystemCache();
 
   // Hack to get around fileNames like "REALNAME?010", where we only
   // want REALNAME.
@@ -350,18 +354,18 @@ boost::filesystem::path System::findFile(
   return fs::path();
 }
 
-void System::reset() {
+void System::Reset() {
   in_menu_ = false;
   previous_selection_.reset();
 
-  enableSyscom();
+  EnableSyscom();
 
-  sound().reset();
-  graphics().reset();
-  text().reset();
+  sound().Reset();
+  graphics().Reset();
+  text().Reset();
 }
 
-std::string System::regname() {
+std::string System::Regname() {
   Gameexe& gexe = gameexe();
   std::string regname = gexe("REGNAME");
   replace_all(regname, "\\", "_");
@@ -371,28 +375,28 @@ std::string System::regname() {
   return cp932toUTF8(regname, 0);
 }
 
-boost::filesystem::path System::gameSaveDirectory() {
-  fs::path base_dir = getHomeDirectory() / ".rlvm" / regname();
+boost::filesystem::path System::GameSaveDirectory() {
+  fs::path base_dir = GetHomeDirectory() / ".rlvm" / Regname();
   fs::create_directories(base_dir);
 
   return base_dir;
 }
 
-bool System::fastForward() {
-  return (event().ctrlPressed() && text().ctrlKeySkip()) ||
-         text().currentlySkipping() || force_fast_forward_;
+bool System::ShouldFastForward() {
+  return (event().CtrlPressed() && text().ctrl_key_skip()) ||
+         text().CurrentlySkipping() || force_fast_forward_;
 }
 
-void System::dumpRenderTree(RLMachine& machine) {
+void System::DumpRenderTree(RLMachine& machine) {
   std::ostringstream oss;
   oss << "Dump_SEEN" << std::setw(4) << std::setfill('0')
-      << machine.sceneNumber() << "_Line" << machine.lineNumber() << ".txt";
+      << machine.SceneNumber() << "_Line" << machine.line_number() << ".txt";
 
   std::ofstream tree(oss.str().c_str());
-  graphics().refresh(&tree);
+  graphics().Refresh(&tree);
 }
 
-boost::filesystem::path System::getHomeDirectory() {
+boost::filesystem::path System::GetHomeDirectory() {
   std::string drive, home;
   char* homeptr = getenv("HOME");
   char* driveptr = getenv("HOMEDRIVE");
@@ -413,27 +417,27 @@ boost::filesystem::path System::getHomeDirectory() {
   }
 }
 
-void System::invokeSaveOrLoad(RLMachine& machine,
+void System::InvokeSaveOrLoad(RLMachine& machine,
                               int syscom,
                               const std::string& mod_key,
                               const std::string& location) {
   GameexeInterpretObject save_mod = gameexe()(mod_key);
   GameexeInterpretObject save_loc = gameexe()(location);
 
-  if (save_mod.exists() && save_loc.exists() && save_mod == 1) {
+  if (save_mod.Exists() && save_loc.Exists() && save_mod == 1) {
     std::vector<int> raw_ints = save_loc;
     int scenario = raw_ints.at(0);
     int entrypoint = raw_ints.at(1);
 
-    text().setSystemVisible(false);
-    machine.pushLongOperation(new RestoreTextSystemVisibility);
-    machine.farcall(scenario, entrypoint);
+    text().set_system_visible(false);
+    machine.PushLongOperation(new RestoreTextSystemVisibility);
+    machine.Farcall(scenario, entrypoint);
   } else if (platform_) {
-    platform_->invokeSyscomStandardUI(machine, syscom);
+    platform_->InvokeSyscomStandardUI(machine, syscom);
   }
 }
 
-void System::checkSyscomIndex(int index, const char* function) {
+void System::CheckSyscomIndex(int index, const char* function) {
   if (index < 0 || index >= NUM_SYSCOM_ENTRIES) {
     std::ostringstream oss;
     oss << "Illegal syscom index #" << index << " in " << function;
@@ -441,21 +445,21 @@ void System::checkSyscomIndex(int index, const char* function) {
   }
 }
 
-void System::buildFileSystemCache() {
+void System::BuildFileSystemCache() {
   // First retrieve all the directories defined in the #FOLDNAME section.
   std::vector<std::string> valid_directories;
   Gameexe& gexe = gameexe();
   GameexeFilteringIterator it = gexe.filtering_begin("FOLDNAME");
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; it != end; ++it) {
-    std::string dir = it->to_string();
+    std::string dir = it->ToString();
     if (!dir.empty()) {
       to_lower(dir);
       valid_directories.push_back(dir);
     }
   }
 
-  fs::path gamepath(gexe("__GAMEPATH").to_string());
+  fs::path gamepath(gexe("__GAMEPATH").ToString());
   fs::directory_iterator dir_end;
   for (fs::directory_iterator dir(gamepath); dir != dir_end; ++dir) {
     if (fs::is_directory(dir->status())) {
@@ -463,17 +467,17 @@ void System::buildFileSystemCache() {
       to_lower(lowername);
       if (find(valid_directories.begin(), valid_directories.end(), lowername) !=
           valid_directories.end()) {
-        addDirectoryToCache(dir->path());
+        AddDirectoryToCache(dir->path());
       }
     }
   }
 }
 
-void System::addDirectoryToCache(const fs::path& directory) {
+void System::AddDirectoryToCache(const fs::path& directory) {
   fs::directory_iterator dir_end;
   for (fs::directory_iterator dir(directory); dir != dir_end; ++dir) {
     if (fs::is_directory(dir->status())) {
-      addDirectoryToCache(dir->path());
+      AddDirectoryToCache(dir->path());
     } else {
       std::string extension = dir->path().extension().string();
       if (extension.size() > 1 && extension[0] == '.')
@@ -492,4 +496,4 @@ void System::addDirectoryToCache(const fs::path& directory) {
   }
 }
 
-std::string rlvm_version() { return "Version 0.13.1"; }
+std::string GetRlvmVersionString() { return "Version 0.13.1"; }

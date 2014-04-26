@@ -42,18 +42,19 @@ class WipeEffect : public Effect {
   WipeEffect(RLMachine& machine,
              boost::shared_ptr<Surface> src,
              boost::shared_ptr<Surface> dst,
-             const Size& screenSize,
+             const Size& screen_size,
              int time,
              int interpolation);
+  virtual ~WipeEffect();
 
  protected:
-  void calculateSizes(int currentTime,
+  void CalculateSizes(int currentTime,
                       int& sizeOfInterpolation,
                       int& sizeOfMainPolygon,
                       int sizeOfScreen);
 
  private:
-  virtual bool blitOriginalImage() const;
+  virtual bool BlitOriginalImage() const override;
 
   int interpolation_;
   int interpolation_in_pixels_;
@@ -65,12 +66,14 @@ class WipeTopToBottomEffect : public WipeEffect {
   WipeTopToBottomEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
+  virtual ~WipeTopToBottomEffect();
 
  protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+  virtual void PerformEffectForTime(RLMachine& machine,
+                                    int currentTime) override;
 };
 
 // Implements SEL #10, Wipe, with direction 1, bottom to top.
@@ -79,12 +82,14 @@ class WipeBottomToTopEffect : public WipeEffect {
   WipeBottomToTopEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
+  virtual ~WipeBottomToTopEffect();
 
  protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+  virtual void PerformEffectForTime(RLMachine& machine,
+                                    int currentTime) override;
 };
 
 // Implements SEL #10, Wipe, with direction 2, left to right.
@@ -93,12 +98,14 @@ class WipeLeftToRightEffect : public WipeEffect {
   WipeLeftToRightEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
+  virtual ~WipeLeftToRightEffect();
 
  protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+  virtual void PerformEffectForTime(RLMachine& machine,
+                                    int currentTime) override;
 };
 
 // Implements SEL #10, Wipe, with direction 3, right to left.
@@ -107,12 +114,14 @@ class WipeRightToLeftEffect : public WipeEffect {
   WipeRightToLeftEffect(RLMachine& machine,
                         boost::shared_ptr<Surface> src,
                         boost::shared_ptr<Surface> dst,
-                        const Size& screenSize,
+                        const Size& screen_size,
                         int time,
                         int interpolation);
+  virtual ~WipeRightToLeftEffect();
 
  protected:
-  virtual void performEffectForTime(RLMachine& machine, int currentTime);
+  virtual void PerformEffectForTime(RLMachine& machine,
+                                    int currentTime) override;
 };
 
 #endif  // SRC_EFFECTS_WIPE_EFFECT_H_

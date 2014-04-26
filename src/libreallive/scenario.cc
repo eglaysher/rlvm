@@ -45,14 +45,14 @@
 
 namespace libreallive {
 
-Metadata::Metadata() : encoding(0) {}
+Metadata::Metadata() : encoding_(0) {}
 
-void Metadata::assign(const char* input) {
+void Metadata::Assign(const char* input) {
   const int meta_len = read_i32(input), id_len = read_i32(input + 4) + 1;
   if (meta_len < id_len + 17)
     return;  // malformed metadata
-  as_string.assign(input, meta_len);
-  encoding = input[id_len + 16];
+  as_string_.assign(input, meta_len);
+  encoding_ = input[id_len + 16];
 }
 
 Header::Header(const char* data, const size_t length) {
@@ -63,11 +63,11 @@ Header::Header(const char* data, const size_t length) {
 
   // Check the version of the compiler.
   if (read_i32(data + 4) == 10002) {
-    use_xor_2 = false;
+    use_xor_2_ = false;
   } else if (read_i32(data + 4) == 110002) {
-    use_xor_2 = true;
+    use_xor_2_ = true;
   } else if (read_i32(data + 4) == 1110002) {
-    use_xor_2 = true;
+    use_xor_2_ = true;
   } else {
     // New xor key?
     std::ostringstream oss;
@@ -79,21 +79,21 @@ Header::Header(const char* data, const size_t length) {
     throw Error("unsupported bytecode version");
 
   // Debug entrypoints
-  zminusone = read_i32(data + 0x2c);
-  zminustwo = read_i32(data + 0x30);
+  z_minus_one_ = read_i32(data + 0x2c);
+  z_minus_two_ = read_i32(data + 0x30);
 
   // Misc settings
-  savepoint_message = read_i32(data + 0x1c4);
-  savepoint_selcom = read_i32(data + 0x1c8);
-  savepoint_seentop = read_i32(data + 0x1cc);
+  savepoint_message_ = read_i32(data + 0x1c4);
+  savepoint_selcom_ = read_i32(data + 0x1c8);
+  savepoint_seentop_ = read_i32(data + 0x1cc);
 
   // Dramatis personae
   int dplen = read_i32(data + 0x18);
-  dramatis_personae.reserve(dplen);
+  dramatis_personae_.reserve(dplen);
   int offs = read_i32(data + 0x14);
   while (dplen--) {
     int elen = read_i32(data + offs);
-    dramatis_personae.push_back(string(data + offs + 4, elen - 1));
+    dramatis_personae_.push_back(string(data + offs + 4, elen - 1));
     offs += elen + 4;
   }
 
@@ -102,9 +102,11 @@ Header::Header(const char* data, const size_t length) {
   // it's present.
   offs = read_i32(data + 0x14) + read_i32(data + 0x1c);
   if (offs != read_i32(data + 0x20)) {
-    rldev_metadata.assign(data + offs);
+    rldev_metadata_.Assign(data + offs);
   }
 }
+
+Header::~Header() {}
 
 Script::Script(const Header& hdr,
                const char* data,
@@ -115,7 +117,7 @@ Script::Script(const Header& hdr,
   // Kidoku/entrypoint table
   const int kidoku_offs = read_i32(data + 0x08);
   const size_t kidoku_length = read_i32(data + 0x0c);
-  ConstructionData cdat(kidoku_length, elts.end());
+  ConstructionData cdat(kidoku_length, elts_.end());
   for (size_t i = 0; i < kidoku_length; ++i)
     cdat.kidoku_table[i] = read_i32(data + kidoku_offs + i * 4);
 
@@ -139,7 +141,7 @@ Script::Script(const Header& hdr,
   }
 
   char* uncompressed = new char[dlen];
-  compression::decompress(data + read_i32(data + 0x20),
+  compression::Decompress(data + read_i32(data + 0x20),
                           read_i32(data + 0x28),
                           uncompressed,
                           dlen,
@@ -148,19 +150,19 @@ Script::Script(const Header& hdr,
   const char* stream = uncompressed;
   const char* end = uncompressed + dlen;
   size_t pos = 0;
-  pointer_t it = elts.before_begin();
+  pointer_t it = elts_.before_begin();
   while (pos < dlen) {
     // Read element
-    it = elts.emplace_after(it, BytecodeElement::read(stream, end, cdat));
+    it = elts_.emplace_after(it, BytecodeElement::Read(stream, end, cdat));
     cdat.offsets[pos] = it;
 
     // Keep track of the entrypoints
-    if ((*it)->type() == Entrypoint) {
-      entrypointAssociations.insert(make_pair((*it)->entrypoint(), it));
-    }
+    int entrypoint = (*it)->GetEntrypoint();
+    if (entrypoint != BytecodeElement::kInvalidEntrypoint)
+      entrypoint_associations_.insert(make_pair(entrypoint, it));
 
     // Advance
-    size_t l = (*it)->length();
+    size_t l = (*it)->GetBytecodeLength();
     if (l <= 0)
       l = 1;  // Failsafe: always advance at least one byte.
     stream += l;
@@ -168,23 +170,45 @@ Script::Script(const Header& hdr,
   }
 
   // Resolve pointers
-  for (pointer_t it = elts.begin(); it != elts.end(); ++it) {
-    (*it)->set_pointers(cdat);
+  for (auto& element : elts_) {
+    element->SetPointers(cdat);
   }
 
   delete[] uncompressed;
 }
 
-const pointer_t Script::getEntrypoint(int entrypoint) const {
-  pointernumber::const_iterator it = entrypointAssociations.find(entrypoint);
-  if (it == entrypointAssociations.end())
+Script::~Script() {}
+
+const pointer_t Script::GetEntrypoint(int entrypoint) const {
+  pointernumber::const_iterator it = entrypoint_associations_.find(entrypoint);
+  if (it == entrypoint_associations_.end())
     throw Error("Unknown entrypoint");
 
   return it->second;
 }
 
-Scenario::const_iterator Scenario::findEntrypoint(int entrypoint) const {
-  return script.getEntrypoint(entrypoint);
+Scenario::Scenario(const char* data, const size_t length, int sn,
+                   const std::string& regname,
+                   const compression::XorKey* second_level_xor_key)
+  : header(data, length),
+    script(header, data, length, regname,
+           header.use_xor_2_, second_level_xor_key),
+    scenario_number_(sn) {
+}
+
+Scenario::Scenario(const FilePos& fp, int sn,
+                   const std::string& regname,
+                   const compression::XorKey* second_level_xor_key)
+  : header(fp.data, fp.length),
+    script(header, fp.data, fp.length, regname,
+           header.use_xor_2_, second_level_xor_key),
+    scenario_number_(sn) {
+}
+
+Scenario::~Scenario() {}
+
+Scenario::const_iterator Scenario::FindEntrypoint(int entrypoint) const {
+  return script.GetEntrypoint(entrypoint);
 }
 
 }  // namespace libreallive

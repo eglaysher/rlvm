@@ -44,26 +44,26 @@ WaitLongOperation::WaitLongOperation(RLMachine& machine)
       break_on_clicks_(false),
       button_pressed_(0),
       break_on_event_(false),
-      break_on_ctrl_pressed_(machine.system().text().ctrlKeySkip()),
+      break_on_ctrl_pressed_(machine.system().text().ctrl_key_skip()),
       ctrl_pressed_(false),
       mouse_moved_(false),
       save_click_location_(false) {}
 
 WaitLongOperation::~WaitLongOperation() {}
 
-void WaitLongOperation::waitMilliseconds(unsigned int time) {
+void WaitLongOperation::WaitMilliseconds(unsigned int time) {
   wait_until_target_time_ = true;
-  target_time_ = machine_.system().event().getTicks() + time;
+  target_time_ = machine_.system().event().GetTicks() + time;
 }
 
-void WaitLongOperation::breakOnClicks() { break_on_clicks_ = true; }
+void WaitLongOperation::BreakOnClicks() { break_on_clicks_ = true; }
 
-void WaitLongOperation::breakOnEvent(const std::function<bool()>& function) {
+void WaitLongOperation::BreakOnEvent(const std::function<bool()>& function) {
   break_on_event_ = true;
   event_function_ = function;
 }
 
-void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
+void WaitLongOperation::SaveClickLocation(IntReferenceIterator x,
                                           IntReferenceIterator y) {
   break_on_clicks_ = true;
   save_click_location_ = true;
@@ -71,14 +71,14 @@ void WaitLongOperation::saveClickLocation(IntReferenceIterator x,
   y_ = y;
 }
 
-void WaitLongOperation::mouseMotion(const Point&) { mouse_moved_ = true; }
+void WaitLongOperation::MouseMotion(const Point&) { mouse_moved_ = true; }
 
-bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool WaitLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                 bool pressed) {
   if (pressed && break_on_clicks_) {
     if (save_click_location_ &&
         (mouseButton == MOUSE_LEFT || mouseButton == MOUSE_RIGHT)) {
-      recordMouseCursorPosition();
+      RecordMouseCursorPosition();
     }
 
     if (mouseButton == MOUSE_LEFT) {
@@ -93,7 +93,7 @@ bool WaitLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool WaitLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool WaitLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && break_on_ctrl_pressed_ &&
       (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
     ctrl_pressed_ = true;
@@ -103,17 +103,17 @@ bool WaitLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   return false;
 }
 
-void WaitLongOperation::recordMouseCursorPosition() {
-  Point location = machine_.system().event().getCursorPos();
+void WaitLongOperation::RecordMouseCursorPosition() {
+  Point location = machine_.system().event().GetCursorPos();
   *x_ = location.x();
   *y_ = location.y();
 }
 
 bool WaitLongOperation::operator()(RLMachine& machine) {
-  bool done = ctrl_pressed_ || machine.system().fastForward();
+  bool done = ctrl_pressed_ || machine.system().ShouldFastForward();
 
   if (!done && wait_until_target_time_) {
-    done = machine.system().event().getTicks() > target_time_;
+    done = machine.system().event().GetTicks() > target_time_;
   }
 
   if (!done && break_on_event_) {
@@ -122,21 +122,21 @@ bool WaitLongOperation::operator()(RLMachine& machine) {
 
   GraphicsSystem& graphics = machine.system().graphics();
   if (mouse_moved_) {
-    graphics.markScreenAsDirty(GUT_MOUSE_MOTION);
+    graphics.MarkScreenAsDirty(GUT_MOUSE_MOTION);
     mouse_moved_ = false;
-  } else if (graphics.objectStateDirty()) {
-    graphics.markScreenAsDirty(GUT_DISPLAY_OBJ);
+  } else if (graphics.object_state_dirty()) {
+    graphics.MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 
   if (break_on_clicks_) {
     if (button_pressed_) {
       done = true;
-      machine.setStoreRegister(button_pressed_);
+      machine.set_store_register(button_pressed_);
     } else if (done) {
       // TODO(erg): this is fishy. shouldn't we record when clicked?
       if (save_click_location_)
-        recordMouseCursorPosition();
-      machine.setStoreRegister(0);
+        RecordMouseCursorPosition();
+      machine.set_store_register(0);
     }
   }
 

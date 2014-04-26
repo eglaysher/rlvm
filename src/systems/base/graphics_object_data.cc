@@ -52,27 +52,27 @@ GraphicsObjectData::GraphicsObjectData(const GraphicsObjectData& obj)
 
 GraphicsObjectData::~GraphicsObjectData() {}
 
-void GraphicsObjectData::render(const GraphicsObject& go,
+void GraphicsObjectData::Render(const GraphicsObject& go,
                                 const GraphicsObject* parent,
                                 std::ostream* tree) {
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    Rect src = srcRect(go);
-    Rect dst = dstRect(go, parent);
-    int alpha = getRenderingAlpha(go, parent);
+    Rect src = SrcRect(go);
+    Rect dst = DstRect(go, parent);
+    int alpha = GetRenderingAlpha(go, parent);
 
-    if (go.buttonUsingOverides()) {
+    if (go.GetButtonUsingOverides()) {
       // Tacked on side channel that lets a ButtonObjectSelectLongOperation
       // tweak the x/y coordinates of dst. There isn't really a better place to
       // put this. It can't go in dstRect() because the LongOperation also
       // consults the data from dstRect().
-      dst = Rect(dst.origin() + Size(go.buttonXOffsetOverride(),
-                                     go.buttonYOffsetOverride()),
+      dst = Rect(dst.origin() + Size(go.GetButtonXOffsetOverride(),
+                                     go.GetButtonYOffsetOverride()),
                  dst.size());
     }
 
     if (tree) {
-      objectInfo(*tree);
+      ObjectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst << std::endl;
       if (parent) {
         *tree << "  Parent: ";
@@ -87,84 +87,84 @@ void GraphicsObjectData::render(const GraphicsObject& go,
       *tree << std::endl;
     }
 
-    if (parent && parent->hasOwnClip()) {
+    if (parent && parent->has_own_clip_rect()) {
       // In Little Busters, a parent clip rect is used to clip text scrolling
       // in the battle system. rlvm has the concept of parent objects badly
       // hacked in, and that means we can't directly apply the own clip
       // rect. Instead we have to calculate this in terms of the screen
       // coordinates and then apply that as a global clip rect.
-      Point parent_start(parent->x() + parent->xAdjustmentSum(),
-                         parent->y() + parent->yAdjustmentSum());
+      Point parent_start(parent->x() + parent->GetXAdjustmentSum(),
+                         parent->y() + parent->GetYAdjustmentSum());
       Rect full_parent_clip =
-          Rect(parent_start + parent->ownClipRect().origin(),
-               parent->ownClipRect().size());
+          Rect(parent_start + parent->own_clip_rect().origin(),
+               parent->own_clip_rect().size());
 
-      Rect clipped_dest = dst.intersection(full_parent_clip);
-      Rect inset = dst.getInsetRectangle(clipped_dest);
+      Rect clipped_dest = dst.Intersection(full_parent_clip);
+      Rect inset = dst.GetInsetRectangle(clipped_dest);
       dst = clipped_dest;
-      src = src.applyInset(inset);
+      src = src.ApplyInset(inset);
 
       if (tree) {
-        *tree << "  Parent Own Clipping Rect: " << parent->ownClipRect()
+        *tree << "  Parent Own Clipping Rect: " << parent->own_clip_rect()
               << std::endl
               << "  After clipping: " << src << " to " << dst << std::endl;
       }
     }
 
-    if (go.hasOwnClip()) {
-      dst = dst.applyInset(go.ownClipRect());
-      src = src.applyInset(go.ownClipRect());
+    if (go.has_own_clip_rect()) {
+      dst = dst.ApplyInset(go.own_clip_rect());
+      src = src.ApplyInset(go.own_clip_rect());
 
       if (tree) {
-        *tree << "  Internal Clipping Rect: " << go.ownClipRect() << std::endl
+        *tree << "  Internal Clipping Rect: " << go.own_clip_rect() << std::endl
               << "  After internal clipping: " << src << " to " << dst
               << std::endl;
       }
     }
 
     // Perform the object clipping.
-    if (go.hasClip()) {
-      Rect clipped_dest = dst.intersection(go.clipRect());
+    if (go.has_clip_rect()) {
+      Rect clipped_dest = dst.Intersection(go.clip_rect());
 
       // Do nothing if object falls wholly outside clip area
-      if (clipped_dest.isEmpty())
+      if (clipped_dest.is_empty())
         return;
 
       // Adjust the source rectangle
-      Rect inset = dst.getInsetRectangle(clipped_dest);
+      Rect inset = dst.GetInsetRectangle(clipped_dest);
 
       dst = clipped_dest;
-      src = src.applyInset(inset);
+      src = src.ApplyInset(inset);
 
       if (tree) {
-        *tree << "  Clipping Rect: " << go.clipRect() << std::endl
+        *tree << "  Clipping Rect: " << go.clip_rect() << std::endl
               << "  After clipping: " << src << " to " << dst << std::endl;
       }
     }
 
     // TODO(erg): Do we want to skip this if no alpha?
-    surface->renderToScreenAsObject(go, src, dst, alpha);
+    surface->RenderToScreenAsObject(go, src, dst, alpha);
   }
 }
 
-void GraphicsObjectData::loopAnimation() {}
+void GraphicsObjectData::LoopAnimation() {}
 
-void GraphicsObjectData::endAnimation() {
+void GraphicsObjectData::EndAnimation() {
   // Set first, because we may deallocate this by one of our actions
   currently_playing_ = false;
 
-  switch (afterAnimation()) {
+  switch (after_animation_) {
     case AFTER_NONE:
       animation_finished_ = true;
       break;
     case AFTER_CLEAR:
-      if (ownedBy())
-        ownedBy()->deleteObject();
+      if (owned_by_)
+        owned_by_->DeleteObject();
       break;
     case AFTER_LOOP: {
       // Reset from the beginning
       currently_playing_ = true;
-      loopAnimation();
+      LoopAnimation();
       break;
     }
   }
@@ -182,56 +182,56 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
     *tree << "(tint=" << go.tint() << ") ";
   if (go.colour() != RGBAColour::Clear())
     *tree << "(colour=" << go.colour() << ") ";
-  if (go.compositeMode())
-    *tree << "(composite=" << go.compositeMode() << ") ";
-  if (go.xOrigin())
-    *tree << "(xOrigin=" << go.xOrigin() << ") ";
-  if (go.yOrigin())
-    *tree << "(yOrigin=" << go.yOrigin() << ") ";
+  if (go.composite_mode())
+    *tree << "(composite=" << go.composite_mode() << ") ";
+  if (go.origin_x())
+    *tree << "(origin_x=" << go.origin_x() << ") ";
+  if (go.origin_y())
+    *tree << "(origin_y=" << go.origin_y() << ") ";
 }
 
-Rect GraphicsObjectData::srcRect(const GraphicsObject& go) {
-  return currentSurface(go)->getPattern(go.pattNo()).rect;
+Rect GraphicsObjectData::SrcRect(const GraphicsObject& go) {
+  return CurrentSurface(go)->GetPattern(go.GetPattNo()).rect;
 }
 
-Point GraphicsObjectData::dstOrigin(const GraphicsObject& go) {
-  if (go.xOrigin() || go.yOrigin()) {
-    return Point(go.xOrigin(), go.yOrigin());
+Point GraphicsObjectData::DstOrigin(const GraphicsObject& go) {
+  if (go.origin_x() || go.origin_y()) {
+    return Point(go.origin_x(), go.origin_y());
   }
 
-  boost::shared_ptr<const Surface> surface = currentSurface(go);
+  boost::shared_ptr<const Surface> surface = CurrentSurface(go);
   if (surface) {
-    return Point(surface->getPattern(go.pattNo()).originX,
-                 surface->getPattern(go.pattNo()).originY);
+    return Point(surface->GetPattern(go.GetPattNo()).originX,
+                 surface->GetPattern(go.GetPattNo()).originY);
   }
 
   return Point();
 }
 
-Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
+Rect GraphicsObjectData::DstRect(const GraphicsObject& go,
                                  const GraphicsObject* parent) {
-  Point origin = dstOrigin(go);
-  Rect src = srcRect(go);
+  Point origin = DstOrigin(go);
+  Rect src = SrcRect(go);
 
   int center_x =
-      go.x() + go.xAdjustmentSum() - origin.x() + (src.width() / 2.0f);
+      go.x() + go.GetXAdjustmentSum() - origin.x() + (src.width() / 2.0f);
   int center_y =
-      go.y() + go.yAdjustmentSum() - origin.y() + (src.height() / 2.0f);
+      go.y() + go.GetYAdjustmentSum() - origin.y() + (src.height() / 2.0f);
 
   float second_factor_x = 1.0f;
   float second_factor_y = 1.0f;
   if (parent) {
-    center_x += parent->x() + parent->xAdjustmentSum();
-    center_y += parent->y() + parent->yAdjustmentSum();
+    center_x += parent->x() + parent->GetXAdjustmentSum();
+    center_y += parent->y() + parent->GetYAdjustmentSum();
 
-    second_factor_x = parent->getWidthScaleFactor();
-    second_factor_y = parent->getHeightScaleFactor();
+    second_factor_x = parent->GetWidthScaleFactor();
+    second_factor_y = parent->GetHeightScaleFactor();
   }
 
   int half_real_width =
-      (src.width() * second_factor_x * go.getWidthScaleFactor()) / 2.0f;
+      (src.width() * second_factor_x * go.GetWidthScaleFactor()) / 2.0f;
   int half_real_height =
-      (src.height() * second_factor_y * go.getHeightScaleFactor()) / 2.0f;
+      (src.height() * second_factor_y * go.GetHeightScaleFactor()) / 2.0f;
 
   int xPos1 = center_x - half_real_width;
   int yPos1 = center_y - half_real_height;
@@ -241,20 +241,18 @@ Rect GraphicsObjectData::dstRect(const GraphicsObject& go,
   return Rect::GRP(xPos1, yPos1, xPos2, yPos2);
 }
 
-int GraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
+int GraphicsObjectData::GetRenderingAlpha(const GraphicsObject& go,
                                           const GraphicsObject* parent) {
   if (!parent) {
-    return go.computedAlpha();
+    return go.GetComputedAlpha();
   } else {
-    return int((parent->computedAlpha() / 255.0f) *
-               (go.computedAlpha() / 255.0f) * 255);
+    return int((parent->GetComputedAlpha() / 255.0f) *
+               (go.GetComputedAlpha() / 255.0f) * 255);
   }
 }
 
-bool GraphicsObjectData::isAnimation() const { return false; }
+bool GraphicsObjectData::IsAnimation() const { return false; }
 
-void GraphicsObjectData::playSet(int set) {}
+void GraphicsObjectData::PlaySet(int set) {}
 
-bool GraphicsObjectData::animationFinished() const {
-  return animation_finished_;
-}
+bool GraphicsObjectData::IsParentLayer() const { return false; }

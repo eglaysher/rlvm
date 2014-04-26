@@ -53,34 +53,34 @@ class TestMachine : public RLMachine {
   template <typename A>
   static ExeArgument Arg(const A& a) {
     std::string output;
-    addEntity(output, a);
+    AddEntity(output, a);
     return ExeArgument(1, output);
   }
 
   template <typename A, typename B>
   static ExeArgument Arg(const A& a, const B& b) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
+    AddEntity(output, a);
+    AddEntity(output, b);
     return ExeArgument(2, output);
   }
 
   template <typename A, typename B, typename C>
   static ExeArgument Arg(const A& a, const B& b, const C& c) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
     return ExeArgument(3, output);
   }
 
   template <typename A, typename B, typename C, typename D>
   static ExeArgument Arg(const A& a, const B& b, const C& c, const D& d) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
     return ExeArgument(4, output);
   }
 
@@ -91,11 +91,11 @@ class TestMachine : public RLMachine {
                          const D& d,
                          const E& e) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
-    addEntity(output, e);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
+    AddEntity(output, e);
     return ExeArgument(5, output);
   }
 
@@ -112,12 +112,12 @@ class TestMachine : public RLMachine {
                          const E& e,
                          const F& f) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
-    addEntity(output, e);
-    addEntity(output, f);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
+    AddEntity(output, e);
+    AddEntity(output, f);
     return ExeArgument(6, output);
   }
 
@@ -136,13 +136,13 @@ class TestMachine : public RLMachine {
                          const F& f,
                          const G& g) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
-    addEntity(output, e);
-    addEntity(output, f);
-    addEntity(output, g);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
+    AddEntity(output, e);
+    AddEntity(output, f);
+    AddEntity(output, g);
     return ExeArgument(7, output);
   }
 
@@ -163,14 +163,14 @@ class TestMachine : public RLMachine {
                          const G& g,
                          const H& h) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
-    addEntity(output, e);
-    addEntity(output, f);
-    addEntity(output, g);
-    addEntity(output, h);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
+    AddEntity(output, e);
+    AddEntity(output, f);
+    AddEntity(output, g);
+    AddEntity(output, h);
     return ExeArgument(8, output);
   }
 
@@ -193,38 +193,38 @@ class TestMachine : public RLMachine {
                          const H& h,
                          const I& i) {
     std::string output;
-    addEntity(output, a);
-    addEntity(output, b);
-    addEntity(output, c);
-    addEntity(output, d);
-    addEntity(output, e);
-    addEntity(output, f);
-    addEntity(output, g);
-    addEntity(output, h);
-    addEntity(output, i);
+    AddEntity(output, a);
+    AddEntity(output, b);
+    AddEntity(output, c);
+    AddEntity(output, d);
+    AddEntity(output, e);
+    AddEntity(output, f);
+    AddEntity(output, g);
+    AddEntity(output, h);
+    AddEntity(output, i);
     return ExeArgument(9, output);
   }
 
   TestMachine(System& in_system, libreallive::Archive& in_archive);
 
   // Index all the RLOperations before passing to parent.
-  virtual void attachModule(RLModule* module);
+  virtual void AttachModule(RLModule* module) override;
 
   // Invokes a named opcode (with no arguments)
-  void exe(const std::string& name, unsigned char overload);
+  void Exe(const std::string& name, unsigned char overload);
 
   // Invokes a named opcode (with arguments)
-  void exe(const std::string& name,
+  void Exe(const std::string& name,
            unsigned char overload,
            const ExeArgument& arguments);
 
  private:
   // Adds a RealLive bytecode version of |arg| to |output|.
-  static void addEntity(std::string& output, const std::string& arg);
-  static void addEntity(std::string& output, const int arg);
+  static void AddEntity(std::string& output, const std::string& arg);
+  static void AddEntity(std::string& output, const int arg);
 
   // Implementation of the two exe() methods.
-  void runOpcode(const std::string& name,
+  void RunOpcode(const std::string& name,
                  unsigned char overload,
                  int argc,
                  const std::string& argument_string);

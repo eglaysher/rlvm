@@ -42,7 +42,7 @@
 // type.
 struct DefaultSpecialMapper {
   static int GetTypeForTag(const libreallive::SpecialExpressionPiece& sp) {
-    return sp.getOverloadTag();
+    return sp.overload_tag();
   }
 };
 
@@ -91,7 +91,7 @@ struct Special_T {
       unsigned int contained_position = 0;
       position++;
       return TYPE::getData(
-          machine, sp.getContainedPieces(), contained_position);
+          machine, sp.contained_pieces(), contained_position);
     }
   }
 
@@ -109,7 +109,7 @@ struct Special_T {
     const libreallive::SpecialExpressionPiece& sp =
         static_cast<const libreallive::SpecialExpressionPiece&>(*p[position]);
 
-    if (sp.getContainedPieces().size() == 0)
+    if (sp.contained_pieces().size() == 0)
       throw rlvm::Exception("Empty special construct in Special_T");
 
     Parameter par;
@@ -145,7 +145,7 @@ struct Special_T {
       default: {
         std::ostringstream oss;
         oss << "Illegal overload in Special_T::getData(). Bytecode tag was "
-            << sp.getOverloadTag() << ", Mapped position was " << par.type;
+            << sp.overload_tag() << ", Mapped position was " << par.type;
         throw rlvm::Exception(oss.str());
       }
     }
@@ -153,11 +153,11 @@ struct Special_T {
     return par;
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
-    output.emplace_back(libreallive::get_data(data));
+    output.emplace_back(libreallive::GetData(data));
     position++;
   }
 

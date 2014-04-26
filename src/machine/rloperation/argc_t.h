@@ -45,7 +45,7 @@ struct Argc_T {
                       unsigned int& position);
 
   // Parse the raw parameter string and put the results in ExpressionPiece
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output);
 
@@ -65,11 +65,11 @@ typename Argc_T<CON>::type Argc_T<CON>::getData(
 }
 
 template <typename CON>
-void Argc_T<CON>::parseParameters(unsigned int& position,
+void Argc_T<CON>::ParseParameters(unsigned int& position,
                                   const std::vector<std::string>& input,
                                   libreallive::ExpressionPiecesVector& output) {
   for (; position < input.size();) {
-    CON::parseParameters(position, input, output);
+    CON::ParseParameters(position, input, output);
   }
 }
 

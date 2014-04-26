@@ -41,12 +41,12 @@
 
 using namespace testing;
 
-// Helper to specify the return value of getTicks().
+// Helper to specify the return value of GetTicks().
 class EffectEventSystemTest : public EventSystemMockHandler {
  public:
   EffectEventSystemTest() : ticks(0) {}
   void setTicks(unsigned int in) { ticks = in; }
-  virtual unsigned int getTicks() const { return ticks; }
+  virtual unsigned int GetTicks() const { return ticks; }
 
  private:
   unsigned int ticks;
@@ -56,7 +56,7 @@ class EffectTest : public FullSystemTest {
  protected:
   EffectTest() : event_system_impl(new EffectEventSystemTest) {
     dynamic_cast<TestEventSystem&>(system.event())
-        .setMockHandler(event_system_impl);
+        .SetMockHandler(event_system_impl);
   }
 
   boost::shared_ptr<EffectEventSystemTest> event_system_impl;
@@ -71,8 +71,8 @@ class MockEffect : public Effect {
              int time)
       : Effect(machine, src, dst, size, time) {}
 
-  MOCK_METHOD2(performEffectForTime, void(RLMachine& machine, int));
-  MOCK_CONST_METHOD0(blitOriginalImage, bool());
+  MOCK_METHOD2(PerformEffectForTime, void(RLMachine& machine, int));
+  MOCK_CONST_METHOD0(BlitOriginalImage, bool());
 };
 
 TEST_F(EffectTest, TestBase) {
@@ -84,8 +84,8 @@ TEST_F(EffectTest, TestBase) {
 
   bool retVal = false;
   for (int i = 0; i < 2; ++i) {
-    EXPECT_CALL(*effect, blitOriginalImage()).WillOnce(Return(false));
-    EXPECT_CALL(*effect, performEffectForTime(_, i)).Times(1);
+    EXPECT_CALL(*effect, BlitOriginalImage()).WillOnce(Return(false));
+    EXPECT_CALL(*effect, PerformEffectForTime(_, i)).Times(1);
     EXPECT_FALSE((*effect)(rlmachine)) << "Didn't prematurely quit";
     ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
@@ -113,8 +113,8 @@ class MockBlitTopToBottom : public BlindTopToBottomEffect {
                                time,
                                blindSize) {}
 
-  MOCK_METHOD2(performEffectForTime, void(const RLMachine& machine, int));
-  MOCK_METHOD2(renderPolygon, void(int, int));
+  MOCK_METHOD2(PerformEffectForTime, void(const RLMachine& machine, int));
+  MOCK_METHOD2(RenderPolygon, void(int, int));
 };
 
 TEST_F(EffectTest, BlindTopToBottomEffect) {
@@ -132,52 +132,52 @@ TEST_F(EffectTest, BlindTopToBottomEffect) {
   bool retVal = false;
 
   // Test at 0
-  EXPECT_CALL(*effect, renderPolygon(0, 0)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(0, 0)).Times(1);
   EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 25
   event_system_impl->setTicks(25);
-  EXPECT_CALL(*effect, renderPolygon(0, 15)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(50, 64)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(100, 113)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(150, 162)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(200, 211)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(250, 260)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(300, 309)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(350, 358)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(400, 407)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(450, 456)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(0, 15)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(50, 64)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(100, 113)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(150, 162)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(200, 211)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(250, 260)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(300, 309)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(350, 358)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(400, 407)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(450, 456)).Times(1);
   EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 50
   event_system_impl->setTicks(50);
-  EXPECT_CALL(*effect, renderPolygon(0, 30)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(50, 79)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(100, 128)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(150, 177)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(200, 226)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(250, 275)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(300, 324)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(350, 373)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(400, 422)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(450, 471)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(0, 30)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(50, 79)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(100, 128)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(150, 177)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(200, 226)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(250, 275)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(300, 324)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(350, 373)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(400, 422)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(450, 471)).Times(1);
   EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 
   // Test at 75
   event_system_impl->setTicks(75);
-  EXPECT_CALL(*effect, renderPolygon(0, 45)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(50, 94)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(100, 143)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(150, 192)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(200, 241)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(250, 290)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(300, 339)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(350, 388)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(400, 437)).Times(1);
-  EXPECT_CALL(*effect, renderPolygon(450, 486)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(0, 45)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(50, 94)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(100, 143)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(150, 192)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(200, 241)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(250, 290)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(300, 339)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(350, 388)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(400, 437)).Times(1);
+  EXPECT_CALL(*effect, RenderPolygon(450, 486)).Times(1);
   EXPECT_FALSE((*effect)(rlmachine)) << "Prematurely quit";
   ASSERT_TRUE(::testing::Mock::VerifyAndClearExpectations(effect.get()));
 

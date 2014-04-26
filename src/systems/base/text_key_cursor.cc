@@ -47,16 +47,16 @@ using std::vector;
 TextKeyCursor::TextKeyCursor(System& system, int in_curosr_number)
     : cursor_number_(in_curosr_number),
       current_frame_(0),
-      last_time_frame_incremented_(system.event().getTicks()),
+      last_time_frame_incremented_(system.event().GetTicks()),
       system_(system) {
   Gameexe& gexe = system.gameexe();
   GameexeInterpretObject cursor = gexe("CURSOR", in_curosr_number);
 
-  if (cursor("NAME").exists()) {
-    setCursorImage(system, cursor("NAME"));
-    setCursorSize(cursor("SIZE"));
-    setCursorFrameCount(cursor("CONT"));
-    setCursorFrameSpeed(cursor("SPEED"));
+  if (cursor("NAME").Exists()) {
+    SetCursorImage(system, cursor("NAME"));
+    SetCursorSize(cursor("SIZE"));
+    SetCursorFrameCount(cursor("CONT"));
+    SetCursorFrameSpeed(cursor("SPEED"));
   }
 }
 
@@ -66,13 +66,13 @@ TextKeyCursor::~TextKeyCursor() {}
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::execute() {
-  unsigned int cur_time = system_.event().getTicks();
+void TextKeyCursor::Execute() {
+  unsigned int cur_time = system_.event().GetTicks();
 
   if (cursor_image_ && last_time_frame_incremented_ + frame_speed_ < cur_time) {
     last_time_frame_incremented_ = cur_time;
 
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
     current_frame_++;
     if (current_frame_ >= frame_count_)
@@ -82,12 +82,12 @@ void TextKeyCursor::execute() {
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
+void TextKeyCursor::Render(TextWindow& text_window, std::ostream* tree) {
   if (cursor_image_) {
     // Get the location to render from text_window
-    Point keycur = text_window.keycursorPosition(frame_size_);
+    Point keycur = text_window.KeycursorPosition(frame_size_);
 
-    cursor_image_->renderToScreen(
+    cursor_image_->RenderToScreen(
         Rect(Point(current_frame_ * frame_size_.width(), 0), frame_size_),
         Rect(keycur, frame_size_),
         255);
@@ -102,9 +102,9 @@ void TextKeyCursor::render(TextWindow& text_window, std::ostream* tree) {
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorImage(System& system, const std::string& name) {
+void TextKeyCursor::SetCursorImage(System& system, const std::string& name) {
   if (name != "") {
-    cursor_image_ = system.graphics().getSurfaceNamed(name);
+    cursor_image_ = system.graphics().GetSurfaceNamed(name);
     cursor_image_file_ = name;
   } else {
     cursor_image_.reset();
@@ -114,18 +114,18 @@ void TextKeyCursor::setCursorImage(System& system, const std::string& name) {
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorSize(const std::vector<int>& image_size) {
+void TextKeyCursor::SetCursorSize(const std::vector<int>& image_size) {
   frame_size_ = Size(image_size.at(0), image_size.at(1));
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorFrameCount(const int frame_count) {
+void TextKeyCursor::SetCursorFrameCount(const int frame_count) {
   frame_count_ = frame_count;
 }
 
 // -----------------------------------------------------------------------
 
-void TextKeyCursor::setCursorFrameSpeed(const int speed) {
+void TextKeyCursor::SetCursorFrameSpeed(const int speed) {
   frame_speed_ = speed / frame_count_;
 }

@@ -47,26 +47,26 @@ class ColourFilterObjectData : public GraphicsObjectData {
   // load_construct_data helper. Wish I could make this private.
   explicit ColourFilterObjectData(System& system);
 
-  void setRect(const Rect& screen_rect) { screen_rect_ = screen_rect; }
+  void set_rect(const Rect& screen_rect) { screen_rect_ = screen_rect; }
 
   // Returns the colour filter, lazily creating it if necessary.
   ColourFilter* GetColourFilter();
 
   // Overriden from GraphicsObjectData:
-  virtual void render(const GraphicsObject& go,
+  virtual void Render(const GraphicsObject& go,
                       const GraphicsObject* parent,
-                      std::ostream* tree);
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
-  virtual bool isAnimation() const;
-  virtual void playSet(int set);
+                      std::ostream* tree) override;
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
+  virtual bool IsAnimation() const override;
+  virtual void PlaySet(int set) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& rp);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& rp) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   GraphicsSystem& graphics_system_;

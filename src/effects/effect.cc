@@ -44,37 +44,37 @@ Effect::Effect(RLMachine& machine,
                int time)
     : screen_size_(size),
       duration_(time),
-      start_time_(machine.system().event().getTicks()),
+      start_time_(machine.system().event().GetTicks()),
       machine_(machine),
       src_surface_(src),
       dst_surface_(dst) {
-  machine.system().graphics().setIsResponsibleForUpdate(false);
+  machine.system().graphics().set_is_responsible_for_update(false);
 }
 
 Effect::~Effect() {
-  machine_.system().graphics().setIsResponsibleForUpdate(true);
+  machine_.system().graphics().set_is_responsible_for_update(true);
 }
 
 bool Effect::operator()(RLMachine& machine) {
-  unsigned int time = machine.system().event().getTicks();
-  unsigned int currentFrame = time - start_time_;
+  unsigned int time = machine.system().event().GetTicks();
+  unsigned int current_frame = time - start_time_;
 
-  bool fastForward = machine.system().fastForward();
+  bool fast_forward = machine.system().ShouldFastForward();
 
-  if (currentFrame >= duration_ || fastForward) {
+  if (current_frame >= duration_ || fast_forward) {
     return true;
   } else {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.beginFrame();
+    graphics.BeginFrame();
 
-    if (blitOriginalImage()) {
-      dstSurface().renderToScreen(
+    if (BlitOriginalImage()) {
+      dst_surface().RenderToScreen(
           Rect(Point(0, 0), size()), Rect(Point(0, 0), size()), 255);
     }
 
-    performEffectForTime(machine, currentFrame);
+    PerformEffectForTime(machine, current_frame);
 
-    graphics.endFrame();
+    graphics.EndFrame();
     return false;
   }
 }
@@ -96,10 +96,10 @@ BlitAfterEffectFinishes::BlitAfterEffectFinishes(LongOperation* in,
 
 BlitAfterEffectFinishes::~BlitAfterEffectFinishes() {}
 
-void BlitAfterEffectFinishes::performAfterLongOperation(RLMachine& machine) {
+void BlitAfterEffectFinishes::PerformAfterLongOperation(RLMachine& machine) {
   // Blit DC1 onto DC0, with full opacity, and end the operation
-  src_surface_->blitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
+  src_surface_->BlitToSurface(*dst_surface_, src_rect_, dest_rect_, 255);
 
   // Now force a screen refresh
-  machine.system().graphics().forceRefresh();
+  machine.system().graphics().ForceRefresh();
 }

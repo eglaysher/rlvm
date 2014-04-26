@@ -43,7 +43,7 @@ HIKRenderer::HIKRenderer(System& system,
                          const boost::shared_ptr<const HIKScript>& script)
     : system_(system),
       script_(script),
-      creation_time_(system_.event().getTicks()),
+      creation_time_(system_.event().GetTicks()),
       x_offset_(0),
       y_offset_(0) {
   layer_to_animation_num_.insert(layer_to_animation_num_.begin(),
@@ -53,12 +53,12 @@ HIKRenderer::HIKRenderer(System& system,
 
 HIKRenderer::~HIKRenderer() {}
 
-void HIKRenderer::execute(RLMachine& machine) {
-  machine.system().graphics().markScreenAsDirty(GUT_DRAW_HIK);
+void HIKRenderer::Execute(RLMachine& machine) {
+  machine.system().graphics().MarkScreenAsDirty(GUT_DRAW_HIK);
 }
 
-void HIKRenderer::render(std::ostream* tree) {
-  int current_ticks = system_.event().getTicks();
+void HIKRenderer::Render(std::ostream* tree) {
+  int current_ticks = system_.event().GetTicks();
   int time_since_creation = current_ticks - creation_time_;
 
   if (tree) {
@@ -145,14 +145,14 @@ void HIKRenderer::render(std::ostream* tree) {
     if (frame.grp_pattern != -1)
       pattern_to_use = frame.grp_pattern;
 
-    Rect src_rect = frame.surface->getPattern(pattern_to_use).rect;
+    Rect src_rect = frame.surface->GetPattern(pattern_to_use).rect;
     src_rect =
         Rect(src_rect.origin() + Size(x_offset_, y_offset_), src_rect.size());
     Rect dest_rect(dest_point, src_rect.size());
     if (it->use_clip_area)
       ClipDestination(it->clip_area, src_rect, dest_rect);
 
-    frame.surface->renderToScreen(src_rect, dest_rect, frame.opacity);
+    frame.surface->RenderToScreen(src_rect, dest_rect, frame.opacity);
 
     if (tree) {
       *tree << "    [L:" << (std::distance(script_->layers().begin(), it) + 1)
@@ -169,7 +169,7 @@ void HIKRenderer::render(std::ostream* tree) {
 }
 
 void HIKRenderer::NextAnimationFrame() {
-  int time = system_.event().getTicks();
+  int time = system_.event().GetTicks();
 
   int idx = 0;
   for (std::vector<LayerData>::iterator it = layer_to_animation_num_.begin();

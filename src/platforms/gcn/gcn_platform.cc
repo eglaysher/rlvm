@@ -149,14 +149,14 @@ class GCNPlatformBlocker : public LongOperation,
                      GraphicsSystem& graphics,
                      const boost::shared_ptr<GCNPlatform>& platform)
       : event_system_(system), graphics_system_(graphics), platform_(platform) {
-    event_system_.setRawSDLInputHandler(this);
-    graphics_system_.addRenderable(this);
+    event_system_.set_raw_sdl_input_handler(this);
+    graphics_system_.AddRenderable(this);
     platform_->blocker_ = this;
   }
 
   ~GCNPlatformBlocker() {
-    graphics_system_.removeRenderable(this);
-    event_system_.setRawSDLInputHandler(NULL);
+    graphics_system_.RemoveRenderable(this);
+    event_system_.set_raw_sdl_input_handler(NULL);
     platform_->blocker_ = NULL;
   }
 
@@ -169,7 +169,7 @@ class GCNPlatformBlocker : public LongOperation,
   }
 
   // Overridden from LongOperation:
-  virtual bool operator()(RLMachine& machine) {
+  virtual bool operator()(RLMachine& machine) override {
     while (delayed_tasks_.size()) {
       delayed_tasks_.front()();
       delayed_tasks_.pop();
@@ -180,16 +180,16 @@ class GCNPlatformBlocker : public LongOperation,
       delayed_rlmachine_tasks_.pop();
     }
 
-    machine.system().graphics().forceRefresh();
+    machine.system().graphics().ForceRefresh();
 
     return platform_->window_stack_.size() == 0;
   }
 
   // Overridden from Renderable:
-  virtual void render(std::ostream* tree) { platform_->render(); }
+  virtual void Render(std::ostream* tree) override { platform_->render(); }
 
   // Overridden from RawSDLInputHandler:
-  virtual void pushInput(SDL_Event event) {
+  virtual void pushInput(SDL_Event event) override {
     platform_->sdl_input_->pushInput(event);
   }
 
@@ -222,7 +222,7 @@ GCNPlatform::~GCNPlatform() {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::run(RLMachine& machine) { guichan_gui_->logic(); }
+void GCNPlatform::Run(RLMachine& machine) { guichan_gui_->logic(); }
 
 // -----------------------------------------------------------------------
 
@@ -245,14 +245,14 @@ void GCNPlatform::render() {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::showNativeSyscomMenu(RLMachine& machine) {
+void GCNPlatform::ShowNativeSyscomMenu(RLMachine& machine) {
   pushBlocker(machine);
   buildSyscomMenuFor("", SYCOM_MAIN_MENU, machine);
 }
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
+void GCNPlatform::InvokeSyscomStandardUI(RLMachine& machine, int syscom) {
   pushBlocker(machine);
   if (syscom == SYSCOM_SAVE)
     blocker_->addMachineTask(bind(&GCNPlatform::MenuSave, this, _1));
@@ -262,7 +262,7 @@ void GCNPlatform::invokeSyscomStandardUI(RLMachine& machine, int syscom) {
 
 // -----------------------------------------------------------------------
 
-void GCNPlatform::showSystemInfo(RLMachine& machine, const RlvmInfo& info) {
+void GCNPlatform::ShowSystemInfo(RLMachine& machine, const RlvmInfo& info) {
   pushBlocker(machine);
   pushWindowOntoStack(new GCNInfoWindow(machine, info, this));
 }
@@ -294,13 +294,13 @@ void GCNPlatform::receiveGCNMenuEvent(GCNMenu* menu, const std::string& event) {
   } else if (event == MENU_RETURN_MENU_EVENT) {
     blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
                                   this,
-                                  syscomString("MENU_RETURN_MESS_STR"),
+                                  GetSyscomString("MENU_RETURN_MESS_STR"),
                                   MENU_RETURN_MENU,
                                   _1));
   } else if (event == EXIT_GAME_MENU_EVENT) {
     blocker_->addMachineTask(bind(&GCNPlatform::buildSyscomMenuFor,
                                   this,
-                                  syscomString("GAME_END_MESS_STR"),
+                                  GetSyscomString("GAME_END_MESS_STR"),
                                   EXIT_GAME_MENU,
                                   _1));
   }
@@ -346,7 +346,7 @@ void GCNPlatform::pushBlocker(RLMachine& machine) {
     SDLEventSystem& event =
         dynamic_cast<SDLEventSystem&>(machine.system().event());
     GraphicsSystem& graphics = machine.system().graphics();
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new GCNPlatformBlocker(event, graphics, shared_from_this()));
   }
 }
@@ -375,7 +375,7 @@ void GCNPlatform::initializeGuichan(System& system, const Rect& screen_size) {
   toplevel_container_->addMouseListener(this);
   guichan_gui_->setTop(toplevel_container_.get());
 
-  fs::path font_file = findFontFile(system);
+  fs::path font_file = FindFontFile(system);
   global_font_.reset(new GCNTrueTypeFont(font_file.string().c_str(), 12));
   gcn::Widget::setGlobalFont(global_font_.get());
 }
@@ -395,21 +395,21 @@ void GCNPlatform::buildSyscomMenuFor(const std::string& label,
       button_definition.separator = true;
       buttons.push_back(button_definition);
     } else if (menu_items[i].syscom_id == MENU) {
-      button_definition.label = syscomString(menu_items[i].label);
+      button_definition.label = GetSyscomString(menu_items[i].label);
       button_definition.action = menu_items[i].event_name;
       button_definition.enabled = true;
       buttons.push_back(button_definition);
     } else {
       int id = menu_items[i].syscom_id;
-      int enabled = sys.isSyscomEnabled(id);
+      int enabled = sys.IsSyscomEnabled(id);
       if (enabled != SYSCOM_INVISIBLE) {
         std::ostringstream labelss;
         labelss << std::setw(3) << std::setfill('0') << id;
 
         if (menu_items[i].label == NULL)
-          button_definition.label = syscomString(labelss.str());
+          button_definition.label = GetSyscomString(labelss.str());
         else
-          button_definition.label = syscomString(menu_items[i].label);
+          button_definition.label = GetSyscomString(menu_items[i].label);
 
         if (menu_items[i].event_name == NULL)
           button_definition.action = SYSCOM_EVENTS[id];
@@ -476,12 +476,12 @@ void GCNPlatform::MenuLoad(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 void GCNPlatform::DoLoad(RLMachine& machine, int slot) {
-  machine.clearLongOperationsOffBackOfStack();
+  machine.ClearLongOperationsOffBackOfStack();
   Sys_load()(machine, slot);
 }
 
 // -----------------------------------------------------------------------
 
 void GCNPlatform::InvokeSyscom(RLMachine& machine, int syscom) {
-  machine.system().invokeSyscom(machine, syscom);
+  machine.system().InvokeSyscom(machine, syscom);
 }

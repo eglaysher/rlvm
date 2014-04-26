@@ -44,11 +44,11 @@ TEST(ExpressionTest, BasicArithmatic) {
   libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/basicOperators.TXT"));
   RLMachine rlmachine(system, arc);
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
   int values[10];
   for (int i = 0; i < 10; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
+    values[i] = rlmachine.GetIntValue(IntMemRef('A', i));
 
   EXPECT_EQ(2, values[0]) << "Incorect value for intA[0] (+ test)";
   EXPECT_EQ(3, values[1]) << "Incorect value for intA[1] (+= test)";
@@ -67,11 +67,11 @@ TEST(ExpressionTest, ComparisonOperators) {
   libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/comparisonOperators.TXT"));
   RLMachine rlmachine(system, arc);
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
   int values[14];
   for (int i = 0; i < 14; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
+    values[i] = rlmachine.GetIntValue(IntMemRef('A', i));
 
   EXPECT_EQ(0, values[0]) << "Incorect value for intA[0]";
   EXPECT_EQ(1, values[1]) << "Incorect value for intA[1]";
@@ -94,11 +94,11 @@ TEST(ExpressionTest, LogicalOperators) {
   libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/logicalOperators.TXT"));
   RLMachine rlmachine(system, arc);
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
   int values[7];
   for (int i = 0; i < 7; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('A', i));
+    values[i] = rlmachine.GetIntValue(IntMemRef('A', i));
 
   EXPECT_EQ(1, values[0]) << "Incorect value for intA[0]";
   EXPECT_EQ(0, values[1]) << "Incorect value for intA[1]";
@@ -114,12 +114,12 @@ TEST(ExpressionTest, PreviousErrors) {
   libreallive::Archive arc(
       locateTestCase("ExpressionTest_SEEN/previousErrors.TXT"));
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
   int values[6];
   for (int i = 0; i < 6; ++i)
-    values[i] = rlmachine.getIntValue(IntMemRef('B', i));
+    values[i] = rlmachine.GetIntValue(IntMemRef('B', i));
 
   EXPECT_EQ(1, values[0]) << "Incorect value for intB[0]";
   EXPECT_EQ(1, values[1]) << "Incorect value for intB[1]";
@@ -132,14 +132,14 @@ TEST(ExpressionTest, PreviousErrors) {
 // In later games, you found newline metadata inside special parameters. Make
 // sure that the expression parser can deal with that.
 TEST(ExpressionTest, ParseWithNewlineInIt) {
-  string parsable = libreallive::printableToParsableString(
+  string parsable = libreallive::PrintableToParsableString(
       "0a 77 02 61 37 61 00 ( $ ff ) 00 00 00 5c 02 $ ff 8d 01 00 00 "
       "$ ff ff 00 00 00 )");
 
   // This shouldn't throw.
   const char* start = parsable.c_str();
   std::unique_ptr<libreallive::ExpressionPiece> piece(
-      libreallive::get_data(start));
+      libreallive::GetData(start));
 
-  ASSERT_TRUE(piece->isSpecialParamater());
+  ASSERT_TRUE(piece->IsSpecialParameter());
 }

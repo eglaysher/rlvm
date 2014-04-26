@@ -64,7 +64,7 @@ TextWindowButton::TextWindowButton(System& system,
                                    bool use_this_button,
                                    GameexeInterpretObject location_box)
     : system_(system), state_(BUTTONSTATE_BUTTON_NOT_USED) {
-  if (use_this_button && location_box.exists()) {
+  if (use_this_button && location_box.Exists()) {
     std::vector<int> z = location_box;
     location_ = location_box;
     state_ = BUTTONSTATE_NORMAL;
@@ -73,10 +73,10 @@ TextWindowButton::TextWindowButton(System& system,
 
 TextWindowButton::~TextWindowButton() {}
 
-Rect TextWindowButton::location(TextWindow& window) {
+Rect TextWindowButton::Location(TextWindow& window) {
   int type = location_.at(0);
   Size size(location_.at(3), location_.at(4));
-  Rect win_rect = window.windowRect();
+  Rect win_rect = window.GetWindowRect();
 
   switch (type) {
     case 0: {
@@ -114,19 +114,19 @@ Rect TextWindowButton::location(TextWindow& window) {
   }
 }
 
-bool TextWindowButton::isValid() const {
+bool TextWindowButton::IsValid() const {
   return state_ != BUTTONSTATE_BUTTON_NOT_USED && location_.size() == 5 &&
          !(location_[0] == 0 && location_[1] == 0 && location_[2] == 0 &&
            location_[3] == 0 && location_[4] == 0);
 }
 
-void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
+void TextWindowButton::SetMousePosition(TextWindow& window, const Point& pos) {
   if (state_ == BUTTONSTATE_DISABLED)
     return;
 
-  if (isValid()) {
+  if (IsValid()) {
     int orig_state = state_;
-    bool in_box = location(window).contains(pos);
+    bool in_box = Location(window).Contains(pos);
     if (in_box && state_ == BUTTONSTATE_NORMAL)
       state_ = BUTTONSTATE_HIGHLIGHTED;
     else if (!in_box && state_ == BUTTONSTATE_HIGHLIGHTED)
@@ -135,31 +135,31 @@ void TextWindowButton::setMousePosition(TextWindow& window, const Point& pos) {
       state_ = BUTTONSTATE_NORMAL;
 
     if (orig_state != state_)
-      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+      system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
   }
 }
 
-bool TextWindowButton::handleMouseClick(RLMachine& machine,
+bool TextWindowButton::HandleMouseClick(RLMachine& machine,
                                         TextWindow& window,
                                         const Point& pos,
                                         bool pressed) {
   if (state_ == BUTTONSTATE_DISABLED)
     return false;
 
-  if (isValid()) {
-    bool in_box = location(window).contains(pos);
+  if (IsValid()) {
+    bool in_box = Location(window).Contains(pos);
 
     if (in_box) {
       // Perform any activation
       if (pressed) {
         state_ = BUTTONSTATE_PRESSED;
-        buttonPressed();
+        ButtonPressed();
       } else {
         state_ = BUTTONSTATE_HIGHLIGHTED;
-        buttonReleased(machine);
+        ButtonReleased(machine);
       }
 
-      system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+      system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
       return true;
     }
@@ -168,14 +168,14 @@ bool TextWindowButton::handleMouseClick(RLMachine& machine,
   return false;
 }
 
-void TextWindowButton::render(TextWindow& window,
+void TextWindowButton::Render(TextWindow& window,
                               const boost::shared_ptr<const Surface>& buttons,
                               int base_pattern) {
-  if (isValid()) {
-    Surface::GrpRect rect = buttons->getPattern(base_pattern + state_);
-    if (!(rect.rect.isEmpty())) {
-      Rect dest = Rect(location(window).origin(), rect.rect.size());
-      buttons->renderToScreen(rect.rect, dest, 255);
+  if (IsValid()) {
+    Surface::GrpRect rect = buttons->GetPattern(base_pattern + state_);
+    if (!(rect.rect.is_empty())) {
+      Rect dest = Rect(Location(window).origin(), rect.rect.size());
+      buttons->RenderToScreen(rect.rect, dest, 255);
     }
   }
 }
@@ -193,7 +193,7 @@ ActionTextWindowButton::ActionTextWindowButton(
 
 ActionTextWindowButton::~ActionTextWindowButton() {}
 
-void ActionTextWindowButton::buttonReleased(RLMachine& machine) { action_(); }
+void ActionTextWindowButton::ButtonReleased(RLMachine& machine) { action_(); }
 
 // -----------------------------------------------------------------------
 // ActivationTextWindowButton
@@ -213,7 +213,7 @@ ActivationTextWindowButton::ActivationTextWindowButton(
 
 ActivationTextWindowButton::~ActivationTextWindowButton() {}
 
-void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
+void ActivationTextWindowButton::ButtonReleased(RLMachine& machine) {
   if (enabled_) {
     if (on_)
       on_set_(false);
@@ -222,24 +222,24 @@ void ActivationTextWindowButton::buttonReleased(RLMachine& machine) {
   }
 }
 
-void ActivationTextWindowButton::setEnabled(bool enabled) {
+void ActivationTextWindowButton::SetEnabled(bool enabled) {
   enabled_ = enabled;
-  setState();
+  SetState();
 }
 
-void ActivationTextWindowButton::setEnabledNotification(
+void ActivationTextWindowButton::SetEnabledNotification(
     NotificationType enabled_listener) {
   enabled_listener_ = enabled_listener;
   registrar_.Add(this, enabled_listener_, NotificationService::AllSources());
 }
 
-void ActivationTextWindowButton::setChangeNotification(
+void ActivationTextWindowButton::SetChangeNotification(
     NotificationType change_listener) {
   change_listener_ = change_listener;
   registrar_.Add(this, change_listener_, NotificationService::AllSources());
 }
 
-void ActivationTextWindowButton::setState() {
+void ActivationTextWindowButton::SetState() {
   if (enabled_)
     state_ = on_ ? BUTTONSTATE_ACTIVATED : BUTTONSTATE_NORMAL;
   else
@@ -257,7 +257,7 @@ void ActivationTextWindowButton::Observe(NotificationType type,
     on_ = *i.ptr();
   }
 
-  setState();
+  SetState();
 }
 
 // -----------------------------------------------------------------------
@@ -277,16 +277,16 @@ RepeatActionWhileHoldingWindowButton::RepeatActionWhileHoldingWindowButton(
 
 RepeatActionWhileHoldingWindowButton::~RepeatActionWhileHoldingWindowButton() {}
 
-void RepeatActionWhileHoldingWindowButton::buttonPressed() {
+void RepeatActionWhileHoldingWindowButton::ButtonPressed() {
   held_down_ = true;
 
   callback_();
-  last_invocation_ = system_.event().getTicks();
+  last_invocation_ = system_.event().GetTicks();
 }
 
-void RepeatActionWhileHoldingWindowButton::execute() {
+void RepeatActionWhileHoldingWindowButton::Execute() {
   if (held_down_) {
-    unsigned int cur_time = system_.event().getTicks();
+    unsigned int cur_time = system_.event().GetTicks();
 
     if (last_invocation_ + time_between_invocations_ > cur_time) {
       callback_();
@@ -295,7 +295,7 @@ void RepeatActionWhileHoldingWindowButton::execute() {
   }
 }
 
-void RepeatActionWhileHoldingWindowButton::buttonReleased(RLMachine& machine) {
+void RepeatActionWhileHoldingWindowButton::ButtonReleased(RLMachine& machine) {
   held_down_ = false;
 }
 
@@ -310,7 +310,7 @@ ExbtnWindowButton::ExbtnWindowButton(System& system,
     : TextWindowButton(system, use, location_box),
       scenario_(0),
       entrypoint_(0) {
-  if (location_box.exists() && to_call.exists()) {
+  if (location_box.Exists() && to_call.Exists()) {
     std::vector<int> farcall = to_call;
     scenario_ = farcall.at(0);
     entrypoint_ = farcall.at(1);
@@ -319,12 +319,12 @@ ExbtnWindowButton::ExbtnWindowButton(System& system,
 
 ExbtnWindowButton::~ExbtnWindowButton() {}
 
-void ExbtnWindowButton::buttonReleased(RLMachine& machine) {
+void ExbtnWindowButton::ButtonReleased(RLMachine& machine) {
   // Hide all text boxes when entering an Exbtn
-  machine.system().text().setSystemVisible(false);
+  machine.system().text().set_system_visible(false);
 
   // Push a LongOperation onto the stack which will restore
   // visibility when we return from this Exbtn call
-  machine.pushLongOperation(new RestoreTextSystemVisibility);
-  machine.farcall(scenario_, entrypoint_);
+  machine.PushLongOperation(new RestoreTextSystemVisibility);
+  machine.Farcall(scenario_, entrypoint_);
 }

@@ -64,166 +64,166 @@ class GraphicsObject {
   // of one template parameter in one of the generic operation
   // functors.
   int visible() const { return impl_->visible_; }
-  void setVisible(const int in);
+  void SetVisible(const int in);
 
   int x() const { return impl_->x_; }
-  void setX(const int x);
+  void SetX(const int x);
 
   int y() const { return impl_->y_; }
-  void setY(const int y);
+  void SetY(const int y);
 
-  int xAdjustment(int idx) const { return impl_->adjust_x_[idx]; }
-  int xAdjustmentSum() const;
-  void setXAdjustment(int idx, int x);
+  int x_adjustment(int idx) const { return impl_->adjust_x_[idx]; }
+  int GetXAdjustmentSum() const;
+  void SetXAdjustment(int idx, int x);
 
-  int yAdjustment(int idx) const { return impl_->adjust_y_[idx]; }
-  int yAdjustmentSum() const;
-  void setYAdjustment(int idx, int y);
-  void setXYAdjustments(int idx, int x, int y);
+  int y_adjustment(int idx) const { return impl_->adjust_y_[idx]; }
+  int GetYAdjustmentSum() const;
+  void SetYAdjustment(int idx, int y);
 
   int vert() const { return impl_->whatever_adjust_vert_operates_on_; }
-  void setVert(const int vert);
+  void SetVert(const int vert);
 
-  int xOrigin() const { return impl_->origin_x_; }
-  void setXOrigin(const int x);
+  int origin_x() const { return impl_->origin_x_; }
+  void SetOriginX(const int x);
 
-  int yOrigin() const { return impl_->origin_y_; }
-  void setYOrigin(const int y);
+  int origin_y() const { return impl_->origin_y_; }
+  void SetOriginY(const int y);
 
-  int xRepOrigin() const { return impl_->rep_origin_x_; }
-  void setXRepOrigin(const int x);
+  int rep_origin_x() const { return impl_->rep_origin_x_; }
+  void SetRepOriginX(const int x);
 
-  int yRepOrigin() const { return impl_->rep_origin_y_; }
-  void setYRepOrigin(const int y);
+  int rep_origin_y() const { return impl_->rep_origin_y_; }
+  void SetRepOriginY(const int y);
 
   // Note: width/height are object scale percentages.
   int width() const { return impl_->width_; }
-  void setWidth(const int in);
+  void SetWidth(const int in);
   int height() const { return impl_->height_; }
-  void setHeight(const int in);
+  void SetHeight(const int in);
 
   // Note: width/height are object scale factors out of 1000.
-  int hqWidth() const { return impl_->hq_width_; }
-  void setHqWidth(const int in);
-  int hqHeight() const { return impl_->hq_height_; }
-  void setHqHeight(const int in);
+  int hq_width() const { return impl_->hq_width_; }
+  void SetHqWidth(const int in);
+  int hq_height() const { return impl_->hq_height_; }
+  void SetHqHeight(const int in);
 
-  float getWidthScaleFactor() const;
-  float getHeightScaleFactor() const;
+  float GetWidthScaleFactor() const;
+  float GetHeightScaleFactor() const;
 
   int rotation() const { return impl_->rotation_; }
-  void setRotation(const int in);
+  void SetRotation(const int in);
 
-  int pixelWidth() const;
-  int pixelHeight() const;
+  int PixelWidth() const;
+  int PixelHeight() const;
 
   // Object attribute accessors
-  int pattNo() const;
-  void setPattNo(const int in);
+  int GetPattNo() const;
+  void SetPattNo(const int in);
 
   int mono() const { return impl_->mono_; }
-  void setMono(const int in);
+  void SetMono(const int in);
 
   int invert() const { return impl_->invert_; }
-  void setInvert(const int in);
+  void SetInvert(const int in);
 
   int light() const { return impl_->light_; }
-  void setLight(const int in);
+  void SetLight(const int in);
 
   const RGBColour& tint() const { return impl_->tint_; }
-  void setTint(const RGBColour& colour);
-  void setTintR(const int in);
-  void setTintG(const int in);
-  void setTintB(const int in);
+  void SetTint(const RGBColour& colour);
+  void SetTintRed(const int in);
+  void SetTintGreen(const int in);
+  void SetTintBlue(const int in);
 
   const RGBAColour& colour() const { return impl_->colour_; }
-  void setColour(const RGBAColour& colour);
-  void setColourR(const int in);
-  void setColourG(const int in);
-  void setColourB(const int in);
-  void setColourLevel(const int in);
+  void SetColour(const RGBAColour& colour);
+  void SetColourRed(const int in);
+  void SetColourGreen(const int in);
+  void SetColourBlue(const int in);
+  void SetColourLevel(const int in);
 
-  int compositeMode() const { return impl_->composite_mode_; }
-  void setCompositeMode(const int in);
+  int composite_mode() const { return impl_->composite_mode_; }
+  void SetCompositeMode(const int in);
 
-  int scrollRateX() const { return impl_->scroll_rate_x_; }
-  void setScrollRateX(const int x);
+  int scroll_rate_x() const { return impl_->scroll_rate_x_; }
+  void SetScrollRateX(const int x);
 
-  int scrollRateY() const { return impl_->scroll_rate_y_; }
-  void setScrollRateY(const int y);
+  int scroll_rate_y() const { return impl_->scroll_rate_y_; }
+  void SetScrollRateY(const int y);
 
   // Three level zorder.
-  int zOrder() const { return impl_->z_order_; }
-  void setZOrder(const int in);
-  int zLayer() const { return impl_->z_layer_; }
-  void setZLayer(const int in);
-  int zDepth() const { return impl_->z_depth_; }
-  void setZDepth(const int in);
+  int z_order() const { return impl_->z_order_; }
+  void SetZOrder(const int in);
+  int z_layer() const { return impl_->z_layer_; }
+  void SetZLayer(const int in);
+  int z_depth() const { return impl_->z_depth_; }
+  void SetZDepth(const int in);
 
-  int computedAlpha() const;
-  int rawAlpha() const { return impl_->alpha_; }
-  void setAlpha(const int alpha);
-  int alphaAdjustment(int idx) const { return impl_->adjust_alpha_[idx]; }
-  void setAlphaAdjustment(int idx, int alpha);
+  int GetComputedAlpha() const;
+  int raw_alpha() const { return impl_->alpha_; }
+  void SetAlpha(const int alpha);
 
-  bool hasClip() const {
+  int alpha_adjustment(int idx) const { return impl_->adjust_alpha_[idx]; }
+  void SetAlphaAdjustment(int idx, int alpha);
+
+  const Rect& clip_rect() const { return impl_->clip_; }
+  bool has_clip_rect() const {
     return impl_->clip_.width() >= 0 || impl_->clip_.height() >= 0;
   }
-  void clearClip();
-  void setClip(const Rect& rec);
-  const Rect& clipRect() const { return impl_->clip_; }
+  void ClearClipRect();
+  void SetClipRect(const Rect& rec);
 
-  bool hasOwnClip() const {
+  const Rect& own_clip_rect() const { return impl_->own_clip_; }
+  bool has_own_clip_rect() const {
     return impl_->own_clip_.width() >= 0 || impl_->own_clip_.height() >= 0;
   }
-  void clearOwnClip();
-  void setOwnClip(const Rect& rec);
-  const Rect& ownClipRect() const { return impl_->own_clip_; }
+  void ClearOwnClipRect();
+  void SetOwnClipRect(const Rect& rec);
 
-  bool hasObjectData() const { return object_data_.get(); }
+  bool has_object_data() const { return object_data_.get(); }
 
-  GraphicsObjectData& objectData();
-  void setObjectData(GraphicsObjectData* obj);
+  GraphicsObjectData& GetObjectData();
+  void SetObjectData(GraphicsObjectData* obj);
 
   // Render!
-  void render(int objNum, const GraphicsObject* parent, std::ostream* tree);
+  void Render(int objNum, const GraphicsObject* parent, std::ostream* tree);
 
   // Deletes the object data. Corresponds to the RLAPI command obj_delete.
-  void deleteObject();
+  void DeleteObject();
 
   // Clears the impl data without deleting the loaded graphics object.
-  void resetProperties();
+  void ResetProperties();
 
   // Deletes the object data and resets all values in this
   // GraphicsObject. Corresponds to the RLAPI command obj_clear.
-  void clearObject();
+  void ClearObject();
 
-  int wipeCopy() const { return impl_->wipe_copy_; }
-  void setWipeCopy(const int wipe_copy);
+  int wipe_copy() const { return impl_->wipe_copy_; }
+  void SetWipeCopy(const int wipe_copy);
 
   // Called each pass through the gameloop to see if this object needs
   // to force a redraw, or something.
-  void execute(RLMachine& machine);
+  void Execute(RLMachine& machine);
 
   // Text Object accessors
-  void setTextText(const std::string& utf8str);
-  const std::string& textText() const;
+  void SetTextText(const std::string& utf8str);
+  const std::string& GetTextText() const;
 
-  void setTextOps(int size,
+  void SetTextOps(int size,
                   int xspace,
                   int yspace,
                   int char_count,
                   int colour,
                   int shadow);
-  int textSize() const;
-  int textXSpace() const;
-  int textYSpace() const;
-  int textCharCount() const;
-  int textColour() const;
-  int textShadowColour() const;
+  int GetTextSize() const;
+  int GetTextXSpace() const;
+  int GetTextYSpace() const;
+  int GetTextCharCount() const;
+  int GetTextColour() const;
+  int GetTextShadowColour() const;
 
   // Drift object accessors
-  void setDriftOpts(int count,
+  void SetDriftOpts(int count,
                     int use_animation,
                     int start_pattern,
                     int end_pattern,
@@ -236,52 +236,52 @@ class GraphicsObject {
                     int driftspeed,
                     Rect driftarea);
 
-  int driftParticleCount() const;
-  int driftUseAnimation() const;
-  int driftStartPattern() const;
-  int driftEndPattern() const;
-  int driftAnimationTime() const;
-  int driftYSpeed() const;
-  int driftPeriod() const;
-  int driftAmplitude() const;
-  int driftUseDrift() const;
-  int driftUnknown() const;
-  int driftDriftSpeed() const;
-  Rect driftArea() const;
+  int GetDriftParticleCount() const;
+  int GetDriftUseAnimation() const;
+  int GetDriftStartPattern() const;
+  int GetDriftEndPattern() const;
+  int GetDriftAnimationTime() const;
+  int GetDriftYSpeed() const;
+  int GetDriftPeriod() const;
+  int GetDriftAmplitude() const;
+  int GetDriftUseDrift() const;
+  int GetDriftUnknown() const;
+  int GetDriftDriftSpeed() const;
+  Rect GetDriftArea() const;
 
   // Digit object accessors
-  void setDigitValue(int value);
-  void setDigitOpts(int digits, int zero, int sign, int pack, int space);
+  void SetDigitValue(int value);
+  void SetDigitOpts(int digits, int zero, int sign, int pack, int space);
 
-  int digitValue() const;
-  int digitDigits() const;
-  int digitZero() const;
-  int digitSign() const;
-  int digitPack() const;
-  int digitSpace() const;
+  int GetDigitValue() const;
+  int GetDigitDigits() const;
+  int GetDigitZero() const;
+  int GetDigitSign() const;
+  int GetDigitPack() const;
+  int GetDigitSpace() const;
 
   // Button object accessors
-  void setButtonOpts(int action, int se, int group, int button_number);
-  void setButtonState(int state);
+  void SetButtonOpts(int action, int se, int group, int button_number);
+  void SetButtonState(int state);
 
-  int isButton() const;
-  int buttonAction() const;
-  int buttonSe() const;
-  int buttonGroup() const;
-  int buttonNumber() const;
-  int buttonState() const;
+  int IsButton() const;
+  int GetButtonAction() const;
+  int GetButtonSe() const;
+  int GetButtonGroup() const;
+  int GetButtonNumber() const;
+  int GetButtonState() const;
 
   // Called only from ButtonObjectSelectLongOperation. Sets override
   // properties.
-  void setButtonOverrides(int override_pattern,
+  void SetButtonOverrides(int override_pattern,
                           int override_x_offset,
                           int override_y_offset);
-  void clearButtonOverrides();
+  void ClearButtonOverrides();
 
-  bool buttonUsingOverides() const;
-  int buttonPatternOverride() const;
-  int buttonXOffsetOverride() const;
-  int buttonYOffsetOverride() const;
+  bool GetButtonUsingOverides() const;
+  int GetButtonPatternOverride() const;
+  int GetButtonXOffsetOverride() const;
+  int GetButtonYOffsetOverride() const;
 
   // Adds a mutator to the list of active mutators. GraphicsSystem takes
   // ownership of the passed in object.
@@ -299,19 +299,19 @@ class GraphicsObject {
 
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
-  int32_t referenceCount() const { return impl_.use_count(); }
+  int32_t reference_count() const { return impl_.use_count(); }
 
   // Whether we have the default shared data. Only used in unit testing.
-  bool isCleared() const { return impl_ == s_empty_impl; }
+  bool is_cleared() const { return impl_ == s_empty_impl; }
 
  private:
   // Makes the ineternal copy for our copy-on-write semantics. This function
   // checks to see if our Impl object has only one reference to it. If it
   // doesn't, a local copy is made.
-  void makeImplUnique();
+  void MakeImplUnique();
 
   // Immediately delete all mutators; doesn't run their SetToEnd() method.
-  void deleteObjectMutators();
+  void DeleteObjectMutators();
 
   // Implementation data structure. GraphicsObject::Impl is the internal data
   // store for GraphicsObjects' copy-on-write semantics.
@@ -407,7 +407,7 @@ class GraphicsObject {
       void serialize(Archive& ar, unsigned int version);
     };
 
-    void makeSureHaveTextProperties();
+    void MakeSureHaveTextProperties();
     boost::scoped_ptr<TextProperties> text_properties_;
 
     // Drift Object properties
@@ -437,7 +437,7 @@ class GraphicsObject {
       void serialize(Archive& ar, unsigned int version);
     };
 
-    void makeSureHaveDriftProperties();
+    void MakeSureHaveDriftProperties();
     boost::scoped_ptr<DriftProperties> drift_properties_;
 
     // Digit Object properties
@@ -457,7 +457,7 @@ class GraphicsObject {
       void serialize(Archive& ar, unsigned int version);
     };
 
-    void makeSureHaveDigitProperties();
+    void MakeSureHaveDigitProperties();
     boost::scoped_ptr<DigitProperties> digit_properties_;
 
     // Button Object properties
@@ -483,7 +483,7 @@ class GraphicsObject {
       void serialize(Archive& ar, unsigned int version);
     };
 
-    void makeSureHaveButtonProperties();
+    void MakeSureHaveButtonProperties();
     boost::scoped_ptr<ButtonProperties> button_properties_;
 
     // The wipe_copy bit
@@ -512,7 +512,7 @@ class GraphicsObject {
   //
   // I think R23 mentioned that these were called "Parameter Events" in the
   // RLMAX SDK.
-  std::vector<ObjectMutator*> object_mutators_;
+  std::vector<std::unique_ptr<ObjectMutator>> object_mutators_;
 
   friend class boost::serialization::access;
 

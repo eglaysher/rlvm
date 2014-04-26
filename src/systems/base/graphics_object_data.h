@@ -49,72 +49,70 @@ class GraphicsObjectData {
   explicit GraphicsObjectData(const GraphicsObjectData& obj);
   virtual ~GraphicsObjectData();
 
-  AfterAnimation afterAnimation() const { return after_animation_; }
-  void setAfterAction(AfterAnimation after) { after_animation_ = after; }
+  void set_after_action(AfterAnimation after) { after_animation_ = after; }
 
-  void setOwnedBy(GraphicsObject& godata) { owned_by_ = &godata; }
-  GraphicsObject* ownedBy() const { return owned_by_; }
+  void set_owned_by(GraphicsObject& godata) { owned_by_ = &godata; }
 
-  void setCurrentlyPlaying(bool in) { currently_playing_ = in; }
-  bool currentlyPlaying() const { return currently_playing_; }
-
-  virtual void render(const GraphicsObject& go,
-                      const GraphicsObject* parent,
-                      std::ostream* tree);
-
-  virtual int pixelWidth(const GraphicsObject& rendering_properties) = 0;
-  virtual int pixelHeight(const GraphicsObject& rendering_properties) = 0;
-
-  virtual GraphicsObjectData* clone() const = 0;
-
-  virtual void execute(RLMachine& machine) = 0;
-
-  virtual bool isAnimation() const;
-  virtual void playSet(int set);
+  void set_is_currently_playing(bool in) { currently_playing_ = in; }
+  bool is_currently_playing() const { return currently_playing_; }
 
   // Returns when an animation has completed. (This only returns true when
   // afterAnimation() is set to AFTER_NONE.)
-  bool animationFinished() const;
+  bool animation_finished() const { return animation_finished_; }
+
+  virtual void Render(const GraphicsObject& go,
+                      const GraphicsObject* parent,
+                      std::ostream* tree);
+
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) = 0;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) = 0;
+
+  virtual GraphicsObjectData* Clone() const = 0;
+
+  virtual void Execute(RLMachine& machine) = 0;
+
+  virtual bool IsAnimation() const;
+  virtual void PlaySet(int set);
 
   // Whether this object data owns another layer of objects.
-  virtual bool isParentLayer() const { return false; }
+  virtual bool IsParentLayer() const;
 
   // Returns the destination rectangle on the screen to draw srcRect()
   // to. Override to return custom rectangles in the case of a custom animation
   // format.
-  virtual Rect dstRect(const GraphicsObject& go, const GraphicsObject* parent);
+  virtual Rect DstRect(const GraphicsObject& go, const GraphicsObject* parent);
 
  protected:
   // Function called after animation ends when this object has been
   // set up to loop. Default implementation does nothing.
-  virtual void loopAnimation();
+  virtual void LoopAnimation();
 
   // Takes the specified action when we've reached the last frame of
   // animation.
-  void endAnimation();
+  void EndAnimation();
 
   void PrintGraphicsObjectToTree(const GraphicsObject& go, std::ostream* tree);
 
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.
-  virtual boost::shared_ptr<const Surface> currentSurface(
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
       const GraphicsObject& rp) = 0;
 
   // Returns the rectangle in currentSurface() to draw to the screen. Override
   // to return custom rectangles in the case of a custom animation format.
-  virtual Rect srcRect(const GraphicsObject& go);
+  virtual Rect SrcRect(const GraphicsObject& go);
 
   // Returns the offset to the destination, which is set on a per surface
   // basis. This template method can be ignored if you override dstRect().
-  virtual Point dstOrigin(const GraphicsObject& go);
+  virtual Point DstOrigin(const GraphicsObject& go);
 
   // Controls the alpha during rendering. Default implementation just consults
   // the GraphicsObject.
-  virtual int getRenderingAlpha(const GraphicsObject& go,
+  virtual int GetRenderingAlpha(const GraphicsObject& go,
                                 const GraphicsObject* parent);
 
   // Prints a description of this object for the RenderTree log.
-  virtual void objectInfo(std::ostream& tree) = 0;
+  virtual void ObjectInfo(std::ostream& tree) = 0;
 
  private:
   // Policy of what to do after an animation is finished.

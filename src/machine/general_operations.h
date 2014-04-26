@@ -47,47 +47,47 @@ class CGMTable;
 // Templated implementation details:
 #include "machine/general_operations_impl.h"
 
-// callFunction(), the public interface to all the above binder classes.
+// CallFunction(), the public interface to all the above binder classes.
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)(const int)) {
+RLOperation* CallFunction(void (OBJTYPE::*s)(const int)) {
   return new binderImpl::Op_CallWithInt<OBJTYPE>(s);
 }
 
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)(RLMachine&, const int)) {
+RLOperation* CallFunction(void (OBJTYPE::*s)(RLMachine&, const int)) {
   return new binderImpl::Op_CallWithMachineInt<OBJTYPE>(s);
 }
 
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)(RLMachine&,
+RLOperation* CallFunction(void (OBJTYPE::*s)(RLMachine&,
                                              const int,
                                              const int)) {
   return new binderImpl::Op_CallWithMachineIntInt<OBJTYPE>(s);
 }
 
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)(const int, const int)) {
+RLOperation* CallFunction(void (OBJTYPE::*s)(const int, const int)) {
   return new binderImpl::Op_CallWithIntInt<OBJTYPE>(s);
 }
 
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)(const std::string&)) {
+RLOperation* CallFunction(void (OBJTYPE::*s)(const std::string&)) {
   return new binderImpl::Op_CallWithString<OBJTYPE>(s);
 }
 
 template <typename OBJTYPE>
-RLOperation* callFunction(void (OBJTYPE::*s)()) {
+RLOperation* CallFunction(void (OBJTYPE::*s)()) {
   return new binderImpl::Op_CallMethod<OBJTYPE>(s);
 }
 
 // Calls the incoming function with value.
 template <typename OBJTYPE, typename VALTYPE>
-RLOperation* callFunctionWith(void (OBJTYPE::*s)(VALTYPE), VALTYPE val) {
+RLOperation* CallFunctionWith(void (OBJTYPE::*s)(VALTYPE), VALTYPE val) {
   return new binderImpl::Op_CallWithConstant<OBJTYPE, VALTYPE>(s, val);
 }
 
 template <typename OBJTYPE, typename VALONE, typename VALTWO>
-RLOperation* callFunctionWith(void (OBJTYPE::*s)(VALONE, VALTWO),
+RLOperation* CallFunctionWith(void (OBJTYPE::*s)(VALONE, VALTWO),
                               VALONE one,
                               VALTWO two) {
   return new binderImpl::Op_CallWithConstantConstant<OBJTYPE, VALONE, VALTWO>(
@@ -96,22 +96,22 @@ RLOperation* callFunctionWith(void (OBJTYPE::*s)(VALONE, VALTWO),
 
 // Returns the int value of the passed in function as the store register.
 template <typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE (*s)()) {
+RLOperation* ReturnIntValue(RETTYPE (*s)()) {
   return new binderImpl::Op_ReturnFunctionIntValue<RETTYPE>(s);
 }
 
 template <typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)() const) {
+RLOperation* ReturnIntValue(RETTYPE (OBJTYPE::*s)() const) {
   return new binderImpl::Op_ReturnIntValue<OBJTYPE, RETTYPE>(s);
 }
 
 template <typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)(int) const) {
+RLOperation* ReturnIntValue(RETTYPE (OBJTYPE::*s)(int) const) {
   return new binderImpl::Op_ReturnIntValueWithInt<OBJTYPE, RETTYPE>(s);
 }
 
 template <typename OBJTYPE, typename RETTYPE>
-RLOperation* returnIntValue(RETTYPE (OBJTYPE::*s)(const std::string&) const) {
+RLOperation* ReturnIntValue(RETTYPE (OBJTYPE::*s)(const std::string&) const) {
   return new binderImpl::Op_ReturnIntValueWithString<OBJTYPE, RETTYPE>(s);
 }
 
@@ -121,7 +121,7 @@ RLOperation* returnStringValue(const std::string& (OBJTYPE::*s)()
   return new binderImpl::Op_ReturnStringValue<OBJTYPE>(s);
 }
 
-// Special adapter for multiple dispatch versions of operations. This
+// Special adapter for multiple Dispatch versions of operations. This
 // operation structure will take a Argc_T<  >
 //
 // For example, consider the two functions @c InitFrame and @c
@@ -140,8 +140,9 @@ class MultiDispatch : public RLOp_SpecialCase {
   explicit MultiDispatch(RLOperation* op);
   ~MultiDispatch();
 
-  void parseParameters(const std::vector<std::string>& input,
-                       libreallive::ExpressionPiecesVector& output);
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override;
 
   virtual void operator()(RLMachine& machine,
                           const libreallive::CommandElement& ff);
@@ -155,7 +156,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
  public:
   ReturnGameexeInt(const std::string& full_key, int en);
 
-  virtual int operator()(RLMachine& machine);
+  virtual int operator()(RLMachine& machine) override;
 
  private:
   std::string full_key_name_;
@@ -167,7 +168,7 @@ class InvokeSyscomAsOp : public RLOp_Void_Void {
  public:
   explicit InvokeSyscomAsOp(const int syscom);
 
-  virtual void operator()(RLMachine& machine);
+  virtual void operator()(RLMachine& machine) override;
 
  private:
   int syscom_;
@@ -183,19 +184,22 @@ class UndefinedFunction : public RLOp_SpecialCase {
                     int opcode,
                     int overload);
 
-  // A note on UGLY HACKS: We need to override RLOp_SpecialCase::dispatch()
+  // A note on UGLY HACKS: We need to override RLOp_SpecialCase::Dispatch()
   // because that's the entry point when using ChildObjAdapter. So we overload
   // all these methods so we error as early as possible when trying to use this
   // invalid opcode.
 
   // RLOp_SpecialCase:
-  virtual void dispatch(RLMachine& machine,
-                        const libreallive::ExpressionPiecesVector& parameters);
-  virtual void dispatchFunction(RLMachine& machine,
-                                const libreallive::CommandElement& f);
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output);
-  virtual void operator()(RLMachine&, const libreallive::CommandElement&);
+  virtual void Dispatch(
+      RLMachine& machine,
+      const libreallive::ExpressionPiecesVector& parameters) override;
+  virtual void DispatchFunction(RLMachine& machine,
+                                const libreallive::CommandElement& f) override;
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override;
+  virtual void operator()(RLMachine&,
+                          const libreallive::CommandElement&) override;
 
  private:
   std::string name_;

@@ -50,27 +50,27 @@ PauseLongOperation::PauseLongOperation(RLMachine& machine)
 
   // Initialize Auto Mode (in case it's activated, or in case it gets
   // activated)
-  int numChars = text.currentPage().number_of_chars_on_page();
-  automode_time_ = text.getAutoTime(numChars);
-  time_at_last_pass_ = event.getTicks();
+  int numChars = text.GetCurrentPage().number_of_chars_on_page();
+  automode_time_ = text.GetAutoTime(numChars);
+  time_at_last_pass_ = event.GetTicks();
   total_time_ = 0;
 
-  machine_.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
+  machine_.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
 
   // We undo this in the destructor
-  text.setInPauseState(true);
+  text.set_in_pause_state(true);
 }
 
 PauseLongOperation::~PauseLongOperation() {
-  machine_.system().text().setInPauseState(false);
+  machine_.system().text().set_in_pause_state(false);
 }
 
-void PauseLongOperation::mouseMotion(const Point& p) {
+void PauseLongOperation::MouseMotion(const Point& p) {
   // Tell the text system about the move
-  machine_.system().text().setMousePosition(p);
+  machine_.system().text().SetMousePosition(p);
 }
 
-bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                  bool pressed) {
   GraphicsSystem& graphics = machine_.system().graphics();
   EventSystem& es = machine_.system().event();
@@ -79,23 +79,23 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
 
   switch (mouseButton) {
     case MOUSE_LEFT: {
-      Point pos = es.getCursorPos();
+      Point pos = es.GetCursorPos();
       // Only unhide the interface on release of the left mouse button
-      if (graphics.interfaceHidden()) {
+      if (graphics.is_interface_hidden()) {
         if (!pressed) {
-          graphics.toggleInterfaceHidden();
+          graphics.ToggleInterfaceHidden();
           return true;
         }
-      } else if (!text.handleMouseClick(machine_, pos, pressed)) {
+      } else if (!text.HandleMouseClick(machine_, pos, pressed)) {
         // We *must* only respond on mouseups! This detail matters because in
         // rlBabel, if glosses are enabled, an spause() is called and then the
         // mouse button value returned by GetCursorPos needs to be "2" for the
         // rest of the gloss implementation to work. If we respond on a
         // mousedown, then it'll return "1" instead.
         if (!pressed) {
-          if (text.isReadingBacklog()) {
+          if (text.IsReadingBacklog()) {
             // Move back to the main page.
-            text.stopReadingBacklog();
+            text.StopReadingBacklog();
           } else {
             is_done_ = true;
           }
@@ -107,19 +107,19 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
     }
     case MOUSE_RIGHT:
       if (!pressed) {
-        machine_.system().showSyscomMenu(machine_);
+        machine_.system().ShowSyscomMenu(machine_);
         return true;
       }
       break;
     case MOUSE_WHEELUP:
       if (pressed) {
-        text.backPage();
+        text.BackPage();
         return true;
       }
       break;
     case MOUSE_WHEELDOWN:
       if (pressed) {
-        text.forwardPage();
+        text.ForwardPage();
         return true;
       }
       break;
@@ -130,34 +130,34 @@ bool PauseLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   bool handled = false;
 
   if (pressed) {
     GraphicsSystem& graphics = machine_.system().graphics();
 
-    if (graphics.interfaceHidden()) {
-      graphics.toggleInterfaceHidden();
+    if (graphics.is_interface_hidden()) {
+      graphics.ToggleInterfaceHidden();
       handled = true;
     } else {
       TextSystem& text = machine_.system().text();
-      bool ctrlKeySkips = text.ctrlKeySkip();
+      bool ctrl_key_skips = text.ctrl_key_skip();
 
-      if (ctrlKeySkips && (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
+      if (ctrl_key_skips && (keyCode == RLKEY_RCTRL || keyCode == RLKEY_LCTRL)) {
         is_done_ = true;
         handled = true;
       } else if (keyCode == RLKEY_SPACE) {
-        graphics.toggleInterfaceHidden();
+        graphics.ToggleInterfaceHidden();
         handled = true;
       } else if (keyCode == RLKEY_UP) {
-        text.backPage();
+        text.BackPage();
         handled = true;
       } else if (keyCode == RLKEY_DOWN) {
-        text.forwardPage();
+        text.ForwardPage();
         handled = true;
       } else if (keyCode == RLKEY_RETURN) {
-        if (text.isReadingBacklog())
-          text.stopReadingBacklog();
+        if (text.IsReadingBacklog())
+          text.StopReadingBacklog();
         else
           is_done_ = true;
 
@@ -171,30 +171,30 @@ bool PauseLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
 
 bool PauseLongOperation::operator()(RLMachine& machine) {
   // Check to see if we're done because of the auto mode timer
-  if (machine_.system().text().autoMode()) {
-    if (AutomodeTimerFired() && !machine_.system().sound().koePlaying())
+  if (machine_.system().text().auto_mode()) {
+    if (AutomodeTimerFired() && !machine_.system().sound().KoePlaying())
       is_done_ = true;
   }
 
   // Check to see if we're done because we're being asked to pause on a piece
   // of text we've already hit.
-  if (machine_.system().fastForward())
+  if (machine_.system().ShouldFastForward())
     is_done_ = true;
 
   if (is_done_) {
     // Stop all voices before continuing.
-    machine_.system().sound().koeStop();
+    machine_.system().sound().KoeStop();
   }
 
   return is_done_;
 }
 
 bool PauseLongOperation::AutomodeTimerFired() {
-  int current_time = machine_.system().event().getTicks();
+  int current_time = machine_.system().event().GetTicks();
   int time_since_last_pass = current_time - time_at_last_pass_;
   time_at_last_pass_ = current_time;
 
-  if (machine_.system().event().timeOfLastMouseMove() < (current_time - 2000)) {
+  if (machine_.system().event().TimeOfLastMouseMove() < (current_time - 2000)) {
     // If the mouse has been moved within the last two seconds, don't advance
     // the timer so the user has a chance to click on buttons.
     total_time_ += time_since_last_pass;
@@ -212,11 +212,11 @@ NewPageAfterLongop::NewPageAfterLongop(LongOperation* inOp)
 
 NewPageAfterLongop::~NewPageAfterLongop() {}
 
-void NewPageAfterLongop::performAfterLongOperation(RLMachine& machine) {
+void NewPageAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
   TextSystem& text = machine.system().text();
-  text.snapshot();
-  text.currentWindow()->clearWin();
-  text.newPageOnWindow(text.activeWindow());
+  text.Snapshot();
+  text.GetCurrentWindow()->ClearWin();
+  text.NewPageOnWindow(text.active_window());
 }
 
 // -----------------------------------------------------------------------
@@ -227,12 +227,12 @@ NewPageOnAllAfterLongop::NewPageOnAllAfterLongop(LongOperation* inOp)
 
 NewPageOnAllAfterLongop::~NewPageOnAllAfterLongop() {}
 
-void NewPageOnAllAfterLongop::performAfterLongOperation(RLMachine& machine) {
+void NewPageOnAllAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
   TextSystem& text = machine.system().text();
-  text.snapshot();
-  for (int window : text.activeWindows()) {
-    text.textWindow(window)->clearWin();
-    text.newPageOnWindow(window);
+  text.Snapshot();
+  for (int window : text.GetActiveWindows()) {
+    text.GetTextWindow(window)->ClearWin();
+    text.NewPageOnWindow(window);
   }
 }
 
@@ -244,8 +244,8 @@ NewParagraphAfterLongop::NewParagraphAfterLongop(LongOperation* inOp)
 
 NewParagraphAfterLongop::~NewParagraphAfterLongop() {}
 
-void NewParagraphAfterLongop::performAfterLongOperation(RLMachine& machine) {
-  TextPage& page = machine.system().text().currentPage();
+void NewParagraphAfterLongop::PerformAfterLongOperation(RLMachine& machine) {
+  TextPage& page = machine.system().text().GetCurrentPage();
   page.ResetIndentation();
   page.HardBrake();
 }

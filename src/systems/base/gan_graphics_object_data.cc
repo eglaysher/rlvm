@@ -78,16 +78,16 @@ GanGraphicsObjectData::GanGraphicsObjectData(System& system,
       current_set_(-1),
       current_frame_(-1),
       time_at_last_frame_change_(0) {
-  load();
+  LoadGANData();
 }
 
 GanGraphicsObjectData::~GanGraphicsObjectData() {}
 
-void GanGraphicsObjectData::load() {
-  image_ = system_.graphics().getSurfaceNamed(img_filename_);
+void GanGraphicsObjectData::LoadGANData() {
+  image_ = system_.graphics().GetSurfaceNamed(img_filename_);
   image_->EnsureUploaded();
 
-  fs::path gan_file_path = system_.findFile(gan_filename_, GAN_FILETYPES);
+  fs::path gan_file_path = system_.FindFile(gan_filename_, GAN_FILETYPES);
   if (gan_file_path.empty()) {
     ostringstream oss;
     oss << "Could not find GAN file \"" << gan_filename_ << "\".";
@@ -96,17 +96,17 @@ void GanGraphicsObjectData::load() {
 
   int file_size = 0;
   std::unique_ptr<char[]> gan_data;
-  if (loadFileData(gan_file_path, gan_data, file_size)) {
+  if (LoadFileData(gan_file_path, gan_data, file_size)) {
     ostringstream oss;
     oss << "Could not read the contents of \"" << gan_file_path << "\"";
     throw rlvm::Exception(oss.str());
   }
 
-  testFileMagic(gan_filename_, gan_data, file_size);
-  readData(gan_filename_, gan_data, file_size);
+  TestFileMagic(gan_filename_, gan_data, file_size);
+  ReadData(gan_filename_, gan_data, file_size);
 }
 
-void GanGraphicsObjectData::testFileMagic(const std::string& file_name,
+void GanGraphicsObjectData::TestFileMagic(const std::string& file_name,
                                           std::unique_ptr<char[]>& gan_data,
                                           int file_size) {
   const char* data = gan_data.get();
@@ -115,10 +115,10 @@ void GanGraphicsObjectData::testFileMagic(const std::string& file_name,
   int c = read_i32(data + 0x08);
 
   if (a != 10000 || b != 10000 || c != 10100)
-    throwBadFormat(file_name, "Incorrect GAN file magic");
+    ThrowBadFormat(file_name, "Incorrect GAN file magic");
 }
 
-void GanGraphicsObjectData::readData(const std::string& file_name,
+void GanGraphicsObjectData::ReadData(const std::string& file_name,
                                      std::unique_ptr<char[]>& gan_data,
                                      int file_size) {
   const char* data = gan_data.get();
@@ -128,12 +128,12 @@ void GanGraphicsObjectData::readData(const std::string& file_name,
   // Strings should be NULL terminated.
   data = data + 0x10 + file_name_length - 1;
   if (*data != 0)
-    throwBadFormat(file_name, "Incorrect filename length in GAN header");
+    ThrowBadFormat(file_name, "Incorrect filename length in GAN header");
   data++;
 
   int twenty_thousand = read_i32(data);
   if (twenty_thousand != 20000)
-    throwBadFormat(file_name, "Expected start of GAN data section");
+    ThrowBadFormat(file_name, "Expected start of GAN data section");
   data += 4;
 
   int number_of_sets = read_i32(data);
@@ -142,23 +142,23 @@ void GanGraphicsObjectData::readData(const std::string& file_name,
   for (int i = 0; i < number_of_sets; ++i) {
     int start_of_ganset = read_i32(data);
     if (start_of_ganset != 0x7530)
-      throwBadFormat(file_name, "Expected start of GAN set");
+      ThrowBadFormat(file_name, "Expected start of GAN set");
 
     data += 4;
     int frame_count = read_i32(data);
     if (frame_count < 0)
-      throwBadFormat(file_name,
+      ThrowBadFormat(file_name,
                      "Expected animation to contain at least one frame");
     data += 4;
 
     vector<Frame> animation_set;
     for (int j = 0; j < frame_count; ++j)
-      animation_set.push_back(readSetFrame(file_name, data));
+      animation_set.push_back(ReadSetFrame(file_name, data));
     animation_sets.push_back(animation_set);
   }
 }
 
-GanGraphicsObjectData::Frame GanGraphicsObjectData::readSetFrame(
+GanGraphicsObjectData::Frame GanGraphicsObjectData::ReadSetFrame(
     const std::string& file_name,
     const char*& data) {
   GanGraphicsObjectData::Frame frame;
@@ -191,7 +191,7 @@ GanGraphicsObjectData::Frame GanGraphicsObjectData::readSetFrame(
       default: {
         ostringstream oss;
         oss << "Unknown GAN frame tag: " << tag;
-        throwBadFormat(file_name, oss.str());
+        ThrowBadFormat(file_name, oss.str());
       }
     }
 
@@ -202,7 +202,7 @@ GanGraphicsObjectData::Frame GanGraphicsObjectData::readSetFrame(
   return frame;
 }
 
-void GanGraphicsObjectData::throwBadFormat(const std::string& file_name,
+void GanGraphicsObjectData::ThrowBadFormat(const std::string& file_name,
                                            const std::string& error) {
   ostringstream oss;
   oss << "File \"" << file_name
@@ -210,13 +210,13 @@ void GanGraphicsObjectData::throwBadFormat(const std::string& file_name,
   throw rlvm::Exception(oss.str());
 }
 
-int GanGraphicsObjectData::pixelWidth(
+int GanGraphicsObjectData::PixelWidth(
     const GraphicsObject& rendering_properties) {
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return int(rendering_properties.getWidthScaleFactor() *
+      const Surface::GrpRect& rect = image_->GetPattern(frame.pattern);
+      return int(rendering_properties.GetWidthScaleFactor() *
                  rect.rect.width());
     }
   }
@@ -224,13 +224,13 @@ int GanGraphicsObjectData::pixelWidth(
   return 0;
 }
 
-int GanGraphicsObjectData::pixelHeight(
+int GanGraphicsObjectData::PixelHeight(
     const GraphicsObject& rendering_properties) {
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
     if (frame.pattern != -1) {
-      const Surface::GrpRect& rect = image_->getPattern(frame.pattern);
-      return int(rendering_properties.getHeightScaleFactor() *
+      const Surface::GrpRect& rect = image_->GetPattern(frame.pattern);
+      return int(rendering_properties.GetHeightScaleFactor() *
                  rect.rect.height());
     }
   }
@@ -238,13 +238,13 @@ int GanGraphicsObjectData::pixelHeight(
   return 0;
 }
 
-GraphicsObjectData* GanGraphicsObjectData::clone() const {
+GraphicsObjectData* GanGraphicsObjectData::Clone() const {
   return new GanGraphicsObjectData(*this);
 }
 
-void GanGraphicsObjectData::execute(RLMachine& machine) {
-  if (currentlyPlaying() && current_frame_ >= 0) {
-    unsigned int current_time = system_.event().getTicks();
+void GanGraphicsObjectData::Execute(RLMachine& machine) {
+  if (is_currently_playing() && current_frame_ >= 0) {
+    unsigned int current_time = system_.event().GetTicks();
     unsigned int time_since_last_frame_change =
         current_time - time_at_last_frame_change_;
 
@@ -256,18 +256,18 @@ void GanGraphicsObjectData::execute(RLMachine& machine) {
         current_frame_--;
         // endAnimation() can delete this, so it needs to be the last thing
         // done in this code path...
-        endAnimation();
+        EndAnimation();
       } else {
         time_at_last_frame_change_ = current_time;
-        system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+        system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
       }
     }
   }
 }
 
-void GanGraphicsObjectData::loopAnimation() { current_frame_ = 0; }
+void GanGraphicsObjectData::LoopAnimation() { current_frame_ = 0; }
 
-boost::shared_ptr<const Surface> GanGraphicsObjectData::currentSurface(
+boost::shared_ptr<const Surface> GanGraphicsObjectData::CurrentSurface(
     const GraphicsObject& go) {
   if (current_set_ != -1 && current_frame_ != -1) {
     const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
@@ -282,47 +282,47 @@ boost::shared_ptr<const Surface> GanGraphicsObjectData::currentSurface(
   return boost::shared_ptr<const Surface>();
 }
 
-Rect GanGraphicsObjectData::srcRect(const GraphicsObject& go) {
+Rect GanGraphicsObjectData::SrcRect(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
-    return image_->getPattern(frame.pattern).rect;
+    return image_->GetPattern(frame.pattern).rect;
   }
 
   return Rect();
 }
 
-Point GanGraphicsObjectData::dstOrigin(const GraphicsObject& go) {
+Point GanGraphicsObjectData::DstOrigin(const GraphicsObject& go) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
-  return GraphicsObjectData::dstOrigin(go) - Size(frame.x, frame.y);
+  return GraphicsObjectData::DstOrigin(go) - Size(frame.x, frame.y);
 }
 
-int GanGraphicsObjectData::getRenderingAlpha(const GraphicsObject& go,
+int GanGraphicsObjectData::GetRenderingAlpha(const GraphicsObject& go,
                                              const GraphicsObject* parent) {
   const Frame& frame = animation_sets.at(current_set_).at(current_frame_);
   if (frame.pattern != -1) {
     // Calculate the combination of our frame alpha with the current object
     // alpha.
-    float parent_alpha = parent ? (parent->computedAlpha() / 255.0f) : 1;
-    return int(((frame.alpha / 255.0f) * (go.computedAlpha() / 255.0f) *
+    float parent_alpha = parent ? (parent->GetComputedAlpha() / 255.0f) : 1;
+    return int(((frame.alpha / 255.0f) * (go.GetComputedAlpha() / 255.0f) *
                 parent_alpha) *
                255);
   } else {
     // Should never happen.
-    return go.computedAlpha();
+    return go.GetComputedAlpha();
   }
 }
 
-void GanGraphicsObjectData::objectInfo(std::ostream& tree) {
+void GanGraphicsObjectData::ObjectInfo(std::ostream& tree) {
   tree << "  GAN file: " << gan_filename_ << " (Using image: " << img_filename_
        << ")" << endl;
 }
 
-void GanGraphicsObjectData::playSet(int set) {
-  setCurrentlyPlaying(true);
+void GanGraphicsObjectData::PlaySet(int set) {
+  set_is_currently_playing(true);
   current_set_ = set;
   current_frame_ = 0;
-  time_at_last_frame_change_ = system_.event().getTicks();
-  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  time_at_last_frame_change_ = system_.event().GetTicks();
+  system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 template <class Archive>
@@ -331,14 +331,14 @@ void GanGraphicsObjectData::load(Archive& ar, unsigned int version) {
       gan_filename_ & img_filename_ & current_set_ & current_frame_ &
       time_at_last_frame_change_;
 
-  load();
+  LoadGANData();
 
   // Saving |time_at_last_frame_change_| as part of the format is obviously a
   // mistake, but is now baked into the file format. Ask the clock for a more
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
-    time_at_last_frame_change_ = system_.event().getTicks();
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    time_at_last_frame_change_ = system_.event().GetTicks();
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 

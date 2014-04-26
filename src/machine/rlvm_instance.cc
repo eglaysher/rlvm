@@ -104,19 +104,19 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
     if (dump_seen_ != -1) {
-      libreallive::Scenario* scenario = arc.scenario(dump_seen_);
+      libreallive::Scenario* scenario = arc.GetScenario(dump_seen_);
       DumpScenario(scenario);
       return;
     }
 
     SDLSystem sdlSystem(gameexe);
     RLMachine rlmachine(sdlSystem, arc);
-    addAllModules(rlmachine);
-    addGameHacks(rlmachine);
+    AddAllModules(rlmachine);
+    AddGameHacks(rlmachine);
 
     // Validate our font file
     // TODO(erg): Remove this when we switch to native font selection dialogs.
-    fs::path fontFile = findFontFile(sdlSystem);
+    fs::path fontFile = FindFontFile(sdlSystem);
     if (fontFile.empty() || !fs::exists(fontFile)) {
       throw rlvm::UserPresentableError(
           _("Could not find msgothic.ttc or a suitable fallback font."),
@@ -127,14 +127,14 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     // Initialize our platform dialogs (we have to do this after
     // looking for a font because we use that font internally).
     boost::shared_ptr<Platform> platform(
-        new GCNPlatform(sdlSystem, sdlSystem.graphics().screenRect()));
-    sdlSystem.setPlatform(platform);
+        new GCNPlatform(sdlSystem, sdlSystem.graphics().screen_rect()));
+    sdlSystem.SetPlatform(platform);
 
     if (undefined_opcodes_)
-      rlmachine.setPrintUndefinedOpcodes(true);
+      rlmachine.SetPrintUndefinedOpcodes(true);
 
     if (count_undefined_copcodes_)
-      rlmachine.recordUndefinedOpcodeCounts();
+      rlmachine.RecordUndefinedOpcodeCounts();
 
     Serialization::loadGlobalMemory(rlmachine);
 
@@ -143,7 +143,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     // user data is going to be screwed!
     DoUserNameCheck(rlmachine);
 
-    rlmachine.setHaltOnException(false);
+    rlmachine.SetHaltOnException(false);
 
     if (load_save_ != -1)
       Sys_load()(rlmachine, load_save_);
@@ -151,30 +151,30 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     while (!rlmachine.halted()) {
       // Give SDL a chance to respond to events, redraw the screen,
       // etc.
-      sdlSystem.run(rlmachine);
+      sdlSystem.Run(rlmachine);
 
       // Run the rlmachine through as many instructions as we can in a 10ms time
       // slice. Bail out if we switch to long operation mode, or if the screen
       // is marked as dirty.
-      unsigned int start_ticks = sdlSystem.event().getTicks();
+      unsigned int start_ticks = sdlSystem.event().GetTicks();
       unsigned int end_ticks = start_ticks;
       do {
-        rlmachine.executeNextInstruction();
-        end_ticks = sdlSystem.event().getTicks();
-      } while (!rlmachine.currentLongOperation() &&
-               !sdlSystem.forceWait() &&
+        rlmachine.ExecuteNextInstruction();
+        end_ticks = sdlSystem.event().GetTicks();
+      } while (!rlmachine.CurrentLongOperation() &&
+               !sdlSystem.force_wait() &&
                (end_ticks - start_ticks < 10));
 
       // Sleep to be nice to the processor and to give the GPU a chance to
       // catch up.
-      if (!sdlSystem.fastForward()) {
+      if (!sdlSystem.ShouldFastForward()) {
         int real_sleep_time = 10 - (end_ticks - start_ticks);
         if (real_sleep_time < 1)
           real_sleep_time = 1;
-        sdlSystem.event().wait(real_sleep_time);
+        sdlSystem.event().Wait(real_sleep_time);
       }
 
-      sdlSystem.setForceWait(false);
+      sdlSystem.set_force_wait(false);
     }
 
     Serialization::saveGlobalMemory(rlmachine);
@@ -210,7 +210,7 @@ void RLVMInstance::ReportFatalError(const std::string& message_text,
 
 void RLVMInstance::DoUserNameCheck(RLMachine& machine) {
   try {
-    int encoding = machine.getProbableEncodingType();
+    int encoding = machine.GetProbableEncodingType();
 
     // Iterate over all the names in both global and local memory banks.
     GlobalMemory& g = machine.memory().global();
@@ -243,7 +243,7 @@ boost::filesystem::path RLVMInstance::FindGameFile(
     const boost::filesystem::path& gamerootPath,
     const std::string& filename) {
   fs::path search_for = gamerootPath / filename;
-  fs::path corrected_path = correctPathCase(search_for);
+  fs::path corrected_path = CorrectPathCase(search_for);
   if (corrected_path.empty()) {
     throw rlvm::UserPresentableError(
         _("Could not load game"),
@@ -258,7 +258,7 @@ void RLVMInstance::CheckBadEngine(const boost::filesystem::path& gamerootPath,
                                   const char** filenames,
                                   const std::string& message_text) {
   for (const char** cur_file = filenames; *cur_file; cur_file++) {
-    if (fs::exists(correctPathCase(gamerootPath / *cur_file))) {
+    if (fs::exists(CorrectPathCase(gamerootPath / *cur_file))) {
       throw rlvm::UserPresentableError(message_text,
                                        _("rlvm can only play RealLive games."));
     }

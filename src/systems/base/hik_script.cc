@@ -63,16 +63,16 @@ std::string consume_string(const char*& curpointer) {
 }  // namespace
 
 HIKScript::HIKScript(System& system, const fs::path& file) {
-  loadHikFile(system, file);
+  LoadHikFile(system, file);
 }
 
 HIKScript::~HIKScript() {}
 
-void HIKScript::loadHikFile(System& system, const fs::path& file) {
+void HIKScript::LoadHikFile(System& system, const fs::path& file) {
   // This is dumb. This all needs to rewritten as either FILE or stream.
   int file_size = 0;
   std::unique_ptr<char[]> hik_data;
-  if (loadFileData(file, hik_data, file_size)) {
+  if (LoadFileData(file, hik_data, file_size)) {
     std::ostringstream oss;
     oss << "Could not read the contents of \"" << file << "\"";
     throw rlvm::Exception(oss.str());
@@ -120,7 +120,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
       case 20101: {
         int x = consume_i32(curpointer);
         int y = consume_i32(curpointer);
-        currentLayer().top_offset = Point(x, y);
+        CurrentLayer().top_offset = Point(x, y);
         break;
       }
       case 21000: {
@@ -158,21 +158,21 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         break;
       }
       case 21200: {
-        currentLayer().use_scrolling = consume_i32(curpointer);
+        CurrentLayer().use_scrolling = consume_i32(curpointer);
         break;
       }
       case 21201: {
         int x = consume_i32(curpointer);
         int y = consume_i32(curpointer);
-        currentLayer().start_point = Point(x, y);
+        CurrentLayer().start_point = Point(x, y);
         x = consume_i32(curpointer);
         y = consume_i32(curpointer);
-        currentLayer().end_point = Point(x, y);
+        CurrentLayer().end_point = Point(x, y);
         break;
       }
       case 21202: {
-        currentLayer().x_scroll_time_ms = consume_i32(curpointer);
-        currentLayer().y_scroll_time_ms = consume_i32(curpointer);
+        CurrentLayer().x_scroll_time_ms = consume_i32(curpointer);
+        CurrentLayer().y_scroll_time_ms = consume_i32(curpointer);
         break;
       }
       case 21203: {
@@ -180,7 +180,7 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         break;
       }
       case 21301: {
-        currentLayer().use_clip_area = consume_i32(curpointer);
+        CurrentLayer().use_clip_area = consume_i32(curpointer);
         break;
       }
       case 21300: {
@@ -189,32 +189,32 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         int y = consume_i32(curpointer);
         int x2 = consume_i32(curpointer);
         int y2 = consume_i32(curpointer);
-        currentLayer().clip_area = Rect::GRP(x, y, x2, y2);
+        CurrentLayer().clip_area = Rect::GRP(x, y, x2, y2);
         break;
       }
       case 30000: {
-        currentLayer().number_of_animations = consume_i32(curpointer);
+        CurrentLayer().number_of_animations = consume_i32(curpointer);
         break;
       }
       case 30001: {
         consume_i32(curpointer);
-        currentLayer().animations.push_back(Animation());
+        CurrentLayer().animations.push_back(Animation());
         break;
       }
       case 30100: {
-        currentAnimation().use_multiframe_animation = consume_i32(curpointer);
+        CurrentAnimation().use_multiframe_animation = consume_i32(curpointer);
         break;
       }
       case 30101: {
-        currentAnimation().i_30101 = consume_i32(curpointer);
+        CurrentAnimation().i_30101 = consume_i32(curpointer);
         break;
       }
       case 30102: {
-        currentAnimation().i_30102 = consume_i32(curpointer);
+        CurrentAnimation().i_30102 = consume_i32(curpointer);
         break;
       }
       case 40000: {
-        currentAnimation().number_of_frames = consume_i32(curpointer);
+        CurrentAnimation().number_of_frames = consume_i32(curpointer);
         break;
       }
       case 40101: {
@@ -222,11 +222,11 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
           consume_i32(curpointer);
         }
 
-        currentAnimation().frames.push_back(Frame());
+        CurrentAnimation().frames.push_back(Frame());
         break;
       }
       case 40102: {
-        currentFrame().opacity = consume_i32(curpointer);
+        CurrentFrame().opacity = consume_i32(curpointer);
         break;
       }
       case 40103: {
@@ -235,9 +235,9 @@ void HIKScript::loadHikFile(System& system, const fs::path& file) {
         break;
       }
       case 40100: {
-        Frame& frame = currentFrame();
+        Frame& frame = CurrentFrame();
         frame.image = consume_string(curpointer);
-        frame.surface = system.graphics().getSurfaceNamed(frame.image);
+        frame.surface = system.graphics().GetSurfaceNamed(frame.image);
         if (!frame.surface) {
           std::ostringstream oss;
           oss << "Could not load image " << frame.image << " for HIK";
@@ -281,7 +281,7 @@ void HIKScript::EnsureUploaded() {
   }
 }
 
-HIKScript::Layer& HIKScript::currentLayer() {
+HIKScript::Layer& HIKScript::CurrentLayer() {
   if (layers_.size() == 0) {
     throw rlvm::Exception("Invalid layer reference");
   }
@@ -289,8 +289,8 @@ HIKScript::Layer& HIKScript::currentLayer() {
   return layers_.back();
 }
 
-HIKScript::Animation& HIKScript::currentAnimation() {
-  Layer& layer = currentLayer();
+HIKScript::Animation& HIKScript::CurrentAnimation() {
+  Layer& layer = CurrentLayer();
   if (layer.animations.size() == 0) {
     throw rlvm::Exception("Invalid unkowns reference");
   }
@@ -298,8 +298,8 @@ HIKScript::Animation& HIKScript::currentAnimation() {
   return layer.animations.back();
 }
 
-HIKScript::Frame& HIKScript::currentFrame() {
-  Animation& animation = currentAnimation();
+HIKScript::Frame& HIKScript::CurrentFrame() {
+  Animation& animation = CurrentAnimation();
   if (animation.frames.size() == 0) {
     throw rlvm::Exception("Invalid frame reference");
   }

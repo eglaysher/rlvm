@@ -39,40 +39,40 @@ LoadGameLongOperation::LoadGameLongOperation(RLMachine& machine) {
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.renderToSurface();
-  Size s = currentWindow->size();
+  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
+  Size s = currentWindow->GetSize();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> dc0 = graphics.getDC(0);
-  dc0->fill(RGBAColour::Black());
+  boost::shared_ptr<Surface> dc0 = graphics.GetDC(0);
+  dc0->Fill(RGBAColour::Black());
 
-  machine.pushLongOperation(this);
-  machine.pushLongOperation(
+  machine.PushLongOperation(this);
+  machine.PushLongOperation(
       new FadeEffect(machine, dc0, currentWindow, s, 250));
 
   // We have our before and after images to use as a transition now. Reset the
   // system to prevent a brief flash of the previous contents of the screen for
   // whatever number of user preceivable milliseconds.
-  machine.system().reset();
+  machine.system().Reset();
 }
 
 bool LoadGameLongOperation::operator()(RLMachine& machine) {
-  load(machine);
+  Load(machine);
   // Warning: the stack has now been nuked and |this| is an invalid.
 
   // Render the current state of the screen
   GraphicsSystem& graphics = machine.system().graphics();
 
-  boost::shared_ptr<Surface> currentWindow = graphics.renderToSurface();
-  Size s = currentWindow->size();
+  boost::shared_ptr<Surface> currentWindow = graphics.RenderToSurface();
+  Size s = currentWindow->GetSize();
 
   // Blank dc0 (because we won't be using it anyway) for the image
   // we're going to render to
-  boost::shared_ptr<Surface> blankScreen = graphics.buildSurface(s);
-  blankScreen->fill(RGBAColour::Black());
+  boost::shared_ptr<Surface> blankScreen = graphics.BuildSurface(s);
+  blankScreen->Fill(RGBAColour::Black());
 
-  machine.pushLongOperation(
+  machine.PushLongOperation(
       new FadeEffect(machine, currentWindow, blankScreen, s, 250));
 
   // At this point, the stack has been nuked, and this current

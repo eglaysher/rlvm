@@ -51,38 +51,30 @@ class GraphicsStackFrame {
 
   bool hasFilename() const { return has_filename_; }
   const std::string& filename() const { return file_name_; }
-  GraphicsStackFrame& setFilename(const std::string& filename);
 
   // source stuff
   bool hasSourceDC() const { return has_source_dc_; }
   int sourceDC() const { return source_dc_; }
-  GraphicsStackFrame& setSourceDC(int in);
 
   bool hasSourceCoordinates() const { return has_source_coordinates_; }
   Rect sourceRect() const { return source_rect_; }
-  GraphicsStackFrame& setSourceCoordinates(const Rect& in);
 
   bool hasTargetDC() const { return has_target_dc_; }
   int targetDC() const { return target_dc_; }
-  GraphicsStackFrame& setTargetDC(int in);
 
   bool hasTargetCoordinates() const { return has_target_coordinates_; }
   Point targetPoint() const { return target_point_; }
-  GraphicsStackFrame& setTargetCoordinates(const Point& target_point);
 
   bool hasRGB() const { return has_rgb_; }
   int r() const { return r_; }
   int g() const { return g_; }
   int b() const { return b_; }
-  GraphicsStackFrame& setRGB(int r, int g, int b);
 
   bool hasOpacity() const { return has_opacity_; }
   int opacity() const { return opacity_; }
-  GraphicsStackFrame& setOpacity(int in);
 
   bool hasMask() const { return has_mask_; }
   bool mask() const { return mask_; }
-  GraphicsStackFrame& setMask(bool in);
 
  private:
   std::string command_name_;
@@ -122,9 +114,5 @@ class GraphicsStackFrame {
                 has_opacity_& opacity_& has_mask_& mask_;
   }
 };  // end of class GraphicsStackFrame
-
-// -----------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream&, const GraphicsStackFrame&);
 
 #endif  // SRC_SYSTEMS_BASE_GRAPHICS_STACK_FRAME_H_

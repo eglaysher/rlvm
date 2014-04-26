@@ -175,7 +175,7 @@ GLint Shaders::getColorMaskUniformMask() {
   return color_mask_mask_;
 }
 
-GLuint Shaders::getObjectProgram() {
+GLuint Shaders::GetObjectProgram() {
   if (object_program_object_id_ == 0) {
     buildShader(kObjectShader, &object_program_object_id_);
   }
@@ -183,9 +183,9 @@ GLuint Shaders::getObjectProgram() {
   return object_program_object_id_;
 }
 
-GLint Shaders::getObjectUniformImage() {
+GLint Shaders::GetObjectUniformImage() {
   if (object_image_ == 0) {
-    object_image_ = glGetUniformLocationARB(getObjectProgram(), "image");
+    object_image_ = glGetUniformLocationARB(GetObjectProgram(), "image");
     if (object_image_ == -1)
       throw SystemError("Bad uniform value: image");
   }
@@ -195,28 +195,28 @@ GLint Shaders::getObjectUniformImage() {
 
 void Shaders::loadObjectUniformFromGraphicsObject(const GraphicsObject& go) {
   RGBAColour colour = go.colour();
-  glUniform4fARB(Shaders::getObjectUniformColour(),
+  glUniform4fARB(Shaders::GetObjectUniformColour(),
                  colour.r_float(),
                  colour.g_float(),
                  colour.b_float(),
                  colour.a_float());
 
   RGBColour tint = go.tint();
-  glUniform3fARB(Shaders::getObjectUniformTint(),
+  glUniform3fARB(Shaders::GetObjectUniformTint(),
                  tint.r_float(),
                  tint.g_float(),
                  tint.b_float());
 
-  glUniform1fARB(Shaders::getObjectUniformLight(), go.light() / 255.0f);
+  glUniform1fARB(Shaders::GetObjectUniformLight(), go.light() / 255.0f);
 
-  glUniform1fARB(Shaders::getObjectUniformMono(), go.mono() / 255.0f);
+  glUniform1fARB(Shaders::GetObjectUniformMono(), go.mono() / 255.0f);
 
-  glUniform1fARB(Shaders::getObjectUniformInvert(), go.invert() / 255.0f);
+  glUniform1fARB(Shaders::GetObjectUniformInvert(), go.invert() / 255.0f);
 }
 
-GLint Shaders::getObjectUniformColour() {
+GLint Shaders::GetObjectUniformColour() {
   if (object_colour_ == 0) {
-    object_colour_ = glGetUniformLocationARB(getObjectProgram(), "colour");
+    object_colour_ = glGetUniformLocationARB(GetObjectProgram(), "colour");
     if (object_colour_ == -1)
       throw SystemError("Bad uniform value: colour");
   }
@@ -224,9 +224,9 @@ GLint Shaders::getObjectUniformColour() {
   return object_colour_;
 }
 
-GLint Shaders::getObjectUniformTint() {
+GLint Shaders::GetObjectUniformTint() {
   if (object_tint_ == 0) {
-    object_tint_ = glGetUniformLocationARB(getObjectProgram(), "tint");
+    object_tint_ = glGetUniformLocationARB(GetObjectProgram(), "tint");
     if (object_tint_ == -1)
       throw SystemError("Bad uniform value: tint");
   }
@@ -234,9 +234,9 @@ GLint Shaders::getObjectUniformTint() {
   return object_tint_;
 }
 
-GLint Shaders::getObjectUniformLight() {
+GLint Shaders::GetObjectUniformLight() {
   if (object_light_ == 0) {
-    object_light_ = glGetUniformLocationARB(getObjectProgram(), "light");
+    object_light_ = glGetUniformLocationARB(GetObjectProgram(), "light");
     if (object_light_ == -1)
       throw SystemError("Bad uniform value: light");
   }
@@ -244,9 +244,9 @@ GLint Shaders::getObjectUniformLight() {
   return object_light_;
 }
 
-GLint Shaders::getObjectUniformAlpha() {
+GLint Shaders::GetObjectUniformAlpha() {
   if (object_alpha_ == 0) {
-    object_alpha_ = glGetUniformLocationARB(getObjectProgram(), "alpha");
+    object_alpha_ = glGetUniformLocationARB(GetObjectProgram(), "alpha");
     if (object_alpha_ == -1)
       throw SystemError("Bad uniform value: alpha");
   }
@@ -254,9 +254,9 @@ GLint Shaders::getObjectUniformAlpha() {
   return object_alpha_;
 }
 
-GLint Shaders::getObjectUniformMono() {
+GLint Shaders::GetObjectUniformMono() {
   if (object_mono_ == 0) {
-    object_mono_ = glGetUniformLocationARB(getObjectProgram(), "mono");
+    object_mono_ = glGetUniformLocationARB(GetObjectProgram(), "mono");
     if (object_mono_ == -1)
       throw SystemError("Bad uniform value: mono");
   }
@@ -264,9 +264,9 @@ GLint Shaders::getObjectUniformMono() {
   return object_mono_;
 }
 
-GLint Shaders::getObjectUniformInvert() {
+GLint Shaders::GetObjectUniformInvert() {
   if (object_invert_ == 0) {
-    object_invert_ = glGetUniformLocationARB(getObjectProgram(), "invert");
+    object_invert_ = glGetUniformLocationARB(GetObjectProgram(), "invert");
     if (object_invert_ == -1)
       throw SystemError("Bad uniform value: invert");
   }

@@ -76,25 +76,25 @@ SDLMusic::~SDLMusic() {
     s_currently_playing.reset();
 }
 
-bool SDLMusic::isLooping() const {
+bool SDLMusic::IsLooping() const {
   SDLAudioLocker locker;
   return loop_point_ != STOP_AT_END;
 }
 
-bool SDLMusic::isFading() const {
+bool SDLMusic::IsFading() const {
   SDLAudioLocker locker;
   return fadetime_total_ > 0;
 }
 
-void SDLMusic::play(bool loop) { fadeIn(loop, DEFAULT_FADE_MS); }
+void SDLMusic::Play(bool loop) { FadeIn(loop, DEFAULT_FADE_MS); }
 
-void SDLMusic::stop() {
+void SDLMusic::Stop() {
   SDLAudioLocker locker;
   if (s_currently_playing.get() == this)
     s_currently_playing.reset();
 }
 
-void SDLMusic::fadeIn(bool loop, int fade_in_ms) {
+void SDLMusic::FadeIn(bool loop, int fade_in_ms) {
   SDLAudioLocker locker;
 
   if (loop)
@@ -107,7 +107,7 @@ void SDLMusic::fadeIn(bool loop, int fade_in_ms) {
   s_currently_playing = shared_from_this();
 }
 
-void SDLMusic::fadeOut(int fade_out_ms) {
+void SDLMusic::FadeOut(int fade_out_ms) {
   SDLAudioLocker locker;
   fade_count_ = 0;
   if (fade_out_ms <= 0)
@@ -115,27 +115,27 @@ void SDLMusic::fadeOut(int fade_out_ms) {
   fadetime_total_ = fade_out_ms;
 }
 
-void SDLMusic::pause() {
+void SDLMusic::Pause() {
   SDLAudioLocker locker;
   music_paused_ = true;
 }
 
-void SDLMusic::unpause() {
+void SDLMusic::Unpause() {
   SDLAudioLocker locker;
   music_paused_ = false;
 }
 
-std::string SDLMusic::name() const {
+std::string SDLMusic::GetName() const {
   SDLAudioLocker locker;
   return track_.name;
 }
 
-int SDLMusic::bgmStatus() const {
+int SDLMusic::BgmStatus() const {
   SDLAudioLocker locker;
 
   if (music_paused_)
     return 0;
-  else if (isFading())
+  else if (IsFading())
     return 2;
   else
     return 1;
@@ -196,7 +196,7 @@ void SDLMusic::MixMusic(void* udata, Uint8* stream, int len) {
 }
 
 template <typename TYPE>
-WAVFILE* buildMusicImplementation(FILE* file, int size) {
+WAVFILE* BuildMusicImplementation(FILE* file, int size) {
   return WAVFILE::MakeConverter(new TYPE(file, size));
 }
 
@@ -205,12 +205,12 @@ boost::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     const SoundSystem::DSTrack& track) {
   typedef std::vector<
     std::pair<std::string, std::function<WAVFILE*(FILE*, int)>>> FileTypes;
-  static FileTypes types = {{"wav", &buildMusicImplementation<WAVFILE_Stream>},
-                            {"nwa", &buildMusicImplementation<NWAFILE>},
-                            {"mp3", &buildMusicImplementation<MP3FILE>},
-                            {"ogg", &buildMusicImplementation<OggFILE>}};
+  static FileTypes types = {{"wav", &BuildMusicImplementation<WAVFILE_Stream>},
+                            {"nwa", &BuildMusicImplementation<NWAFILE>},
+                            {"mp3", &BuildMusicImplementation<MP3FILE>},
+                            {"ogg", &BuildMusicImplementation<OggFILE>}};
 
-  fs::path file_path = system.findFile(track.file, SOUND_FILETYPES);
+  fs::path file_path = system.FindFile(track.file, SOUND_FILETYPES);
   if (file_path.empty()) {
     std::ostringstream oss;
     oss << "Could not find music file \"" << track.file << "\".";

@@ -268,7 +268,7 @@ struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
 // been saved.
 struct LatestSave : public RLOp_Store_Void {
   int operator()(RLMachine& machine) {
-    fs::path saveDir = machine.system().gameSaveDirectory();
+    fs::path saveDir = machine.system().GameSaveDirectory();
     int latestSlot = -1;
     time_t latestTime = std::numeric_limits<time_t>::min();
 
@@ -303,7 +303,7 @@ struct LoadingGameFromSlot : public LoadGameLongOperation {
   explicit LoadingGameFromSlot(RLMachine& machine, int slot)
       : LoadGameLongOperation(machine), slot_(slot) {}
 
-  virtual void load(RLMachine& machine) {
+  virtual void Load(RLMachine& machine) override {
     Serialization::loadGameForSlot(machine, slot_);
   }
 };
@@ -312,6 +312,8 @@ struct LoadingGameFromSlot : public LoadGameLongOperation {
 
 // -----------------------------------------------------------------------
 
+bool Sys_load::AdvanceInstructionPointer() { return false; }
+
 void Sys_load::operator()(RLMachine& machine, int slot) {
   // LoadGameLongOperation will add self to |machine|'s stack.
   new LoadingGameFromSlot(machine, slot);
@@ -319,39 +321,39 @@ void Sys_load::operator()(RLMachine& machine, int slot) {
 
 // -----------------------------------------------------------------------
 
-void addSysSaveOpcodes(RLModule& m) {
-  m.addOpcode(1409, 0, "SaveExists", new SaveExists);
-  m.addOpcode(1410, 0, "SaveDate", new SaveDate);
-  m.addOpcode(1411, 0, "SaveTime", new SaveTime);
-  m.addOpcode(1412, 0, "SaveDateTime", new SaveDateTime);
-  m.addOpcode(1413, 0, "SaveInfo", new SaveInfo);
-  m.addOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
-  m.addOpcode(1421, 0, "LatestSave", new LatestSave);
+void AddSysSaveOpcodes(RLModule& m) {
+  m.AddOpcode(1409, 0, "SaveExists", new SaveExists);
+  m.AddOpcode(1410, 0, "SaveDate", new SaveDate);
+  m.AddOpcode(1411, 0, "SaveTime", new SaveTime);
+  m.AddOpcode(1412, 0, "SaveDateTime", new SaveDateTime);
+  m.AddOpcode(1413, 0, "SaveInfo", new SaveInfo);
+  m.AddOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
+  m.AddOpcode(1421, 0, "LatestSave", new LatestSave);
 
-  m.addOpcode(
-      2053, 0, "SetConfirmSaveLoad", callFunction(&System::setConfirmSaveLoad));
-  m.addOpcode(
-      2003, 0, "ConfirmSaveLoad", returnIntValue(&System::confirmSaveLoad));
+  m.AddOpcode(
+      2053, 0, "SetConfirmSaveLoad", CallFunction(&System::set_confirm_save_load));
+  m.AddOpcode(
+      2003, 0, "ConfirmSaveLoad", ReturnIntValue(&System::confirm_save_load));
 
-  m.addOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
-  m.addOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
+  m.AddOpcode(3000, 0, "menu_save", new InvokeSyscomAsOp(0));
+  m.AddOpcode(3001, 0, "menu_load", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3007, 0, "save", new save);
-  m.addOpcode(3107, 0, "save_always", new save);
+  m.AddOpcode(3007, 0, "save", new save);
+  m.AddOpcode(3107, 0, "save_always", new save);
 
-  m.addOpcode(3009, 0, "load", new Sys_load);
-  m.addOpcode(3109, 0, "load_always", new Sys_load);
+  m.AddOpcode(3009, 0, "load", new Sys_load);
+  m.AddOpcode(3109, 0, "load_always", new Sys_load);
 
-  m.addOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
-  m.addOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
+  m.AddOpcode(3100, 0, "menu_save_always", new InvokeSyscomAsOp(0));
+  m.AddOpcode(3101, 0, "menu_load_always", new InvokeSyscomAsOp(1));
 
-  m.addOpcode(3500, 0, "Savepoint", callFunction(&RLMachine::markSavepoint));
-  m.addOpcode(3501,
+  m.AddOpcode(3500, 0, "Savepoint", CallFunction(&RLMachine::MarkSavepoint));
+  m.AddOpcode(3501,
               0,
               "EnableAutoSavepoints",
-              callFunctionWith(&RLMachine::setMarkSavepoints, 1));
-  m.addOpcode(3502,
+              CallFunctionWith(&RLMachine::SetMarkSavepoints, 1));
+  m.AddOpcode(3502,
               0,
               "DisableAutoSavepoints",
-              callFunctionWith(&RLMachine::setMarkSavepoints, 0));
+              CallFunctionWith(&RLMachine::SetMarkSavepoints, 0));
 }

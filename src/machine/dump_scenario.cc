@@ -38,5 +38,5 @@ void DumpScenario(libreallive::Scenario* scenario) {
   }
 
   for (auto const& instruction : *scenario)
-    instruction->print(std::cout);
+    instruction->PrintSourceRepresentation(std::cout);
 }

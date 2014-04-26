@@ -70,9 +70,9 @@ const char* ja_platform_fonts[] = {
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFileFinal(Gameexe& gexe, const std::string& fileName) {
+fs::path FindFontFileFinal(Gameexe& gexe, const std::string& fileName) {
   // HACK: Look for the font in the game
-  if (gexe.exists("__GAMEPATH")) {
+  if (gexe.Exists("__GAMEPATH")) {
     std::string gamepath = gexe("__GAMEPATH");
     fs::path gamePathFont = fs::path(gamepath) / fileName;
     if (fs::exists(gamePathFont))
@@ -99,17 +99,17 @@ fs::path findFontFileFinal(Gameexe& gexe, const std::string& fileName) {
 
 // -----------------------------------------------------------------------
 
-fs::path findFontFile(System& system) {
+fs::path FindFontFile(System& system) {
   Gameexe& gexe = system.gameexe();
   // HACK: If the user has overridden the __GAMEFONT, use it instead.
-  if (gexe.exists("__GAMEFONT")) {
+  if (gexe.Exists("__GAMEFONT")) {
     std::string gamefontstr = gexe("__GAMEFONT");
     fs::path gameFont = fs::path(gamefontstr);
     if (fs::exists(gameFont))
       return gameFont;
   }
 
-  if (system.useWesternFont()) {
+  if (system.use_western_font()) {
     // Try to look up a western alternative font.
     for (const char** file = western_platform_fonts; *file; ++file) {
       if (fs::exists(*file))
@@ -123,5 +123,5 @@ fs::path findFontFile(System& system) {
       return fs::path(*file);
   }
 
-  return findFontFileFinal(system.gameexe(), "msgothic.ttc");
+  return FindFontFileFinal(system.gameexe(), "msgothic.ttc");
 }

@@ -31,5 +31,5 @@
 #include "systems/base/sound_system.h"
 
 SeModule::SeModule() : RLModule("Se", 1, 22) {
-  addOpcode(0, 0, "sePlay", callFunction(&SoundSystem::playSe));
+  AddOpcode(0, 0, "sePlay", CallFunction(&SoundSystem::PlaySe));
 }

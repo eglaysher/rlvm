@@ -47,62 +47,62 @@ DigitsGraphicsObject::DigitsGraphicsObject(System& system,
     : system_(system),
       value_(0),
       font_name_(font),
-      font_(system.graphics().getSurfaceNamed(font)) {}
+      font_(system.graphics().GetSurfaceNamed(font)) {}
 
 DigitsGraphicsObject::~DigitsGraphicsObject() {}
 
-int DigitsGraphicsObject::pixelWidth(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int DigitsGraphicsObject::PixelWidth(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
-  return int(rp.getWidthScaleFactor() * surface_->size().width());
+  return int(rp.GetWidthScaleFactor() * surface_->GetSize().width());
 }
 
-int DigitsGraphicsObject::pixelHeight(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int DigitsGraphicsObject::PixelHeight(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
-  return int(rp.getHeightScaleFactor() * surface_->size().height());
+  return int(rp.GetHeightScaleFactor() * surface_->GetSize().height());
 }
 
-GraphicsObjectData* DigitsGraphicsObject::clone() const {
+GraphicsObjectData* DigitsGraphicsObject::Clone() const {
   return new DigitsGraphicsObject(*this);
 }
 
-void DigitsGraphicsObject::execute(RLMachine& machine) {}
+void DigitsGraphicsObject::Execute(RLMachine& machine) {}
 
-boost::shared_ptr<const Surface> DigitsGraphicsObject::currentSurface(
+boost::shared_ptr<const Surface> DigitsGraphicsObject::CurrentSurface(
     const GraphicsObject& go) {
-  if (needsUpdate(go))
-    updateSurface(go);
+  if (NeedsUpdate(go))
+    UpdateSurface(go);
 
   return surface_;
 }
 
-void DigitsGraphicsObject::objectInfo(std::ostream& tree) {
+void DigitsGraphicsObject::ObjectInfo(std::ostream& tree) {
   tree << "  Digits: \"" << value_ << "\"" << std::endl;
 }
 
-void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
-  value_ = rp.digitValue();
+void DigitsGraphicsObject::UpdateSurface(const GraphicsObject& rp) {
+  value_ = rp.GetDigitValue();
 
   // Calculate the size our canvas will have to be.
-  int digit_pixel_width = rp.digitSpace()
-                              ? rp.digitSpace()
-                              : font_->getPattern(0).rect.size().width();
+  int digit_pixel_width = rp.GetDigitSpace()
+                              ? rp.GetDigitSpace()
+                              : font_->GetPattern(0).rect.size().width();
   int num_chars = 0;
   for (int a = value_; a > 0; a = a / 10, num_chars++) {}
-  num_chars = std::max(num_chars, rp.digitDigits());
+  num_chars = std::max(num_chars, rp.GetDigitDigits());
 
   int num_extra = 0;
-  if (value_ < 0 || rp.digitSign())
+  if (value_ < 0 || rp.GetDigitSign())
     num_extra++;
 
   int total_pixel_width = (num_chars + num_extra) * digit_pixel_width;
 
-  surface_ = system_.graphics().buildSurface(
-      Size(total_pixel_width, font_->getPattern(0).rect.size().height()));
-  surface_->fill(RGBAColour::Clear());
+  surface_ = system_.graphics().BuildSurface(
+      Size(total_pixel_width, font_->GetPattern(0).rect.size().height()));
+  surface_->Fill(RGBAColour::Clear());
 
   // We draw glyphs onto the canvas from right to left so we can use the
   // obvious div/mod method to get the current digit to display.
@@ -112,9 +112,9 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
   int printed = 0;
   do {
     int digit = i % 10;
-    const Surface::GrpRect& grp = font_->getPattern(digit);
+    const Surface::GrpRect& grp = font_->GetPattern(digit);
 
-    font_->blitToSurface(
+    font_->BlitToSurface(
         *surface_, grp.rect, Rect(x_offset, 0, grp.rect.size()), 255, false);
 
     i = i / 10;
@@ -122,11 +122,11 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
     x_offset -= digit_pixel_width;
   } while (i > 0);
 
-  const Surface::GrpRect& zero_grp = font_->getPattern(0);
-  bool print_zeros = rp.digitZero();
+  const Surface::GrpRect& zero_grp = font_->GetPattern(0);
+  bool print_zeros = rp.GetDigitZero();
   while (printed < num_chars) {
     if (print_zeros) {
-      font_->blitToSurface(*surface_,
+      font_->BlitToSurface(*surface_,
                            zero_grp.rect,
                            Rect(x_offset, 0, zero_grp.rect.size()),
                            255,
@@ -136,14 +136,14 @@ void DigitsGraphicsObject::updateSurface(const GraphicsObject& rp) {
     x_offset -= digit_pixel_width;
   }
 
-  if (value_ < 0 || rp.digitSign()) {
+  if (value_ < 0 || rp.GetDigitSign()) {
     std::cerr << "We don't support negative numbers in objOfDigits() yet."
               << std::endl;
   }
 }
 
-bool DigitsGraphicsObject::needsUpdate(const GraphicsObject& rp) {
-  return !surface_ || rp.digitValue() != value_;
+bool DigitsGraphicsObject::NeedsUpdate(const GraphicsObject& rp) {
+  return !surface_ || rp.GetDigitValue() != value_;
 }
 
 // -----------------------------------------------------------------------
@@ -154,7 +154,7 @@ void DigitsGraphicsObject::load(Archive& ar, unsigned int version) {
 
   value_ = 0;
   surface_.reset();
-  font_ = system_.graphics().getSurfaceNamed(font_name_);
+  font_ = system_.graphics().GetSurfaceNamed(font_name_);
 }
 
 template <class Archive>

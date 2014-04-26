@@ -80,11 +80,11 @@ const char* VoiceSample::MakeWavHeader(int rate, int ch, int bps, int size) {
 // -----------------------------------------------------------------------
 // VoiceArchive
 // -----------------------------------------------------------------------
-VoiceArchive::VoiceArchive(int file_no) : file_no_(file_no) {}
+VoiceArchive::VoiceArchive(int file_number) : file_number_(file_number) {}
 
 VoiceArchive::~VoiceArchive() {}
 
-void VoiceArchive::readVisualArtsTable(boost::filesystem::path file,
+void VoiceArchive::ReadVisualArtsTable(boost::filesystem::path file,
                                        int entry_length,
                                        std::vector<Entry>& entries) {
   fs::ifstream ifs(file, fs::ifstream::in | fs::ifstream::binary);

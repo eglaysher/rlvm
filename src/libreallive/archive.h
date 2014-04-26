@@ -49,15 +49,40 @@ namespace compression {
 struct XorKey;
 }  // namespace compression
 
-
 // Interface to a loaded SEEN.TXT file.
 class Archive {
+ public:
+  // Read an archive, assuming no per-game xor key. (Used in unit testing).
+  explicit Archive(const string& filename);
+
+  // Creates an interface to a SEEN.TXT file. Uses |regname| to look up
+  // per-game xor key for newer games.
+  Archive(const string& filename, const string& regname);
+  ~Archive();
+
+  typedef std::map<int, FilePos>::const_iterator const_iterator;
+  const_iterator begin() { return scenarios_.begin(); }
+  const_iterator end() { return scenarios_.end(); }
+
+  // Returns a specific scenario by |index| number or NULL if none exist.
+  Scenario* GetScenario(int index);
+
+  // Does a quick pass through all scenarios in the archive, looking for any
+  // with non-default encoding. This short circuits when it finds one.
+  int GetProbableEncodingType() const;
+
+ private:
   typedef std::map<int, FilePos> scenarios_t;
-  typedef std::map<int, Scenario*> accessed_t;
-  scenarios_t scenarios;
-  accessed_t accessed;
-  string name;
-  Mapping info;
+  typedef std::map<int, std::unique_ptr<Scenario>> accessed_t;
+
+  void ReadTOC();
+
+  void ReadOverrides();
+
+  scenarios_t scenarios_;
+  accessed_t accessed_;
+  string name_;
+  Mapping info_;
 
   // Mappings to unarchived SEEN\d{4}.TXT files on disk.
   std::vector<std::unique_ptr<Mapping>> maps_to_delete_;
@@ -69,32 +94,6 @@ class Archive {
   // The #REGNAME key from the Gameexe.ini file. Passed down to Scenario for
   // prettier error messages.
   std::string regname_;
-
-  void readTOC();
-
-  void readOverrides();
-
- public:
-  // Read an archive, assuming no per-game xor key. (Used in unit testing).
-  explicit Archive(const string& filename);
-
-  // Creates an interface to a SEEN.TXT file. Uses |regname| to look up
-  // per-game xor key for newer games.
-  Archive(const string& filename, const string& regname);
-  ~Archive();
-
-  typedef std::map<int, FilePos>::const_iterator const_iterator;
-  const_iterator begin() { return scenarios.begin(); }
-  const_iterator end()   { return scenarios.end(); }
-
-  // Returns a specific scenario by |index| number or NULL if none exist.
-  Scenario* scenario(int index);
-
-  // Does a quick pass through all scenarios in the archive, looking for any
-  // with non-default encoding. This short circuits when it finds one.
-  int getProbableEncodingType() const;
-
-  void reset();
 };
 
 }  // namespace libreallive

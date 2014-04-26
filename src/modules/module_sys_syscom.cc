@@ -44,15 +44,15 @@ struct ContextMenu : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     // Based off of ALMA, it appears that we also are responsible for flushing
     // clicks.
-    machine.system().event().flushMouseClicks();
+    machine.system().event().FlushMouseClicks();
 
-    machine.system().showSyscomMenu(machine);
+    machine.system().ShowSyscomMenu(machine);
   }
 };
 
 struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int num) {
-    return machine.system().isSyscomEnabled(num);
+    return machine.system().IsSyscomEnabled(num);
   }
 };
 
@@ -60,22 +60,22 @@ struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-void addSysSyscomOpcodes(RLModule& m) {
-  m.addOpcode(1210, 0, "ContextMenu", new ContextMenu);
+void AddSysSyscomOpcodes(RLModule& m) {
+  m.AddOpcode(1210, 0, "ContextMenu", new ContextMenu);
 
-  m.addOpcode(
-      1211, 0, "EnableSyscom", callFunction(&System::enableSyscomEntry));
-  m.addOpcode(1211, 1, "EnableSyscom", callFunction(&System::enableSyscom));
+  m.AddOpcode(
+      1211, 0, "EnableSyscom", CallFunction(&System::EnableSyscomEntry));
+  m.AddOpcode(1211, 1, "EnableSyscom", CallFunction(&System::EnableSyscom));
 
-  m.addOpcode(1212, 0, "HideSyscom", callFunction(&System::hideSyscomEntry));
-  m.addOpcode(1212, 1, "HideSyscom", callFunction(&System::hideSyscom));
+  m.AddOpcode(1212, 0, "HideSyscom", CallFunction(&System::HideSyscomEntry));
+  m.AddOpcode(1212, 1, "HideSyscom", CallFunction(&System::HideSyscom));
 
-  m.addOpcode(
-      1213, 0, "DisableSyscom", callFunction(&System::disableSyscomEntry));
+  m.AddOpcode(
+      1213, 0, "DisableSyscom", CallFunction(&System::DisableSyscomEntry));
 
-  m.addOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
+  m.AddOpcode(1214, 0, "SyscomEnabled", new SyscomEnabled);
 
-  m.addOpcode(1215, 0, "InvokeSyscom", callFunction(&System::invokeSyscom));
-  m.addUnsupportedOpcode(1215, 1, "InvokeSyscom");
-  m.addUnsupportedOpcode(1216, 0, "ReadSyscom");
+  m.AddOpcode(1215, 0, "InvokeSyscom", CallFunction(&System::InvokeSyscom));
+  m.AddUnsupportedOpcode(1215, 1, "InvokeSyscom");
+  m.AddUnsupportedOpcode(1216, 0, "ReadSyscom");
 }

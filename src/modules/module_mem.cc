@@ -214,15 +214,15 @@ struct sums
 // -----------------------------------------------------------------------
 
 MemModule::MemModule() : RLModule("Mem", 1, 11) {
-  addOpcode(0, 0, "setarray", new setarray);
-  addOpcode(1, 0, "setrng", new setrng_0);
-  addOpcode(1, 1, "setrng", new setrng_1);
-  addOpcode(2, 0, "cpyrng", new cpyrng);
-  addOpcode(3, 0, "setarray_stepped", new setarray_stepped);
-  addOpcode(4, 0, "setrng_stepped", new setrng_stepped_0);
-  addOpcode(4, 1, "setrng_stepped", new setrng_stepped_1);
+  AddOpcode(0, 0, "setarray", new setarray);
+  AddOpcode(1, 0, "setrng", new setrng_0);
+  AddOpcode(1, 1, "setrng", new setrng_1);
+  AddOpcode(2, 0, "cpyrng", new cpyrng);
+  AddOpcode(3, 0, "setarray_stepped", new setarray_stepped);
+  AddOpcode(4, 0, "setrng_stepped", new setrng_stepped_0);
+  AddOpcode(4, 1, "setrng_stepped", new setrng_stepped_1);
   // implement op<1:Mem:00005, 0>
-  addOpcode(6, 0, "cpyvars", new cpyvars);
-  addOpcode(100, 0, "sum", new sum);
-  addOpcode(101, 0, "sums", new sums);
+  AddOpcode(6, 0, "cpyvars", new cpyvars);
+  AddOpcode(100, 0, "sum", new sum);
+  AddOpcode(101, 0, "sums", new sums);
 }

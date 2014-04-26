@@ -35,7 +35,7 @@ LittleBustersPT00DLL::LittleBustersPT00DLL() {
 
 LittleBustersPT00DLL::~LittleBustersPT00DLL() {}
 
-int LittleBustersPT00DLL::callDLL(RLMachine& machine,
+int LittleBustersPT00DLL::CallDLL(RLMachine& machine,
                                   int func,
                                   int arg1,
                                   int arg2,
@@ -45,7 +45,7 @@ int LittleBustersPT00DLL::callDLL(RLMachine& machine,
   return 0;
 }
 
-const std::string& LittleBustersPT00DLL::name() const {
+const std::string& LittleBustersPT00DLL::GetDLLName() const {
   static std::string n("PT00");
   return n;
 }

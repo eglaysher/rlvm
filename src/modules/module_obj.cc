@@ -40,54 +40,54 @@
 using libreallive::IntegerConstant;
 using libreallive::ExpressionPiece;
 
-void ensureIsParentObject(GraphicsObject& parent, int size) {
-  if (parent.hasObjectData()) {
-    if (parent.objectData().isParentLayer()) {
+void EnsureIsParentObject(GraphicsObject& parent, int size) {
+  if (parent.has_object_data()) {
+    if (parent.GetObjectData().IsParentLayer()) {
       return;
     }
   }
 
-  parent.setObjectData(new ParentGraphicsObjectData(size));
+  parent.SetObjectData(new ParentGraphicsObjectData(size));
 }
 
-GraphicsObject& getGraphicsObject(RLMachine& machine,
+GraphicsObject& GetGraphicsObject(RLMachine& machine,
                                   RLOperation* op,
                                   int obj) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if (!op->getProperty(P_FGBG, fgbg))
+  if (!op->GetProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
-  if (op->getProperty(P_PARENTOBJ, parentobj)) {
-    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent, graphics.objectLayerSize());
-    return static_cast<ParentGraphicsObjectData&>(parent.objectData())
-        .getObject(obj);
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
+    return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
+        .GetObject(obj);
   } else {
-    return graphics.getObject(fgbg, obj);
+    return graphics.GetObject(fgbg, obj);
   }
 }
 
-void setGraphicsObject(RLMachine& machine,
+void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
                        int obj,
                        GraphicsObject& gobj) {
   GraphicsSystem& graphics = machine.system().graphics();
 
   int fgbg;
-  if (!op->getProperty(P_FGBG, fgbg))
+  if (!op->GetProperty(P_FGBG, fgbg))
     fgbg = OBJ_FG;
 
   int parentobj;
-  if (op->getProperty(P_PARENTOBJ, parentobj)) {
-    GraphicsObject& parent = graphics.getObject(fgbg, parentobj);
-    ensureIsParentObject(parent, graphics.objectLayerSize());
-    static_cast<ParentGraphicsObjectData&>(parent.objectData())
-        .setObject(obj, gobj);
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
+    static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
+        .SetObject(obj, gobj);
   } else {
-    graphics.setObject(fgbg, obj, gobj);
+    graphics.SetObject(fgbg, obj, gobj);
   }
 }
 
@@ -95,20 +95,23 @@ void setGraphicsObject(RLMachine& machine,
 
 ObjRangeAdapter::ObjRangeAdapter(RLOperation* in) : handler(in) {}
 
+ObjRangeAdapter::~ObjRangeAdapter() {}
+
 void ObjRangeAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 2)
     throw rlvm::Exception("Less then two arguments to an objRange function!");
 
   // BIG WARNING ABOUT THE FOLLOWING CODE: Note that we copy half of
-  // what RLOperation.dispatchFunction() does; we manually call the
-  // subclass's dispatch() so that we can get around the automated
+  // what RLOperation.DispatchFunction() does; we manually call the
+  // subclass's Dispatch() so that we can get around the automated
   // incrementing of the instruction pointer.
-  int lowerRange = allParameters[0]->integerValue(machine);
-  int upperRange = allParameters[1]->integerValue(machine);
+  int lowerRange = allParameters[0]->GetIntegerValue(machine);
+  int upperRange = allParameters[1]->GetIntegerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
@@ -120,17 +123,17 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
         allParameters.begin();
     std::advance(it, 2);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->clone());
+      currentInstantiation.emplace_back((*it)->Clone());
     }
 
-    // Now dispatch based on these parameters.
-    handler->dispatch(machine, currentInstantiation);
+    // Now Dispatch based on these parameters.
+    handler->Dispatch(machine, currentInstantiation);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
-RLOperation* rangeMappingFun(RLOperation* op) {
+RLOperation* RangeMappingFun(RLOperation* op) {
   return new ObjRangeAdapter(op);
 }
 
@@ -140,15 +143,18 @@ RLOperation* rangeMappingFun(RLOperation* op) {
 
 ChildObjAdapter::ChildObjAdapter(RLOperation* in) : handler(in) {}
 
+ChildObjAdapter::~ChildObjAdapter() {}
+
 void ChildObjAdapter::operator()(RLMachine& machine,
                                  const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 1)
     throw rlvm::Exception("Less than one argument to an objLayered function!");
 
-  int objset = allParameters[0]->integerValue(machine);
+  int objset = allParameters[0]->GetIntegerValue(machine);
 
   // Copy everything after the first item
   libreallive::ExpressionPiecesVector currentInstantiation;
@@ -156,16 +162,16 @@ void ChildObjAdapter::operator()(RLMachine& machine,
       allParameters.begin();
   ++it;
   for (; it != allParameters.end(); ++it) {
-    currentInstantiation.emplace_back((*it)->clone());
+    currentInstantiation.emplace_back((*it)->Clone());
   }
 
-  handler->setProperty(P_PARENTOBJ, objset);
-  handler->dispatch(machine, currentInstantiation);
+  handler->SetProperty(P_PARENTOBJ, objset);
+  handler->Dispatch(machine, currentInstantiation);
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
-RLOperation* childObjMappingFun(RLOperation* op) {
+RLOperation* ChildObjMappingFun(RLOperation* op) {
   return new ChildObjAdapter(op);
 }
 
@@ -175,9 +181,12 @@ RLOperation* childObjMappingFun(RLOperation* op) {
 
 ChildObjRangeAdapter::ChildObjRangeAdapter(RLOperation* in) : handler(in) {}
 
+ChildObjRangeAdapter::~ChildObjRangeAdapter() {}
+
 void ChildObjRangeAdapter::operator()(RLMachine& machine,
                                       const libreallive::CommandElement& ff) {
-  const libreallive::ExpressionPiecesVector& allParameters = ff.getParameters();
+  const libreallive::ExpressionPiecesVector& allParameters =
+      ff.GetParsedParameters();
 
   // Range check the data
   if (allParameters.size() < 3) {
@@ -187,12 +196,12 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
   // This part is like ChildObjAdapter; the first parameter is an integer
   // that represents the parent object.
-  int objset = allParameters[0]->integerValue(machine);
+  int objset = allParameters[0]->GetIntegerValue(machine);
 
   // This part is like ObjRangeAdapter; the second and third parameters are
   // integers that represent a range of child objects.
-  int lowerRange = allParameters[1]->integerValue(machine);
-  int upperRange = allParameters[2]->integerValue(machine);
+  int lowerRange = allParameters[1]->GetIntegerValue(machine);
+  int upperRange = allParameters[2]->GetIntegerValue(machine);
   for (int i = lowerRange; i <= upperRange; ++i) {
     // Create a new list of expression pieces that contain the
     // current object we're dealing with and
@@ -204,18 +213,18 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
         allParameters.begin();
     std::advance(it, 3);
     for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->clone());
+      currentInstantiation.emplace_back((*it)->Clone());
     }
 
-    // Now dispatch based on these parameters.
-    handler->setProperty(P_PARENTOBJ, objset);
-    handler->dispatch(machine, currentInstantiation);
+    // Now Dispatch based on these parameters.
+    handler->SetProperty(P_PARENTOBJ, objset);
+    handler->Dispatch(machine, currentInstantiation);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
-RLOperation* childRangeMappingFun(RLOperation* op) {
+RLOperation* ChildRangeMappingFun(RLOperation* op) {
   return new ChildObjRangeAdapter(op);
 }
 
@@ -228,10 +237,10 @@ Obj_SetOneIntOnObj::Obj_SetOneIntOnObj(Setter s) : setter(s) {}
 Obj_SetOneIntOnObj::~Obj_SetOneIntOnObj() {}
 
 void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
-  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
   ((obj).*(setter))(incoming);
 
-  machine.system().graphics().markObjectStateAsDirty();
+  machine.system().graphics().mark_object_state_as_dirty();
 }
 
 // -----------------------------------------------------------------------
@@ -247,9 +256,9 @@ void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
                                     int buf,
                                     int incomingOne,
                                     int incomingTwo) {
-  GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
   ((obj).*(setterOne))(incomingOne);
   ((obj).*(setterTwo))(incomingTwo);
 
-  machine.system().graphics().markObjectStateAsDirty();
+  machine.system().graphics().mark_object_state_as_dirty();
 }

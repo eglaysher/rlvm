@@ -60,64 +60,60 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   // When the cursor is changed, also make sure that it exists so that we can
   // switch on/off the operating system cursor when the cursor index is invalid.
-  virtual void setCursor(int cursor);
+  virtual void SetCursor(int cursor) override;
 
-  virtual void beginFrame();
+  virtual void BeginFrame() override;
 
-  virtual void markScreenAsDirty(GraphicsUpdateType type);
+  virtual void MarkScreenAsDirty(GraphicsUpdateType type) override;
 
-  virtual void endFrame();
+  virtual void EndFrame() override;
 
-  void redrawLastFrame();
-  void drawCursor();
+  void RedrawLastFrame();
+  void DrawCursor();
 
-  virtual boost::shared_ptr<Surface> endFrameToSurface();
+  virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
 
-  virtual void executeGraphicsSystem(RLMachine& machine);
+  virtual void ExecuteGraphicsSystem(RLMachine& machine) override;
 
-  virtual void allocateDC(int dc, Size screen_size);
-  virtual void setMinimumSizeForDC(int dc, Size size);
-  virtual void freeDC(int dc);
+  virtual void AllocateDC(int dc, Size screen_size) override;
+  virtual void SetMinimumSizeForDC(int dc, Size size) override;
+  virtual void FreeDC(int dc) override;
 
-  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
-      const std::string& short_filename);
+  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+      const std::string& short_filename) override;
 
-  virtual boost::shared_ptr<Surface> getHaikei();
-  virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(const Size& size);
+  virtual boost::shared_ptr<Surface> GetHaikei() override;
+  virtual boost::shared_ptr<Surface> GetDC(int dc) override;
+  virtual boost::shared_ptr<Surface> BuildSurface(const Size& size) override;
 
-  virtual ColourFilter* BuildColourFiller();
+  virtual ColourFilter* BuildColourFiller() override;
 
   // -----------------------------------------------------------------------
 
-  virtual void setWindowSubtitle(const std::string& cp932str,
-                                 int text_encoding);
+  virtual void SetWindowSubtitle(const std::string& cp932str,
+                                 int text_encoding) override;
 
-  virtual void setScreenMode(const int in);
+  virtual void SetScreenMode(const int in) override;
 
   // Reset the system. Should clear all state for when a user loads a
   // game.
-  virtual void reset();
+  virtual void Reset() override;
 
  private:
-  void setupVideo();
+  void SetupVideo();
 
   // Makes sure that a passed in dc number is valid.
   //
   // @exception Error Throws when dc is greater then the maximum.
   // @exception Error Throws when dc is unallocated.
-  void verifySurfaceExists(int dc, const std::string& caller);
+  void VerifySurfaceExists(int dc, const std::string& caller);
 
-  // Makes sure that a surface we just allocated was, in fact,
-  // allocated.
-  void verifyDCAllocation(int dc, const std::string& caller);
-
-  void setWindowTitle();
+  void SetWindowTitle();
 
   // NotificationObserver:
   virtual void Observe(NotificationType type,
                        const NotificationSource& source,
-                       const NotificationDetails& details);
+                       const NotificationDetails& details) override;
 
   // ---------------------------------------------------------------------
 
@@ -131,7 +127,7 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
   // Whether to display (SEEN####)(Line ###) in the title bar
   bool display_data_in_titlebar_;
 
-  // The last time the titlebar was updated (in getTicks())
+  // The last time the titlebar was updated (in GetTicks())
   unsigned int time_of_last_titlebar_update_;
 
   // The last seen number;

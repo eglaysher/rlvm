@@ -75,7 +75,7 @@ struct Sys_timetable2 : public RLOp_Store_5<IntConstant_T,
                          int rep_time,
                          int start_time,
                          int start_num,
-                         TimeTable2List::type index_list);
+                         TimeTable2List::type index_list) override;
 
   int Jump(int start_time,
            int now_time,
@@ -86,6 +86,6 @@ struct Sys_timetable2 : public RLOp_Store_5<IntConstant_T,
 };
 
 // index_series has its own file.
-void addTimetable2Opcode(RLModule& module);
+void AddTimetable2Opcode(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_TIMETABLE2_H_

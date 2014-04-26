@@ -154,12 +154,12 @@ class KOEPACVoiceSample : public VoiceSample {
         length_(length),
         rate_(rate) {}
 
-  ~KOEPACVoiceSample() {
+  virtual ~KOEPACVoiceSample() {
     if (stream_)
       fclose(stream_);
   }
 
-  virtual char* decode(int* size);
+  virtual char* Decode(int* size) override;
 
  private:
   FILE* stream_;
@@ -168,7 +168,7 @@ class KOEPACVoiceSample : public VoiceSample {
   int rate_;
 };
 
-char* KOEPACVoiceSample::decode(int* dest_len) {
+char* KOEPACVoiceSample::Decode(int* dest_len) {
   // This function has been mildly adapted from decode_koe in xclannad. I have
   // modified types so that it works on 64-bit systems and changed malloc()s to
   // new[]s, as the consumer of decode() will delete [] the returned pointer.
@@ -254,7 +254,7 @@ char* KOEPACVoiceSample::decode(int* dest_len) {
 // -----------------------------------------------------------------------
 KOEPACVoiceArchive::KOEPACVoiceArchive(fs::path file, int file_no)
     : VoiceArchive(file_no), file_(file) {
-  readTable(file);
+  ReadTable(file);
 }
 
 // -----------------------------------------------------------------------
@@ -263,7 +263,7 @@ KOEPACVoiceArchive::~KOEPACVoiceArchive() {}
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::findSample(int sample_num) {
+boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::FindSample(int sample_num) {
   std::vector<Entry>::const_iterator it =
       std::lower_bound(entries_.begin(), entries_.end(), sample_num);
   if (it != entries_.end()) {
@@ -276,7 +276,7 @@ boost::shared_ptr<VoiceSample> KOEPACVoiceArchive::findSample(int sample_num) {
 
 // -----------------------------------------------------------------------
 
-void KOEPACVoiceArchive::readTable(boost::filesystem::path file) {
+void KOEPACVoiceArchive::ReadTable(boost::filesystem::path file) {
   fs::ifstream ifs(file, ifstream::in | ifstream::binary);
   if (!ifs) {
     std::ostringstream oss;

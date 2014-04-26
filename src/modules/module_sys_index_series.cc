@@ -62,7 +62,7 @@ int Sys_index_series::operator()(RLMachine& machine,
         int start = get<0>(it->second) + offset;
         int end = get<1>(it->second) + offset;
         int endval = get<2>(it->second);
-        adder(
+        Adder(
             index, start, end, endval, 0, value, init, previous_term_finished);
         break;
       }
@@ -71,7 +71,7 @@ int Sys_index_series::operator()(RLMachine& machine,
         int end = get<1>(it->third) + offset;
         int endval = get<2>(it->third);
         int mod = get<3>(it->third);
-        adder(index,
+        Adder(index,
               start,
               end,
               endval,
@@ -87,7 +87,7 @@ int Sys_index_series::operator()(RLMachine& machine,
   return value;
 }
 
-void Sys_index_series::adder(int index,
+void Sys_index_series::Adder(int index,
                              int start,
                              int end,
                              int endval,
@@ -109,6 +109,6 @@ void Sys_index_series::adder(int index,
 
 // -----------------------------------------------------------------------
 
-void addIndexSeriesOpcode(RLModule& module) {
-  module.addOpcode(800, 0, "index_series", new Sys_index_series);
+void AddIndexSeriesOpcode(RLModule& module) {
+  module.AddOpcode(800, 0, "index_series", new Sys_index_series);
 }

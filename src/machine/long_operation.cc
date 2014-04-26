@@ -49,26 +49,26 @@ PerformAfterLongOperationDecorator::PerformAfterLongOperationDecorator(
 
 PerformAfterLongOperationDecorator::~PerformAfterLongOperationDecorator() {}
 
-void PerformAfterLongOperationDecorator::mouseMotion(
+void PerformAfterLongOperationDecorator::MouseMotion(
     const Point& new_location) {
-  operation_->mouseMotion(new_location);
+  operation_->MouseMotion(new_location);
 }
 
-bool PerformAfterLongOperationDecorator::mouseButtonStateChanged(
+bool PerformAfterLongOperationDecorator::MouseButtonStateChanged(
     MouseButton mouse_button,
     bool pressed) {
-  return operation_->mouseButtonStateChanged(mouse_button, pressed);
+  return operation_->MouseButtonStateChanged(mouse_button, pressed);
 }
 
-bool PerformAfterLongOperationDecorator::keyStateChanged(KeyCode key_code,
+bool PerformAfterLongOperationDecorator::KeyStateChanged(KeyCode key_code,
                                                          bool pressed) {
-  return operation_->keyStateChanged(key_code, pressed);
+  return operation_->KeyStateChanged(key_code, pressed);
 }
 
 bool PerformAfterLongOperationDecorator::operator()(RLMachine& machine) {
   bool ret_val = (*operation_)(machine);
   if (ret_val)
-    performAfterLongOperation(machine);
+    PerformAfterLongOperation(machine);
 
   return ret_val;
 }

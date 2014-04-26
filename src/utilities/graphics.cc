@@ -36,28 +36,28 @@
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
 
-std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
+std::vector<int> GetSELEffect(RLMachine& machine, int selNum) {
   Gameexe& gexe = machine.system().gameexe();
   std::vector<int> selEffect;
 
-  if (gexe("SEL", selNum).exists()) {
-    selEffect = gexe("SEL", selNum).to_intVector();
-    grpToRecCoordinates(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
-  } else if (gexe("SELR", selNum).exists()) {
-    selEffect = gexe("SELR", selNum).to_intVector();
+  if (gexe("SEL", selNum).Exists()) {
+    selEffect = gexe("SEL", selNum).ToIntVector();
+    grp_to_rec_coordinates(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
+  } else if (gexe("SELR", selNum).Exists()) {
+    selEffect = gexe("SELR", selNum).ToIntVector();
   } else {
     // Can't find the specified #SEL effect. See if there's a #SEL.000 effect:
-    if (gexe("SEL", 0).exists()) {
-      selEffect = gexe("SEL", 0).to_intVector();
-      grpToRecCoordinates(
+    if (gexe("SEL", 0).Exists()) {
+      selEffect = gexe("SEL", 0).ToIntVector();
+      grp_to_rec_coordinates(
           selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
-    } else if (gexe("SELR", 0).exists()) {
-      selEffect = gexe("SELR", 0).to_intVector();
+    } else if (gexe("SELR", 0).Exists()) {
+      selEffect = gexe("SELR", 0).ToIntVector();
     } else {
       // Crap! Couldn't fall back on the default one either, so instead return
       // a SEL vector that is a screenwide, short fade because we absolutely
       // can't fail here.
-      Size screen = getScreenSize(gexe);
+      Size screen = GetScreenSize(gexe);
       selEffect = {0, 0, screen.width(), screen.height(), 0, 0, 1000, 000,
                    0, 0, 0,              0,               0, 0, 255,  0};
     }
@@ -66,16 +66,16 @@ std::vector<int> getSELEffect(RLMachine& machine, int selNum) {
   return selEffect;
 }
 
-void getSELPointAndRect(RLMachine& machine,
+void GetSELPointAndRect(RLMachine& machine,
                         int selNum,
                         Rect& rect,
                         Point& point) {
-  std::vector<int> selEffect = getSELEffect(machine, selNum);
+  std::vector<int> selEffect = GetSELEffect(machine, selNum);
   rect = Rect::REC(selEffect[0], selEffect[1], selEffect[2], selEffect[3]);
   point = Point(selEffect[4], selEffect[5]);
 }
 
-Size getScreenSize(Gameexe& gameexe) {
+Size GetScreenSize(Gameexe& gameexe) {
   std::vector<int> graphicsMode = gameexe("SCREENSIZE_MOD");
   if (graphicsMode.size()) {
     if (graphicsMode[0] == 0) {
@@ -96,7 +96,7 @@ Size getScreenSize(Gameexe& gameexe) {
   throw SystemError(oss.str());
 }
 
-void clamp(float& var, float min, float max) {
+void Clamp(float& var, float min, float max) {
   if (var < min)
     var = min;
   else if (var > max)
@@ -104,8 +104,8 @@ void clamp(float& var, float min, float max) {
 }
 
 void ClipDestination(const Rect& clip_rect, Rect& src, Rect& dest) {
-  Rect intersection = clip_rect.intersection(dest);
-  if (intersection.size().isEmpty()) {
+  Rect intersection = clip_rect.Intersection(dest);
+  if (intersection.size().is_empty()) {
     src = Rect();
     dest = Rect();
     return;

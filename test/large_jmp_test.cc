@@ -54,14 +54,14 @@ TEST(LargeJmpTest, goto) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Set intA[1]; this means the goto was ignored!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -81,14 +81,14 @@ TEST(LargeJmpTest, goto_if_false) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Didn't set intA[1]; goto-ed when we had a false value!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -108,16 +108,16 @@ TEST(LargeJmpTest, goto_if_true) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 1);
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 1);
 
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Set intA[1]; failed to goto when we had a true value!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -137,15 +137,15 @@ TEST(LargeJmpTest, goto_unless_false) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
+  rlmachine.AttachModule(new JmpModule);
 
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Set intA[1]; this means that we didn't goto but we had a false val";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -178,11 +178,11 @@ TEST(LargeJmpTest, goto_on) {
     libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "Wrong destination on goto_on";
   }
 }
@@ -214,11 +214,11 @@ TEST(LargeJmpTest, goto_on_illegal) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_on_0.TXT"));
   TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 7);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 7);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(-1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(-1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "We jumped somewhere unexpected on a bad value!";
 }
 
@@ -251,11 +251,11 @@ TEST(LargeJmpTest, goto_case) {
     libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "We jumped somewhere unexpected on a bad value!";
   }
 
@@ -263,11 +263,11 @@ TEST(LargeJmpTest, goto_case) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/goto_case_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 29);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 29);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef(0, 0)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef(0, 0)))
       << "We jumped somewhere unexpected on a bad value!";
 }
 
@@ -293,14 +293,14 @@ TEST(LargeJmpTest, gosub_0) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "intA[1] is unset; this means the gosub or ret was ignored!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -311,14 +311,14 @@ TEST(LargeJmpTest, gosub_if_false) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Set intA[1]; this means we gosubed on a false value (or ret problem)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -329,16 +329,16 @@ TEST(LargeJmpTest, gosub_if_true) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_if_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 1);
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 1);
 
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Didn't set intA[1]; didn't gosub on true!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -365,14 +365,14 @@ TEST(LargeJmpTest, gosub_unless_false) {
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Didn't set intA[1]; didn't gosub on false!";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -399,16 +399,16 @@ TEST(LargeJmpTest, gosub_unless_true) {
       locateTestCase("Module_Jmp_SEEN/gosub_unless_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 1);
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 1);
 
-  rlmachine.executeUntilHalted();
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set precondition (!?!?)";
-  EXPECT_EQ(0, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(0, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Set intA[1]; this means we gosubed on a true value (or ret problem)";
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Didn't set postcondition (!?!?)";
 }
 
@@ -442,11 +442,11 @@ TEST(LargeJmpTest, gosub_case) {
         locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
     TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "We jumped somewhere unexpected on a bad value!";
   }
 
@@ -454,11 +454,11 @@ TEST(LargeJmpTest, gosub_case) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_case_0.TXT"));
   TestSystem system(locateTestCase("Gameexe_data/Gameexe.ini"));
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.setIntValue(IntMemRef('B', 0), 29);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.SetIntValue(IntMemRef('B', 0), 29);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "We jumped somewhere unexpected on a bad value!";
 }
 
@@ -489,11 +489,11 @@ TEST(LargeJmpTest, jump) {
     libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jump_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "We jumped somewhere unexpected on a bad value!";
   }
 }
@@ -526,11 +526,11 @@ TEST(LargeJmpTest, jumpTest) {
     libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/jumpTest.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "We jumped somewhere unexpected on a bad value!";
   }
 }
@@ -564,15 +564,15 @@ TEST(LargeJmpTest, farcall) {
         locateTestCase("Module_Jmp_SEEN/farcallTest_0.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.setIntValue(IntMemRef('B', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.SetIntValue(IntMemRef('B', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
-    EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 0)))
+    EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 0)))
         << "Precondition not set! (!?!?!?!)";
-    EXPECT_EQ(i, rlmachine.getIntValue(IntMemRef('A', 1)))
+    EXPECT_EQ(i, rlmachine.GetIntValue(IntMemRef('A', 1)))
         << "We jumped somewhere unexpected on a bad value!";
-    EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('A', 2)))
+    EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('A', 2)))
         << "Postcondition not set! (We didn't return correctly!)";
   }
 }
@@ -609,32 +609,32 @@ TEST(LargeJmpTest, gosub_with) {
   libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/gosub_with_0.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
   // Original states that shouldn't be modified
-  EXPECT_EQ(1, rlmachine.getIntValue(IntMemRef('B', 0)))
+  EXPECT_EQ(1, rlmachine.GetIntValue(IntMemRef('B', 0)))
       << "Precondition not set! (!?!?!?!) (intB[0])";
-  EXPECT_EQ(2, rlmachine.getIntValue(IntMemRef('B', 1)))
+  EXPECT_EQ(2, rlmachine.GetIntValue(IntMemRef('B', 1)))
       << "Precondition not set! (!?!?!?!) (intB[1])";
-  EXPECT_EQ("one", rlmachine.getStringValue(STRS_LOCATION, 0))
+  EXPECT_EQ("one", rlmachine.GetStringValue(STRS_LOCATION, 0))
       << "Precondition not set! (!?!?!?!) (strS[0])";
-  EXPECT_EQ("two", rlmachine.getStringValue(STRS_LOCATION, 1))
+  EXPECT_EQ("two", rlmachine.GetStringValue(STRS_LOCATION, 1))
       << "Precondition not set! (!?!?!?!) (strS[1])";
 
   // Check the intermediate values that were calculated in the
   // functions
-  EXPECT_EQ("onetwo", rlmachine.getStringValue(STRS_LOCATION, 3))
+  EXPECT_EQ("onetwo", rlmachine.GetStringValue(STRS_LOCATION, 3))
       << "Wrong intermediary value for strS[3] in @stringTest!";
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('D', 0)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('D', 0)))
       << "Wrong intermediary value for intD[0] in @intTest!";
 
   // Make sure that intA[0] and intA[1] are set correctly when the
   // gosub_with returns
-  EXPECT_EQ(3, rlmachine.getIntValue(IntMemRef('A', 0)))
+  EXPECT_EQ(3, rlmachine.GetIntValue(IntMemRef('A', 0)))
       << "Wrong final value for intA[0]!";
-  EXPECT_EQ(6, rlmachine.getIntValue(IntMemRef('A', 1)))
+  EXPECT_EQ(6, rlmachine.GetIntValue(IntMemRef('A', 1)))
       << "Wrong final value for intA[1]!";
 }
 
@@ -699,14 +699,14 @@ TEST(LargeJmpTest, fibonacci) {
     libreallive::Archive arc(locateTestCase("Module_Jmp_SEEN/fibonacci.TXT"));
     TestSystem system;
     RLMachine rlmachine(system, arc);
-    rlmachine.attachModule(new JmpModule);
-    rlmachine.attachModule(new StrModule);
-    rlmachine.setIntValue(IntMemRef('D', 0), i);
-    rlmachine.executeUntilHalted();
+    rlmachine.AttachModule(new JmpModule);
+    rlmachine.AttachModule(new StrModule);
+    rlmachine.SetIntValue(IntMemRef('D', 0), i);
+    rlmachine.ExecuteUntilHalted();
 
     stringstream ss;
     ss << "Wrong output value for fib(" << i << ")";
-    EXPECT_EQ(recFib(i), rlmachine.getIntValue(IntMemRef('E', 0)))
+    EXPECT_EQ(recFib(i), rlmachine.GetIntValue(IntMemRef('E', 0)))
         << ss.str().c_str();
   }
 }
@@ -742,16 +742,16 @@ TEST(LargeJmpTest, farcall_with) {
           locateTestCase("Module_Jmp_SEEN/farcall_withTest.TXT"));
       TestSystem system;
       RLMachine rlmachine(system, arc);
-      rlmachine.attachModule(new JmpModule);
-      rlmachine.attachModule(new StrModule);
-      rlmachine.setIntValue(IntMemRef('B', 0), entrypoint);
-      rlmachine.setIntValue(IntMemRef('B', 1), offset);
-      rlmachine.executeUntilHalted();
+      rlmachine.AttachModule(new JmpModule);
+      rlmachine.AttachModule(new StrModule);
+      rlmachine.SetIntValue(IntMemRef('B', 0), entrypoint);
+      rlmachine.SetIntValue(IntMemRef('B', 1), offset);
+      rlmachine.ExecuteUntilHalted();
 
       stringstream ss;
       ss << "Wrong output value for pair (" << offset << ", " << entrypoint
          << ") in farcall_with test!";
-      EXPECT_EQ(entrypoint + offset, rlmachine.getIntValue(IntMemRef('A', 1)))
+      EXPECT_EQ(entrypoint + offset, rlmachine.GetIntValue(IntMemRef('A', 1)))
           << ss.str().c_str();
     }
   }
@@ -763,9 +763,9 @@ TEST(LargeJmpTest, pushStringValueUp) {
       locateTestCase("Module_Jmp_SEEN/pushStringValueUp.TXT"));
   TestSystem system;
   RLMachine rlmachine(system, arc);
-  rlmachine.attachModule(new JmpModule);
-  rlmachine.attachModule(new StrModule);
-  rlmachine.executeUntilHalted();
+  rlmachine.AttachModule(new JmpModule);
+  rlmachine.AttachModule(new StrModule);
+  rlmachine.ExecuteUntilHalted();
 
-  EXPECT_EQ("GOOD", rlmachine.getStringValue(STRM_LOCATION, 0));
+  EXPECT_EQ("GOOD", rlmachine.GetStringValue(STRM_LOCATION, 0));
 }

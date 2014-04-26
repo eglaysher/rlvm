@@ -48,7 +48,7 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
   // Builds a Mix_Chunk from a chunk of memory.
   SDLSoundChunk(char* data, int length);
 
-  ~SDLSoundChunk();
+  virtual ~SDLSoundChunk();
 
   // Plays the chunk on the given channel. Wraps Mix_PlayChannel. Pass -1 to
   // |loops| for infinite loops.
@@ -56,10 +56,10 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
   // This method should always be used instead of Mix_PlayChannel with a raw
   // Mix_Chunk because we do additional bookkeeping to handle memory
   // deallocation for when a chunk finishes.
-  void playChunkOn(int channel, int loops);
+  void PlayChunkOn(int channel, int loops);
 
   // Fades a chunk in.
-  void fadeInChunkOn(int channel, int loops, int ms);
+  void FadeInChunkOn(int channel, int loops, int ms);
 
   // SDL_Mixer callback function passed in to Mix_ChannelFinished().
   static void SoundChunkFinishedPlayback(int channel);
@@ -74,7 +74,7 @@ class SDLSoundChunk : public boost::enable_shared_from_this<SDLSoundChunk> {
  private:
   // Used in the path constructor to actually create the Mix_Chunk, which
   // requires a hack for NWA support.
-  Mix_Chunk* loadSample(const boost::filesystem::path& path);
+  Mix_Chunk* LoadSample(const boost::filesystem::path& path);
 
   // Static table which deliberatly creates cycles. When a chunk
   // starts playing, it's associated with its channel ID in this table

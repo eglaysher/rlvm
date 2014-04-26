@@ -51,14 +51,14 @@ struct objWaitAll : public RLOp_Void_Void {
   static bool WaitUntilDone(RLMachine& machine) {
     // Clannad puts us in DrawManual() right before calling us so we force
     // refreshes.
-    machine.system().graphics().forceRefresh();
-    return !machine.system().graphics().animationsPlaying();
+    machine.system().graphics().ForceRefresh();
+    return !machine.system().graphics().AnimationsPlaying();
   }
 
   void operator()(RLMachine& machine) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->breakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
-    machine.pushLongOperation(wait_op);
+    wait_op->BreakOnEvent(std::bind(WaitUntilDone, std::ref(machine)));
+    machine.PushLongOperation(wait_op);
   }
 };
 
@@ -75,41 +75,41 @@ struct objWaitAll : public RLOp_Void_Void {
 struct WaitForGanToFinish : public LongOperation {
   WaitForGanToFinish(GraphicsSystem& system, int fgbg, int parent, int inBuf)
       : system_(system),
-        mode_(system_.screenUpdateMode()),
+        mode_(system_.screen_update_mode()),
         fgbg_(fgbg),
         parent_(parent),
         buf_(inBuf) {
-    system_.setScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
+    system_.SetScreenUpdateMode(GraphicsSystem::SCREENUPDATEMODE_AUTOMATIC);
   }
 
   bool operator()(RLMachine& machine) {
-    GraphicsObject& obj = getObject(machine);
+    GraphicsObject& obj = GetObject(machine);
     bool done = true;
 
-    if (obj.hasObjectData()) {
-      const GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation())
-        done = !data.currentlyPlaying();
+    if (obj.has_object_data()) {
+      const GraphicsObjectData& data = obj.GetObjectData();
+      if (data.IsAnimation())
+        done = !data.is_currently_playing();
     }
 
     if (done) {
       // Restore whatever mode we were in before.
-      system_.setScreenUpdateMode(mode_);
+      system_.SetScreenUpdateMode(mode_);
     }
 
     return done;
   }
 
-  GraphicsObject& getObject(RLMachine& machine) {
+  GraphicsObject& GetObject(RLMachine& machine) {
     GraphicsSystem& graphics = machine.system().graphics();
 
     if (parent_ != -1) {
-      GraphicsObject& parent = graphics.getObject(fgbg_, parent_);
-      ensureIsParentObject(parent, graphics.objectLayerSize());
-      return static_cast<ParentGraphicsObjectData&>(parent.objectData())
-          .getObject(buf_);
+      GraphicsObject& parent = graphics.GetObject(fgbg_, parent_);
+      EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
+      return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
+          .GetObject(buf_);
     } else {
-      return graphics.getObject(fgbg_, buf_);
+      return graphics.GetObject(fgbg_, buf_);
     }
   }
 
@@ -129,24 +129,24 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
       : block_(block), after_effect_(after) {}
 
   void operator()(RLMachine& machine, int buf, int animationSet) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
 
-    if (obj.hasObjectData()) {
-      GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation()) {
-        data.playSet(animationSet);
-        data.setAfterAction(after_effect_);
+    if (obj.has_object_data()) {
+      GraphicsObjectData& data = obj.GetObjectData();
+      if (data.IsAnimation()) {
+        data.PlaySet(animationSet);
+        data.set_after_action(after_effect_);
 
         if (block_) {
           int fgbg;
-          if (!getProperty(P_FGBG, fgbg))
+          if (!GetProperty(P_FGBG, fgbg))
             fgbg = OBJ_FG;
 
           int parent_object;
-          if (!getProperty(P_PARENTOBJ, parent_object))
+          if (!GetProperty(P_PARENTOBJ, parent_object))
             parent_object = -1;
 
-          machine.pushLongOperation(new WaitForGanToFinish(
+          machine.PushLongOperation(new WaitForGanToFinish(
               machine.system().graphics(), fgbg, parent_object, buf));
         }
       }
@@ -157,14 +157,14 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 struct ganWait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     int fgbg;
-    if (!getProperty(P_FGBG, fgbg))
+    if (!GetProperty(P_FGBG, fgbg))
       fgbg = OBJ_FG;
 
     int parent_object;
-    if (!getProperty(P_PARENTOBJ, parent_object))
+    if (!GetProperty(P_PARENTOBJ, parent_object))
       parent_object = -1;
 
-    machine.pushLongOperation(new WaitForGanToFinish(
+    machine.PushLongOperation(new WaitForGanToFinish(
         machine.system().graphics(), fgbg, parent_object, buf));
   }
 };
@@ -205,12 +205,12 @@ struct ganWait : public RLOp_Void_1<IntConstant_T> {
 // Ushio's birth so I'm assuming this is correct.
 struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, gan_num);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, gan_num);
 
-    if (obj.hasObjectData()) {
-      GraphicsObjectData& data = obj.objectData();
-      if (data.isAnimation()) {
-        if (data.animationFinished()) {
+    if (obj.has_object_data()) {
+      GraphicsObjectData& data = obj.GetObjectData();
+      if (data.IsAnimation()) {
+        if (data.animation_finished()) {
           return 0;
         } else {
           return 1;
@@ -224,9 +224,9 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
 
 struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, obj_num);
-    if (obj.hasObjectData())
-      obj.objectData().setCurrentlyPlaying(false);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
+    if (obj.has_object_data())
+      obj.GetObjectData().set_is_currently_playing(false);
   }
 };
 
@@ -235,51 +235,51 @@ struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
 // -----------------------------------------------------------------------
 
 void addGanOperationsTo(RLModule& m) {
-  m.addOpcode(0, 0, "objStop2", new objStop_0);
-  m.addOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
-  m.addOpcode(4, 0, "ganWait", new ganWait);
+  m.AddOpcode(0, 0, "objStop2", new objStop_0);
+  m.AddOpcode(3, 0, "ganIsDonePlaying", new isGanDonePlaying);
+  m.AddOpcode(4, 0, "ganWait", new ganWait);
 
-  m.addOpcode(1000, 0, "objStop", new objStop_0);
-  m.addUnsupportedOpcode(1000, 1, "objStop");
+  m.AddOpcode(1000, 0, "objStop", new objStop_0);
+  m.AddUnsupportedOpcode(1000, 1, "objStop");
 
-  m.addOpcode(104, 0, "objWaitAll", new objWaitAll);
+  m.AddOpcode(104, 0, "objWaitAll", new objWaitAll);
 
-  m.addOpcode(
+  m.AddOpcode(
       1001, 0, "ganLoop", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       1003, 0, "ganPlay", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(1005,
+  m.AddOpcode(1005,
               0,
               "ganPlayOnce",
               new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
-  m.addOpcode(
+  m.AddOpcode(
       1006, 0, "ganPlayEx", new ganPlay(true, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(1007,
+  m.AddOpcode(1007,
               0,
               "ganPlayOnceEx",
               new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
-  m.addOpcode(
+  m.AddOpcode(
       2001, 0, "objLoop", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       2003, 0, "objPlay", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 
-  m.addOpcode(
+  m.AddOpcode(
       3001, 0, "ganLoop2", new ganPlay(false, GraphicsObjectData::AFTER_LOOP));
-  m.addOpcode(
+  m.AddOpcode(
       3003, 0, "ganPlay2", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(3005,
+  m.AddOpcode(3005,
               0,
               "ganPlayOnce2",
               new ganPlay(false, GraphicsObjectData::AFTER_CLEAR));
-  m.addOpcode(
+  m.AddOpcode(
       3006, 0, "ganPlayEx2", new ganPlay(true, GraphicsObjectData::AFTER_NONE));
-  m.addOpcode(3007,
+  m.AddOpcode(3007,
               0,
               "ganPlayOnceEx2",
               new ganPlay(true, GraphicsObjectData::AFTER_CLEAR));
 
-  m.addOpcode(
+  m.AddOpcode(
       3103, 0, "ganPlay3", new ganPlay(false, GraphicsObjectData::AFTER_NONE));
 }
 
@@ -287,28 +287,28 @@ void addGanOperationsTo(RLModule& m) {
 
 GanFgModule::GanFgModule() : RLModule("GanFg", 1, 73) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 GanBgModule::GanBgModule() : RLModule("GanBg", 1, 74) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildGanFgModule::ChildGanFgModule()
-    : MappedRLModule(childObjMappingFun, "ChildGanFg", 2, 73) {
+    : MappedRLModule(ChildObjMappingFun, "ChildGanFg", 2, 73) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildGanBgModule::ChildGanBgModule()
-    : MappedRLModule(childObjMappingFun, "ChildGanBg", 2, 74) {
+    : MappedRLModule(ChildObjMappingFun, "ChildGanBg", 2, 74) {
   addGanOperationsTo(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }

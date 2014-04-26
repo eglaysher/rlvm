@@ -77,7 +77,7 @@ class MonoColourTransformer : public ColourTransformer {
  public:
   virtual SDL_Color operator()(const SDL_Color& colour) const {
     float grayscale = 0.3 * colour.r + 0.59 * colour.g + 0.11 * colour.b;
-    clamp(grayscale, 0, 255);
+    Clamp(grayscale, 0, 255);
     SDL_Color out = {grayscale, grayscale, grayscale, 0};
     return out;
   }
@@ -159,7 +159,7 @@ void TransformSurface(SDLSurface* our_surface,
   SDL_UnlockSurface(surface);
 
   // If we are the main screen, then we want to update the screen
-  our_surface->markWrittenTo(our_surface->rect());
+  our_surface->markWrittenTo(our_surface->GetRect());
 }
 
 }  // namespace
@@ -227,8 +227,8 @@ SDLSurface::TextureRecord::TextureRecord(SDL_Surface* surface,
 void SDLSurface::TextureRecord::reupload(SDL_Surface* surface,
                                          const Rect& dirty) {
   if (texture) {
-    Rect i = Rect::REC(x_, y_, w_, h_).intersection(dirty);
-    if (!i.isEmpty()) {
+    Rect i = Rect::REC(x_, y_, w_, h_).Intersection(dirty);
+    if (!i.is_empty()) {
       texture->reupload(surface,
                         i.x() - x_,
                         i.y() - y_,
@@ -339,14 +339,14 @@ SDLSurface::~SDLSurface() { deallocate(); }
 
 // -----------------------------------------------------------------------
 
-Size SDLSurface::size() const {
+Size SDLSurface::GetSize() const {
   assert(surface_);
   return Size(surface_->w, surface_->h);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::dump() {
+void SDLSurface::Dump() {
   static int count = 0;
   std::ostringstream ss;
   ss << "dump_" << count << ".bmp";
@@ -361,7 +361,7 @@ void SDLSurface::allocate(const Size& size) {
 
   surface_ = buildNewSurface(size);
 
-  fill(RGBAColour::Black());
+  Fill(RGBAColour::Black());
 }
 
 // -----------------------------------------------------------------------
@@ -383,7 +383,7 @@ void SDLSurface::deallocate() {
 
 // TODO(erg): This function doesn't ignore alpha blending when use_src_alpha is
 // false; thus, grp_open and grp_mask_open are really grp_mask_open.
-void SDLSurface::blitToSurface(Surface& dest_surface,
+void SDLSurface::BlitToSurface(Surface& dest_surface,
                                const Rect& src,
                                const Rect& dst,
                                int alpha,
@@ -571,7 +571,7 @@ void SDLSurface::uploadTextureIfNeeded() const {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src,
+void SDLSurface::RenderToScreen(const Rect& src,
                                 const Rect& dst,
                                 int alpha) const {
   uploadTextureIfNeeded();
@@ -579,13 +579,13 @@ void SDLSurface::renderToScreen(const Rect& src,
   for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
-    it->texture->renderToScreen(src, dst, alpha);
+    it->texture->RenderToScreen(src, dst, alpha);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsColorMask(const Rect& src,
+void SDLSurface::RenderToScreenAsColorMask(const Rect& src,
                                            const Rect& dst,
                                            const RGBAColour& rgba,
                                            int filter) const {
@@ -594,13 +594,13 @@ void SDLSurface::renderToScreenAsColorMask(const Rect& src,
   for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
-    it->texture->renderToScreenAsColorMask(src, dst, rgba, filter);
+    it->texture->RenderToScreenAsColorMask(src, dst, rgba, filter);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreen(const Rect& src,
+void SDLSurface::RenderToScreen(const Rect& src,
                                 const Rect& dst,
                                 const int opacity[4]) const {
   uploadTextureIfNeeded();
@@ -608,13 +608,13 @@ void SDLSurface::renderToScreen(const Rect& src,
   for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
-    it->texture->renderToScreen(src, dst, opacity);
+    it->texture->RenderToScreen(src, dst, opacity);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
+void SDLSurface::RenderToScreenAsObject(const GraphicsObject& rp,
                                         const Rect& src,
                                         const Rect& dst,
                                         int alpha) const {
@@ -623,13 +623,13 @@ void SDLSurface::renderToScreenAsObject(const GraphicsObject& rp,
   for (std::vector<TextureRecord>::iterator it = textures_.begin();
        it != textures_.end();
        ++it) {
-    it->texture->renderToScreenAsObject(rp, *this, src, dst, alpha);
+    it->texture->RenderToScreenAsObject(rp, *this, src, dst, alpha);
   }
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(const RGBAColour& colour) {
+void SDLSurface::Fill(const RGBAColour& colour) {
   // Fill the entire surface with the incoming colour
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
@@ -637,12 +637,12 @@ void SDLSurface::fill(const RGBAColour& colour) {
     reportSDLError("SDL_FillRect", "SDLGraphicsSystem::wipe()");
 
   // If we are the main screen, then we want to update the screen
-  markWrittenTo(rect());
+  markWrittenTo(GetRect());
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
+void SDLSurface::Fill(const RGBAColour& colour, const Rect& area) {
   // Fill the entire surface with the incoming colour
   Uint32 sdl_colour = MapRGBA(surface_->format, colour);
 
@@ -658,39 +658,39 @@ void SDLSurface::fill(const RGBAColour& colour, const Rect& area) {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::invert(const Rect& rect) {
+void SDLSurface::Invert(const Rect& rect) {
   InvertColourTransformer inverter;
   TransformSurface(this, rect, inverter);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::mono(const Rect& rect) {
+void SDLSurface::Mono(const Rect& rect) {
   MonoColourTransformer mono;
   TransformSurface(this, rect, mono);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::toneCurve(const ToneCurveRGBMap effect, const Rect& area) {
+void SDLSurface::ToneCurve(const ToneCurveRGBMap effect, const Rect& area) {
   ToneCurveColourTransformer tc(effect);
   TransformSurface(this, area, tc);
 }
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::applyColour(const RGBColour& colour, const Rect& area) {
+void SDLSurface::ApplyColour(const RGBColour& colour, const Rect& area) {
   ApplyColourTransformer apply(colour);
   TransformSurface(this, area, apply);
 }
 
 // -----------------------------------------------------------------------
 
-int SDLSurface::numPatterns() const { return region_table_.size(); }
+int SDLSurface::GetNumPatterns() const { return region_table_.size(); }
 
 // -----------------------------------------------------------------------
 
-const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const {
+const SDLSurface::GrpRect& SDLSurface::GetPattern(int patt_no) const {
   if (patt_no < region_table_.size())
     return region_table_[patt_no];
   else
@@ -699,7 +699,7 @@ const SDLSurface::GrpRect& SDLSurface::getPattern(int patt_no) const {
 
 // -----------------------------------------------------------------------
 
-Surface* SDLSurface::clone() const {
+Surface* SDLSurface::Clone() const {
   SDL_Surface* tmp_surface =
       SDL_CreateRGBSurface(surface_->flags,
                            surface_->w,
@@ -752,7 +752,7 @@ std::vector<int> SDLSurface::segmentPicture(int size_remainging) {
 
 // -----------------------------------------------------------------------
 
-void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) const {
+void SDLSurface::GetDCPixel(const Point& pos, int& r, int& g, int& b) const {
   SDL_Color colour;
   Uint32 col = 0;
 
@@ -778,11 +778,11 @@ void SDLSurface::getDCPixel(const Point& pos, int& r, int& g, int& b) const {
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(const Rect& clip_rect,
+boost::shared_ptr<Surface> SDLSurface::ClipAsColorMask(const Rect& clip_rect,
                                                        int r,
                                                        int g,
                                                        int b) const {
-  const char* function_name = "SDLGraphicsSystem::clipAsColorMask()";
+  const char* function_name = "SDLGraphicsSystem::ClipAsColorMask()";
 
   // TODO(erg): This needs to be made exception safe and so does the rest
   // of this file.
@@ -818,11 +818,11 @@ boost::shared_ptr<Surface> SDLSurface::clipAsColorMask(const Rect& clip_rect,
 void SDLSurface::markWrittenTo(const Rect& written_rect) {
   // If we are marked as dc0, alert the SDLGraphicsSystem.
   if (is_dc0_ && graphics_system_) {
-    graphics_system_->markScreenAsDirty(GUT_DRAW_DC0);
+    graphics_system_->MarkScreenAsDirty(GUT_DRAW_DC0);
   }
 
   // Mark that the texture needs reuploading
-  dirty_rectangle_ = dirty_rectangle_.rectUnion(written_rect);
+  dirty_rectangle_ = dirty_rectangle_.RectUnion(written_rect);
   texture_is_valid_ = false;
 }
 
@@ -837,7 +837,7 @@ void SDLSurface::Observe(NotificationType type,
       it->forceUnload();
     }
 
-    dirty_rectangle_ = rect();
+    dirty_rectangle_ = GetRect();
   }
 
   texture_is_valid_ = false;

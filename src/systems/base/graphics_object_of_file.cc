@@ -74,7 +74,7 @@ GraphicsObjectOfFile::GraphicsObjectOfFile(System& system,
       frame_time_(0),
       current_frame_(0),
       time_at_last_frame_change_(0) {
-  loadFile();
+  LoadFile();
 }
 
 // -----------------------------------------------------------------------
@@ -83,106 +83,106 @@ GraphicsObjectOfFile::~GraphicsObjectOfFile() {}
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loadFile() {
-  surface_ = system_.graphics().getSurfaceNamed(filename_);
+void GraphicsObjectOfFile::LoadFile() {
+  surface_ = system_.graphics().GetSurfaceNamed(filename_);
   surface_->EnsureUploaded();
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelWidth(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
+int GraphicsObjectOfFile::PixelWidth(const GraphicsObject& rp) {
+  const Surface::GrpRect& rect = surface_->GetPattern(rp.GetPattNo());
   int width = rect.rect.width();
-  return int(rp.getWidthScaleFactor() * width);
+  return int(rp.GetWidthScaleFactor() * width);
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsObjectOfFile::pixelHeight(const GraphicsObject& rp) {
-  const Surface::GrpRect& rect = surface_->getPattern(rp.pattNo());
+int GraphicsObjectOfFile::PixelHeight(const GraphicsObject& rp) {
+  const Surface::GrpRect& rect = surface_->GetPattern(rp.GetPattNo());
   int height = rect.rect.height();
-  return int(rp.getHeightScaleFactor() * height);
+  return int(rp.GetHeightScaleFactor() * height);
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsObjectOfFile::clone() const {
+GraphicsObjectData* GraphicsObjectOfFile::Clone() const {
   return new GraphicsObjectOfFile(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::execute(RLMachine& machine) {
-  if (currentlyPlaying()) {
-    unsigned int current_time = system_.event().getTicks();
+void GraphicsObjectOfFile::Execute(RLMachine& machine) {
+  if (is_currently_playing()) {
+    unsigned int current_time = system_.event().GetTicks();
     unsigned int time_since_last_frame_change =
         current_time - time_at_last_frame_change_;
 
     while (time_since_last_frame_change > frame_time_) {
       current_frame_++;
-      if (current_frame_ == surface_->numPatterns()) {
+      if (current_frame_ == surface_->GetNumPatterns()) {
         current_frame_--;
-        endAnimation();
+        EndAnimation();
       }
 
       time_at_last_frame_change_ += frame_time_;
       time_since_last_frame_change = current_time - time_at_last_frame_change_;
-      system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+      system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
     }
   }
 }
 
 // -----------------------------------------------------------------------
 
-bool GraphicsObjectOfFile::isAnimation() const {
-  return surface_->numPatterns();
+bool GraphicsObjectOfFile::IsAnimation() const {
+  return surface_->GetNumPatterns();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::loopAnimation() { current_frame_ = 0; }
+void GraphicsObjectOfFile::LoopAnimation() { current_frame_ = 0; }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsObjectOfFile::currentSurface(
+boost::shared_ptr<const Surface> GraphicsObjectOfFile::CurrentSurface(
     const GraphicsObject& rp) {
   return surface_;
 }
 
 // -----------------------------------------------------------------------
 
-Rect GraphicsObjectOfFile::srcRect(const GraphicsObject& go) {
+Rect GraphicsObjectOfFile::SrcRect(const GraphicsObject& go) {
   if (time_at_last_frame_change_ != 0) {
     // If we've ever been treated as an animation, we need to continue acting
     // as an animation even if we've stopped.
-    return surface_->getPattern(current_frame_).rect;
+    return surface_->GetPattern(current_frame_).rect;
   }
 
-  return GraphicsObjectData::srcRect(go);
+  return GraphicsObjectData::SrcRect(go);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::objectInfo(std::ostream& tree) {
+void GraphicsObjectOfFile::ObjectInfo(std::ostream& tree) {
   tree << "  Image: " << filename_ << std::endl;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsObjectOfFile::playSet(int frame_time) {
-  setCurrentlyPlaying(true);
+void GraphicsObjectOfFile::PlaySet(int frame_time) {
+  set_is_currently_playing(true);
   frame_time_ = frame_time;
   current_frame_ = 0;
 
   if (frame_time_ == 0) {
-    std::cerr << "WARNING: GraphicsObjectOfFile::playSet(0) is invalid;"
+    std::cerr << "WARNING: GraphicsObjectOfFile::PlaySet(0) is invalid;"
               << " this is probably going to cause a graphical glitch..."
               << std::endl;
     frame_time_ = 10;
   }
 
-  time_at_last_frame_change_ = system_.event().getTicks();
-  system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+  time_at_last_frame_change_ = system_.event().GetTicks();
+  system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
 }
 
 // -----------------------------------------------------------------------
@@ -192,14 +192,14 @@ void GraphicsObjectOfFile::load(Archive& ar, unsigned int version) {
   ar& boost::serialization::base_object<GraphicsObjectData>(*this) & filename_ &
       frame_time_ & current_frame_ & time_at_last_frame_change_;
 
-  loadFile();
+  LoadFile();
 
   // Saving |time_at_last_frame_change_| as part of the format is obviously a
   // mistake, but is now baked into the file format. Ask the clock for a more
   // suitable value.
   if (time_at_last_frame_change_ != 0) {
-    time_at_last_frame_change_ = system_.event().getTicks();
-    system_.graphics().markScreenAsDirty(GUT_DISPLAY_OBJ);
+    time_at_last_frame_change_ = system_.event().GetTicks();
+    system_.graphics().MarkScreenAsDirty(GUT_DISPLAY_OBJ);
   }
 }
 

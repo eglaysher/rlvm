@@ -74,25 +74,25 @@ CGMTable::CGMTable() {}
 
 CGMTable::CGMTable(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("CGTABLE_FILENAME");
-  if (!filename_key.exists()) {
+  if (!filename_key.Exists()) {
     // It is perfectly valid not to have a CG table key. All operations in this
     // class become noops.
     return;
   }
 
-  std::string cgtable = filename_key.to_string("");
+  std::string cgtable = filename_key.ToString("");
   if (cgtable == "") {
     // It is perfectly valid not to have a CG table. All operations in this
     // class become noops.
     return;
   }
 
-  fs::path basename = gameexe("__GAMEPATH").to_string();
-  fs::path filename = correctPathCase(basename / "dat" / cgtable);
+  fs::path basename = gameexe("__GAMEPATH").ToString();
+  fs::path filename = CorrectPathCase(basename / "dat" / cgtable);
 
   int size;
   std::unique_ptr<char[]> data;
-  if (loadFileData(filename, data, size)) {
+  if (LoadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());
@@ -133,19 +133,19 @@ CGMTable::CGMTable(Gameexe& gameexe) {
 
 CGMTable::~CGMTable() {}
 
-int CGMTable::getTotal() const { return cgm_info_.size(); }
+int CGMTable::GetTotal() const { return cgm_info_.size(); }
 
-int CGMTable::getViewed() const { return cgm_data_.size(); }
+int CGMTable::GetViewed() const { return cgm_data_.size(); }
 
-int CGMTable::getPercent() const {
+int CGMTable::GetPercent() const {
   // Prevent divide by zero
-  if (getTotal())
-    return (getViewed() / double(getTotal())) * 100;
+  if (GetTotal())
+    return (GetViewed() / double(GetTotal())) * 100;
   else
     return 0;
 }
 
-int CGMTable::getFlag(const std::string& filename) const {
+int CGMTable::GetFlag(const std::string& filename) const {
   CGMMap::const_iterator it = cgm_info_.find(filename);
   if (it == cgm_info_.end())
     return -1;
@@ -153,8 +153,8 @@ int CGMTable::getFlag(const std::string& filename) const {
   return it->second;
 }
 
-int CGMTable::getStatus(const std::string& filename) const {
-  int flag = getFlag(filename);
+int CGMTable::GetStatus(const std::string& filename) const {
+  int flag = GetFlag(filename);
   if (flag == -1)
     return -1;
 
@@ -164,12 +164,12 @@ int CGMTable::getStatus(const std::string& filename) const {
   return 0;
 }
 
-void CGMTable::setViewed(RLMachine& machine, const std::string& filename) {
-  int flag = getFlag(filename);
+void CGMTable::SetViewed(RLMachine& machine, const std::string& filename) {
+  int flag = GetFlag(filename);
 
   if (flag != -1) {
     // Set the intZ[] flag
-    machine.memory().setIntValue(
+    machine.memory().SetIntValue(
         libreallive::IntMemRef(libreallive::INTZ_LOCATION, 0, flag), 1);
 
     cgm_data_.insert(flag);

@@ -38,7 +38,7 @@
 SDLSoundChunk::PlayingTable SDLSoundChunk::s_playing_table;
 
 SDLSoundChunk::SDLSoundChunk(const boost::filesystem::path& path)
-    : sample_(loadSample(path)) {}
+    : sample_(LoadSample(path)) {}
 
 SDLSoundChunk::SDLSoundChunk(char* data, int length)
     : sample_(Mix_LoadWAV_RW(SDL_RWFromMem(data, length + 0x2c), 1)),
@@ -49,7 +49,7 @@ SDLSoundChunk::~SDLSoundChunk() {
   data_.reset();
 }
 
-Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
+Mix_Chunk* SDLSoundChunk::LoadSample(const boost::filesystem::path& path) {
   if (boost::iequals(path.extension().string(), ".nwa")) {
     // Hack to load NWA sounds into a MixChunk. I was resisted doing this
     // because I assumed there was a better way, but this is essentially what
@@ -70,7 +70,7 @@ Mix_Chunk* SDLSoundChunk::loadSample(const boost::filesystem::path& path) {
   }
 }
 
-void SDLSoundChunk::playChunkOn(int channel, int loops) {
+void SDLSoundChunk::PlayChunkOn(int channel, int loops) {
   {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();
@@ -81,7 +81,7 @@ void SDLSoundChunk::playChunkOn(int channel, int loops) {
   }
 }
 
-void SDLSoundChunk::fadeInChunkOn(int channel, int loops, int ms) {
+void SDLSoundChunk::FadeInChunkOn(int channel, int loops, int ms) {
   {
     SDLAudioLocker locker;
     s_playing_table[channel] = shared_from_this();

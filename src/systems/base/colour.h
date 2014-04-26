@@ -48,9 +48,9 @@ class RGBColour {
   float g_float() const { return static_cast<float>(g_) / 255; }
   float b_float() const { return static_cast<float>(b_) / 255; }
 
-  void setRed(const int in) { r_ = in; }
-  void setGreen(const int in) { g_ = in; }
-  void setBlue(const int in) { b_ = in; }
+  void set_red(const int in) { r_ = in; }
+  void set_green(const int in) { g_ = in; }
+  void set_blue(const int in) { b_ = in; }
 
   bool operator==(const RGBColour& rhs) const;
   bool operator!=(const RGBColour& rhs) const;
@@ -95,10 +95,10 @@ class RGBAColour {
   int a() const { return alpha_; }
   float a_float() const { return static_cast<float>(alpha_) / 255; }
 
-  void setRed(const int in) { rgb_.setRed(in); }
-  void setGreen(const int in) { rgb_.setGreen(in); }
-  void setBlue(const int in) { rgb_.setBlue(in); }
-  void setAlpha(const int in) { alpha_ = in; }
+  void set_red(const int in) { rgb_.set_red(in); }
+  void set_green(const int in) { rgb_.set_green(in); }
+  void set_blue(const int in) { rgb_.set_blue(in); }
+  void set_alpha(const int in) { alpha_ = in; }
 
   bool operator==(const RGBAColour& rhs) const;
   bool operator!=(const RGBAColour& rhs) const;

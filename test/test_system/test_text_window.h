@@ -33,33 +33,30 @@
 class TestTextWindow : public TextWindow {
  public:
   TestTextWindow(System& system, int x);
-  ~TestTextWindow();
-  virtual void execute() {}
+  virtual ~TestTextWindow();
 
-  virtual void setFontColor(const std::vector<int>& colour_data);
+  // Overridden from TextWindow:
+  virtual void SetFontColor(const std::vector<int>& colour_data) override;
+  virtual boost::shared_ptr<Surface> GetTextSurface() override;
+  virtual boost::shared_ptr<Surface> GetNameSurface() override;
+  virtual bool DisplayCharacter(const std::string& current,
+                                const std::string& next) override;
 
-  virtual bool character(const std::string& current, const std::string& next);
-  virtual int charWidth(uint16_t codepoint) const { return 0; }
+  virtual void RenderNameInBox(const std::string& utf8str);
+  virtual void ClearWin() override;
+  virtual void SetName(const std::string& utf8name,
+                       const std::string& next_char) override;
 
-  virtual boost::shared_ptr<Surface> textSurface();
-  virtual boost::shared_ptr<Surface> nameSurface();
-  virtual void renderNameInBox(const std::string& utf8str);
-  virtual void clearWin();
-  virtual void setName(const std::string& utf8name,
-                       const std::string& next_char);
-
-  virtual void hardBrake();
+  virtual void HardBrake() override;
 
   // To implement for real, instead of just recording in the mocklog.
-  virtual void resetIndentation();
-  virtual void markRubyBegin();
-  virtual void displayRubyText(const std::string& utf8str);
+  virtual void ResetIndentation() override;
+  virtual void MarkRubyBegin() override;
+  virtual void DisplayRubyText(const std::string& utf8str) override;
 
-  virtual bool isFull() const { return false; }
+  std::string current_contents() const { return current_contents_; }
 
-  std::string currentContents() const { return current_contents_; }
-
-  virtual void addSelectionItem(const std::string& utf8str, int selection_id) {}
+  virtual void AddSelectionItem(const std::string& utf8str, int selection_id) override {}
 
  private:
   std::string current_contents_;

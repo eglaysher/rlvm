@@ -36,11 +36,11 @@ class GraphicsObject;
 
 // -----------------------------------------------------------------------
 
-void ensureIsParentObject(GraphicsObject& parent, int size);
+void EnsureIsParentObject(GraphicsObject& parent, int size);
 
-GraphicsObject& getGraphicsObject(RLMachine& machine, RLOperation* op, int obj);
+GraphicsObject& GetGraphicsObject(RLMachine& machine, RLOperation* op, int obj);
 
-void setGraphicsObject(RLMachine& machine,
+void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
                        int obj,
                        GraphicsObject& gobj);
@@ -62,9 +62,10 @@ void setGraphicsObject(RLMachine& machine,
 class ObjRangeAdapter : public RLOp_SpecialCase {
  public:
   explicit ObjRangeAdapter(RLOperation* in);
+  virtual ~ObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff) override;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -75,7 +76,7 @@ class ObjRangeAdapter : public RLOp_SpecialCase {
 //
 // The wrapper takes ownership of the incoming op pointer, and the
 // caller takes ownership of the resultant RLOperation.
-RLOperation* rangeMappingFun(RLOperation* op);
+RLOperation* RangeMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
@@ -84,15 +85,16 @@ RLOperation* rangeMappingFun(RLOperation* op);
 class ChildObjAdapter : public RLOp_SpecialCase {
  public:
   explicit ChildObjAdapter(RLOperation* in);
+  virtual ~ChildObjAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff) override;
 
  private:
   std::unique_ptr<RLOperation> handler;
 };
 
-RLOperation* childObjMappingFun(RLOperation* op);
+RLOperation* ChildObjMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
@@ -100,9 +102,10 @@ RLOperation* childObjMappingFun(RLOperation* op);
 class ChildObjRangeAdapter : public RLOp_SpecialCase {
  public:
   explicit ChildObjRangeAdapter(RLOperation* in);
+  virtual ~ChildObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff);
+                          const libreallive::CommandElement& ff) override;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -111,7 +114,7 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
 // The combo form of rangeMappingFun and childObjMappingFun. Used for
 // operations that start with (parent object num, first child num, last child
 // num).
-RLOperation* childRangeMappingFun(RLOperation* op);
+RLOperation* ChildRangeMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
@@ -127,9 +130,9 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   typedef void (GraphicsObject::*Setter)(const int);
 
   explicit Obj_SetOneIntOnObj(Setter s);
-  ~Obj_SetOneIntOnObj();
+  virtual ~Obj_SetOneIntOnObj();
 
-  void operator()(RLMachine& machine, int buf, int incoming);
+  virtual void operator()(RLMachine& machine, int buf, int incoming) override;
 
  private:
   // The setter function to call on Op_SetToIncoming::reference when
@@ -154,12 +157,12 @@ class Obj_SetTwoIntOnObj
 
  public:
   Obj_SetTwoIntOnObj(Setter one, Setter two);
-  ~Obj_SetTwoIntOnObj();
+  virtual ~Obj_SetTwoIntOnObj();
 
-  void operator()(RLMachine& machine,
-                  int buf,
-                  int incomingOne,
-                  int incomingTwo);
+  virtual void operator()(RLMachine& machine,
+                          int buf,
+                          int incomingOne,
+                          int incomingTwo) override;
 };
 
 #endif  // SRC_MODULES_MODULE_OBJ_H_

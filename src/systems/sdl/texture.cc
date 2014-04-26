@@ -315,7 +315,7 @@ void printARBLog(GLhandleARB obj) {
 // -----------------------------------------------------------------------
 
 // This is really broken and brain dead.
-void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
+void Texture::RenderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
   int fdx1 = dst.x(), fdy1 = dst.y(), fdx2 = dst.x2(), fdy2 = dst.y2();
   if (!filterCoords(x1, y1, x2, y2, fdx1, fdy1, fdx2, fdy2))
@@ -356,7 +356,7 @@ void Texture::renderToScreen(const Rect& src, const Rect& dst, int opacity) {
 
 // TODO(erg): A function of this hairiness needs super more amounts of
 // documentation.
-void Texture::renderToScreenAsColorMask(const Rect& src,
+void Texture::RenderToScreenAsColorMask(const Rect& src,
                                         const Rect& dst,
                                         const RGBAColour& rgba,
                                         int filter) {
@@ -566,7 +566,7 @@ void Texture::render_to_screen_as_colour_mask_additive(const Rect& src,
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreen(const Rect& src,
+void Texture::RenderToScreen(const Rect& src,
                              const Rect& dst,
                              const int opacity[4]) {
   // For the time being, we are dumb and assume that it's one texture
@@ -609,7 +609,7 @@ void Texture::renderToScreen(const Rect& src,
 
 // -----------------------------------------------------------------------
 
-void Texture::renderToScreenAsObject(const GraphicsObject& go,
+void Texture::RenderToScreenAsObject(const GraphicsObject& go,
                                      const SDLSurface& surface,
                                      const Rect& srcRect,
                                      const Rect& dstRect,
@@ -647,8 +647,8 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
     int height = fdy2 - fdy1;
 
     // Rotate the texture around the point (origin + position + reporigin)
-    float x_rep = (width / 2.0f) + go.xRepOrigin();
-    float y_rep = (height / 2.0f) + go.yRepOrigin();
+    float x_rep = (width / 2.0f) + go.rep_origin_x();
+    float y_rep = (height / 2.0f) + go.rep_origin_y();
 
     glTranslatef(x_rep, y_rep, 0);
     glRotatef(float(go.rotation()) / 10, 0, 0, 1);
@@ -665,14 +665,14 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
       glActiveTexture(GL_TEXTURE0_ARB);
       glEnable(GL_TEXTURE_2D);
       glBindTexture(GL_TEXTURE_2D, texture_id_);
-      glUseProgramObjectARB(Shaders::getObjectProgram());
-      glUniform1iARB(Shaders::getObjectUniformImage(), 0);
+      glUseProgramObjectARB(Shaders::GetObjectProgram());
+      glUniform1iARB(Shaders::GetObjectUniformImage(), 0);
 
       // Colour/Tint/Etc.
       Shaders::loadObjectUniformFromGraphicsObject(go);
 
       // Alpha.
-      glUniform1fARB(Shaders::getObjectUniformAlpha(), alpha / 255.0f);
+      glUniform1fARB(Shaders::GetObjectUniformAlpha(), alpha / 255.0f);
 
       // Our final blending color has to be all white here.
       using_shader = true;
@@ -684,7 +684,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
 
     // Make this so that when we have composite 1, we're doing a pure
     // additive blend, (ignoring the alpha channel?)
-    switch (go.compositeMode()) {
+    switch (go.composite_mode()) {
       case 0:
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         break;
@@ -698,7 +698,7 @@ void Texture::renderToScreenAsObject(const GraphicsObject& go,
       }
       default: {
         std::ostringstream oss;
-        oss << "Invalid composite_mode in render: " << go.compositeMode();
+        oss << "Invalid composite_mode in render: " << go.composite_mode();
         throw SystemError(oss.str());
       }
     }

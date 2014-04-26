@@ -54,7 +54,7 @@ size_t strcharlen(const char* string) {
   size_t result = 0;
   while (*string) {
     ++result;
-    advanceOneShiftJISChar(string);
+    AdvanceOneShiftJISChar(string);
   }
   return result;
 }
@@ -175,7 +175,7 @@ struct strsub_0
             "Error in strsub: offset is greater then string length");
       }
 
-      advanceOneShiftJISChar(str);
+      AdvanceOneShiftJISChar(str);
       offset--;
     }
 
@@ -213,12 +213,12 @@ struct strsub_1 : public RLOp_Void_4<StrReference_T,
             "Error in strsub: offset is greater then string length");
       }
 
-      advanceOneShiftJISChar(str);
+      AdvanceOneShiftJISChar(str);
       offset--;
     }
 
     while (*str && length > 0) {
-      copyOneShiftJisCharacter(str, output);
+      CopyOneShiftJisCharacter(str, output);
       length--;
     }
 
@@ -274,7 +274,7 @@ struct Str_strtrunc : public RLOp_Void_2<StrReference_T, IntConstant_T> {
     const char* str = input.c_str();
     std::string output;
     while (*str && length > 0) {
-      copyOneShiftJisCharacter(str, output);
+      CopyOneShiftJisCharacter(str, output);
       --length;
     }
     *dest = output;
@@ -286,7 +286,7 @@ struct Str_strtrunc : public RLOp_Void_2<StrReference_T, IntConstant_T> {
 // Changes half width characters to their full width equivalents.
 struct hantozen_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = hantozen_cp932(*dest, machine.getTextEncoding());
+    *dest = hantozen_cp932(*dest, machine.GetTextEncoding());
   }
 };
 
@@ -297,7 +297,7 @@ struct hantozen_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   std::string input,
                   StringReferenceIterator dest) {
-    *dest = hantozen_cp932(input, machine.getTextEncoding());
+    *dest = hantozen_cp932(input, machine.GetTextEncoding());
   }
 };
 
@@ -306,7 +306,7 @@ struct hantozen_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 // Changes full width characters to their half width equivalents.
 struct zentohan_0 : public RLOp_Void_1<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = zentohan_cp932(*dest, machine.getTextEncoding());
+    *dest = zentohan_cp932(*dest, machine.GetTextEncoding());
   }
 };
 
@@ -317,7 +317,7 @@ struct zentohan_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   std::string input,
                   StringReferenceIterator dest) {
-    *dest = zentohan_cp932(input, machine.getTextEncoding());
+    *dest = zentohan_cp932(input, machine.GetTextEncoding());
   }
 };
 
@@ -379,7 +379,7 @@ struct Lowercase_1 : public RLOp_Void_2<StrConstant_T, StrReference_T> {
 struct itoa_ws_0 : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine, int input, StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, ' '),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -394,7 +394,7 @@ struct itoa_ws_1
                   StringReferenceIterator dest,
                   int length) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, length, ' '),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -431,7 +431,7 @@ struct itoa_s_1
 struct itoa_w_0 : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine, int input, StringReferenceIterator dest) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, -1, '0'),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -446,7 +446,7 @@ struct itoa_w_1
                   StringReferenceIterator dest,
                   int length) {
     *dest = hantozen_cp932(rl_itoa_implementation(input, length, '0'),
-                           machine.getTextEncoding());
+                           machine.GetTextEncoding());
   }
 };
 
@@ -567,7 +567,7 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
     // This is the point right before we are about to switch from cp932 to
     // unicode. If the character is supposed to be italic, the incoming values
     // may have been munged to be valid cp932 character.
-    int encoding = machine.getTextEncoding();
+    int encoding = machine.GetTextEncoding();
     size_t size = value.size();
     if (encoding != 0 && (size == 1 || size == 2)) {
       // Look at the first character in the
@@ -580,16 +580,16 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
         // form.
         uint16_t decoded = GetItalic(cp932_char);
         value.clear();
-        addShiftJISChar(decoded, value);
+        AddShiftJISChar(decoded, value);
 
         // Notify the TextSystem that the next character that will be printed
         // should be printed in italics.
-        TextPage& page = machine.system().text().currentPage();
+        TextPage& page = machine.system().text().GetCurrentPage();
         page.NextCharIsItalic();
       }
     }
 
-    machine.performTextout(value);
+    machine.PerformTextout(value);
   }
 };
 
@@ -598,8 +598,8 @@ struct Str_strout : public RLOp_Void_1<StrConstant_T> {
 // Prints an integer.
 struct Str_intout : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
-    // Assumption: Text is in whatever native encoding for getTextEncoding().
-    machine.performTextout(std::to_string(value));
+    // Assumption: Text is in whatever native encoding for GetTextEncoding().
+    machine.PerformTextout(std::to_string(value));
   }
 };
 
@@ -615,42 +615,42 @@ struct Str_strused : public RLOp_Store_1<StrReference_T> {
 }  // namespace
 
 StrModule::StrModule() : RLModule("Str", 1, 10) {
-  addOpcode(0, 0, "strcpy", new strcpy_0);
-  addOpcode(0, 1, "strcpy", new strcpy_1);
-  addOpcode(1, 0, "strclear", new strclear_0);
-  addOpcode(1, 1, "strclear", new strclear_1);
-  addOpcode(2, 0, "strcat", new Str_strcat);
-  addOpcode(3, 0, "strlen", new Str_strlen);
-  addOpcode(4, 0, "strcmp", new Str_strcmp);
-  addOpcode(5, 0, "strsub", new strsub_0);
-  addOpcode(5, 1, "strsub", new strsub_1);
-  addOpcode(6, 0, "strrsub", new strrsub_0);
-  addOpcode(6, 1, "strrsub", new strrsub_1);
-  addOpcode(7, 0, "strcharlen", new Str_strcharlen);
-  addOpcode(8, 0, "strtrunc", new Str_strtrunc);
-  addOpcode(10, 0, "hantozen", new hantozen_0);
-  addOpcode(10, 1, "hantozen", new hantozen_1);
-  addOpcode(11, 0, "zentohan", new zentohan_0);
-  addOpcode(11, 1, "zentohan", new zentohan_1);
-  addOpcode(12, 0, "Uppercase", new Uppercase_0);
-  addOpcode(12, 1, "Uppercase", new Uppercase_1);
-  addOpcode(13, 0, "Lowercase", new Lowercase_0);
-  addOpcode(13, 1, "Lowercase", new Lowercase_1);
-  addOpcode(14, 0, "itoa_ws", new itoa_ws_0);
-  addOpcode(14, 1, "itoa_ws", new itoa_ws_1);
-  addOpcode(15, 0, "itoa_s", new itoa_s_0);
-  addOpcode(15, 1, "itoa_s", new itoa_s_1);
-  addOpcode(16, 0, "itoa_w", new itoa_w_0);
-  addOpcode(16, 1, "itoa_w", new itoa_w_1);
-  addOpcode(17, 0, "itoa", new itoa_0);
-  addOpcode(17, 1, "itoa", new itoa_1);
-  addOpcode(18, 0, "atoi", new Str_atoi);
-  addOpcode(19, 0, "digits", new Str_digits);
-  addOpcode(20, 0, "digit", new Str_digit);
-  addOpcode(30, 0, "strpos", new Str_strpos);
-  addOpcode(31, 0, "strlpos", new Str_strlpos);
+  AddOpcode(0, 0, "strcpy", new strcpy_0);
+  AddOpcode(0, 1, "strcpy", new strcpy_1);
+  AddOpcode(1, 0, "strclear", new strclear_0);
+  AddOpcode(1, 1, "strclear", new strclear_1);
+  AddOpcode(2, 0, "strcat", new Str_strcat);
+  AddOpcode(3, 0, "strlen", new Str_strlen);
+  AddOpcode(4, 0, "strcmp", new Str_strcmp);
+  AddOpcode(5, 0, "strsub", new strsub_0);
+  AddOpcode(5, 1, "strsub", new strsub_1);
+  AddOpcode(6, 0, "strrsub", new strrsub_0);
+  AddOpcode(6, 1, "strrsub", new strrsub_1);
+  AddOpcode(7, 0, "strcharlen", new Str_strcharlen);
+  AddOpcode(8, 0, "strtrunc", new Str_strtrunc);
+  AddOpcode(10, 0, "hantozen", new hantozen_0);
+  AddOpcode(10, 1, "hantozen", new hantozen_1);
+  AddOpcode(11, 0, "zentohan", new zentohan_0);
+  AddOpcode(11, 1, "zentohan", new zentohan_1);
+  AddOpcode(12, 0, "Uppercase", new Uppercase_0);
+  AddOpcode(12, 1, "Uppercase", new Uppercase_1);
+  AddOpcode(13, 0, "Lowercase", new Lowercase_0);
+  AddOpcode(13, 1, "Lowercase", new Lowercase_1);
+  AddOpcode(14, 0, "itoa_ws", new itoa_ws_0);
+  AddOpcode(14, 1, "itoa_ws", new itoa_ws_1);
+  AddOpcode(15, 0, "itoa_s", new itoa_s_0);
+  AddOpcode(15, 1, "itoa_s", new itoa_s_1);
+  AddOpcode(16, 0, "itoa_w", new itoa_w_0);
+  AddOpcode(16, 1, "itoa_w", new itoa_w_1);
+  AddOpcode(17, 0, "itoa", new itoa_0);
+  AddOpcode(17, 1, "itoa", new itoa_1);
+  AddOpcode(18, 0, "atoi", new Str_atoi);
+  AddOpcode(19, 0, "digits", new Str_digits);
+  AddOpcode(20, 0, "digit", new Str_digit);
+  AddOpcode(30, 0, "strpos", new Str_strpos);
+  AddOpcode(31, 0, "strlpos", new Str_strlpos);
 
-  addOpcode(100, 0, "strout", new Str_strout);
-  addOpcode(100, 1, "intout", new Str_intout);
-  addOpcode(200, 0, "strused", new Str_strused);
+  AddOpcode(100, 0, "strout", new Str_strout);
+  AddOpcode(100, 1, "intout", new Str_intout);
+  AddOpcode(200, 0, "strused", new Str_strused);
 }

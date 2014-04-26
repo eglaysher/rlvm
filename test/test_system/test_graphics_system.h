@@ -45,54 +45,27 @@ class TestGraphicsSystem : public GraphicsSystem {
   TestGraphicsSystem(System& system, Gameexe& gexe);
   virtual ~TestGraphicsSystem();
 
-  virtual void executeGraphicsSystem(RLMachine& machine) {
-    GraphicsSystem::executeGraphicsSystem(machine);
-  }
-
-  int screenWidth() const { return 640; }
-  int screenHeight() const { return 480; }
-
-  void injectSurface(const std::string& short_filename,
+  void InjectSurface(const std::string& short_filename,
                      const boost::shared_ptr<Surface>& surface);
 
-  virtual Size screenSize() const { return Size(640, 480); }
-  virtual void allocateDC(int dc, Size s);
-  virtual void setMinimumSizeForDC(int, Size) { /* noop for now. */
-  }
-  virtual void freeDC(int dc);
-
-  virtual void clearAndPromoteObjects();
-
-  virtual GraphicsObject& getObject(int layer, int obj_number);
+  virtual void AllocateDC(int dc, Size s) override;
+  virtual void SetMinimumSizeForDC(int, Size) override;
+  virtual void FreeDC(int dc) override;
 
   // Make a null Surface object?
-  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
-      const std::string& short_filename);
-  virtual boost::shared_ptr<Surface> getHaikei();
-  virtual boost::shared_ptr<Surface> getDC(int dc);
-  virtual boost::shared_ptr<Surface> buildSurface(const Size& s);
-  virtual ColourFilter* BuildColourFiller();
+  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
+      const std::string& short_filename) override;
+  virtual boost::shared_ptr<Surface> GetHaikei() override;
+  virtual boost::shared_ptr<Surface> GetDC(int dc) override;
+  virtual boost::shared_ptr<Surface> BuildSurface(const Size& s) override;
+  virtual ColourFilter* BuildColourFiller() override;
 
-  virtual void blitSurfaceToDC(Surface& source_obj,
-                               int target_dc,
-                               int srcX,
-                               int srcY,
-                               int src_width,
-                               int src_height,
-                               int destX,
-                               int destY,
-                               int dest_width,
-                               int dest_height,
-                               int alpha = 255);
-
-  virtual void beginFrame() {}
-  virtual void endFrame() {}
-  virtual boost::shared_ptr<Surface> endFrameToSurface() {
-    return boost::shared_ptr<Surface>();
-  }
+  virtual void BeginFrame() override;
+  virtual void EndFrame() override;
+  virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
 
   // Needed because of covariant issues.
-  MockSurface& getMockDC(int dc);
+  MockSurface& GetMockDC(int dc);
 
  private:
   boost::shared_ptr<MockSurface> haikei_;

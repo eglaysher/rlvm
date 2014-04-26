@@ -47,21 +47,21 @@ class TextWaku {
 
   virtual ~TextWaku();
 
-  virtual void execute() = 0;
-  virtual void render(std::ostream* tree,
+  virtual void Execute() = 0;
+  virtual void Render(std::ostream* tree,
                       Point box_location,
                       Size namebox_size) = 0;
 
   // Possibly returns the size if this TextWaku object has a known size on
   // screen.
-  virtual Size getSize(const Size& text_surface) const = 0;
-  virtual Point insertionPoint(const Rect& waku_rect,
+  virtual Size GetSize(const Size& text_surface) const = 0;
+  virtual Point InsertionPoint(const Rect& waku_rect,
                                const Size& padding,
                                const Size& surface_size,
                                bool center) const = 0;
 
-  virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine,
+  virtual void SetMousePosition(const Point& pos);
+  virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed);
 };

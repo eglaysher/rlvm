@@ -58,7 +58,7 @@ struct InitFrame : public RLOp_Void_4<IntConstant_T,
                   int frameMax,
                   int time) {
     EventSystem& es = machine.system().event();
-    es.setFrameCounter(
+    es.SetFrameCounter(
         layer_, counter, new FRAMECLASS(es, frameMin, frameMax, time));
   }
 };
@@ -69,8 +69,8 @@ struct ReadFrame : public RLOp_Store_1<IntConstant_T> {
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    if (es.frameCounterExists(layer_, counter))
-      return es.getFrameCounter(layer_, counter).readFrame();
+    if (es.FrameCounterExists(layer_, counter))
+      return es.GetFrameCounter(layer_, counter).ReadFrame();
     else
       return 0;
   }
@@ -82,8 +82,8 @@ struct FrameActive : public RLOp_Store_1<IntConstant_T> {
 
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    if (es.frameCounterExists(layer_, counter)) {
-      return es.getFrameCounter(layer_, counter).isActive();
+    if (es.FrameCounterExists(layer_, counter)) {
+      return es.GetFrameCounter(layer_, counter).IsActive();
     } else {
       return 0;
     }
@@ -97,8 +97,8 @@ struct AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
   int operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
     for (int i = 0; i < 255; ++i) {
-      if (es.frameCounterExists(layer_, counter) &&
-          es.getFrameCounter(layer_, counter).isActive()) {
+      if (es.FrameCounterExists(layer_, counter) &&
+          es.GetFrameCounter(layer_, counter).IsActive()) {
         return 1;
       }
     }
@@ -113,7 +113,7 @@ struct ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
 
   void operator()(RLMachine& machine, int counter) {
     EventSystem& es = machine.system().event();
-    es.setFrameCounter(layer_, counter, NULL);
+    es.SetFrameCounter(layer_, counter, NULL);
   }
 };
 
@@ -121,11 +121,11 @@ struct ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   const int layer_;
   explicit ClearFrame_1(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine, int counter, int newValue) {
+  void operator()(RLMachine& machine, int counter, int new_value) {
     FrameCounter& fc =
-        machine.system().event().getFrameCounter(layer_, counter);
-    fc.setActive(false);
-    fc.setValue(newValue);
+        machine.system().event().GetFrameCounter(layer_, counter);
+    fc.set_active(false);
+    fc.set_value(new_value);
   }
 };
 
@@ -133,14 +133,14 @@ struct ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
   const int layer_;
   explicit ClearAllFrames_0(int layer) : layer_(layer) {}
 
-  void operator()(RLMachine& machine, int newValue) {
+  void operator()(RLMachine& machine, int new_value) {
     EventSystem& es = machine.system().event();
 
     for (int i = 0; i < 255; ++i) {
-      if (es.frameCounterExists(layer_, i)) {
-        FrameCounter& fc = es.getFrameCounter(layer_, i);
-        fc.setActive(false);
-        fc.setValue(newValue);
+      if (es.FrameCounterExists(layer_, i)) {
+        FrameCounter& fc = es.GetFrameCounter(layer_, i);
+        fc.set_active(false);
+        fc.set_value(new_value);
       }
     }
   }
@@ -154,8 +154,8 @@ struct ClearAllFrames_1 : public RLOp_Void_Void {
     EventSystem& es = machine.system().event();
 
     for (int i = 0; i < 255; ++i) {
-      if (es.frameCounterExists(layer_, i)) {
-        es.setFrameCounter(layer_, i, NULL);
+      if (es.FrameCounterExists(layer_, i)) {
+        es.SetFrameCounter(layer_, i, NULL);
       }
     }
   }
@@ -169,8 +169,6 @@ struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
 
   int operator()(RLMachine& machine,
                  std::vector<FrameDataInReadFrames::type> frames) {
-    static int callNum = 0;
-    callNum++;
     EventSystem& es = machine.system().event();
 
     bool storeValue = false;
@@ -178,11 +176,11 @@ struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
     for (auto& frame : frames) {
       int counter = get<0>(frame);
 
-      if (es.frameCounterExists(layer_, counter)) {
-        int val = es.getFrameCounter(layer_, counter).readFrame();
+      if (es.FrameCounterExists(layer_, counter)) {
+        int val = es.GetFrameCounter(layer_, counter).ReadFrame();
         *(get<1>(frame)) = val;
 
-        if (es.getFrameCounter(layer_, counter).isActive())
+        if (es.GetFrameCounter(layer_, counter).IsActive())
           storeValue = true;
       } else {
         *(get<1>(frame)) = 0;
@@ -197,82 +195,82 @@ struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
 
 // -----------------------------------------------------------------------
 
-void addSysFrameOpcodes(RLModule& m) {
+void AddSysFrameOpcodes(RLModule& m) {
   // Normal frame counter operations
-  m.addOpcode(500, 0, "InitFrame", new InitFrame<SimpleFrameCounter>(0));
-  m.addOpcode(501, 0, "InitFrameLoop", new InitFrame<LoopFrameCounter>(0));
-  m.addOpcode(502, 0, "InitFrameTurn", new InitFrame<TurnFrameCounter>(0));
-  m.addOpcode(
+  m.AddOpcode(500, 0, "InitFrame", new InitFrame<SimpleFrameCounter>(0));
+  m.AddOpcode(501, 0, "InitFrameLoop", new InitFrame<LoopFrameCounter>(0));
+  m.AddOpcode(502, 0, "InitFrameTurn", new InitFrame<TurnFrameCounter>(0));
+  m.AddOpcode(
       503, 0, "InitFrameAccel", new InitFrame<AcceleratingFrameCounter>(0));
-  m.addOpcode(
+  m.AddOpcode(
       504, 0, "InitFrameDecel", new InitFrame<DeceleratingFrameCounter>(0));
-  m.addOpcode(510, 0, "ReadFrame", new ReadFrame(0));
-  m.addOpcode(511, 0, "FrameActive", new FrameActive(0));
-  m.addOpcode(512, 0, "AnyFrameActive", new AnyFrameActive(0));
-  m.addOpcode(513, 0, "ClearFrame", new ClearFrame_0(0));
-  m.addOpcode(513, 1, "ClearFrame", new ClearFrame_1(0));
-  m.addOpcode(514, 0, "ClearAllFrames", new ClearAllFrames_0(0));
-  m.addOpcode(514, 1, "ClearAllFrames", new ClearAllFrames_1(0));
+  m.AddOpcode(510, 0, "ReadFrame", new ReadFrame(0));
+  m.AddOpcode(511, 0, "FrameActive", new FrameActive(0));
+  m.AddOpcode(512, 0, "AnyFrameActive", new AnyFrameActive(0));
+  m.AddOpcode(513, 0, "ClearFrame", new ClearFrame_0(0));
+  m.AddOpcode(513, 1, "ClearFrame", new ClearFrame_1(0));
+  m.AddOpcode(514, 0, "ClearAllFrames", new ClearAllFrames_0(0));
+  m.AddOpcode(514, 1, "ClearAllFrames", new ClearAllFrames_1(0));
 
   // Extended frame counter operations
-  m.addOpcode(520, 0, "InitExFrame", new InitFrame<SimpleFrameCounter>(1));
-  m.addOpcode(521, 0, "InitExFrameLoop", new InitFrame<LoopFrameCounter>(1));
-  m.addOpcode(522, 0, "InitExFrameTurn", new InitFrame<TurnFrameCounter>(1));
-  m.addOpcode(
+  m.AddOpcode(520, 0, "InitExFrame", new InitFrame<SimpleFrameCounter>(1));
+  m.AddOpcode(521, 0, "InitExFrameLoop", new InitFrame<LoopFrameCounter>(1));
+  m.AddOpcode(522, 0, "InitExFrameTurn", new InitFrame<TurnFrameCounter>(1));
+  m.AddOpcode(
       523, 0, "InitExFrameAccel", new InitFrame<AcceleratingFrameCounter>(1));
-  m.addOpcode(
+  m.AddOpcode(
       524, 0, "InitExFrameDecel", new InitFrame<DeceleratingFrameCounter>(1));
-  m.addOpcode(530, 0, "ReadExFrame", new ReadFrame(1));
-  m.addOpcode(531, 0, "ExFrameActive", new FrameActive(1));
-  m.addOpcode(532, 0, "AnyExFrameActive", new AnyFrameActive(1));
-  m.addOpcode(533, 0, "ClearExFrame", new ClearFrame_0(1));
-  m.addOpcode(533, 1, "ClearExFrame", new ClearFrame_1(1));
-  m.addOpcode(534, 0, "ClearAllExFrames", new ClearAllFrames_0(1));
-  m.addOpcode(534, 1, "ClearAllExFrames", new ClearAllFrames_1(1));
+  m.AddOpcode(530, 0, "ReadExFrame", new ReadFrame(1));
+  m.AddOpcode(531, 0, "ExFrameActive", new FrameActive(1));
+  m.AddOpcode(532, 0, "AnyExFrameActive", new AnyFrameActive(1));
+  m.AddOpcode(533, 0, "ClearExFrame", new ClearFrame_0(1));
+  m.AddOpcode(533, 1, "ClearExFrame", new ClearFrame_1(1));
+  m.AddOpcode(534, 0, "ClearAllExFrames", new ClearAllFrames_0(1));
+  m.AddOpcode(534, 1, "ClearAllExFrames", new ClearAllFrames_1(1));
 
-  // Multiple dispatch operations on normal frame counters
-  m.addOpcode(600,
+  // Multiple Dispatch operations on normal frame counters
+  m.AddOpcode(600,
               0,
               "InitFrames",
               new MultiDispatch(new InitFrame<SimpleFrameCounter>(0)));
-  m.addOpcode(601,
+  m.AddOpcode(601,
               0,
               "InitFramesLoop",
               new MultiDispatch(new InitFrame<LoopFrameCounter>(0)));
-  m.addOpcode(602,
+  m.AddOpcode(602,
               0,
               "InitFramesTurn",
               new MultiDispatch(new InitFrame<TurnFrameCounter>(0)));
-  m.addOpcode(603,
+  m.AddOpcode(603,
               0,
               "InitFramesAccel",
               new MultiDispatch(new InitFrame<AcceleratingFrameCounter>(0)));
-  m.addOpcode(604,
+  m.AddOpcode(604,
               0,
               "InitFramesDecel",
               new MultiDispatch(new InitFrame<DeceleratingFrameCounter>(0)));
-  m.addOpcode(610, 0, "ReadFrames", new ReadFrames(0));
+  m.AddOpcode(610, 0, "ReadFrames", new ReadFrames(0));
 
-  // Multiple dispatch operations on normal frame counters
-  m.addOpcode(620,
+  // Multiple Dispatch operations on normal frame counters
+  m.AddOpcode(620,
               0,
               "InitExFrames",
               new MultiDispatch(new InitFrame<SimpleFrameCounter>(1)));
-  m.addOpcode(621,
+  m.AddOpcode(621,
               0,
               "InitExFramesLoop",
               new MultiDispatch(new InitFrame<LoopFrameCounter>(1)));
-  m.addOpcode(622,
+  m.AddOpcode(622,
               0,
               "InitExFramesTurn",
               new MultiDispatch(new InitFrame<TurnFrameCounter>(1)));
-  m.addOpcode(623,
+  m.AddOpcode(623,
               0,
               "InitExFramesAccel",
               new MultiDispatch(new InitFrame<AcceleratingFrameCounter>(1)));
-  m.addOpcode(624,
+  m.AddOpcode(624,
               0,
               "InitExFramesDecel",
               new MultiDispatch(new InitFrame<DeceleratingFrameCounter>(1)));
-  m.addOpcode(630, 0, "ReadExFrames", new ReadFrames(1));
+  m.AddOpcode(630, 0, "ReadExFrames", new ReadFrames(1));
 }

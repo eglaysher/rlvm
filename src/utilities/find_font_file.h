@@ -39,7 +39,7 @@ class RLMachine;
 class System;
 
 // Hack. Tries to find a font. Once I go in and allow the selection of
-// arbitrary fonts, this method and the other findFontFile need to go away.
-boost::filesystem::path findFontFile(System& system);
+// arbitrary fonts, this method and the other FindFontFile need to go away.
+boost::filesystem::path FindFontFile(System& system);
 
 #endif  // SRC_UTILITIES_FIND_FONT_FILE_H_

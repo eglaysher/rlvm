@@ -33,25 +33,46 @@
 TestEventSystem::TestEventSystem(Gameexe& gexe)
     : EventSystem(gexe), event_system_mock_(new EventSystemMockHandler) {}
 
-void TestEventSystem::setMockHandler(
+void TestEventSystem::SetMockHandler(
     const boost::shared_ptr<EventSystemMockHandler>& handler) {
   event_system_mock_ = handler;
 }
 
-void TestEventSystem::executeEventSystem(RLMachine& machine) {}
+void TestEventSystem::ExecuteEventSystem(RLMachine& machine) {}
 
-bool TestEventSystem::shiftPressed() const {
+bool TestEventSystem::ShiftPressed() const {
   return event_system_mock_->shiftPressed();
 }
 
-bool TestEventSystem::ctrlPressed() const {
+bool TestEventSystem::CtrlPressed() const {
   return event_system_mock_->ctrlPressed();
 }
 
-unsigned int TestEventSystem::getTicks() const {
-  return event_system_mock_->getTicks();
+unsigned int TestEventSystem::GetTicks() const {
+  return event_system_mock_->GetTicks();
 }
 
-void TestEventSystem::wait(unsigned int milliseconds) const {
+void TestEventSystem::Wait(unsigned int milliseconds) const {
   // waiting is a noop.
 }
+
+Point TestEventSystem::GetCursorPos() {
+  return Point(0, 0);
+}
+
+void TestEventSystem::GetCursorPos(Point& position,
+                                   int& button1,
+                                   int& button2) {}
+
+void TestEventSystem::FlushMouseClicks() {}
+
+unsigned int TestEventSystem::TimeOfLastMouseMove() {
+  return 0;
+}
+
+void TestEventSystem::InjectMouseMovement(RLMachine& machine,
+                                          const Point& loc) {}
+
+void TestEventSystem::InjectMouseDown(RLMachine& machine) {}
+
+void TestEventSystem::InjectMouseUp(RLMachine& machine) {}

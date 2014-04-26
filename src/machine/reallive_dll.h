@@ -44,7 +44,7 @@ class RealLiveDLL {
   // RealLive DLLs have essentially one entrypoint, taking up to five integers
   // and yielding an integer. All values not given an explicit value in the
   // bytecode default to zero.
-  virtual int callDLL(RLMachine& machine,
+  virtual int CallDLL(RLMachine& machine,
                       int one,
                       int two,
                       int three,
@@ -52,7 +52,7 @@ class RealLiveDLL {
                       int five) = 0;
 
   // Returns the DLL's name.
-  virtual const std::string& name() const = 0;
+  virtual const std::string& GetDLLName() const = 0;
 };  // end of class RealLiveDLL
 
 #endif  // SRC_MACHINE_REALLIVE_DLL_H_

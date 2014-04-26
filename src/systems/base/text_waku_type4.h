@@ -38,35 +38,35 @@
 class TextWakuType4 : public TextWaku {
  public:
   TextWakuType4(System& system, TextWindow& window, int setno, int no);
-  ~TextWakuType4();
+  virtual ~TextWakuType4();
 
-  virtual void execute();
-  virtual void render(std::ostream* tree,
+  virtual void Execute() override;
+  virtual void Render(std::ostream* tree,
                       Point box_location,
-                      Size namebox_size);
+                      Size namebox_size) override;
 
   // We have no size other than what is passed to |namebox_size|. Always
   // returns false and resets |out|.
-  virtual Size getSize(const Size& text_surface) const;
-  virtual Point insertionPoint(const Rect& waku_rect,
+  virtual Size GetSize(const Size& text_surface) const override;
+  virtual Point InsertionPoint(const Rect& waku_rect,
                                const Size& padding,
                                const Size& surface_size,
-                               bool center) const;
+                               bool center) const override;
 
   // TODO(erg): These two methods shouldn't really exist; I need to redo
   // plumbing of events so that these aren't routed through TextWindow, but are
   // instead some sort of listener. I'm currently thinking that the individual
   // buttons that need to handle events should be listeners.
-  virtual void setMousePosition(const Point& pos);
-  virtual bool handleMouseClick(RLMachine& machine,
+  virtual void SetMousePosition(const Point& pos) override;
+  virtual bool HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
-                                bool pressed);
+                                bool pressed) override;
 
  private:
-  void setWakuMain(const std::string& name);
+  void SetWakuMain(const std::string& name);
 
   // Returns |cached_backing_|, shrinking or enlarging it to |size|.
-  const boost::shared_ptr<Surface>& getWakuBackingOfSize(Size size);
+  const boost::shared_ptr<Surface>& GetWakuBackingOfSize(Size size);
 
   // The system we are a part of.
   System& system_;

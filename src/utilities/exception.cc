@@ -42,11 +42,11 @@ namespace rlvm {
 // -----------------------------------------------------------------------
 
 Exception::Exception(const std::string& what)
-    : description(what), operation_(NULL) {}
+    : description_(what), operation_(NULL) {}
 
 Exception::~Exception() throw() {}
 
-const char* Exception::what() const throw() { return description.c_str(); }
+const char* Exception::what() const throw() { return description_.c_str(); }
 
 // -----------------------------------------------------------------------
 // UserPresentableError
@@ -72,7 +72,7 @@ UnimplementedOpcode::UnimplementedOpcode(const std::string& funName,
   oss << funName << " (opcode<" << modtype << ":" << module << ":" << opcode
       << ", " << overload << ">)";
   name_ = oss.str();
-  setSimpleDescription();
+  SetSimpleDescription();
 }
 
 UnimplementedOpcode::UnimplementedOpcode(
@@ -81,12 +81,12 @@ UnimplementedOpcode::UnimplementedOpcode(
     const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
-      parameters_(command.getUnparsedParameters()) {
+      parameters_(command.GetUnparsedParameters()) {
   std::ostringstream oss;
   oss << funName << " [opcode<" << command.modtype() << ":" << command.module()
       << ":" << command.opcode() << ", " << command.overload() << ">]";
   name_ = oss.str();
-  setFullDescription(machine);
+  SetFullDescription(machine);
 }
 
 UnimplementedOpcode::UnimplementedOpcode(
@@ -94,17 +94,17 @@ UnimplementedOpcode::UnimplementedOpcode(
     const libreallive::CommandElement& command)
     : Exception(""),
       has_parameters_(true),
-      parameters_(command.getUnparsedParameters()) {
+      parameters_(command.GetUnparsedParameters()) {
   ostringstream oss;
   oss << "opcode<" << command.modtype() << ":" << command.module() << ":"
       << command.opcode() << ", " << command.overload() << ">";
   name_ = oss.str();
-  setFullDescription(machine);
+  SetFullDescription(machine);
 }
 
 UnimplementedOpcode::~UnimplementedOpcode() throw() {}
 
-void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
+void UnimplementedOpcode::SetFullDescription(RLMachine& machine) {
   ostringstream oss;
   oss << "Undefined: " << name_;
 
@@ -124,25 +124,25 @@ void UnimplementedOpcode::setFullDescription(RLMachine& machine) {
       const char* start = it->c_str();
       try {
         std::unique_ptr<libreallive::ExpressionPiece> piece(
-            libreallive::get_data(start));
-        oss << piece->getDebugValue(machine);
+            libreallive::GetData(start));
+        oss << piece->GetDebugString();
       }
       catch (libreallive::Error& e) {
         // Any error throw here is a parse error.
-        oss << "{RAW : " << libreallive::parsableToPrintableString(*it) << "}";
+        oss << "{RAW : " << libreallive::ParsableToPrintableString(*it) << "}";
       }
     }
     oss << ")";
   }
 #endif
 
-  description = oss.str();
+  description_ = oss.str();
 }
 
-void UnimplementedOpcode::setSimpleDescription() {
+void UnimplementedOpcode::SetSimpleDescription() {
   ostringstream oss;
   oss << "Undefined: " << name_;
-  description = oss.str();
+  description_ = oss.str();
 }
 
 }  // namespace rlvm

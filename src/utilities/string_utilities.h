@@ -54,22 +54,22 @@
 std::wstring cp932toUnicode(const std::string& line, int transformation);
 
 // String representation of the transformation name.
-std::string transformationName(int transformation);
+std::string TransformationName(int transformation);
 
 // Converts a UTF-16 string to a UTF-8 one.
-std::string unicodeToUTF8(const std::wstring& widestring);
+std::string UnicodeToUTF8(const std::wstring& widestring);
 
 // For convenience. Combines the two above functions.
 std::string cp932toUTF8(const std::string& line, int transformation);
 
 // Returns true if codepoint is either of the Japanese quote marks or '('.
-bool isOpeningQuoteMark(int codepoint);
+bool IsOpeningQuoteMark(int codepoint);
 
 // Returns whether the unicode |codepoint| is a piece of breaking punctuation.
-bool isKinsoku(int codepoint);
+bool IsKinsoku(int codepoint);
 
 // Returns the unicode codpoint for the next UTF-8 character in |c|.
-int codepoint(const std::string& c);
+int Codepoint(const std::string& c);
 
 // Checks to see if the byte c is the first byte of a two byte
 // character. RealLive encodes its strings in Shift_JIS, so we have to
@@ -79,27 +79,27 @@ inline bool shiftjis_lead_byte(const char c) {
 }
 
 // Advanced the Shift_JIS character string c by one char.
-void advanceOneShiftJISChar(const char*& c);
+void AdvanceOneShiftJISChar(const char*& c);
 
 // Copies a single Shift_JIS character into output and advances the string.
-void copyOneShiftJisCharacter(const char*& str, std::string& output);
+void CopyOneShiftJisCharacter(const char*& str, std::string& output);
 
 // If there is currently a two byte fullwidth Latin capital letter at the
 // current point in str (a shift_jis string), then convert it to ASCII, copy it
 // to output and return true. Returns false otherwise.
-bool readFullwidthLatinLetter(const char*& str, std::string& output);
+bool ReadFullwidthLatinLetter(const char*& str, std::string& output);
 
 // Adds a character to the string |output|. Two byte characters are encoded in
 // an uint16_t.
-void addShiftJISChar(uint16_t c, std::string& output);
+void AddShiftJISChar(uint16_t c, std::string& output);
 
 // Feeds each two consecutive pair of characters to |fun|.
-void printTextToFunction(
+void PrintTextToFunction(
     std::function<bool(const std::string& c, const std::string& nextChar)> fun,
     const std::string& charsToPrint,
     const std::string& nextCharForFinal);
 
 // Removes quotes from the beginning and end of the string.
-std::string removeQuotes(const std::string& quotedString);
+std::string RemoveQuotes(const std::string& quotedString);
 
 #endif  // SRC_UTILITIES_STRING_UTILITIES_H_

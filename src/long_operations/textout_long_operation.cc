@@ -53,29 +53,29 @@ int TextoutLongOperation::next_character_countdown_ = 0;
 
 TextoutLongOperation::TextoutLongOperation(RLMachine& machine,
                                            const std::string& utf8string)
-    : m_utf8string(utf8string),
+    : utf8_string_(utf8string),
       current_codepoint_(0),
-      current_position_(m_utf8string.begin()),
+      current_position_(utf8_string_.begin()),
       no_wait_(false) {
   // Retrieve the first character (prime the loop in operator())
   string::iterator tmp = current_position_;
-  if (tmp == m_utf8string.end()) {
+  if (tmp == utf8_string_.end()) {
     current_char_ = "";
   } else {
-    current_codepoint_ = utf8::next(tmp, m_utf8string.end());
+    current_codepoint_ = utf8::next(tmp, utf8_string_.end());
     current_char_ = string(current_position_, tmp);
     current_position_ = tmp;
   }
 
   // If we are inside a ruby gloss right now, don't delay at
   // all. Render the entire gloss!
-  if (machine.system().text().currentPage().in_ruby_gloss())
+  if (machine.system().text().GetCurrentPage().in_ruby_gloss())
     no_wait_ = true;
 }
 
 TextoutLongOperation::~TextoutLongOperation() {}
 
-bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
+bool TextoutLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed) {
   if (pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
@@ -85,7 +85,7 @@ bool TextoutLongOperation::mouseButtonStateChanged(MouseButton mouseButton,
   return false;
 }
 
-bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
+bool TextoutLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {
   if (pressed && (keyCode == RLKEY_LCTRL || keyCode == RLKEY_RCTRL)) {
     no_wait_ = true;
     return true;
@@ -94,16 +94,16 @@ bool TextoutLongOperation::keyStateChanged(KeyCode keyCode, bool pressed) {
   return false;
 }
 
-bool TextoutLongOperation::displayAsMuchAsWeCanThenPause(RLMachine& machine) {
+bool TextoutLongOperation::DisplayAsMuchAsWeCanThenPause(RLMachine& machine) {
   bool paused = false;
-  while (!displayOneMoreCharacter(machine, paused))
+  while (!DisplayOneMoreCharacter(machine, paused))
     if (paused)
       return false;
 
   return true;
 }
 
-bool TextoutLongOperation::displayName(RLMachine& machine) {
+bool TextoutLongOperation::DisplayName(RLMachine& machine) {
   // TODO(erg): Right now, this doesn't deal with \#\#\#PRINT() syntax in the
   // name, even though character names are one of the places where that's
   // evaluated.
@@ -111,7 +111,7 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
   // Ignore the starting bracket
   string::iterator it = current_position_;
   string::iterator curend = it;
-  string::iterator strend = m_utf8string.end();
+  string::iterator strend = utf8_string_.end();
   int codepoint = utf8::next(it, strend);
 
   // Eat all characters between the name brackets
@@ -138,27 +138,27 @@ bool TextoutLongOperation::displayName(RLMachine& machine) {
     current_position_ = it;
   }
 
-  TextPage& page = machine.system().text().currentPage();
+  TextPage& page = machine.system().text().GetCurrentPage();
   page.Name(name, current_char_);
 
   // Stop if this was the end of input
   return it == strend;
 }
 
-bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
+bool TextoutLongOperation::DisplayOneMoreCharacter(RLMachine& machine,
                                                    bool& paused) {
   if (current_codepoint_ == 0x3010) {
     // The current character is the opening character for a name. We
     // treat names as a single display operation
-    return displayName(machine);
+    return DisplayName(machine);
   } else {
     // Isolate the next character
     string::iterator it = current_position_;
-    string::iterator strend = m_utf8string.end();
+    string::iterator strend = utf8_string_.end();
 
     if (it != strend) {
       int codepoint = utf8::next(it, strend);
-      TextPage& page = machine.system().text().currentPage();
+      TextPage& page = machine.system().text().GetCurrentPage();
       if (codepoint) {
         string rest(current_position_, strend);
         bool rendered = page.Character(current_char_, rest);
@@ -179,14 +179,14 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
       // Call the pause operation if we've filled up the current page.
       if (page.IsFull()) {
         paused = true;
-        machine.system().graphics().markScreenAsDirty(GUT_TEXTSYS);
-        machine.pushLongOperation(
+        machine.system().graphics().MarkScreenAsDirty(GUT_TEXTSYS);
+        machine.PushLongOperation(
             new NewPageAfterLongop(new PauseLongOperation(machine)));
       }
 
       return false;
     } else {
-      machine.system().text().currentPage().Character(current_char_, "");
+      machine.system().text().GetCurrentPage().Character(current_char_, "");
 
       return true;
     }
@@ -195,21 +195,21 @@ bool TextoutLongOperation::displayOneMoreCharacter(RLMachine& machine,
 
 bool TextoutLongOperation::operator()(RLMachine& machine) {
   // Check to make sure we're not trying to do a textout (impossible!)
-  if (!machine.system().text().systemVisible())
+  if (!machine.system().text().system_visible())
     throw rlvm::Exception("Trying to Textout while TextSystem is hidden!");
 
   if (no_wait_) {
-    return displayAsMuchAsWeCanThenPause(machine);
+    return DisplayAsMuchAsWeCanThenPause(machine);
   } else {
-    int current_time = machine.system().event().getTicks();
+    int current_time = machine.system().event().GetTicks();
     int time_since_last_pass = current_time - time_at_last_pass_;
     time_at_last_pass_ = current_time;
 
     next_character_countdown_ -= time_since_last_pass;
     if (next_character_countdown_ <= 0) {
       bool paused = false;
-      next_character_countdown_ = machine.system().text().messageSpeed();
-      return displayOneMoreCharacter(machine, paused);
+      next_character_countdown_ = machine.system().text().message_speed();
+      return DisplayOneMoreCharacter(machine, paused);
     } else {
       // Let's sleep a bit and then try again.
       return false;

@@ -91,7 +91,7 @@ const int SYSCOM_SHOW_BACKGROUND = 31;
 // File type constants.
 //
 // These constant, externed vectors are passed as parameters to
-// findFile to control which file types are searched for. Defaults to
+// FindFile to control which file types are searched for. Defaults to
 // all.
 extern const std::vector<std::string> OBJ_FILETYPES;
 extern const std::vector<std::string> IMAGE_FILETYPES;
@@ -139,16 +139,36 @@ class System {
   System();
   virtual ~System();
 
-  void setPlatform(const boost::shared_ptr<Platform>& platform) {
-    platform_ = platform;
-  }
+  bool confirm_save_load() const { return globals_.confirm_save_load_; }
+  void set_confirm_save_load(const int in) { globals_.confirm_save_load_ = in; }
+
+  bool low_priority() const { return globals_.low_priority_; }
+  void set_low_priority(const int in) { globals_.low_priority_ = in; }
+
   boost::shared_ptr<Platform> platform() { return platform_; }
+  void SetPlatform(const boost::shared_ptr<Platform>& platform);
+
+  // Whether we're currently forcing fast forward (only used during game tests
+  // to zoom through).
+  bool force_fast_forward() { return force_fast_forward_; }
+  // Set in luaRlvm, to speed through the game with maximum speed!
+  void set_force_fast_forward() { force_fast_forward_ = true; }
+
+  bool force_wait() { return force_wait_; }
+  void set_force_wait(bool in) { force_wait_ = in; }
+
+  // We record what the text encoding response was during the first scene, and
+  // then during every scene change, if it was western, we flip this bit to
+  // true. We do this as a big hack because we only have System access while
+  // we're loading fonts.
+  bool use_western_font() { return use_western_font_; }
+  void set_use_western_font() { use_western_font_ = true; }
 
   // Takes and restores the previous selection snapshot; a special emphemeral
   // save game slot that autosaves on selections and is restored through a
   // special kepago method/syscom call.
-  void takeSelectionSnapshot(RLMachine& machine);
-  void restoreSelectionSnapshot(RLMachine& machine);
+  void TakeSelectionSnapshot(RLMachine& machine);
+  void RestoreSelectionSnapshot(RLMachine& machine);
 
   // Syscom related functions
   //
@@ -166,31 +186,31 @@ class System {
   // Checks the visibility of a single syscom command. Returns 0 if the given
   // system command is invisible, 1 if it is visible, and 2 if it is visible
   // but disabled (greyed out).
-  int isSyscomEnabled(int syscom);
+  int IsSyscomEnabled(int syscom);
 
   // Hides all syscom entries
-  void hideSyscom();
+  void HideSyscom();
 
   // Hides the syscom entry |syscom|
-  void hideSyscomEntry(int syscom);
+  void HideSyscomEntry(int syscom);
 
   // Enables all syscom entries
-  void enableSyscom();
+  void EnableSyscom();
 
   // Enables the syscom entry |syscom|
-  void enableSyscomEntry(int syscom);
+  void EnableSyscomEntry(int syscom);
 
   // Disables all syscom entries
-  void disableSyscom();
+  void DisableSyscom();
 
   // Disables the syscom entry |syscom|
-  void disableSyscomEntry(int syscom);
+  void DisableSyscomEntry(int syscom);
 
   // Reads the corresponding value for syscom number |syscom|
-  int readSyscom(int syscom);
+  int ReadSyscom(int syscom);
 
   // Called by various LongOperations to show the right click menu.
-  void showSyscomMenu(RLMachine& machine);
+  void ShowSyscomMenu(RLMachine& machine);
 
   // If there is a standard dialog box associated with syscom, it is
   // displayed; if there is a standard action, it is performed. The list of
@@ -198,21 +218,15 @@ class System {
   // standard dialogs. The optional value is used for the setting where
   // relevant (for example, InvokeSyscom(5, val) is exactly equivalent to
   // SetScreenMode(val)).
-  void invokeSyscom(RLMachine& machine, int syscom);
+  void InvokeSyscom(RLMachine& machine, int syscom);
 
   // Shows a screen with certain information about the current state of the
   // interpreter.
-  void showSystemInfo(RLMachine& machine);
-
-  bool confirmSaveLoad() const { return globals_.confirm_save_load_; }
-  void setConfirmSaveLoad(const int in) { globals_.confirm_save_load_ = in; }
-
-  bool lowPriority() const { return globals_.low_priority_; }
-  void setLowPriority(const int in) { globals_.low_priority_ = in; }
+  void ShowSystemInfo(RLMachine& machine);
 
   // Finds a file on disk based on its basename with a list of possible
   // extensions, or empty() if file not found.
-  boost::filesystem::path findFile(const std::string& fileName,
+  boost::filesystem::path FindFile(const std::string& fileName,
                                    const std::vector<std::string>& extensions);
 
   // Resets the present values of the system; this doesn't clear user settings,
@@ -220,7 +234,7 @@ class System {
   // the text windows. This method is called when the user loads a game or
   // resets the machine. The System implementation of reset() will call
   // reset() on all systems.
-  void reset();
+  void Reset();
 
   // Returns the global state for saving/restoring
   SystemGlobals& globals() { return globals_; }
@@ -228,7 +242,7 @@ class System {
   // Cleans the regname entry from the gameexe and makes it filesystem
   // safe. This translates it to UTF-8, as Gameexe files are written in
   // Shift-JIS.
-  std::string regname();
+  std::string Regname();
 
   // Returns a boost::filesystem object which points to the directory
   // where saved game data, preferences, et cetera should be stored
@@ -237,37 +251,20 @@ class System {
   // The default implementation returns "~/.rlvm/#{REGNAME}/". A Mac
   // specific override could return "~/Library/Application
   // Support/rlvm/#{REGNAME}/"
-  boost::filesystem::path gameSaveDirectory();
+  boost::filesystem::path GameSaveDirectory();
 
   // Testing and Debugging Tools
 
   // Whether we are zooming through text and events quickly. Currently can be
   // triggered by holding down the control key, or using skip previously read
   // text.
-  bool fastForward();
-
-  // Whether we're currently forcing fast forward (only used during game tests
-  // to zoom through).
-  bool forceFastForward() { return force_fast_forward_; }
-
-  // Set in luaRlvm, to speed through the game with maximum speed!
-  void setForceFastForward() { force_fast_forward_ = true; }
+  bool ShouldFastForward();
 
   // Renders the screen and dumps a textual representation of the screen.
-  void dumpRenderTree(RLMachine& machine);
-
-  bool forceWait() { return force_wait_; }
-  void setForceWait(bool in) { force_wait_ = in; }
-
-  // We record what the text encoding response was during the first scene, and
-  // then during every scene change, if it was western, we flip this bit to
-  // true. We do this as a big hack because we only have System access while
-  // we're loading fonts.
-  bool useWesternFont() { return use_western_font_; }
-  void setUseWesternFont() { use_western_font_ = true; }
+  void DumpRenderTree(RLMachine& machine);
 
   // Called once per gameloop.
-  virtual void run(RLMachine& machine) = 0;
+  virtual void Run(RLMachine& machine) = 0;
 
   // Returns the specific subclasses.
   virtual GraphicsSystem& graphics() = 0;
@@ -286,24 +283,24 @@ class System {
                         std::pair<std::string, boost::filesystem::path>>
       FileSystemCache;
 
-  boost::filesystem::path getHomeDirectory();
+  boost::filesystem::path GetHomeDirectory();
 
   // Invokes a custom dialog or the standard one if none present.
-  void invokeSaveOrLoad(RLMachine& machine,
+  void InvokeSaveOrLoad(RLMachine& machine,
                         int syscom,
                         const std::string& mod_key,
                         const std::string& location);
 
   // Verify that |index| is valid and throw if it isn't.
-  void checkSyscomIndex(int index, const char* function);
+  void CheckSyscomIndex(int index, const char* function);
 
   // Builds a list of all files that are in a directory specified in the
   // #FOLDNAME part of the Gameexe.ini file.
-  void buildFileSystemCache();
+  void BuildFileSystemCache();
 
   // Recursese on |directory| and adds all filetypes that we can read to our
   // FileSystemCache.
-  void addDirectoryToCache(const boost::filesystem::path& directory);
+  void AddDirectoryToCache(const boost::filesystem::path& directory);
 
   // The visibility status for all syscom entries
   int syscom_status_[NUM_SYSCOM_ENTRIES];
@@ -348,6 +345,6 @@ class System {
 
 // Returns a version string suitable for printing. Used on the command line
 // interface and on the info screen.
-std::string rlvm_version();
+std::string GetRlvmVersionString();
 
 #endif  // SRC_SYSTEMS_BASE_SYSTEM_H_

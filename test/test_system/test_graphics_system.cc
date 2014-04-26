@@ -42,22 +42,24 @@ using namespace std;
 
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
     : GraphicsSystem(system, gexe) {
+  SetScreenSize(Size(640, 480));
+
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
     display_contexts_[i].reset(MockSurface::Create(oss.str()));
   }
 
-  display_contexts_[0]->allocate(screenSize());
-  display_contexts_[1]->allocate(screenSize());
+  display_contexts_[0]->Allocate(screen_size());
+  display_contexts_[1]->Allocate(screen_size());
 
   haikei_.reset(MockSurface::Create("Haikei"));
-  haikei_->allocate(screenSize());
+  haikei_->Allocate(screen_size());
 }
 
 TestGraphicsSystem::~TestGraphicsSystem() {}
 
-void TestGraphicsSystem::allocateDC(int dc, Size size) {
+void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   if (dc >= 16)
     throw rlvm::Exception(
         "Invalid DC number in "
@@ -71,41 +73,39 @@ void TestGraphicsSystem::allocateDC(int dc, Size size) {
   // the screen.
   if (dc == 1) {
     boost::shared_ptr<MockSurface> dc0 = display_contexts_[0];
-    if (size.width() < dc0->size().width())
-      size.setWidth(dc0->size().width());
-    if (size.height() < dc0->size().height())
-      size.setHeight(dc0->size().height());
+    Size dc0_size = dc0->GetSize();
+    if (size.width() < dc0_size.width())
+      size.set_width(dc0_size.width());
+    if (size.height() < dc0_size.height())
+      size.set_height(dc0_size.height());
   }
 
   // Allocate a new obj.
-  display_contexts_[dc]->allocate(size);
+  display_contexts_[dc]->Allocate(size);
 }
 
-void TestGraphicsSystem::freeDC(int dc) {
+void TestGraphicsSystem::SetMinimumSizeForDC(int, Size) {
+  // noop for now.
+}
+
+void TestGraphicsSystem::FreeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
-    display_contexts_[1]->fill(RGBAColour::Black());
+    display_contexts_[1]->Fill(RGBAColour::Black());
   } else {
-    display_contexts_[dc]->deallocate();
+    display_contexts_[dc]->Deallocate();
   }
 }
 
-void TestGraphicsSystem::clearAndPromoteObjects() {}
-
-GraphicsObject& TestGraphicsSystem::getObject(int layer, int obj_number) {
-  static GraphicsObject x;
-  return x;
-}
-
-void TestGraphicsSystem::injectSurface(
+void TestGraphicsSystem::InjectSurface(
     const std::string& short_filename,
     const boost::shared_ptr<Surface>& surface) {
   named_surfaces_[short_filename] = surface;
 }
 
-boost::shared_ptr<const Surface> TestGraphicsSystem::loadSurfaceFromFile(
+boost::shared_ptr<const Surface> TestGraphicsSystem::LoadSurfaceFromFile(
     const std::string& short_filename) {
   // If we have an injected surface, return it instead of a fresh surface.
   std::map<std::string, boost::shared_ptr<const Surface>>::iterator it =
@@ -119,13 +119,13 @@ boost::shared_ptr<const Surface> TestGraphicsSystem::loadSurfaceFromFile(
       MockSurface::Create(short_filename, Size(50, 50)));
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::getHaikei() { return haikei_; }
+boost::shared_ptr<Surface> TestGraphicsSystem::GetHaikei() { return haikei_; }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::getDC(int dc) {
+boost::shared_ptr<Surface> TestGraphicsSystem::GetDC(int dc) {
   return display_contexts_[dc];
 }
 
-boost::shared_ptr<Surface> TestGraphicsSystem::buildSurface(const Size& s) {
+boost::shared_ptr<Surface> TestGraphicsSystem::BuildSurface(const Size& s) {
   static int surface_num = 0;
   ostringstream oss;
   oss << "Built Surface #" << surface_num++;
@@ -137,20 +137,14 @@ ColourFilter* TestGraphicsSystem::BuildColourFiller() {
   return new MockColourFilter;
 }
 
-void TestGraphicsSystem::blitSurfaceToDC(Surface& source_obj,
-                                         int target_dc,
-                                         int srcX,
-                                         int srcY,
-                                         int src_width,
-                                         int src_height,
-                                         int destX,
-                                         int destY,
-                                         int dest_width,
-                                         int dest_height,
-                                         int alpha) {
-  // TODO
+void TestGraphicsSystem::BeginFrame() {}
+
+void TestGraphicsSystem::EndFrame() {}
+
+boost::shared_ptr<Surface> TestGraphicsSystem::EndFrameToSurface() {
+  return boost::shared_ptr<Surface>();
 }
 
-MockSurface& TestGraphicsSystem::getMockDC(int dc) {
+MockSurface& TestGraphicsSystem::GetMockDC(int dc) {
   return *display_contexts_[dc];
 }

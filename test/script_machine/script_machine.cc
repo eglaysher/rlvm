@@ -56,20 +56,20 @@ ScriptMachine::ScriptMachine(ScriptWorld& world,
 
 ScriptMachine::~ScriptMachine() {}
 
-void ScriptMachine::setDecisionList(const std::vector<std::string>& decisions) {
+void ScriptMachine::SetDecisionList(const std::vector<std::string>& decisions) {
   decisions_ = decisions;
   current_decision_ = 0;
 }
 
-void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
+void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
   // Intercept various LongOperations and modify them.
   if (SelectLongOperation* sel =
           dynamic_cast<SelectLongOperation*>(long_operation)) {
     // Try our optional, script provided matching behaviour.
-    std::string choice = world_.makeDecision(sel->options());
+    std::string choice = world_.MakeDecision(sel->GetOptions());
     bool optionFound = false;
     if (choice != "") {
-      optionFound = sel->selectOption(choice);
+      optionFound = sel->SelectByText(choice);
       if (!optionFound) {
         cerr << "WTF? Script decision handler returned invalid choice" << endl;
       } else {
@@ -88,7 +88,7 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
         }
 
         std::string to_select = decisions_.at(current_decision_ + offset);
-        optionFound = sel->selectOption(to_select);
+        optionFound = sel->SelectByText(to_select);
 
         if (optionFound) {
           cerr << "Selected '" << to_select << "'";
@@ -118,7 +118,7 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
         cerr << "WARNING! Couldn't call option " << current_decision_
              << ". Options are: " << endl;
 
-        for (const std::string& option : sel->options())
+        for (const std::string& option : sel->GetOptions())
           cerr << "- \"" << option << "\"" << endl;
 
         current_decision_++;
@@ -131,16 +131,16 @@ void ScriptMachine::pushLongOperation(LongOperation* long_operation) {
                      long_operation)) {
     // We don't deal with these yet. Return 1 for the first option every time,
     // which corresponds with selecting "NO" for battle missions.
-    setStoreRegister(1);
+    set_store_register(1);
     delete sel;
     return;
   }
 
-  RLMachine::pushLongOperation(long_operation);
+  RLMachine::PushLongOperation(long_operation);
 }
 
-int ScriptMachine::getInt(const std::string& bank, int position) {
+int ScriptMachine::GetInt(const std::string& bank, int position) {
   char bchar = bank[0];
 
-  return getIntValue(IntMemRef(bchar, position));
+  return GetIntValue(IntMemRef(bchar, position));
 }

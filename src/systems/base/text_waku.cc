@@ -37,7 +37,7 @@ TextWaku* TextWaku::Create(System& system,
                            int setno,
                            int no) {
   GameexeInterpretObject waku(system.gameexe()("WAKU", setno, "TYPE"));
-  if (waku.to_int(5) == 5) {
+  if (waku.ToInt(5) == 5) {
     return new TextWakuNormal(system, window, setno, no);
   } else {
     return new TextWakuType4(system, window, setno, no);
@@ -46,9 +46,9 @@ TextWaku* TextWaku::Create(System& system,
 
 TextWaku::~TextWaku() {}
 
-void TextWaku::setMousePosition(const Point& pos) {}
+void TextWaku::SetMousePosition(const Point& pos) {}
 
-bool TextWaku::handleMouseClick(RLMachine& machine,
+bool TextWaku::HandleMouseClick(RLMachine& machine,
                                 const Point& pos,
                                 bool pressed) {
   return false;

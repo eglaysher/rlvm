@@ -107,7 +107,7 @@ TextWindow::TextWindow(System& system, int window_num)
   Gameexe& gexe = system.gameexe();
 
   // POINT
-  Size size = getScreenSize(gexe);
+  Size size = GetScreenSize(gexe);
   screen_width_ = size.width();
   screen_height_ = size.height();
 
@@ -117,45 +117,45 @@ TextWindow::TextWindow(System& system, int window_num)
   // Handle: #WINDOW.index.ATTR_MOD, #WINDOW_ATTR, #WINDOW.index.ATTR
   window_attr_mod_ = window("ATTR_MOD");
   if (window_attr_mod_ == 0)
-    setRGBAF(system.text().windowAttr());
+    SetRGBAF(system.text().window_attr());
   else
-    setRGBAF(window("ATTR"));
+    SetRGBAF(window("ATTR"));
 
-  default_font_size_in_pixels_ = window("MOJI_SIZE").to_int(25);
-  setFontSizeInPixels(default_font_size_in_pixels_);
-  setWindowSizeInCharacters(window("MOJI_CNT"));
-  setSpacingBetweenCharacters(window("MOJI_REP"));
-  setRubyTextSize(window("LUBY_SIZE").to_int(0));
-  setTextboxPadding(window("MOJI_POS"));
+  default_font_size_in_pixels_ = window("MOJI_SIZE").ToInt(25);
+  set_font_size_in_pixels(default_font_size_in_pixels_);
+  SetWindowSizeInCharacters(window("MOJI_CNT"));
+  SetSpacingBetweenCharacters(window("MOJI_REP"));
+  set_ruby_text_size(window("LUBY_SIZE").ToInt(0));
+  SetTextboxPadding(window("MOJI_POS"));
 
-  setWindowPosition(window("POS"));
+  SetWindowPosition(window("POS"));
 
-  setDefaultTextColor(gexe("COLOR_TABLE", 0));
+  SetDefaultTextColor(gexe("COLOR_TABLE", 0));
 
   // INDENT_USE appears to default to on. See the first scene in the
   // game with Nagisa, paying attention to indentation; then check the
   // Gameexe.ini.
-  setUseIndentation(window("INDENT_USE").to_int(1));
+  set_use_indentation(window("INDENT_USE").ToInt(1));
 
-  setKeycurMod(window("KEYCUR_MOD"));
-  setActionOnPause(window("R_COMMAND_MOD").to_int(0));
+  SetKeycursorMod(window("KEYCUR_MOD"));
+  set_action_on_pause(window("R_COMMAND_MOD").ToInt(0));
 
   // Main textbox waku
-  waku_set_ = window("WAKU_SETNO").to_int(0);
+  waku_set_ = window("WAKU_SETNO").ToInt(0);
   textbox_waku_.reset(TextWaku::Create(system_, *this, waku_set_, 0));
 
   // Name textbox if that setting has been enabled.
-  setNameMod(window("NAME_MOD").to_int(0));
-  if (name_mod_ == 1 && window("NAME_WAKU_SETNO").exists()) {
+  set_name_mod(window("NAME_MOD").ToInt(0));
+  if (name_mod_ == 1 && window("NAME_WAKU_SETNO").Exists()) {
     name_waku_set_ = window("NAME_WAKU_SETNO");
     namebox_waku_.reset(TextWaku::Create(system_, *this, name_waku_set_, 0));
-    setNameSpacingBetweenCharacters(window("NAME_MOJI_REP"));
-    setNameboxPadding(window("NAME_MOJI_POS"));
+    SetNameSpacingBetweenCharacters(window("NAME_MOJI_REP"));
+    SetNameboxPadding(window("NAME_MOJI_POS"));
     // Ignoring NAME_WAKU_MIN for now
-    setNameboxPosition(window("NAME_POS"));
-    name_waku_dir_set_ = window("NAME_WAKU_DIR").to_int(0);
-    namebox_centering_ = window("NAME_CENTERING").to_int(0);
-    minimum_namebox_size_ = window("NAME_MOJI_MIN").to_int(4);
+    SetNameboxPosition(window("NAME_POS"));
+    name_waku_dir_set_ = window("NAME_WAKU_DIR").ToInt(0);
+    namebox_centering_ = window("NAME_CENTERING").ToInt(0);
+    minimum_namebox_size_ = window("NAME_MOJI_MIN").ToInt(4);
     name_size_ = window("NAME_MOJI_SIZE");
   }
 
@@ -164,12 +164,12 @@ TextWindow::TextWindow(System& system, int window_num)
   GameexeFilteringIterator end = gexe.filtering_end();
   for (; it != end; ++it) {
     // Retrieve the face slot number
-    std::vector<std::string> key_parts = it->key_parts();
+    std::vector<std::string> GetKeyParts = it->GetKeyParts();
 
     try {
-      int slot = std::stoi(key_parts.at(3));
+      int slot = std::stoi(GetKeyParts.at(3));
       if (slot < kNumFaceSlots) {
-        face_slot_[slot].reset(new FaceSlot(it->to_intVector()));
+        face_slot_[slot].reset(new FaceSlot(it->ToIntVector()));
       }
     }
     catch (...) {
@@ -180,32 +180,33 @@ TextWindow::TextWindow(System& system, int window_num)
 
 TextWindow::~TextWindow() {}
 
-void TextWindow::execute() {
-  if (isVisible() && !system_.graphics().interfaceHidden()) {
-    textbox_waku_->execute();
+void TextWindow::Execute() {
+  if (is_visible() && !system_.graphics().is_interface_hidden()) {
+    textbox_waku_->Execute();
   }
 }
 
-void TextWindow::setTextboxPadding(const vector<int>& pos_data) {
+void TextWindow::SetTextboxPadding(const vector<int>& pos_data) {
   upper_box_padding_ = pos_data.at(0);
   lower_box_padding_ = pos_data.at(1);
   left_box_padding_ = pos_data.at(2);
   right_box_padding_ = pos_data.at(3);
 }
 
-void TextWindow::setName(const std::string& utf8name,
+void TextWindow::SetName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
     // Display the name in one pass
-    printTextToFunction(
-        bind(&TextWindow::character, ref(*this), _1, _2), utf8name, next_char);
-    setIndentation();
+    PrintTextToFunction(
+        bind(&TextWindow::DisplayCharacter, ref(*this), _1, _2),
+        utf8name, next_char);
+    SetIndentation();
   }
 
-  setNameWithoutDisplay(utf8name);
+  SetNameWithoutDisplay(utf8name);
 }
 
-void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
+void TextWindow::SetNameWithoutDisplay(const std::string& utf8name) {
   if (name_mod_ == 1) {
     namebox_characters_ = 0;
     try {
@@ -218,55 +219,55 @@ void TextWindow::setNameWithoutDisplay(const std::string& utf8name) {
 
     namebox_characters_ = std::max(namebox_characters_, minimum_namebox_size_);
 
-    renderNameInBox(utf8name);
+    RenderNameInBox(utf8name);
   }
 
   last_token_was_name_ = true;
 }
 
-void TextWindow::setDefaultTextColor(const vector<int>& colour) {
+void TextWindow::SetDefaultTextColor(const vector<int>& colour) {
   default_colour_ = RGBColour(colour.at(0), colour.at(1), colour.at(2));
 }
 
-void TextWindow::setFontColor(const vector<int>& colour) {
+void TextWindow::SetFontColor(const vector<int>& colour) {
   font_colour_ = RGBColour(colour.at(0), colour.at(1), colour.at(2));
 }
 
-void TextWindow::setWindowSizeInCharacters(const vector<int>& pos_data) {
+void TextWindow::SetWindowSizeInCharacters(const vector<int>& pos_data) {
   x_window_size_in_chars_ = pos_data.at(0);
   y_window_size_in_chars_ = pos_data.at(1);
 }
 
-void TextWindow::setSpacingBetweenCharacters(const vector<int>& pos_data) {
+void TextWindow::SetSpacingBetweenCharacters(const vector<int>& pos_data) {
   x_spacing_ = pos_data.at(0);
   y_spacing_ = pos_data.at(1);
 }
 
-void TextWindow::setWindowPosition(const vector<int>& pos_data) {
+void TextWindow::SetWindowPosition(const vector<int>& pos_data) {
   origin_ = pos_data.at(0);
   x_distance_from_origin_ = pos_data.at(1);
   y_distance_from_origin_ = pos_data.at(2);
 }
 
-Size TextWindow::textWindowSize() const {
+Size TextWindow::GetTextWindowSize() const {
   return Size(
       (x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_)),
       (y_window_size_in_chars_ *
        (default_font_size_in_pixels_ + y_spacing_ + ruby_size_)));
 }
 
-Size TextWindow::textSurfaceSize() const {
+Size TextWindow::GetTextSurfaceSize() const {
   // There is one extra character in each line to accommodate squeezed
   // punctuation.
-  return textWindowSize() + Size(default_font_size_in_pixels_, 0);
+  return GetTextWindowSize() + Size(default_font_size_in_pixels_, 0);
 }
 
-Rect TextWindow::windowRect() const {
+Rect TextWindow::GetWindowRect() const {
   // This absolutely needs to know the size of the on main backing waku if we
   // want to draw things correctly! If we are going to offset this text box
   // from the top or the bottom, we MUST know what the size of the image
   // graphic is if we want accurate calculations, because some image graphics
-  // are significantly larger than textWindowSize() + the paddings.
+  // are significantly larger than GetTextWindowSize() + the paddings.
   //
   // RealLive is definitely correcting programmer errors which places textboxes
   // offscreen. For example, take P_BRAVE (please!): #WINDOW.002.POS=2:78,6,
@@ -274,7 +275,7 @@ Rect TextWindow::windowRect() const {
   // pixels. The image is still centered perfectly, even though it's supposed
   // to be shifted 78 pixels right since the origin is the bottom
   // left. Expanding this number didn't change the position offscreen.
-  Size boxSize = textbox_waku_->getSize(textSurfaceSize());
+  Size boxSize = textbox_waku_->GetSize(GetTextSurfaceSize());
 
   int x, y;
   switch (origin_) {
@@ -318,90 +319,90 @@ Rect TextWindow::windowRect() const {
   return Rect(x, y, boxSize);
 }
 
-Rect TextWindow::textSurfaceRect() const {
-  Rect window = windowRect();
+Rect TextWindow::GetTextSurfaceRect() const {
+  Rect window = GetWindowRect();
 
   Point textOrigin =
       window.origin() + Size(left_box_padding_, upper_box_padding_);
 
-  Size rectSize = textSurfaceSize();
+  Size rectSize = GetTextSurfaceSize();
   rectSize += Size(right_box_padding_, lower_box_padding_);
 
   return Rect(textOrigin, rectSize);
 }
 
-Rect TextWindow::nameboxWakuRect() const {
-  // Like the main windowRect(), we need to ask the waku what size it wants to
+Rect TextWindow::GetNameboxWakuRect() const {
+  // Like the main GetWindowRect(), we need to ask the waku what size it wants to
   // be.
-  Size boxSize = namebox_waku_->getSize(nameboxTextArea());
+  Size boxSize = namebox_waku_->GetSize(GetNameboxTextArea());
 
   // The waku is offset from the top left corner of the text window.
-  Rect r = windowRect();
+  Rect r = GetWindowRect();
   return Rect(Point(r.x() + namebox_x_offset_,
                     r.y() + namebox_y_offset_ - boxSize.height()),
               boxSize);
 }
 
-Size TextWindow::nameboxTextArea() const {
+Size TextWindow::GetNameboxTextArea() const {
   // TODO(erg): This seems excessively wide.
   return Size(
       2 * horizontal_namebox_padding_ + namebox_characters_ * name_size_,
       vertical_namebox_padding_ + name_size_);
 }
 
-void TextWindow::setNameSpacingBetweenCharacters(
+void TextWindow::SetNameSpacingBetweenCharacters(
     const std::vector<int>& pos_data) {
   name_x_spacing_ = pos_data.at(0);
 }
 
-void TextWindow::setNameboxPadding(const std::vector<int>& pos_data) {
+void TextWindow::SetNameboxPadding(const std::vector<int>& pos_data) {
   if (pos_data.size() >= 1)
     horizontal_namebox_padding_ = pos_data.at(0);
   if (pos_data.size() >= 2)
     vertical_namebox_padding_ = pos_data.at(1);
 }
 
-void TextWindow::setNameboxPosition(const vector<int>& pos_data) {
+void TextWindow::SetNameboxPosition(const vector<int>& pos_data) {
   namebox_x_offset_ = pos_data.at(0);
   namebox_y_offset_ = pos_data.at(1);
 }
 
-void TextWindow::setKeycurMod(const vector<int>& keycur) {
+void TextWindow::SetKeycursorMod(const vector<int>& keycur) {
   keycursor_type_ = keycur.at(0);
   keycursor_pos_ = Point(keycur.at(1), keycur.at(2));
 }
 
-Point TextWindow::keycursorPosition(const Size& cursor_size) const {
+Point TextWindow::KeycursorPosition(const Size& cursor_size) const {
   switch (keycursor_type_) {
     case 0:
-      return textSurfaceRect().lowerRight() - cursor_size;
+      return GetTextSurfaceRect().lower_right() - cursor_size;
     case 1:
-      return textSurfaceRect().origin() +
+      return GetTextSurfaceRect().origin() +
              Point(text_insertion_point_x_, text_insertion_point_y_);
     case 2:
-      return textSurfaceRect().origin() + keycursor_pos_;
+      return GetTextSurfaceRect().origin() + keycursor_pos_;
     default:
       throw SystemError("Invalid keycursor type");
   }
 }
 
-void TextWindow::faceOpen(const std::string& filename, int index) {
+void TextWindow::FaceOpen(const std::string& filename, int index) {
   if (face_slot_[index]) {
     face_slot_[index]->face_surface =
-        system_.graphics().getSurfaceNamed(filename);
+        system_.graphics().GetSurfaceNamed(filename);
 
     if (face_slot_[index]->hide_other_windows) {
-      system_.text().hideAllTextWindowsExcept(windowNumber());
+      system_.text().HideAllTextWindowsExcept(window_number());
     }
   }
 }
 
-void TextWindow::faceClose(int index) {
+void TextWindow::FaceClose(int index) {
   if (face_slot_[index]) {
     face_slot_[index]->face_surface.reset();
 
     if (face_slot_[index]->hide_other_windows) {
-      system_.text().hideAllTextWindowsExcept(windowNumber());
+      system_.text().HideAllTextWindowsExcept(window_number());
     }
   }
 }
@@ -412,46 +413,46 @@ void TextWindow::NextCharIsItalic() {
 
 // TODO(erg): Make this pass the #WINDOW_ATTR colour off wile rendering the
 // waku_backing.
-void TextWindow::render(std::ostream* tree) {
-  boost::shared_ptr<Surface> text_surface = textSurface();
+void TextWindow::Render(std::ostream* tree) {
+  boost::shared_ptr<Surface> text_surface = GetTextSurface();
 
-  if (text_surface && isVisible()) {
-    Size surface_size = text_surface->size();
+  if (text_surface && is_visible()) {
+    Size surface_size = text_surface->GetSize();
 
     // POINT
-    Point box = windowRect().origin();
+    Point box = GetWindowRect().origin();
 
     if (tree) {
       *tree << "  Text Window #" << window_num_ << endl;
     }
 
-    Point textOrigin = textSurfaceRect().origin();
+    Point textOrigin = GetTextSurfaceRect().origin();
 
-    textbox_waku_->render(tree, box, surface_size);
-    renderFaces(tree, 1);
+    textbox_waku_->Render(tree, box, surface_size);
+    RenderFaces(tree, 1);
 
-    if (inSelectionMode()) {
+    if (in_selection_mode()) {
       for_each(selections_.begin(), selections_.end(),
-               [](SelectionElement& e) { e.render(); });
+               [](SelectionElement& e) { e.Render(); });
     } else {
-      boost::shared_ptr<Surface> name_surface = nameSurface();
+      boost::shared_ptr<Surface> name_surface = GetNameSurface();
       if (name_surface) {
-        Rect r = nameboxWakuRect();
+        Rect r = GetNameboxWakuRect();
 
         if (namebox_waku_) {
           // TODO(erg): The waku needs to be adjusted to be the minimum size of
           // the window in characters
-          namebox_waku_->render(tree, r.origin(), nameboxTextArea());
+          namebox_waku_->Render(tree, r.origin(), GetNameboxTextArea());
         }
 
-        Point insertion_point = namebox_waku_->insertionPoint(
+        Point insertion_point = namebox_waku_->InsertionPoint(
             r,
             Size(horizontal_namebox_padding_, vertical_namebox_padding_),
-            name_surface->size(),
+            name_surface->GetSize(),
             namebox_centering_);
-        name_surface->renderToScreen(
-            name_surface->rect(),
-            Rect(insertion_point, name_surface->size()),
+        name_surface->RenderToScreen(
+            name_surface->GetRect(),
+            Rect(insertion_point, name_surface->GetSize()),
             255);
 
         if (tree) {
@@ -459,10 +460,10 @@ void TextWindow::render(std::ostream* tree) {
         }
       }
 
-      renderFaces(tree, 0);
-      renderKoeReplayButtons(tree);
+      RenderFaces(tree, 0);
+      RenderKoeReplayButtons(tree);
 
-      text_surface->renderToScreen(
+      text_surface->RenderToScreen(
           Rect(Point(0, 0), surface_size), Rect(textOrigin, surface_size), 255);
 
       if (tree) {
@@ -472,17 +473,17 @@ void TextWindow::render(std::ostream* tree) {
   }
 }
 
-void TextWindow::renderFaces(std::ostream* tree, int behind) {
+void TextWindow::RenderFaces(std::ostream* tree, int behind) {
   for (int i = 0; i < kNumFaceSlots; ++i) {
     if (face_slot_[i] && face_slot_[i]->face_surface &&
         face_slot_[i]->behind == behind) {
       const boost::shared_ptr<const Surface>& surface =
           face_slot_[i]->face_surface;
 
-      Rect dest(windowRect().x() + face_slot_[i]->x,
-                windowRect().y() + face_slot_[i]->y,
-                surface->size());
-      surface->renderToScreen(surface->rect(), dest, 255);
+      Rect dest(GetWindowRect().x() + face_slot_[i]->x,
+                GetWindowRect().y() + face_slot_[i]->y,
+                surface->GetSize());
+      surface->RenderToScreen(surface->GetRect(), dest, 255);
 
       if (tree) {
         *tree << "    Face Slot #" << i << ": " << dest << endl;
@@ -491,22 +492,22 @@ void TextWindow::renderFaces(std::ostream* tree, int behind) {
   }
 }
 
-void TextWindow::renderKoeReplayButtons(std::ostream* tree) {
+void TextWindow::RenderKoeReplayButtons(std::ostream* tree) {
   for (std::vector<std::pair<Point, int>>::const_iterator it =
            koe_replay_button_.begin();
        it != koe_replay_button_.end();
        ++it) {
-    koe_replay_info_->icon->renderToScreen(
-        Rect(Point(0, 0), koe_replay_info_->icon->size()),
-        Rect(textSurfaceRect().origin() + it->first,
-             koe_replay_info_->icon->size()),
+    koe_replay_info_->icon->RenderToScreen(
+        Rect(Point(0, 0), koe_replay_info_->icon->GetSize()),
+        Rect(GetTextSurfaceRect().origin() + it->first,
+             koe_replay_info_->icon->GetSize()),
         255);
   }
 }
 
-void TextWindow::clearWin() {
+void TextWindow::ClearWin() {
   text_insertion_point_x_ = 0;
-  text_insertion_point_y_ = rubyTextSize();
+  text_insertion_point_y_ = ruby_text_size();
   current_indentation_in_pixels_ = 0;
   current_line_number_ = 0;
   ruby_begin_point_ = -1;
@@ -514,27 +515,27 @@ void TextWindow::clearWin() {
   koe_replay_button_.clear();
 }
 
-bool TextWindow::character(const std::string& current,
-                           const std::string& rest) {
+bool TextWindow::DisplayCharacter(const std::string& current,
+                                  const std::string& rest) {
   // If this text page is already full, save some time and reject
   // early.
-  if (isFull())
+  if (IsFull())
     return false;
 
-  setVisible(true);
+  set_is_visible(true);
 
   if (current != "") {
-    int cur_codepoint = codepoint(current);
+    int cur_codepoint = Codepoint(current);
     bool indent_after_spacing = false;
 
     // But if the last character was a lenticular bracket, we need to indent
     // now. See doc/notes/NamesAndIndentation.txt for more details.
     if (last_token_was_name_) {
       if (name_mod_ == 0) {
-        if (isOpeningQuoteMark(cur_codepoint))
+        if (IsOpeningQuoteMark(cur_codepoint))
           indent_after_spacing = true;
       } else if (name_mod_ == 2) {
-        if (isOpeningQuoteMark(cur_codepoint)) {
+        if (IsOpeningQuoteMark(cur_codepoint)) {
           indent_after_spacing = true;
         } else {
           // An implicit wide space is printed instead on lines that don't have
@@ -545,7 +546,7 @@ bool TextWindow::character(const std::string& current,
           // Prevent infinite recursion.
           last_token_was_name_ = false;
 
-          if (!character(wide_space, current)) {
+          if (!DisplayCharacter(wide_space, current)) {
             last_token_was_name_ = true;
             return false;
           }
@@ -555,35 +556,35 @@ bool TextWindow::character(const std::string& current,
 
     // If the width of this glyph plus the spacing will put us over the
     // edge of the window, then line increment.
-    if (mustLineBreak(cur_codepoint, rest)) {
-      hardBrake();
+    if (MustLineBreak(cur_codepoint, rest)) {
+      HardBrake();
 
-      if (isFull())
+      if (IsFull())
         return false;
     }
 
     RGBColour shadow = RGBAColour::Black().rgb();
-    text_system_.renderGlyphOnto(current,
-                                 fontSizeInPixels(),
+    text_system_.RenderGlyphOnto(current,
+                                 font_size_in_pixels(),
                                  next_char_italic_,
                                  font_colour_,
                                  &shadow,
                                  text_insertion_point_x_,
                                  text_insertion_point_y_,
-                                 textSurface());
+                                 GetTextSurface());
     next_char_italic_ = false;
 
     // Move the insertion point forward one character
     text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
 
     if (indent_after_spacing)
-      setIndentation();
+      SetIndentation();
   }
 
   // When we aren't rendering a piece of text with a ruby gloss, mark
   // the screen as dirty so that this character renders.
   if (ruby_begin_point_ == -1) {
-    system_.graphics().markScreenAsDirty(GUT_TEXTSYS);
+    system_.graphics().MarkScreenAsDirty(GUT_TEXTSYS);
   }
 
   last_token_was_name_ = false;
@@ -591,9 +592,9 @@ bool TextWindow::character(const std::string& current,
   return true;
 }
 
-bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
-  int char_width = system().text().charWidth(fontSizeInPixels(), cur_codepoint);
-  bool cur_codepoint_is_kinsoku = isKinsoku(cur_codepoint);
+bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
+  int char_width = system().text().GetCharWidth(font_size_in_pixels(), cur_codepoint);
+  bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint);
   int normal_width =
       x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_);
   int extended_width = normal_width + default_font_size_in_pixels_;
@@ -619,7 +620,7 @@ bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
     string::const_iterator end = rest.end();
     while (cur != end) {
       int point = utf8::next(cur, end);
-      if (isKinsoku(point)) {
+      if (IsKinsoku(point)) {
         final_insertion_x += char_width + x_spacing_;
 
         if (final_insertion_x > extended_width) {
@@ -634,18 +635,18 @@ bool TextWindow::mustLineBreak(int cur_codepoint, const std::string& rest) {
   return false;
 }
 
-bool TextWindow::isFull() const {
+bool TextWindow::IsFull() const {
   return current_line_number_ >= y_window_size_in_chars_;
 }
 
-void TextWindow::koeMarker(int id) {
+void TextWindow::KoeMarker(int id) {
   if (!koe_replay_info_) {
     koe_replay_info_.reset(new KoeReplayInfo);
     Gameexe& gexe = system_.gameexe();
     GameexeInterpretObject replay_icon(gexe("KOEREPLAYICON"));
 
     koe_replay_info_->icon =
-        system_.graphics().getSurfaceNamed(replay_icon("NAME"));
+        system_.graphics().GetSurfaceNamed(replay_icon("NAME"));
     std::vector<int> reppos = replay_icon("REPPOS");
     if (reppos.size() == 2)
       koe_replay_info_->repos = Size(reppos[0], reppos[1]);
@@ -656,45 +657,45 @@ void TextWindow::koeMarker(int id) {
   koe_replay_button_.push_back(std::make_pair(p, id));
 }
 
-void TextWindow::hardBrake() {
+void TextWindow::HardBrake() {
   text_insertion_point_x_ = current_indentation_in_pixels_;
-  text_insertion_point_y_ += lineHeight();
+  text_insertion_point_y_ += line_height();
   current_line_number_++;
 }
 
-void TextWindow::setIndentation() {
+void TextWindow::SetIndentation() {
   current_indentation_in_pixels_ = text_insertion_point_x_;
 }
 
-void TextWindow::resetIndentation() { current_indentation_in_pixels_ = 0; }
+void TextWindow::ResetIndentation() { current_indentation_in_pixels_ = 0; }
 
-void TextWindow::markRubyBegin() {
+void TextWindow::MarkRubyBegin() {
   ruby_begin_point_ = text_insertion_point_x_;
 }
 
-void TextWindow::setRGBAF(const vector<int>& attr) {
+void TextWindow::SetRGBAF(const vector<int>& attr) {
   colour_ = RGBAColour(attr.at(0), attr.at(1), attr.at(2), attr.at(3));
-  setFilter(attr.at(4));
+  set_filter(attr.at(4));
 }
 
-void TextWindow::setMousePosition(const Point& pos) {
-  if (inSelectionMode()) {
+void TextWindow::SetMousePosition(const Point& pos) {
+  if (in_selection_mode()) {
     for_each(selections_.begin(),
              selections_.end(),
-             [&](SelectionElement& e) { e.setMousePosition(pos); });
+             [&](SelectionElement& e) { e.SetMousePosition(pos); });
   }
 
-  textbox_waku_->setMousePosition(pos);
+  textbox_waku_->SetMousePosition(pos);
 }
 
-bool TextWindow::handleMouseClick(RLMachine& machine,
+bool TextWindow::HandleMouseClick(RLMachine& machine,
                                   const Point& pos,
                                   bool pressed) {
-  if (inSelectionMode()) {
+  if (in_selection_mode()) {
     bool found =
       find_if(selections_.begin(), selections_.end(),
               [&](SelectionElement &e) {
-                return e.handleMouseClick(pos, pressed);
+                return e.HandleMouseClick(pos, pressed);
               }) != selections_.end();
 
     if (found)
@@ -705,37 +706,33 @@ bool TextWindow::handleMouseClick(RLMachine& machine,
            koe_replay_button_.begin();
        it != koe_replay_button_.end();
        ++it) {
-    Rect r = Rect(textSurfaceRect().origin() + it->first,
-                  koe_replay_info_->icon->size());
-    if (r.contains(pos)) {
+    Rect r = Rect(GetTextSurfaceRect().origin() + it->first,
+                  koe_replay_info_->icon->GetSize());
+    if (r.Contains(pos)) {
       // We only want to actually replay the voice clip once, but we want to
       // catch both clicks.
       if (pressed)
-        system_.sound().koePlay(it->second);
+        system_.sound().KoePlay(it->second);
       return true;
     }
   }
 
-  if (isVisible() && !machine.system().graphics().interfaceHidden()) {
-    return textbox_waku_->handleMouseClick(machine, pos, pressed);
+  if (is_visible() && !machine.system().graphics().is_interface_hidden()) {
+    return textbox_waku_->HandleMouseClick(machine, pos, pressed);
   }
 
   return false;
 }
 
-void TextWindow::startSelectionMode() { in_selection_mode_ = true; }
+void TextWindow::StartSelectionMode() { in_selection_mode_ = true; }
 
-void TextWindow::setSelectionCallback(const std::function<void(int)>& in) {
+void TextWindow::SetSelectionCallback(const std::function<void(int)>& in) {
   selection_callback_ = in;
 }
 
-void TextWindow::endSelectionMode() {
+void TextWindow::EndSelectionMode() {
   in_selection_mode_ = false;
   selection_callback_ = nullptr;
   selections_.clear();
-  clearWin();
-}
-
-const std::function<void(int)>& TextWindow::selectionCallback() {
-  return selection_callback_;
+  ClearWin();
 }

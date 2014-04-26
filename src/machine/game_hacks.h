@@ -30,6 +30,6 @@
 class RLMachine;
 
 // Adds game specific hacks that execute at certain seen/line pairs.
-void addGameHacks(RLMachine& machine);
+void AddGameHacks(RLMachine& machine);
 
 #endif  // SRC_MACHINE_GAME_HACKS_H__

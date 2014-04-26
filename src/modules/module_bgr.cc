@@ -63,21 +63,21 @@ namespace {
 struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int sel) {
     GraphicsSystem& graphics = machine.system().graphics();
-    graphics.setDefaultBgrName("");
-    graphics.setHikRenderer(NULL);
-    graphics.setGraphicsBackground(BACKGROUND_HIK);
+    graphics.set_default_bgr_name("");
+    graphics.SetHikRenderer(NULL);
+    graphics.set_graphics_background(BACKGROUND_HIK);
 
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
-    graphics.getHaikei()->fill(RGBAColour::Clear());
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
+    graphics.GetHaikei()->Fill(RGBAColour::Clear());
 
     if (!machine.replaying_graphics_stack())
-      graphics.clearAndPromoteObjects();
+      graphics.ClearAndPromoteObjects();
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
     LongOperation* effect =
-        EffectFactory::buildFromSEL(machine, after, before, sel);
-    machine.pushLongOperation(effect);
+        EffectFactory::BuildFromSEL(machine, after, before, sel);
+    machine.PushLongOperation(effect);
   }
 };
 
@@ -85,40 +85,40 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string filename, int sel) {
     System& system = machine.system();
     GraphicsSystem& graphics = system.graphics();
-    graphics.setDefaultBgrName(filename);
-    graphics.setGraphicsBackground(BACKGROUND_HIK);
+    graphics.set_default_bgr_name(filename);
+    graphics.set_graphics_background(BACKGROUND_HIK);
 
     // bgrLoadHaikei clears the stack.
-    graphics.clearStack();
+    graphics.ClearStack();
 
-    fs::path path = system.findFile(filename, HIK_FILETYPES);
+    fs::path path = system.FindFile(filename, HIK_FILETYPES);
     if (iends_with(path.string(), "hik")) {
       if (!machine.replaying_graphics_stack())
-        graphics.clearAndPromoteObjects();
+        graphics.ClearAndPromoteObjects();
 
-      graphics.setHikRenderer(new HIKRenderer(
+      graphics.SetHikRenderer(new HIKRenderer(
           system, graphics.GetHIKScript(system, filename, path)));
     } else {
-      boost::shared_ptr<Surface> before = graphics.renderToSurface();
+      boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
       if (!path.empty()) {
         boost::shared_ptr<const Surface> source(
-            graphics.getSurfaceNamedAndMarkViewed(machine, filename));
-        boost::shared_ptr<Surface> haikei = graphics.getHaikei();
-        source->blitToSurface(
-            *haikei, source->rect(), source->rect(), 255, true);
+            graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
+        boost::shared_ptr<Surface> haikei = graphics.GetHaikei();
+        source->BlitToSurface(
+            *haikei, source->GetRect(), source->GetRect(), 255, true);
       }
 
       // Promote the objects if we're in normal mode. If we're restoring the
       // graphics stack, we already have our layers promoted.
       if (!machine.replaying_graphics_stack())
-        graphics.clearAndPromoteObjects();
+        graphics.ClearAndPromoteObjects();
 
-      boost::shared_ptr<Surface> after = graphics.renderToSurface();
+      boost::shared_ptr<Surface> after = graphics.RenderToSurface();
 
       LongOperation* effect =
-          EffectFactory::buildFromSEL(machine, after, before, sel);
-      machine.pushLongOperation(effect);
+          EffectFactory::BuildFromSEL(machine, after, before, sel);
+      machine.PushLongOperation(effect);
     }
   }
 };
@@ -180,19 +180,19 @@ struct bgrMulti_1
     GraphicsSystem& graphics = machine.system().graphics();
 
     // Get the state of the world before we do any processing.
-    boost::shared_ptr<Surface> before = graphics.renderToSurface();
+    boost::shared_ptr<Surface> before = graphics.RenderToSurface();
 
-    graphics.setGraphicsBackground(BACKGROUND_HIK);
+    graphics.set_graphics_background(BACKGROUND_HIK);
 
     // May need to use current background.
     if (filename == "???")
-      filename = graphics.defaultBgrName();
+      filename = graphics.default_bgr_name();
 
     // Load "filename" as the background.
     boost::shared_ptr<const Surface> surface(
-        graphics.getSurfaceNamedAndMarkViewed(machine, filename));
-    surface->blitToSurface(
-        *graphics.getHaikei(), surface->rect(), surface->rect(), 255, true);
+        graphics.GetSurfaceNamedAndMarkViewed(machine, filename));
+    surface->BlitToSurface(
+        *graphics.GetHaikei(), surface->GetRect(), surface->GetRect(), 255, true);
 
     // TODO(erg): Unsure about the alpha in these implementation.
     for (BgrMultiCommand::type::const_iterator it = commands.begin();
@@ -201,10 +201,10 @@ struct bgrMulti_1
       switch (it->type) {
         case 0: {
           // 0:copy(strC 'filename')
-          surface = graphics.getSurfaceNamedAndMarkViewed(machine, it->first);
-          surface->blitToSurface(*graphics.getHaikei(),
-                                 surface->rect(),
-                                 surface->rect(),
+          surface = graphics.GetSurfaceNamedAndMarkViewed(machine, it->first);
+          surface->BlitToSurface(*graphics.GetHaikei(),
+                                 surface->GetRect(),
+                                 surface->GetRect(),
                                  255,
                                  true);
           break;
@@ -213,14 +213,14 @@ struct bgrMulti_1
           // 2:copy(strC 'filename', '?')
           Rect srcRect;
           Point dest;
-          getSELPointAndRect(machine, std::get<1>(it->third), srcRect, dest);
+          GetSELPointAndRect(machine, std::get<1>(it->third), srcRect, dest);
 
           surface =
-              graphics.getSurfaceNamedAndMarkViewed(machine,
+              graphics.GetSurfaceNamedAndMarkViewed(machine,
                                                     std::get<0>(it->third));
           Rect destRect = Rect(dest, srcRect.size());
-          surface->blitToSurface(
-              *graphics.getHaikei(), srcRect, destRect, 255, true);
+          surface->BlitToSurface(
+              *graphics.GetHaikei(), srcRect, destRect, 255, true);
           break;
         }
         default: {
@@ -234,18 +234,18 @@ struct bgrMulti_1
     // Promote the objects if we're in normal mode. If we're restoring the
     // graphics stack, we already have our layers promoted.
     if (!machine.replaying_graphics_stack())
-      graphics.clearAndPromoteObjects();
+      graphics.ClearAndPromoteObjects();
 
-    boost::shared_ptr<Surface> after = graphics.renderToSurface();
+    boost::shared_ptr<Surface> after = graphics.RenderToSurface();
     LongOperation* effect =
-        EffectFactory::buildFromSEL(machine, after, before, effectNum);
-    machine.pushLongOperation(effect);
+        EffectFactory::BuildFromSEL(machine, after, before, effectNum);
+    machine.PushLongOperation(effect);
   }
 };
 
 struct bgrNext : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {
       renderer->NextAnimationFrame();
     }
@@ -254,7 +254,7 @@ struct bgrNext : public RLOp_Void_Void {
 
 struct bgrSetXOffset : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
-    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {
       renderer->set_x_offset(offset);
     }
@@ -263,7 +263,7 @@ struct bgrSetXOffset : public RLOp_Void_1<IntConstant_T> {
 
 struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
-    HIKRenderer* renderer = machine.system().graphics().getHikRenderer();
+    HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {
       renderer->set_y_offset(offset);
     }
@@ -273,7 +273,7 @@ struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
 struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     System& system = machine.system();
-    fs::path path = system.findFile(name, HIK_FILETYPES);
+    fs::path path = system.FindFile(name, HIK_FILETYPES);
     if (iends_with(path.string(), "hik")) {
       system.graphics().PreloadHIKScript(system, slot, name, path);
     }
@@ -284,27 +284,27 @@ struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 
 // -----------------------------------------------------------------------
 
-BgrModule::BgrModule() : MappedRLModule(graphicsStackMappingFun, "Bgr", 1, 40) {
-  addOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
-  addOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
-  addOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
-  addOpcode(10, 3, "bgrLoadHaikei", new bgrLoadHaikei_wtf2);
+BgrModule::BgrModule() : MappedRLModule(GraphicsStackMappingFun, "Bgr", 1, 40) {
+  AddOpcode(10, 0, "bgrLoadHaikei", new bgrLoadHaikei_blank);
+  AddOpcode(10, 1, "bgrLoadHaikei", new bgrLoadHaikei_main);
+  AddOpcode(10, 2, "bgrLoadHaikei", new bgrLoadHaikei_wtf);
+  AddOpcode(10, 3, "bgrLoadHaikei", new bgrLoadHaikei_wtf2);
 
-  addUnsupportedOpcode(100, 0, "bgrMulti");
-  addOpcode(100, 1, "bgrMulti", new bgrMulti_1);
+  AddUnsupportedOpcode(100, 0, "bgrMulti");
+  AddOpcode(100, 1, "bgrMulti", new bgrMulti_1);
 
-  addOpcode(1000, 0, "bgrNext", new bgrNext);
+  AddOpcode(1000, 0, "bgrNext", new bgrNext);
 
-  addOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
-  addOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
+  AddOpcode(1104, 0, "bgrSetXOffset", new bgrSetXOffset);
+  AddOpcode(1105, 0, "bgrSetYOffset", new bgrSetYOffset);
 
-  addOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
-  addOpcode(2001,
+  AddOpcode(2000, 0, "bgrPreloadScript", new bgrPreloadScript);
+  AddOpcode(2001,
             0,
             "bgrClearPreloadedScript",
-            callFunction(&GraphicsSystem::ClearPreloadedHIKScript));
-  addOpcode(2002,
+            CallFunction(&GraphicsSystem::ClearPreloadedHIKScript));
+  AddOpcode(2002,
             0,
             "bgrClearAllPreloadedScripts",
-            callFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
+            CallFunction(&GraphicsSystem::ClearAllPreloadedHIKScripts));
 }

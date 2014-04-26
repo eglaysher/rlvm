@@ -36,7 +36,7 @@ class System;
 
 // Public access to the frame counter operations. Meant to be called
 // from the constructor of SysModule.
-void addSysSaveOpcodes(RLModule& module);
+void AddSysSaveOpcodes(RLModule& module);
 
 // -----------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ void addSysSaveOpcodes(RLModule& module);
 // we're going to nuke the call stack and system memory in
 // LoadingGame.
 struct Sys_load : public RLOp_Void_1<IntConstant_T> {
-  bool advanceInstructionPointer() { return false; }
+  virtual bool AdvanceInstructionPointer() override;
 
   // Main entrypoint into the load command. Simply sets the callstack
   // up so that we will fade to black, clear the screen and render,

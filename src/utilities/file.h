@@ -41,11 +41,11 @@ class System;
 // On platforms with case-insensitive file systems, returns a copy of the input
 // unchanged. On less tolerant platforms, returns a copy of the input with
 // correct case, or the empty string if no solution could be found.
-boost::filesystem::path correctPathCase(boost::filesystem::path Path);
+boost::filesystem::path CorrectPathCase(boost::filesystem::path Path);
 
 // Reads the entire contents of a file into the passed in |data| and
 // |size|. Returns true if there were no problems.
-bool loadFileData(const boost::filesystem::path& path,
+bool LoadFileData(const boost::filesystem::path& path,
                   std::unique_ptr<char[]>& fileData,
                   int& fileSize);
 

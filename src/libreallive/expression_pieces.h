@@ -42,39 +42,34 @@ namespace libreallive {
 // and rvlaue).
 class StoreRegisterExpressionPiece : public ExpressionPiece {
  public:
-  // StoreRegisterExpressionPiece is a memory reference; returns true
-  virtual bool isMemoryReference() const;
+  StoreRegisterExpressionPiece();
+  virtual ~StoreRegisterExpressionPiece();
 
-  // Assign the incoming value to the store register of the passed in
-  // machine.
-  virtual void assignIntValue(RLMachine& machine, int rvalue);
-
-  // Returns the store register value of the passed in machine
-  virtual int integerValue(RLMachine& machine) const;
-
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-
+  // Overridden from ExpressionPiece:
+  virtual bool IsMemoryReference() const override;
+  virtual void SetIntegerValue(RLMachine& machine, int rvalue) override;
+  virtual int GetIntegerValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
   // Never seen in any commercial games, but needed for rlBabel support.
-  virtual IntReferenceIterator getIntegerReferenceIterator(
-      RLMachine& machine) const;
-
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  virtual IntReferenceIterator GetIntegerReferenceIterator(
+      RLMachine& machine) const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 };
 
 // Represents a constant integer in an Expression.
 class IntegerConstant : public ExpressionPiece {
  public:
   explicit IntegerConstant(const int in);
-  ~IntegerConstant();
+  virtual ~IntegerConstant();
 
-  // Returns the constant value
-  virtual int integerValue(RLMachine& machine) const;
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  // Overridden from ExpressionPiece:
+  virtual int GetIntegerValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  private:
   // The value of this constant
@@ -86,14 +81,15 @@ class IntegerConstant : public ExpressionPiece {
 class StringConstant : public ExpressionPiece {
  public:
   explicit StringConstant(const std::string& inStr);
+  virtual ~StringConstant();
 
-  virtual ExpressionValueType expressionValueType() const;
-  virtual const std::string& getStringValue(RLMachine& machine) const;
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  // Overridden from ExpressionPiece:
+  virtual ExpressionValueType GetExpressionValueType() const override;
+  virtual const std::string& GetStringValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  private:
   std::string constant;
@@ -105,26 +101,26 @@ class StringConstant : public ExpressionPiece {
 class MemoryReference : public ExpressionPiece {
  public:
   MemoryReference(int type, std::unique_ptr<ExpressionPiece> inLoc);
-  ~MemoryReference();
+  virtual ~MemoryReference();
 
-  virtual bool isMemoryReference() const;
-  virtual ExpressionValueType expressionValueType() const;
+  // Overridden from ExpressionPiece:
+  virtual bool IsMemoryReference() const override;
+  virtual ExpressionValueType GetExpressionValueType() const override;
 
-  virtual void assignIntValue(RLMachine& machine, int rvalue);
-  virtual int integerValue(RLMachine& machine) const;
+  virtual void SetIntegerValue(RLMachine& machine, int rvalue) override;
+  virtual int GetIntegerValue(RLMachine& machine) const override;
 
-  virtual void assignStringValue(RLMachine& machine, const std::string& rvalue);
-  virtual const std::string& getStringValue(RLMachine& machine) const;
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-
-  virtual IntReferenceIterator getIntegerReferenceIterator(
-      RLMachine& machine) const;
-  virtual StringReferenceIterator getStringReferenceIterator(
-      RLMachine& machine) const;
-
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  virtual void SetStringValue(RLMachine& machine,
+                              const std::string& rvalue) override;
+  virtual const std::string& GetStringValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual IntReferenceIterator GetIntegerReferenceIterator(
+      RLMachine& machine) const override;
+  virtual StringReferenceIterator GetStringReferenceIterator(
+      RLMachine& machine) const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  private:
   // The type of an memory reference refers to both the memory
@@ -144,17 +140,19 @@ class UniaryExpressionOperator : public ExpressionPiece {
  public:
   UniaryExpressionOperator(char inOperation,
                            std::unique_ptr<ExpressionPiece> inOperand);
-  ~UniaryExpressionOperator();
-  virtual int integerValue(RLMachine& machine) const;
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  virtual ~UniaryExpressionOperator();
+
+  // Overridden from ExpressionPiece:
+  virtual int GetIntegerValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  private:
   // Performs operation on the passed in parameter, and returns the
   // value.
-  int performOperationOn(int x) const;
+  int PerformOperationOn(int x) const;
 
   // The sub-Expression to operate on
   std::unique_ptr<ExpressionPiece> operand;
@@ -170,17 +168,18 @@ class BinaryExpressionOperator : public ExpressionPiece {
   BinaryExpressionOperator(char inOperation,
                            std::unique_ptr<ExpressionPiece> lhs,
                            std::unique_ptr<ExpressionPiece> rhs);
-  ~BinaryExpressionOperator();
-  virtual int integerValue(RLMachine& machine) const;
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
+  virtual ~BinaryExpressionOperator();
 
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  // Overridden from ExpressionPiece:
+  virtual int GetIntegerValue(RLMachine& machine) const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  protected:
   // Performs operation on the two passed in operands.
-  int performOperationOn(int lhs, int rhs) const;
+  int PerformOperationOn(int lhs, int rhs) const;
 
   // The operation to perform
   char operation;
@@ -201,19 +200,18 @@ class AssignmentExpressionOperator : public BinaryExpressionOperator {
   AssignmentExpressionOperator(char operation,
                                std::unique_ptr<ExpressionPiece> lhs,
                                std::unique_ptr<ExpressionPiece> rhs);
-  ~AssignmentExpressionOperator();
+  virtual ~AssignmentExpressionOperator();
 
-  virtual bool isAssignment() const;
+  virtual bool IsAssignment() const override;
 
-  // For the entire assignment operator hiearchy, we use integerValue,
+  // For the entire assignment operator hiearchy, we use GetIntegerValue,
   // since it acts as the execute.
-  virtual int integerValue(RLMachine& machine) const;
+  virtual int GetIntegerValue(RLMachine& machine) const override;
 
-  // Deliberately has no serializedValue() implementation; uses
+  // Deliberately has no GetSerializedExpression() implementation; uses
   // BinaryExpressionOperator's.
-  virtual std::string getDebugValue(RLMachine& machine) const;
 
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 };
 
 
@@ -223,20 +221,23 @@ class AssignmentExpressionOperator : public BinaryExpressionOperator {
 // contains multiple ExpressionPieces.
 class ComplexExpressionPiece : public ExpressionPiece {
  public:
-  virtual bool isComplexParameter() const;
+  ComplexExpressionPiece();
+  virtual ~ComplexExpressionPiece();
 
   // Adds an ExpressionPiece to this complex expressionPiece. This
   // instance of ComplexExpressionPiece takes ownership of any
   // ExpressionPiece passed in this way.
-  void addContainedPiece(std::unique_ptr<ExpressionPiece> piece);
+  void AddContainedPiece(std::unique_ptr<ExpressionPiece> piece);
 
-  const std::vector<std::unique_ptr<ExpressionPiece>>&
-  getContainedPieces() const
-    { return contained_pieces_; }
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  const std::vector<std::unique_ptr<ExpressionPiece>>& contained_pieces() const
+  { return contained_pieces_; }
+
+  // Overridden from ExpressionPiece:
+  virtual bool IsComplexParameter() const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  protected:
   // Poiter owning container of all the ExpressionPieces we compose
@@ -254,16 +255,19 @@ class ComplexExpressionPiece : public ExpressionPiece {
 class SpecialExpressionPiece : public ComplexExpressionPiece {
  public:
   explicit SpecialExpressionPiece(int tag);
-  virtual bool isSpecialParamater() const;
+  virtual ~SpecialExpressionPiece();
 
-  int getOverloadTag() const { return overloadTag; }
-  virtual std::string serializedValue(RLMachine& machine) const;
-  virtual std::string getDebugValue(RLMachine& machine) const;
-  virtual std::string getDebugString() const;
-  virtual std::unique_ptr<ExpressionPiece> clone() const;
+  int overload_tag() const { return overload_tag_; }
+
+  // Overridden from ExpressionPiece:
+  virtual bool IsSpecialParameter() const override;
+  virtual std::string GetSerializedExpression(
+      RLMachine& machine) const override;
+  virtual std::string GetDebugString() const override;
+  virtual std::unique_ptr<ExpressionPiece> Clone() const override;
 
  private:
-  int overloadTag;
+  int overload_tag_;
 };
 
 }  // namespace libreallive

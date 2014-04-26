@@ -54,17 +54,17 @@ class RLMachine;
 class LittleBustersEF00DLL : public RealLiveDLL {
  public:
   // Overridden from RealLiveDLL:
-  virtual int callDLL(RLMachine& machine,
+  virtual int CallDLL(RLMachine& machine,
                       int func,
                       int arg1,
                       int arg2,
                       int arg3,
-                      int arg4);
-  virtual const std::string& name() const;
+                      int arg4) override;
+  virtual const std::string& GetDLLName() const override;
 
  private:
-  void configureEffect(int arg1, int arg2, int arg3, int arg4);
-  void performCalculations(RLMachine& machine, int arg1);
+  void ConfigureEffect(int arg1, int arg2, int arg3, int arg4);
+  void PerformCalculations(RLMachine& machine, int arg1);
 
   std::unique_ptr<double[]> lb_ef_param;
 };

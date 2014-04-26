@@ -52,15 +52,15 @@ TEST(UtilitiesTest, ScreenSizeModKey) {
   // Old games
   Gameexe old;
   old.parseLine("#SCREENSIZE_MOD=0");
-  EXPECT_EQ(Size(640, 480), getScreenSize(old));
+  EXPECT_EQ(Size(640, 480), GetScreenSize(old));
 
   // Newer games
   Gameexe newer;
   newer.parseLine("#SCREENSIZE_MOD=1");
-  EXPECT_EQ(Size(800, 600), getScreenSize(newer));
+  EXPECT_EQ(Size(800, 600), GetScreenSize(newer));
 
   // Used in Memorial Edition games
   Gameexe me;
   me.parseLine("#SCREENSIZE_MOD=999,800,600");
-  EXPECT_EQ(Size(800, 600), getScreenSize(me));
+  EXPECT_EQ(Size(800, 600), GetScreenSize(me));
 }

@@ -45,8 +45,8 @@ namespace {
 struct objCopyFgToBg_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsSystem& sys = machine.system().graphics();
-    GraphicsObject& go = sys.getObject(OBJ_FG, buf);
-    sys.setObject(OBJ_BG, buf, go);
+    GraphicsObject& go = sys.GetObject(OBJ_FG, buf);
+    sys.SetObject(OBJ_BG, buf, go);
   }
 };
 
@@ -55,8 +55,8 @@ struct objCopyFgToBg_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     GraphicsSystem& sys = machine.system().graphics();
 
     for (int i = start; i <= end; ++i) {
-      GraphicsObject& go = sys.getObject(OBJ_FG, i);
-      sys.setObject(OBJ_BG, i, go);
+      GraphicsObject& go = sys.GetObject(OBJ_FG, i);
+      sys.SetObject(OBJ_BG, i, go);
     }
   }
 };
@@ -67,36 +67,36 @@ struct objCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
   void operator()(RLMachine& machine, int sbuf, int dbuf) {
     GraphicsSystem& sys = machine.system().graphics();
-    GraphicsObject& go = sys.getObject(from_fgbg_, sbuf);
-    sys.setObject(to_fgbg_, dbuf, go);
+    GraphicsObject& go = sys.GetObject(from_fgbg_, sbuf);
+    sys.SetObject(to_fgbg_, dbuf, go);
   }
 };
 
 struct objClear_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
-    obj.clearObject();
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+    obj.ClearObject();
   }
 };
 
 struct objClear_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   // I highly suspect that this has range semantics like
-  // setWipeCopyTo_1, but none of the games I own use this
+  // SetWipeCopyTo_1, but none of the games I own use this
   // function.
   void operator()(RLMachine& machine, int min, int max) {
     // Inclusive ranges make baby Kerrigan and Ritchie cry.
     max++;
 
     for (int i = min; i < max; ++i) {
-      getGraphicsObject(machine, this, i).clearObject();
+      GetGraphicsObject(machine, this, i).ClearObject();
     }
   }
 };
 
 struct objDelete_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
-    obj.deleteObject();
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+    obj.DeleteObject();
   }
 };
 
@@ -106,42 +106,42 @@ struct objDelete_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     max++;
 
     for (int i = min; i < max; ++i) {
-      getGraphicsObject(machine, this, i).deleteObject();
+      GetGraphicsObject(machine, this, i).DeleteObject();
     }
   }
 };
 
-struct setWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
+struct SetWipeCopyTo_0 : public RLOp_Void_1<IntConstant_T> {
   int val_;
-  explicit setWipeCopyTo_0(int value) : val_(value) {}
+  explicit SetWipeCopyTo_0(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int buf) {
-    getGraphicsObject(machine, this, buf).setWipeCopy(val_);
+    GetGraphicsObject(machine, this, buf).SetWipeCopy(val_);
   }
 };
 
-struct setWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct SetWipeCopyTo_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   int val_;
-  explicit setWipeCopyTo_1(int value) : val_(value) {}
+  explicit SetWipeCopyTo_1(int value) : val_(value) {}
 
   void operator()(RLMachine& machine, int min, int numObjsToSet) {
     int maxObj = min + numObjsToSet;
     for (int i = min; i < maxObj; ++i) {
-      getGraphicsObject(machine, this, i).setWipeCopy(val_);
+      GetGraphicsObject(machine, this, i).SetWipeCopy(val_);
     }
   }
 };
 
 void addObjManagementFunctions(RLModule& m) {
-  m.addOpcode(4, 0, "objWipeCopyOn", new setWipeCopyTo_0(1));
-  m.addOpcode(4, 1, "objWipeCopyOn", new setWipeCopyTo_1(1));
-  m.addOpcode(5, 0, "objWipeCopyOff", new setWipeCopyTo_0(0));
-  m.addOpcode(5, 1, "objWipeCopyOff", new setWipeCopyTo_1(0));
+  m.AddOpcode(4, 0, "objWipeCopyOn", new SetWipeCopyTo_0(1));
+  m.AddOpcode(4, 1, "objWipeCopyOn", new SetWipeCopyTo_1(1));
+  m.AddOpcode(5, 0, "objWipeCopyOff", new SetWipeCopyTo_0(0));
+  m.AddOpcode(5, 1, "objWipeCopyOff", new SetWipeCopyTo_1(0));
 
-  m.addOpcode(10, 0, "objClear", new objClear_0);
-  m.addOpcode(10, 1, "objClear", new objClear_1);
-  m.addOpcode(11, 0, "objDelete", new objDelete_0);
-  m.addOpcode(11, 1, "objDelete", new objDelete_1);
+  m.AddOpcode(10, 0, "objClear", new objClear_0);
+  m.AddOpcode(10, 1, "objClear", new objClear_1);
+  m.AddOpcode(11, 0, "objDelete", new objDelete_0);
+  m.AddOpcode(11, 1, "objDelete", new objDelete_1);
 }
 
 struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
@@ -155,16 +155,16 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
     // tampered with by the ChildObjAdaptor. So use P_PARENTOBJ as our toplevel
     // object.
     int parentobj;
-    if (getProperty(P_PARENTOBJ, parentobj)) {
-      GraphicsObject& go = sys.getObject(fgbg_, parentobj);
-      ensureIsParentObject(go, sys.objectLayerSize());
+    if (GetProperty(P_PARENTOBJ, parentobj)) {
+      GraphicsObject& go = sys.GetObject(fgbg_, parentobj);
+      EnsureIsParentObject(go, sys.GetObjectLayerSize());
 
       // Pick out the object data.
       ParentGraphicsObjectData& parent =
-          static_cast<ParentGraphicsObjectData&>(go.objectData());
+          static_cast<ParentGraphicsObjectData&>(go.GetObjectData());
 
-      GraphicsObject& src_obj = parent.getObject(sbuf);
-      parent.setObject(dbuf, src_obj);
+      GraphicsObject& src_obj = parent.GetObject(sbuf);
+      parent.SetObject(dbuf, src_obj);
     }
   }
 };
@@ -174,72 +174,72 @@ struct objChildCopy : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // -----------------------------------------------------------------------
 
 ObjCopyFgToBg::ObjCopyFgToBg() : RLModule("ObjCopyFgToBg", 1, 60) {
-  addOpcode(0, 0, "objFree", callFunction(&GraphicsSystem::clearObject));
+  AddOpcode(0, 0, "objFree", CallFunction(&GraphicsSystem::ClearObject));
 
-  addOpcode(1, 0, "objEraseWipeCopy", new setWipeCopyTo_0(0));
+  AddOpcode(1, 0, "objEraseWipeCopy", new SetWipeCopyTo_0(0));
 
   // This may be wrong; the function is undocumented, but this appears
   // to fix the display problem in Kanon OP.
-  addOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
-  addOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
+  AddOpcode(2, 0, "objCopyFgToBg", new objCopyFgToBg_0);
+  AddOpcode(2, 1, "objCopyFgToBg", new objCopyFgToBg_1);
 
-  addOpcode(
-      100, 0, "objClearAll", callFunction(&GraphicsSystem::clearAllObjects));
-  addOpcode(110,
+  AddOpcode(
+      100, 0, "objClearAll", CallFunction(&GraphicsSystem::ClearAllObjects));
+  AddOpcode(110,
             0,
             "objResetPropertiesAll",
-            callFunction(&GraphicsSystem::resetAllObjectsProperties));
+            CallFunction(&GraphicsSystem::ResetAllObjectsProperties));
 
   // Experimentation shows that op<1:60:111, 0> looks like a synonmy for
   // op<1:60:100, 0>. May have differences?
-  addOpcode(
-      111, 0, "objClearAll2", callFunction(&GraphicsSystem::clearAllObjects));
+  AddOpcode(
+      111, 0, "objClearAll2", CallFunction(&GraphicsSystem::ClearAllObjects));
 }
 
 // -----------------------------------------------------------------------
 
 ObjFgManagement::ObjFgManagement() : RLModule("ObjFgManagement", 1, 61) {
-  addOpcode(2, 0, "objCopy", new objCopy(OBJ_FG, OBJ_FG));
-  addOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
+  AddOpcode(2, 0, "objCopy", new objCopy(OBJ_FG, OBJ_FG));
+  AddOpcode(3, 0, "objCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ObjBgManagement::ObjBgManagement() : RLModule("ObjBgManagement", 1, 62) {
-  addOpcode(2, 0, "objBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
-  addOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
+  AddOpcode(2, 0, "objBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
+  AddOpcode(3, 0, "objBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildObjFgManagement::ChildObjFgManagement()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 61) {
-  addOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
-  addOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgManagement", 2, 61) {
+  AddOpcode(2, 0, "objSetCopy", new objCopy(OBJ_FG, OBJ_FG));
+  AddOpcode(3, 0, "objSetCopyToBg", new objCopy(OBJ_FG, OBJ_BG));
 
-  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
+  AddOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_FG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildObjBgManagement::ChildObjBgManagement()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgManagement", 2, 62) {
-  addOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
-  addOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgManagement", 2, 62) {
+  AddOpcode(2, 0, "objSetBgCopyToFg", new objCopy(OBJ_BG, OBJ_FG));
+  AddOpcode(3, 0, "objSetBgCopy", new objCopy(OBJ_BG, OBJ_BG));
 
-  addOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
+  AddOpcode(14, 0, "objChildCopy", new objChildCopy(OBJ_BG));
 
   addObjManagementFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------

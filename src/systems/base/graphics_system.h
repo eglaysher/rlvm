@@ -157,22 +157,30 @@ class GraphicsSystem : public EventListener {
   GraphicsSystem(System& system, Gameexe& gameexe);
   virtual ~GraphicsSystem();
 
-  bool isResponsibleForUpdate() const { return is_responsible_for_update_; }
-  void setIsResponsibleForUpdate(bool in);
+  bool is_responsible_for_update() const { return is_responsible_for_update_; }
+  void set_is_responsible_for_update(bool in) {
+    is_responsible_for_update_ = in;
+  }
 
   // Sets the default name for certain classes of commands. (Certain graphics
   // commands set either of these and most graphics commands can pass in '?',
   // which is substituted with the default name.)
-  void setDefaultGrpName(const std::string& name) { default_grp_name_ = name; }
-  const std::string& defaultGrpName() const { return default_grp_name_; }
-  void setDefaultBgrName(const std::string& name) { default_bgr_name_ = name; }
-  const std::string& defaultBgrName() const { return default_bgr_name_; }
+  const std::string& default_grp_name() const { return default_grp_name_; }
+  void set_default_grp_name(const std::string& name) {
+    default_grp_name_ = name;
+  }
+  const std::string& default_bgr_name() const { return default_bgr_name_; }
+  void set_default_bgr_name(const std::string& name) {
+    default_bgr_name_ = name;
+  }
 
   // Define who is responsible for screen updates.
-  DCScreenUpdateMode screenUpdateMode() const { return screen_update_mode_; }
-  virtual void setScreenUpdateMode(DCScreenUpdateMode u);
+  DCScreenUpdateMode screen_update_mode() const { return screen_update_mode_; }
+  virtual void SetScreenUpdateMode(DCScreenUpdateMode u);
 
-  void setGraphicsBackground(GraphicsBackgroundType t) { background_type_ = t; }
+  void set_graphics_background(GraphicsBackgroundType t) {
+    background_type_ = t;
+  }
 
   System& system() { return system_; }
 
@@ -197,16 +205,16 @@ class GraphicsSystem : public EventListener {
   // Whether we are using a custom cursor. Verifies that there was a
   // \#MOUSE_CURSOR entry in the Gameexe.ini file, and that the currently
   // selected cursor exists.
-  int useCustomCursor();
+  int ShouldUseCustomCursor();
 
   // Sets the cursor to the incoming cursor index.
-  virtual void setCursor(int cursor);
+  virtual void SetCursor(int cursor);
 
   // Returns the current index.
   int cursor() const { return cursor_; }
 
   // Whether we display a cursor at all.
-  void setShowCursorFromBytecode(const int in) {
+  void set_show_cursor_from_bytecode(const int in) {
     show_cursor_from_bytecode_ = in;
   }
 
@@ -218,26 +226,26 @@ class GraphicsSystem : public EventListener {
 
   // Adds |command|, the serialized form of a bytecode used by calling the
   // BytecodeElement::data().
-  void addGraphicsStackCommand(const std::string& command);
+  void AddGraphicsStackCommand(const std::string& command);
 
   // Returns the number of entries in the stack.
-  int stackSize() const;
+  int StackSize() const;
 
   // Clears the graphics stack.
-  void clearStack();
+  void ClearStack();
 
   // Removes (up to) |num_items| from the stack. (Stops when the stack is
   // empty).
-  void stackPop(int num_items);
+  void StackPop(int num_items);
 
   // Replays the graphics stack. This is called after we've reloaded
   // a saved game and deals with both old style and the new stack system.
-  void replayGraphicsStack(RLMachine& machine);
+  void ReplayGraphicsStack(RLMachine& machine);
 
   // Sets the current hik script. GraphicsSystem takes ownership, freeing the
   // current HIKScript if applicable. |script| can be NULL.
-  void setHikRenderer(HIKRenderer* script);
-  HIKRenderer* getHikRenderer() const { return hik_renderer_.get(); }
+  HIKRenderer* hik_renderer() const { return hik_renderer_.get(); }
+  void SetHikRenderer(HIKRenderer* script);
 
   // -----------------------------------------------------------------------
 
@@ -245,22 +253,22 @@ class GraphicsSystem : public EventListener {
   // pipeline by injecting Renderables. There should only really be one
   // Renderable on screen at a time, but the interface allows for multiple
   // ones.
-  void addRenderable(Renderable* renderable);
-  void removeRenderable(Renderable* renderable);
+  void AddRenderable(Renderable* renderable);
+  void RemoveRenderable(Renderable* renderable);
 
   // Subtitle management
 
   // Sets the current value of the subtitle, as set with title(). This
   // is virtual so that UTF8 or other charset systems can convert for
   // their own internal copy.
-  virtual void setWindowSubtitle(const std::string& cp932str,
+  virtual void SetWindowSubtitle(const std::string& cp932str,
                                  int text_encoding);
 
   // Returns the current window subtitle, in native encoding.
-  const std::string& windowSubtitle() const;
+  const std::string& window_subtitle() const { return subtitle_; }
 
   // Wether we should display the subtitle.
-  bool displaySubtitle() const { return display_subtitle_; }
+  bool should_display_subtitle() const { return display_subtitle_; }
 
   // Access to the GrapihcsSystem global variables.
   GraphicsSystemGlobals& globals() { return globals_; }
@@ -271,32 +279,34 @@ class GraphicsSystem : public EventListener {
   // hidden depending on the corresponding `show object' flag. This is
   // one of the properties controlled by the \#OBJECT variables in
   // gameexe.ini.
-  void setShowObject1(const int in);
-  int showObject1() const { return globals_.show_object_1; }
-  void setShowObject2(const int in);
-  int showObject2() const { return globals_.show_object_2; }
-  void setShowWeather(const int in);
-  int showWeather() const { return globals_.show_weather; }
+  int should_show_object1() const { return globals_.show_object_1; }
+  void set_should_show_object1(const int in) { globals_.show_object_1 = in; }
+  int should_show_object2() const { return globals_.show_object_2; }
+  void set_should_show_object2(const int in) { globals_.show_object_2 = in; }
+  int should_show_weather() const { return globals_.show_weather; }
+  void set_should_show_weather(const int in) { globals_.show_weather = in; }
 
-  // Sets whether we're in fullscreen mode. setScreenMode() is virtual so we
+  // Sets whether we're in fullscreen mode. SetScreenMode() is virtual so we
   // can tell SDL to switch the screen mode.
-  virtual void setScreenMode(const int in);
-  int screenMode() const { return globals_.screen_mode; }
-  void toggleFullscreen();
+  int screen_mode() const { return globals_.screen_mode; }
+  virtual void SetScreenMode(const int in);
+  void ToggleFullscreen();
 
   // Toggles whether the interface is shown. Called by
   // PauseLongOperation and related functors.
-  void toggleInterfaceHidden();
-  bool interfaceHidden();
+  void ToggleInterfaceHidden();
+  bool is_interface_hidden() { return interface_hidden_; }
 
   // Whether we should skip animations (such as all the Effect subclasses).
-  void setSkipAnimations(const int in) { globals_.skip_animations = in; }
-  int skipAnimations() const { return globals_.skip_animations; }
+  int should_skip_animations() const { return globals_.skip_animations; }
+  void set_should_skip_animations(const int in) {
+    globals_.skip_animations = in;
+  }
 
   // Returns the ObjectSettings from the Gameexe for obj_num. The data
   // from this method should be used by all subclasses of
   // GraphicsSystem when deciding whether to render an object or not.
-  ObjectSettings getObjectSettings(const int obj_num);
+  const ObjectSettings& GetObjectSettings(const int obj_num);
 
   // Should be called by any of the drawing functions the screen is
   // invalidated.
@@ -304,102 +314,99 @@ class GraphicsSystem : public EventListener {
   // For more information, please see section 5.10.4 of the RLDev
   // manual, which deals with the behaviour of screen updates, and the
   // various modes.
-  virtual void markScreenAsDirty(GraphicsUpdateType type);
+  virtual void MarkScreenAsDirty(GraphicsUpdateType type);
 
   // Forces a refresh of the screen the next time the graphics system
   // executes.
-  virtual void forceRefresh();
+  virtual void ForceRefresh();
 
-  bool screenNeedsRefresh() const { return screen_needs_refresh_; }
-  void screenRefreshed() {
-    screen_needs_refresh_ = false;
-    object_state_dirty_ = false;
-  }
+  bool screen_needs_refresh() const { return screen_needs_refresh_; }
+  void OnScreenRefreshed();
 
   // We keep a separate state about whether object state has been modified. We
   // do this so that background object mutation in automatic mode plays nicely
   // with LongOperations.
-  void markObjectStateAsDirty() { object_state_dirty_ = true; }
-  bool objectStateDirty() const { return object_state_dirty_; }
+  void mark_object_state_as_dirty() { object_state_dirty_ = true; }
+  bool object_state_dirty() const { return object_state_dirty_; }
 
-  virtual void beginFrame() = 0;
-  virtual void endFrame() = 0;
-  virtual boost::shared_ptr<Surface> endFrameToSurface() = 0;
+  virtual void BeginFrame() = 0;
+  virtual void EndFrame() = 0;
+  virtual boost::shared_ptr<Surface> EndFrameToSurface() = 0;
 
   // Performs a full redraw of the screen.
-  void refresh(std::ostream* tree);
+  void Refresh(std::ostream* tree);
 
   // Draws the screen (as if refresh() was called), but draw to the returned
   // surface instead of the screen.
-  boost::shared_ptr<Surface> renderToSurface();
+  boost::shared_ptr<Surface> RenderToSurface();
 
   // Called from the game loop; Does everything that's needed to keep
   // things up.
-  virtual void executeGraphicsSystem(RLMachine& machine);
+  virtual void ExecuteGraphicsSystem(RLMachine& machine);
 
   // Returns the size of the window in pixels.
-  const Size& screenSize() const { return screen_size_; }
+  const Size& screen_size() const { return screen_size_; }
 
   // Returns a rectangle with an origin of (0,0) and a size returned by
-  // screenSize().
-  const Rect& screenRect() const { return screen_rect_; }
+  // screen_size().
+  const Rect& screen_rect() const { return screen_rect_; }
 
-  virtual void allocateDC(int dc, Size size) = 0;
-  virtual void setMinimumSizeForDC(int dc, Size size) = 0;
-  virtual void freeDC(int dc) = 0;
+  virtual void AllocateDC(int dc, Size size) = 0;
+  virtual void SetMinimumSizeForDC(int dc, Size size) = 0;
+  virtual void FreeDC(int dc) = 0;
 
   // Loads an image, optionally marking that this image has been loaded (if it
   // is in the game's CGM table).
-  boost::shared_ptr<const Surface> getSurfaceNamedAndMarkViewed(
+  boost::shared_ptr<const Surface> GetSurfaceNamedAndMarkViewed(
       RLMachine& machine,
       const std::string& short_filename);
 
   // Just loads an image. This shouldn't be used for images that are destined
   // for one of the DCs, since those can be CGs.
-  boost::shared_ptr<const Surface> getSurfaceNamed(
+  boost::shared_ptr<const Surface> GetSurfaceNamed(
       const std::string& short_filename);
 
-  virtual boost::shared_ptr<Surface> getHaikei() = 0;
+  virtual boost::shared_ptr<Surface> GetHaikei() = 0;
 
-  virtual boost::shared_ptr<Surface> getDC(int dc) = 0;
+  virtual boost::shared_ptr<Surface> GetDC(int dc) = 0;
 
-  virtual boost::shared_ptr<Surface> buildSurface(const Size& size) = 0;
+  virtual boost::shared_ptr<Surface> BuildSurface(const Size& size) = 0;
 
   virtual ColourFilter* BuildColourFiller() = 0;
 
   // Clears and promotes objects.
-  void clearAndPromoteObjects();
+  void ClearAndPromoteObjects();
 
   // Calls render() on all foreground objects that need to be
   // rendered.
-  void renderObjects(std::ostream* tree);
+  void RenderObjects(std::ostream* tree);
 
   // Creates rendering data for a graphics object from a G00, PDT or ANM file.
   // Does not deal with GAN files. Those are built with a separate function.
-  GraphicsObjectData* buildObjOfFile(const std::string& filename);
+  GraphicsObjectData* BuildObjOfFile(const std::string& filename);
 
   // Object getters
   // layer == 0 for fg, layer == 1 for bg.
-  GraphicsObject& getObject(int layer, int obj_number);
-  void setObject(int layer, int obj_number, GraphicsObject& object);
+  GraphicsObject& GetObject(int layer, int obj_number);
+  void SetObject(int layer, int obj_number, GraphicsObject& object);
 
-  void clearObject(int obj_number);
+  void ClearObject(int obj_number);
 
   // Deallocates all graphics objects.
-  void clearAllObjects();
+  void ClearAllObjects();
 
   // Resets the object properties for all graphics objects.
-  void resetAllObjectsProperties();
+  void ResetAllObjectsProperties();
 
   // The number of objects in a layer for this game. Defaults to 256 and can be
   // overridden with #OBJECT_MAX.
-  int objectLayerSize();
+  int GetObjectLayerSize();
 
-  LazyArray<GraphicsObject>& backgroundObjects();
-  LazyArray<GraphicsObject>& foregroundObjects();
+  LazyArray<GraphicsObject>& GetBackgroundObjects();
+  LazyArray<GraphicsObject>& GetForegroundObjects();
 
   // Returns true if there's a currently playing animation.
-  bool animationsPlaying() const;
+  bool AnimationsPlaying() const;
 
   // Takes a snapshot of the current object state. This snapshot is saved
   // instead of the current state of the graphics, since RealLive is a savepoint
@@ -408,22 +415,22 @@ class GraphicsSystem : public EventListener {
   // (This operation isn't exceptionally expensive; internally GraphicsObject
   // has multiple copy-on-write data structs to make this and object promotion a
   // relativly cheap operation.)
-  void takeSavepointSnapshot();
+  void TakeSavepointSnapshot();
 
   // Sets DC0 to black and frees up DCs 1 through 16.
-  void clearAllDCs();
+  void ClearAllDCs();
 
   // Implementation of MouseMotionListener:
-  virtual void mouseMotion(const Point& new_location);
+  virtual void MouseMotion(const Point& new_location) override;
 
   // Reset the system. Should clear all state for when a user loads a game.
-  virtual void reset();
+  virtual void Reset();
 
   // Access to the cgtable for the cg* functions.
-  CGMTable& cgTable() { return globals_.cg_table; }
+  CGMTable& cg_table() { return globals_.cg_table; }
 
   // Access to the tone curve effects file
-  ToneCurve& toneCurve() { return globals_.tone_curves; }
+  ToneCurve& tone_curve() { return globals_.tone_curves; }
 
   // Gets the emoji surface, if any.
   boost::shared_ptr<const Surface> GetEmojiSurface();
@@ -453,20 +460,17 @@ class GraphicsSystem : public EventListener {
   FinalRenderers::iterator renderer_begin() { return final_renderers_.begin(); }
   FinalRenderers::iterator renderer_end() { return final_renderers_.end(); }
 
-  const Point& cursorPos() const { return cursor_pos_; }
+  const Point& cursor_pos() const { return cursor_pos_; }
 
-  boost::shared_ptr<MouseCursor> currentCursor();
+  boost::shared_ptr<MouseCursor> GetCurrentCursor();
 
-  void setScreenSize(const Size& size) {
-    screen_size_ = size;
-    screen_rect_ = Rect(Point(0, 0), size);
-  }
+  void SetScreenSize(const Size& size);
 
-  void drawFrame(std::ostream* tree);
+  void DrawFrame(std::ostream* tree);
 
  private:
   // Gets a platform appropriate surface loaded.
-  virtual boost::shared_ptr<const Surface> loadSurfaceFromFile(
+  virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
       const std::string& short_filename) = 0;
 
   // Default grp name (used in grp* and rec* functions where filename
@@ -503,7 +507,7 @@ class GraphicsSystem : public EventListener {
 
   // Controls whether we render the interface (this can be
   // temporarily toggled by the user at runtime)
-  bool hide_interface_;
+  bool interface_hidden_;
 
   // Mutable global data to be saved in the globals file
   GraphicsSystemGlobals globals_;

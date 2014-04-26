@@ -50,6 +50,6 @@ Point getClickPointHack(const GraphicsObject& obj) {
 scope register_graphics_object() {
   return class_<GraphicsObject>("GraphicsObject")
       .def("getClickPointHack", &getClickPointHack)
-      .def("text", &GraphicsObject::textText)
+      .def("text", &GraphicsObject::GetTextText)
       .def("visible", &GraphicsObject::visible);
 }

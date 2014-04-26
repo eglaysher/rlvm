@@ -49,26 +49,26 @@ ToneCurve::ToneCurve() {}
 
 ToneCurve::ToneCurve(Gameexe& gameexe) {
   GameexeInterpretObject filename_key = gameexe("TONECURVE_FILENAME");
-  if (!filename_key.exists()) {
+  if (!filename_key.Exists()) {
     // It is perfectly valid not to have a tone curve key. All operations in
     // this
     // class become noops.
     return;
   }
 
-  std::string tonecurve = filename_key.to_string("");
+  std::string tonecurve = filename_key.ToString("");
   if (tonecurve == "") {
     // It is perfectly valid not to have a tone curve. All operations in this
     // class become noops.
     return;
   }
 
-  fs::path basename = gameexe("__GAMEPATH").to_string();
-  fs::path filename = correctPathCase(basename / "dat" / tonecurve);
+  fs::path basename = gameexe("__GAMEPATH").ToString();
+  fs::path filename = CorrectPathCase(basename / "dat" / tonecurve);
 
   int size;
   std::unique_ptr<char[]> data;
-  if (loadFileData(filename, data, size)) {
+  if (LoadFileData(filename, data, size)) {
     std::ostringstream oss;
     oss << "Could not read contents of file \"" << filename << "\".";
     throw rlvm::Exception(oss.str());
@@ -105,10 +105,10 @@ ToneCurve::ToneCurve(Gameexe& gameexe) {
   }
 }
 
-int ToneCurve::getEffectCount() const { return effect_count_; }
+int ToneCurve::GetEffectCount() const { return effect_count_; }
 
-ToneCurveRGBMap ToneCurve::getEffect(int index) {
-  if (index >= getEffectCount() || index < 0) {
+ToneCurveRGBMap ToneCurve::GetEffect(int index) {
+  if (index >= GetEffectCount() || index < 0) {
     std::ostringstream oss;
     oss << "Requested tone curve index " << index
         << " exceeds the amount of effects in the tone curve file.";

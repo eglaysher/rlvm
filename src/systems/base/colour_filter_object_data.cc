@@ -52,7 +52,7 @@ ColourFilter* ColourFilterObjectData::GetColourFilter() {
   return colour_filer_.get();
 }
 
-void ColourFilterObjectData::render(const GraphicsObject& go,
+void ColourFilterObjectData::Render(const GraphicsObject& go,
                                     const GraphicsObject* parent,
                                     std::ostream* tree) {
   if (go.width() != 100 || go.height() != 100) {
@@ -75,36 +75,36 @@ void ColourFilterObjectData::render(const GraphicsObject& go,
   }
 }
 
-int ColourFilterObjectData::pixelWidth(
+int ColourFilterObjectData::PixelWidth(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
 
-int ColourFilterObjectData::pixelHeight(
+int ColourFilterObjectData::PixelHeight(
     const GraphicsObject& rendering_properties) {
   throw rlvm::Exception("There is no sane value for this!");
 }
 
-GraphicsObjectData* ColourFilterObjectData::clone() const {
+GraphicsObjectData* ColourFilterObjectData::Clone() const {
   return new ColourFilterObjectData(graphics_system_, screen_rect_);
 }
 
-void ColourFilterObjectData::execute(RLMachine& machine) {
+void ColourFilterObjectData::Execute(RLMachine& machine) {
   // Nothing to do.
 }
 
-bool ColourFilterObjectData::isAnimation() const { return false; }
+bool ColourFilterObjectData::IsAnimation() const { return false; }
 
-void ColourFilterObjectData::playSet(int set) {
+void ColourFilterObjectData::PlaySet(int set) {
   // No op
 }
 
-boost::shared_ptr<const Surface> ColourFilterObjectData::currentSurface(
+boost::shared_ptr<const Surface> ColourFilterObjectData::CurrentSurface(
     const GraphicsObject& rp) {
   return boost::shared_ptr<const Surface>();
 }
 
-void ColourFilterObjectData::objectInfo(std::ostream& tree) {
+void ColourFilterObjectData::ObjectInfo(std::ostream& tree) {
   tree << "ColourFilterObjectData(" << screen_rect_ << ")" << std::endl;
 }
 

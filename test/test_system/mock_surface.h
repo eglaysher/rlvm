@@ -45,38 +45,38 @@ class MockSurface : public Surface {
   static MockSurface* Create(const std::string& surface_name, const Size& size);
 
   // Size related stuff.
-  void allocate(const Size& size);
-  void deallocate();
-  virtual Size size() const;
+  void Allocate(const Size& size);
+  void Deallocate();
+  virtual Size GetSize() const override;
 
   MOCK_CONST_METHOD5(
-      blitToSurface,
+      BlitToSurface,
       void(Surface&, const Rect&, const Rect&, int alpha, bool use_src_alpha));
-  MOCK_CONST_METHOD3(renderToScreen, void(const Rect&, const Rect&, int alpha));
-  MOCK_CONST_METHOD4(renderToScreenAsColorMask,
+  MOCK_CONST_METHOD3(RenderToScreen, void(const Rect&, const Rect&, int alpha));
+  MOCK_CONST_METHOD4(RenderToScreenAsColorMask,
                      void(const Rect&, const Rect&, const RGBAColour&, int));
-  MOCK_CONST_METHOD3(renderToScreen,
+  MOCK_CONST_METHOD3(RenderToScreen,
                      void(const Rect&, const Rect&, const int[4]));
   MOCK_CONST_METHOD4(
-      renderToScreenAsObject,
+      RenderToScreenAsObject,
       void(const GraphicsObject&, const Rect&, const Rect&, int));
   MOCK_CONST_METHOD0(numPatterns, int());
   MOCK_CONST_METHOD1(getPattern, const GrpRect&(int patt_no));
-  MOCK_METHOD1(fill, void(const RGBAColour&));
-  MOCK_METHOD2(fill, void(const RGBAColour&, const Rect&));
-  MOCK_METHOD1(invert, void(const Rect&));
-  MOCK_METHOD2(toneCurve, void(const ToneCurveRGBMap effect, const Rect& area));
-  MOCK_METHOD1(mono, void(const Rect&));
-  MOCK_METHOD2(applyColour, void(const RGBColour&, const Rect&));
+  MOCK_METHOD1(Fill, void(const RGBAColour&));
+  MOCK_METHOD2(Fill, void(const RGBAColour&, const Rect&));
+  MOCK_METHOD1(Invert, void(const Rect&));
+  MOCK_METHOD2(ToneCurve, void(const ToneCurveRGBMap effect, const Rect& area));
+  MOCK_METHOD1(Mono, void(const Rect&));
+  MOCK_METHOD2(ApplyColour, void(const RGBColour&, const Rect&));
 
-  MOCK_CONST_METHOD4(getDCPixel, void(const Point&, int&, int&, int&));
+  MOCK_CONST_METHOD4(GetDCPixel, void(const Point&, int&, int&, int&));
 
   // Concrete implementations of the cloning methods.
-  virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& rect,
+  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& rect,
                                                      int r,
                                                      int g,
-                                                     int b);
-  virtual Surface* clone() const;
+                                                     int b) const override;
+  virtual Surface* Clone() const override;
 
  protected:
   // The real constructors are private. (See static creation methods above).

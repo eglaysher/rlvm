@@ -56,10 +56,10 @@ void runDataTest(T& t, RLMachine& machine, const vector<string>& input) {
   transform(input.begin(),
             input.end(),
             back_inserter(binary_strings),
-            bind(&printableToParsableString, _1));
+            bind(&PrintableToParsableString, _1));
 
-  t.parseParameters(binary_strings, expression_pieces);
-  t.dispatch(machine, expression_pieces);
+  t.ParseParameters(binary_strings, expression_pieces);
+  t.Dispatch(machine, expression_pieces);
 }
 
 // -----------------------------------------------------------------------
@@ -112,8 +112,8 @@ struct IntRefIntRefCapturer
 };
 
 TEST_F(RLOperationTest, TestIntReference_T) {
-  rlmachine.setIntValue(IntMemRef('A', 0), 1);
-  rlmachine.setIntValue(IntMemRef('B', 5), 2);
+  rlmachine.SetIntValue(IntMemRef('A', 0), 1);
+  rlmachine.SetIntValue(IntMemRef('B', 5), 2);
 
   int one = -1;
   int two = -1;
@@ -152,8 +152,8 @@ TEST_F(RLOperationTest, TestStringConstant_T) {
 
   vector<string> unparsed = {"\"string one\"", "\"string two\""};
   ExpressionPiecesVector expression_pieces;
-  capturer.parseParameters(unparsed, expression_pieces);
-  capturer.dispatch(rlmachine, expression_pieces);
+  capturer.ParseParameters(unparsed, expression_pieces);
+  capturer.Dispatch(rlmachine, expression_pieces);
 
   EXPECT_EQ("string one", one);
   EXPECT_EQ("string two", two);
@@ -179,8 +179,8 @@ struct StrRefStrRefCapturer
 };
 
 TEST_F(RLOperationTest, TestStringReference_T) {
-  rlmachine.setStringValue(STRM_LOCATION, 0, "string one");
-  rlmachine.setStringValue(STRS_LOCATION, 5, "string two");
+  rlmachine.SetStringValue(STRM_LOCATION, 0, "string one");
+  rlmachine.SetStringValue(STRS_LOCATION, 5, "string two");
 
   std::string one = "empty";
   std::string two = "empty";

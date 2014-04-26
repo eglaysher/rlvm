@@ -62,67 +62,67 @@ class Surface : public boost::enable_shared_from_this<Surface> {
   // ------------------------------------------------- [ Drawing functions ]
 
   // Fills the surface with |colour|.
-  virtual void fill(const RGBAColour& colour) = 0;
+  virtual void Fill(const RGBAColour& colour) = 0;
 
   // Fills |area| with |colour|.
-  virtual void fill(const RGBAColour& colour, const Rect& area) = 0;
+  virtual void Fill(const RGBAColour& colour, const Rect& area) = 0;
 
   // Apply the given tone curve effect to the surface
-  virtual void toneCurve(const ToneCurveRGBMap effect, const Rect& area) = 0;
+  virtual void ToneCurve(const ToneCurveRGBMap effect, const Rect& area) = 0;
 
   // Inverts each color of the surface (like a photo negative).
-  virtual void invert(const Rect& area) = 0;
+  virtual void Invert(const Rect& area) = 0;
 
   // Turns |area| to grayscale.
-  virtual void mono(const Rect& area) = 0;
+  virtual void Mono(const Rect& area) = 0;
 
   // Applies |colour| to |area| of the surface.
-  virtual void applyColour(const RGBColour& colour, const Rect& area) = 0;
+  virtual void ApplyColour(const RGBColour& colour, const Rect& area) = 0;
 
   // ----------------------------------------------------- [ Uncategorized ]
-  virtual void setIsMask(const bool is) {}
+  virtual void SetIsMask(const bool is) {}
 
-  virtual Size size() const = 0;
-  Rect rect() const;
+  virtual Size GetSize() const = 0;
+  Rect GetRect() const;
 
-  virtual void dump();
+  virtual void Dump();
 
   // Blits to another surface
-  virtual void blitToSurface(Surface& dest_surface,
+  virtual void BlitToSurface(Surface& dest_surface,
                              const Rect& src,
                              const Rect& dst,
                              int alpha = 255,
                              bool use_src_alpha = true) const = 0;
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
                               int alpha = 255) const = 0;
 
-  virtual void renderToScreenAsColorMask(const Rect& src,
+  virtual void RenderToScreenAsColorMask(const Rect& src,
                                          const Rect& dst,
                                          const RGBAColour& colour,
                                          int filter) const = 0;
 
-  virtual void renderToScreen(const Rect& src,
+  virtual void RenderToScreen(const Rect& src,
                               const Rect& dst,
                               const int opacity[4]) const = 0;
 
-  virtual void renderToScreenAsObject(const GraphicsObject& rp,
+  virtual void RenderToScreenAsObject(const GraphicsObject& rp,
                                       const Rect& src,
                                       const Rect& dst,
                                       int alpha) const = 0;
 
-  virtual int numPatterns() const;
-  virtual const GrpRect& getPattern(int patt_no) const;
+  virtual int GetNumPatterns() const;
+  virtual const GrpRect& GetPattern(int patt_no) const;
 
-  virtual void getDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
+  virtual void GetDCPixel(const Point& pos, int& r, int& g, int& b) const = 0;
 
-  virtual boost::shared_ptr<Surface> clipAsColorMask(const Rect& clip_rect,
+  virtual boost::shared_ptr<Surface> ClipAsColorMask(const Rect& clip_rect,
                                                      int r,
                                                      int g,
                                                      int b) const;
 
-  virtual Surface* clone() const = 0;
+  virtual Surface* Clone() const = 0;
 };
 
 #endif  // SRC_SYSTEMS_BASE_SURFACE_H_

@@ -32,6 +32,6 @@ class RLModule;
 
 // Public access to the frame counter operations. Meant to be called
 // from the constructor of SysModule.
-void addSysFrameOpcodes(RLModule& module);
+void AddSysFrameOpcodes(RLModule& module);
 
 #endif  // SRC_MODULES_MODULE_SYS_FRAME_H_

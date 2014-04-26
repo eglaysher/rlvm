@@ -46,12 +46,12 @@ class SDLSystem : public System {
   virtual ~SDLSystem();
 
   // Implementation of System:
-  virtual void run(RLMachine& machine);
-  virtual GraphicsSystem& graphics();
-  virtual EventSystem& event();
-  virtual Gameexe& gameexe();
-  virtual SDLTextSystem& text();
-  virtual SoundSystem& sound();
+  virtual void Run(RLMachine& machine) override;
+  virtual GraphicsSystem& graphics() override;
+  virtual EventSystem& event() override;
+  virtual Gameexe& gameexe() override;
+  virtual SDLTextSystem& text() override;
+  virtual SoundSystem& sound() override;
 
  private:
   std::unique_ptr<SDLGraphicsSystem> graphics_system_;

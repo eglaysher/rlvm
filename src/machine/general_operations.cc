@@ -41,38 +41,38 @@
 namespace getSystemObjImpl {
 
 template <>
-System& getSystemObj(RLMachine& machine) {
+System& GetSystemObj(RLMachine& machine) {
   return machine.system();
 }
 
 template <>
-EventSystem& getSystemObj(RLMachine& machine) {
+EventSystem& GetSystemObj(RLMachine& machine) {
   return machine.system().event();
 }
 
 template <>
-GraphicsSystem& getSystemObj(RLMachine& machine) {
+GraphicsSystem& GetSystemObj(RLMachine& machine) {
   return machine.system().graphics();
 }
 
 template <>
-TextSystem& getSystemObj(RLMachine& machine) {
+TextSystem& GetSystemObj(RLMachine& machine) {
   return machine.system().text();
 }
 
 template <>
-SoundSystem& getSystemObj(RLMachine& machine) {
+SoundSystem& GetSystemObj(RLMachine& machine) {
   return machine.system().sound();
 }
 
 template <>
-CGMTable& getSystemObj(RLMachine& machine) {
-  return machine.system().graphics().cgTable();
+CGMTable& GetSystemObj(RLMachine& machine) {
+  return machine.system().graphics().cg_table();
 }
 
 template <>
-TextPage& getSystemObj(RLMachine& machine) {
-  return machine.system().text().currentPage();
+TextPage& GetSystemObj(RLMachine& machine) {
+  return machine.system().text().GetCurrentPage();
 }
 
 }  // namespace getSystemObjImpl
@@ -84,12 +84,12 @@ MultiDispatch::MultiDispatch(RLOperation* op) : handler_(op) {}
 
 MultiDispatch::~MultiDispatch() {}
 
-void MultiDispatch::parseParameters(
+void MultiDispatch::ParseParameters(
     const std::vector<std::string>& input,
     libreallive::ExpressionPiecesVector& output) {
   for (auto const& parameter : input) {
     const char* src = parameter.c_str();
-    output.push_back(libreallive::get_complex_param(src));
+    output.push_back(libreallive::GetComplexParam(src));
   }
 }
 
@@ -97,17 +97,17 @@ void MultiDispatch::parseParameters(
 void MultiDispatch::operator()(RLMachine& machine,
                                const libreallive::CommandElement& ff) {
   const libreallive::ExpressionPiecesVector& parameter_pieces =
-      ff.getParameters();
+      ff.GetParsedParameters();
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libreallive::ExpressionPiecesVector& element =
         dynamic_cast<const libreallive::ComplexExpressionPiece&>(
-            *parameter_pieces[i]).getContainedPieces();
+            *parameter_pieces[i]).contained_pieces();
 
-    handler_->dispatch(machine, element);
+    handler_->Dispatch(machine, element);
   }
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -135,7 +135,7 @@ int ReturnGameexeInt::operator()(RLMachine& machine) {
 InvokeSyscomAsOp::InvokeSyscomAsOp(const int syscom) : syscom_(syscom) {}
 
 void InvokeSyscomAsOp::operator()(RLMachine& machine) {
-  machine.system().invokeSyscom(machine, syscom_);
+  machine.system().InvokeSyscom(machine, syscom_);
 }
 
 // -----------------------------------------------------------------------
@@ -152,18 +152,18 @@ UndefinedFunction::UndefinedFunction(const std::string& name,
       opcode_(opcode),
       overload_(overload) {}
 
-void UndefinedFunction::dispatch(
+void UndefinedFunction::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
 }
 
-void UndefinedFunction::dispatchFunction(RLMachine& machine,
+void UndefinedFunction::DispatchFunction(RLMachine& machine,
                                          const libreallive::CommandElement& f) {
   throw rlvm::UnimplementedOpcode(machine, name_, f);
 }
 
-void UndefinedFunction::parseParameters(
+void UndefinedFunction::ParseParameters(
     const std::vector<std::string>& input,
     libreallive::ExpressionPiecesVector& output) {
   throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);

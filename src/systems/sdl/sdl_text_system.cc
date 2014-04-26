@@ -61,7 +61,7 @@ SDLTextSystem::~SDLTextSystem() {
   // reference so we'll just leak the FreeType structures.
 }
 
-boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
+boost::shared_ptr<TextWindow> SDLTextSystem::GetTextWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
     it =
@@ -74,7 +74,7 @@ boost::shared_ptr<TextWindow> SDLTextSystem::textWindow(int text_window) {
   return it->second;
 }
 
-Size SDLTextSystem::renderGlyphOnto(
+Size SDLTextSystem::RenderGlyphOnto(
     const std::string& current,
     int font_size,
     bool italic,
@@ -85,7 +85,7 @@ Size SDLTextSystem::renderGlyphOnto(
     const boost::shared_ptr<Surface>& destination) {
   SDLSurface* sdl_surface = static_cast<SDLSurface*>(destination.get());
 
-  boost::shared_ptr<TTF_Font> font = getFontOfSize(font_size);
+  boost::shared_ptr<TTF_Font> font = GetFontOfSize(font_size);
 
   if (italic) {
     TTF_SetFontStyle(font.get(), TTF_STYLE_ITALIC);
@@ -106,7 +106,7 @@ Size SDLTextSystem::renderGlyphOnto(
   }
 
   boost::shared_ptr<SDL_Surface> shadow;
-  if (shadow_colour && sdl_system_.text().fontShadow()) {
+  if (shadow_colour && sdl_system_.text().font_shadow()) {
     SDL_Color sdl_shadow_colour;
     RGBColourToSDLColor(*shadow_colour, &sdl_shadow_colour);
 
@@ -135,17 +135,17 @@ Size SDLTextSystem::renderGlyphOnto(
   return size;
 }
 
-int SDLTextSystem::charWidth(int size, uint16_t codepoint) {
-  boost::shared_ptr<TTF_Font> font = getFontOfSize(size);
+int SDLTextSystem::GetCharWidth(int size, uint16_t codepoint) {
+  boost::shared_ptr<TTF_Font> font = GetFontOfSize(size);
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics(font.get(), codepoint, &minx, &maxx, &miny, &maxy, &advance);
   return advance;
 }
 
-boost::shared_ptr<TTF_Font> SDLTextSystem::getFontOfSize(int size) {
+boost::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
   FontSizeMap::iterator it = map_.find(size);
   if (it == map_.end()) {
-    std::string filename = findFontFile(system()).native();
+    std::string filename = FindFontFile(system()).native();
     TTF_Font* f = TTF_OpenFont(filename.c_str(), size);
     if (f == NULL) {
       std::ostringstream oss;

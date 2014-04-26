@@ -52,33 +52,35 @@ namespace {
 struct Sel_select : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
-    machine.pushLongOperation(new NormalSelectLongOperation(machine, element));
-    machine.advanceInstructionPointer();
+    machine.PushLongOperation(new NormalSelectLongOperation(machine, element));
+    machine.AdvanceInstructionPointer();
   }
 };
 
 struct Sel_select_s : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new ButtonSelectLongOperation(machine, element, 0));
-    machine.advanceInstructionPointer();
+    machine.AdvanceInstructionPointer();
   }
 };
 
@@ -87,8 +89,8 @@ struct ClearAndRestoreWindow : public LongOperation {
   explicit ClearAndRestoreWindow(int in) : to_restore_(in) {}
 
   bool operator()(RLMachine& machine) {
-    machine.system().text().hideAllTextWindows();
-    machine.system().text().setActiveWindow(to_restore_);
+    machine.system().text().HideAllTextWindows();
+    machine.system().text().set_active_window(to_restore_);
     return true;
   }
 };
@@ -96,66 +98,67 @@ struct ClearAndRestoreWindow : public LongOperation {
 struct Sel_select_w : public RLOp_SpecialCase {
   // Prevent us from trying to parse the parameters to the CommandElement as
   // RealLive expressions (because they are not).
-  virtual void parseParameters(const std::vector<std::string>& input,
-                               libreallive::ExpressionPiecesVector& output) {}
+  virtual void ParseParameters(
+      const std::vector<std::string>& input,
+      libreallive::ExpressionPiecesVector& output) override {}
 
   void operator()(RLMachine& machine, const CommandElement& ce) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     const SelectElement& element = dynamic_cast<const SelectElement&>(ce);
 
     // Sometimes the RL bytecode will override DEFAULT_SEL_WINDOW.
-    int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").to_int(-1);
-    libreallive::ExpressionElement window_exp = element.window();
-    int computed = window_exp.valueOnly(machine);
+    int window = machine.system().gameexe()("DEFAULT_SEL_WINDOW").ToInt(-1);
+    libreallive::ExpressionElement window_exp = element.GetWindowExpression();
+    int computed = window_exp.GetValueOnly(machine);
     if (computed != -1)
       window = computed;
 
     // Restore the previous text state after the select operation completes.
     TextSystem& text = machine.system().text();
-    int active_window = text.activeWindow();
-    text.hideAllTextWindows();
-    text.setActiveWindow(window);
-    machine.pushLongOperation(new ClearAndRestoreWindow(active_window));
+    int active_window = text.active_window();
+    text.HideAllTextWindows();
+    text.set_active_window(window);
+    machine.PushLongOperation(new ClearAndRestoreWindow(active_window));
 
-    machine.pushLongOperation(new NormalSelectLongOperation(machine, element));
-    machine.advanceInstructionPointer();
+    machine.PushLongOperation(new NormalSelectLongOperation(machine, element));
+    machine.AdvanceInstructionPointer();
   }
 };
 
 struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new ButtonObjectSelectLongOperation(machine, group));
   }
 };
 
 struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     ButtonObjectSelectLongOperation* obj =
         new ButtonObjectSelectLongOperation(machine, group);
     obj->set_cancelable();
-    machine.pushLongOperation(obj);
+    machine.PushLongOperation(obj);
   }
 };
 
 struct Sel_select_objbtn_cancel_1
     : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int group, int se) {
-    if (machine.shouldSetSelcomSavepoint())
-      machine.markSavepoint();
+    if (machine.ShouldSetSelcomSavepoint())
+      machine.MarkSavepoint();
 
     ButtonObjectSelectLongOperation* obj =
         new ButtonObjectSelectLongOperation(machine, group);
     obj->set_cancelable();
-    machine.pushLongOperation(obj);
+    machine.PushLongOperation(obj);
   }
 };
 
@@ -171,14 +174,14 @@ struct objbtn_init_1 : public RLOp_Void_Void {
 }  // namespace
 
 SelModule::SelModule() : RLModule("Sel", 0, 2) {
-  addOpcode(0, 0, "select_w", new Sel_select_w);
-  addOpcode(1, 0, "select", new Sel_select);
-  addOpcode(2, 0, "select_s2", new Sel_select_s);
-  addOpcode(3, 0, "select_s", new Sel_select_s);
-  addOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
-  addOpcode(14, 0, "select_objbtn_cancel", new Sel_select_objbtn_cancel_0);
-  addOpcode(14, 1, "select_objbtn_cancel", new Sel_select_objbtn_cancel_1);
+  AddOpcode(0, 0, "select_w", new Sel_select_w);
+  AddOpcode(1, 0, "select", new Sel_select);
+  AddOpcode(2, 0, "select_s2", new Sel_select_s);
+  AddOpcode(3, 0, "select_s", new Sel_select_s);
+  AddOpcode(4, 0, "select_objbtn", new Sel_select_objbtn);
+  AddOpcode(14, 0, "select_objbtn_cancel", new Sel_select_objbtn_cancel_0);
+  AddOpcode(14, 1, "select_objbtn_cancel", new Sel_select_objbtn_cancel_1);
 
-  addOpcode(20, 0, "objbtn_init", new objbtn_init_0);
-  addOpcode(20, 1, "objbtn_init", new objbtn_init_1);
+  AddOpcode(20, 0, "objbtn_init", new objbtn_init_0);
+  AddOpcode(20, 1, "objbtn_init", new objbtn_init_1);
 }

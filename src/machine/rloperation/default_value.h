@@ -44,11 +44,11 @@ struct DefaultIntValue_T {
     }
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
-      IntConstant_T::parseParameters(position, input, output);
+      IntConstant_T::ParseParameters(position, input, output);
     } else {
       output.emplace_back(new libreallive::IntegerConstant(DEFAULTVAL));
       position++;
@@ -74,11 +74,11 @@ struct DefaultStrValue_T {
     }
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     if (position < input.size()) {
-      StrConstant_T::parseParameters(position, input, output);
+      StrConstant_T::ParseParameters(position, input, output);
     } else {
       output.emplace_back(new libreallive::StringConstant(std::string()));
       position++;

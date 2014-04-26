@@ -75,13 +75,13 @@
 // Private Interface
 // -----------------------------------------------------------------------
 
-void SDLGraphicsSystem::setCursor(int cursor) {
-  GraphicsSystem::setCursor(cursor);
+void SDLGraphicsSystem::SetCursor(int cursor) {
+  GraphicsSystem::SetCursor(cursor);
 
-  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+  SDL_ShowCursor(ShouldUseCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 }
 
-void SDLGraphicsSystem::beginFrame() {
+void SDLGraphicsSystem::BeginFrame() {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   DebugShowGLErrors();
@@ -94,8 +94,8 @@ void SDLGraphicsSystem::beginFrame() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0,
-          (GLdouble)screenSize().width(),
-          (GLdouble)screenSize().height(),
+          (GLdouble)screen_size().width(),
+          (GLdouble)screen_size().height(),
           0.0,
           0.0,
           1.0);
@@ -110,22 +110,22 @@ void SDLGraphicsSystem::beginFrame() {
   glTranslatef(origin.x(), origin.y(), 0);
 }
 
-void SDLGraphicsSystem::markScreenAsDirty(GraphicsUpdateType type) {
-  if (isResponsibleForUpdate() &&
-      screenUpdateMode() == SCREENUPDATEMODE_MANUAL && type == GUT_MOUSE_MOTION)
+void SDLGraphicsSystem::MarkScreenAsDirty(GraphicsUpdateType type) {
+  if (is_responsible_for_update() &&
+      screen_update_mode() == SCREENUPDATEMODE_MANUAL && type == GUT_MOUSE_MOTION)
     redraw_last_frame_ = true;
   else
-    GraphicsSystem::markScreenAsDirty(type);
+    GraphicsSystem::MarkScreenAsDirty(type);
 }
 
-void SDLGraphicsSystem::endFrame() {
+void SDLGraphicsSystem::EndFrame() {
   FinalRenderers::iterator it = renderer_begin();
   FinalRenderers::iterator end = renderer_end();
   for (; it != end; ++it) {
-    (*it)->render(NULL);
+    (*it)->Render(NULL);
   }
 
-  if (screenUpdateMode() == SCREENUPDATEMODE_MANUAL) {
+  if (screen_update_mode() == SCREENUPDATEMODE_MANUAL) {
     // Copy the area behind the cursor to the temporary buffer (drivers differ:
     // the contents of the back buffer is undefined after SDL_GL_SwapBuffers()
     // and I've just been lucky that the Intel i810 and whatever my Mac machine
@@ -137,14 +137,14 @@ void SDLGraphicsSystem::endFrame() {
                         0,
                         0,
                         0,
-                        screenSize().width(),
-                        screenSize().height());
+                        screen_size().width(),
+                        screen_size().height());
     screen_contents_texture_valid_ = true;
   } else {
     screen_contents_texture_valid_ = false;
   }
 
-  drawCursor();
+  DrawCursor();
 
   // Swap the buffers
   glFlush();
@@ -152,7 +152,7 @@ void SDLGraphicsSystem::endFrame() {
   ShowGLErrors();
 }
 
-void SDLGraphicsSystem::redrawLastFrame() {
+void SDLGraphicsSystem::RedrawLastFrame() {
   // We won't redraw the screen between when the DrawManual() command is issued
   // by the bytecode and the first refresh() is called since we need a valid
   // copy of the screen to work with and we only snapshot the screen during
@@ -163,9 +163,9 @@ void SDLGraphicsSystem::redrawLastFrame() {
     glBegin(GL_QUADS);
     {
       int dx1 = 0;
-      int dx2 = screenSize().width();
+      int dx2 = screen_size().width();
       int dy1 = 0;
-      int dy2 = screenSize().height();
+      int dy2 = screen_size().height();
 
       float x_cord = dx2 / float(screen_tex_width_);
       float y_cord = dy2 / float(screen_tex_height_);
@@ -182,7 +182,7 @@ void SDLGraphicsSystem::redrawLastFrame() {
     }
     glEnd();
 
-    drawCursor();
+    DrawCursor();
 
     glFlush();
 
@@ -192,21 +192,21 @@ void SDLGraphicsSystem::redrawLastFrame() {
   }
 }
 
-void SDLGraphicsSystem::drawCursor() {
-  if (useCustomCursor()) {
+void SDLGraphicsSystem::DrawCursor() {
+  if (ShouldUseCustomCursor()) {
     boost::shared_ptr<MouseCursor> cursor;
-    if (static_cast<SDLEventSystem&>(system().event()).mouseInsideWindow())
-      cursor = currentCursor();
+    if (static_cast<SDLEventSystem&>(system().event()).mouse_inside_window())
+      cursor = GetCurrentCursor();
     if (cursor) {
-      Point hotspot = cursorPos();
-      cursor->renderHotspotAt(hotspot);
+      Point hotspot = cursor_pos();
+      cursor->RenderHotspotAt(hotspot);
     }
   }
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::endFrameToSurface() {
+boost::shared_ptr<Surface> SDLGraphicsSystem::EndFrameToSurface() {
   return boost::shared_ptr<Surface>(
-      new SDLRenderToTextureSurface(this, screenSize()));
+      new SDLRenderToTextureSurface(this, screen_size()));
 }
 
 // -----------------------------------------------------------------------
@@ -227,22 +227,22 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   for (int i = 0; i < 16; ++i)
     display_contexts_[i].reset(new SDLSurface(this));
 
-  setScreenSize(getScreenSize(gameexe));
-  Texture::SetScreenSize(screenSize());
+  SetScreenSize(GetScreenSize(gameexe));
+  Texture::SetScreenSize(screen_size());
 
   // Grab the caption
-  std::string cp932caption = gameexe("CAPTION").to_string();
-  int name_enc = gameexe("NAME_ENC").to_int(0);
+  std::string cp932caption = gameexe("CAPTION").ToString();
+  int name_enc = gameexe("NAME_ENC").ToInt(0);
   caption_title_ = cp932toUTF8(cp932caption, name_enc);
 
-  setupVideo();
+  SetupVideo();
 
   // Now we allocate the first two display contexts with equal size to
   // the display
-  display_contexts_[0]->allocate(screenSize(), true);
-  display_contexts_[1]->allocate(screenSize());
+  display_contexts_[0]->allocate(screen_size(), true);
+  display_contexts_[1]->allocate(screen_size());
 
-  setWindowTitle();
+  SetWindowTitle();
 
 #if defined(__linux__)
   // We only set the icon on linux because OSX will use the icns file
@@ -256,18 +256,18 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 #endif
 
   // When debug is set, display trace data in the titlebar
-  if (gameexe("MEMORY").exists()) {
+  if (gameexe("MEMORY").Exists()) {
     display_data_in_titlebar_ = true;
   }
 
-  SDL_ShowCursor(useCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
+  SDL_ShowCursor(ShouldUseCustomCursor() ? SDL_DISABLE : SDL_ENABLE);
 
   registrar_.Add(this,
                  NotificationType::FULLSCREEN_STATE_CHANGED,
                  Source<GraphicsSystem>(static_cast<GraphicsSystem*>(this)));
 }
 
-void SDLGraphicsSystem::setupVideo() {
+void SDLGraphicsSystem::SetupVideo() {
   // Let's get some video information.
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
   SDL_WM_SetCaption("rlvm", "rlvm");
@@ -286,7 +286,7 @@ void SDLGraphicsSystem::setupVideo() {
   video_flags |= SDL_GL_DOUBLEBUFFER;  // Enable double buffering
   video_flags |= SDL_SWSURFACE;
 
-  if (screenMode() == 0)
+  if (screen_mode() == 0)
     video_flags |= SDL_FULLSCREEN;
 
   // Sets up OpenGL double buffering
@@ -297,7 +297,7 @@ void SDLGraphicsSystem::setupVideo() {
 
   // Set the video mode
   if ((screen_ = SDL_SetVideoMode(
-           screenSize().width(), screenSize().height(), bpp, video_flags)) ==
+           screen_size().width(), screen_size().height(), bpp, video_flags)) ==
       0) {
     // This could happen for a variety of reasons,
     // including DISPLAY not being set, the specified
@@ -350,8 +350,8 @@ void SDLGraphicsSystem::setupVideo() {
   glBindTexture(GL_TEXTURE_2D, screen_contents_texture_);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  screen_tex_width_ = SafeSize(screenSize().width());
-  screen_tex_height_ = SafeSize(screenSize().height());
+  screen_tex_width_ = SafeSize(screen_size().width());
+  screen_tex_height_ = SafeSize(screen_size().height());
   glTexImage2D(GL_TEXTURE_2D,
                0,
                GL_RGBA,
@@ -367,39 +367,39 @@ void SDLGraphicsSystem::setupVideo() {
 
 SDLGraphicsSystem::~SDLGraphicsSystem() {}
 
-void SDLGraphicsSystem::executeGraphicsSystem(RLMachine& machine) {
+void SDLGraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
   // For now, nothing, but later, we need to put all code each cycle
   // here.
-  if (isResponsibleForUpdate() && screenNeedsRefresh()) {
-    refresh(NULL);
-    screenRefreshed();
+  if (is_responsible_for_update() && screen_needs_refresh()) {
+    Refresh(NULL);
+    OnScreenRefreshed();
     redraw_last_frame_ = false;
-  } else if (isResponsibleForUpdate() && redraw_last_frame_) {
-    redrawLastFrame();
+  } else if (is_responsible_for_update() && redraw_last_frame_) {
+    RedrawLastFrame();
     redraw_last_frame_ = false;
   }
 
   // Update the seen.
-  int current_time = machine.system().event().getTicks();
+  int current_time = machine.system().event().GetTicks();
   if ((current_time - time_of_last_titlebar_update_) > 60) {
     time_of_last_titlebar_update_ = current_time;
 
-    if (machine.sceneNumber() != last_seen_number_ ||
-        machine.lineNumber() != last_line_number_) {
-      last_seen_number_ = machine.sceneNumber();
-      last_line_number_ = machine.lineNumber();
-      setWindowTitle();
+    if (machine.SceneNumber() != last_seen_number_ ||
+        machine.line_number() != last_line_number_) {
+      last_seen_number_ = machine.SceneNumber();
+      last_line_number_ = machine.line_number();
+      SetWindowTitle();
     }
   }
 
-  GraphicsSystem::executeGraphicsSystem(machine);
+  GraphicsSystem::ExecuteGraphicsSystem(machine);
 }
 
-void SDLGraphicsSystem::setWindowTitle() {
+void SDLGraphicsSystem::SetWindowTitle() {
   std::ostringstream oss;
   oss << caption_title_;
 
-  if (displaySubtitle() && subtitle_ != "") {
+  if (should_display_subtitle() && subtitle_ != "") {
     oss << ": " << subtitle_;
   }
 
@@ -423,21 +423,21 @@ void SDLGraphicsSystem::Observe(NotificationType type,
   Shaders::Reset();
 }
 
-void SDLGraphicsSystem::setWindowSubtitle(const std::string& cp932str,
+void SDLGraphicsSystem::SetWindowSubtitle(const std::string& cp932str,
                                           int text_encoding) {
   // TODO(erg): Still not restoring title correctly!
   subtitle_ = cp932toUTF8(cp932str, text_encoding);
 
-  GraphicsSystem::setWindowSubtitle(cp932str, text_encoding);
+  GraphicsSystem::SetWindowSubtitle(cp932str, text_encoding);
 }
 
-void SDLGraphicsSystem::setScreenMode(const int in) {
-  GraphicsSystem::setScreenMode(in);
+void SDLGraphicsSystem::SetScreenMode(const int in) {
+  GraphicsSystem::SetScreenMode(in);
 
-  setupVideo();
+  SetupVideo();
 }
 
-void SDLGraphicsSystem::allocateDC(int dc, Size size) {
+void SDLGraphicsSystem::AllocateDC(int dc, Size size) {
   if (dc >= 16) {
     std::ostringstream ss;
     ss << "Invalid DC number \"" << dc
@@ -454,47 +454,48 @@ void SDLGraphicsSystem::allocateDC(int dc, Size size) {
   if (dc == 1) {
     SDL_Surface* dc0 = *(display_contexts_[0]);
     if (size.width() < dc0->w)
-      size.setWidth(dc0->w);
+      size.set_width(dc0->w);
     if (size.height() < dc0->h)
-      size.setHeight(dc0->h);
+      size.set_height(dc0->h);
   }
 
   // Allocate a new obj.
   display_contexts_[dc]->allocate(size);
 }
 
-void SDLGraphicsSystem::setMinimumSizeForDC(int dc, Size size) {
+void SDLGraphicsSystem::SetMinimumSizeForDC(int dc, Size size) {
   if (display_contexts_[dc] == NULL || !display_contexts_[dc]->allocated()) {
-    allocateDC(dc, size);
+    AllocateDC(dc, size);
   } else {
-    Size current = display_contexts_[dc]->size();
+    Size current = display_contexts_[dc]->GetSize();
     if (current.width() < size.width() || current.height() < size.height()) {
       // Make a new surface of the maximum size.
-      Size maxSize = current.sizeUnion(size);
+      Size maxSize = current.SizeUnion(size);
 
       boost::shared_ptr<SDLSurface> newdc(new SDLSurface(this));
       newdc->allocate(maxSize);
 
-      display_contexts_[dc]->blitToSurface(
-          *newdc, display_contexts_[dc]->rect(), display_contexts_[dc]->rect());
+      display_contexts_[dc]->BlitToSurface(
+          *newdc, display_contexts_[dc]->GetRect(),
+          display_contexts_[dc]->GetRect());
 
       display_contexts_[dc] = newdc;
     }
   }
 }
 
-void SDLGraphicsSystem::freeDC(int dc) {
+void SDLGraphicsSystem::FreeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
   } else if (dc == 1) {
     // DC[1] never gets freed; it only gets blanked
-    getDC(1)->fill(RGBAColour::Black());
+    GetDC(1)->Fill(RGBAColour::Black());
   } else {
     display_contexts_[dc]->deallocate();
   }
 }
 
-void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
+void SDLGraphicsSystem::VerifySurfaceExists(int dc, const std::string& caller) {
   if (dc >= 16) {
     std::ostringstream ss;
     ss << "Invalid DC number (" << dc << ") in " << caller;
@@ -505,15 +506,6 @@ void SDLGraphicsSystem::verifySurfaceExists(int dc, const std::string& caller) {
     std::ostringstream ss;
     ss << "Parameter DC[" << dc << "] not allocated in " << caller;
     throw rlvm::Exception(ss.str());
-  }
-}
-
-void SDLGraphicsSystem::verifyDCAllocation(int dc, const std::string& caller) {
-  if (display_contexts_[dc] == NULL) {
-    std::ostringstream ss;
-    ss << "Couldn't allocate DC[" << dc << "] in " << caller << ": "
-       << SDL_GetError();
-    throw SystemError(ss.str());
   }
 }
 
@@ -574,10 +566,10 @@ static SDLSurface::GrpRect xclannadRegionToGrpRect(
   return rect;
 }
 
-boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
+boost::shared_ptr<const Surface> SDLGraphicsSystem::LoadSurfaceFromFile(
     const std::string& short_filename) {
   boost::filesystem::path filename =
-      system().findFile(short_filename, IMAGE_FILETYPES);
+      system().FindFile(short_filename, IMAGE_FILETYPES);
   if (filename.empty()) {
     std::ostringstream oss;
     oss << "Could not find image file \"" << short_filename << "\".";
@@ -650,41 +642,41 @@ boost::shared_ptr<const Surface> SDLGraphicsSystem::loadSurfaceFromFile(
     std::string effect_no_str =
         short_filename.substr(short_filename.find("?") + 1);
     int effect_no = std::stoi(effect_no_str);
-    // the effect number is an index that goes from 10 to getEffectCount() * 10,
+    // the effect number is an index that goes from 10 to GetEffectCount() * 10,
     // so keep that in mind here
-    if ((effect_no / 10) > globals().tone_curves.getEffectCount() ||
+    if ((effect_no / 10) > globals().tone_curves.GetEffectCount() ||
         effect_no < 10) {
       std::ostringstream oss;
       oss << "Tone curve index " << effect_no << " is invalid.";
       throw rlvm::Exception(oss.str());
     }
-    surface_to_ret.get()->toneCurve(
-        globals().tone_curves.getEffect(effect_no / 10 - 1),
+    surface_to_ret.get()->ToneCurve(
+        globals().tone_curves.GetEffect(effect_no / 10 - 1),
         Rect(Point(0, 0), Size(conv->Width(), conv->Height())));
   }
 
   return surface_to_ret;
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::getHaikei() {
+boost::shared_ptr<Surface> SDLGraphicsSystem::GetHaikei() {
   if (haikei_->rawSurface() == NULL) {
-    haikei_->allocate(screenSize(), true);
+    haikei_->allocate(screen_size(), true);
   }
 
   return haikei_;
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::getDC(int dc) {
-  verifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
+boost::shared_ptr<Surface> SDLGraphicsSystem::GetDC(int dc) {
+  VerifySurfaceExists(dc, "SDLGraphicsSystem::get_dc");
 
   // If requesting a DC that doesn't exist, allocate it first.
   if (display_contexts_[dc]->rawSurface() == NULL)
-    allocateDC(dc, display_contexts_[0]->size());
+    AllocateDC(dc, display_contexts_[0]->GetSize());
 
   return display_contexts_[dc];
 }
 
-boost::shared_ptr<Surface> SDLGraphicsSystem::buildSurface(const Size& size) {
+boost::shared_ptr<Surface> SDLGraphicsSystem::BuildSurface(const Size& size) {
   return boost::shared_ptr<Surface>(new SDLSurface(this, size));
 }
 
@@ -692,9 +684,9 @@ ColourFilter* SDLGraphicsSystem::BuildColourFiller() {
   return new SDLColourFilter();
 }
 
-void SDLGraphicsSystem::reset() {
+void SDLGraphicsSystem::Reset() {
   last_seen_number_ = 0;
   last_line_number_ = 0;
 
-  GraphicsSystem::reset();
+  GraphicsSystem::Reset();
 }

@@ -42,11 +42,11 @@ struct Sys_wait : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int time) {
     // Simply set the long operation
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->waitMilliseconds(time);
+    wait_op->WaitMilliseconds(time);
     if (cancelable_)
-      wait_op->breakOnClicks();
+      wait_op->BreakOnClicks();
 
-    machine.pushLongOperation(wait_op);
+    machine.PushLongOperation(wait_op);
   }
 };
 
@@ -57,8 +57,8 @@ struct Sys_GetClick : public RLOp_Void_2<IntReference_T, IntReference_T> {
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->saveClickLocation(x, y);
-    machine.pushLongOperation(wait_op);
+    wait_op->SaveClickLocation(x, y);
+    machine.PushLongOperation(wait_op);
   }
 };
 
@@ -72,18 +72,18 @@ struct Sys_WaitClick
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->waitMilliseconds(time);
-    wait_op->saveClickLocation(x, y);
-    machine.pushLongOperation(wait_op);
+    wait_op->WaitMilliseconds(time);
+    wait_op->SaveClickLocation(x, y);
+    machine.PushLongOperation(wait_op);
   }
 };
 
 // -----------------------------------------------------------------------
 
-void addWaitAndMouseOpcodes(RLModule& m) {
-  m.addOpcode(100, 0, "wait", new Sys_wait(false));
-  m.addOpcode(101, 0, "waitC", new Sys_wait(true));
+void AddWaitAndMouseOpcodes(RLModule& m) {
+  m.AddOpcode(100, 0, "wait", new Sys_wait(false));
+  m.AddOpcode(101, 0, "waitC", new Sys_wait(true));
 
-  m.addOpcode(131, 0, "GetClick", new Sys_GetClick);
-  m.addOpcode(132, 0, "WaitClick", new Sys_WaitClick);
+  m.AddOpcode(131, 0, "GetClick", new Sys_GetClick);
+  m.AddOpcode(132, 0, "WaitClick", new Sys_WaitClick);
 }

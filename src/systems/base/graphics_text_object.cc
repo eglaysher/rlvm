@@ -57,33 +57,33 @@ GraphicsTextObject::~GraphicsTextObject() {}
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
-  cached_utf8_str_ = rp.textText();
+void GraphicsTextObject::UpdateSurface(const GraphicsObject& rp) {
+  cached_utf8_str_ = rp.GetTextText();
 
   // Get the correct colour
   Gameexe& gexe = system_.gameexe();
-  std::vector<int> vec = gexe("COLOR_TABLE", rp.textColour());
-  cached_text_colour_ = rp.textColour();
+  std::vector<int> vec = gexe("COLOR_TABLE", rp.GetTextColour());
+  cached_text_colour_ = rp.GetTextColour();
   RGBColour colour(vec.at(0), vec.at(1), vec.at(2));
 
   RGBColour* shadow = NULL;
   RGBColour shadow_impl;
-  cached_shadow_colour_ = rp.textShadowColour();
-  if (rp.textShadowColour() != -1) {
-    vec = gexe("COLOR_TABLE", rp.textShadowColour());
+  cached_shadow_colour_ = rp.GetTextShadowColour();
+  if (rp.GetTextShadowColour() != -1) {
+    vec = gexe("COLOR_TABLE", rp.GetTextShadowColour());
     shadow_impl = RGBColour(vec.at(0), vec.at(1), vec.at(2));
     shadow = &shadow_impl;
   }
 
-  cached_text_size_ = rp.textSize();
-  cached_x_space_ = rp.textXSpace();
-  cached_y_space_ = rp.textYSpace();
-  cached_char_count_ = rp.textCharCount();
+  cached_text_size_ = rp.GetTextSize();
+  cached_x_space_ = rp.GetTextXSpace();
+  cached_y_space_ = rp.GetTextYSpace();
+  cached_char_count_ = rp.GetTextCharCount();
 
-  surface_ = system_.text().renderText(cached_utf8_str_,
-                                       rp.textSize(),
-                                       rp.textXSpace(),
-                                       rp.textYSpace(),
+  surface_ = system_.text().RenderText(cached_utf8_str_,
+                                       rp.GetTextSize(),
+                                       rp.GetTextXSpace(),
+                                       rp.GetTextYSpace(),
                                        colour,
                                        shadow,
                                        cached_char_count_);
@@ -92,59 +92,59 @@ void GraphicsTextObject::updateSurface(const GraphicsObject& rp) {
 
 // -----------------------------------------------------------------------
 
-bool GraphicsTextObject::needsUpdate(const GraphicsObject& rp) {
-  return !surface_ || rp.textColour() != cached_text_colour_ ||
-         rp.textShadowColour() != cached_shadow_colour_ ||
-         rp.textSize() != cached_text_size_ ||
-         rp.textXSpace() != cached_x_space_ ||
-         rp.textYSpace() != cached_y_space_ ||
-         rp.textCharCount() != cached_char_count_ ||
-         rp.textText() != cached_utf8_str_;
+bool GraphicsTextObject::NeedsUpdate(const GraphicsObject& rp) {
+  return !surface_ || rp.GetTextColour() != cached_text_colour_ ||
+         rp.GetTextShadowColour() != cached_shadow_colour_ ||
+         rp.GetTextSize() != cached_text_size_ ||
+         rp.GetTextXSpace() != cached_x_space_ ||
+         rp.GetTextYSpace() != cached_y_space_ ||
+         rp.GetTextCharCount() != cached_char_count_ ||
+         rp.GetTextText() != cached_utf8_str_;
 }
 
 // -----------------------------------------------------------------------
 
-boost::shared_ptr<const Surface> GraphicsTextObject::currentSurface(
+boost::shared_ptr<const Surface> GraphicsTextObject::CurrentSurface(
     const GraphicsObject& go) {
-  if (needsUpdate(go))
-    updateSurface(go);
+  if (NeedsUpdate(go))
+    UpdateSurface(go);
 
   return surface_;
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::objectInfo(std::ostream& tree) {
+void GraphicsTextObject::ObjectInfo(std::ostream& tree) {
   tree << "  Text: \"" << cached_utf8_str_ << "\"" << std::endl;
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelWidth(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int GraphicsTextObject::PixelWidth(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
-  return int(rp.getWidthScaleFactor() * surface_->size().width());
+  return int(rp.GetWidthScaleFactor() * surface_->GetSize().width());
 }
 
 // -----------------------------------------------------------------------
 
-int GraphicsTextObject::pixelHeight(const GraphicsObject& rp) {
-  if (needsUpdate(rp))
-    updateSurface(rp);
+int GraphicsTextObject::PixelHeight(const GraphicsObject& rp) {
+  if (NeedsUpdate(rp))
+    UpdateSurface(rp);
 
-  return int(rp.getHeightScaleFactor() * surface_->size().height());
+  return int(rp.GetHeightScaleFactor() * surface_->GetSize().height());
 }
 
 // -----------------------------------------------------------------------
 
-GraphicsObjectData* GraphicsTextObject::clone() const {
+GraphicsObjectData* GraphicsTextObject::Clone() const {
   return new GraphicsTextObject(*this);
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsTextObject::execute(RLMachine& machine) {}
+void GraphicsTextObject::Execute(RLMachine& machine) {}
 
 // -----------------------------------------------------------------------
 

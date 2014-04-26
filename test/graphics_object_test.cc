@@ -99,7 +99,7 @@ TEST_F(GraphicsObjectTest, SerializeObject) {
   Serialization::g_current_machine = &rlmachine;
   {
     const scoped_ptr<GraphicsObject> obj(new GraphicsObject());
-    obj->setObjectData(new GraphicsObjectOfFile(system, FILE_NAME));
+    obj->SetObjectData(new GraphicsObjectOfFile(system, FILE_NAME));
 
     boost::archive::text_oarchive oa(ss);
     oa << obj;
@@ -110,7 +110,7 @@ TEST_F(GraphicsObjectTest, SerializeObject) {
     ia >> dst;
 
     GraphicsObjectOfFile& obj =
-        dynamic_cast<GraphicsObjectOfFile&>(dst->objectData());
+        dynamic_cast<GraphicsObjectOfFile&>(dst->GetObjectData());
 
     EXPECT_EQ(FILE_NAME, obj.filename()) << "Preserved file name";
   }
@@ -136,52 +136,57 @@ TEST_P(AccessorTest, TestReferenceCount) {
 
   // At this step, it is equal to three because they all share the
   // empty object
-  EXPECT_EQ(3, obj.referenceCount())
+  EXPECT_EQ(3, obj.reference_count())
       << "Both objects have the same internal object";
-  EXPECT_EQ(3, objCopy.referenceCount())
+  EXPECT_EQ(3, objCopy.reference_count())
       << "Both objects have the same internal object";
 
   // Call the getter method (ignoring the result). We expect that
   // this won't force a copy-on-write.
   (get<1>(accessors))(objCopy);
 
-  EXPECT_EQ(3, obj.referenceCount())
+  EXPECT_EQ(3, obj.reference_count())
       << "Both objects have the same internal object";
-  EXPECT_EQ(3, objCopy.referenceCount())
+  EXPECT_EQ(3, objCopy.reference_count())
       << "Both objects have the same internal object";
 
   // Call this setter function. This should force the copy-on-write
   // code to trigger.
   (get<0>(accessors))(objCopy, 1);
 
-  EXPECT_EQ(2, obj.referenceCount())
+  EXPECT_EQ(2, obj.reference_count())
       << "Untouched object still points to empty";
-  EXPECT_EQ(1, objCopy.referenceCount()) << "Modified object has its own impl";
+  EXPECT_EQ(1, objCopy.reference_count()) << "Modified object has its own impl";
 }
 
 typedef vector<TupleT> SetterVec;
 SetterVec graphics_object_setters = {
-    std::make_tuple(&GraphicsObject::setVisible, &GraphicsObject::visible),
-    std::make_tuple(&GraphicsObject::setX, &GraphicsObject::x),
-    std::make_tuple(&GraphicsObject::setY, &GraphicsObject::y),
-    std::make_tuple(&GraphicsObject::setVert, &GraphicsObject::vert),
-    std::make_tuple(&GraphicsObject::setXOrigin, &GraphicsObject::xOrigin),
-    std::make_tuple(&GraphicsObject::setYOrigin, &GraphicsObject::yOrigin),
-    std::make_tuple(&GraphicsObject::setWidth, &GraphicsObject::width),
-    std::make_tuple(&GraphicsObject::setHeight, &GraphicsObject::height),
-    std::make_tuple(&GraphicsObject::setRotation, &GraphicsObject::rotation),
-    std::make_tuple(&GraphicsObject::setPattNo, &GraphicsObject::pattNo),
-    std::make_tuple(&GraphicsObject::setMono, &GraphicsObject::mono),
-    std::make_tuple(&GraphicsObject::setInvert, &GraphicsObject::invert),
-    std::make_tuple(&GraphicsObject::setLight, &GraphicsObject::light),
-    std::make_tuple(&GraphicsObject::setCompositeMode,
-                    &GraphicsObject::compositeMode),
-    std::make_tuple(&GraphicsObject::setScrollRateX,
-                    &GraphicsObject::scrollRateX),
-    std::make_tuple(&GraphicsObject::setScrollRateY,
-                    &GraphicsObject::scrollRateY),
-    std::make_tuple(&GraphicsObject::setAlpha, &GraphicsObject::rawAlpha),
-    std::make_tuple(&GraphicsObject::setWipeCopy, &GraphicsObject::wipeCopy)};
+    std::make_tuple(&GraphicsObject::SetVisible, &GraphicsObject::visible),
+    std::make_tuple(&GraphicsObject::SetX, &GraphicsObject::x),
+    std::make_tuple(&GraphicsObject::SetY, &GraphicsObject::y),
+    std::make_tuple(&GraphicsObject::SetVert, &GraphicsObject::vert),
+    std::make_tuple(&GraphicsObject::SetOriginX, &GraphicsObject::origin_x),
+    std::make_tuple(&GraphicsObject::SetOriginY, &GraphicsObject::origin_y),
+    std::make_tuple(&GraphicsObject::SetWidth, &GraphicsObject::width),
+    std::make_tuple(&GraphicsObject::SetHeight, &GraphicsObject::height),
+    std::make_tuple(&GraphicsObject::SetHqWidth, &GraphicsObject::hq_width),
+    std::make_tuple(&GraphicsObject::SetHqHeight, &GraphicsObject::hq_height),
+    std::make_tuple(&GraphicsObject::SetRotation, &GraphicsObject::rotation),
+    std::make_tuple(&GraphicsObject::SetPattNo, &GraphicsObject::GetPattNo),
+    std::make_tuple(&GraphicsObject::SetMono, &GraphicsObject::mono),
+    std::make_tuple(&GraphicsObject::SetInvert, &GraphicsObject::invert),
+    std::make_tuple(&GraphicsObject::SetLight, &GraphicsObject::light),
+    std::make_tuple(&GraphicsObject::SetCompositeMode,
+                    &GraphicsObject::composite_mode),
+    std::make_tuple(&GraphicsObject::SetScrollRateX,
+                    &GraphicsObject::scroll_rate_x),
+    std::make_tuple(&GraphicsObject::SetScrollRateY,
+                    &GraphicsObject::scroll_rate_y),
+    std::make_tuple(&GraphicsObject::SetZOrder, &GraphicsObject::z_order),
+    std::make_tuple(&GraphicsObject::SetZLayer, &GraphicsObject::z_layer),
+    std::make_tuple(&GraphicsObject::SetZDepth, &GraphicsObject::z_depth),
+    std::make_tuple(&GraphicsObject::SetAlpha, &GraphicsObject::raw_alpha),
+    std::make_tuple(&GraphicsObject::SetWipeCopy, &GraphicsObject::wipe_copy)};
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,
                         AccessorTest,
@@ -199,13 +204,13 @@ int getColourLevel(const GraphicsObject& obj) { return obj.colour().a(); }
 
 typedef vector<TupleT> SetterVec;
 SetterVec graphics_object_colour_setters = {
-    std::make_tuple(&GraphicsObject::setTintR, getTintR),
-    std::make_tuple(&GraphicsObject::setTintG, getTintG),
-    std::make_tuple(&GraphicsObject::setTintB, getTintB),
-    std::make_tuple(&GraphicsObject::setColourR, getColourR),
-    std::make_tuple(&GraphicsObject::setColourG, getColourG),
-    std::make_tuple(&GraphicsObject::setColourB, getColourB),
-    std::make_tuple(&GraphicsObject::setColourLevel, getColourLevel)};
+    std::make_tuple(&GraphicsObject::SetTintRed, getTintR),
+    std::make_tuple(&GraphicsObject::SetTintGreen, getTintG),
+    std::make_tuple(&GraphicsObject::SetTintBlue, getTintB),
+    std::make_tuple(&GraphicsObject::SetColourRed, getColourR),
+    std::make_tuple(&GraphicsObject::SetColourGreen, getColourG),
+    std::make_tuple(&GraphicsObject::SetColourBlue, getColourB),
+    std::make_tuple(&GraphicsObject::SetColourLevel, getColourLevel)};
 
 INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
                         AccessorTest,
@@ -215,31 +220,31 @@ INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
 
 class MockGraphicsObjectData : public GraphicsObjectData {
  public:
-  MOCK_METHOD2(render, void(const GraphicsObject&, std::ostream*));
-  MOCK_METHOD1(pixelWidth, int(const GraphicsObject&));
-  MOCK_METHOD1(pixelHeight, int(const GraphicsObject&));
-  MOCK_CONST_METHOD0(clone, GraphicsObjectData*());
-  MOCK_METHOD1(execute, void(RLMachine&));
-  MOCK_METHOD0(isAnimation, bool());
-  MOCK_METHOD1(playSet, void(int));
-  MOCK_METHOD1(currentSurface,
+  MOCK_METHOD2(Render, void(const GraphicsObject&, std::ostream*));
+  MOCK_METHOD1(PixelWidth, int(const GraphicsObject&));
+  MOCK_METHOD1(PixelHeight, int(const GraphicsObject&));
+  MOCK_CONST_METHOD0(Clone, GraphicsObjectData*());
+  MOCK_METHOD1(Execute, void(RLMachine&));
+  MOCK_METHOD0(IsAnimation, bool());
+  MOCK_METHOD1(PlaySet, void(int));
+  MOCK_METHOD1(CurrentSurface,
                boost::shared_ptr<const Surface>(const GraphicsObject&));
-  MOCK_METHOD1(objectInfo, void(std::ostream&));
+  MOCK_METHOD1(ObjectInfo, void(std::ostream&));
 };
 
 TEST_F(GraphicsObjectTest, TestPixelHeightWidth) {
   GraphicsObject obj;
 
   // Check default values when we don't have a GraphicsObjectData.
-  EXPECT_EQ(0, obj.pixelWidth());
-  EXPECT_EQ(0, obj.pixelHeight());
+  EXPECT_EQ(0, obj.PixelWidth());
+  EXPECT_EQ(0, obj.PixelHeight());
 
   MockGraphicsObjectData* data = new MockGraphicsObjectData;
-  obj.setObjectData(data);
-  EXPECT_CALL(*data, pixelWidth(Ref(obj))).Times(1).WillOnce(Return(30));
-  EXPECT_CALL(*data, pixelHeight(Ref(obj))).Times(1).WillOnce(Return(50));
-  EXPECT_EQ(30, obj.pixelWidth());
-  EXPECT_EQ(50, obj.pixelHeight());
+  obj.SetObjectData(data);
+  EXPECT_CALL(*data, PixelWidth(Ref(obj))).Times(1).WillOnce(Return(30));
+  EXPECT_CALL(*data, PixelHeight(Ref(obj))).Times(1).WillOnce(Return(50));
+  EXPECT_EQ(30, obj.PixelWidth());
+  EXPECT_EQ(50, obj.PixelHeight());
 
   ::testing::Mock::VerifyAndClearExpectations(data);
 }
@@ -248,11 +253,11 @@ TEST_F(GraphicsObjectTest, GetObjectData) {
   GraphicsObject obj;
 
   // Throws when it doesn't have data.
-  EXPECT_THROW({ obj.objectData(); }, rlvm::Exception);
+  EXPECT_THROW({ obj.GetObjectData(); }, rlvm::Exception);
 
   MockGraphicsObjectData* data = new MockGraphicsObjectData;
-  obj.setObjectData(data);
-  EXPECT_EQ(data, &obj.objectData());
+  obj.SetObjectData(data);
+  EXPECT_EQ(data, &obj.GetObjectData());
 }
 
 // TODO: Use the above mock to test more of the insides of GraphicsObject...
@@ -269,7 +274,7 @@ TEST_F(GraphicsObjectTest, TestColourFilter) {
 
   ColourFilterObjectData* data =
       new ColourFilterObjectData(system.graphics(), one);
-  obj.setObjectData(data);
+  obj.SetObjectData(data);
 
   MockColourFilter* filter =
       dynamic_cast<MockColourFilter*>(data->GetColourFilter());
@@ -277,10 +282,10 @@ TEST_F(GraphicsObjectTest, TestColourFilter) {
   EXPECT_CALL(*filter, Fill(_, two, _));
 
   // Render as is (for the first call).
-  data->render(obj, NULL, NULL);
+  data->Render(obj, NULL, NULL);
 
-  data->setRect(two);
+  data->set_rect(two);
 
   // Render with the modified rect (for the second call).
-  data->render(obj, NULL, NULL);
+  data->Render(obj, NULL, NULL);
 }

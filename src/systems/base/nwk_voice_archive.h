@@ -40,11 +40,9 @@ class NWKVoiceArchive : public VoiceArchive {
   NWKVoiceArchive(boost::filesystem::path file, int file_no);
   virtual ~NWKVoiceArchive();
 
-  virtual boost::shared_ptr<VoiceSample> findSample(int sample_num);
+  virtual boost::shared_ptr<VoiceSample> FindSample(int sample_num) override;
 
  private:
-  void readTable(boost::filesystem::path file);
-
   // The file to read from
   boost::filesystem::path file_;
 

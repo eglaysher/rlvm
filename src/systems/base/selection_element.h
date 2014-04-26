@@ -48,14 +48,16 @@ class SelectionElement {
                    const Point& pos);
   ~SelectionElement();
 
-  void setSelectionCallback(const std::function<void(int)>& func);
+  void SetSelectionCallback(const std::function<void(int)>& func);
 
-  void setMousePosition(const Point& pos);
-  bool handleMouseClick(const Point& pos, bool pressed);
+  void SetMousePosition(const Point& pos);
+  bool HandleMouseClick(const Point& pos, bool pressed);
 
-  void render();
+  void Render();
 
  private:
+  bool IsHighlighted(const Point& p);
+
   bool is_highlighted_;
 
   int id_;
@@ -70,8 +72,6 @@ class SelectionElement {
   std::function<void(int)> selection_callback_;
 
   System& system_;
-
-  bool isHighlighted(const Point& p);
 };
 
 #endif  // SRC_SYSTEMS_BASE_SELECTION_ELEMENT_H_

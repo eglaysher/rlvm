@@ -40,24 +40,24 @@ class TextoutLongOperation : public LongOperation {
   TextoutLongOperation(RLMachine& machine, const std::string& utf8string);
   virtual ~TextoutLongOperation();
 
-  void setNoWait(bool in = true) { no_wait_ = in; }
+  void set_no_wait() { no_wait_ = true; }
 
   // Overriden from EventListener:
-  virtual bool mouseButtonStateChanged(MouseButton mouseButton, bool pressed);
-  virtual bool keyStateChanged(KeyCode keyCode, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouseButton, bool pressed);
+  virtual bool KeyStateChanged(KeyCode keyCode, bool pressed);
 
   // Overriden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 
  private:
-  bool displayAsMuchAsWeCanThenPause(RLMachine& machine);
+  bool DisplayAsMuchAsWeCanThenPause(RLMachine& machine);
 
   // Extract a name and send it to the text system as an automic
   // operation.
-  bool displayName(RLMachine& machine);
-  bool displayOneMoreCharacter(RLMachine& machine, bool& paused);
+  bool DisplayName(RLMachine& machine);
+  bool DisplayOneMoreCharacter(RLMachine& machine, bool& paused);
 
-  std::string m_utf8string;
+  std::string utf8_string_;
 
   int current_codepoint_;
   std::string current_char_;

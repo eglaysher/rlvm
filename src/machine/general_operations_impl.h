@@ -36,40 +36,40 @@
 namespace getSystemObjImpl {
 
 template <typename RETTYPE>
-RETTYPE& getSystemObj(RLMachine& machine);
+RETTYPE& GetSystemObj(RLMachine& machine);
 
 template <>
-inline RLMachine& getSystemObj(RLMachine& machine) {
+inline RLMachine& GetSystemObj(RLMachine& machine) {
   return machine;
 }
 
 // Equivalent to machine.system().
 template <>
-System& getSystemObj(RLMachine& machine);
+System& GetSystemObj(RLMachine& machine);
 
 // Equivalent to machine.system().event().
 template <>
-EventSystem& getSystemObj(RLMachine& machine);
+EventSystem& GetSystemObj(RLMachine& machine);
 
 // Equivalent to machine.system().graphics().
 template <>
-GraphicsSystem& getSystemObj(RLMachine& machine);
+GraphicsSystem& GetSystemObj(RLMachine& machine);
 
 // Equivalent to machine.system().text().
 template <>
-TextSystem& getSystemObj(RLMachine& machine);
+TextSystem& GetSystemObj(RLMachine& machine);
 
 // Equivalent to machine.system().sound().
 template <>
-SoundSystem& getSystemObj(RLMachine& machine);
+SoundSystem& GetSystemObj(RLMachine& machine);
 
-// Equivalent to machine.system().graphics().cgTable().
+// Equivalent to machine.system().graphics().cg_table().
 template <>
-CGMTable& getSystemObj(RLMachine& machine);
+CGMTable& GetSystemObj(RLMachine& machine);
 
-// Equivalent to machine.system().text().currentPage().
+// Equivalent to machine.system().text().GetCurrentPage().
 template <>
-TextPage& getSystemObj(RLMachine& machine);
+TextPage& GetSystemObj(RLMachine& machine);
 
 }  // namespace getSystemObjImpl
 
@@ -85,8 +85,8 @@ class Op_CallWithInt : public RLOp_Void_1<IntConstant_T> {
 
   explicit Op_CallWithInt(Setter s) : setter(s) {}
 
-  void operator()(RLMachine& machine, int in) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(in);
+  virtual void operator()(RLMachine& machine, int in) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(in);
   }
 
  private:
@@ -105,8 +105,8 @@ class Op_CallWithMachineInt : public RLOp_Void_1<IntConstant_T> {
 
   explicit Op_CallWithMachineInt(Setter s) : setter(s) {}
 
-  void operator()(RLMachine& machine, int in) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(machine, in);
+  virtual void operator()(RLMachine& machine, int in) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(machine, in);
   }
 
  private:
@@ -126,8 +126,8 @@ class Op_CallWithMachineIntInt
 
   explicit Op_CallWithMachineIntInt(Setter s) : setter(s) {}
 
-  void operator()(RLMachine& machine, int one, int two) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(
+  virtual void operator()(RLMachine& machine, int one, int two) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(
         machine, one, two);
   }
 
@@ -147,8 +147,8 @@ class Op_CallWithIntInt : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
   explicit Op_CallWithIntInt(Setter s) : setter(s) {}
 
-  void operator()(RLMachine& machine, int in1, int in2) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(in1, in2);
+  virtual void operator()(RLMachine& machine, int in1, int in2) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(in1, in2);
   }
 
  private:
@@ -167,8 +167,8 @@ class Op_CallWithString : public RLOp_Void_1<StrConstant_T> {
 
   explicit Op_CallWithString(Setter s) : setter(s) {}
 
-  void operator()(RLMachine& machine, std::string incoming) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(incoming);
+  virtual void operator()(RLMachine& machine, std::string incoming) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(incoming);
   }
 
  private:
@@ -185,8 +185,8 @@ class Op_CallMethod : public RLOp_Void_Void {
 
   explicit Op_CallMethod(FUNCTYPE f) : func(f) {}
 
-  void operator()(RLMachine& machine) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*func)();
+  virtual void operator()(RLMachine& machine) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*func)();
   }
 
  private:
@@ -202,8 +202,8 @@ class Op_CallWithConstant : public RLOp_Void_Void {
 
   Op_CallWithConstant(Setter s, VALTYPE in_val) : setter(s), value(in_val) {}
 
-  void operator()(RLMachine& machine) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(value);
+  virtual void operator()(RLMachine& machine) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(value);
   }
 
  private:
@@ -219,8 +219,8 @@ class Op_CallWithConstantConstant : public RLOp_Void_Void {
   Op_CallWithConstantConstant(Setter s, VALONE in_valone, VALTWO in_valtwo)
       : setter(s), valone(in_valone), valtwo(in_valtwo) {}
 
-  void operator()(RLMachine& machine) {
-    (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*setter)(valone, valtwo);
+  virtual void operator()(RLMachine& machine) override {
+    (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*setter)(valone, valtwo);
   }
 
  private:
@@ -236,7 +236,9 @@ class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
 
   explicit Op_ReturnFunctionIntValue(Getter g) : getter_(g) {}
 
-  int operator()(RLMachine& machine) { return (*getter_)(); }
+  virtual int operator()(RLMachine& machine) override {
+    return (*getter_)();
+  }
 
  private:
   Getter getter_;
@@ -251,8 +253,8 @@ class Op_ReturnIntValue : public RLOp_Store_Void {
 
   explicit Op_ReturnIntValue(Getter g) : getter_(g) {}
 
-  int operator()(RLMachine& machine) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
+  virtual int operator()(RLMachine& machine) override {
+    return (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*getter_)();
   }
 
  private:
@@ -266,8 +268,8 @@ class Op_ReturnIntValueWithInt : public RLOp_Store_1<IntConstant_T> {
 
   explicit Op_ReturnIntValueWithInt(Getter g) : getter_(g) {}
 
-  int operator()(RLMachine& machine, int one) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)(one);
+  virtual int operator()(RLMachine& machine, int one) override {
+    return (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*getter_)(one);
   }
 
  private:
@@ -281,8 +283,8 @@ class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
 
   explicit Op_ReturnIntValueWithString(Getter g) : getter_(g) {}
 
-  int operator()(RLMachine& machine, string one) {
-    return (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)(one);
+  virtual int operator()(RLMachine& machine, string one) override {
+    return (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*getter_)(one);
   }
 
  private:
@@ -299,8 +301,9 @@ class Op_ReturnStringValue : public RLOp_Void_1<StrReference_T> {
 
   explicit Op_ReturnStringValue(Getter g) : getter_(g) {}
 
-  void operator()(RLMachine& machine, StringReferenceIterator dest) {
-    *dest = (getSystemObjImpl::getSystemObj<OBJTYPE>(machine).*getter_)();
+  virtual void operator()(RLMachine& machine,
+                          StringReferenceIterator dest) override {
+    *dest = (getSystemObjImpl::GetSystemObj<OBJTYPE>(machine).*getter_)();
   }
 
  private:

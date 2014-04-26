@@ -35,101 +35,101 @@
 
 class MediumGrpTest : public FullSystemTest {
  protected:
-  MediumGrpTest() { rlmachine.attachModule(new GrpModule); }
+  MediumGrpTest() { rlmachine.AttachModule(new GrpModule); }
 };
 
 TEST_F(MediumGrpTest, TestWipe) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255)));
-  rlmachine.exe("wipe", 0, TestMachine::Arg(0, 128, 128, 128));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255)));
+  rlmachine.Exe("wipe", 0, TestMachine::Arg(0, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestFill_0) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255)));
-  rlmachine.exe("recFill", 0, TestMachine::Arg(0, 128, 128, 128));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255)));
+  rlmachine.Exe("recFill", 0, TestMachine::Arg(0, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestFill_1) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255)));
-  rlmachine.exe("recFill", 1, TestMachine::Arg(0, 128, 128, 128, 255));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255)));
+  rlmachine.Exe("recFill", 1, TestMachine::Arg(0, 128, 128, 128, 255));
 }
 
 TEST_F(MediumGrpTest, TestFill_2) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
-  rlmachine.exe(
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
+  rlmachine.Exe(
       "recFill", 2, TestMachine::Arg(10, 10, 20, 20, 0, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestFill_3) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
-  rlmachine.exe(
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
+  rlmachine.Exe(
       "recFill", 3, TestMachine::Arg(10, 10, 20, 20, 0, 128, 128, 128, 255));
 }
 
 TEST_F(MediumGrpTest, TestMono_1) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              mono(system.graphics().getMockDC(0).rect()));
-  rlmachine.exe("recMono", 0, TestMachine::Arg(0));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Mono(system.graphics().GetMockDC(0).GetRect()));
+  rlmachine.Exe("recMono", 0, TestMachine::Arg(0));
 }
 
 TEST_F(MediumGrpTest, TestMono_3) {
-  EXPECT_CALL(system.graphics().getMockDC(0), mono(Rect(5, 6, Size(7, 8))));
-  rlmachine.exe("recMono", 2, TestMachine::Arg(5, 6, 7, 8, 0));
+  EXPECT_CALL(system.graphics().GetMockDC(0), Mono(Rect(5, 6, Size(7, 8))));
+  rlmachine.Exe("recMono", 2, TestMachine::Arg(5, 6, 7, 8, 0));
 }
 
 TEST_F(MediumGrpTest, TestColour_1) {
   EXPECT_CALL(
-      system.graphics().getMockDC(0),
-      applyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
-  rlmachine.exe("recColour", 0, TestMachine::Arg(0, 128, 128, 128));
+      system.graphics().GetMockDC(0),
+      ApplyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
+  rlmachine.Exe("recColour", 0, TestMachine::Arg(0, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestColour_3) {
   EXPECT_CALL(
-      system.graphics().getMockDC(0),
-      applyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
-  rlmachine.exe(
+      system.graphics().GetMockDC(0),
+      ApplyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
+  rlmachine.Exe(
       "recColour", 1, TestMachine::Arg(0, 0, 640, 480, 0, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestLight_1) {
   EXPECT_CALL(
-      system.graphics().getMockDC(0),
-      applyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
-  rlmachine.exe("recLight", 0, TestMachine::Arg(0, 128));
+      system.graphics().GetMockDC(0),
+      ApplyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
+  rlmachine.Exe("recLight", 0, TestMachine::Arg(0, 128));
 }
 
 TEST_F(MediumGrpTest, TestLight_3) {
   EXPECT_CALL(
-      system.graphics().getMockDC(0),
-      applyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
-  rlmachine.exe("recLight", 1, TestMachine::Arg(0, 0, 640, 480, 0, 128));
+      system.graphics().GetMockDC(0),
+      ApplyColour(RGBColour(128, 128, 128), Rect(0, 0, Size(640, 480))));
+  rlmachine.Exe("recLight", 1, TestMachine::Arg(0, 0, 640, 480, 0, 128));
 }
 
 TEST_F(MediumGrpTest, TestInvert_1) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              invert(system.graphics().getMockDC(0).rect()));
-  rlmachine.exe("recInvert", 0, TestMachine::Arg(0));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Invert(system.graphics().GetMockDC(0).GetRect()));
+  rlmachine.Exe("recInvert", 0, TestMachine::Arg(0));
 }
 
 TEST_F(MediumGrpTest, TestInvert_3) {
-  EXPECT_CALL(system.graphics().getMockDC(0), invert(Rect(5, 6, Size(7, 8))));
-  rlmachine.exe("recInvert", 2, TestMachine::Arg(5, 6, 7, 8, 0));
+  EXPECT_CALL(system.graphics().GetMockDC(0), Invert(Rect(5, 6, Size(7, 8))));
+  rlmachine.Exe("recInvert", 2, TestMachine::Arg(5, 6, 7, 8, 0));
 }
 
 TEST_F(MediumGrpTest, TestFade_6) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
-  rlmachine.exe("recFade", 6, TestMachine::Arg(10, 10, 20, 20, 128, 128, 128));
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
+  rlmachine.Exe("recFade", 6, TestMachine::Arg(10, 10, 20, 20, 128, 128, 128));
 }
 
 TEST_F(MediumGrpTest, TestFade_7) {
-  EXPECT_CALL(system.graphics().getMockDC(0),
-              fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
-  rlmachine.exe(
+  EXPECT_CALL(system.graphics().GetMockDC(0),
+              Fill(RGBAColour(128, 128, 128, 255), Rect(10, 10, Size(20, 20))));
+  rlmachine.Exe(
       "recFade", 7, TestMachine::Arg(10, 10, 20, 20, 128, 128, 128, 0));
 }

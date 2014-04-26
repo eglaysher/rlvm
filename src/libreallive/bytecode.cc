@@ -106,7 +106,7 @@ CommandElement* BuildFunctionElement(const char* stream) {
   if (*ptr == '(') {
     const char* end = ptr + 1;
     while (*end != ')') {
-      const size_t len = next_data(end);
+      const size_t len = NextData(end);
       params.push_back(string(end, len));
       end += len;
     }
@@ -133,12 +133,12 @@ void PrintParameterString(std::ostream& oss,
     // Take the binary stuff and try to get usefull, printable values.
     const char* start = param.c_str();
     try {
-      std::unique_ptr<ExpressionPiece> piece(get_data(start));
-      oss << piece->getDebugString();
+      std::unique_ptr<ExpressionPiece> piece(GetData(start));
+      oss << piece->GetDebugString();
     }
     catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
-      oss << "{RAW : " << parsableToPrintableString(param) << "}";
+      oss << "{RAW : " << ParsableToPrintableString(param) << "}";
     }
   }
   oss << ")";
@@ -159,7 +159,11 @@ ConstructionData::~ConstructionData() {}
 // Pointers
 // -----------------------------------------------------------------------
 
-void Pointers::set_pointers(ConstructionData& cdata) {
+Pointers::Pointers() {}
+
+Pointers::~Pointers() {}
+
+void Pointers::SetPointers(ConstructionData& cdata) {
   assert(target_ids.size() != 0);
   targets.reserve(target_ids.size());
   for (unsigned int i = 0; i < target_ids.size(); ++i) {
@@ -179,27 +183,26 @@ BytecodeElement::BytecodeElement() {}
 
 BytecodeElement::~BytecodeElement() {}
 
-const ElementType BytecodeElement::type() const { return Unspecified; }
-
-void BytecodeElement::print(std::ostream& oss) const {
+void BytecodeElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "<unspecified bytecode>" << std::endl;
 }
 
-void BytecodeElement::set_pointers(ConstructionData& cdata) {}
+void BytecodeElement::SetPointers(ConstructionData& cdata) {}
 
-const int BytecodeElement::entrypoint() const { return -999; }
+const int BytecodeElement::GetEntrypoint() const { return kInvalidEntrypoint; }
 
-string BytecodeElement::serializableData(RLMachine& machine) const {
+string BytecodeElement::GetSerializedCommand(RLMachine& machine) const {
   throw Error(
-      "Can't call serializableData() on things other than FunctionElements");
+      "Can't call GetSerializedCommand() on things other than "
+      "FunctionElements");
 }
 
-void BytecodeElement::runOnMachine(RLMachine& machine) const {
-  machine.advanceInstructionPointer();
+void BytecodeElement::RunOnMachine(RLMachine& machine) const {
+  machine.AdvanceInstructionPointer();
 }
 
 // static
-BytecodeElement* BytecodeElement::read(const char* stream,
+BytecodeElement* BytecodeElement::Read(const char* stream,
                                        const char* end,
                                        ConstructionData& cdata) {
   const char c = *stream;
@@ -232,13 +235,11 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 CommaElement::CommaElement() {}
 CommaElement::~CommaElement() {}
 
-const ElementType CommaElement::type() const { return Data; }
-
-void CommaElement::print(std::ostream& oss) const {
+void CommaElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "<CommaElement>" << std::endl;
 }
 
-const size_t CommaElement::length() const { return 1; }
+const size_t CommaElement::GetBytecodeLength() const { return 1; }
 
 // -----------------------------------------------------------------------
 // MetaElement
@@ -258,11 +259,7 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
 
 MetaElement::~MetaElement() {}
 
-const ElementType MetaElement::type() const {
-  return type_ == Line_ ? Line : (type_ == Kidoku_ ? Kidoku : Entrypoint);
-}
-
-void MetaElement::print(std::ostream& oss) const {
+void MetaElement::PrintSourceRepresentation(std::ostream& oss) const {
   if (type_ == Line_)
     oss << "#line " << value_ << std::endl;
   else if (type_ == Entrypoint_)
@@ -271,19 +268,19 @@ void MetaElement::print(std::ostream& oss) const {
     oss << "{- Kidoku " << value_ << " -}" << std::endl;
 }
 
-const size_t MetaElement::length() const { return 3; }
+const size_t MetaElement::GetBytecodeLength() const { return 3; }
 
-const int MetaElement::entrypoint() const {
-  return type_ == Entrypoint_ ? entrypoint_index_ : -999;
+const int MetaElement::GetEntrypoint() const {
+  return type_ == Entrypoint_ ? entrypoint_index_ : kInvalidEntrypoint;
 }
 
-void MetaElement::runOnMachine(RLMachine& machine) const {
+void MetaElement::RunOnMachine(RLMachine& machine) const {
   if (type_ == Line_)
-    machine.setLineNumber(value_);
+    machine.SetLineNumber(value_);
   else if (type_ == Kidoku_)
-    machine.setKidokuMarker(value_);
+    machine.SetKidokuMarker(value_);
 
-  machine.advanceInstructionPointer();
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -316,7 +313,7 @@ TextoutElement::TextoutElement(const char* src, const char* file_end) {
 
 TextoutElement::~TextoutElement() {}
 
-const string TextoutElement::text() const {
+const string TextoutElement::GetText() const {
   string rv;
   bool quoted = false;
   string::const_iterator it = repr.begin();
@@ -341,17 +338,15 @@ const string TextoutElement::text() const {
   return rv;
 }
 
-const ElementType TextoutElement::type() const { return Textout; }
-
-void TextoutElement::print(std::ostream& oss) const {
-  oss << "\"" << text() << "\"" << std::endl;
+void TextoutElement::PrintSourceRepresentation(std::ostream& oss) const {
+  oss << "\"" << GetText() << "\"" << std::endl;
 }
 
-const size_t TextoutElement::length() const { return repr.size(); }
+const size_t TextoutElement::GetBytecodeLength() const { return repr.size(); }
 
-void TextoutElement::runOnMachine(RLMachine& machine) const {
-  machine.performTextout(*this);
-  machine.advanceInstructionPointer();
+void TextoutElement::RunOnMachine(RLMachine& machine) const {
+  machine.PerformTextout(*this);
+  machine.AdvanceInstructionPointer();
 }
 
 // -----------------------------------------------------------------------
@@ -361,10 +356,10 @@ void TextoutElement::runOnMachine(RLMachine& machine) const {
 ExpressionElement::ExpressionElement(const char* src) {
   // Don't parse the expression, just isolate it.
   const char* end = src;
-  end += next_token(end);
+  end += NextToken(end);
   if (*end == '\\') {
     end += 2;
-    end += next_expr(end);
+    end += NextExpression(end);
   }
   repr.assign(src, end);
 }
@@ -381,31 +376,31 @@ ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
 
 ExpressionElement::~ExpressionElement() {}
 
-int ExpressionElement::valueOnly(RLMachine& machine) const {
+int ExpressionElement::GetValueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
-  std::unique_ptr<ExpressionPiece> e(get_expression(location));
-  return e->integerValue(machine);
+  std::unique_ptr<ExpressionPiece> e(GetExpression(location));
+  return e->GetIntegerValue(machine);
 }
 
-const ExpressionPiece& ExpressionElement::parsedExpression() const {
+const ExpressionPiece& ExpressionElement::ParsedExpression() const {
   if (parsed_expression_.get() == 0) {
     const char* location = repr.c_str();
-    parsed_expression_ = get_assignment(location);
+    parsed_expression_ = GetAssignment(location);
   }
 
   return *parsed_expression_;
 }
 
-const ElementType ExpressionElement::type() const { return Expression; }
-
-void ExpressionElement::print(std::ostream& oss) const {
-  oss << parsedExpression().getDebugString() << std::endl;
+void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
+  oss << ParsedExpression().GetDebugString() << std::endl;
 }
 
-const size_t ExpressionElement::length() const { return repr.size(); }
+const size_t ExpressionElement::GetBytecodeLength() const {
+  return repr.size();
+}
 
-void ExpressionElement::runOnMachine(RLMachine& machine) const {
-  machine.executeExpression(*this);
+void ExpressionElement::RunOnMachine(RLMachine& machine) const {
+  machine.ExecuteExpression(*this);
 }
 
 // -----------------------------------------------------------------------
@@ -416,51 +411,49 @@ CommandElement::CommandElement(const char* src) { memcpy(command, src, 8); }
 
 CommandElement::~CommandElement() {}
 
-std::vector<std::string> CommandElement::getUnparsedParameters() const {
+std::vector<std::string> CommandElement::GetUnparsedParameters() const {
   std::vector<std::string> parameters;
-  size_t numberOfParameters = param_count();
-  for (size_t i = 0; i < numberOfParameters; ++i)
-    parameters.push_back(get_param(i));
+  size_t param_count = GetParamCount();
+  for (size_t i = 0; i < param_count; ++i)
+    parameters.push_back(GetParam(i));
   return parameters;
 }
 
-bool CommandElement::areParametersParsed() const {
-  return param_count() == parsed_parameters_.size();
+bool CommandElement::AreParametersParsed() const {
+  return GetParamCount() == parsed_parameters_.size();
 }
 
-void CommandElement::setParsedParameters(
+void CommandElement::SetParsedParameters(
     ExpressionPiecesVector& parsedParameters) const {
   parsed_parameters_.clear();
   parsed_parameters_ = std::move(parsedParameters);
 }
 
-const ExpressionPiecesVector& CommandElement::getParameters() const {
+const ExpressionPiecesVector& CommandElement::GetParsedParameters() const {
   return parsed_parameters_;
 }
 
-const size_t CommandElement::pointers_count() const { return 0; }
+const size_t CommandElement::GetPointersCount() const { return 0; }
 
-pointer_t CommandElement::get_pointer(int i) const { return pointer_t(); }
+pointer_t CommandElement::GetPointer(int i) const { return pointer_t(); }
 
-const size_t CommandElement::case_count() const { return 0; }
+const size_t CommandElement::GetCaseCount() const { return 0; }
 
-const string CommandElement::get_case(int i) const { return ""; }
+const string CommandElement::GetCase(int i) const { return ""; }
 
-const ElementType CommandElement::type() const { return Command; }
-
-void CommandElement::print(std::ostream& oss) const {
+void CommandElement::PrintSourceRepresentation(std::ostream& oss) const {
   oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
       << module() << ":"
       << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
       << ">";
 
-  PrintParameterString(oss, getUnparsedParameters());
+  PrintParameterString(oss, GetUnparsedParameters());
 
   oss << std::endl;
 }
 
-void CommandElement::runOnMachine(RLMachine& machine) const {
-  machine.executeCommand(*this);
+void CommandElement::RunOnMachine(RLMachine& machine) const {
+  machine.ExecuteCommand(*this);
 }
 
 // -----------------------------------------------------------------------
@@ -473,7 +466,7 @@ SelectElement::SelectElement(const char* src)
 
   src += 8;
   if (*src == '(') {
-    const int elen = next_expr(src);
+    const int elen = NextExpression(src);
     repr.append(src, elen);
     src += elen;
   }
@@ -500,7 +493,7 @@ SelectElement::SelectElement(const char* src)
       while (*src != ')') {
         Condition c;
         if (*src == '(') {
-          int len = next_expr(src);
+          int len = NextExpression(src);
           c.condition = string(src, len);
           src += len;
         }
@@ -508,7 +501,7 @@ SelectElement::SelectElement(const char* src)
         c.effect = *src;
         ++src;
         if (seekarg && *src != ')' && (*src < '0' || *src > '9')) {
-          int len = next_expr(src);
+          int len = NextExpression(src);
           c.effect_argument = string(src, len);
           src += len;
         }
@@ -520,7 +513,7 @@ SelectElement::SelectElement(const char* src)
     size_t clen = src - cond;
     // Read text.
     const char* text = src;
-    src += next_string(src);
+    src += NextString(src);
     size_t tlen = src - text;
     // Add parameter to list.
     if (*src != '\n')
@@ -549,22 +542,20 @@ SelectElement::SelectElement(const char* src)
 
 SelectElement::~SelectElement() {}
 
-ExpressionElement SelectElement::window() const {
+ExpressionElement SelectElement::GetWindowExpression() const {
   return repr[8] == '(' ? ExpressionElement(repr.data() + 9)
                         : ExpressionElement(-1);
 }
 
-const size_t SelectElement::param_count() const { return params.size(); }
+const size_t SelectElement::GetParamCount() const { return params.size(); }
 
-string SelectElement::get_param(int i) const {
+string SelectElement::GetParam(int i) const {
   string rv(params[i].cond_text);
   rv.append(params[i].text);
   return rv;
 }
 
-const ElementType SelectElement::type() const { return Select; }
-
-const size_t SelectElement::length() const {
+const size_t SelectElement::GetBytecodeLength() const {
   size_t rv = repr.size() + 5;
   for (Param const& param : params)
     rv += param.cond_text.size() + param.text.size() + 3;
@@ -582,7 +573,7 @@ FunctionElement::FunctionElement(const char* src,
 
 FunctionElement::~FunctionElement() {}
 
-const size_t FunctionElement::param_count() const {
+const size_t FunctionElement::GetParamCount() const {
   // Because line number metaelements can be placed inside parameters (!?!?!),
   // it's possible that our last parameter consists only of the data for a
   // source line MetaElement. We can't detect this during parsing (because just
@@ -596,11 +587,9 @@ const size_t FunctionElement::param_count() const {
   return params.size();
 }
 
-string FunctionElement::get_param(int i) const { return params[i]; }
+string FunctionElement::GetParam(int i) const { return params[i]; }
 
-const ElementType FunctionElement::type() const { return Function; }
-
-const size_t FunctionElement::length() const {
+const size_t FunctionElement::GetBytecodeLength() const {
   if (params.size() > 0) {
     size_t rv(COMMAND_SIZE + 2);
     for (std::string const& param : params)
@@ -611,7 +600,7 @@ const size_t FunctionElement::length() const {
   }
 }
 
-std::string FunctionElement::serializableData(RLMachine& machine) const {
+std::string FunctionElement::GetSerializedCommand(RLMachine& machine) const {
   string rv;
   for (int i = 0; i < COMMAND_SIZE; ++i)
     rv.push_back(command[i]);
@@ -619,8 +608,8 @@ std::string FunctionElement::serializableData(RLMachine& machine) const {
     rv.push_back('(');
     for (string const& param : params) {
       const char* data = param.c_str();
-      std::unique_ptr<ExpressionPiece> expression(get_data(data));
-      rv.append(expression->serializedValue(machine));
+      std::unique_ptr<ExpressionPiece> expression(GetData(data));
+      rv.append(expression->GetSerializedExpression(machine));
     }
     rv.push_back(')');
   }
@@ -636,15 +625,16 @@ VoidFunctionElement::VoidFunctionElement(const char* src)
 
 VoidFunctionElement::~VoidFunctionElement() {}
 
-const size_t VoidFunctionElement::param_count() const { return 0; }
+const size_t VoidFunctionElement::GetParamCount() const { return 0; }
 
-string VoidFunctionElement::get_param(int i) const { return std::string(); }
+string VoidFunctionElement::GetParam(int i) const { return std::string(); }
 
-const ElementType VoidFunctionElement::type() const { return Function; }
+const size_t VoidFunctionElement::GetBytecodeLength() const {
+  return COMMAND_SIZE;
+}
 
-const size_t VoidFunctionElement::length() const { return COMMAND_SIZE; }
-
-std::string VoidFunctionElement::serializableData(RLMachine& machine) const {
+std::string VoidFunctionElement::GetSerializedCommand(RLMachine& machine)
+    const {
   string rv;
   for (int i = 0; i < COMMAND_SIZE; ++i)
     rv.push_back(command[i]);
@@ -661,27 +651,25 @@ SingleArgFunctionElement::SingleArgFunctionElement(const char* src,
 
 SingleArgFunctionElement::~SingleArgFunctionElement() {}
 
-const size_t SingleArgFunctionElement::param_count() const { return 1; }
+const size_t SingleArgFunctionElement::GetParamCount() const { return 1; }
 
-string SingleArgFunctionElement::get_param(int i) const {
+string SingleArgFunctionElement::GetParam(int i) const {
   return i == 0 ? arg_ : std::string();
 }
 
-const ElementType SingleArgFunctionElement::type() const { return Function; }
-
-const size_t SingleArgFunctionElement::length() const {
+const size_t SingleArgFunctionElement::GetBytecodeLength() const {
   return COMMAND_SIZE + 2 + arg_.size();
 }
 
-std::string SingleArgFunctionElement::serializableData(RLMachine& machine)
+std::string SingleArgFunctionElement::GetSerializedCommand(RLMachine& machine)
     const {
   string rv;
   for (int i = 0; i < COMMAND_SIZE; ++i)
     rv.push_back(command[i]);
   rv.push_back('(');
   const char* data = arg_.c_str();
-  std::unique_ptr<ExpressionPiece> expression(get_data(data));
-  rv.append(expression->serializedValue(machine));
+  std::unique_ptr<ExpressionPiece> expression(GetData(data));
+  rv.append(expression->GetSerializedExpression(machine));
   rv.push_back(')');
   return rv;
 }
@@ -694,12 +682,12 @@ PointerElement::PointerElement(const char* src) : CommandElement(src) {}
 
 PointerElement::~PointerElement() {}
 
-const size_t PointerElement::pointers_count() const { return targets.size(); }
+const size_t PointerElement::GetPointersCount() const { return targets.size(); }
 
-pointer_t PointerElement::get_pointer(int i) const { return targets[i]; }
+pointer_t PointerElement::GetPointer(int i) const { return targets[i]; }
 
-void PointerElement::set_pointers(ConstructionData& cdata) {
-  targets.set_pointers(cdata);
+void PointerElement::SetPointers(ConstructionData& cdata) {
+  targets.SetPointers(cdata);
 }
 
 // -----------------------------------------------------------------------
@@ -715,25 +703,23 @@ GotoElement::GotoElement(const char* src, ConstructionData& cdata)
 
 GotoElement::~GotoElement() {}
 
-const size_t GotoElement::param_count() const {
+const size_t GotoElement::GetParamCount() const {
   // The pointer is not counted as a parameter.
   return 0;
 }
 
-string GotoElement::get_param(int i) const { return std::string(); }
+string GotoElement::GetParam(int i) const { return std::string(); }
 
-const size_t GotoElement::pointers_count() const { return 1; }
+const size_t GotoElement::GetPointersCount() const { return 1; }
 
-pointer_t GotoElement::get_pointer(int i) const {
+pointer_t GotoElement::GetPointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
 
-const ElementType GotoElement::type() const { return Goto; }
+const size_t GotoElement::GetBytecodeLength() const { return 12; }
 
-const size_t GotoElement::length() const { return 12; }
-
-void GotoElement::set_pointers(ConstructionData& cdata) {
+void GotoElement::SetPointers(ConstructionData& cdata) {
   ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
@@ -750,7 +736,7 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
 
   if (*src++ != '(')
     throw Error("GotoIfElement(): expected `('");
-  int expr = next_expr(src);
+  int expr = NextExpression(src);
   repr.push_back('(');
   repr.append(src, expr);
   repr.push_back(')');
@@ -763,29 +749,29 @@ GotoIfElement::GotoIfElement(const char* src, ConstructionData& cdata)
 
 GotoIfElement::~GotoIfElement() {}
 
-const size_t GotoIfElement::param_count() const {
+const size_t GotoIfElement::GetParamCount() const {
   // The pointer is not counted as a parameter.
   return repr.size() == 8 ? 0 : 1;
 }
 
-string GotoIfElement::get_param(int i) const {
+string GotoIfElement::GetParam(int i) const {
   return i == 0
              ? (repr.size() == 8 ? string() : repr.substr(9, repr.size() - 10))
              : string();
 }
 
-const size_t GotoIfElement::pointers_count() const { return 1; }
+const size_t GotoIfElement::GetPointersCount() const { return 1; }
 
-pointer_t GotoIfElement::get_pointer(int i) const {
+pointer_t GotoIfElement::GetPointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
 
-const ElementType GotoIfElement::type() const { return Goto; }
+const size_t GotoIfElement::GetBytecodeLength() const {
+  return repr.size() + 4;
+}
 
-const size_t GotoIfElement::length() const { return repr.size() + 4; }
-
-void GotoIfElement::set_pointers(ConstructionData& cdata) {
+void GotoIfElement::SetPointers(ConstructionData& cdata) {
   ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;
@@ -800,7 +786,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
   repr.assign(src, 8);
   src += 8;
   // Condition
-  const int expr = next_expr(src);
+  const int expr = NextExpression(src);
   repr.append(src, expr);
   src += expr;
   // Cases
@@ -816,7 +802,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
       cases.push_back("()");
       src += 2;
     } else {
-      int cexpr = next_expr(src + 1);
+      int cexpr = NextExpression(src + 1);
       cases.push_back(string(src, cexpr + 2));
       src += cexpr + 1;
       if (*src++ != ')')
@@ -831,22 +817,20 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
 
 GotoCaseElement::~GotoCaseElement() {}
 
-const size_t GotoCaseElement::param_count() const {
+const size_t GotoCaseElement::GetParamCount() const {
   // The cases are not counted as parameters.
   return 1;
 }
 
-string GotoCaseElement::get_param(int i) const {
+string GotoCaseElement::GetParam(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
 
-const size_t GotoCaseElement::case_count() const { return cases.size(); }
+const size_t GotoCaseElement::GetCaseCount() const { return cases.size(); }
 
-const string GotoCaseElement::get_case(int i) const { return cases[i]; }
+const string GotoCaseElement::GetCase(int i) const { return cases[i]; }
 
-const ElementType GotoCaseElement::type() const { return GotoCase; }
-
-const size_t GotoCaseElement::length() const {
+const size_t GotoCaseElement::GetBytecodeLength() const {
   size_t rv = repr.size() + 2;
   for (unsigned int i = 0; i < cases.size(); ++i)
     rv += cases[i].size() + 4;
@@ -862,7 +846,7 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
   repr.assign(src, 8);
   src += 8;
   // Condition
-  const int expr = next_expr(src);
+  const int expr = NextExpression(src);
   repr.append(src, expr);
   src += expr;
   // Pointers
@@ -880,15 +864,13 @@ GotoOnElement::GotoOnElement(const char* src, ConstructionData& cdata)
 
 GotoOnElement::~GotoOnElement() {}
 
-const size_t GotoOnElement::param_count() const { return 1; }
+const size_t GotoOnElement::GetParamCount() const { return 1; }
 
-string GotoOnElement::get_param(int i) const {
+string GotoOnElement::GetParam(int i) const {
   return i == 0 ? repr.substr(8, repr.size() - 8) : string();
 }
 
-const ElementType GotoOnElement::type() const { return GotoOn; }
-
-const size_t GotoOnElement::length() const {
+const size_t GotoOnElement::GetBytecodeLength() const {
   return repr.size() + argc() * 4 + 2;
 }
 
@@ -904,7 +886,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     repr_size++;
 
     while (*src != ')') {
-      int expr = next_data(src);
+      int expr = NextData(src);
       repr_size += expr;
       params.push_back(string(src, expr));
       src += expr;
@@ -919,27 +901,25 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 
 GosubWithElement::~GosubWithElement() {}
 
-const size_t GosubWithElement::param_count() const {
+const size_t GosubWithElement::GetParamCount() const {
   // The pointer is not counted as a parameter.
   return params.size();
 }
 
-string GosubWithElement::get_param(int i) const { return params[i]; }
+string GosubWithElement::GetParam(int i) const { return params[i]; }
 
+const size_t GosubWithElement::GetPointersCount() const { return 1; }
 
-const size_t GosubWithElement::pointers_count() const { return 1; }
-
-pointer_t GosubWithElement::get_pointer(int i) const {
+pointer_t GosubWithElement::GetPointer(int i) const {
   assert(i == 0);
   return pointer_;
 }
 
+const size_t GosubWithElement::GetBytecodeLength() const {
+  return repr_size + 4;
+}
 
-const ElementType GosubWithElement::type() const { return Goto; }
-
-const size_t GosubWithElement::length() const { return repr_size + 4; }
-
-void GosubWithElement::set_pointers(ConstructionData& cdata) {
+void GosubWithElement::SetPointers(ConstructionData& cdata) {
   ConstructionData::offsets_t::const_iterator it = cdata.offsets.find(id_);
   assert(it != cdata.offsets.end());
   pointer_ = it->second;

@@ -209,36 +209,36 @@ class Memory {
   ~Memory();
 
   // Returns the integer value of a certain memory location
-  int getIntValue(const libreallive::IntMemRef& ref);
+  int GetIntValue(const libreallive::IntMemRef& ref);
 
   // Sets the value of a certain memory location
-  void setIntValue(const libreallive::IntMemRef& ref, int value);
+  void SetIntValue(const libreallive::IntMemRef& ref, int value);
 
   // Returns the string value of a string memory bank
-  const std::string& getStringValue(int type, int location);
+  const std::string& GetStringValue(int type, int location);
 
   // Sets the string value of one of the string banks
-  void setStringValue(int type, int number, const std::string& value);
+  void SetStringValue(int type, int number, const std::string& value);
 
   // Name table functions:
 
   // Sets the local name slot index to name.
-  void setName(int index, const std::string& name);
+  void SetName(int index, const std::string& name);
 
   // Returns the local name slot index.
-  const std::string& getName(int index) const;
+  const std::string& GetName(int index) const;
 
   // Sets the local name slot index to name.
-  void setLocalName(int index, const std::string& name);
+  void SetLocalName(int index, const std::string& name);
 
   // Returns the local name slot index.
-  const std::string& getLocalName(int index) const;
+  const std::string& GetLocalName(int index) const;
 
   // Methods that record whether a piece of text has been read. RealLive
   // scripts have a piece of metadata called a kidoku marker which signifies if
   // the text between that and the next kidoku marker have been previously read.
-  bool hasBeenRead(int scenario, int kidoku) const;
-  void recordKidoku(int scenario, int kidoku);
+  bool HasBeenRead(int scenario, int kidoku) const;
+  void RecordKidoku(int scenario, int kidoku);
 
   // Accessors for serialization.
   GlobalMemory& global() { return *global_; }
@@ -249,7 +249,7 @@ class Memory {
   // Commit changes in local memory. Unlike the code in src/Systems/ which
   // copies current values to shadow values, Memory clears a list of changes
   // that have been made since.
-  void takeSavepointSnapshot();
+  void TakeSavepointSnapshot();
 
   // Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
   // equivalent. These letter indexies are used in \#NAME definitions.
@@ -257,14 +257,14 @@ class Memory {
 
  private:
   // Connects the memory banks in local_ and in global_ into int_var.
-  void connectIntVarPointers();
+  void ConnectIntVarPointers();
 
   // Input validating function to the {get,set}(Local)?Name set of functions.
-  void checkNameIndex(int index, const std::string& name) const;
+  void CheckNameIndex(int index, const std::string& name) const;
 
   // Reads in default memory values from the passed in Gameexe, such as \#NAME
   // and \#LOCALNAME values.
-  void initializeDefaultValues(Gameexe& gameexe);
+  void InitializeDefaultValues(Gameexe& gameexe);
 
   // Pointer to the GlobalMemory structure. While there can (and will
   // be) multiple Memory instances (this is how we implement

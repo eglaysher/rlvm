@@ -81,20 +81,20 @@ TextWakuNormal::TextWakuNormal(System& system,
                                int setno,
                                int no)
     : system_(system), window_(window), setno_(setno), no_(no) {
-  loadWindowWaku();
+  LoadWindowWaku();
 }
 
 TextWakuNormal::~TextWakuNormal() {}
 
-void TextWakuNormal::execute() {
+void TextWakuNormal::Execute() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->execute();
+      button_map_[i]->Execute();
     }
   }
 }
 
-void TextWakuNormal::render(std::ostream* tree,
+void TextWakuNormal::Render(std::ostream* tree,
                             Point box_location,
                             Size namebox_size) {
   if (tree) {
@@ -102,8 +102,8 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_backing_) {
-    Size backing_size = waku_backing_->size();
-    waku_backing_->renderToScreenAsColorMask(Rect(Point(0, 0), backing_size),
+    Size backing_size = waku_backing_->GetSize();
+    waku_backing_->RenderToScreenAsColorMask(Rect(Point(0, 0), backing_size),
                                              Rect(box_location, backing_size),
                                              window_.colour(),
                                              window_.filter());
@@ -115,8 +115,8 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_main_) {
-    Size main_size = waku_main_->size();
-    waku_main_->renderToScreen(
+    Size main_size = waku_main_->GetSize();
+    waku_main_->RenderToScreen(
         Rect(Point(0, 0), main_size), Rect(box_location, main_size), 255);
 
     if (tree) {
@@ -125,27 +125,27 @@ void TextWakuNormal::render(std::ostream* tree,
   }
 
   if (waku_button_)
-    renderButtons();
+    RenderButtons();
 }
 
-void TextWakuNormal::renderButtons() {
+void TextWakuNormal::RenderButtons() {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->render(window_, waku_button_, BUTTON_INFO[i].waku_offset);
+      button_map_[i]->Render(window_, waku_button_, BUTTON_INFO[i].waku_offset);
     }
   }
 }
 
-Size TextWakuNormal::getSize(const Size& text_surface) const {
+Size TextWakuNormal::GetSize(const Size& text_surface) const {
   if (waku_main_)
-    return waku_main_->size();
+    return waku_main_->GetSize();
   else if (waku_backing_)
-    return waku_backing_->size();
+    return waku_backing_->GetSize();
   else
     return text_surface;
 }
 
-Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
+Point TextWakuNormal::InsertionPoint(const Rect& waku_rect,
                                      const Size& padding,
                                      const Size& surface_size,
                                      bool center) const {
@@ -161,20 +161,20 @@ Point TextWakuNormal::insertionPoint(const Rect& waku_rect,
   return insertion_point;
 }
 
-void TextWakuNormal::setMousePosition(const Point& pos) {
+void TextWakuNormal::SetMousePosition(const Point& pos) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      button_map_[i]->setMousePosition(window_, pos);
+      button_map_[i]->SetMousePosition(window_, pos);
     }
   }
 }
 
-bool TextWakuNormal::handleMouseClick(RLMachine& machine,
+bool TextWakuNormal::HandleMouseClick(RLMachine& machine,
                                       const Point& pos,
                                       bool pressed) {
   for (int i = 0; BUTTON_INFO[i].index != -1; ++i) {
     if (button_map_[i]) {
-      if (button_map_[i]->handleMouseClick(machine, window_, pos, pressed))
+      if (button_map_[i]->HandleMouseClick(machine, window_, pos, pressed))
         return true;
     }
   }
@@ -182,37 +182,37 @@ bool TextWakuNormal::handleMouseClick(RLMachine& machine,
   return false;
 }
 
-void TextWakuNormal::loadWindowWaku() {
+void TextWakuNormal::LoadWindowWaku() {
   GameexeInterpretObject waku(system_.gameexe()("WAKU", setno_, no_));
 
-  setWakuMain(waku("NAME").to_string(""));
-  setWakuBacking(waku("BACK").to_string(""));
-  setWakuButton(waku("BTN").to_string(""));
+  SetWakuMain(waku("NAME").ToString(""));
+  SetWakuBacking(waku("BACK").ToString(""));
+  SetWakuButton(waku("BTN").ToString(""));
 
   TextSystem& ts = system_.text();
   GraphicsSystem& gs = system_.graphics();
 
-  if (waku("CLEAR_BOX").exists()) {
+  if (waku("CLEAR_BOX").Exists()) {
     button_map_[0].reset(new ActionTextWindowButton(
         system_,
-        ts.windowClearUse(),
+        ts.window_clear_use(),
         waku("CLEAR_BOX"),
-        std::bind(&GraphicsSystem::toggleInterfaceHidden, std::ref(gs))));
+        std::bind(&GraphicsSystem::ToggleInterfaceHidden, std::ref(gs))));
   }
-  if (waku("MSGBKLEFT_BOX").exists()) {
+  if (waku("MSGBKLEFT_BOX").Exists()) {
     button_map_[1].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
-        ts.windowMsgbkleftUse(),
+        ts.window_msgbkleft_use(),
         waku("MSGBKLEFT_BOX"),
-        std::bind(&TextSystem::backPage, std::ref(ts)),
+        std::bind(&TextSystem::BackPage, std::ref(ts)),
         250));
   }
-  if (waku("MSGBKRIGHT_BOX").exists()) {
+  if (waku("MSGBKRIGHT_BOX").Exists()) {
     button_map_[2].reset(new RepeatActionWhileHoldingWindowButton(
         system_,
-        ts.windowMsgbkrightUse(),
+        ts.window_msgbkright_use(),
         waku("MSGBKRIGHT_BOX"),
-        std::bind(&TextSystem::forwardPage, std::ref(ts)),
+        std::bind(&TextSystem::ForwardPage, std::ref(ts)),
         250));
   }
 
@@ -220,38 +220,38 @@ void TextWakuNormal::loadWindowWaku() {
     GameexeInterpretObject wbcall(system_.gameexe()("WBCALL", i));
     ostringstream oss;
     oss << "EXBTN_" << setw(3) << setfill('0') << i << "_BOX";
-    if (waku(oss.str()).exists()) {
+    if (waku(oss.str()).Exists()) {
       button_map_[3 + i].reset(new ExbtnWindowButton(
-          system_, ts.windowExbtnUse(), waku(oss.str()), wbcall));
+          system_, ts.window_exbtn_use(), waku(oss.str()), wbcall));
     }
   }
 
-  if (waku("READJUMP_BOX").exists()) {
+  if (waku("READJUMP_BOX").Exists()) {
     ActivationTextWindowButton* readjump_box = new ActivationTextWindowButton(
         system_,
-        ts.windowReadJumpUse(),
+        ts.window_read_jump_use(),
         waku("READJUMP_BOX"),
-        std::bind(&TextSystem::setSkipMode, std::ref(ts), _1));
-    readjump_box->setEnabledNotification(
+        std::bind(&TextSystem::SetSkipMode, std::ref(ts), _1));
+    readjump_box->SetEnabledNotification(
         NotificationType::SKIP_MODE_ENABLED_CHANGED);
-    readjump_box->setChangeNotification(
+    readjump_box->SetChangeNotification(
         NotificationType::SKIP_MODE_STATE_CHANGED);
 
     // Set the initial enabled state. If true, we'll get a signal enabling it
     // immediately.
-    readjump_box->setEnabled(ts.kidokuRead());
+    readjump_box->SetEnabled(ts.kidoku_read());
 
     button_map_[10].reset(readjump_box);
   }
 
-  if (waku("AUTOMODE_BOX").exists()) {
+  if (waku("AUTOMODE_BOX").Exists()) {
     ActivationTextWindowButton* automode_button =
         new ActivationTextWindowButton(
             system_,
-            ts.windowAutomodeUse(),
+            ts.window_automode_use(),
             waku("AUTOMODE_BOX"),
-            std::bind(&TextSystem::setAutoMode, std::ref(ts), _1));
-    automode_button->setChangeNotification(
+            std::bind(&TextSystem::SetAutoMode, std::ref(ts), _1));
+    automode_button->SetChangeNotification(
         NotificationType::AUTO_MODE_STATE_CHANGED);
 
     button_map_[11].reset(automode_button);
@@ -263,33 +263,33 @@ void TextWakuNormal::loadWindowWaku() {
    *
   string key = "MOVE_BOX";
   button_map_.insert(
-    key, new TextWindowButton(ts.windowMoveUse(), waku("MOVE_BOX")));
+    key, new TextWindowButton(ts.window_move_use(), waku("MOVE_BOX")));
 
   key = string("MSGBK_BOX");
   button_map_.insert(
-    key, new TextWindowButton(ts.windowMsgbkUse(), waku("MSGBK_BOX")));
+    key, new TextWindowButton(ts.window_msgbk_use(), waku("MSGBK_BOX")));
   */
 }
 
-void TextWakuNormal::setWakuMain(const std::string& name) {
+void TextWakuNormal::SetWakuMain(const std::string& name) {
   if (name != "")
-    waku_main_ = system_.graphics().getSurfaceNamed(name);
+    waku_main_ = system_.graphics().GetSurfaceNamed(name);
   else
     waku_main_.reset();
 }
 
-void TextWakuNormal::setWakuBacking(const std::string& name) {
+void TextWakuNormal::SetWakuBacking(const std::string& name) {
   if (name != "") {
-    waku_backing_.reset(system_.graphics().getSurfaceNamed(name)->clone());
-    waku_backing_->setIsMask(true);
+    waku_backing_.reset(system_.graphics().GetSurfaceNamed(name)->Clone());
+    waku_backing_->SetIsMask(true);
   } else {
     waku_backing_.reset();
   }
 }
 
-void TextWakuNormal::setWakuButton(const std::string& name) {
+void TextWakuNormal::SetWakuButton(const std::string& name) {
   if (name != "")
-    waku_button_ = system_.graphics().getSurfaceNamed(name);
+    waku_button_ = system_.graphics().GetSurfaceNamed(name);
   else
     waku_button_.reset();
 }

@@ -45,7 +45,7 @@ class HIKScript {
   ~HIKScript();
 
   // Loads our data from a HIK file.
-  void loadHikFile(System& system, const boost::filesystem::path& file);
+  void LoadHikFile(System& system, const boost::filesystem::path& file);
 
   // Make sure all graphics data is ready to be presented to the user.
   void EnsureUploaded();
@@ -109,9 +109,9 @@ class HIKScript {
  private:
   // Returns the current structure being operated on, throwing on logic
   // errors. Only to be used during parsing of the file.
-  Animation& currentAnimation();
-  Layer& currentLayer();
-  Frame& currentFrame();
+  Animation& CurrentAnimation();
+  Layer& CurrentLayer();
+  Frame& CurrentFrame();
 
   // Each graphics component in the HIK script.
   std::vector<Layer> layers_;

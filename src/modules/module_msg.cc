@@ -48,7 +48,7 @@ namespace {
 
 struct par : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.ResetIndentation();
     page.HardBrake();
   }
@@ -57,14 +57,14 @@ struct par : public RLOp_Void_Void {
 struct Msg_pause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    int windowNum = text.activeWindow();
-    boost::shared_ptr<TextWindow> textWindow = text.textWindow(windowNum);
+    int windowNum = text.active_window();
+    boost::shared_ptr<TextWindow> textWindow = text.GetTextWindow(windowNum);
 
-    if (textWindow->actionOnPause()) {
-      machine.pushLongOperation(
+    if (textWindow->action_on_pause()) {
+      machine.PushLongOperation(
           new NewParagraphAfterLongop(new PauseLongOperation(machine)));
     } else {
-      machine.pushLongOperation(
+      machine.PushLongOperation(
           new NewPageOnAllAfterLongop(new PauseLongOperation(machine)));
     }
   }
@@ -72,22 +72,22 @@ struct Msg_pause : public RLOp_Void_Void {
 
 struct Msg_TextWindow : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int window) {
-    machine.system().text().setActiveWindow(window);
+    machine.system().text().set_active_window(window);
   }
 };
 
 struct FontColour
     : public RLOp_Void_2<DefaultIntValue_T<0>, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum, int shadowColorNum) {
-    machine.system().text().currentPage().FontColour(textColorNum);
+    machine.system().text().GetCurrentPage().FontColour(textColorNum);
   }
 };
 
 struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
-    if (gexe("COLOR_TABLE", textColorNum).exists()) {
-      machine.system().text().currentWindow()->setDefaultTextColor(
+    if (gexe("COLOR_TABLE", textColorNum).Exists()) {
+      machine.system().text().GetCurrentWindow()->SetDefaultTextColor(
           gexe("COLOR_TABLE", textColorNum));
     }
   }
@@ -95,17 +95,17 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
 
 struct doruby_display : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string cpStr) {
-    std::string utf8str = cp932toUTF8(cpStr, machine.getTextEncoding());
-    machine.system().text().currentPage().DisplayRubyText(utf8str);
+    std::string utf8str = cp932toUTF8(cpStr, machine.GetTextEncoding());
+    machine.system().text().GetCurrentPage().DisplayRubyText(utf8str);
   }
 };
 
 struct msgHide : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int unknown) {
     TextSystem& text = machine.system().text();
-    int winNum = text.activeWindow();
-    text.hideTextWindow(winNum);
-    text.newPageOnWindow(winNum);
+    int winNum = text.active_window();
+    text.HideTextWindow(winNum);
+    text.NewPageOnWindow(winNum);
   }
 };
 
@@ -113,9 +113,9 @@ struct msgHideAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
 
-    for (int window : text.activeWindows()) {
-      text.hideTextWindow(window);
-      text.newPageOnWindow(window);
+    for (int window : text.GetActiveWindows()) {
+      text.HideTextWindow(window);
+      text.NewPageOnWindow(window);
     }
   }
 };
@@ -123,43 +123,45 @@ struct msgHideAll : public RLOp_Void_Void {
 struct msgClear : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    int activeWindow = text.activeWindow();
-    text.snapshot();
-    text.textWindow(activeWindow)->clearWin();
-    text.newPageOnWindow(activeWindow);
+    int active_window = text.active_window();
+    text.Snapshot();
+    text.GetTextWindow(active_window)->ClearWin();
+    text.NewPageOnWindow(active_window);
   }
 };
 
 struct msgClearAll : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
-    std::vector<int> activeWindows = text.activeWindows();
-    int activeWindow = text.activeWindow();
+    std::vector<int> active_windows = text.GetActiveWindows();
+    int active_window = text.active_window();
 
-    text.snapshot();
-    for (int window : activeWindows) {
-      text.textWindow(activeWindow)->clearWin();
-      text.newPageOnWindow(window);
+    text.Snapshot();
+    for (int window : active_windows) {
+      // TODO(erg): Found this during refactoring? Just entirely wrong? Dates
+      // all the way back to 2007 in 6938e517e8423e391eeba0fe4b294ad64434243d.
+      text.GetTextWindow(active_window)->ClearWin();
+      text.NewPageOnWindow(window);
     }
   }
 };
 
 struct spause : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(new PauseLongOperation(machine));
+    machine.PushLongOperation(new PauseLongOperation(machine));
   }
 };
 
 struct page : public RLOp_Void_Void {
   void operator()(RLMachine& machine) {
-    machine.pushLongOperation(
+    machine.PushLongOperation(
         new NewPageAfterLongop(new PauseLongOperation(machine)));
   }
 };
 
 struct TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.SetInsertionPointX(x);
     page.SetInsertionPointY(y);
   }
@@ -170,33 +172,33 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
     boost::shared_ptr<TextWindow> textWindow =
-        machine.system().text().currentWindow();
+        machine.system().text().GetCurrentWindow();
 
     if (textWindow) {
-      *x = textWindow->insertionPointX();
-      *y = textWindow->insertionPointY();
+      *x = textWindow->insertion_point_x();
+      *y = textWindow->insertion_point_y();
     }
   }
 };
 
 struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
-    TextPage& page = machine.system().text().currentPage();
-    page.OffsetInsertionPointX(x);
-    page.OffsetInsertionPointY(y);
+    TextPage& page = machine.system().text().GetCurrentPage();
+    page.Offset_insertion_point_x(x);
+    page.Offset_insertion_point_y(y);
   }
 };
 
 struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, std::string file, int index) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceOpen(file, index);
   }
 };
 
 struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int index) {
-    TextPage& page = machine.system().text().currentPage();
+    TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceClose(index);
   }
 };
@@ -204,79 +206,79 @@ struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
 }  // namespace
 
 MsgModule::MsgModule() : RLModule("Msg", 0, 003) {
-  addOpcode(3, 0, "par", new par);
-  //  addOpcode(15, 0, /* spause3 */ );
-  addOpcode(17, 0, "pause", new Msg_pause);
+  AddOpcode(3, 0, "par", new par);
+  //  AddOpcode(15, 0, /* spause3 */ );
+  AddOpcode(17, 0, "pause", new Msg_pause);
 
-  addUnsupportedOpcode(100, 0, "SetFontColour");
-  addOpcode(100, 1, "SetFontColour", new SetFontColour);
-  addOpcode(100, 2, "SetFontColour", new SetFontColour);
-  addOpcode(101, 0, "FontSize", callFunction(&TextPage::FontSize));
-  addOpcode(101, 1, "FontSize", callFunction(&TextPage::DefaultFontSize));
+  AddUnsupportedOpcode(100, 0, "SetFontColour");
+  AddOpcode(100, 1, "SetFontColour", new SetFontColour);
+  AddOpcode(100, 2, "SetFontColour", new SetFontColour);
+  AddOpcode(101, 0, "FontSize", CallFunction(&TextPage::FontSize));
+  AddOpcode(101, 1, "FontSize", CallFunction(&TextPage::DefaultFontSize));
 
-  addOpcode(102, 0, "TextWindow", new Msg_TextWindow);
-  addOpcode(102, 1, "TextWindow", new Msg_TextWindow);
+  AddOpcode(102, 0, "TextWindow", new Msg_TextWindow);
+  AddOpcode(102, 1, "TextWindow", new Msg_TextWindow);
 
-  addOpcode(
-      103, 0, "FastText", callFunctionWith(&TextSystem::setFastTextMode, 1));
-  addOpcode(
-      104, 0, "NormalText", callFunctionWith(&TextSystem::setFastTextMode, 0));
+  AddOpcode(
+      103, 0, "FastText", CallFunctionWith(&TextSystem::set_fast_text_mode, 1));
+  AddOpcode(
+      104, 0, "NormalText", CallFunctionWith(&TextSystem::set_fast_text_mode, 0));
 
-  addOpcode(105, 0, "FontColor", new FontColour);
-  addOpcode(105, 1, "FontColor", new FontColour);
-  addOpcode(105, 2, "FontColor", new FontColour);
+  AddOpcode(105, 0, "FontColor", new FontColour);
+  AddOpcode(105, 1, "FontColor", new FontColour);
+  AddOpcode(105, 2, "FontColor", new FontColour);
 
-  addUnsupportedOpcode(106, 0, "SetFontColourAll");
-  addUnsupportedOpcode(106, 1, "SetFontColourAll");
-  addUnsupportedOpcode(106, 2, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 0, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 1, "SetFontColourAll");
+  AddUnsupportedOpcode(106, 2, "SetFontColourAll");
 
-  addUnsupportedOpcode(107, 0, "FontSizeAll");
+  AddUnsupportedOpcode(107, 0, "FontSizeAll");
 
-  addOpcode(109,
+  AddOpcode(109,
             0,
-            "messageNoWaitOn",
-            callFunctionWith(&TextSystem::setScriptMessageNowait, 1));
-  addOpcode(110,
+            "message_no_waitOn",
+            CallFunctionWith(&TextSystem::set_script_message_nowait, 1));
+  AddOpcode(110,
             0,
-            "messageNoWaitOff",
-            callFunctionWith(&TextSystem::setScriptMessageNowait, 0));
+            "message_no_waitOff",
+            CallFunctionWith(&TextSystem::set_script_message_nowait, 0));
 
-  addOpcode(111, 0, "activeWindow", returnIntValue(&TextSystem::activeWindow));
+  AddOpcode(111, 0, "activeWindow", ReturnIntValue(&TextSystem::active_window));
 
-  addOpcode(120, 0, "__doruby_on", new doruby_display);
-  addOpcode(120, 1, "__doruby_off", callFunction(&TextPage::MarkRubyBegin));
+  AddOpcode(120, 0, "__doruby_on", new doruby_display);
+  AddOpcode(120, 1, "__doruby_off", CallFunction(&TextPage::MarkRubyBegin));
 
-  addOpcode(151, 0, "msgHide", new msgHide);
-  addOpcode(152, 0, "msgClear", new msgClear);
+  AddOpcode(151, 0, "msgHide", new msgHide);
+  AddOpcode(152, 0, "msgClear", new msgClear);
 
-  addOpcode(161, 0, "msgHideAll", new msgHideAll);
-  addOpcode(162, 0, "msgClearAll", new msgClearAll);
-  addUnsupportedOpcode(170, 0, "msgHideAllTemp");
-  addOpcode(201, 0, "br", callFunction(&TextPage::HardBrake));
-  addOpcode(205, 0, "spause", new spause);
-  addUnsupportedOpcode(206, 0, "spause2");
-  addUnsupportedOpcode(207, 0, "pause_all");
-  addOpcode(210, 0, "page", new page);
+  AddOpcode(161, 0, "msgHideAll", new msgHideAll);
+  AddOpcode(162, 0, "msgClearAll", new msgClearAll);
+  AddUnsupportedOpcode(170, 0, "msgHideAllTemp");
+  AddOpcode(201, 0, "br", CallFunction(&TextPage::HardBrake));
+  AddOpcode(205, 0, "spause", new spause);
+  AddUnsupportedOpcode(206, 0, "spause2");
+  AddUnsupportedOpcode(207, 0, "pause_all");
+  AddOpcode(210, 0, "page", new page);
 
-  addOpcode(300, 0, "SetIndent", callFunction(&TextPage::SetIndentation));
-  addOpcode(301, 0, "ClearIndent", callFunction(&TextPage::ResetIndentation));
+  AddOpcode(300, 0, "SetIndent", CallFunction(&TextPage::SetIndentation));
+  AddOpcode(301, 0, "ClearIndent", CallFunction(&TextPage::ResetIndentation));
 
-  addOpcode(310, 0, "TextPos", new TextPos);
-  addOpcode(311, 0, "TextPosX", callFunction(&TextPage::SetInsertionPointX));
-  addOpcode(312, 0, "TextPosY", callFunction(&TextPage::SetInsertionPointY));
-  addOpcode(320, 0, "TextOffset", new TextOffset);
-  addOpcode(
-      321, 0, "TextOffsetX", callFunction(&TextPage::OffsetInsertionPointX));
-  addOpcode(
-      322, 0, "TextOffsetY", callFunction(&TextPage::OffsetInsertionPointY));
-  addOpcode(330, 0, "GetTextPos", new GetTextPos);
+  AddOpcode(310, 0, "TextPos", new TextPos);
+  AddOpcode(311, 0, "TextPosX", CallFunction(&TextPage::SetInsertionPointX));
+  AddOpcode(312, 0, "TextPosY", CallFunction(&TextPage::SetInsertionPointY));
+  AddOpcode(320, 0, "TextOffset", new TextOffset);
+  AddOpcode(
+      321, 0, "TextOffsetX", CallFunction(&TextPage::Offset_insertion_point_x));
+  AddOpcode(
+      322, 0, "TextOffsetY", CallFunction(&TextPage::Offset_insertion_point_y));
+  AddOpcode(330, 0, "GetTextPos", new GetTextPos);
 
-  addUnsupportedOpcode(340, 0, "WindowLen");
-  addUnsupportedOpcode(340, 1, "WindowLen");
-  addUnsupportedOpcode(341, 0, "WindowLenAll");
+  AddUnsupportedOpcode(340, 0, "WindowLen");
+  AddUnsupportedOpcode(340, 1, "WindowLen");
+  AddUnsupportedOpcode(341, 0, "WindowLenAll");
 
-  addOpcode(1000, 0, "FaceOpen", new FaceOpen);
-  addOpcode(1000, 1, "FaceOpen", new FaceOpen);
-  addOpcode(1001, 0, "FaceClose", new FaceClose);
-  addOpcode(1001, 1, "FaceClose", new FaceClose);
+  AddOpcode(1000, 0, "FaceOpen", new FaceOpen);
+  AddOpcode(1000, 1, "FaceOpen", new FaceOpen);
+  AddOpcode(1001, 0, "FaceClose", new FaceClose);
+  AddOpcode(1001, 1, "FaceClose", new FaceClose);
 }

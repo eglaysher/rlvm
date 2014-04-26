@@ -36,15 +36,15 @@
 
 class MediumMsgLoopTest : public FullSystemTest {
  protected:
-  MediumMsgLoopTest() { rlmachine.attachModule(new MsgModule); }
+  MediumMsgLoopTest() { rlmachine.AttachModule(new MsgModule); }
 };
 
 TEST_F(MediumMsgLoopTest, TestFastText) {
-  system.text().setFastTextMode(0);
+  system.text().set_fast_text_mode(0);
 
-  rlmachine.exe("FastText", 0);
-  EXPECT_TRUE(system.text().fastTextMode());
+  rlmachine.Exe("FastText", 0);
+  EXPECT_TRUE(system.text().fast_text_mode());
 
-  rlmachine.exe("NormalText", 0);
-  EXPECT_FALSE(system.text().fastTextMode());
+  rlmachine.Exe("NormalText", 0);
+  EXPECT_FALSE(system.text().fast_text_mode());
 }

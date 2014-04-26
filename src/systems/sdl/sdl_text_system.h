@@ -46,20 +46,20 @@ class SDLTextSystem : public TextSystem {
   SDLTextSystem(SDLSystem& system, Gameexe& gameexe);
   ~SDLTextSystem();
 
-  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number);
+  virtual boost::shared_ptr<TextWindow> GetTextWindow(int text_window_number) override;
 
-  virtual Size renderGlyphOnto(const std::string& current,
+  virtual Size RenderGlyphOnto(const std::string& current,
                                int font_size,
                                bool italic,
                                const RGBColour& font_colour,
                                const RGBColour* shadow_colour,
                                int insertion_point_x,
                                int insertion_point_y,
-                               const boost::shared_ptr<Surface>& destination);
-  virtual int charWidth(int size, uint16_t codepoint);
+                               const boost::shared_ptr<Surface>& destination) override;
+  virtual int GetCharWidth(int size, uint16_t codepoint) override;
 
   // Returns (and caches) a SDL_ttf font object for a font of |size|.
-  boost::shared_ptr<TTF_Font> getFontOfSize(int size);
+  boost::shared_ptr<TTF_Font> GetFontOfSize(int size);
 
  private:
   // Font storage.

@@ -45,12 +45,12 @@ struct RGBColour_T {
     return RGBAColour(r, g, b);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
-    IntConstant_T::parseParameters(position, input, output);
-    IntConstant_T::parseParameters(position, input, output);
-    IntConstant_T::parseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
   }
 
   enum { is_complex = false };
@@ -77,15 +77,15 @@ struct RGBMaybeAColour_T {
     return RGBAColour(r, g, b, a);
   }
 
-  static void parseParameters(unsigned int& position,
+  static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
-    IntConstant_T::parseParameters(position, input, output);
-    IntConstant_T::parseParameters(position, input, output);
-    IntConstant_T::parseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
+    IntConstant_T::ParseParameters(position, input, output);
 
     if (position < input.size()) {
-      IntConstant_T::parseParameters(position, input, output);
+      IntConstant_T::ParseParameters(position, input, output);
     } else {
       output.emplace_back(new libreallive::IntegerConstant(255));
       position++;

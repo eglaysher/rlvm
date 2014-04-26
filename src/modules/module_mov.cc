@@ -30,11 +30,11 @@
 // -----------------------------------------------------------------------
 
 MovModule::MovModule() : RLModule("Mov", 1, 26) {
-  addUnsupportedOpcode(0, 0, "movPlay");
-  addUnsupportedOpcode(1, 0, "movPlayEx");
-  addUnsupportedOpcode(2, 0, "movLoop");
-  addUnsupportedOpcode(3, 0, "movWait");
-  addUnsupportedOpcode(4, 0, "movPlaying");
-  addUnsupportedOpcode(5, 0, "movStop");
-  addUnsupportedOpcode(20, 0, "movPlayExC");
+  AddUnsupportedOpcode(0, 0, "movPlay");
+  AddUnsupportedOpcode(1, 0, "movPlayEx");
+  AddUnsupportedOpcode(2, 0, "movLoop");
+  AddUnsupportedOpcode(3, 0, "movWait");
+  AddUnsupportedOpcode(4, 0, "movPlaying");
+  AddUnsupportedOpcode(5, 0, "movStop");
+  AddUnsupportedOpcode(20, 0, "movPlayExC");
 }

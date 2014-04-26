@@ -42,19 +42,19 @@ namespace {
 void injectMouseMovement(lua_State* L, EventSystem& sys, const Point& loc) {
   ScriptMachine* machine =
       luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseMovement(*machine, loc);
+  sys.InjectMouseMovement(*machine, loc);
 }
 
 void injectMouseDown(lua_State* L, EventSystem& sys) {
   ScriptMachine* machine =
       luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseDown(*machine);
+  sys.InjectMouseDown(*machine);
 }
 
 void injectMouseUp(lua_State* L, EventSystem& sys) {
   ScriptMachine* machine =
       luabind::object_cast<ScriptMachine*>(luabind::globals(L)["Machine"]);
-  sys.injectMouseUp(*machine);
+  sys.InjectMouseUp(*machine);
 }
 
 }  // namespace

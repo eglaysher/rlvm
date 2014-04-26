@@ -44,33 +44,30 @@
 RLModule::RLModule(const std::string& in_module_name,
                    int in_module_type,
                    int in_module_number)
-    : property_list_(NULL),
+    : property_list_(),
       module_type_(in_module_type),
       module_number_(in_module_number),
       module_name_(in_module_name) {}
 
-RLModule::~RLModule() {
-  if (property_list_)
-    delete property_list_;
-}
+RLModule::~RLModule() {}
 
-int RLModule::packOpcodeNumber(int opcode, unsigned char overload) {
+int RLModule::PackOpcodeNumber(int opcode, unsigned char overload) {
   return ((int)opcode << 8) | overload;
 }
 
-void RLModule::unpackOpcodeNumber(int packed_opcode,
+void RLModule::UnpackOpcodeNumber(int packed_opcode,
                                   int& opcode,
                                   unsigned char& overload) {
   opcode = (packed_opcode >> 8);
   overload = packed_opcode & 0xFF;
 }
 
-void RLModule::addOpcode(int opcode,
+void RLModule::AddOpcode(int opcode,
                          unsigned char overload,
                          const char* name,
                          RLOperation* op) {
-  int packed_opcode = packOpcodeNumber(opcode, overload);
-  op->setName(name);
+  int packed_opcode = PackOpcodeNumber(opcode, overload);
+  op->set_name(name);
   op->module_ = this;
 #ifndef NDEBUG
   OpcodeMap::iterator it = stored_operations_.find(packed_opcode);
@@ -86,23 +83,23 @@ void RLModule::addOpcode(int opcode,
       std::make_pair(packed_opcode, std::unique_ptr<RLOperation>(op)));
 }
 
-void RLModule::addUnsupportedOpcode(int opcode,
+void RLModule::AddUnsupportedOpcode(int opcode,
                                     unsigned char overload,
                                     const std::string& name) {
-  addOpcode(opcode,
+  AddOpcode(opcode,
             overload,
             "",
             new UndefinedFunction(
                 name, module_type_, module_number_, opcode, (int)overload));
 }
 
-void RLModule::setProperty(int property, int value) {
+void RLModule::SetProperty(int property, int value) {
   if (!property_list_) {
-    property_list_ = new std::vector<std::pair<int, int>>;
+    property_list_.reset(new std::vector<std::pair<int, int>>);
   }
 
   // Modify the property if it already exists
-  PropertyList::iterator it = findProperty(property);
+  PropertyList::iterator it = FindProperty(property);
   if (it != property_list_->end()) {
     it->second = value;
     return;
@@ -111,9 +108,9 @@ void RLModule::setProperty(int property, int value) {
   property_list_->push_back(std::make_pair(property, value));
 }
 
-bool RLModule::getProperty(int property, int& value) const {
+bool RLModule::GetProperty(int property, int& value) const {
   if (property_list_) {
-    PropertyList::iterator it = findProperty(property);
+    PropertyList::iterator it = FindProperty(property);
     if (it != property_list_->end()) {
       value = it->second;
       return true;
@@ -123,19 +120,19 @@ bool RLModule::getProperty(int property, int& value) const {
   return false;
 }
 
-RLModule::PropertyList::iterator RLModule::findProperty(int property) const {
+RLModule::PropertyList::iterator RLModule::FindProperty(int property) const {
   return find_if(property_list_->begin(),
                  property_list_->end(),
                  [&](Property& p) { return p.first == property; });
 }
 
-void RLModule::dispatchFunction(RLMachine& machine,
+void RLModule::DispatchFunction(RLMachine& machine,
                                 const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =
-      stored_operations_.find(packOpcodeNumber(f.opcode(), f.overload()));
+      stored_operations_.find(PackOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations_.end()) {
     try {
-      it->second->dispatchFunction(machine, f);
+      it->second->DispatchFunction(machine, f);
     }
     catch (rlvm::Exception& e) {
       e.setOperation(it->second.get());
@@ -147,7 +144,7 @@ void RLModule::dispatchFunction(RLMachine& machine,
 }
 
 std::ostream& operator<<(std::ostream& os, const RLModule& module) {
-  os << "mod<" << module.moduleName() << "," << module.moduleType() << ":"
-     << module.moduleNumber() << ">";
+  os << "mod<" << module.module_name() << "," << module.module_type() << ":"
+     << module.module_number() << ">";
   return os;
 }

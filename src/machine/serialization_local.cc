@@ -100,7 +100,7 @@ void saveGameTo(std::ostream& oss, RLMachine& machine) {
   filtered_output.push(boost::iostreams::zlib_compressor());
   filtered_output.push(oss);
 
-  const SaveGameHeader header(machine.system().graphics().windowSubtitle());
+  const SaveGameHeader header(machine.system().graphics().window_subtitle());
 
   g_current_machine = &machine;
 
@@ -129,7 +129,7 @@ fs::path buildSaveGameFilename(RLMachine& machine, int slot) {
   std::ostringstream oss;
   oss << "save" << std::setw(3) << std::setfill('0') << slot << ".sav.gz";
 
-  return machine.system().gameSaveDirectory() / oss.str();
+  return machine.system().GameSaveDirectory() / oss.str();
 }
 
 SaveGameHeader loadHeaderForSlot(RLMachine& machine, int slot) {
@@ -197,16 +197,16 @@ void loadGameFrom(std::istream& iss, RLMachine& machine) {
   try {
     // Must clear the stack before reseting the System because LongOperations
     // often hold references to objects in the System heiarchy.
-    machine.reset();
+    machine.Reset();
 
     boost::archive::text_iarchive ia(filtered_input);
     ia >> version >> header >> machine.memory().local() >> machine >>
         machine.system() >> machine.system().graphics() >>
         machine.system().text() >> machine.system().sound();
 
-    machine.system().graphics().replayGraphicsStack(machine);
+    machine.system().graphics().ReplayGraphicsStack(machine);
 
-    machine.system().graphics().forceRefresh();
+    machine.system().graphics().ForceRefresh();
   }
   catch (std::exception& e) {
     std::cerr << "--- WARNING: ERROR DURING LOADING FILE: " << e.what()

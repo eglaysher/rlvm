@@ -47,7 +47,7 @@ class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
   virtual ~Obj_GetInt() {}
 
   virtual int operator()(RLMachine& machine, int buf) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, buf);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     return ((obj).*(getter_))();
   }
 
@@ -67,7 +67,7 @@ struct objGetPos
                   int objNum,
                   IntReferenceIterator xIt,
                   IntReferenceIterator yIt) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     *xIt = obj.x();
     *yIt = obj.y();
   }
@@ -75,15 +75,15 @@ struct objGetPos
 
 struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
-    return obj.xAdjustment(repno);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
+    return obj.x_adjustment(repno);
   }
 };
 
 struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
-    return obj.yAdjustment(repno);
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
+    return obj.y_adjustment(repno);
   }
 };
 
@@ -99,29 +99,30 @@ struct objGetDims : public RLOp_Void_4<IntConstant_T,
                   IntReferenceIterator widthIt,
                   IntReferenceIterator heightIt,
                   int unknown) {
-    GraphicsObject& obj = getGraphicsObject(machine, this, objNum);
-    *widthIt = obj.pixelWidth();
-    *heightIt = obj.pixelHeight();
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
+    *widthIt = obj.PixelWidth();
+    *heightIt = obj.PixelHeight();
   }
 };
 
 void addFunctions(RLModule& m) {
-  m.addOpcode(1000, 0, "objGetPos", new objGetPos);
-  m.addOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
-  m.addOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
-  m.addOpcode(
-      1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::rawAlpha));
-  m.addOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
+  m.AddOpcode(1000, 0, "objGetPos", new objGetPos);
+  m.AddOpcode(1001, 0, "objGetPosX", new Obj_GetInt(&GraphicsObject::x));
+  m.AddOpcode(1002, 0, "objGetPosY", new Obj_GetInt(&GraphicsObject::y));
+  m.AddOpcode(
+      1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::raw_alpha));
+  m.AddOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
 
-  m.addOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
-  m.addOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
-  m.addOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));
-  m.addOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
-  m.addOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
+  m.AddOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
+  m.AddOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
+  m.AddOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));
+  m.AddOpcode(1010, 0, "objGetInvert", new Obj_GetInt(&GraphicsObject::invert));
+  m.AddOpcode(1011, 0, "objGetLight", new Obj_GetInt(&GraphicsObject::light));
 
-  m.addOpcode(1039, 0, "objGetPattNo", new Obj_GetInt(&GraphicsObject::pattNo));
-  m.addOpcode(1100, 0, "objGetDims", new objGetDims);
-  m.addOpcode(1100, 1, "objGetDims", new objGetDims);
+  m.AddOpcode(1039, 0, "objGetPattNo",
+              new Obj_GetInt(&GraphicsObject::GetPattNo));
+  m.AddOpcode(1100, 0, "objGetDims", new objGetDims);
+  m.AddOpcode(1100, 1, "objGetDims", new objGetDims);
 }
 
 }  // namespace
@@ -130,28 +131,28 @@ void addFunctions(RLModule& m) {
 
 ObjFgGettersModule::ObjFgGettersModule() : RLModule("ObjFgGetters", 1, 84) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ObjBgGettersModule::ObjBgGettersModule() : RLModule("ObjBgGetters", 1, 85) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildObjFgGettersModule::ChildObjFgGettersModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjFgGetters", 2, 84) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFgGetters", 2, 84) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_FG);
+  SetProperty(P_FGBG, OBJ_FG);
 }
 
 // -----------------------------------------------------------------------
 
 ChildObjBgGettersModule::ChildObjBgGettersModule()
-    : MappedRLModule(childObjMappingFun, "ChildObjBgGetters", 2, 85) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBgGetters", 2, 85) {
   addFunctions(*this);
-  setProperty(P_FGBG, OBJ_BG);
+  SetProperty(P_FGBG, OBJ_BG);
 }

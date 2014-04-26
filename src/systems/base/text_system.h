@@ -98,128 +98,128 @@ class TextSystem : public EventListener {
   virtual ~TextSystem();
 
   // Controls whether the text system is rendered at all.
-  void setSystemVisible(bool in) { system_visible_ = in; }
-  bool systemVisible() const { return system_visible_; }
+  bool system_visible() const { return system_visible_; }
+  void set_system_visible(bool in) { system_visible_ = in; }
 
-  void executeTextSystem();
+  void ExecuteTextSystem();
 
-  void render(std::ostream* tree);
-  void hideTextWindow(int win_number);
-  void hideAllTextWindows();
-  void hideAllTextWindowsExcept(int i);
-  void showTextWindow(int win_number);
-  void showAllTextWindows();
-  void clearAllTextWindows();
-  void setVisualOverride(int win_number, bool show_window);
-  void setVisualOverrideAll(bool show_window);
-  void clearVisualOverrides();
-  virtual boost::shared_ptr<TextWindow> textWindow(int text_window_number) = 0;
-  boost::shared_ptr<TextWindow> currentWindow();
+  void Render(std::ostream* tree);
+  void HideTextWindow(int win_number);
+  void HideAllTextWindows();
+  void HideAllTextWindowsExcept(int i);
+  void ShowTextWindow(int win_number);
+  void ShowAllTextWindows();
+  void ClearAllTextWindows();
+  void SetVisualOverride(int win_number, bool show_window);
+  void SetVisualOverrideAll(bool show_window);
+  void ClearVisualOverrides();
+  virtual boost::shared_ptr<TextWindow> GetTextWindow(int text_window_number) = 0;
+  boost::shared_ptr<TextWindow> GetCurrentWindow();
 
-  void setInPauseState(bool in) { in_pause_state_ = in; }
+  void set_in_pause_state(bool in) { in_pause_state_ = in; }
 
-  int activeWindow() const { return active_window_; }
-  void setActiveWindow(int window) { active_window_ = window; }
+  int active_window() const { return active_window_; }
+  void set_active_window(int window) { active_window_ = window; }
 
-  std::vector<int> activeWindows();
+  std::vector<int> GetActiveWindows();
 
   // Take a snapshot of the current window state, with their
   // respective TextPages, and add it to the backlog.
-  void snapshot();
+  void Snapshot();
 
   // Resets the text page in the current_set
-  void newPageOnWindow(int window);
+  void NewPageOnWindow(int window);
 
   // Get the active page. This function will return
   // windows_[active_window_].page().
-  TextPage& currentPage();
+  TextPage& GetCurrentPage();
 
   // Clears the screen, moves back one page and renders it.
-  void backPage();
-  void forwardPage();
+  void BackPage();
+  void ForwardPage();
 
-  void replayPageSet(PageSet& set, bool is_current_page);
+  void ReplayPageSet(PageSet& set, bool is_current_page);
 
-  bool isReadingBacklog() const;
-  void stopReadingBacklog();
+  bool IsReadingBacklog() const;
+  void StopReadingBacklog();
 
   // A temporary version of |message_no_wait_| controllable by the script.
-  void setScriptMessageNowait(const int in) { script_message_no_wait_ = in; }
-  int scriptMessageNowait() const { return script_message_no_wait_; }
+  void set_script_message_nowait(const int in) { script_message_no_wait_ = in; }
+  int script_message_nowait() const { return script_message_no_wait_; }
 
   // It is possible to set the interpreter up to advance text
   // automatically instead of waiting for player input after each
   // screen is displayed; the `auto mode' controls permit this
   // behaviour to be customized.
-  void setAutoMode(int i);
-  int autoMode() const { return (int)auto_mode_; }
+  int auto_mode() const { return (int)auto_mode_; }
+  void SetAutoMode(int i);
 
-  void setAutoBaseTime(int i) { globals_.auto_mode_base_time = i; }
-  int autoBaseTime() const { return globals_.auto_mode_base_time; }
+  int auto_base_time() const { return globals_.auto_mode_base_time; }
+  void set_auto_base_time(int i) { globals_.auto_mode_base_time = i; }
 
-  void setAutoCharTime(int i) { globals_.auto_mode_char_time = i; }
+  void set_auto_char_time(int i) { globals_.auto_mode_char_time = i; }
   int autoCharTime() const { return globals_.auto_mode_char_time; }
 
-  int getAutoTime(int num_chars);
+  int GetAutoTime(int num_chars);
 
-  void setKeyCursor(int new_cursor);
+  void SetKeyCursor(int new_cursor);
 
   // Returns the key cursor index. (or -1 if no key cursor).
-  int cursorNumber() const;
+  int GetCursorNumber() const;
 
-  void setCtrlKeySkip(int i) { ctrl_key_skip_ = i; }
-  int ctrlKeySkip() const { return ctrl_key_skip_; }
+  int ctrl_key_skip() const { return ctrl_key_skip_; }
+  void set_ctrl_key_skip(int i) { ctrl_key_skip_ = i; }
 
-  void setFastTextMode(int i) { fast_text_mode_ = i; }
-  int fastTextMode() const { return fast_text_mode_; }
+  int fast_text_mode() const { return fast_text_mode_; }
+  void set_fast_text_mode(int i) { fast_text_mode_ = i; }
 
-  void setMessageNoWait(int i) { message_no_wait_ = i; }
-  int messageNoWait() const { return message_no_wait_; }
+  int message_no_wait() const { return message_no_wait_; }
+  void set_message_no_wait(int i) { message_no_wait_ = i; }
 
-  void setMessageSpeed(int i) { globals_.message_speed = i; }
-  int messageSpeed() const { return globals_.message_speed; }
+  int message_speed() const { return globals_.message_speed; }
+  void set_message_speed(int i) { globals_.message_speed = i; }
 
-  void setFontWeight(int i) { globals_.font_weight = i; }
-  int fontWeight() const { return globals_.font_weight; }
+  int font_weight() const { return globals_.font_weight; }
+  void set_font_weight(int i) { globals_.font_weight = i; }
 
-  void setFontShadow(int i) { globals_.font_shadow = i; }
-  int fontShadow() const { return globals_.font_shadow; }
+  int font_shadow() const { return globals_.font_shadow; }
+  void set_font_shadow(int i) { globals_.font_shadow = i; }
 
-  void setDefaultWindowAttr(const std::vector<int>& attr);
-  std::vector<int> windowAttr() const { return globals_.window_attr; }
+  const std::vector<int>& window_attr() const { return globals_.window_attr; }
+  void SetDefaultWindowAttr(const std::vector<int>& attr);
 
-  int windowAttrR() const { return globals_.window_attr.at(0); }
-  int windowAttrG() const { return globals_.window_attr.at(1); }
-  int windowAttrB() const { return globals_.window_attr.at(2); }
-  int windowAttrA() const { return globals_.window_attr.at(3); }
-  int windowAttrF() const { return globals_.window_attr.at(4); }
+  int window_attr_r() const { return globals_.window_attr.at(0); }
+  int window_attr_g() const { return globals_.window_attr.at(1); }
+  int window_attr_b() const { return globals_.window_attr.at(2); }
+  int window_attr_a() const { return globals_.window_attr.at(3); }
+  int window_attr_f() const { return globals_.window_attr.at(4); }
 
-  void setWindowAttrR(int i);
-  void setWindowAttrG(int i);
-  void setWindowAttrB(int i);
-  void setWindowAttrA(int i);
-  void setWindowAttrF(int i);
+  void SetWindowAttrR(int i);
+  void SetWindowAttrG(int i);
+  void SetWindowAttrB(int i);
+  void SetWindowAttrA(int i);
+  void SetWindowAttrF(int i);
 
-  bool windowMoveUse() const { return move_use_; }
-  bool windowClearUse() const { return clear_use_; }
-  bool windowReadJumpUse() const { return read_jump_use_; }
-  bool windowAutomodeUse() const { return automode_use_; }
-  bool windowMsgbkUse() const { return msgbk_use_; }
-  bool windowMsgbkleftUse() const { return msgbkleft_use_; }
-  bool windowMsgbkrightUse() const { return msgbkright_use_; }
-  bool windowExbtnUse() const { return exbtn_use_; }
+  bool window_move_use() const { return move_use_; }
+  bool window_clear_use() const { return clear_use_; }
+  bool window_read_jump_use() const { return read_jump_use_; }
+  bool window_automode_use() const { return automode_use_; }
+  bool window_msgbk_use() const { return msgbk_use_; }
+  bool window_msgbkleft_use() const { return msgbkleft_use_; }
+  bool window_msgbkright_use() const { return msgbkright_use_; }
+  bool window_exbtn_use() const { return exbtn_use_; }
 
   // Update the mouse cursor.
-  void setMousePosition(const Point& pos);
-  bool handleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
+  void SetMousePosition(const Point& pos);
+  bool HandleMouseClick(RLMachine& machine, const Point& pos, bool pressed);
 
   // Save pieces of state that would be saved to disk.
-  void takeSavepointSnapshot();
+  void TakeSavepointSnapshot();
 
   // Returns a surface with |utf8str| rendered with the other specified
   // properties. Will search |utf8str| for object text syntax and will change
   // various properties based on that syntax.
-  boost::shared_ptr<Surface> renderText(const std::string& utf8str,
+  boost::shared_ptr<Surface> RenderText(const std::string& utf8str,
                                         int size,
                                         int xspace,
                                         int yspace,
@@ -228,7 +228,7 @@ class TextSystem : public EventListener {
                                         int max_chars_in_line);
 
   // Renders a glyph onto destination. Returns the size of the glyph blitted.
-  virtual Size renderGlyphOnto(
+  virtual Size RenderGlyphOnto(
       const std::string& current,
       int font_size,
       bool italic,
@@ -238,33 +238,33 @@ class TextSystem : public EventListener {
       int insertion_point_y,
       const boost::shared_ptr<Surface>& destination) = 0;
 
-  virtual int charWidth(int size, uint16_t codepoint) = 0;
+  virtual int GetCharWidth(int size, uint16_t codepoint) = 0;
 
   TextSystemGlobals& globals() { return globals_; }
 
   // Resets non-configuration values (so we can load games).
-  virtual void reset();
+  virtual void Reset();
 
-  bool kidokuRead() const { return kidoku_read_; }
-  void setKidokuRead(const int in);
+  bool kidoku_read() const { return kidoku_read_; }
+  void SetKidokuRead(const int in);
 
-  bool skipMode() const { return skip_mode_; }
-  void setSkipMode(int in);
+  bool skip_mode() const { return skip_mode_; }
+  void SetSkipMode(int in);
 
-  bool currentlySkipping() const;
+  bool CurrentlySkipping() const;
 
-  void setInSelectionMode(const bool in) { in_selection_mode_ = in; }
+  void set_in_selection_mode(const bool in) { in_selection_mode_ = in; }
 
   // Overriden from EventListener
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button, bool pressed) override;
+  virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
 
   System& system() { return system_; }
 
  protected:
-  void updateWindowsForChangeToWindowAttr();
+  void UpdateWindowsForChangeToWindowAttr();
 
-  bool showWindow(int win_num) const;
+  bool ShowWindow(int win_num) const;
 
   // TextPage will call our internals since it actually does most of
   // the work while we hold state.
@@ -318,7 +318,7 @@ class TextSystem : public EventListener {
   bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
       msgbkleft_use_, msgbkright_use_, exbtn_use_;
 
-  void checkAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
+  void CheckAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
 
   TextSystemGlobals globals_;
 
@@ -368,7 +368,7 @@ void parseNames(const Memory& memory,
                 const std::string& input,
                 std::string& output);
 
-// LongOperation which just calls text().setSystemVisible(true) and removes
+// LongOperation which just calls text().set_system_visible(true) and removes
 // itself from the callstack.
 struct RestoreTextSystemVisibility : public LongOperation {
   virtual bool operator()(RLMachine& machine);

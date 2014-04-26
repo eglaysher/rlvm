@@ -35,7 +35,7 @@ TomoyoAfterDT00DLL::TomoyoAfterDT00DLL() {
 
 TomoyoAfterDT00DLL::~TomoyoAfterDT00DLL() {}
 
-int TomoyoAfterDT00DLL::callDLL(RLMachine& machine,
+int TomoyoAfterDT00DLL::CallDLL(RLMachine& machine,
                                 int func,
                                 int arg1,
                                 int arg2,
@@ -45,7 +45,7 @@ int TomoyoAfterDT00DLL::callDLL(RLMachine& machine,
   return 0;
 }
 
-const std::string& TomoyoAfterDT00DLL::name() const {
+const std::string& TomoyoAfterDT00DLL::GetDLLName() const {
   static std::string n("DT00");
   return n;
 }

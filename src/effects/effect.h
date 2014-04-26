@@ -68,15 +68,15 @@ class Effect : public LongOperation {
   virtual ~Effect();
 
   // Implements the LongOperation calling interface. This simply keeps
-  // track of the current time and calls performEffectForTime() until
+  // track of the current time and calls PerformEffectForTime() until
   // time > duration_, when the default implementation simply sets
   // the current dc0 to the original dc0, then blits dc1 onto it.
   virtual bool operator()(RLMachine& machine);
 
   // Accessors for which surfaces we're composing. These are public as
   // an ugly hack for ScrollOnScrollOff.cpp.
-  Surface& srcSurface() { return *src_surface_; }
-  Surface& dstSurface() { return *dst_surface_; }
+  Surface& src_surface() { return *src_surface_; }
+  Surface& dst_surface() { return *dst_surface_; }
 
  protected:
   Size size() const { return screen_size_; }
@@ -86,12 +86,12 @@ class Effect : public LongOperation {
 
   // Implements the effect. Usually, this is all that needs to be
   // overriden, other then the public constructor.
-  virtual void performEffectForTime(RLMachine& machine, int currentTime) = 0;
+  virtual void PerformEffectForTime(RLMachine& machine, int currentTime) = 0;
 
  private:
   // Whether the orriginal dc0 should be blitted onto the target
   // surface before we pass control to the effect
-  virtual bool blitOriginalImage() const = 0;
+  virtual bool BlitOriginalImage() const = 0;
 
   // Defines the size of the screen; since effects update the entire screen.
   Size screen_size_;
@@ -127,10 +127,10 @@ class BlitAfterEffectFinishes : public PerformAfterLongOperationDecorator {
                           const Rect& srcRect,
                           const Rect& destRect);
 
-  ~BlitAfterEffectFinishes();
+  virtual ~BlitAfterEffectFinishes();
 
  private:
-  virtual void performAfterLongOperation(RLMachine& machine);
+  virtual void PerformAfterLongOperation(RLMachine& machine) override;
 
   // The source surface (previously known as DC1, before I realized
   // that temporary surfaces could in fact be part of effects)

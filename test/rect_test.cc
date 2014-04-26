@@ -31,33 +31,33 @@
 TEST(RectTest, EmptyIntersection) {
   Rect empty;
   Rect empty2;
-  Rect t = empty.intersection(empty2);
-  EXPECT_TRUE(t.isEmpty());
+  Rect t = empty.Intersection(empty2);
+  EXPECT_TRUE(t.is_empty());
 }
 
 TEST(RectTest, ZeroIntersection) {
   Rect one = Rect::REC(0, 0, 1, 1);
   Rect two = Rect::REC(5, 5, 1, 1);
-  Rect t = one.intersection(two);
-  EXPECT_TRUE(t.isEmpty());
+  Rect t = one.Intersection(two);
+  EXPECT_TRUE(t.is_empty());
 }
 
 TEST(RectTest, NormalIntersection) {
   Rect one = Rect::REC(0, 0, 6, 6);
   Rect two = Rect::REC(4, 4, 6, 6);
-  EXPECT_EQ(Rect::REC(4, 4, 2, 2), one.intersection(two));
+  EXPECT_EQ(Rect::REC(4, 4, 2, 2), one.Intersection(two));
 }
 
 TEST(RectTest, IdentityInsetRectangle) {
   Rect one = Rect::GRP(0, 0, 10, 10);
   Rect two = Rect::GRP(4, 4, 6, 6);
-  EXPECT_EQ(two, one.getInsetRectangle(two));
+  EXPECT_EQ(two, one.GetInsetRectangle(two));
 }
 
 TEST(RectTest, BottomLeftInsetRectangle) {
   Rect one = Rect::GRP(1, 1, 9, 9);
   Rect two = Rect::GRP(1, 5, 5, 9);
-  EXPECT_EQ(Rect::REC(0, 4, 4, 4), one.getInsetRectangle(two));
+  EXPECT_EQ(Rect::REC(0, 4, 4, 4), one.GetInsetRectangle(two));
 }
 
 // TODO: Write tests for applyInset.

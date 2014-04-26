@@ -126,13 +126,4 @@ Mapping::Mapping(string filename, Mode mode, off_t min_size)
 
 Mapping::~Mapping() { mclose(); }
 
-void Mapping::replace(string newfilename) {
-  mclose();
-  if (unlink(fn_.c_str()) != 0 ||
-      rename(newfilename.c_str(), fn_.c_str()) != 0) {
-    throw Error("Failed to replace file");
-  }
-  mopen();
-}
-
 }  // namespace libreallive

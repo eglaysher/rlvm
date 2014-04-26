@@ -63,22 +63,23 @@ class LongOperation : public EventListener {
 class PerformAfterLongOperationDecorator : public LongOperation {
  public:
   explicit PerformAfterLongOperationDecorator(LongOperation* in_op);
-  ~PerformAfterLongOperationDecorator();
+  virtual ~PerformAfterLongOperationDecorator();
 
   // Overridden from EventListener:
   // Forward all messages to our held operation
-  virtual void mouseMotion(const Point& new_location);
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+  virtual void MouseMotion(const Point& new_location) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button,
+                                       bool pressed) override;
+  virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
 
  private:
-  std::unique_ptr<LongOperation> operation_;
-
   // Payload of decorator implemented by subclasses
-  virtual void performAfterLongOperation(RLMachine& machine) = 0;
+  virtual void PerformAfterLongOperation(RLMachine& machine) = 0;
+
+  std::unique_ptr<LongOperation> operation_;
 };
 
 #endif  // SRC_MACHINE_LONG_OPERATION_H_

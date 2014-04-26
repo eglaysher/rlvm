@@ -40,14 +40,14 @@ using namespace std;
 namespace {
 
 GraphicsObject& getFgObject(GraphicsSystem& sys, int obj_number) {
-  return sys.getObject(0, obj_number);
+  return sys.GetObject(0, obj_number);
 }
 
 GraphicsObject& getChildFgObject(GraphicsSystem& sys, int parent, int child) {
-  GraphicsObject& obj = sys.getObject(0, parent);
-  if (obj.hasObjectData() && obj.objectData().isParentLayer()) {
-    return static_cast<ParentGraphicsObjectData&>(obj.objectData())
-        .getObject(child);
+  GraphicsObject& obj = sys.GetObject(0, parent);
+  if (obj.has_object_data() && obj.GetObjectData().IsParentLayer()) {
+    return static_cast<ParentGraphicsObjectData&>(obj.GetObjectData())
+        .GetObject(child);
   }
 
   cerr << "WARNING: Couldn't get child object (" << parent << ", " << child

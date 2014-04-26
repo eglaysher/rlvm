@@ -41,7 +41,7 @@ std::ostream& operator<<(std::ostream& os, const Point& p) {
 // -----------------------------------------------------------------------
 // Size
 // -----------------------------------------------------------------------
-Rect Size::centeredIn(const Rect& r) const {
+Rect Size::CenteredIn(const Rect& r) const {
   int half_r_width = r.width() / 2;
   int half_r_height = r.height() / 2;
 
@@ -54,7 +54,7 @@ Rect Size::centeredIn(const Rect& r) const {
   return Rect(Point(new_x, new_y), *this);
 }
 
-Size Size::sizeUnion(const Size& rhs) const {
+Size Size::SizeUnion(const Size& rhs) const {
   return Size(std::max(width_, rhs.width_), std::max(height_, rhs.height_));
 }
 
@@ -66,17 +66,17 @@ std::ostream& operator<<(std::ostream& os, const Size& s) {
 // -----------------------------------------------------------------------
 // Rect
 // -----------------------------------------------------------------------
-bool Rect::contains(const Point& loc) {
+bool Rect::Contains(const Point& loc) {
   return loc.x() >= x() && loc.x() < x2() && loc.y() >= y() && loc.y() < y2();
 }
 
-bool Rect::intersects(const Rect& rhs) const {
+bool Rect::Intersects(const Rect& rhs) const {
   return !(x() > rhs.x2() || x2() < rhs.x() || y() > rhs.y2() ||
            y2() < rhs.y());
 }
 
-Rect Rect::intersection(const Rect& rhs) const {
-  if (intersects(rhs)) {
+Rect Rect::Intersection(const Rect& rhs) const {
+  if (Intersects(rhs)) {
     return Rect::GRP(std::max(x(), rhs.x()),
                      std::max(y(), rhs.y()),
                      std::min(x2(), rhs.x2()),
@@ -86,10 +86,10 @@ Rect Rect::intersection(const Rect& rhs) const {
   return Rect();
 }
 
-Rect Rect::rectUnion(const Rect& rhs) const {
-  if (isEmpty()) {
+Rect Rect::RectUnion(const Rect& rhs) const {
+  if (is_empty()) {
     return rhs;
-  } else if (rhs.isEmpty()) {
+  } else if (rhs.is_empty()) {
     return *this;
   } else {
     return Rect::GRP(std::min(x(), rhs.x()),
@@ -99,12 +99,12 @@ Rect Rect::rectUnion(const Rect& rhs) const {
   }
 }
 
-Rect Rect::getInsetRectangle(const Rect& rhs) const {
+Rect Rect::GetInsetRectangle(const Rect& rhs) const {
   Size p = rhs.origin() - origin();
   return Rect(Point(p.width(), p.height()), rhs.size());
 }
 
-Rect Rect::applyInset(const Rect& inset) const {
+Rect Rect::ApplyInset(const Rect& inset) const {
   Point p = origin() + inset.origin();
   return Rect(p, inset.size());
 }

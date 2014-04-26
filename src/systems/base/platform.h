@@ -43,24 +43,24 @@ class Platform {
   virtual ~Platform();
 
   // Returns a game specific string from the Gameexe.ini file.
-  std::string syscomString(const std::string& key) const;
+  std::string GetSyscomString(const std::string& key) const;
 
   // Called every cycle.
-  virtual void run(RLMachine& machine) = 0;
+  virtual void Run(RLMachine& machine) = 0;
 
   // Called on a right click where the game doesn't have its own syscom
   // handler.
-  virtual void showNativeSyscomMenu(RLMachine& machine) = 0;
+  virtual void ShowNativeSyscomMenu(RLMachine& machine) = 0;
 
   // Invokes a standard dialog.
-  virtual void invokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
+  virtual void InvokeSyscomStandardUI(RLMachine& machine, int syscom) = 0;
 
   // Displays the current interpreter info.
-  virtual void showSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
+  virtual void ShowSystemInfo(RLMachine& machine, const RlvmInfo& info) = 0;
 
  private:
   // Strips quotes off of value and adds it to our internal strings database.
-  void addSyscomStringFor(const std::string& key, const std::string& value);
+  void AddSyscomStringFor(const std::string& key, const std::string& value);
 
   // Parsed out syscom strings from the Gameexe.ini file. Gameexe.ini files
   // are in some input encoding (usually Shift_JIS), but the text system

@@ -313,8 +313,8 @@ void TextPage::Replay(bool is_active_page) {
   if (!is_active_page) {
     Gameexe& gexe = system_->gameexe();
     GameexeInterpretObject colour(gexe("COLOR_TABLE", 254));
-    if (colour.exists()) {
-      system_->text().textWindow(window_num_)->setFontColor(colour);
+    if (colour.Exists()) {
+      system_->text().GetTextWindow(window_num_)->SetFontColor(colour);
     }
   }
 
@@ -391,11 +391,11 @@ void TextPage::SetInsertionPointY(int y) {
   AddAction(Command(TYPE_SET_INSERTION_Y, y));
 }
 
-void TextPage::OffsetInsertionPointX(int offset) {
+void TextPage::Offset_insertion_point_x(int offset) {
   AddAction(Command(TYPE_OFFSET_INSERTION_X, offset));
 }
 
-void TextPage::OffsetInsertionPointY(int offset) {
+void TextPage::Offset_insertion_point_y(int offset) {
   AddAction(Command(TYPE_OFFSET_INSERTION_Y, offset));
 }
 
@@ -412,7 +412,7 @@ void TextPage::NextCharIsItalic() {
 }
 
 bool TextPage::IsFull() const {
-  return system_->text().textWindow(window_num_)->isFull();
+  return system_->text().GetTextWindow(window_num_)->IsFull();
 }
 
 void TextPage::AddAction(const Command& command) {
@@ -421,76 +421,76 @@ void TextPage::AddAction(const Command& command) {
 }
 
 bool TextPage::CharacterImpl(const string& c, const string& rest) {
-  return system_->text().textWindow(window_num_)->character(c, rest);
+  return system_->text().GetTextWindow(window_num_)->DisplayCharacter(c, rest);
 }
 
 void TextPage::RunTextPageCommand(const Command& command,
                                   bool is_active_page) {
   boost::shared_ptr<TextWindow> window =
-      system_->text().textWindow(window_num_);
+      system_->text().GetTextWindow(window_num_);
 
   switch (command.command) {
     case TYPE_CHARACTERS:
       if (command.characters.size()) {
-        printTextToFunction(
+        PrintTextToFunction(
             bind(&TextPage::CharacterImpl, ref(*this), _1, _2),
             command.characters,
             "");
       }
       break;
     case TYPE_NAME:
-      window->setName(command.name.name, command.name.next_char);
+      window->SetName(command.name.name, command.name.next_char);
       break;
     case TYPE_KOE_MARKER:
       if (!is_active_page)
-        window->koeMarker(command.koe_id);
+        window->KoeMarker(command.koe_id);
       break;
     case TYPE_HARD_BREAK:
-      window->hardBrake();
+      window->HardBrake();
       break;
     case TYPE_SET_INDENTATION:
-      window->setIndentation();
+      window->SetIndentation();
       break;
     case TYPE_RESET_INDENTATION:
-      window->resetIndentation();
+      window->ResetIndentation();
       break;
     case TYPE_FONT_COLOUR:
       if (is_active_page) {
-        window->setFontColor(
+        window->SetFontColor(
             system_->gameexe()("COLOR_TABLE", command.font_colour));
       }
       break;
     case TYPE_DEFAULT_FONT_SIZE:
-      window->setFontSizeToDefault();
+      window->set_font_size_to_default();
       break;
     case TYPE_FONT_SIZE:
-      window->setFontSizeInPixels(command.font_size);
+      window->set_font_size_in_pixels(command.font_size);
       break;
     case TYPE_RUBY_BEGIN:
-      window->markRubyBegin();
+      window->MarkRubyBegin();
       in_ruby_gloss_ = true;
       break;
     case TYPE_RUBY_END:
-      window->displayRubyText(command.ruby_text);
+      window->DisplayRubyText(command.ruby_text);
       in_ruby_gloss_ = false;
       break;
     case TYPE_SET_INSERTION_X:
-      window->setInsertionPointX(command.set_insertion_x);
+      window->set_insertion_point_x(command.set_insertion_x);
       break;
     case TYPE_SET_INSERTION_Y:
-      window->setInsertionPointY(command.set_insertion_y);
+      window->set_insertion_point_y(command.set_insertion_y);
       break;
     case TYPE_OFFSET_INSERTION_X:
-      window->offsetInsertionPointX(command.offset_insertion_x);
+      window->offset_insertion_point_x(command.offset_insertion_x);
       break;
     case TYPE_OFFSET_INSERTION_Y:
-      window->offsetInsertionPointY(command.offset_insertion_y);
+      window->offset_insertion_point_y(command.offset_insertion_y);
       break;
     case TYPE_FACE_OPEN:
-      window->faceOpen(command.face_open.filename, command.face_open.index);
+      window->FaceOpen(command.face_open.filename, command.face_open.index);
       break;
     case TYPE_FACE_CLOSE:
-      window->faceClose(command.face_close);
+      window->FaceClose(command.face_close);
       break;
     case TYPE_NEXT_CHAR_IS_ITALIC:
       window->NextCharIsItalic();

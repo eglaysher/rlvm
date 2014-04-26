@@ -47,18 +47,18 @@ namespace fs = boost::filesystem;
 namespace libreallive {
 
 Archive::Archive(const std::string& filename)
-    : name(filename), info(filename, Read), second_level_xor_key_(NULL) {
-  readTOC();
-  readOverrides();
+    : name_(filename), info_(filename, Read), second_level_xor_key_(NULL) {
+  ReadTOC();
+  ReadOverrides();
 }
 
 Archive::Archive(const std::string& filename, const std::string& regname)
-    : name(filename),
-      info(filename, Read),
+    : name_(filename),
+      info_(filename, Read),
       second_level_xor_key_(NULL),
       regname_(regname) {
-  readTOC();
-  readOverrides();
+  ReadTOC();
+  ReadOverrides();
 
   if (regname == "KEY\\CLANNAD_FV") {
     second_level_xor_key_ =
@@ -92,24 +92,47 @@ Archive::Archive(const std::string& filename, const std::string& regname)
   }
 }
 
-Archive::~Archive() {
-  for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it)
-    delete it->second;
+Archive::~Archive() {}
+
+Scenario* Archive::GetScenario(int index) {
+  accessed_t::const_iterator at = accessed_.find(index);
+  if (at != accessed_.end())
+    return at->second.get();
+  scenarios_t::const_iterator st = scenarios_.find(index);
+  if (st != scenarios_.end()) {
+    Scenario* scene =
+        new Scenario(st->second, index, regname_, second_level_xor_key_);
+    accessed_[index].reset(scene);
+    return scene;
+  }
+  return NULL;
 }
 
-void Archive::readTOC() {
-  const char* idx = info.get();
+int Archive::GetProbableEncodingType() const {
+  // Directly create Header objects instead of Scenarios. We don't want to
+  // parse the entire SEEN file here.
+  for (const_iterator it = scenarios_.begin(); it != scenarios_.end(); ++it) {
+    Header header(it->second.data, it->second.length);
+    if (header.rldev_metadata_.text_encoding() != 0)
+      return header.rldev_metadata_.text_encoding();
+  }
+
+  return 0;
+}
+
+void Archive::ReadTOC() {
+  const char* idx = info_.get();
   for (int i = 0; i < 10000; ++i, idx += 8) {
     const int offs = read_i32(idx);
     if (offs)
-      scenarios[i] = FilePos(info.get() + offs, read_i32(idx + 4));
+      scenarios_[i] = FilePos(info_.get() + offs, read_i32(idx + 4));
   }
 }
 
-void Archive::readOverrides() {
+void Archive::ReadOverrides() {
   // Iterate over all files in the directory and override the table of contents
   // if there is a free SEENXXXX.TXT file.
-  fs::path seen_dir = fs::path(name).branch_path();
+  fs::path seen_dir = fs::path(name_).branch_path();
   fs::directory_iterator end;
   for (fs::directory_iterator it(seen_dir); it != end; ++it) {
     std::string filename = it->path().filename().string();
@@ -120,38 +143,9 @@ void Archive::readOverrides() {
       maps_to_delete_.emplace_back(mapping);
 
       int index = std::stoi(filename.substr(4, 4));
-      scenarios[index] = FilePos(mapping->get(), mapping->size());
+      scenarios_[index] = FilePos(mapping->get(), mapping->size());
     }
   }
-}
-
-Scenario* Archive::scenario(int index) {
-  accessed_t::const_iterator at = accessed.find(index);
-  if (at != accessed.end())
-    return at->second;
-  scenarios_t::const_iterator st = scenarios.find(index);
-  if (st != scenarios.end())
-    return accessed[index] =
-               new Scenario(st->second, index, regname_, second_level_xor_key_);
-  return NULL;
-}
-
-int Archive::getProbableEncodingType() const {
-  // Directly create Header objects instead of Scenarios. We don't want to
-  // parse the entire SEEN file here.
-  for (const_iterator it = scenarios.begin(); it != scenarios.end(); ++it) {
-    Header header(it->second.data, it->second.length);
-    if (header.rldev_metadata.text_encoding() != 0)
-      return header.rldev_metadata.text_encoding();
-  }
-
-  return 0;
-}
-
-void Archive::reset() {
-  for (accessed_t::iterator it = accessed.begin(); it != accessed.end(); ++it)
-    delete it->second;
-  accessed.clear();
 }
 
 }  // namespace libreallive

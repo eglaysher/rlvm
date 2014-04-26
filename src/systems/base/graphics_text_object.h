@@ -46,21 +46,21 @@ class System;
 class GraphicsTextObject : public GraphicsObjectData {
  public:
   explicit GraphicsTextObject(System& system);
-  ~GraphicsTextObject();
+  virtual ~GraphicsTextObject();
 
-  void updateSurface(const GraphicsObject& rp);
+  void UpdateSurface(const GraphicsObject& rp);
 
   // ------------------------------------ [ GraphicsObjectData interface ]
-  virtual int pixelWidth(const GraphicsObject& rendering_properties);
-  virtual int pixelHeight(const GraphicsObject& rendering_properties);
+  virtual int PixelWidth(const GraphicsObject& rendering_properties) override;
+  virtual int PixelHeight(const GraphicsObject& rendering_properties) override;
 
-  virtual GraphicsObjectData* clone() const;
-  virtual void execute(RLMachine& machine);
+  virtual GraphicsObjectData* Clone() const override;
+  virtual void Execute(RLMachine& machine) override;
 
  protected:
-  virtual boost::shared_ptr<const Surface> currentSurface(
-      const GraphicsObject& go);
-  virtual void objectInfo(std::ostream& tree);
+  virtual boost::shared_ptr<const Surface> CurrentSurface(
+      const GraphicsObject& go) override;
+  virtual void ObjectInfo(std::ostream& tree) override;
 
  private:
   // Current machine context.
@@ -76,7 +76,7 @@ class GraphicsTextObject : public GraphicsObjectData {
 
   boost::shared_ptr<Surface> surface_;
 
-  bool needsUpdate(const GraphicsObject& rendering_properties);
+  bool NeedsUpdate(const GraphicsObject& rendering_properties);
 
   // boost::serialization support
   friend class boost::serialization::access;

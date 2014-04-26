@@ -42,15 +42,17 @@
 WipeEffect::WipeEffect(RLMachine& machine,
                        boost::shared_ptr<Surface> src,
                        boost::shared_ptr<Surface> dst,
-                       const Size& screenSize,
+                       const Size& screen_size,
                        int time,
                        int interpolation)
-    : Effect(machine, src, dst, screenSize, time),
+    : Effect(machine, src, dst, screen_size, time),
       interpolation_(interpolation),
       interpolation_in_pixels_(0) {
   if (interpolation_)
     interpolation_in_pixels_ = int(pow(float(2), interpolation) * 2.5);
 }
+
+WipeEffect::~WipeEffect() {}
 
 // Calculates the size of the interpolation and main polygons.
 //
@@ -63,7 +65,7 @@ WipeEffect::WipeEffect(RLMachine& machine,
 //   interpolation_in_pixels_, sizeOfInterpolation == amountVisible)
 // - [height, height + interpolation_in_pixels_) - Draw both
 //   polygons, flooring the height of the transition to
-void WipeEffect::calculateSizes(int currentTime,
+void WipeEffect::CalculateSizes(int currentTime,
                                 int& sizeOfInterpolation,
                                 int& sizeOfMainPolygon,
                                 int sizeOfScreen) {
@@ -81,7 +83,7 @@ void WipeEffect::calculateSizes(int currentTime,
   }
 }
 
-bool WipeEffect::blitOriginalImage() const { return true; }
+bool WipeEffect::BlitOriginalImage() const { return true; }
 
 // -----------------------------------------------------------------------
 // WipeTopToBottomEffect
@@ -90,26 +92,28 @@ bool WipeEffect::blitOriginalImage() const { return true; }
 WipeTopToBottomEffect::WipeTopToBottomEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
-void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
+WipeTopToBottomEffect::~WipeTopToBottomEffect() {}
+
+void WipeTopToBottomEffect::PerformEffectForTime(RLMachine& machine,
                                                  int currentTime) {
   int sizeOfInterpolation, sizeOfMainPolygon;
-  calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
+  CalculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
 
   if (sizeOfMainPolygon) {
-    srcSurface().renderToScreen(Rect::REC(0, 0, width(), sizeOfMainPolygon),
-                                Rect::REC(0, 0, width(), sizeOfMainPolygon),
-                                255);
+    src_surface().RenderToScreen(Rect::REC(0, 0, width(), sizeOfMainPolygon),
+                                 Rect::REC(0, 0, width(), sizeOfMainPolygon),
+                                 255);
   }
 
   if (sizeOfInterpolation) {
     int opacity[4] = {255, 255, 0, 0};
 
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(0,
                   sizeOfMainPolygon,
                   width(),
@@ -129,19 +133,21 @@ void WipeTopToBottomEffect::performEffectForTime(RLMachine& machine,
 WipeBottomToTopEffect::WipeBottomToTopEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
-void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
+WipeBottomToTopEffect::~WipeBottomToTopEffect() {}
+
+void WipeBottomToTopEffect::PerformEffectForTime(RLMachine& machine,
                                                  int currentTime) {
   int sizeOfInterpolation, sizeOfMainPolygon;
-  calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
+  CalculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, height());
 
   // Render the sliding on frame
   if (sizeOfMainPolygon) {
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
         Rect::GRP(0, height() - sizeOfMainPolygon, width(), height()),
         255);
@@ -149,7 +155,7 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
 
   if (sizeOfInterpolation) {
     int opacity[4] = {0, 0, 255, 255};
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(0,
                   height() - sizeOfMainPolygon - sizeOfInterpolation,
                   width(),
@@ -169,27 +175,29 @@ void WipeBottomToTopEffect::performEffectForTime(RLMachine& machine,
 WipeLeftToRightEffect::WipeLeftToRightEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
-void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
+WipeLeftToRightEffect::~WipeLeftToRightEffect() {}
+
+void WipeLeftToRightEffect::PerformEffectForTime(RLMachine& machine,
                                                  int currentTime) {
   int sizeOfInterpolation, sizeOfMainPolygon;
-  calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
+  CalculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
   // CONTINUE FIXING THE WIPES HERE!
 
   if (sizeOfMainPolygon) {
-    srcSurface().renderToScreen(Rect::GRP(0, 0, sizeOfMainPolygon, height()),
-                                Rect::GRP(0, 0, sizeOfMainPolygon, height()),
-                                255);
+    src_surface().RenderToScreen(Rect::GRP(0, 0, sizeOfMainPolygon, height()),
+                                 Rect::GRP(0, 0, sizeOfMainPolygon, height()),
+                                 255);
   }
 
   if (sizeOfInterpolation) {
     int opacity[4] = {255, 0, 0, 255};
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(sizeOfMainPolygon,
                   0,
                   sizeOfMainPolygon + sizeOfInterpolation,
@@ -209,18 +217,20 @@ void WipeLeftToRightEffect::performEffectForTime(RLMachine& machine,
 WipeRightToLeftEffect::WipeRightToLeftEffect(RLMachine& machine,
                                              boost::shared_ptr<Surface> src,
                                              boost::shared_ptr<Surface> dst,
-                                             const Size& screenSize,
+                                             const Size& screen_size,
                                              int time,
                                              int interpolation)
-    : WipeEffect(machine, src, dst, screenSize, time, interpolation) {}
+    : WipeEffect(machine, src, dst, screen_size, time, interpolation) {}
 
-void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
+WipeRightToLeftEffect::~WipeRightToLeftEffect() {}
+
+void WipeRightToLeftEffect::PerformEffectForTime(RLMachine& machine,
                                                  int currentTime) {
   int sizeOfInterpolation, sizeOfMainPolygon;
-  calculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
+  CalculateSizes(currentTime, sizeOfInterpolation, sizeOfMainPolygon, width());
 
   if (sizeOfMainPolygon) {
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
         Rect::GRP(width() - sizeOfMainPolygon, 0, width(), height()),
         255);
@@ -228,7 +238,7 @@ void WipeRightToLeftEffect::performEffectForTime(RLMachine& machine,
 
   if (sizeOfInterpolation) {
     int opacity[4] = {0, 255, 255, 0};
-    srcSurface().renderToScreen(
+    src_surface().RenderToScreen(
         Rect::GRP(width() - sizeOfInterpolation - sizeOfMainPolygon,
                   0,
                   width() - sizeOfMainPolygon,

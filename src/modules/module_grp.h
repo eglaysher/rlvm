@@ -45,12 +45,12 @@ class GrpModule : public MappedRLModule {
 
 // An adapter for MappedRLModules that records the incoming command into the
 // graphics stack.
-RLOperation* graphicsStackMappingFun(RLOperation* op);
+RLOperation* GraphicsStackMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
 // Replays the new Graphics stack, string representations of reallive bytecode.
-void replayGraphicsStackCommand(RLMachine& machine,
+void ReplayGraphicsStackCommand(RLMachine& machine,
                                 const std::deque<std::string>& stack);
 
 // Replays the serialized graphics stack; this should put the graphics
@@ -60,7 +60,7 @@ void replayGraphicsStackCommand(RLMachine& machine,
 // we often have to call the implementation function so that we don't
 // display all the transition effects that happened since the last
 // stackTrunc on load.
-void replayDepricatedGraphicsStackVector(
+void ReplayDepricatedGraphicsStackVector(
     RLMachine& machine,
     const std::vector<GraphicsStackFrame>& serializedStack);
 

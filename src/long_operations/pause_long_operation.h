@@ -35,12 +35,13 @@
 class PauseLongOperation : public LongOperation {
  public:
   explicit PauseLongOperation(RLMachine& machine);
-  ~PauseLongOperation();
+  virtual ~PauseLongOperation();
 
   // Overridden from EventListener:
-  virtual void mouseMotion(const Point& new_location);
-  virtual bool mouseButtonStateChanged(MouseButton mouse_button, bool pressed);
-  virtual bool keyStateChanged(KeyCode key_code, bool pressed);
+  virtual void MouseMotion(const Point& new_location) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button,
+                                       bool pressed) override;
+  virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
 
   // Overridden from LongOperation:
   virtual bool operator()(RLMachine& machine);
@@ -71,10 +72,10 @@ class PauseLongOperation : public LongOperation {
 class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewPageAfterLongop(LongOperation* inOp);
-  ~NewPageAfterLongop();
+  virtual ~NewPageAfterLongop();
 
  private:
-  virtual void performAfterLongOperation(RLMachine& machine);
+  virtual void PerformAfterLongOperation(RLMachine& machine) override;
 };
 
 // -----------------------------------------------------------------------
@@ -83,10 +84,10 @@ class NewPageAfterLongop : public PerformAfterLongOperationDecorator {
 class NewPageOnAllAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewPageOnAllAfterLongop(LongOperation* inOp);
-  ~NewPageOnAllAfterLongop();
+  virtual ~NewPageOnAllAfterLongop();
 
  private:
-  virtual void performAfterLongOperation(RLMachine& machine);
+  virtual void PerformAfterLongOperation(RLMachine& machine) override;
 };
 
 // -----------------------------------------------------------------------
@@ -95,10 +96,10 @@ class NewPageOnAllAfterLongop : public PerformAfterLongOperationDecorator {
 class NewParagraphAfterLongop : public PerformAfterLongOperationDecorator {
  public:
   explicit NewParagraphAfterLongop(LongOperation* inOp);
-  ~NewParagraphAfterLongop();
+  virtual ~NewParagraphAfterLongop();
 
  private:
-  virtual void performAfterLongOperation(RLMachine& machine);
+  virtual void PerformAfterLongOperation(RLMachine& machine) override;
 };
 
 #endif  // SRC_LONG_OPERATIONS_PAUSE_LONG_OPERATION_H_

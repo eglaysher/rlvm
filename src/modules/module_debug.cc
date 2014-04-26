@@ -46,15 +46,15 @@ namespace {
 
 struct DebugMessageInt : public RLOp_Void_1<IntConstant_T> {
   void operator()(RLMachine& machine, int value) {
-    if (machine.system().gameexe()("MEMORY").exists())
+    if (machine.system().gameexe()("MEMORY").Exists())
       std::cerr << "DebugMessage: " << value << std::endl;
   }
 };
 
 struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
   void operator()(RLMachine& machine, std::string value) {
-    if (machine.system().gameexe()("MEMORY").exists()) {
-      std::string utfvalue = cp932toUTF8(value, machine.getTextEncoding());
+    if (machine.system().gameexe()("MEMORY").Exists()) {
+      std::string utfvalue = cp932toUTF8(value, machine.GetTextEncoding());
       std::cerr << "DebugMessage: " << utfvalue << std::endl;
     }
   }
@@ -63,6 +63,6 @@ struct DebugMessageStr : public RLOp_Void_1<StrConstant_T> {
 }  // namespace
 
 DebugModule::DebugModule() : RLModule("Debug", 1, 255) {
-  addOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
-  addOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
+  AddOpcode(10, 0, "__DebugMessage", new DebugMessageInt);
+  AddOpcode(10, 1, "__DebugMessage", new DebugMessageStr);
 }

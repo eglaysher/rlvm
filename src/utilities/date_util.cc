@@ -32,43 +32,43 @@ namespace datetime {
 
 // -----------------------------------------------------------------------
 
-int getYear() { return boost::gregorian::day_clock::local_day().year(); }
+int GetYear() { return boost::gregorian::day_clock::local_day().year(); }
 
 // -----------------------------------------------------------------------
 
-int getMonth() { return boost::gregorian::day_clock::local_day().month(); }
+int GetMonth() { return boost::gregorian::day_clock::local_day().month(); }
 
 // -----------------------------------------------------------------------
 
-int getDay() { return boost::gregorian::day_clock::local_day().day(); }
+int GetDay() { return boost::gregorian::day_clock::local_day().day(); }
 
 // -----------------------------------------------------------------------
 
-int getDayOfWeek() {
+int GetDayOfWeek() {
   return boost::gregorian::day_clock::local_day().day_of_week();
 }
 
 // -----------------------------------------------------------------------
 
-int getHour() {
+int GetHour() {
   return boost::posix_time::second_clock::local_time().time_of_day().hours();
 }
 
 // -----------------------------------------------------------------------
 
-int getMinute() {
+int GetMinute() {
   return boost::posix_time::second_clock::local_time().time_of_day().minutes();
 }
 
 // -----------------------------------------------------------------------
 
-int getSecond() {
+int GetSecond() {
   return boost::posix_time::second_clock::local_time().time_of_day().seconds();
 }
 
 // -----------------------------------------------------------------------
 
-int getMs() {
+int GetMs() {
   return boost::posix_time::second_clock::local_time()
       .time_of_day()
       .fractional_seconds();

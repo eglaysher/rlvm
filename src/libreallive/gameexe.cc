@@ -170,7 +170,7 @@ void Gameexe::parseLine(const std::string& line) {
 
 // -----------------------------------------------------------------------
 
-const std::vector<int>& Gameexe::getIntArray(
+const std::vector<int>& Gameexe::GetIntArray(
     GameexeData_t::const_iterator key) {
   if (key == data_.end()) {
     static std::vector<int> falseVector;
@@ -182,29 +182,29 @@ const std::vector<int>& Gameexe::getIntArray(
 
 // -----------------------------------------------------------------------
 
-int Gameexe::getIntAt(GameexeData_t::const_iterator key, int index) {
+int Gameexe::GetIntAt(GameexeData_t::const_iterator key, int index) {
   if (key == data_.end())
-    throwUnknownKey("TMP");
+    ThrowUnknownKey("TMP");
 
   return key->second.at(index);
 }
 
 // -----------------------------------------------------------------------
 
-bool Gameexe::exists(const std::string& key) {
+bool Gameexe::Exists(const std::string& key) {
   return data_.find(key) != data_.end();
 }
 
 // -----------------------------------------------------------------------
 
-std::string Gameexe::getStringAt(GameexeData_t::const_iterator key, int index) {
-  int cindex = getIntAt(key, index);
+std::string Gameexe::GetStringAt(GameexeData_t::const_iterator key, int index) {
+  int cindex = GetIntAt(key, index);
   return cdata_.at(cindex);
 }
 
 // -----------------------------------------------------------------------
 
-void Gameexe::setStringAt(const std::string& key, const std::string& value) {
+void Gameexe::SetStringAt(const std::string& key, const std::string& value) {
   Gameexe_vec_type toStore;
   cdata_.push_back(value);
   toStore.push_back(cdata_.size() - 1);
@@ -214,7 +214,7 @@ void Gameexe::setStringAt(const std::string& key, const std::string& value) {
 
 // -----------------------------------------------------------------------
 
-void Gameexe::setIntAt(const std::string& key, const int value) {
+void Gameexe::SetIntAt(const std::string& key, const int value) {
   Gameexe_vec_type toStore;
   toStore.push_back(value);
   data_.erase(key);
@@ -223,25 +223,25 @@ void Gameexe::setIntAt(const std::string& key, const int value) {
 
 // -----------------------------------------------------------------------
 
-GameexeData_t::const_iterator Gameexe::find(const std::string& key) {
+GameexeData_t::const_iterator Gameexe::Find(const std::string& key) {
   return data_.find(key);
 }
 
 // -----------------------------------------------------------------------
 
-void Gameexe::addToStream(const std::string& x, std::ostringstream& ss) {
+void Gameexe::AddToStream(const std::string& x, std::ostringstream& ss) {
   ss << x;
 }
 
 // -----------------------------------------------------------------------
 
-void Gameexe::addToStream(const int& x, std::ostringstream& ss) {
+void Gameexe::AddToStream(const int& x, std::ostringstream& ss) {
   ss << std::setw(3) << std::setfill('0') << x;
 }
 
 // -----------------------------------------------------------------------
 
-void Gameexe::throwUnknownKey(const std::string& key) {
+void Gameexe::ThrowUnknownKey(const std::string& key) {
   std::ostringstream ss;
   ss << "Unknown Gameexe key '" << key << "'";
   throw libreallive::Error(ss.str());
@@ -265,7 +265,7 @@ GameexeFilteringIterator Gameexe::filtering_end() {
 GameexeInterpretObject::GameexeInterpretObject(const std::string& key,
                                                Gameexe& objectToLookupOn)
     : key_(key),
-      iterator_(objectToLookupOn.find(key)),
+      iterator_(objectToLookupOn.Find(key)),
       object_to_lookup_on_(objectToLookupOn) {}
 
 // -----------------------------------------------------------------------
@@ -281,8 +281,8 @@ GameexeInterpretObject::~GameexeInterpretObject() {}
 
 // -----------------------------------------------------------------------
 
-const int GameexeInterpretObject::to_int(const int defaultValue) const {
-  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
+const int GameexeInterpretObject::ToInt(const int defaultValue) const {
+  const std::vector<int>& ints = object_to_lookup_on_.GetIntArray(iterator_);
   if (ints.size() == 0)
     return defaultValue;
 
@@ -291,26 +291,26 @@ const int GameexeInterpretObject::to_int(const int defaultValue) const {
 
 // -----------------------------------------------------------------------
 
-const int GameexeInterpretObject::to_int() const {
-  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
+const int GameexeInterpretObject::ToInt() const {
+  const std::vector<int>& ints = object_to_lookup_on_.GetIntArray(iterator_);
   if (ints.size() == 0)
-    object_to_lookup_on_.throwUnknownKey(key_);
+    object_to_lookup_on_.ThrowUnknownKey(key_);
 
   return ints[0];
 }
 
 // -----------------------------------------------------------------------
 
-int GameexeInterpretObject::getIntAt(int index) const {
-  return object_to_lookup_on_.getIntAt(iterator_, index);
+int GameexeInterpretObject::GetIntAt(int index) const {
+  return object_to_lookup_on_.GetIntAt(iterator_, index);
 }
 
 // -----------------------------------------------------------------------
 
-const std::string GameexeInterpretObject::to_string(
+const std::string GameexeInterpretObject::ToString(
     const std::string& defaultValue) const {
   try {
-    return object_to_lookup_on_.getStringAt(iterator_, 0);
+    return object_to_lookup_on_.GetStringAt(iterator_, 0);
   }
   catch (...) {
     return defaultValue;
@@ -319,12 +319,12 @@ const std::string GameexeInterpretObject::to_string(
 
 // -----------------------------------------------------------------------
 
-const std::string GameexeInterpretObject::to_string() const {
+const std::string GameexeInterpretObject::ToString() const {
   try {
-    return object_to_lookup_on_.getStringAt(iterator_, 0);
+    return object_to_lookup_on_.GetStringAt(iterator_, 0);
   }
   catch (...) {
-    object_to_lookup_on_.throwUnknownKey(key_);
+    object_to_lookup_on_.ThrowUnknownKey(key_);
   }
 
   // Shut the -Wall up
@@ -333,29 +333,29 @@ const std::string GameexeInterpretObject::to_string() const {
 
 // -----------------------------------------------------------------------
 
-const std::string GameexeInterpretObject::getStringAt(int index) const {
-  return object_to_lookup_on_.getStringAt(iterator_, index);
+const std::string GameexeInterpretObject::GetStringAt(int index) const {
+  return object_to_lookup_on_.GetStringAt(iterator_, index);
 }
 
 // -----------------------------------------------------------------------
 
-const std::vector<int>& GameexeInterpretObject::to_intVector() const {
-  const std::vector<int>& ints = object_to_lookup_on_.getIntArray(iterator_);
+const std::vector<int>& GameexeInterpretObject::ToIntVector() const {
+  const std::vector<int>& ints = object_to_lookup_on_.GetIntArray(iterator_);
   if (ints.size() == 0)
-    object_to_lookup_on_.throwUnknownKey(key_);
+    object_to_lookup_on_.ThrowUnknownKey(key_);
 
   return ints;
 }
 
 // -----------------------------------------------------------------------
 
-bool GameexeInterpretObject::exists() const {
-  return object_to_lookup_on_.exists(key_);
+bool GameexeInterpretObject::Exists() const {
+  return object_to_lookup_on_.Exists(key_);
 }
 
 // -----------------------------------------------------------------------
 
-const std::vector<std::string> GameexeInterpretObject::key_parts() const {
+const std::vector<std::string> GameexeInterpretObject::GetKeyParts() const {
   std::vector<std::string> keyparts;
   boost::split(keyparts, key_, boost::is_any_of("."));
   return keyparts;
@@ -366,7 +366,7 @@ const std::vector<std::string> GameexeInterpretObject::key_parts() const {
 GameexeInterpretObject& GameexeInterpretObject::operator=(
     const std::string& value) {
   // Set the key to incoming int
-  object_to_lookup_on_.setStringAt(key_, value);
+  object_to_lookup_on_.SetStringAt(key_, value);
   return *this;
 }
 
@@ -374,7 +374,7 @@ GameexeInterpretObject& GameexeInterpretObject::operator=(
 
 GameexeInterpretObject& GameexeInterpretObject::operator=(const int value) {
   // Set the key to incoming int
-  object_to_lookup_on_.setIntAt(key_, value);
+  object_to_lookup_on_.SetIntAt(key_, value);
   return *this;
 }
 

@@ -36,7 +36,7 @@
 // static
 int TimeTableMapper::GetTypeForTag(
     const libreallive::SpecialExpressionPiece& sp) {
-  switch (sp.getOverloadTag()) {
+  switch (sp.overload_tag()) {
     case 48:
       return 0;
     case 65584:
@@ -57,7 +57,7 @@ int TimeTableMapper::GetTypeForTag(
       return 8;
     default: {
       std::ostringstream oss;
-      oss << "Invalid timetable2 tag: " << sp.getOverloadTag();
+      oss << "Invalid timetable2 tag: " << sp.overload_tag();
       throw rlvm::Exception(oss.str());
     }
   }
@@ -242,7 +242,7 @@ struct Sys_timetablelen2 : public Sys_timetable2 {
 
 // -----------------------------------------------------------------------
 
-void addTimetable2Opcode(RLModule& module) {
-  module.addOpcode(810, 0, "timetable2", new Sys_timetable2);
-  module.addOpcode(811, 0, "timetablelen2", new Sys_timetablelen2);
+void AddTimetable2Opcode(RLModule& module) {
+  module.AddOpcode(810, 0, "timetable2", new Sys_timetable2);
+  module.AddOpcode(811, 0, "timetablelen2", new Sys_timetablelen2);
 }
