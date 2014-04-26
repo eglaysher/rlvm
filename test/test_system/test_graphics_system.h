@@ -45,25 +45,12 @@ class TestGraphicsSystem : public GraphicsSystem {
   TestGraphicsSystem(System& system, Gameexe& gexe);
   virtual ~TestGraphicsSystem();
 
-  virtual void ExecuteGraphicsSystem(RLMachine& machine) {
-    GraphicsSystem::ExecuteGraphicsSystem(machine);
-  }
-
-  int screenWidth() const { return 640; }
-  int screenHeight() const { return 480; }
-
-  void injectSurface(const std::string& short_filename,
+  void InjectSurface(const std::string& short_filename,
                      const boost::shared_ptr<Surface>& surface);
 
-  virtual Size screen_size() const { return Size(640, 480); }
-  virtual void AllocateDC(int dc, Size s);
-  virtual void SetMinimumSizeForDC(int, Size) { /* noop for now. */
-  }
-  virtual void FreeDC(int dc);
-
-  virtual void ClearAndPromoteObjects();
-
-  virtual GraphicsObject& GetObject(int layer, int obj_number);
+  virtual void AllocateDC(int dc, Size s) override;
+  virtual void SetMinimumSizeForDC(int, Size) override;
+  virtual void FreeDC(int dc) override;
 
   // Make a null Surface object?
   virtual boost::shared_ptr<const Surface> LoadSurfaceFromFile(
@@ -73,14 +60,12 @@ class TestGraphicsSystem : public GraphicsSystem {
   virtual boost::shared_ptr<Surface> BuildSurface(const Size& s) override;
   virtual ColourFilter* BuildColourFiller() override;
 
-  virtual void BeginFrame() {}
-  virtual void EndFrame() {}
-  virtual boost::shared_ptr<Surface> EndFrameToSurface() {
-    return boost::shared_ptr<Surface>();
-  }
+  virtual void BeginFrame() override;
+  virtual void EndFrame() override;
+  virtual boost::shared_ptr<Surface> EndFrameToSurface() override;
 
   // Needed because of covariant issues.
-  MockSurface& getMockDC(int dc);
+  MockSurface& GetMockDC(int dc);
 
  private:
   boost::shared_ptr<MockSurface> haikei_;

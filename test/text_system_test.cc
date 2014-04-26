@@ -326,7 +326,7 @@ TEST_F(TextSystemTest, TestEmoji) {
   // text surface.
   boost::shared_ptr<MockSurface> mock(
       MockSurface::Create("emoji_file", Size(24 * 5, 24)));
-  getGraphicsSystem().injectSurface("emoji_file", mock);
+  getGraphicsSystem().InjectSurface("emoji_file", mock);
 
   // Our mock surface should render its icon between the Es.
   EXPECT_CALL(*mock,

@@ -42,6 +42,8 @@ using namespace std;
 
 TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
     : GraphicsSystem(system, gexe) {
+  SetScreenSize(Size(640, 480));
+
   for (int i = 0; i < 16; ++i) {
     ostringstream oss;
     oss << "DC #" << i;
@@ -82,6 +84,10 @@ void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   display_contexts_[dc]->Allocate(size);
 }
 
+void TestGraphicsSystem::SetMinimumSizeForDC(int, Size) {
+  // noop for now.
+}
+
 void TestGraphicsSystem::FreeDC(int dc) {
   if (dc == 0) {
     throw rlvm::Exception("Attempt to deallocate DC[0]");
@@ -93,14 +99,7 @@ void TestGraphicsSystem::FreeDC(int dc) {
   }
 }
 
-void TestGraphicsSystem::ClearAndPromoteObjects() {}
-
-GraphicsObject& TestGraphicsSystem::GetObject(int layer, int obj_number) {
-  static GraphicsObject x;
-  return x;
-}
-
-void TestGraphicsSystem::injectSurface(
+void TestGraphicsSystem::InjectSurface(
     const std::string& short_filename,
     const boost::shared_ptr<Surface>& surface) {
   named_surfaces_[short_filename] = surface;
@@ -138,6 +137,14 @@ ColourFilter* TestGraphicsSystem::BuildColourFiller() {
   return new MockColourFilter;
 }
 
-MockSurface& TestGraphicsSystem::getMockDC(int dc) {
+void TestGraphicsSystem::BeginFrame() {}
+
+void TestGraphicsSystem::EndFrame() {}
+
+boost::shared_ptr<Surface> TestGraphicsSystem::EndFrameToSurface() {
+  return boost::shared_ptr<Surface>();
+}
+
+MockSurface& TestGraphicsSystem::GetMockDC(int dc) {
   return *display_contexts_[dc];
 }

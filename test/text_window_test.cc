@@ -103,7 +103,7 @@ class TextWindowTest : public ::testing::Test {
     setGameexeData(gameexe_data);
 
     // Inject an image for the textbox.
-    system.graphics().injectSurface(
+    system.graphics().InjectSurface(
         "name_image",
         boost::shared_ptr<Surface>(
             MockSurface::Create("name_image", Size(640, 122))));
@@ -168,7 +168,7 @@ TEST_F(TextWindowTest, PrincessBraveLikePositioning) {
   setGameexeData(gameexe_data);
 
   // Inject an image for the textbox.
-  system.graphics().injectSurface(
+  system.graphics().InjectSurface(
       "background",
       boost::shared_ptr<Surface>(
           MockSurface::Create("background", Size(800, 300))));
