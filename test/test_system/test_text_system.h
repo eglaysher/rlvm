@@ -42,20 +42,11 @@ class TestTextWindow;
 class TestTextSystem : public TextSystem {
  public:
   TestTextSystem(System& system, Gameexe& gexe);
-  ~TestTextSystem();
+  virtual ~TestTextSystem();
 
-  void ExecuteTextSystem(RLMachine& machine) {}
-  void render(RLMachine& machine) {}
-
-  MockTextWindow& getMockTextWindowAt(int text_window_number);
-  virtual boost::shared_ptr<TextWindow> GetTextWindow(int text_window_number) override;
-
-  // We can safely ignore mouse clicks...for now.
-  void SetMousePosition(RLMachine& machine, const Point& pos) {}
-  bool HandleMouseClick(RLMachine& machine, const Point& pos, bool pressed) {
-    return false;
-  }
-
+  // Overridden from TextSystem:
+  virtual boost::shared_ptr<TextWindow> GetTextWindow(
+      int text_window_number) override;
   virtual Size RenderGlyphOnto(const std::string& current,
                                int font_size,
                                bool italic,
@@ -64,7 +55,7 @@ class TestTextSystem : public TextSystem {
                                int insertion_point_x,
                                int insertion_point_y,
                                const boost::shared_ptr<Surface>& destination) override;
-  virtual int GetCharWidth(int size, uint16_t codepoint) override { return 20; }
+  virtual int GetCharWidth(int size, uint16_t codepoint) override;
 
   const std::vector<std::tuple<std::string, int, int>>& glyphs() {
     return rendered_glyps_;

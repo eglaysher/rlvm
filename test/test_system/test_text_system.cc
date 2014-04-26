@@ -70,3 +70,7 @@ Size TestTextSystem::RenderGlyphOnto(
 
   return Size(20, 20);
 }
+
+int TestTextSystem::GetCharWidth(int size, uint16_t codepoint) {
+  return 20;
+}
