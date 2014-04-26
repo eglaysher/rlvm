@@ -81,7 +81,7 @@ TEST_P(PromotionTest, BgLayerPromotion) {
   obj.SetObjectData(new GraphicsTextObject(system));
 
   // Run the graphics command.
-  rlmachine.exe(get<0>(data), get<1>(data), get<2>(data));
+  rlmachine.Exe(get<0>(data), get<1>(data), get<2>(data));
 
   // Whether the object was promoted to the fg layer.
   EXPECT_EQ(get<3>(data) & SHOULD_PROMOTE_BG,

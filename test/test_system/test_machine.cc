@@ -56,25 +56,25 @@ void TestMachine::AttachModule(RLModule* module) {
   RLMachine::AttachModule(module);
 }
 
-void TestMachine::exe(const std::string& name, unsigned char overload) {
-  runOpcode(name, overload, 0, "");
+void TestMachine::Exe(const std::string& name, unsigned char overload) {
+  RunOpcode(name, overload, 0, "");
 }
 
-void TestMachine::exe(const std::string& name,
+void TestMachine::Exe(const std::string& name,
                       unsigned char overload,
                       const ExeArgument& arguments) {
-  runOpcode(name, overload, arguments.first, arguments.second);
+  RunOpcode(name, overload, arguments.first, arguments.second);
 }
 
 // static
-void TestMachine::addEntity(std::string& output, const std::string& arg) {
+void TestMachine::AddEntity(std::string& output, const std::string& arg) {
   output += "\"";
   output += arg;
   output += "\"";
 }
 
 // static
-void TestMachine::addEntity(std::string& output, const int arg) {
+void TestMachine::AddEntity(std::string& output, const int arg) {
   char buf[6];
   buf[0] = '$';
   buf[1] = 0xff;
@@ -82,7 +82,7 @@ void TestMachine::addEntity(std::string& output, const int arg) {
   output.append(buf, 6);
 }
 
-void TestMachine::runOpcode(const std::string& name,
+void TestMachine::RunOpcode(const std::string& name,
                             unsigned char overload,
                             int argc,
                             const std::string& argument_string) {
