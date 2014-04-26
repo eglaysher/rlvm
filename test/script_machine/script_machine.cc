@@ -66,7 +66,7 @@ void ScriptMachine::PushLongOperation(LongOperation* long_operation) {
   if (SelectLongOperation* sel =
           dynamic_cast<SelectLongOperation*>(long_operation)) {
     // Try our optional, script provided matching behaviour.
-    std::string choice = world_.makeDecision(sel->GetOptions());
+    std::string choice = world_.MakeDecision(sel->GetOptions());
     bool optionFound = false;
     if (choice != "") {
       optionFound = sel->SelectByText(choice);

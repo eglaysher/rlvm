@@ -217,8 +217,8 @@ int main(int argc, char* argv[]) {
     ScriptMachine rlmachine(world, sdlSystem, arc);
     AddAllModules(rlmachine);
     AddGameHacks(rlmachine);
-    world.initializeMachine(rlmachine);
-    world.loadToplevelFile(scriptLocation.string());
+    world.InitializeMachine(rlmachine);
+    world.LoadToplevelFile(scriptLocation.string());
 
     // Make sure we go as fast as possible:
     sdlSystem.set_force_fast_forward();

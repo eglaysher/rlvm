@@ -58,32 +58,32 @@ class ScriptWorld {
   // Copies data from the initial script execution into the ScriptMachine,
   // since the lua script is executed during the ScriptWorld constructor, but
   // some of the data is meant for the ScriptMachine.
-  void initializeMachine(ScriptMachine& machine);
+  void InitializeMachine(ScriptMachine& machine);
 
   // Try to make a decision based on the decision handler. Will return the
   // empty string if there is no decision handler added or if the decision
   // handler returned nil.
-  std::string makeDecision(const std::vector<std::string>& decisions);
+  std::string MakeDecision(const std::vector<std::string>& decisions);
 
   // Loads the "main" lua testing file (and settings the search path for
   // future import() statements).
-  void loadToplevelFile(const std::string& lua_file);
+  void LoadToplevelFile(const std::string& lua_file);
 
   // Loads a lua script in the same directory as lua_file.
-  void import(const std::string& file_name);
+  void Import(const std::string& file_name);
 
   // Returns the sanitized #REGNAME key (as would be found in the ~/.rlvm
   // folder).
-  std::string regname() const;
+  std::string Regname() const;
 
-  void setDecisionList(luabind::object table);
-  void error(const std::string& error_message);
-  void addHandler(int scene, int lineNo, luabind::object handler);
+  void SetDecisionList(luabind::object table);
+  void Error(const std::string& error_message);
+  void AddHandler(int scene, int lineNo, luabind::object handler);
 
   // Sets a function that can override the decision list. The function takes an
   // table of strings, which are possible decisions. It will either return the
   // string to select or nil if the default behaviour should be used instead.
-  void setDecisionHandler(luabind::object obj);
+  void SetDecisionHandler(luabind::object obj);
 
  private:
   static void InitializeLuabind(lua_State* L);
