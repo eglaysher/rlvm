@@ -44,13 +44,14 @@ class SDLTextWindow : public TextWindow {
   SDLTextWindow(SDLSystem& system, int window);
   virtual ~SDLTextWindow();
 
+  // Overridden from TextWindow:
   virtual boost::shared_ptr<Surface> GetTextSurface() override;
   virtual boost::shared_ptr<Surface> GetNameSurface() override;
   virtual void ClearWin() override;
-  virtual void RenderNameInBox(const std::string& utf8str);
-  virtual void DisplayRubyText(const std::string& utf8str);
-
-  virtual void AddSelectionItem(const std::string& utf8str, int selection_id);
+  virtual void RenderNameInBox(const std::string& utf8str) override;
+  virtual void DisplayRubyText(const std::string& utf8str) override;
+  virtual void AddSelectionItem(const std::string& utf8str,
+                                int selection_id) override;
 
  private:
   SDLSystem& sdl_system_;
