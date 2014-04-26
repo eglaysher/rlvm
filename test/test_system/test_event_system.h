@@ -51,7 +51,7 @@ class EventSystemMockHandler {
 class TestEventSystem : public EventSystem {
  public:
   explicit TestEventSystem(Gameexe& gexe);
-  void setMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
+  void SetMockHandler(const boost::shared_ptr<EventSystemMockHandler>& handler);
 
   // Implementation of EventSystem:
   virtual void ExecuteEventSystem(RLMachine& machine) override;
@@ -59,16 +59,16 @@ class TestEventSystem : public EventSystem {
   virtual void Wait(unsigned int milliseconds) const override;
   virtual bool ShiftPressed() const override;
   virtual bool CtrlPressed() const override;
-  virtual Point GetCursorPos() override { return Point(0, 0); }
+  virtual Point GetCursorPos() override;
   virtual void GetCursorPos(Point& position,
                             int& button1,
-                            int& button2) override {}
-  virtual void FlushMouseClicks() override {}
-  virtual unsigned int TimeOfLastMouseMove() override { return 0; }
+                            int& button2) override;
+  virtual void FlushMouseClicks() override;
+  virtual unsigned int TimeOfLastMouseMove() override;
   virtual void InjectMouseMovement(RLMachine& machine,
-                                   const Point& loc) override {}
-  virtual void InjectMouseDown(RLMachine& machine) override {}
-  virtual void InjectMouseUp(RLMachine& machine) override {}
+                                   const Point& loc) override;
+  virtual void InjectMouseDown(RLMachine& machine) override;
+  virtual void InjectMouseUp(RLMachine& machine) override;
 
  private:
   // Defines test specific behaviour for the TestEventSystem

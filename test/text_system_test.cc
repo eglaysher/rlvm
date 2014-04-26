@@ -61,7 +61,7 @@ class TextSystemTest : public FullSystemTest {
  protected:
   TextSystemTest() {
     event_mock.reset(new IncrementingTickCounter);
-    dynamic_cast<TestEventSystem&>(system.event()).setMockHandler(event_mock);
+    dynamic_cast<TestEventSystem&>(system.event()).SetMockHandler(event_mock);
 
     system.text().set_active_window(0);
   }

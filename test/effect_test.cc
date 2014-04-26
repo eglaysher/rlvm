@@ -56,7 +56,7 @@ class EffectTest : public FullSystemTest {
  protected:
   EffectTest() : event_system_impl(new EffectEventSystemTest) {
     dynamic_cast<TestEventSystem&>(system.event())
-        .setMockHandler(event_system_impl);
+        .SetMockHandler(event_system_impl);
   }
 
   boost::shared_ptr<EffectEventSystemTest> event_system_impl;
