@@ -33,7 +33,7 @@
 class TestTextWindow : public TextWindow {
  public:
   TestTextWindow(System& system, int x);
-  ~TestTextWindow();
+  virtual ~TestTextWindow();
 
   // Overridden from TextWindow:
   virtual void SetFontColor(const std::vector<int>& colour_data) override;
@@ -45,18 +45,18 @@ class TestTextWindow : public TextWindow {
   virtual void RenderNameInBox(const std::string& utf8str);
   virtual void ClearWin() override;
   virtual void SetName(const std::string& utf8name,
-                       const std::string& next_char);
+                       const std::string& next_char) override;
 
-  virtual void HardBrake();
+  virtual void HardBrake() override;
 
   // To implement for real, instead of just recording in the mocklog.
-  virtual void ResetIndentation();
-  virtual void MarkRubyBegin();
-  virtual void DisplayRubyText(const std::string& utf8str);
+  virtual void ResetIndentation() override;
+  virtual void MarkRubyBegin() override;
+  virtual void DisplayRubyText(const std::string& utf8str) override;
 
-  std::string currentContents() const { return current_contents_; }
+  std::string current_contents() const { return current_contents_; }
 
-  virtual void AddSelectionItem(const std::string& utf8str, int selection_id) {}
+  virtual void AddSelectionItem(const std::string& utf8str, int selection_id) override {}
 
  private:
   std::string current_contents_;

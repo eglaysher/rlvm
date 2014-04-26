@@ -198,7 +198,7 @@ TEST_F(TextWindowTest, NormalLineBreaking) {
   PrintTextToFunction(
       bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
-  EXPECT_EQ(window.currentContents(),
+  EXPECT_EQ(window.current_contents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
             "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
             "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
@@ -226,7 +226,7 @@ TEST_F(TextWindowTest, SqueezeOneKinsokuCharacter) {
   PrintTextToFunction(
       bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
-  EXPECT_EQ(window.currentContents(),
+  EXPECT_EQ(window.current_contents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
             "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
             "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
@@ -256,7 +256,7 @@ TEST_F(TextWindowTest, MultipleKinsokuCharacters) {
   PrintTextToFunction(
       bind(&TextWindow::DisplayCharacter, std::ref(window), _1, _2), str, "");
 
-  EXPECT_EQ(window.currentContents(),
+  EXPECT_EQ(window.current_contents(),
             "\xe5\xbd\xbc\xe5\xa5\xb3\xe3\x80\x8c\xe3\x81\x82\xe3\x81\x82\xe3"
             "\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81"
             "\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82\xe3\x81\x82"
