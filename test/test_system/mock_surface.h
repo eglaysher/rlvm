@@ -45,8 +45,8 @@ class MockSurface : public Surface {
   static MockSurface* Create(const std::string& surface_name, const Size& size);
 
   // Size related stuff.
-  void allocate(const Size& size);
-  void deallocate();
+  void Allocate(const Size& size);
+  void Deallocate();
   virtual Size GetSize() const override;
 
   MOCK_CONST_METHOD5(

@@ -48,11 +48,11 @@ TestGraphicsSystem::TestGraphicsSystem(System& system, Gameexe& gexe)
     display_contexts_[i].reset(MockSurface::Create(oss.str()));
   }
 
-  display_contexts_[0]->allocate(screen_size());
-  display_contexts_[1]->allocate(screen_size());
+  display_contexts_[0]->Allocate(screen_size());
+  display_contexts_[1]->Allocate(screen_size());
 
   haikei_.reset(MockSurface::Create("Haikei"));
-  haikei_->allocate(screen_size());
+  haikei_->Allocate(screen_size());
 }
 
 TestGraphicsSystem::~TestGraphicsSystem() {}
@@ -79,7 +79,7 @@ void TestGraphicsSystem::AllocateDC(int dc, Size size) {
   }
 
   // Allocate a new obj.
-  display_contexts_[dc]->allocate(size);
+  display_contexts_[dc]->Allocate(size);
 }
 
 void TestGraphicsSystem::FreeDC(int dc) {
@@ -89,7 +89,7 @@ void TestGraphicsSystem::FreeDC(int dc) {
     // DC[1] never gets freed; it only gets blanked
     display_contexts_[1]->Fill(RGBAColour::Black());
   } else {
-    display_contexts_[dc]->deallocate();
+    display_contexts_[dc]->Deallocate();
   }
 }
 

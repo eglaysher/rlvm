@@ -46,12 +46,12 @@ MockSurface* MockSurface::Create(const std::string& surface_name,
   return new ::testing::NiceMock<MockSurface>(surface_name, size);
 }
 
-void MockSurface::allocate(const Size& size) {
+void MockSurface::Allocate(const Size& size) {
   allocated_ = true;
   size_ = size;
 }
 
-void MockSurface::deallocate() { allocated_ = false; }
+void MockSurface::Deallocate() { allocated_ = false; }
 
 Size MockSurface::GetSize() const { return size_; }
 
