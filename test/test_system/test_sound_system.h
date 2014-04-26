@@ -37,7 +37,7 @@ class Gameexe;
 class TestSoundSystem : public SoundSystem {
  public:
   explicit TestSoundSystem(System& system);
-  ~TestSoundSystem();
+  virtual ~TestSoundSystem();
 
   virtual int BgmStatus() const override;
 
