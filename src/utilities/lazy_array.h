@@ -241,7 +241,7 @@ LazyArray<T>::LazyArray(int size)
 template <typename T>
 LazyArray<T>::~LazyArray() {
   std::for_each(
-      array_.get(), array_.get() + size_, boost::checked_deleter<T>());
+      array_.get(), array_.get() + size_, std::default_delete<T>());
 }
 
 template <typename T>

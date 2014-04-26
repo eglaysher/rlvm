@@ -59,7 +59,7 @@ class GCNMenu : public GCNWindow, public gcn::ActionListener {
   virtual void action(const gcn::ActionEvent& actionEvent);
 
  private:
-  std::vector<gcn::Widget*> widgets_to_delete_;
+  std::vector<std::unique_ptr<gcn::Widget>> owned_widgets_;
 };  // end of class GCNMenu
 
 #endif  // SRC_PLATFORMS_GCN_GCN_MENU_H_

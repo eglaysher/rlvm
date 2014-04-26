@@ -72,7 +72,7 @@ class GCNSaveLoadWindow : public GCNWindow,
 
   gcn::ListBox* listbox_;
 
-  std::vector<gcn::Widget*> widgets_to_delete_;
+  std::vector<std::unique_ptr<gcn::Widget>> owned_widgets_;
 };  // end of class GCNSaveLoadWindow
 
 #endif  // SRC_PLATFORMS_GCN_GCN_SAVE_LOAD_WINDOW_H_
