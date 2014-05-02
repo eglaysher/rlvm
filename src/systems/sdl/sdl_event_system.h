@@ -83,7 +83,8 @@ class SDLEventSystem : public EventSystem {
   void HandleKeyUp(RLMachine& machine, SDL_Event& event);
   void HandleMouseMotion(RLMachine& machine, SDL_Event& event);
   void HandleMouseButtonEvent(RLMachine& machine, SDL_Event& event);
-  void HandleActiveEvent(RLMachine& machine, SDL_Event& event);
+  void HandleWheelEvent(RLMachine& machine, SDL_Event& event);
+  void HandleWindowEvent(RLMachine& machine, SDL_Event& event);
 
   bool shift_pressed_, ctrl_pressed_;
 

@@ -111,23 +111,26 @@ bool PauseLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
         return true;
       }
       break;
-    case MOUSE_WHEELUP:
-      if (pressed) {
-        text.BackPage();
-        return true;
-      }
-      break;
-    case MOUSE_WHEELDOWN:
-      if (pressed) {
-        text.ForwardPage();
-        return true;
-      }
-      break;
     default:
       break;
   }
 
   return false;
+}
+
+bool PauseLongOperation::MouseWheelEvent(MouseWheelType mouse_wheel) {
+  TextSystem& text = machine_.system().text();
+
+  switch (mouse_wheel) {
+    case MOUSE_WHEEL_UP:
+      text.BackPage();
+      return true;
+    case MOUSE_WHEEL_DOWN:
+      text.ForwardPage();
+      return true;
+    default:
+      return false;
+  }
 }
 
 bool PauseLongOperation::KeyStateChanged(KeyCode keyCode, bool pressed) {

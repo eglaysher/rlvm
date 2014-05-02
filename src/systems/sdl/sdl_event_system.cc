@@ -84,24 +84,17 @@ void SDLEventSystem::ExecuteEventSystem(RLMachine& machine) {
           HandleMouseButtonEvent(machine, event);
         break;
       }
+      case SDL_MOUSEWHEEL:
+        HandleWheelEvent(machine, event);
+        break;
       case SDL_QUIT:
         machine.Halt();
         break;
-      case SDL_WINDOWEVENT_ENTER:
-      case SDL_WINDOWEVENT_LEAVE:
-      case SDL_WINDOWEVENT_FOCUS_GAINED:
-      case SDL_WINDOWEVENT_FOCUS_LOST:
-        // TODO(sdl2): 
-        // if (raw_handler_)
-        //   raw_handler_->pushInput(event);
-        // HandleActiveEvent(machine, event);
+      case SDL_WINDOWEVENT:
+        if (raw_handler_)
+          raw_handler_->pushInput(event);
+        HandleWindowEvent(machine, event);
         break;
-
-      // TODO(sdl2): Video expose also is gone see https://wiki.libsdl.org/SDL_WindowEvent for replacement.
-
-      // case SDL_VIDEOEXPOSE: {
-      //   machine.system().graphics().forceRefresh();
-      //   break;
     }
   }
 }
@@ -272,15 +265,6 @@ void SDLEventSystem::HandleMouseButtonEvent(RLMachine& machine,
       case SDL_BUTTON_MIDDLE:
         button = MOUSE_MIDDLE;
         break;
-      // TODO(sdl2): Wheel events are no longer button events. Use
-      // SDL_MouseWheelEvent instead.
-      //
-      // case SDL_BUTTON_WHEELUP:
-      //   button = MOUSE_WHEELUP;
-      //   break;
-      // case SDL_BUTTON_WHEELDOWN:
-      //   button = MOUSE_WHEELDOWN;
-      //   break;
       default:
         break;
     }
@@ -291,20 +275,36 @@ void SDLEventSystem::HandleMouseButtonEvent(RLMachine& machine,
   }
 }
 
-void SDLEventSystem::HandleActiveEvent(RLMachine& machine, SDL_Event& event) {
-  // TODO(sdl2): Port this here.
+void SDLEventSystem::HandleWheelEvent(RLMachine& machine, SDL_Event& event) {
+  if (mouse_inside_window_) {
+    MouseWheelType wheel_event = MOUSE_WHEEL_NONE;
+    if (event.wheel.y > 0)
+      wheel_event = MOUSE_WHEEL_UP;
+    else if (event.wheel.y < 0)
+      wheel_event = MOUSE_WHEEL_DOWN;
 
-  // if (event.active.state & SDL_APPINPUTFOCUS) {
-  //   // Assume the mouse is inside the window. Actually checking the mouse
-  //   // state doesn't work in the case where we mouse click on another window
-  //   // that's partially covered by rlvm's window and then alt-tab back.
-  //   mouse_inside_window_ = true;
+    if (wheel_event != MOUSE_WHEEL_NONE) {
+      DispatchEvent(
+          machine,
+          bind(&EventListener::MouseWheelEvent, _1, wheel_event));
+    }
+  }
+}
 
-  //   machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
-  // } else if (event.active.state & SDL_APPMOUSEFOCUS) {
-  //   mouse_inside_window_ = event.active.gain == 1;
+void SDLEventSystem::HandleWindowEvent(RLMachine& machine, SDL_Event& event) {
+  if (event.window.event == SDL_WINDOWEVENT_ENTER) {
+    // Assume the mouse is inside the window. Actually checking the mouse
+    // state doesn't work in the case where we mouse click on another window
+    // that's partially covered by rlvm's window and then alt-tab back.
+    mouse_inside_window_ = true;
 
-  //   // Force a mouse refresh:
-  //   machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
-  // }
+    machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
+  } else if (event.window.event == SDL_WINDOWEVENT_LEAVE) {
+    mouse_inside_window_ = false;
+
+    // Force a mouse refresh:
+    machine.system().graphics().MarkScreenAsDirty(GUT_MOUSE_MOTION);
+  } else if (event.window.event == SDL_WINDOWEVENT_EXPOSED) {
+    machine.system().graphics().ForceRefresh();
+  }
 }
