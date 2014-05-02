@@ -244,17 +244,16 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 
   SetWindowTitle();
 
-  // TODO(sdl2): Port: Use one or more window icons.
-// #if defined(__linux__)
-//   // We only set the icon on linux because OSX will use the icns file
-//   // automatically and this doesn't look too awesome.
-//   SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
-//   if (icon) {
-//     SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 0, 0, 0));
-//     SDL_WM_SetIcon(icon, NULL);
-//     SDL_FreeSurface(icon);
-//   }
-// #endif
+#if defined(__linux__)
+  // We only set the icon on linux because OSX will use the icns file
+  // automatically and this doesn't look too awesome.
+  SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
+  if (icon) {
+    SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 0, 0, 0));
+    SDL_SetWindowIcon(window_, icon);
+    SDL_FreeSurface(icon);
+  }
+#endif
 
   // When debug is set, display trace data in the titlebar
   if (gameexe("MEMORY").Exists()) {
