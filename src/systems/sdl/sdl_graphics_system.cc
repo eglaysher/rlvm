@@ -352,8 +352,8 @@ void SDLGraphicsSystem::SetupVideo() {
 }
 
 SDLGraphicsSystem::~SDLGraphicsSystem() {
-  // TODO(sdl2): Clean up properly! SDL_GL_DeleteContext(glcontext);, window
-  // cleanup, etc.
+  SDL_GL_DeleteContext(gl_context_);
+  SDL_DestroyWindow(window_);
 }
 
 void SDLGraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {

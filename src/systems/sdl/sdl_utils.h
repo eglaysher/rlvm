@@ -60,9 +60,8 @@ int GetMaxTextureSize();
 // than |i| if GL_MAX_TEXTURE_SIZE is small.)
 int SafeSize(int i);
 
-// TODO(sdl2): port
-// struct SDL_Surface;
-// SDL_Surface* AlphaInvert(SDL_Surface* in_surface);
+struct SDL_Surface;
+SDL_Surface* AlphaInvert(SDL_Surface* in_surface);
 
 void RectToSDLRect(const Rect& rect, SDL_Rect* out);
 

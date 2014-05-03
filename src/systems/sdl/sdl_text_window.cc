@@ -92,8 +92,7 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
       TTF_RenderUTF8_Blended(font.get(), utf8str.c_str(), colour);
 
   // Copy and invert the surface for whatever.
-  // TODO(sdl2): port
-  //SDL_Surface* inverted = AlphaInvert(normal);
+  SDL_Surface* inverted = AlphaInvert(normal);
 
   // Figure out xpos and ypos
   Point position = GetTextSurfaceRect().origin() +
@@ -103,11 +102,8 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
       new SelectionElement(system(),
                            std::shared_ptr<Surface>(new SDLSurface(
                                getSDLGraphics(system()), normal)),
-                           // TODO(sdl2): Port. Temporarily using normal twice.
                            std::shared_ptr<Surface>(new SDLSurface(
-                               getSDLGraphics(system()), normal)),
-                           // std::shared_ptr<Surface>(new SDLSurface(
-                           //     getSDLGraphics(system()), inverted)),
+                               getSDLGraphics(system()), inverted)),
                            selectionCallback(),
                            selection_id,
                            position);
