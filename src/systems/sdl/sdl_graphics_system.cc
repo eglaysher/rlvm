@@ -423,7 +423,10 @@ void SDLGraphicsSystem::SetWindowSubtitle(const std::string& cp932str,
 void SDLGraphicsSystem::SetScreenMode(const int in) {
   GraphicsSystem::SetScreenMode(in);
 
-  SetupVideo();
+  // TODO(sdl2): We need to port fullscreen support here. The following sets
+  // the desktop to fullscreen, puts the renderer in the bottom right (!?) and
+  // then we can never get out of the mode.
+  SDL_SetWindowFullscreen(window_, in ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
 void SDLGraphicsSystem::AllocateDC(int dc, Size size) {
