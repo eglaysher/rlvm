@@ -289,17 +289,10 @@ vector<int> TextSystem::GetActiveWindows() {
 }
 
 void TextSystem::Snapshot() {
-  // TODO(erg): Get off ptr_container and then switch the implementation here
-  // to std::all_of.
-  bool all_empty = true;
-  for (PageSet::iterator it = current_pageset_.begin();
-       it != current_pageset_.end();
-       ++it) {
-    if (!it->second.empty()) {
-      all_empty = false;
-      break;
-    }
-  }
+  bool all_empty = std::all_of(
+      current_pageset_.begin(),
+      current_pageset_.end(),
+      [&](std::pair<const int, TextPage>& rhs) { return rhs.second.empty(); });
 
   if (!all_empty) {
     previous_page_sets_.push_back(current_pageset_);
