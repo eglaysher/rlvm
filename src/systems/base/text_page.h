@@ -48,6 +48,7 @@ class TextPage {
  public:
   TextPage(System& system, int window_num);
   TextPage(const TextPage& rhs);
+  TextPage(TextPage&& rhs);
   ~TextPage();
 
   // Returns the number of characters printed with Character() and Name().

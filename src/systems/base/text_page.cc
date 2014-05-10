@@ -306,6 +306,8 @@ TextPage::TextPage(System& system, int window_num)
 
 TextPage::TextPage(const TextPage& rhs) = default;
 
+TextPage::TextPage(TextPage&& rhs) = default;
+
 TextPage::~TextPage() {}
 
 void TextPage::Replay(bool is_active_page) {

@@ -101,7 +101,7 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
       script_message_no_wait_(false),
       active_window_(0),
       is_reading_backlog_(false),
-      current_pageset_(new PageSet),
+      current_pageset_(),
       in_pause_state_(false),
       // #WINDOW_*_USE
       move_use_(false),
@@ -254,7 +254,7 @@ void TextSystem::CheckAndSetBool(Gameexe& gexe,
     out = key_obj.ToInt();
 }
 
-void TextSystem::expireOldPages() {
+void TextSystem::ExpireOldPages() {
   while (previous_page_sets_.size() > MAX_PAGE_HISTORY)
     previous_page_sets_.pop_front();
 }
@@ -280,8 +280,8 @@ bool TextSystem::KeyStateChanged(KeyCode key_code, bool pressed) {
 
 vector<int> TextSystem::GetActiveWindows() {
   vector<int> tmp;
-  for (PageSet::iterator it = current_pageset_->begin();
-       it != current_pageset_->end();
+  for (PageSet::iterator it = current_pageset_.begin();
+       it != current_pageset_.end();
        ++it) {
     tmp.push_back(it->first);
   }
@@ -292,41 +292,42 @@ void TextSystem::Snapshot() {
   // TODO(erg): Get off ptr_container and then switch the implementation here
   // to std::all_of.
   bool all_empty = true;
-  for (PageSet::iterator it = current_pageset_->begin();
-       it != current_pageset_->end();
+  for (PageSet::iterator it = current_pageset_.begin();
+       it != current_pageset_.end();
        ++it) {
-    if (!it->second->empty()) {
+    if (!it->second.empty()) {
       all_empty = false;
       break;
     }
   }
 
   if (!all_empty) {
-    previous_page_sets_.push_back(current_pageset_->clone().release());
-    expireOldPages();
+    previous_page_sets_.push_back(current_pageset_);
+    ExpireOldPages();
   }
 }
 
 void TextSystem::NewPageOnWindow(int window) {
   // Erase the current instance of this window if it exists
-  PageSet::iterator it = current_pageset_->find(window);
-  if (it != current_pageset_->end()) {
-    current_pageset_->erase(it);
+  PageSet::iterator it = current_pageset_.find(window);
+  if (it != current_pageset_.end()) {
+    current_pageset_.erase(it);
   }
 
   previous_page_it_ = previous_page_sets_.end();
-  current_pageset_->insert(window, new TextPage(system(), window));
-  expireOldPages();
+  current_pageset_.insert(std::make_pair(window, TextPage(system(), window)));
+  ExpireOldPages();
 }
 
 TextPage& TextSystem::GetCurrentPage() {
   // Check to see if the active window has a current page.
-  PageSet::iterator it = current_pageset_->find(active_window_);
-  if (it == current_pageset_->end())
-    it = current_pageset_->insert(active_window_,
-                                  new TextPage(system(), active_window_)).first;
+  PageSet::iterator it = current_pageset_.find(active_window_);
+  if (it == current_pageset_.end())
+    it = current_pageset_.insert(
+        std::make_pair(active_window_,
+                       TextPage(system(), active_window_))).first;
 
-  return *it->second;
+  return it->second;
 }
 
 void TextSystem::BackPage() {
@@ -356,14 +357,14 @@ void TextSystem::ForwardPage() {
     if (previous_page_it_ != previous_page_sets_.end())
       ReplayPageSet(*previous_page_it_, false);
     else
-      ReplayPageSet(*current_pageset_, false);
+      ReplayPageSet(current_pageset_, false);
   }
 }
 
 void TextSystem::ReplayPageSet(PageSet& set, bool is_current_page) {
   for (PageSet::iterator it = set.begin(); it != set.end(); ++it) {
     try {
-      it->second->Replay(is_current_page);
+      it->second.Replay(is_current_page);
     }
     catch (rlvm::Exception& e) {
       // Currently, the text system can throw on a few unimplemented situations,
@@ -383,7 +384,7 @@ void TextSystem::StopReadingBacklog() {
   // Clear all windows
   ClearAllTextWindows();
   HideAllTextWindows();
-  ReplayPageSet(*current_pageset_, true);
+  ReplayPageSet(current_pageset_, true);
 }
 
 void TextSystem::SetAutoMode(int i) {
@@ -775,7 +776,7 @@ void TextSystem::Reset() {
   is_reading_backlog_ = false;
   script_message_no_wait_ = false;
 
-  current_pageset_ = std::unique_ptr<PageSet>(new PageSet);
+  current_pageset_.clear();
   previous_page_sets_.clear();
   previous_page_it_ = previous_page_sets_.end();
 
