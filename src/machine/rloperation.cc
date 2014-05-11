@@ -127,7 +127,10 @@ void IntConstant_T::ParseParameters(
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
-    throw rlvm::Exception("IntConstant_T parse err.");
+    std::ostringstream oss;
+    oss << "IntConstant_T parse error. Expected type string, but actually "
+        << "contained \"" << ep->GetDebugString() << "\"";
+    throw rlvm::Exception(oss.str());
   }
 
   output.push_back(std::move(ep));
@@ -150,7 +153,10 @@ void IntReference_T::ParseParameters(
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
-    throw rlvm::Exception("IntReference_T parse err.");
+    std::ostringstream oss;
+    oss << "IntReference_T parse error. Expected type string, but actually "
+        << "contained \"" << ep->GetDebugString() << "\"";
+    throw rlvm::Exception(oss.str());
   }
 
   output.push_back(std::move(ep));
@@ -208,7 +214,10 @@ void StrConstant_T::ParseParameters(
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
-    throw rlvm::Exception("StrConstant_T parse err.");
+    std::ostringstream oss;
+    oss << "StrConstant_T parse error. Expected type string, but actually "
+        << "contained \"" << ep->GetDebugString() << "\"";
+    throw rlvm::Exception(oss.str());
   }
 
   output.push_back(std::move(ep));
@@ -231,7 +240,10 @@ void StrReference_T::ParseParameters(
   std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
 
   if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
-    throw rlvm::Exception("StrReference_T parse err.");
+    std::ostringstream oss;
+    oss << "StrReference_T parse error. Expected type string, but actually "
+        << "contained \"" << ep->GetDebugString() << "\"";
+    throw rlvm::Exception(oss.str());
   }
 
   output.push_back(std::move(ep));
