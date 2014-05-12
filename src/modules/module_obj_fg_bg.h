@@ -67,4 +67,9 @@ class ChildObjRangeFgModule : public MappedRLModule {
   ChildObjRangeFgModule();
 };
 
+class ChildObjRangeBgModule : public MappedRLModule {
+ public:
+  ChildObjRangeBgModule();
+};
+
 #endif  // SRC_MODULES_MODULE_OBJ_FG_BG_H_

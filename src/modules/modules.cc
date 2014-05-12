@@ -72,6 +72,7 @@ void AddAllModules(RLMachine& rlmachine) {
   rlmachine.AttachModule(new ChildObjFgModule);
   rlmachine.AttachModule(new ChildObjFgGettersModule);
   rlmachine.AttachModule(new ChildObjRangeFgModule);
+  rlmachine.AttachModule(new ChildObjRangeBgModule);
   rlmachine.AttachModule(new DLLModule);
   rlmachine.AttachModule(new DebugModule);
   rlmachine.AttachModule(new EventLoopModule);

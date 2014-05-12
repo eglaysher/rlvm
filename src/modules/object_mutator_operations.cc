@@ -163,3 +163,15 @@ void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
   GetGraphicsObject(machine, this, object)
       .EndObjectMutatorMatching(machine, repno, name_, speedup);
 }
+
+// -----------------------------------------------------------------------
+
+Op_MutatorCheck::Op_MutatorCheck(const char* name)
+    : name_(name) {}
+
+Op_MutatorCheck::~Op_MutatorCheck() {}
+
+int Op_MutatorCheck::operator()(RLMachine& machine, int object) {
+  GraphicsObject& obj = GetGraphicsObject(machine, this, object);
+  return obj.IsMutatorRunningMatching(object, name_) ? 1 : 0;
+}

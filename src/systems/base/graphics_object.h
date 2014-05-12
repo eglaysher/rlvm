@@ -136,6 +136,7 @@ class GraphicsObject {
   void SetTintBlue(const int in);
 
   const RGBAColour& colour() const { return impl_->colour_; }
+  int colour_level() const { return impl_->colour_.a(); }
   void SetColour(const RGBAColour& colour);
   void SetColourRed(const int in);
   void SetColourGreen(const int in);

@@ -28,6 +28,7 @@
 #define SRC_MODULES_OBJECT_MUTATOR_OPERATIONS_H_
 
 #include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
 
 class GraphicsObject;
 
@@ -142,6 +143,19 @@ class Op_EndObjectMutation_RepNo
                           int object,
                           int repno,
                           int speedup);
+
+ private:
+  const char* name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorCheck : public RLOp_Store_1<IntConstant_T> {
+ public:
+  explicit Op_MutatorCheck(const char* name);
+  virtual ~Op_MutatorCheck();
+
+  virtual int operator()(RLMachine& machine, int object) override;
 
  private:
   const char* name_;

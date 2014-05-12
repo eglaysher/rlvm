@@ -1020,6 +1020,20 @@ void addEveObjectFunctions(RLModule& m) {
                                            &GraphicsObject::SetYAdjustment,
                                            "objEveAdjustY"));
 
+  m.AddOpcode(2011, 0, "objEveLight",
+              new Obj_SetOneIntOnObj(&GraphicsObject::SetLight));
+  m.AddOpcode(2011, 1, "objEveLight",
+              new Op_ObjectMutatorInt(&GraphicsObject::light,
+                                      &GraphicsObject::SetLight,
+                                      "objEveLight"));
+
+  m.AddOpcode(2020, 0, "objEveColLevel",
+              new Obj_SetOneIntOnObj(&GraphicsObject::SetColourLevel));
+  m.AddOpcode(2020, 1, "objEveColLevel",
+              new Op_ObjectMutatorInt(&GraphicsObject::colour_level,
+                                      &GraphicsObject::SetColourLevel,
+                                      "objEveColLevel"));
+
   m.AddOpcode(2040, 0, "objEveAdjustAlpha", new objAdjustAlpha);
   m.AddOpcode(2040,
               1,
@@ -1042,6 +1056,34 @@ void addEveObjectFunctions(RLModule& m) {
                                          &GraphicsObject::SetHeight,
                                          "objEveScale"));
 
+  m.AddOpcode(2049, 0, "objRotate",
+              new Obj_SetOneIntOnObj(&GraphicsObject::SetRotation));
+  m.AddOpcode(2049, 1, "objEveRotate",
+              new Op_ObjectMutatorInt(&GraphicsObject::rotation,
+                                      &GraphicsObject::SetRotation,
+                                      "objEveRotate"));
+
+  m.AddOpcode(2061, 0, "objEveHqScale",
+              new Obj_SetTwoIntOnObj(&GraphicsObject::SetHqWidth,
+                                     &GraphicsObject::SetHqHeight));
+  m.AddOpcode(2061, 1, "objEveHqScale",
+              new Op_ObjectMutatorIntInt(&GraphicsObject::hq_width,
+                                         &GraphicsObject::SetHqWidth,
+                                         &GraphicsObject::hq_height,
+                                         &GraphicsObject::SetHqHeight,
+                                         "objEveHqScale"));
+
+  m.AddOpcode(
+      3000, 0, "objEveMoveCheck", new Op_MutatorCheck("objEveMove"));
+  m.AddOpcode(
+      3001, 0, "objEveLeftCheck", new Op_MutatorCheck("objEveLeft"));
+  m.AddOpcode(
+      3002, 0, "objEveTopCheck", new Op_MutatorCheck("objEveTop"));
+  m.AddOpcode(
+      3003, 0, "objEveAlphaCheck", new Op_MutatorCheck("objEveAlpha"));
+  m.AddOpcode(
+      3004, 0, "objEveDisplayCheck", new Op_MutatorCheck("objEveDisplay"));
+
   m.AddOpcode(
       4000, 0, "objEveMoveWait", new Op_MutatorWaitNormal("objEveMove"));
   m.AddOpcode(
@@ -1057,6 +1099,9 @@ void addEveObjectFunctions(RLModule& m) {
               0,
               "objEveAdjustAlpha",
               new Op_MutatorWaitRepNo("objEveAdjustAlpha"));
+
+  m.AddOpcode(4046, 0, "objEveScaleWait",
+              new Op_MutatorWaitNormal("objEveScale"));
 
   m.AddOpcode(
       5000, 0, "objEveMoveWaitC", new Op_MutatorWaitCNormal("objEveMove"));
@@ -1161,4 +1206,12 @@ ChildObjRangeFgModule::ChildObjRangeFgModule()
     : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90) {
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjRangeBgModule::ChildObjRangeBgModule()
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeBg", 2, 91) {
+  addObjectFunctions(*this);
+  SetProperty(P_FGBG, OBJ_BG);
 }
