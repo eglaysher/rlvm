@@ -248,17 +248,35 @@ void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
 // -----------------------------------------------------------------------
 
 Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(Setter one, Setter two)
-    : setterOne(one), setterTwo(two) {}
+    : setter_one_(one), setter_two_(two) {}
 
 Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {}
 
 void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
                                     int buf,
-                                    int incomingOne,
-                                    int incomingTwo) {
+                                    int incoming_one,
+                                    int incoming_two) {
   GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-  ((obj).*(setterOne))(incomingOne);
-  ((obj).*(setterTwo))(incomingTwo);
+  ((obj).*(setter_one_))(incoming_one);
+  ((obj).*(setter_two_))(incoming_two);
 
+  machine.system().graphics().mark_object_state_as_dirty();
+}
+
+// -----------------------------------------------------------------------
+// Obj_SetRepnoIntOnObj
+// -----------------------------------------------------------------------
+
+Obj_SetRepnoIntOnObj::Obj_SetRepnoIntOnObj(Setter setter)
+    : setter(setter) {}
+
+Obj_SetRepnoIntOnObj::~Obj_SetRepnoIntOnObj() {}
+
+void Obj_SetRepnoIntOnObj::operator()(RLMachine& machine,
+                                      int buf,
+                                      int idx,
+                                      int val) {
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+  ((obj).*(setter))(idx, val);
   machine.system().graphics().mark_object_state_as_dirty();
 }

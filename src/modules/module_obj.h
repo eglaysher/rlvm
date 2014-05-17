@@ -147,22 +147,39 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // call a setter.
 class Obj_SetTwoIntOnObj
     : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  // The function signature for the setter function
+ public:
   typedef void (GraphicsObject::*Setter)(const int);
 
-  // The setter functions to call on Op_SetToIncoming::reference when
-  // called.
-  Setter setterOne;
-  Setter setterTwo;
-
- public:
   Obj_SetTwoIntOnObj(Setter one, Setter two);
   virtual ~Obj_SetTwoIntOnObj();
 
   virtual void operator()(RLMachine& machine,
                           int buf,
-                          int incomingOne,
-                          int incomingTwo) override;
+                          int incoming_one,
+                          int incoming_two) override;
+
+ private:
+  Setter setter_one_;
+  Setter setter_two_;
+};
+
+// -----------------------------------------------------------------------
+
+class Obj_SetRepnoIntOnObj
+    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+ public:
+  typedef void (GraphicsObject::*Setter)(const int, const int);
+
+  Obj_SetRepnoIntOnObj(Setter setter);
+  virtual ~Obj_SetRepnoIntOnObj();
+
+  virtual void operator()(RLMachine& machine,
+                          int buf,
+                          int idx,
+                          int val) override;
+
+ private:
+  Setter setter;
 };
 
 #endif  // SRC_MODULES_MODULE_OBJ_H_

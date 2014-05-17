@@ -146,22 +146,6 @@ struct adjust
   }
 };
 
-struct adjustX : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int idx, int x) {
-    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.SetXAdjustment(idx, x);
-    machine.system().graphics().mark_object_state_as_dirty();
-  }
-};
-
-struct adjustY : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int idx, int y) {
-    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.SetYAdjustment(idx, y);
-    machine.system().graphics().mark_object_state_as_dirty();
-  }
-};
-
 struct tint
     : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
@@ -721,6 +705,13 @@ void addUnifiedFunctions(ObjectModule& h) {
 
   // ----
 
+  h.AddCustomRepno<adjust, objEveAdjust>(6, "Adjust");
+  h.AddRepnoObjectCommands(7, "AdjustX",
+                           &GraphicsObject::x_adjustment,
+                           &GraphicsObject::SetXAdjustment);
+  h.AddRepnoObjectCommands(8, "AdjustY",
+                           &GraphicsObject::y_adjustment,
+                           &GraphicsObject::SetYAdjustment);
   h.AddSingleObjectCommands(9, "Mono",
                             &GraphicsObject::mono,
                             &GraphicsObject::SetMono);
@@ -763,6 +754,10 @@ void addUnifiedFunctions(ObjectModule& h) {
   h.AddSingleObjectCommands(36, "AdjustVert",
                             &GraphicsObject::vert,
                             &GraphicsObject::SetVert);
+
+  h.AddRepnoObjectCommands(40, "AdjustAlpha",
+                           &GraphicsObject::alpha_adjustment,
+                           &GraphicsObject::SetAlphaAdjustment);
 
   // --
   h.AddDoubleObjectCommands(46, "Scale",
@@ -815,8 +810,6 @@ void addUnifiedFunctions(ObjectModule& h) {
   h.AddSingleObjectCommands(63, "HqHeight",
                             &GraphicsObject::hq_height,
                             &GraphicsObject::SetHqHeight);
-
-
 }
 
 void addObjectFunctions(RLModule& m) {
@@ -824,9 +817,6 @@ void addObjectFunctions(RLModule& m) {
       1004, 0, "objShow", new Obj_SetOneIntOnObj(&GraphicsObject::SetVisible));
   m.AddOpcode(1005, 0, "objDispArea", new dispArea_0);
   m.AddOpcode(1005, 1, "objDispArea", new dispArea_1);
-  m.AddOpcode(1006, 0, "objAdjust", new adjust);
-  m.AddOpcode(1007, 0, "objAdjustX", new adjustX);
-  m.AddOpcode(1008, 0, "objAdjustY", new adjustY);
 
   m.AddOpcode(1012, 0, "objTint", new tint);
 
@@ -876,7 +866,6 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(
       1039, 0, "objPattNo", new Obj_SetOneIntOnObj(&GraphicsObject::SetPattNo));
 
-  m.AddOpcode(1040, 0, "objAdjustAlpha", new objAdjustAlpha);
   m.AddUnsupportedOpcode(1041, 0, "objAdjustAll");
   m.AddUnsupportedOpcode(1042, 0, "objAdjustAllX");
   m.AddUnsupportedOpcode(1043, 0, "objAdjustAllY");
@@ -904,69 +893,21 @@ void addEveObjectFunctions(RLModule& m) {
   m.AddOpcode(2004, 2, "objEveDisplay", new objEveDisplay_2);
   m.AddOpcode(2004, 3, "objEveDisplay", new objEveDisplay_3);
 
-  m.AddOpcode(2006, 0, "objEveAdjust", new adjust);
-  m.AddOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
-
-  m.AddOpcode(2007, 0, "objEveAdjustX", new adjustX);
-  m.AddOpcode(2007,
-              1,
-              "objEveAdjustX",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::x_adjustment,
-                                           &GraphicsObject::SetXAdjustment,
-                                           "objEveAdjustX"));
-
-  m.AddOpcode(2008, 0, "objEveAdjustY", new adjustY);
-  m.AddOpcode(2008,
-              1,
-              "objEveAdjustY",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::y_adjustment,
-                                           &GraphicsObject::SetYAdjustment,
-                                           "objEveAdjustY"));
-
-  m.AddOpcode(2040, 0, "objEveAdjustAlpha", new objAdjustAlpha);
-  m.AddOpcode(2040,
-              1,
-              "objEveAdjustAlpha",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::alpha_adjustment,
-                                           &GraphicsObject::SetAlphaAdjustment,
-                                           "objEveAdjustAlpha"));
-
-
   m.AddOpcode(
       3004, 0, "objEveDisplayCheck", new Op_MutatorCheck("objEveDisplay"));
 
   m.AddOpcode(
       4004, 0, "objEveDisplayWait", new Op_MutatorWaitNormal("objEveDisplay"));
-  m.AddOpcode(
-      4006, 0, "objEveAdjustEnd", new Op_MutatorWaitRepNo("objEveAdjust"));
-  m.AddOpcode(4040,
-              0,
-              "objEveAdjustAlpha",
-              new Op_MutatorWaitRepNo("objEveAdjustAlpha"));
 
   m.AddOpcode(5004,
               0,
               "objEveDisplayWaitC",
               new Op_MutatorWaitCNormal("objEveDisplay"));
-  m.AddOpcode(
-      5006, 0, "objEveAdjustWaitC", new Op_MutatorWaitCRepNo("objEveAdjust"));
-  m.AddOpcode(5040,
-              0,
-              "objEveAdjustAlphaWaitC",
-              new Op_MutatorWaitCRepNo("objEveAdjustAlpha"));
 
   m.AddOpcode(6004,
               0,
               "objEveDisplayEnd",
               new Op_EndObjectMutation_Normal("objEveDisplay"));
-  m.AddOpcode(6006,
-              0,
-              "objEveAdjustEnd",
-              new Op_EndObjectMutation_RepNo("objEveAdjust"));
-  m.AddOpcode(6040,
-              0,
-              "objEveAdjustAlphaEnd",
-              new Op_EndObjectMutation_RepNo("objEveAdjustAlpha"));
 }
 
 }  // namespace

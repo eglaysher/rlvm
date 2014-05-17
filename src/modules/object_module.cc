@@ -39,8 +39,10 @@ ObjectModule::ObjectModule(const std::string& prefix,
 
 ObjectModule::~ObjectModule() {}
 
-void ObjectModule::AddSingleObjectCommands(int base_id, const std::string& name,
-                                           Getter getter, Setter setter) {
+void ObjectModule::AddSingleObjectCommands(int base_id,
+                                           const std::string& name,
+                                           NormalGetter getter,
+                                           NormalSetter setter) {
   string base_name = prefix_ + name;
   module_->AddOpcode(1000 + base_id, 0, base_name,
                      new Obj_SetOneIntOnObj(setter));
@@ -58,10 +60,10 @@ void ObjectModule::AddSingleObjectCommands(int base_id, const std::string& name,
 
 void ObjectModule::AddDoubleObjectCommands(int base_id,
                                            const std::string& name,
-                                           Getter getter_one,
-                                           Setter setter_one,
-                                           Getter getter_two,
-                                           Setter setter_two) {
+                                           NormalGetter getter_one,
+                                           NormalSetter setter_one,
+                                           NormalGetter getter_two,
+                                           NormalSetter setter_two) {
   string base_name = prefix_ + name;
   module_->AddOpcode(1000 + base_id, 0, base_name,
                      new Obj_SetTwoIntOnObj(setter_one, setter_two));
@@ -80,6 +82,28 @@ void ObjectModule::AddDoubleObjectCommands(int base_id,
 
   AddCheck(eve_name, base_eve_name, base_id);
   AddNormalFinale(eve_name, base_eve_name, base_id);
+}
+
+void ObjectModule::AddRepnoObjectCommands(int base_id,
+                                          const std::string& name,
+                                          RepnoGetter getter,
+                                          RepnoSetter setter) {
+  string base_name = prefix_ + name;
+  module_->AddOpcode(1000 + base_id, 0, base_name,
+                     new Obj_SetRepnoIntOnObj(setter));
+
+  string eve_name = prefix_ + "Eve" + name;
+  string base_eve_name = "objEve" + name;
+  module_->AddOpcode(2000 + base_id, 0, eve_name,
+                     new Obj_SetRepnoIntOnObj(setter));
+  module_->AddOpcode(2000 + base_id, 1, eve_name,
+                     new Op_ObjectMutatorRepnoInt(
+                         getter,
+                         setter,
+                         base_eve_name));
+
+  AddCheck(eve_name, base_eve_name, base_id);
+  AddRepnoFinale(eve_name, base_eve_name, base_id);
 }
 
 void ObjectModule::AddCheck(const std::string& eve_name,
@@ -104,4 +128,20 @@ void ObjectModule::AddNormalFinale(const std::string& eve_name,
   string end_name = eve_name + "End";
   module_->AddOpcode(6000 + base_id, 0, end_name,
                      new Op_EndObjectMutation_Normal(base_eve_name));
+}
+
+void ObjectModule::AddRepnoFinale(const std::string& eve_name,
+                                  const std::string& base_eve_name,
+                                  int base_id) {
+  string wait_name = eve_name + "Wait";
+  module_->AddOpcode(4000 + base_id, 0, wait_name,
+                     new Op_MutatorWaitRepNo(base_eve_name));
+
+  string waitc_name = eve_name + "WaitC";
+  module_->AddOpcode(5000 + base_id, 0, waitc_name,
+                     new Op_MutatorWaitCRepNo(base_eve_name));
+
+  string end_name = eve_name + "End";
+  module_->AddOpcode(6000 + base_id, 0, end_name,
+                     new Op_EndObjectMutation_RepNo(base_eve_name));
 }
