@@ -64,7 +64,7 @@ void RLModule::UnpackOpcodeNumber(int packed_opcode,
 
 void RLModule::AddOpcode(int opcode,
                          unsigned char overload,
-                         const char* name,
+                         const std::string& name,
                          RLOperation* op) {
   int packed_opcode = PackOpcodeNumber(opcode, overload);
   op->set_name(name);
@@ -88,9 +88,9 @@ void RLModule::AddUnsupportedOpcode(int opcode,
                                     const std::string& name) {
   AddOpcode(opcode,
             overload,
-            "",
+            name,
             new UndefinedFunction(
-                name, module_type_, module_number_, opcode, (int)overload));
+                module_type_, module_number_, opcode, (int)overload));
 }
 
 void RLModule::SetProperty(int property, int value) {

@@ -50,7 +50,7 @@ class MappedRLModule : public RLModule {
   // of |op|.
   virtual void AddOpcode(int opcode,
                          unsigned char overload,
-                         const char* name,
+                         const std::string& name,
                          RLOperation* op) override;
 
  private:

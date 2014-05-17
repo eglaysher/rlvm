@@ -290,12 +290,12 @@ class GraphicsObject {
 
   // Returns true if a mutator matching the following parameters is currently
   // running.
-  bool IsMutatorRunningMatching(int repno, const char* name);
+  bool IsMutatorRunningMatching(int repno, const std::string& name);
 
   // Ends all mutators that match the given parameters.
   void EndObjectMutatorMatching(RLMachine& machine,
                                 int repno,
-                                const char* name,
+                                const std::string& name,
                                 int speedup);
 
   // Returns the number of GraphicsObject instances sharing the

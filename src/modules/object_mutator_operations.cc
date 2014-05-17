@@ -39,7 +39,7 @@
 
 Op_ObjectMutatorInt::Op_ObjectMutatorInt(Getter getter,
                                          Setter setter,
-                                         const char* name)
+                                         const std::string& name)
     : getter_(getter), setter_(setter), name_(name) {}
 
 Op_ObjectMutatorInt::~Op_ObjectMutatorInt() {}
@@ -68,7 +68,7 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
 
 Op_ObjectMutatorRepnoInt::Op_ObjectMutatorRepnoInt(Getter getter,
                                                    Setter setter,
-                                                   const char* name)
+                                                   const std::string& name)
     : getter_(getter), setter_(setter), name_(name) {}
 
 Op_ObjectMutatorRepnoInt::~Op_ObjectMutatorRepnoInt() {}
@@ -101,7 +101,7 @@ Op_ObjectMutatorIntInt::Op_ObjectMutatorIntInt(Getter getter_one,
                                                Setter setter_one,
                                                Getter getter_two,
                                                Setter setter_two,
-                                               const char* name)
+                                               const std::string& name)
     : getter_one_(getter_one),
       setter_one_(setter_one),
       getter_two_(getter_two),
@@ -137,7 +137,8 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-Op_EndObjectMutation_Normal::Op_EndObjectMutation_Normal(const char* name)
+Op_EndObjectMutation_Normal::Op_EndObjectMutation_Normal(
+    const std::string& name)
     : name_(name) {}
 
 Op_EndObjectMutation_Normal::~Op_EndObjectMutation_Normal() {}
@@ -151,7 +152,7 @@ void Op_EndObjectMutation_Normal::operator()(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-Op_EndObjectMutation_RepNo::Op_EndObjectMutation_RepNo(const char* name)
+Op_EndObjectMutation_RepNo::Op_EndObjectMutation_RepNo(const std::string& name)
     : name_(name) {}
 
 Op_EndObjectMutation_RepNo::~Op_EndObjectMutation_RepNo() {}
@@ -166,7 +167,7 @@ void Op_EndObjectMutation_RepNo::operator()(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-Op_MutatorCheck::Op_MutatorCheck(const char* name)
+Op_MutatorCheck::Op_MutatorCheck(const std::string& name)
     : name_(name) {}
 
 Op_MutatorCheck::~Op_MutatorCheck() {}

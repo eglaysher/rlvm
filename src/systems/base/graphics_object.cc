@@ -790,7 +790,8 @@ void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
   object_mutators_.emplace_back(mutator);
 }
 
-bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
+bool GraphicsObject::IsMutatorRunningMatching(int repno,
+                                              const std::string& name) {
   for (auto const& mutator : object_mutators_) {
     if (mutator->OperationMatches(repno, name))
       return true;
@@ -801,7 +802,7 @@ bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
 
 void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
                                               int repno,
-                                              const char* name,
+                                              const std::string& name,
                                               int speedup) {
   if (speedup == 0) {
     std::vector<std::unique_ptr<ObjectMutator>>::iterator it =

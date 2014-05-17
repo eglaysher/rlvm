@@ -35,7 +35,7 @@
 #include "systems/base/system.h"
 
 ObjectMutator::ObjectMutator(int repr,
-                             const char* name,
+                             const std::string& name,
                              int creation_time,
                              int duration_time,
                              int delay,
@@ -57,8 +57,8 @@ bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
   return ticks > (creation_time_ + delay_ + duration_time_);
 }
 
-bool ObjectMutator::OperationMatches(int repr, const char* name) const {
-  return repr_ == repr && (strcmp(name, name_) == 0);
+bool ObjectMutator::OperationMatches(int repr, const std::string& name) const {
+  return repr_ == repr && name_ == name;
 }
 
 int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
@@ -78,7 +78,7 @@ int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
 
 // -----------------------------------------------------------------------
 
-OneIntObjectMutator::OneIntObjectMutator(const char* name,
+OneIntObjectMutator::OneIntObjectMutator(const std::string& name,
                                          int creation_time,
                                          int duration_time,
                                          int delay,
@@ -105,7 +105,7 @@ void OneIntObjectMutator::PerformSetting(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-RepnoIntObjectMutator::RepnoIntObjectMutator(const char* name,
+RepnoIntObjectMutator::RepnoIntObjectMutator(const std::string& name,
                                              int creation_time,
                                              int duration_time,
                                              int delay,
@@ -135,7 +135,7 @@ void RepnoIntObjectMutator::PerformSetting(RLMachine& machine,
 
 // -----------------------------------------------------------------------
 
-TwoIntObjectMutator::TwoIntObjectMutator(const char* name,
+TwoIntObjectMutator::TwoIntObjectMutator(const std::string& name,
                                          int creation_time,
                                          int duration_time,
                                          int delay,

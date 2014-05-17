@@ -141,13 +141,11 @@ void InvokeSyscomAsOp::operator()(RLMachine& machine) {
 // -----------------------------------------------------------------------
 // UndefinedFunction
 // -----------------------------------------------------------------------
-UndefinedFunction::UndefinedFunction(const std::string& name,
-                                     int modtype,
+UndefinedFunction::UndefinedFunction(int modtype,
                                      int module,
                                      int opcode,
                                      int overload)
-    : name_(name),
-      modtype_(modtype),
+    : modtype_(modtype),
       module_(module),
       opcode_(opcode),
       overload_(overload) {}
@@ -155,21 +153,21 @@ UndefinedFunction::UndefinedFunction(const std::string& name,
 void UndefinedFunction::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
-  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
+  throw rlvm::UnimplementedOpcode(name(), modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::DispatchFunction(RLMachine& machine,
                                          const libreallive::CommandElement& f) {
-  throw rlvm::UnimplementedOpcode(machine, name_, f);
+  throw rlvm::UnimplementedOpcode(machine, name(), f);
 }
 
 void UndefinedFunction::ParseParameters(
     const std::vector<std::string>& input,
     libreallive::ExpressionPiecesVector& output) {
-  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
+  throw rlvm::UnimplementedOpcode(name(), modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::operator()(RLMachine& machine,
                                    const libreallive::CommandElement& f) {
-  throw rlvm::UnimplementedOpcode(machine, name_, f);
+  throw rlvm::UnimplementedOpcode(machine, name(), f);
 }

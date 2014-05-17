@@ -104,7 +104,7 @@ class RLModule {
   // operations the module handles. Takes ownership |op|.
   virtual void AddOpcode(int opcode,
                          unsigned char overload,
-                         const char* name,
+                         const std::string& name,
                          RLOperation* op);
 
   // Adds an UndefinedFunction object to this module.

@@ -42,7 +42,7 @@
 // RLOperation
 // -----------------------------------------------------------------------
 
-RLOperation::RLOperation() : name_(NULL) {}
+RLOperation::RLOperation() : name_() {}
 
 RLOperation::~RLOperation() {}
 

@@ -178,8 +178,7 @@ class InvokeSyscomAsOp : public RLOp_Void_Void {
 // unimplemented functions.
 class UndefinedFunction : public RLOp_SpecialCase {
  public:
-  UndefinedFunction(const std::string& name,
-                    int modtype,
+  UndefinedFunction(int modtype,
                     int module,
                     int opcode,
                     int overload);
@@ -202,7 +201,6 @@ class UndefinedFunction : public RLOp_SpecialCase {
                           const libreallive::CommandElement&) override;
 
  private:
-  std::string name_;
   int modtype_;
   int module_;
   int opcode_;

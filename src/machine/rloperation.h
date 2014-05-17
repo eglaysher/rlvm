@@ -98,8 +98,8 @@ class RLOperation {
   // Destructor
   virtual ~RLOperation();
 
-  void set_name(const char* name) { name_ = name; }
-  const char* name() const { return name_; }
+  void set_name(const std::string& name) { name_ = name; }
+  const std::string& name() const { return name_; }
 
   RLOperation* SetProperty(int property, int value);
   bool GetProperty(int property, int& value) const;
@@ -145,7 +145,7 @@ class RLOperation {
   RLModule* module_;
 
   // The human readable name for this operation
-  const char* name_;
+  std::string name_;
 };
 
 // Type definition for a Constant integer value.
