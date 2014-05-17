@@ -150,6 +150,7 @@ librlvm_files = [
   "src/modules/module_sys_index_series.cc",
   "src/modules/module_sys_timetable2.cc",
   "src/modules/modules.cc",
+  "src/modules/object_module.cc",
   "src/systems/base/anm_graphics_object_data.cc",
   "src/systems/base/cgm_table.cc",
   "src/systems/base/colour.cc",

@@ -41,7 +41,6 @@
 
 #include "libreallive/bytecode.h"
 #include "libreallive/gameexe.h"
-#include "long_operations/wait_long_operation.h"
 #include "machine/long_operation.h"
 #include "machine/properties.h"
 #include "machine/rlmachine.h"
@@ -700,101 +699,127 @@ struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
   }
 };
 
-bool MutatorIsDone(RLMachine& machine,
-                   RLOperation* op,
-                   int obj,
-                   int repno,
-                   const char* name) {
-  return GetGraphicsObject(machine, op, obj)
-             .IsMutatorRunningMatching(repno, name) == false;
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+
+void addUnifiedFunctions(ObjectModule& h) {
+  h.AddDoubleObjectCommands(0, "Move",
+                            &GraphicsObject::x,
+                            &GraphicsObject::SetX,
+                            &GraphicsObject::y,
+                            &GraphicsObject::SetY);
+  h.AddSingleObjectCommands(1, "Left",
+                            &GraphicsObject::x,
+                            &GraphicsObject::SetX);
+  h.AddSingleObjectCommands(2, "Top",
+                            &GraphicsObject::y,
+                            &GraphicsObject::SetY);
+  h.AddSingleObjectCommands(3, "Alpha",
+                            &GraphicsObject::raw_alpha,
+                            &GraphicsObject::SetAlpha);
+
+  // ----
+
+  h.AddSingleObjectCommands(9, "Mono",
+                            &GraphicsObject::mono,
+                            &GraphicsObject::SetMono);
+  h.AddSingleObjectCommands(10, "Invert",
+                            &GraphicsObject::invert,
+                            &GraphicsObject::SetInvert);
+  h.AddSingleObjectCommands(11, "Light",
+                            &GraphicsObject::light,
+                            &GraphicsObject::SetLight);
+
+  // ---
+
+  h.AddSingleObjectCommands(13, "TintR",
+                            &GraphicsObject::tint_red,
+                            &GraphicsObject::SetTintRed);
+  h.AddSingleObjectCommands(14, "TintG",
+                            &GraphicsObject::tint_green,
+                            &GraphicsObject::SetTintGreen);
+  h.AddSingleObjectCommands(15, "TintB",
+                            &GraphicsObject::tint_blue,
+                            &GraphicsObject::SetTintBlue);
+
+  // ---
+
+  h.AddSingleObjectCommands(17, "ColR",
+                            &GraphicsObject::colour_red,
+                            &GraphicsObject::SetColourRed);
+  h.AddSingleObjectCommands(18, "ColG",
+                            &GraphicsObject::colour_green,
+                            &GraphicsObject::SetColourGreen);
+  h.AddSingleObjectCommands(19, "ColB",
+                            &GraphicsObject::colour_blue,
+                            &GraphicsObject::SetColourBlue);
+  h.AddSingleObjectCommands(20, "ColLevel",
+                            &GraphicsObject::colour_level,
+                            &GraphicsObject::SetColourLevel);
+
+  // ---
+
+  h.AddSingleObjectCommands(36, "AdjustVert",
+                            &GraphicsObject::vert,
+                            &GraphicsObject::SetVert);
+
+  // --
+  h.AddDoubleObjectCommands(46, "Scale",
+                            &GraphicsObject::width,
+                            &GraphicsObject::SetWidth,
+                            &GraphicsObject::height,
+                            &GraphicsObject::SetHeight);
+  h.AddSingleObjectCommands(47, "Width",
+                            &GraphicsObject::width,
+                            &GraphicsObject::SetWidth);
+  h.AddSingleObjectCommands(48, "Height",
+                            &GraphicsObject::height,
+                            &GraphicsObject::SetHeight);
+  h.AddSingleObjectCommands(49, "Rotate",
+                            &GraphicsObject::rotation,
+                            &GraphicsObject::SetRotation);
+  h.AddDoubleObjectCommands(50, "RepOrigin",
+                            &GraphicsObject::rep_origin_x,
+                            &GraphicsObject::SetRepOriginX,
+                            &GraphicsObject::rep_origin_y,
+                            &GraphicsObject::SetRepOriginY);
+  h.AddSingleObjectCommands(51, "RepOriginX",
+                            &GraphicsObject::rep_origin_x,
+                            &GraphicsObject::SetRepOriginX);
+  h.AddSingleObjectCommands(52, "RepOriginY",
+                            &GraphicsObject::rep_origin_y,
+                            &GraphicsObject::SetRepOriginY);
+  h.AddDoubleObjectCommands(53, "Origin",
+                            &GraphicsObject::origin_x,
+                            &GraphicsObject::SetOriginX,
+                            &GraphicsObject::origin_y,
+                            &GraphicsObject::SetOriginY);
+  h.AddSingleObjectCommands(54, "OriginX",
+                            &GraphicsObject::origin_x,
+                            &GraphicsObject::SetOriginX);
+  h.AddSingleObjectCommands(55, "OriginY",
+                            &GraphicsObject::origin_y,
+                            &GraphicsObject::SetOriginY);
+
+  // ---
+
+  h.AddDoubleObjectCommands(61, "HqScale",
+                            &GraphicsObject::hq_width,
+                            &GraphicsObject::SetHqWidth,
+                            &GraphicsObject::hq_height,
+                            &GraphicsObject::SetHqHeight);
+  h.AddSingleObjectCommands(62, "HqWidth",
+                            &GraphicsObject::hq_width,
+                            &GraphicsObject::SetHqWidth);
+  h.AddSingleObjectCommands(63, "HqHeight",
+                            &GraphicsObject::hq_height,
+                            &GraphicsObject::SetHqHeight);
+
+
 }
-
-class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
- public:
-  explicit Op_MutatorWaitNormal(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnEvent(
-        std::bind(MutatorIsDone, std::ref(machine), this, obj, -1, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
- public:
-  explicit Op_MutatorWaitRepNo(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj, int repno) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnEvent(
-        std::bind(MutatorIsDone, std::ref(machine), this, obj, repno, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-bool objectMutatorIsWorking(RLMachine& machine,
-                            RLOperation* op,
-                            int obj,
-                            int repno,
-                            const char* name) {
-  return GetGraphicsObject(machine, op, obj)
-             .IsMutatorRunningMatching(repno, name) == false;
-}
-
-class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
- public:
-  explicit Op_MutatorWaitCNormal(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnClicks();
-    wait_op->BreakOnEvent(std::bind(
-        objectMutatorIsWorking, std::ref(machine), this, obj, -1, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
- public:
-  explicit Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj, int repno) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnClicks();
-    wait_op->BreakOnEvent(std::bind(
-        objectMutatorIsWorking, std::ref(machine), this, obj, repno, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
 
 void addObjectFunctions(RLModule& m) {
-  m.AddOpcode(
-      1000,
-      0,
-      "objMove",
-      new Obj_SetTwoIntOnObj(&GraphicsObject::SetX, &GraphicsObject::SetY));
-  m.AddOpcode(
-      1001, 0, "objLeft", new Obj_SetOneIntOnObj(&GraphicsObject::SetX));
-  m.AddOpcode(1002, 0, "objTop", new Obj_SetOneIntOnObj(&GraphicsObject::SetY));
-  m.AddOpcode(
-      1003, 0, "objAlpha", new Obj_SetOneIntOnObj(&GraphicsObject::SetAlpha));
   m.AddOpcode(
       1004, 0, "objShow", new Obj_SetOneIntOnObj(&GraphicsObject::SetVisible));
   m.AddOpcode(1005, 0, "objDispArea", new dispArea_0);
@@ -802,35 +827,11 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(1006, 0, "objAdjust", new adjust);
   m.AddOpcode(1007, 0, "objAdjustX", new adjustX);
   m.AddOpcode(1008, 0, "objAdjustY", new adjustY);
-  m.AddOpcode(
-      1009, 0, "objMono", new Obj_SetOneIntOnObj(&GraphicsObject::SetMono));
-  m.AddOpcode(
-      1010, 0, "objInvert", new Obj_SetOneIntOnObj(&GraphicsObject::SetInvert));
-  m.AddOpcode(
-      1011, 0, "objLight", new Obj_SetOneIntOnObj(&GraphicsObject::SetLight));
+
   m.AddOpcode(1012, 0, "objTint", new tint);
-  m.AddOpcode(
-      1013, 0, "objTintR", new Obj_SetOneIntOnObj(&GraphicsObject::SetTintRed));
-  m.AddOpcode(
-      1014, 0, "objTintG",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetTintGreen));
-  m.AddOpcode(
-      1015, 0, "objTintB",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetTintBlue));
+
   m.AddOpcode(1016, 0, "objColour", new colour);
-  m.AddOpcode(
-      1017, 0, "objColR",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourRed));
-  m.AddOpcode(
-      1018, 0, "objColG",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourGreen));
-  m.AddOpcode(
-      1019, 0, "objColB",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourBlue));
-  m.AddOpcode(1020,
-              0,
-              "objColLevel",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetColourLevel));
+
   m.AddOpcode(1021,
               0,
               "objComposite",
@@ -866,10 +867,7 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(1035, 0, "objDispCorner", new dispArea_0);
   m.AddOpcode(1035, 1, "objDispCorner", new dispArea_1);
   m.AddOpcode(1035, 2, "objDispCorner", new dispCorner_1);
-  m.AddOpcode(1036,
-              0,
-              "objAdjustVert",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetVert));
+
   m.AddOpcode(1037,
               0,
               "objSetDigits",
@@ -883,61 +881,7 @@ void addObjectFunctions(RLModule& m) {
   m.AddUnsupportedOpcode(1042, 0, "objAdjustAllX");
   m.AddUnsupportedOpcode(1043, 0, "objAdjustAllY");
 
-  m.AddOpcode(1046,
-              0,
-              "objScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetWidth,
-                                     &GraphicsObject::SetHeight));
-  m.AddOpcode(
-      1047, 0, "objWidth", new Obj_SetOneIntOnObj(&GraphicsObject::SetWidth));
-  m.AddOpcode(
-      1048, 0, "objHeight", new Obj_SetOneIntOnObj(&GraphicsObject::SetHeight));
-  m.AddOpcode(1049,
-              0,
-              "objRotate",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRotation));
-
-  m.AddOpcode(1050,
-              0,
-              "objRepOrigin",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetRepOriginX,
-                                     &GraphicsObject::SetRepOriginY));
-  m.AddOpcode(1051,
-              0,
-              "objRepOriginX",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRepOriginX));
-  m.AddOpcode(1052,
-              0,
-              "objRepOriginY",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRepOriginY));
-  m.AddOpcode(1053,
-              0,
-              "objOrigin",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetOriginX,
-                                     &GraphicsObject::SetOriginY));
-  m.AddOpcode(1054,
-              0,
-              "objOriginX",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetOriginX));
-  m.AddOpcode(1055,
-              0,
-              "objOriginY",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetOriginY));
   m.AddUnsupportedOpcode(1056, 0, "objFadeOpts");
-
-  m.AddOpcode(1061,
-              0,
-              "objHqScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetHqWidth,
-                                     &GraphicsObject::SetHqHeight));
-  m.AddOpcode(1062,
-              0,
-              "objHqWidth",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetHqWidth));
-  m.AddOpcode(1063,
-              0,
-              "objHqHeight",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetHqHeight));
 
   m.AddOpcode(1064, 2, "objButtonOpts", new objButtonOpts);
   m.AddOpcode(1066,
@@ -952,47 +896,6 @@ void addObjectFunctions(RLModule& m) {
 }
 
 void addEveObjectFunctions(RLModule& m) {
-  m.AddOpcode(
-      2000,
-      0,
-      "objEveMove",
-      new Obj_SetTwoIntOnObj(&GraphicsObject::SetX, &GraphicsObject::SetY));
-  m.AddOpcode(2000,
-              1,
-              "objEveMove",
-              new Op_ObjectMutatorIntInt(&GraphicsObject::x,
-                                         &GraphicsObject::SetX,
-                                         &GraphicsObject::y,
-                                         &GraphicsObject::SetY,
-                                         "objEveMove"));
-
-  m.AddOpcode(
-      2001, 0, "objEveLeft", new Obj_SetOneIntOnObj(&GraphicsObject::SetX));
-  m.AddOpcode(2001,
-              1,
-              "objEveLeft",
-              new Op_ObjectMutatorInt(
-                  &GraphicsObject::x, &GraphicsObject::SetX, "objEveLeft"));
-
-  m.AddOpcode(
-      2002, 0, "objEveTop", new Obj_SetOneIntOnObj(&GraphicsObject::SetY));
-  m.AddOpcode(2002,
-              1,
-              "objEveTop",
-              new Op_ObjectMutatorInt(
-                  &GraphicsObject::y, &GraphicsObject::SetY, "objEveTop"));
-
-  m.AddOpcode(2003,
-              0,
-              "objEveAlpha",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetAlpha));
-  m.AddOpcode(
-      2003,
-      1,
-      "objEveAlpha",
-      new Op_ObjectMutatorInt(
-          &GraphicsObject::raw_alpha, &GraphicsObject::SetAlpha, "objEveAlpha"));
-
   m.AddOpcode(2004,
               0,
               "objEveDisplay",
@@ -1020,20 +923,6 @@ void addEveObjectFunctions(RLModule& m) {
                                            &GraphicsObject::SetYAdjustment,
                                            "objEveAdjustY"));
 
-  m.AddOpcode(2011, 0, "objEveLight",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetLight));
-  m.AddOpcode(2011, 1, "objEveLight",
-              new Op_ObjectMutatorInt(&GraphicsObject::light,
-                                      &GraphicsObject::SetLight,
-                                      "objEveLight"));
-
-  m.AddOpcode(2020, 0, "objEveColLevel",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetColourLevel));
-  m.AddOpcode(2020, 1, "objEveColLevel",
-              new Op_ObjectMutatorInt(&GraphicsObject::colour_level,
-                                      &GraphicsObject::SetColourLevel,
-                                      "objEveColLevel"));
-
   m.AddOpcode(2040, 0, "objEveAdjustAlpha", new objAdjustAlpha);
   m.AddOpcode(2040,
               1,
@@ -1042,55 +931,10 @@ void addEveObjectFunctions(RLModule& m) {
                                            &GraphicsObject::SetAlphaAdjustment,
                                            "objEveAdjustAlpha"));
 
-  m.AddOpcode(2046,
-              0,
-              "objEveScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetWidth,
-                                     &GraphicsObject::SetHeight));
-  m.AddOpcode(2046,
-              1,
-              "objEveScale",
-              new Op_ObjectMutatorIntInt(&GraphicsObject::width,
-                                         &GraphicsObject::SetWidth,
-                                         &GraphicsObject::height,
-                                         &GraphicsObject::SetHeight,
-                                         "objEveScale"));
 
-  m.AddOpcode(2049, 0, "objRotate",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRotation));
-  m.AddOpcode(2049, 1, "objEveRotate",
-              new Op_ObjectMutatorInt(&GraphicsObject::rotation,
-                                      &GraphicsObject::SetRotation,
-                                      "objEveRotate"));
-
-  m.AddOpcode(2061, 0, "objEveHqScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetHqWidth,
-                                     &GraphicsObject::SetHqHeight));
-  m.AddOpcode(2061, 1, "objEveHqScale",
-              new Op_ObjectMutatorIntInt(&GraphicsObject::hq_width,
-                                         &GraphicsObject::SetHqWidth,
-                                         &GraphicsObject::hq_height,
-                                         &GraphicsObject::SetHqHeight,
-                                         "objEveHqScale"));
-
-  m.AddOpcode(
-      3000, 0, "objEveMoveCheck", new Op_MutatorCheck("objEveMove"));
-  m.AddOpcode(
-      3001, 0, "objEveLeftCheck", new Op_MutatorCheck("objEveLeft"));
-  m.AddOpcode(
-      3002, 0, "objEveTopCheck", new Op_MutatorCheck("objEveTop"));
-  m.AddOpcode(
-      3003, 0, "objEveAlphaCheck", new Op_MutatorCheck("objEveAlpha"));
   m.AddOpcode(
       3004, 0, "objEveDisplayCheck", new Op_MutatorCheck("objEveDisplay"));
 
-  m.AddOpcode(
-      4000, 0, "objEveMoveWait", new Op_MutatorWaitNormal("objEveMove"));
-  m.AddOpcode(
-      4001, 0, "objEveLeftWait", new Op_MutatorWaitNormal("objEveLeft"));
-  m.AddOpcode(4002, 0, "objEveTopWait", new Op_MutatorWaitNormal("objEveTop"));
-  m.AddOpcode(
-      4003, 0, "objEveAlphaWait", new Op_MutatorWaitNormal("objEveAlpha"));
   m.AddOpcode(
       4004, 0, "objEveDisplayWait", new Op_MutatorWaitNormal("objEveDisplay"));
   m.AddOpcode(
@@ -1100,17 +944,6 @@ void addEveObjectFunctions(RLModule& m) {
               "objEveAdjustAlpha",
               new Op_MutatorWaitRepNo("objEveAdjustAlpha"));
 
-  m.AddOpcode(4046, 0, "objEveScaleWait",
-              new Op_MutatorWaitNormal("objEveScale"));
-
-  m.AddOpcode(
-      5000, 0, "objEveMoveWaitC", new Op_MutatorWaitCNormal("objEveMove"));
-  m.AddOpcode(
-      5001, 0, "objEveLeftWaitC", new Op_MutatorWaitCNormal("objEveLeft"));
-  m.AddOpcode(
-      5002, 0, "objEveTopWaitC", new Op_MutatorWaitCNormal("objEveTop"));
-  m.AddOpcode(
-      5003, 0, "objEveAlphaWaitC", new Op_MutatorWaitCNormal("objEveAlpha"));
   m.AddOpcode(5004,
               0,
               "objEveDisplayWaitC",
@@ -1122,16 +955,6 @@ void addEveObjectFunctions(RLModule& m) {
               "objEveAdjustAlphaWaitC",
               new Op_MutatorWaitCRepNo("objEveAdjustAlpha"));
 
-  m.AddOpcode(
-      6000, 0, "objEveMoveEnd", new Op_EndObjectMutation_Normal("objEveMove"));
-  m.AddOpcode(
-      6001, 0, "objEveLeftEnd", new Op_EndObjectMutation_Normal("objEveLeft"));
-  m.AddOpcode(
-      6002, 0, "objEveTopEnd", new Op_EndObjectMutation_Normal("objEveTop"));
-  m.AddOpcode(6003,
-              0,
-              "objEveAlphaEnd",
-              new Op_EndObjectMutation_Normal("objEveAlpha"));
   m.AddOpcode(6004,
               0,
               "objEveDisplayEnd",
@@ -1152,7 +975,11 @@ void addEveObjectFunctions(RLModule& m) {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
+ObjFgModule::ObjFgModule()
+    : RLModule("ObjFg", 1, 81),
+      helper_("obj", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -1160,7 +987,11 @@ ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
 
 // -----------------------------------------------------------------------
 
-ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
+ObjBgModule::ObjBgModule()
+    : RLModule("ObjBg", 1, 82),
+      helper_("objBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -1169,7 +1000,10 @@ ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
 // -----------------------------------------------------------------------
 
 ChildObjFgModule::ChildObjFgModule()
-    : MappedRLModule(ChildObjMappingFun, "ChildObjFg", 2, 81) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFg", 2, 81),
+      helper_("objChild", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -1178,7 +1012,10 @@ ChildObjFgModule::ChildObjFgModule()
 // -----------------------------------------------------------------------
 
 ChildObjBgModule::ChildObjBgModule()
-    : MappedRLModule(ChildObjMappingFun, "ChildObjBg", 2, 82) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBg", 2, 82),
+      helper_("objChildBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -1187,7 +1024,10 @@ ChildObjBgModule::ChildObjBgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeFgModule::ObjRangeFgModule()
-    : MappedRLModule(RangeMappingFun, "ObjRangeFg", 1, 90) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeFg", 1, 90),
+      helper_("objRange", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -1195,7 +1035,10 @@ ObjRangeFgModule::ObjRangeFgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeBgModule::ObjRangeBgModule()
-    : MappedRLModule(RangeMappingFun, "ObjRangeBg", 1, 91) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeBg", 1, 91),
+      helper_("objRangeBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }
@@ -1203,7 +1046,10 @@ ObjRangeBgModule::ObjRangeBgModule()
 // -----------------------------------------------------------------------
 
 ChildObjRangeFgModule::ChildObjRangeFgModule()
-    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90) {
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90),
+      helper_("objChildRange", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -1211,7 +1057,10 @@ ChildObjRangeFgModule::ChildObjRangeFgModule()
 // -----------------------------------------------------------------------
 
 ChildObjRangeBgModule::ChildObjRangeBgModule()
-    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeBg", 2, 91) {
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeBg", 2, 91),
+      helper_("objChildRangeBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }

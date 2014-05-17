@@ -130,12 +130,18 @@ class GraphicsObject {
   void SetLight(const int in);
 
   const RGBColour& tint() const { return impl_->tint_; }
+  int tint_red() const { return impl_->tint_.r(); }
+  int tint_green() const { return impl_->tint_.g(); }
+  int tint_blue() const { return impl_->tint_.b(); }
   void SetTint(const RGBColour& colour);
   void SetTintRed(const int in);
   void SetTintGreen(const int in);
   void SetTintBlue(const int in);
 
   const RGBAColour& colour() const { return impl_->colour_; }
+  int colour_red() const { return impl_->colour_.r(); }
+  int colour_green() const { return impl_->colour_.g(); }
+  int colour_blue() const { return impl_->colour_.b(); }
   int colour_level() const { return impl_->colour_.a(); }
   void SetColour(const RGBAColour& colour);
   void SetColourRed(const int in);

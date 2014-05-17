@@ -65,7 +65,7 @@ class ObjectMutator {
   int repr_;
 
   // The name of our operation.
-  const std::string& name_;
+  const std::string name_;
 
   // Clock value at time of creation
   int creation_time_;

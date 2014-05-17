@@ -54,7 +54,7 @@ class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
  private:
   Getter getter_;
   Setter setter_;
-  const std::string& name_;
+  const std::string name_;
 };
 
 class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
@@ -81,7 +81,7 @@ class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
  private:
   Getter getter_;
   Setter setter_;
-  const std::string& name_;
+  const std::string name_;
 };
 
 class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
@@ -114,7 +114,7 @@ class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
   Setter setter_one_;
   Getter getter_two_;
   Setter setter_two_;
-  const std::string& name_;
+  const std::string name_;
 };
 
 // -----------------------------------------------------------------------
@@ -128,7 +128,7 @@ class Op_EndObjectMutation_Normal
   virtual void operator()(RLMachine& machine, int object, int speedup);
 
  private:
-  const std::string& name_;
+  const std::string name_;
 };
 
 // -----------------------------------------------------------------------
@@ -145,7 +145,7 @@ class Op_EndObjectMutation_RepNo
                           int speedup);
 
  private:
-  const std::string& name_;
+  const std::string name_;
 };
 
 // -----------------------------------------------------------------------
@@ -158,7 +158,59 @@ class Op_MutatorCheck : public RLOp_Store_1<IntConstant_T> {
   virtual int operator()(RLMachine& machine, int object) override;
 
  private:
-  const std::string& name_;
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitNormal(const std::string& name);
+  virtual ~Op_MutatorWaitNormal();
+
+  virtual void operator()(RLMachine& machine, int obj) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitRepNo(const std::string& name);
+  virtual ~Op_MutatorWaitRepNo();
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitCNormal(const std::string& name);
+  virtual ~Op_MutatorWaitCNormal();
+
+  virtual void operator()(RLMachine& machine, int obj) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitCRepNo(const std::string& name);
+  virtual ~Op_MutatorWaitCRepNo();
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) override;
+
+ private:
+  const std::string name_;
 };
 
 #endif  // SRC_MODULES_OBJECT_MUTATOR_OPERATIONS_H_
