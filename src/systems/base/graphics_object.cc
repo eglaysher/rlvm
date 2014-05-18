@@ -846,20 +846,20 @@ void GraphicsObject::Render(int objNum,
   }
 }
 
-void GraphicsObject::DeleteObject() {
+void GraphicsObject::FreeObjectData() {
   object_data_.reset();
   DeleteObjectMutators();
 }
 
-void GraphicsObject::ResetProperties() {
+void GraphicsObject::InitializeParams() {
   impl_ = s_empty_impl;
   DeleteObjectMutators();
 }
 
-void GraphicsObject::ClearObject() {
+void GraphicsObject::FreeDataAndInitializeParams() {
+  object_data_.reset();
   impl_ = s_empty_impl;
   DeleteObjectMutators();
-  object_data_.reset();
 }
 
 void GraphicsObject::Execute(RLMachine& machine) {

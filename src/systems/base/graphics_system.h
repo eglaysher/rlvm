@@ -391,13 +391,14 @@ class GraphicsSystem : public EventListener {
   GraphicsObject& GetObject(int layer, int obj_number);
   void SetObject(int layer, int obj_number, GraphicsObject& object);
 
-  void ClearObject(int obj_number);
+  // Frees the object data (but not the parameters).
+  void FreeObjectData(int obj_number);
+  void FreeAllObjectData();
 
-  // Deallocates all graphics objects.
-  void ClearAllObjects();
-
-  // Resets the object properties for all graphics objects.
-  void ResetAllObjectsProperties();
+  // Resets/reinitializes all the object parameters without deleting the loaded
+  // graphics object data.
+  void InitializeObjectParams(int obj_number);
+  void InitializeAllObjectParams();
 
   // The number of objects in a layer for this game. Defaults to 256 and can be
   // overridden with #OBJECT_MAX.

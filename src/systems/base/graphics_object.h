@@ -195,15 +195,16 @@ class GraphicsObject {
   // Render!
   void Render(int objNum, const GraphicsObject* parent, std::ostream* tree);
 
-  // Deletes the object data. Corresponds to the RLAPI command obj_delete.
-  void DeleteObject();
+  // Frees the object data. Corresponds to objFree, but is also invoked by
+  // other commands.
+  void FreeObjectData();
 
-  // Clears the impl data without deleting the loaded graphics object.
-  void ResetProperties();
+  // Resets/reinitializes all the object parameters without deleting the loaded
+  // graphics object data.
+  void InitializeParams();
 
-  // Deletes the object data and resets all values in this
-  // GraphicsObject. Corresponds to the RLAPI command obj_clear.
-  void ClearObject();
+  // Both frees the object data and initializes parameters.
+  void FreeDataAndInitializeParams();
 
   int wipe_copy() const { return impl_->wipe_copy_; }
   void SetWipeCopy(const int wipe_copy);

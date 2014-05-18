@@ -44,6 +44,7 @@
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
+#include "modules/module_obj_management.h"
 #include "modules/module_str.h"
 #include "systems/base/colour_filter_object_data.h"
 #include "systems/base/graphics_object.h"
@@ -288,4 +289,23 @@ TEST_F(GraphicsObjectTest, TestColourFilter) {
 
   // Render with the modified rect (for the second call).
   data->Render(obj, NULL, NULL);
+}
+
+TEST_F(GraphicsObjectTest, objFgFreeAll) {
+  GraphicsObject obj;
+  obj.SetX(50);
+  obj.SetY(120);
+  obj.SetObjectData(new ColourFilterObjectData(
+      system.graphics(), Rect(10, 10, Size(80, 70))));
+
+  system.graphics().SetObject(0, 10, obj);
+  system.graphics().SetObject(0, 46, obj);
+  system.graphics().SetObject(1, 18, obj);
+
+  rlmachine.AttachModule(new ObjFgManagement);
+  rlmachine.Exe("objFgFreeAll", 0);
+
+  EXPECT_FALSE(system.graphics().GetObject(0, 10).has_object_data());
+  EXPECT_FALSE(system.graphics().GetObject(0, 46).has_object_data());
+  EXPECT_TRUE(system.graphics().GetObject(1, 18).has_object_data());
 }

@@ -544,7 +544,9 @@ void GraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::Reset() {
-  ClearAllObjects();
+  graphics_object_impl_->foreground_objects.Clear();
+  graphics_object_impl_->background_objects.Clear();
+
   ClearAllDCs();
 
   preloaded_hik_scripts_.Clear();
@@ -683,12 +685,14 @@ void GraphicsSystem::ClearAndPromoteObjects() {
   FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
   for (; bg != bg_end && fg != fg_end; bg++, fg++) {
     if (fg.valid() && !fg->wipe_copy()) {
-      fg->ClearObject();
+      fg->InitializeParams();
+      fg->FreeObjectData();
     }
 
     if (bg.valid()) {
       *fg = *bg;
-      bg->ClearObject();
+      bg->InitializeParams();
+      bg->FreeObjectData();
     }
   }
 }
@@ -719,26 +723,36 @@ void GraphicsSystem::SetObject(int layer, int obj_number, GraphicsObject& obj) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::ClearObject(int obj_number) {
-  graphics_object_impl_->foreground_objects.DeleteAt(obj_number);
-  graphics_object_impl_->background_objects.DeleteAt(obj_number);
+void GraphicsSystem::FreeObjectData(int obj_number) {
+  graphics_object_impl_->foreground_objects[obj_number].FreeObjectData();
+  graphics_object_impl_->background_objects[obj_number].FreeObjectData();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::ClearAllObjects() {
-  graphics_object_impl_->foreground_objects.Clear();
-  graphics_object_impl_->background_objects.Clear();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::ResetAllObjectsProperties() {
+void GraphicsSystem::FreeAllObjectData() {
   for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
-    object.ResetProperties();
+    object.FreeObjectData();
 
   for (GraphicsObject& object : graphics_object_impl_->background_objects)
-    object.ResetProperties();
+    object.FreeObjectData();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::InitializeObjectParams(int obj_number) {
+  graphics_object_impl_->foreground_objects[obj_number].InitializeParams();
+  graphics_object_impl_->background_objects[obj_number].InitializeParams();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::InitializeAllObjectParams() {
+  for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
+    object.InitializeParams();
+
+  for (GraphicsObject& object : graphics_object_impl_->background_objects)
+    object.InitializeParams();
 }
 
 // -----------------------------------------------------------------------

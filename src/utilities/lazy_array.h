@@ -23,6 +23,7 @@
 #ifndef SRC_UTILITIES_LAZY_ARRAY_H_
 #define SRC_UTILITIES_LAZY_ARRAY_H_
 
+#include <boost/checked_delete.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/serialization/split_member.hpp>
 

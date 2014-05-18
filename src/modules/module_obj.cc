@@ -70,6 +70,27 @@ GraphicsObject& GetGraphicsObject(RLMachine& machine,
   }
 }
 
+LazyArray<GraphicsObject>& GetGraphicsObjects(RLMachine& machine,
+                                              RLOperation* op) {
+  GraphicsSystem& graphics = machine.system().graphics();
+
+  int fgbg;
+  if (!op->GetProperty(P_FGBG, fgbg))
+    fgbg = OBJ_FG;
+
+  int parentobj;
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
+    return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
+        .objects();
+  } else if (fgbg == OBJ_FG) {
+    return graphics.GetForegroundObjects();
+  } else {
+    return graphics.GetBackgroundObjects();
+  }
+}
+
 void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
                        int obj,
@@ -226,6 +247,19 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
 RLOperation* ChildRangeMappingFun(RLOperation* op) {
   return new ChildObjRangeAdapter(op);
+}
+
+// -----------------------------------------------------------------------
+// Obj_CallFunction
+// -----------------------------------------------------------------------
+
+Obj_CallFunction::Obj_CallFunction(Function f) : function_(f) {}
+
+Obj_CallFunction::~Obj_CallFunction() {}
+
+void Obj_CallFunction::operator()(RLMachine& machine, int buf) {
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+  ((obj).*(function_))();
 }
 
 // -----------------------------------------------------------------------

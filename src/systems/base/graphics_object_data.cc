@@ -159,7 +159,7 @@ void GraphicsObjectData::EndAnimation() {
       break;
     case AFTER_CLEAR:
       if (owned_by_)
-        owned_by_->DeleteObject();
+        owned_by_->FreeObjectData();
       break;
     case AFTER_LOOP: {
       // Reset from the beginning

@@ -31,6 +31,7 @@
 // Reusable function objects for the GraphicsObject system.
 
 #include "machine/rloperation.h"
+#include "utilities/lazy_array.h"
 
 class GraphicsObject;
 
@@ -39,6 +40,9 @@ class GraphicsObject;
 void EnsureIsParentObject(GraphicsObject& parent, int size);
 
 GraphicsObject& GetGraphicsObject(RLMachine& machine, RLOperation* op, int obj);
+
+LazyArray<GraphicsObject>& GetGraphicsObjects(RLMachine& machine,
+                                              RLOperation* op);
 
 void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
@@ -115,6 +119,25 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
 // operations that start with (parent object num, first child num, last child
 // num).
 RLOperation* ChildRangeMappingFun(RLOperation* op);
+
+// -----------------------------------------------------------------------
+
+// Calls a function on an object.
+//
+// NOTE: This does *not* call mark_object_state_as_dirty(), like the rest of
+// these adapters.
+class Obj_CallFunction : public RLOp_Void_1<IntConstant_T> {
+ public:
+  typedef void (GraphicsObject::*Function)();
+
+  explicit Obj_CallFunction(Function f);
+  virtual ~Obj_CallFunction();
+
+  virtual void operator()(RLMachine& machine, int buf) override;
+
+ private:
+  Function function_;
+};
 
 // -----------------------------------------------------------------------
 
