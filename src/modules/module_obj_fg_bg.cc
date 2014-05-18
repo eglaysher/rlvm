@@ -371,12 +371,18 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
           end_y_(target_y) {}
 
    private:
-    virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+    virtual void SetToEnd(RLMachine& machine,
+                          GraphicsObject& object) override {
       object.SetXAdjustment(repno_, end_x_);
       object.SetYAdjustment(repno_, end_y_);
     }
 
-    virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+    virtual ObjectMutator* Clone() const override {
+      return new AdjustMutator(*this);
+    }
+
+    virtual void PerformSetting(RLMachine& machine,
+                                GraphicsObject& object) override {
       int x = GetValueForTime(machine, start_x_, end_x_);
       object.SetXAdjustment(repno_, x);
 
@@ -490,7 +496,7 @@ class DisplayMutator : public ObjectMutator {
   }
 
  private:
-  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override {
     object.SetVisible(display_);
 
     if (tr_mod_)
@@ -502,7 +508,12 @@ class DisplayMutator : public ObjectMutator {
     }
   }
 
-  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+  virtual ObjectMutator* Clone() const override {
+    return new DisplayMutator(*this);
+  }
+
+  virtual void PerformSetting(RLMachine& machine,
+                              GraphicsObject& object) override {
     // While performing whatever visual transition, the object should be
     // displayed.
     object.SetVisible(true);

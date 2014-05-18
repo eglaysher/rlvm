@@ -46,6 +46,8 @@ ObjectMutator::ObjectMutator(int repr,
       duration_time_(duration_time),
       delay_(delay) {}
 
+ObjectMutator::ObjectMutator(const ObjectMutator& mutator) = default;
+
 ObjectMutator::~ObjectMutator() {}
 
 bool ObjectMutator::operator()(RLMachine& machine, GraphicsObject& object) {
@@ -93,8 +95,15 @@ OneIntObjectMutator::OneIntObjectMutator(const std::string& name,
 
 OneIntObjectMutator::~OneIntObjectMutator() {}
 
+OneIntObjectMutator::OneIntObjectMutator(const OneIntObjectMutator& rhs) =
+  default;
+
 void OneIntObjectMutator::SetToEnd(RLMachine& machine, GraphicsObject& object) {
   (object.*setter_)(endval_);
+}
+
+ObjectMutator* OneIntObjectMutator::Clone() const {
+  return new OneIntObjectMutator(*this);
 }
 
 void OneIntObjectMutator::PerformSetting(RLMachine& machine,
@@ -122,9 +131,16 @@ RepnoIntObjectMutator::RepnoIntObjectMutator(const std::string& name,
 
 RepnoIntObjectMutator::~RepnoIntObjectMutator() {}
 
+RepnoIntObjectMutator::RepnoIntObjectMutator(const RepnoIntObjectMutator& rhs) =
+  default;
+
 void RepnoIntObjectMutator::SetToEnd(RLMachine& machine,
                                      GraphicsObject& object) {
   (object.*setter_)(repno_, endval_);
+}
+
+ObjectMutator* RepnoIntObjectMutator::Clone() const {
+  return new RepnoIntObjectMutator(*this);
 }
 
 void RepnoIntObjectMutator::PerformSetting(RLMachine& machine,
@@ -156,9 +172,16 @@ TwoIntObjectMutator::TwoIntObjectMutator(const std::string& name,
 
 TwoIntObjectMutator::~TwoIntObjectMutator() {}
 
+TwoIntObjectMutator::TwoIntObjectMutator(const TwoIntObjectMutator& rhs) =
+  default;
+
 void TwoIntObjectMutator::SetToEnd(RLMachine& machine, GraphicsObject& object) {
   (object.*setter_one_)(endval_one_);
   (object.*setter_two_)(endval_two_);
+}
+
+ObjectMutator* TwoIntObjectMutator::Clone() const {
+  return new TwoIntObjectMutator(*this);
 }
 
 void TwoIntObjectMutator::PerformSetting(RLMachine& machine,

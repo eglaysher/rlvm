@@ -145,7 +145,8 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs) : impl_(rhs.impl_) {
     object_data_.reset();
   }
 
-  // Note: we don't copy the currently running object mutators.
+  for (auto const& mutator : rhs.object_mutators_)
+    object_mutators_.emplace_back(mutator->Clone());
 }
 
 GraphicsObject::~GraphicsObject() { DeleteObjectMutators(); }
@@ -160,6 +161,9 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
   } else {
     object_data_.reset();
   }
+
+  for (auto const& mutator : obj.object_mutators_)
+    object_mutators_.emplace_back(mutator->Clone());
 
   return *this;
 }

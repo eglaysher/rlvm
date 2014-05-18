@@ -44,6 +44,7 @@
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
+#include "modules/module_obj_fg_bg.h"
 #include "modules/module_obj_management.h"
 #include "modules/module_str.h"
 #include "systems/base/colour_filter_object_data.h"
@@ -308,4 +309,25 @@ TEST_F(GraphicsObjectTest, objFgFreeAll) {
   EXPECT_FALSE(system.graphics().GetObject(0, 10).has_object_data());
   EXPECT_FALSE(system.graphics().GetObject(0, 46).has_object_data());
   EXPECT_TRUE(system.graphics().GetObject(1, 18).has_object_data());
+}
+
+TEST_F(GraphicsObjectTest, ObjectMutatorCopy) {
+  GraphicsObject obj;
+  obj.SetX(50);
+  obj.SetY(120);
+  obj.SetObjectData(new ColourFilterObjectData(
+      system.graphics(), Rect(10, 10, Size(80, 70))));
+  system.graphics().SetObject(1, 18, obj);
+
+  // Set a mutator on the object.
+  rlmachine.AttachModule(new ObjBgModule);
+  rlmachine.Exe("objBgEveColLevel", 1, TestMachine::Arg(18, 128, 0, 0, 0));
+
+  EXPECT_TRUE(system.graphics().GetObject(1, 18).IsMutatorRunningMatching(
+      -1, "objEveColLevel"));
+
+  system.graphics().ClearAndPromoteObjects();
+
+  EXPECT_TRUE(system.graphics().GetObject(0, 18).IsMutatorRunningMatching(
+      -1, "objEveColLevel"));
 }

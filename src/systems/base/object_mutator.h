@@ -52,7 +52,12 @@ class ObjectMutator {
   // Called to end the mutation prematurely.
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) = 0;
 
+  // Builds a copy of the ObjectMutator. Used during object promotion.
+  virtual ObjectMutator* Clone() const = 0;
+
  protected:
+  ObjectMutator(const ObjectMutator& mutator);
+
   // Returns what value should be set on the object at the current time.
   int GetValueForTime(RLMachine& machine, int start, int end);
 
@@ -95,7 +100,10 @@ class OneIntObjectMutator : public ObjectMutator {
   virtual ~OneIntObjectMutator();
 
  private:
+  OneIntObjectMutator(const OneIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 
@@ -123,7 +131,10 @@ class RepnoIntObjectMutator : public ObjectMutator {
   virtual ~RepnoIntObjectMutator();
 
  private:
+  RepnoIntObjectMutator(const RepnoIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 
@@ -154,7 +165,10 @@ class TwoIntObjectMutator : public ObjectMutator {
   virtual ~TwoIntObjectMutator();
 
  private:
+  TwoIntObjectMutator(const TwoIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 
