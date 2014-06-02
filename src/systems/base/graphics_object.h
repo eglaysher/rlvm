@@ -305,6 +305,9 @@ class GraphicsObject {
                                 const std::string& name,
                                 int speedup);
 
+  // Returns a string for each mutator.
+  std::vector<std::string> GetMutatorNames() const;
+
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.
   int32_t reference_count() const { return impl_.use_count(); }

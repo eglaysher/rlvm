@@ -50,6 +50,8 @@
 #include "systems/base/colour_filter_object_data.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_of_file.h"
+#include "systems/base/object_mutator.h"
+#include "systems/base/parent_graphics_object_data.h"
 #include "test_system/mock_colour_filter.h"
 #include "test_system/test_graphics_system.h"
 #include "test_system/test_system.h"
@@ -330,4 +332,40 @@ TEST_F(GraphicsObjectTest, ObjectMutatorCopy) {
 
   EXPECT_TRUE(system.graphics().GetObject(0, 18).IsMutatorRunningMatching(
       -1, "objEveColLevel"));
+}
+
+class MutatorTest : public ObjectMutator {
+ public:
+  MutatorTest()
+      : ObjectMutator(-1, "MutatorTest", 0, 1000, 0, 0),
+        called_(false) {}
+
+  bool called() const { return called_; }
+
+  virtual bool operator()(RLMachine& machine, GraphicsObject& object) override {
+    called_ = true;
+    return false;
+  }
+
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override {}
+  virtual ObjectMutator* Clone() const override { return NULL; }
+  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object)
+      override {}
+
+ private:
+  bool called_;
+};
+
+TEST_F(GraphicsObjectTest, RunMutatorsOnChildObjects) {
+  GraphicsObject parent;
+  ParentGraphicsObjectData* parent_data = new ParentGraphicsObjectData(10);
+  parent.SetObjectData(parent_data);
+
+  MutatorTest* mutator_test = new MutatorTest;
+  parent_data->GetObject(5).AddObjectMutator(
+      std::unique_ptr<ObjectMutator>(mutator_test));
+
+  EXPECT_FALSE(mutator_test->called());
+  parent.Execute(rlmachine);
+  EXPECT_TRUE(mutator_test->called());
 }

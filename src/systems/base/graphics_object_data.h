@@ -31,6 +31,8 @@
 #include <boost/serialization/access.hpp>
 
 #include <memory>
+#include <string>
+#include <vector>
 
 class GraphicsObject;
 class Point;
@@ -93,6 +95,9 @@ class GraphicsObjectData {
   void EndAnimation();
 
   void PrintGraphicsObjectToTree(const GraphicsObject& go, std::ostream* tree);
+
+  void PrintStringVector(const std::vector<std::string>& names,
+                         std::ostream* tree);
 
   // Template method used during rendering to get the surface to render.
   // Return a null shared_ptr to disable rendering.

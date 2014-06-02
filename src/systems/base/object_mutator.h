@@ -46,8 +46,9 @@ class ObjectMutator {
   int repr() const { return repr_; }
   const std::string& name() const { return name_; }
 
-  // Called every tick. Returns true if the command has completed.
-  bool operator()(RLMachine& machine, GraphicsObject& object);
+  // Called every tick. Returns true if the command has completed. Virtual for
+  // testing.
+  virtual bool operator()(RLMachine& machine, GraphicsObject& object);
 
   // Returns true if this ObjectMutator is operating on |name|/|repr|.
   bool OperationMatches(int repr, const std::string& name) const;

@@ -37,6 +37,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -834,6 +835,20 @@ void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
               << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
               << std::endl;
   }
+}
+
+std::vector<std::string> GraphicsObject::GetMutatorNames() const {
+  std::vector<std::string> names;
+
+  for (auto& mutator : object_mutators_) {
+    std::ostringstream oss;
+    oss << mutator->name();
+    if (mutator->repr() != -1)
+      oss << "/" << mutator->repr();
+    names.push_back(oss.str());
+  }
+
+  return names;
 }
 
 void GraphicsObject::MakeImplUnique() {
