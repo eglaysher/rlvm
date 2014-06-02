@@ -45,8 +45,9 @@ rlvm currently plays the following games to their completion:
 | Planetarian CD         | OK                 | (Broken)            |
 | Tomoyo After           | OK                 | (None)              |
 | Little Busters         | OK (Some glitches) | (Broken)            |
-| Princess Bride         | Mostly works       | (None)              |
+| Kud Wafter             | OK                 | (None)              |
 |------------------------+--------------------+---------------------|
+| Princess Bride         | Mostly works       | (None)              |
 | Princess Brave         | Works?             | (None)              |
 | ALMA ~zutto soba ni~   | Reported to work   | (None)              |
 | SNOW                   | Works?             | (None)              |

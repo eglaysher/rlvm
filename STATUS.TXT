@@ -39,6 +39,11 @@ Little Busters (Ex)
 - No testing has been done with Little Busters Ecstasy past making sure the
   game starts.
 
+Kud Wafter
+----------
+- The All Ages edition has been tested through the end.
+- Minor graphical glitches in the ending animations.
+
 Princess Bride
 --------------
 - Playable to the end; all routes.
