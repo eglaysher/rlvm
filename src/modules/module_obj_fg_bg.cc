@@ -332,16 +332,17 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
     int start_x = object.x_adjustment(repno);
     int start_y = object.y_adjustment(repno);
 
-    object.AddObjectMutator(new AdjustMutator(machine,
-                                              repno,
-                                              creation_time,
-                                              duration_time,
-                                              delay,
-                                              type,
-                                              start_x,
-                                              x,
-                                              start_y,
-                                              y));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new AdjustMutator(machine,
+                          repno,
+                          creation_time,
+                          duration_time,
+                          delay,
+                          type,
+                          start_x,
+                          x,
+                          start_y,
+                          y)));
   }
 
  private:
@@ -565,26 +566,27 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
 
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp.at(0),
-                                               disp.at(1),
-                                               disp.at(2),
-                                               disp.at(3),
-                                               disp.at(4),
-                                               disp.at(5),
-                                               disp.at(6),
-                                               disp.at(7),
-                                               disp.at(8),
-                                               disp.at(9),
-                                               disp.at(10),
-                                               disp.at(11),
-                                               disp.at(12),
-                                               disp.at(13)));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp.at(0),
+                           disp.at(1),
+                           disp.at(2),
+                           disp.at(3),
+                           disp.at(4),
+                           disp.at(5),
+                           disp.at(6),
+                           disp.at(7),
+                           disp.at(8),
+                           disp.at(9),
+                           disp.at(10),
+                           disp.at(11),
+                           disp.at(12),
+                           disp.at(13))));
   }
 };
 
@@ -609,26 +611,27 @@ struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
                   int move_len_y) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp_event_mod,
-                                               tr_mod,
-                                               move_mod,
-                                               move_len_x,
-                                               move_len_y,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp_event_mod,
+                           tr_mod,
+                           move_mod,
+                           move_len_x,
+                           move_len_y,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0)));
   }
 };
 
@@ -671,26 +674,27 @@ struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
                   int sin_count) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp_event_mod,
-                                               tr_mod,
-                                               move_mod,
-                                               move_len_x,
-                                               move_len_y,
-                                               rotate_mod,
-                                               rotate_count,
-                                               scale_x_mod,
-                                               scale_x_percent,
-                                               scale_y_mod,
-                                               scale_y_percent,
-                                               sin_mod,
-                                               sin_len,
-                                               sin_count));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp_event_mod,
+                           tr_mod,
+                           move_mod,
+                           move_len_x,
+                           move_len_y,
+                           rotate_mod,
+                           rotate_count,
+                           scale_x_mod,
+                           scale_x_percent,
+                           scale_y_mod,
+                           scale_y_percent,
+                           sin_mod,
+                           sin_len,
+                           sin_count)));
   }
 };
 

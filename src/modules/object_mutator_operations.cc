@@ -77,14 +77,15 @@ void Op_ObjectMutatorInt::operator()(RLMachine& machine,
   GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)();
-  obj.AddObjectMutator(new OneIntObjectMutator(name_,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               type,
-                                               startval,
-                                               endval,
-                                               setter_));
+  obj.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+      new OneIntObjectMutator(name_,
+                              creation_time,
+                              duration_time,
+                              delay,
+                              type,
+                              startval,
+                              endval,
+                              setter_)));
 }
 
 // -----------------------------------------------------------------------
@@ -107,15 +108,16 @@ void Op_ObjectMutatorRepnoInt::operator()(RLMachine& machine,
   GraphicsObject& obj = GetGraphicsObject(machine, this, object);
 
   int startval = (obj.*getter_)(repno);
-  obj.AddObjectMutator(new RepnoIntObjectMutator(name_,
-                                                 creation_time,
-                                                 duration_time,
-                                                 delay,
-                                                 type,
-                                                 repno,
-                                                 startval,
-                                                 endval,
-                                                 setter_));
+  obj.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+      new RepnoIntObjectMutator(name_,
+                                creation_time,
+                                duration_time,
+                                delay,
+                                type,
+                                repno,
+                                startval,
+                                endval,
+                                setter_)));
 }
 
 // -----------------------------------------------------------------------
@@ -145,17 +147,18 @@ void Op_ObjectMutatorIntInt::operator()(RLMachine& machine,
   int startval_one = (obj.*getter_one_)();
   int startval_two = (obj.*getter_two_)();
 
-  obj.AddObjectMutator(new TwoIntObjectMutator(name_,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               type,
-                                               startval_one,
-                                               endval_one,
-                                               setter_one_,
-                                               startval_two,
-                                               endval_two,
-                                               setter_two_));
+  obj.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+      new TwoIntObjectMutator(name_,
+                              creation_time,
+                              duration_time,
+                              delay,
+                              type,
+                              startval_one,
+                              endval_one,
+                              setter_one_,
+                              startval_two,
+                              endval_two,
+                              setter_two_)));
 }
 
 // -----------------------------------------------------------------------

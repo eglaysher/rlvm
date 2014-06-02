@@ -293,7 +293,7 @@ class GraphicsObject {
 
   // Adds a mutator to the list of active mutators. GraphicsSystem takes
   // ownership of the passed in object.
-  void AddObjectMutator(ObjectMutator* mutator);
+  void AddObjectMutator(std::unique_ptr<ObjectMutator> mutator);
 
   // Returns true if a mutator matching the following parameters is currently
   // running.

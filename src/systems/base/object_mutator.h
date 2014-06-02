@@ -43,6 +43,9 @@ class ObjectMutator {
                 int type);
   virtual ~ObjectMutator();
 
+  int repr() const { return repr_; }
+  const std::string& name() const { return name_; }
+
   // Called every tick. Returns true if the command has completed.
   bool operator()(RLMachine& machine, GraphicsObject& object);
 

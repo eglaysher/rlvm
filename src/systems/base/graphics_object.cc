@@ -788,10 +788,18 @@ int GraphicsObject::GetButtonYOffsetOverride() const {
     return DEFAULT_BUTTON_Y_OFFSET;
 }
 
-void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
+void GraphicsObject::AddObjectMutator(std::unique_ptr<ObjectMutator> mutator) {
   MakeImplUnique();
-  // TODO(erg): If we have an equivalent mutator, remove it first.
-  object_mutators_.emplace_back(mutator);
+
+  // If there's a currently running mutator that matches the incoming mutator,
+  // we ignore the incoming mutator. Kud Wafter's ED relies on this behaviour.
+  for (std::unique_ptr<ObjectMutator>& mutator_ptr : object_mutators_) {
+    if (mutator_ptr->OperationMatches(mutator->repr(), mutator->name())) {
+      return;
+    }
+  }
+
+  object_mutators_.push_back(std::move(mutator));
 }
 
 bool GraphicsObject::IsMutatorRunningMatching(int repno,
