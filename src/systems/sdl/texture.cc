@@ -303,17 +303,6 @@ std::string readTextFile(const std::string& file) {
 
 // -----------------------------------------------------------------------
 
-void printARBLog(GLhandleARB obj) {
-  char str[256];
-  GLsizei size = 0;
-  glGetInfoLogARB(obj, 256, &size, str);
-  if (size != 0) {
-    std::cerr << "Log: " << str << std::endl;
-  }
-}
-
-// -----------------------------------------------------------------------
-
 // This is really broken and brain dead.
 void Texture::RenderToScreen(const Rect& src, const Rect& dst, int opacity) {
   int x1 = src.x(), y1 = src.y(), x2 = src.x2(), y2 = src.y2();
