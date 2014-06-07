@@ -33,6 +33,7 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/parent_graphics_object_data.h"
 #include "systems/base/system.h"
+#include "utilities/math_util.h"
 
 ObjectMutator::ObjectMutator(int repr,
                              const std::string& name,
@@ -44,7 +45,9 @@ ObjectMutator::ObjectMutator(int repr,
       name_(name),
       creation_time_(creation_time),
       duration_time_(duration_time),
-      delay_(delay) {}
+      delay_(delay),
+      type_(type) {
+}
 
 ObjectMutator::ObjectMutator(const ObjectMutator& mutator) = default;
 
@@ -68,11 +71,12 @@ int ObjectMutator::GetValueForTime(RLMachine& machine, int start, int end) {
   if (ticks < (creation_time_ + delay_)) {
     return start;
   } else if (ticks < (creation_time_ + delay_ + duration_time_)) {
-    // TODO(erg): This is the implementation for type_ == 0. Add nonlinear ones
-    // for 1 and 2.
-    unsigned int ticks_into_duration_ = ticks - creation_time_ - delay_;
-    float percentage = float(ticks_into_duration_) / float(duration_time_);
-    return start + ((end - start) * percentage);
+    return InterpolateBetween(creation_time_ + delay_,
+                              ticks,
+                              creation_time_ + delay_ + duration_time_,
+                              start,
+                              end,
+                              type_);
   } else {
     return end;
   }

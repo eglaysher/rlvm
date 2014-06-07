@@ -84,6 +84,9 @@ class ObjectMutator {
 
   // An optional duration after |creation_time_| where we don't do anything.
   int delay_;
+
+  // What sort of interpolation we should do here.
+  int type_;
 };
 
 // -----------------------------------------------------------------------
