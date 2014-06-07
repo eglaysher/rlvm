@@ -94,6 +94,10 @@ class RLMachine {
   // Returns the current System that this RLMachine outputs to.
   System& system() { return system_; }
 
+  // An option which prints out all commands executed to the console.
+  void set_tracing_on() { tracing_ = true; }
+  bool is_tracing_on() const { return tracing_; }
+
   // Registers a given module with this RLMachine instance. A module is a set
   // of different functions registered as one unit. Takes ownership of
   // |module|.
@@ -395,6 +399,9 @@ class RLMachine {
   // graphics stack, we shouldn't advance the instruction pointer and do other
   // stuff.
   bool replaying_graphics_stack_;
+
+  // Whether we should print out all commands to the console.
+  bool tracing_;
 
   // The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<std::function<void(void)>> delayed_modifications_;

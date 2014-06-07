@@ -27,6 +27,8 @@
 
 #include "machine/rlmodule.h"
 
+#include <iomanip>
+#include <iostream>
 #include <utility>
 #include <sstream>
 #include <string>
@@ -132,6 +134,15 @@ void RLModule::DispatchFunction(RLMachine& machine,
       stored_operations_.find(PackOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations_.end()) {
     try {
+      if (machine.is_tracing_on()) {
+        std::cerr << "(SEEN" << std::setw(4) << std::setfill('0')
+                  << machine.SceneNumber()
+                  << ")(Line " << std::setw(4) << std::setfill('0')
+                  << machine.line_number() << "): " << it->second->name();
+        libreallive::PrintParameterString(std::cerr,
+                                          f.GetUnparsedParameters());
+        std::cerr << std::endl;
+      }
       it->second->DispatchFunction(machine, f);
     }
     catch (rlvm::Exception& e) {

@@ -110,7 +110,8 @@ RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
       system_(in_system),
       mark_savepoints_(true),
       delay_stack_modifications_(false),
-      replaying_graphics_stack_(false) {
+      replaying_graphics_stack_(false),
+      tracing_(false) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libreallive::Scenario* scenario = NULL;

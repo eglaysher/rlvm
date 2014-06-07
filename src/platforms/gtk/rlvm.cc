@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
       "undefined-opcodes", "Display a message on undefined opcodes")(
       "count-undefined",
       "On exit, present a summary table about how many times each undefined "
-      "opcode was called");
+      "opcode was called")("trace", "Prints opcodes as they are run)");
 
   // Declare the final option to be game-root
   po::options_description hidden("Hidden");
@@ -206,6 +206,9 @@ int main(int argc, char* argv[]) {
 
   if (vm.count("count-undefined"))
     instance.set_count_undefined();
+
+  if (vm.count("trace"))
+    instance.set_tracing();
 
   if (vm.count("load-save"))
     instance.set_load_save(vm["load-save"].as<int>());

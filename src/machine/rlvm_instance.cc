@@ -65,6 +65,7 @@ RLVMInstance::RLVMInstance()
       memory_(false),
       undefined_opcodes_(false),
       count_undefined_copcodes_(false),
+      tracing_(false),
       load_save_(-1),
       dump_seen_(-1) {
   srand(time(NULL));
@@ -135,6 +136,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     if (count_undefined_copcodes_)
       rlmachine.RecordUndefinedOpcodeCounts();
+
+    if (tracing_)
+      rlmachine.set_tracing_on();
 
     Serialization::loadGlobalMemory(rlmachine);
 
