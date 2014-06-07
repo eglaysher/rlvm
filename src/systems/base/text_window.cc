@@ -56,6 +56,7 @@ using std::ostringstream;
 using std::ref;
 using std::setfill;
 using std::setw;
+using std::unique_ptr;
 using std::vector;
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -433,7 +434,7 @@ void TextWindow::Render(std::ostream* tree) {
 
     if (in_selection_mode()) {
       for_each(selections_.begin(), selections_.end(),
-               [](SelectionElement& e) { e.Render(); });
+               [](unique_ptr<SelectionElement>& e) { e->Render(); });
     } else {
       std::shared_ptr<Surface> name_surface = GetNameSurface();
       if (name_surface) {
@@ -682,7 +683,8 @@ void TextWindow::SetMousePosition(const Point& pos) {
   if (in_selection_mode()) {
     for_each(selections_.begin(),
              selections_.end(),
-             [&](SelectionElement& e) { e.SetMousePosition(pos); });
+             [&](unique_ptr<SelectionElement>& e) {
+               e->SetMousePosition(pos); });
   }
 
   textbox_waku_->SetMousePosition(pos);
@@ -694,8 +696,8 @@ bool TextWindow::HandleMouseClick(RLMachine& machine,
   if (in_selection_mode()) {
     bool found =
       find_if(selections_.begin(), selections_.end(),
-              [&](SelectionElement &e) {
-                return e.HandleMouseClick(pos, pressed);
+              [&](unique_ptr<SelectionElement> &e) {
+                return e->HandleMouseClick(pos, pressed);
               }) != selections_.end();
 
     if (found)

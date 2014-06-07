@@ -327,7 +327,7 @@ void TextSystem::BackPage() {
   is_reading_backlog_ = true;
 
   if (previous_page_it_ != previous_page_sets_.begin()) {
-    previous_page_it_ = boost::prior(previous_page_it_);
+    previous_page_it_ = std::prev(previous_page_it_);
 
     // Clear all windows
     ClearAllTextWindows();
@@ -341,7 +341,7 @@ void TextSystem::ForwardPage() {
   is_reading_backlog_ = true;
 
   if (previous_page_it_ != previous_page_sets_.end()) {
-    previous_page_it_ = boost::next(previous_page_it_);
+    previous_page_it_ = std::next(previous_page_it_);
 
     // Clear all windows
     ClearAllTextWindows();
