@@ -169,10 +169,13 @@ TextPage::Command::Command(CommandType type, int one)
       break;
     case TYPE_OFFSET_INSERTION_X:
       offset_insertion_x = one;
+      break;
     case TYPE_OFFSET_INSERTION_Y:
       offset_insertion_y = one;
+      break;
     case TYPE_FACE_CLOSE:
       face_close = one;
+      break;
     default:
       throw rlvm::Exception("Incorrect arrity");
   }
