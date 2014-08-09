@@ -339,7 +339,7 @@ class RLMachine {
   void LocalReset();
 
   // Adds a programatic action triggered by a line marker in a specific SEEN
-  // file. This is used both by luaRlvm to trigger actions specified in lua to
+  // file. This is used both by lua_rlvm to trigger actions specified in lua to
   // drive rlvm's playing certain games, but is also used for game specific
   // hacks.
   void AddLineAction(const int seen, const int line, std::function<void(void)>);

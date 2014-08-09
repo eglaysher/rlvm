@@ -18,7 +18,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/Little_Busters/$SCRIPT $GAMEDIR > LB.log/$LOG 2>&1
+  time build/lua_rlvm --count-undefined test/Little_Busters/$SCRIPT $GAMEDIR > LB.log/$LOG 2>&1
 }
 
 # r1 is the common route.

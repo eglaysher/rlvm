@@ -151,7 +151,7 @@ class System {
   // Whether we're currently forcing fast forward (only used during game tests
   // to zoom through).
   bool force_fast_forward() { return force_fast_forward_; }
-  // Set in luaRlvm, to speed through the game with maximum speed!
+  // Set in lua_rlvm, to speed through the game with maximum speed!
   void set_force_fast_forward() { force_fast_forward_ = true; }
 
   bool force_wait() { return force_wait_; }

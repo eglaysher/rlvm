@@ -163,7 +163,7 @@ class EventSystem {
 
   // Testing
   //
-  // Allows test systems like luaRlvm to inject mouse movement and clicks.
+  // Allows test systems like lua_rlvm to inject mouse movement and clicks.
   virtual void InjectMouseMovement(RLMachine& machine, const Point& loc) = 0;
   virtual void InjectMouseDown(RLMachine& machine) = 0;
   virtual void InjectMouseUp(RLMachine& machine) = 0;
