@@ -61,6 +61,8 @@ inline BytecodeElement* ReadFunction(const char* stream,
     case 0x00010005:
     case 0x00050001:
     case 0x00050005:
+    case 0x00060001:
+    case 0x00060005:
       return new GotoElement(stream, cdata);
     case 0x00010001:
     case 0x00010002:
@@ -69,18 +71,27 @@ inline BytecodeElement* ReadFunction(const char* stream,
     case 0x00050002:
     case 0x00050006:
     case 0x00050007:
+    case 0x00060000:
+    case 0x00060002:
+    case 0x00060006:
+    case 0x00060007:
       return new GotoIfElement(stream, cdata);
     case 0x00010003:
     case 0x00010008:
     case 0x00050003:
     case 0x00050008:
+    case 0x00060003:
+    case 0x00060008:
       return new GotoOnElement(stream, cdata);
     case 0x00010004:
     case 0x00010009:
     case 0x00050004:
     case 0x00050009:
+    case 0x00060004:
+    case 0x00060009:
       return new GotoCaseElement(stream, cdata);
     case 0x00010010:
+    case 0x00060010:
       return new GosubWithElement(stream, cdata);
 
     // Select elements.
