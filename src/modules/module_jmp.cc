@@ -133,7 +133,7 @@ void WriteWithData(RLMachine& machine,
         libreallive::INTL_LOCATION, 0, i), integers[i]);
   }
 
-  for (int i = 0; i < 3 && i < strings.size(); ++i) {
+  for (int i = 0; i < strings.size(); ++i) {
     machine.SetStringValue(libreallive::STRK_LOCATION, i, strings[i]);
   }
 }

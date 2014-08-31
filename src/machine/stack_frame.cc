@@ -30,6 +30,7 @@
 
 #include "machine/stack_frame.h"
 
+#include <boost/serialization/vector.hpp>
 #include <typeinfo>
 
 #include "libreallive/archive.h"
@@ -107,7 +108,19 @@ void StackFrame::load(Archive& ar, unsigned int version) {
   *this = StackFrame(scenario, position_it, type);
 
   if (version >= 1) {
-    ar& intL& strK;
+    ar& intL;
+  }
+
+  if (version == 1) {
+    std::string old_strk[3];
+    ar & old_strk;
+
+    strK.resize(3);
+    strK[0] = old_strk[0];
+    strK[1] = old_strk[1];
+    strK[2] = old_strk[2];
+  } else if (version > 1) {
+    ar & strK;
   }
 }
 

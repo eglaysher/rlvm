@@ -436,6 +436,8 @@ void RLMachine::PushStringValueUp(int index, const std::string& val) {
     it = find_if(it, call_stack_.rend(), IsNotLongOp);
 
     if (it != call_stack_.rend()) {
+      if ((index + 1) > it->strK.size())
+        it->strK.resize(index + 1);
       it->strK[index] = val;
     }
   }
@@ -480,7 +482,7 @@ int* RLMachine::CurrentIntLBank() {
   throw rlvm::Exception("No valid intL bank");
 }
 
-std::string* RLMachine::CurrentStrKBank() {
+std::vector<std::string>& RLMachine::CurrentStrKBank() {
   std::vector<StackFrame>::reverse_iterator it =
       find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
   if (it != call_stack_.rend()) {
