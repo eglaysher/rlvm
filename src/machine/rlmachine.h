@@ -325,7 +325,7 @@ class RLMachine {
   int* CurrentIntLBank();
 
   // Returns the strK bank of the current stack frame.
-  std::string* CurrentStrKBank();
+  std::vector<std::string>& CurrentStrKBank();
 
   // Clears all LongOperations from the back of the stack.
   void ClearLongOperationsOffBackOfStack();

@@ -63,8 +63,9 @@ struct StackFrame {
   // Parameter passing integer bank
   int intL[40];
 
-  // Parameter passing string bank
-  std::string strK[3];
+  // Parameter passing string bank. I have no idea how large this should
+  // actually be, so accept any number and grow to fit.
+  std::vector<std::string> strK;
 
   // The function that pushed the current frame onto the
   // stack. Used in error checking.
@@ -99,7 +100,7 @@ struct StackFrame {
   BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
-BOOST_CLASS_VERSION(StackFrame, 1)
+BOOST_CLASS_VERSION(StackFrame, 2)
 
 std::ostream& operator<<(std::ostream& os, const StackFrame& frame);
 

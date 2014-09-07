@@ -36,4 +36,11 @@ class JmpModule : public RLModule {
   JmpModule();
 };
 
+// Contains functions for mod<0:6>, Bra. This is the branching instructions for
+// RealLiveMax.
+class BraModule : public RLModule {
+ public:
+  BraModule();
+};
+
 #endif  // SRC_MODULES_MODULE_JMP_H_

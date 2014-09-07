@@ -538,19 +538,6 @@ bool TextWindow::DisplayCharacter(const std::string& current,
       } else if (name_mod_ == 2) {
         if (IsOpeningQuoteMark(cur_codepoint)) {
           indent_after_spacing = true;
-        } else {
-          // An implicit wide space is printed instead on lines that don't have
-          // an opening quote mark.
-          std::string wide_space;
-          utf8::append(0x3000, back_inserter(wide_space));
-
-          // Prevent infinite recursion.
-          last_token_was_name_ = false;
-
-          if (!DisplayCharacter(wide_space, current)) {
-            last_token_was_name_ = true;
-            return false;
-          }
         }
       }
     }
@@ -575,8 +562,19 @@ bool TextWindow::DisplayCharacter(const std::string& current,
                                  GetTextSurface());
     next_char_italic_ = false;
 
-    // Move the insertion point forward one character
-    text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
+    if (cur_codepoint < 128) {
+      // This is a basic ASCII character. In normal RealLive, western text
+      // appears to be treated as half width monospace. If we're here, we are
+      // either in a manually laid out western game (therefore we should try to
+      // fit onto the monospace grid) or we're in rlbabel (in which case, our
+      // insertion point will be manually set by the bytecode immediately after
+      // this character).
+      text_insertion_point_x_ +=
+          std::ceil((font_size_in_pixels_ + x_spacing_) / 2.0f);
+    } else {
+      // Move the insertion point forward one character
+      text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
+    }
 
     if (indent_after_spacing)
       SetIndentation();
@@ -594,8 +592,9 @@ bool TextWindow::DisplayCharacter(const std::string& current,
 }
 
 bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
-  int char_width = system().text().GetCharWidth(font_size_in_pixels(), cur_codepoint);
-  bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint);
+  int char_width = font_size_in_pixels_ + x_spacing_;
+  bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint) ||
+                                  cur_codepoint == 0x20;
   int normal_width =
       x_window_size_in_chars_ * (default_font_size_in_pixels_ + x_spacing_);
   int extended_width = normal_width + default_font_size_in_pixels_;
@@ -608,21 +607,21 @@ bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
   }
 
   // If this character won't fit on the line normally, break.
-  if (text_insertion_point_x_ + char_width + x_spacing_ > normal_width) {
+  if (text_insertion_point_x_ + char_width > normal_width) {
     return true;
   }
 
   // If this character will fit on the line, but the next n characters are
   // kinsoku characters and one of them won't, then break.
   if (!cur_codepoint_is_kinsoku && rest != "") {
-    int final_insertion_x = text_insertion_point_x_ + char_width + x_spacing_;
+    int final_insertion_x = text_insertion_point_x_ + char_width;
 
     string::const_iterator cur = rest.begin();
     string::const_iterator end = rest.end();
     while (cur != end) {
       int point = utf8::next(cur, end);
       if (IsKinsoku(point)) {
-        final_insertion_x += char_width + x_spacing_;
+        final_insertion_x += char_width;
 
         if (final_insertion_x > extended_width) {
           return true;

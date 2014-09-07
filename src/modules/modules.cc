@@ -61,6 +61,7 @@ void AddAllModules(RLMachine& rlmachine) {
   // Attatch the modules for some commands
   rlmachine.AttachModule(new BgmModule);
   rlmachine.AttachModule(new BgrModule);
+  rlmachine.AttachModule(new BraModule);
   rlmachine.AttachModule(new ChildGanBgModule);
   rlmachine.AttachModule(new ChildGanFgModule);
   rlmachine.AttachModule(new ChildObjBgCreationModule);

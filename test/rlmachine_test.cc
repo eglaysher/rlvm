@@ -128,11 +128,7 @@ TEST_F(RLMachineTest, StringMemory) {
 
 // Test error-inducing, string memory access.
 TEST_F(RLMachineTest, StringMemoryErrors) {
-  EXPECT_THROW({ rlmachine.SetStringValue(STRK_LOCATION, 3, "Blah"); },
-               rlvm::Exception);
   EXPECT_THROW({ rlmachine.SetStringValue(STRM_LOCATION, 2000, "Blah"); },
-               rlvm::Exception);
-  EXPECT_THROW({ rlmachine.GetStringValue(STRK_LOCATION, 3); },
                rlvm::Exception);
   EXPECT_THROW({ rlmachine.GetStringValue(STRM_LOCATION, 2000); },
                rlvm::Exception);
