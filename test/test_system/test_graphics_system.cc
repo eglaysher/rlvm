@@ -116,7 +116,9 @@ std::shared_ptr<const Surface> TestGraphicsSystem::LoadSurfaceFromFile(
 
   // We don't have an injected surface so make a surface.
   return std::shared_ptr<const Surface>(
-      MockSurface::Create(short_filename, Size(50, 50)));
+      std::const_pointer_cast<const MockSurface>(
+          std::shared_ptr<MockSurface>(
+              MockSurface::Create(short_filename, Size(50, 50)))));
 }
 
 std::shared_ptr<Surface> TestGraphicsSystem::GetHaikei() { return haikei_; }

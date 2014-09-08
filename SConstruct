@@ -21,16 +21,7 @@ AddOption('--fullstatic', action='store_true',
 env = Environment(
   tools = ["default", "rlvm"],
 
-  LIBS = [
-    "boost_program_options",
-    "boost_serialization",
-    "boost_iostreams",
-    "boost_filesystem",
-    "boost_date_time",
-    "boost_thread",
-    "boost_system",
-    "z"
-  ],
+  LIBS = ["z"],
 
   LOCAL_LIBS = [],
 
@@ -71,6 +62,27 @@ env = Environment(
   # Whether we build the test binary that requires lua.
   BUILD_LUA_TESTS = False,
 )
+
+if env['PLATFORM'] == "darwin":
+  env.Append(
+    LIBS = [
+      "boost_program_options-mt",
+      "boost_serialization-mt",
+      "boost_iostreams-mt",
+      "boost_filesystem-mt",
+      "boost_date_time-mt",
+      "boost_thread-mt",
+      "boost_system-mt"])
+else:
+  env.Append(
+    LIBS = [
+      "boost_program_options",
+      "boost_serialization",
+      "boost_iostreams",
+      "boost_filesystem",
+      "boost_date_time",
+      "boost_thread",
+      "boost_system"])
 
 if GetOption("fullstatic"):
   env["FULL_STATIC_BUILD"] = True
