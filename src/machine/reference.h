@@ -171,10 +171,10 @@ class MemoryReferenceIterator
   }
 
  private:
-  int* store_register_;
-  Memory* memory_;
-  int type_;
-  int location_;
+  int* store_register_ = NULL;
+  Memory* memory_ = NULL;
+  int type_ = -1;
+  int location_ = 0;
 
   // Can this be templated?
   friend class StringAccessor;
@@ -182,19 +182,17 @@ class MemoryReferenceIterator
 };
 
 template <typename ACCESS>
-MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator()
-    : store_register_(NULL), memory_(NULL), type_(-1), location_(0) {}
+MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator() {}
 
 template <typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(int* store_register)
-    : store_register_(store_register), memory_(NULL), type_(-1), location_(0) {}
+    : store_register_(store_register) {}
 
 template <typename ACCESS>
 MemoryReferenceIterator<ACCESS>::MemoryReferenceIterator(Memory* memory,
                                                          const int in_type,
                                                          const int in_location)
-    : store_register_(NULL),
-      memory_(memory),
+    : memory_(memory),
       type_(in_type),
       location_(in_location) {}
 

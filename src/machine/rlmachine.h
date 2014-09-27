@@ -349,7 +349,7 @@ class RLMachine {
   std::unique_ptr<Memory> memory_;
 
   // The RealLive machine's single result register
-  int store_register_;
+  int store_register_ = 0;
 
   // Mapping between the module_type:module pair and the module implementation
   typedef std::unordered_map<unsigned int, std::unique_ptr<RLModule>> ModuleMap;
@@ -358,14 +358,14 @@ class RLMachine {
 
   // States whether the RLMachine is in the halted state (and thus won't
   // execute more instructions)
-  bool halted_;
+  bool halted_ = false;
 
   // Whether we should print an error to stderr when we encounter an undefined
   // opcode.
-  bool print_undefined_opcodes_;
+  bool print_undefined_opcodes_ = false;
 
   // States whether the machine should halt if an unhandled exception is thrown
-  bool halt_on_exception_;
+  bool halt_on_exception_ = false;
 
   // The SEEN.TXT the machine is currently executing.
   libreallive::Archive& archive_;
@@ -377,7 +377,7 @@ class RLMachine {
   std::vector<StackFrame> savepoint_call_stack_;
 
   // The most recent line marker we've come across
-  int line_;
+  int line_ = 0;
 
   // The RLMachine carried around a reference to the local system, to keep it
   // from being a Singleton so we can do proper unit testing.
@@ -388,20 +388,20 @@ class RLMachine {
   std::unique_ptr<OpcodeLog> undefined_log_;
 
   // Override defaults
-  bool mark_savepoints_;
+  bool mark_savepoints_ = true;
 
   // Whether the stack was modified during the running of a
   // LongOperation. Used to signal that any stack mutating functions should be
   // be placed in |delay_modifications_| for execution later.
-  bool delay_stack_modifications_;
+  bool delay_stack_modifications_ = false;
 
   // Whether we are currently replaying the graphics stack. While replaying the
   // graphics stack, we shouldn't advance the instruction pointer and do other
   // stuff.
-  bool replaying_graphics_stack_;
+  bool replaying_graphics_stack_ = false;
 
   // Whether we should print out all commands to the console.
-  bool tracing_;
+  bool tracing_ = false;
 
   // The actions that were delayed when |delay_stack_modifications_| is on.
   std::vector<std::function<void(void)>> delayed_modifications_;

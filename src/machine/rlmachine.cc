@@ -102,16 +102,8 @@ bool IsNotLongOp(StackFrame& frame) {
 
 RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
     : memory_(new Memory(*this, in_system.gameexe())),
-      halted_(false),
-      print_undefined_opcodes_(false),
-      halt_on_exception_(true),
       archive_(in_archive),
-      line_(0),
-      system_(in_system),
-      mark_savepoints_(true),
-      delay_stack_modifications_(false),
-      replaying_graphics_stack_(false),
-      tracing_(false) {
+      system_(in_system) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libreallive::Scenario* scenario = NULL;
