@@ -1,7 +1,7 @@
-rlvm: A RealLive interpreter clone for Linux, OSX and other UNIX-likes.
-=======================================================================
+rlvm: A RealLive interpreter for Linux and OSX.
+===============================================
 
-## INTRODUCTION:
+## INTRODUCTION
 
 rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users with
@@ -150,19 +150,19 @@ To build a dmg file for distribution, type:
 
     $ scons --release --fullstatic --dmgname="rlvm <version>"
 
-### KNOWN ISSUES:
+## KNOWN ISSUES
 
 Little Busters' baseball doesn't work because it is implemented as a
 Windows DLL instead. For the same reason, the dungeon crawling minigame
 in Tomoyo After does not work.
 
-### GETTING INVOLVED:
+## GETTING INVOLVED
 
 Little Buster's baseball minigame appears to be implemented by a DLL,
 not RealLive bytecode. Figuring out what its doing is the first step to
 getting it working.
 
-### DONATE
+## DONATE
 
 Have you found rlvm useful? I accept donations in bitcoin at the following address: [18LntbVY1GMZeioDYnst8yFmYQP86P4iKi][bitcoin]
 
