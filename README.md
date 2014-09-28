@@ -1,16 +1,8 @@
--------------------------------------------------------------------------
 rlvm: A RealLive interpreter clone for Linux, OSX and other UNIX-likes.
--------------------------------------------------------------------------
+=======================================================================
 
-Table of Contents:
-1) INTRODUCTION
-2) STATUS
-3) COMPILING RLVM
-4) KNOWN ISSUES
-5) GETTING INVOLVED
+## INTRODUCTION:
 
-1) INTRODUCTION:
--------------------------------------------------------------------------
 rlvm is a Free Software reimplementation of the VisualArt's KK's
 RealLive interpreter. It is meant to provide Linux and Apple users with
 a compatible, portable interpreter to play VisualArts games,
@@ -25,33 +17,30 @@ Share / {insert name of popular P2P app in your locale}.
 Special thanks to Jagarl for the first work on reverse engineering the
 RealLive interpreter and for Free software licensed source code for
 decoding their file formats, to Richard 23 for figuring out features
-added to RealLive for Little Busters, and to Haeleth for creating rldev
-along with answering all my dumb questions about the internal workings
-of the RealLive system, and
+added to RealLive for Little Busters, to \\{jyuichi} for help with Kud Wafter, and to Haeleth for creating rldev, along with answering all my dumb questions about the internal workings of the RealLive system.
 
-
-2) STATUS
--------------------------------------------------------------------------
+## STATUS
 
 rlvm currently plays the following games to their completion:
 
-|------------------------+--------------------+---------------------|
-| Game                   | Original Japanese  |  English Fan Patch  |
-|------------------------+--------------------+---------------------|
-| Kanon Standard Edition | OK                 | Get from NDT        |
-| Air Standard Edition   | OK                 | (None)              |
-| CLANNAD                | OK                 | (Not supported)     |
-| CLANNAD (Full Voice)   | OK                 | Get from Baka-Tsuki |
-| Planetarian CD         | OK                 | (Broken)            |
-| Tomoyo After           | OK                 | (None)              |
-| Little Busters         | OK (Some glitches) | (Broken)            |
-| Kud Wafter             | OK                 | (None)              |
-|------------------------+--------------------+---------------------|
-| Princess Bride         | Mostly works       | (None)              |
-| Princess Brave         | Works?             | (None)              |
-| ALMA ~zutto soba ni~   | Reported to work   | (None)              |
-| SNOW                   | Works?             | (None)              |
-|------------------------+--------------------+---------------------|
+| Japanese Edition Games | Status          | English Fan Patch Status |
+| ---------------------- | --------------- | ------------------------ |
+| Kanon Standard Edition | OK              | [NDT's patch][kanon]     |
+| Air Standard Edition   | OK              | (None)                   |
+| CLANNAD                | OK              | (Not supported)          |
+| CLANNAD (Full Voice)   | OK              | [Licensed][clannad]      |
+| Planetarian CD         | OK              | [Licensed][planetarian]  |
+| Tomoyo After           | OK              | (None)                   |
+| Little Busters         | OK              | (Untested)               |
+| Kud Wafter             | OK              | (None)                   |
+
+| US Edition Games       | Status                         |
+| ---------------------- | ------------------------------ |
+| Planetarian            | Works; [buy here][planetarian] |
+
+[kanon]: http://radicalr.pestermom.com/vn.html
+[clannad]: https://sekaiproject.com/blog-en/sekai-project-and-visualarts-announce-the-licensing-of-clannad-full-voice-edition/
+[planetarian]: http://store.steampowered.com/app/316720/
 
 For more details, please read STATUS.TXT.
 
@@ -71,11 +60,11 @@ vorbis voice patches which follow the convention
 Fullscreen can be entered by pressing Alt+{F,Enter} on Linux and
 Command+{F,Enter} on Mac.
 
-Please report bugs and discrepancies to <glaysher at umich dot edu>.
+Please report bugs on [the GitHub bug tracker][bugtracker].
 
+[bugtracker]: https://github.com/eglaysher/rlvm/issues
 
-3) USING RLVM
--------------------------------------------------------------------------
+## USING RLVM
 
 By default, rlvm is a GUI program. Start it by double clicking on the
 icon [OSX] or selecting it from your Applications menu [Linux]. You will
@@ -91,7 +80,7 @@ manually specify a font with the --font option.
 On Linux, you can also manually start rlvm from the command line,
 optionally passing in the directory containing the SEEN.TXT file:
 
- $ rlvm [/path/to/GameDirectory/]
+    $ rlvm [/path/to/GameDirectory/]
 
 The rlvm binary should be self contained and movable anywhere, though
 the build system does not have an install target.
@@ -100,34 +89,39 @@ If you don't have the file "msgothic.ttc" in either the game directory
 nor your home directory, please specify a Japanese font on the command
 line with --font.
 
+## COMPILING RLVM
 
-3) COMPILING RLVM
--------------------------------------------------------------------------
 You will need the following libraries/utilities:
 
-- The scons build system (Note: the scons in MacPorts has been reported
-  to not work)
-- boost 1.40 or higher
-- SDL (and optionally, SDL_image, and SDL_mixer, though there are copies
-  included in the source distribution if you don't already have them
-  installed.)
-- freetype
+- The [scons][scons] build system (Note: the scons in MacPorts has been
+  reported to not work)
+- [boost][boost] 1.40 or higher
+- [SDL 1.2][sdl] (and optionally, [SDL_image][sdl_image], and
+  [SDL_mixer][sdl_mixer], though there are copies included in the source
+  distribution if you don't already have them installed.)
+- [freetype][freetype]
 - GNU gettext
 
-3a) Compiling under Linux
--------------------------------------------------------------------------
+[scons]: http://www.scons.org/
+[boost]: http://www.boost.org/
+[sdl]: http://libsdl.org/download-1.2.php
+[sdl_image]: https://www.libsdl.org/projects/SDL_image/release-1.2.html
+[sdl_mixer]: http://www.libsdl.org/projects/SDL_mixer/release-1.2.html
+[freetype]: http://www.freetype.org/
 
-Make sure that freetype-config and sdl-config are in your $PATH. The
+### COMPILING UNDER LINUX
+
+Make sure that freetype-config and sdl-config are in your `$PATH`. The
 current SConscripts are fairly naive and may need editing to point to
 the correct location of some header files. Future versions will have the
 build system refined. You should be able to type:
 
- $ scons --release
+    $ scons --release
 
 in the root and have a complete build. The unit tests will automatically
 be built and can be run by typing:
 
- $ ./build/rlvmTest
+    $ ./build/rlvm_unittests
 
 They should all pass.
 
@@ -135,23 +129,18 @@ There is no convenient install feature (I am not sure how to do that in
 scons). rlvm will work (without icons or localization) in place. If you
 wish to use rlvm in place, the binary is in:
 
- $ ./build/rlvm
+    $ ./build/rlvm
 
-For packagers, the debian/install file contains a mapping of where files
-should be copied to. I agree that there should be a better long term
-solution, though it currently escapes me.
+For packagers, the debian/install file contains a mapping of where files should be copied to. I agree that there should be a better long term solution, though it currently escapes me.
 
-3b) Compiling under OSX
--------------------------------------------------------------------------
+### COMPILING UNDER OSX
+
 In addition to freetype-config and sdl-config needing to be in your
-$PATH, (like when compiling under Linux), the Sconscripts assume you use
-fink to manage your unix programs and that fink is installed at /sw/,
-though they also try to check for Darwin Ports. You may need to edit the
-SConscript files if using something else.
+`$PATH`, (like when compiling under Linux), the Sconscripts assume you use fink to manage your unix programs and that fink is installed at /sw/, though they also try to check for Darwin Ports. You may need to edit the SConscript files if using something else.
 
 To build an OSX application, type:
 
- $ scons --release --fullstatic
+    $ scons --release --fullstatic
 
 which will build rlvm.app in the build directory. The resulting OSX
 application will ask you for the location of the game with a native
@@ -159,23 +148,22 @@ dialog.
 
 To build a dmg file for distribution, type:
 
- $ scons --release --fullstatic --dmgname="rlvm <version>"
+    $ scons --release --fullstatic --dmgname="rlvm <version>"
 
+### KNOWN ISSUES:
 
-4) KNOWN ISSUES:
--------------------------------------------------------------------------
-Using rlvm with insani's English translation of Planetarian is currently
-not recommended as the indentation behaviour *will* break in the middle
-of words.
+Little Busters' baseball doesn't work because it is implemented as a
+Windows DLL instead. For the same reason, the dungeon crawling minigame
+in Tomoyo After does not work.
 
-Little Busters' baseball doesn't work.
+### GETTING INVOLVED:
 
-5) GETTING INVOLVED:
--------------------------------------------------------------------------
 Little Buster's baseball minigame appears to be implemented by a DLL,
 not RealLive bytecode. Figuring out what its doing is the first step to
 getting it working.
 
-;; Local Variables: **
-;; fill-column: 72 **
-;; End: **
+### DONATE
+
+Have you found rlvm useful? I accept donations in bitcoin at the following address: [18LntbVY1GMZeioDYnst8yFmYQP86P4iKi][bitcoin]
+
+[bitcoin]: https://blockchain.info/address/18LntbVY1GMZeioDYnst8yFmYQP86P4iKi

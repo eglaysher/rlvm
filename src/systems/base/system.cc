@@ -496,4 +496,4 @@ void System::AddDirectoryToCache(const fs::path& directory) {
   }
 }
 
-std::string GetRlvmVersionString() { return "Version 0.13.1"; }
+std::string GetRlvmVersionString() { return "Version 0.14"; }

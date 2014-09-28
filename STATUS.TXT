@@ -32,6 +32,10 @@ Planetarian CD
 --------------
 - Playable to the end, voice is now supported.
 
+Planetarian (US Edition)
+------------------------
+- Playable to the end, voice is now supported.
+
 Little Busters (Ex)
 -------------------
 - The original edition is clearable, including the Refrain. There are many
