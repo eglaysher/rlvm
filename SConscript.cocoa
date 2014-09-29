@@ -38,8 +38,8 @@ cocoarlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
   "src/machine/rlvm_instance.cc",
 
-  "src/Platforms/osx/CocoaRLVMInstance.mm",
-  "src/Platforms/osx/SDLMain.mm"
+  "src/platforms/osx/CocoaRLVMInstance.mm",
+  "src/platforms/osx/SDLMain.mm"
 ]
 
 # Builds a fullstatic version of rlvm and then builds a bundle
@@ -49,18 +49,18 @@ static_env.RlvmProgram('rlvm-static', cocoarlvm_files,
                        rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
 
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/Info.plist',
-                     source='src/Platforms/osx/Info.plist.in')
+                     source='src/platforms/osx/Info.plist.in')
 static_env.Install(target='$OUTPUT_DIR/rlvm.app/Contents/Resources/',
                    source=["COPYING.TXT", "GPL.TXT", "README.TXT",
                            'resources/rlvm.icns', '$OUTPUT_DIR/locale/'])
 static_env.InstallAs(
   target='$OUTPUT_DIR/rlvm.app/Contents/Resources/'
          'Japanese.lproj/InfoPlist.strings',
-  source='src/Platforms/osx/StubInfoPlist.strings')
+  source='src/platforms/osx/StubInfoPlist.strings')
 static_env.InstallAs(
   target='$OUTPUT_DIR/rlvm.app/Contents/Resources/'
          'English.lproj/InfoPlist.strings',
-  source='src/Platforms/osx/StubInfoPlist.strings')
+  source='src/platforms/osx/StubInfoPlist.strings')
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/MacOS/rlvm',
                      source='rlvm-static')
 
@@ -83,5 +83,5 @@ if GetOption('dmgname'):
                      "  --target build/" + filename +
                      "  --sourcefile"
                      "  --volname \"" + dmgname + "\""
-                     "  --copy src/Platforms/osx/dmg-ds-store:/.DS_Store"
+                     "  --copy src/platforms/osx/dmg-ds-store:/.DS_Store"
                      "  --format UDBZ")

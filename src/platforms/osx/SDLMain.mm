@@ -13,7 +13,7 @@
 #import <AppKit/NSPanel.h>
 
 #include "Utilities/gettext.h"
-#include "Platforms/osx/CocoaRLVMInstance.h"
+#include "platforms/osx/CocoaRLVMInstance.h"
 
 #include <boost/filesystem/operations.hpp>
 namespace fs = boost::filesystem;

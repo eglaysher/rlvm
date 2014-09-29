@@ -19,8 +19,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/Platforms/gtk/GtkRLVMInstance.cpp:73
-#: src/Platforms/osx/CocoaRLVMInstance.mm:43
+#: src/platforms/gtk/GtkRLVMInstance.cpp:73
+#: src/platforms/osx/CocoaRLVMInstance.mm:43
 msgid "Select Game Directory"
 msgstr "ゲームディレクトリを開く"
 
@@ -101,55 +101,55 @@ msgid ""
 "game path."
 msgstr ""
 
-#: src/Platforms/osx/SDLMain.mm:184 src/Platforms/osx/SDLMain.mm:194
-#: src/Platforms/osx/SDLMain.mm:204
+#: src/platforms/osx/SDLMain.mm:184 src/platforms/osx/SDLMain.mm:194
+#: src/platforms/osx/SDLMain.mm:204
 msgid "Window"
 msgstr "ウインドウ"
 
-#: src/Platforms/osx/SDLMain.mm:187 src/Platforms/osx/SDLMain.mm:197
+#: src/platforms/osx/SDLMain.mm:187 src/platforms/osx/SDLMain.mm:197
 msgid "Minimize"
 msgstr "しまう"
 
-#: src/Platforms/osx/SDLMain.mm:215 src/Platforms/osx/SDLMain.mm:248
-#: src/Platforms/osx/SDLMain.mm:225 src/Platforms/osx/SDLMain.mm:258
+#: src/platforms/osx/SDLMain.mm:215 src/platforms/osx/SDLMain.mm:248
+#: src/platforms/osx/SDLMain.mm:225 src/platforms/osx/SDLMain.mm:258
 msgid "Help"
 msgstr "ヘルプ"
 
-#: src/Platforms/osx/SDLMain.mm:218 src/Platforms/osx/SDLMain.mm:228
+#: src/platforms/osx/SDLMain.mm:218 src/platforms/osx/SDLMain.mm:228
 msgid "Readme"
 msgstr "Readmeファイル (英語)"
 
-#: src/Platforms/osx/SDLMain.mm:231 src/Platforms/osx/SDLMain.mm:241
+#: src/platforms/osx/SDLMain.mm:231 src/platforms/osx/SDLMain.mm:241
 msgid "Copying"
 msgstr ""
 
-#: src/Platforms/osx/SDLMain.mm:240 src/Platforms/osx/SDLMain.mm:250
+#: src/platforms/osx/SDLMain.mm:240 src/platforms/osx/SDLMain.mm:250
 msgid "GNU General Public License v3"
 msgstr "GNU 一般公衆利用許諾契約書"
 
-#: src/Platforms/osx/SDLMain.mm:148 src/Platforms/osx/SDLMain.mm:147
+#: src/platforms/osx/SDLMain.mm:148 src/platforms/osx/SDLMain.mm:147
 #, boost-format
 msgid "About %1%"
 msgstr "%1% について"
 
-#: src/Platforms/osx/SDLMain.mm:153 src/Platforms/osx/SDLMain.mm:152
+#: src/platforms/osx/SDLMain.mm:153 src/platforms/osx/SDLMain.mm:152
 #, boost-format
 msgid "Hide %1%"
 msgstr "%1% を隠す"
 
-#: src/Platforms/osx/SDLMain.mm:168 src/Platforms/osx/SDLMain.mm:167
+#: src/platforms/osx/SDLMain.mm:168 src/platforms/osx/SDLMain.mm:167
 #, boost-format
 msgid "Quit %1%"
 msgstr "%1% を終了"
 
-#: src/Platforms/osx/SDLMain.mm:156
+#: src/platforms/osx/SDLMain.mm:156
 msgid "Hide Others"
 msgstr "ほかを隠す"
 
-#: src/Platforms/osx/SDLMain.mm:161
+#: src/platforms/osx/SDLMain.mm:161
 msgid "Show All"
 msgstr "すべてを表示"
 
-#: src/Platforms/osx/CocoaRLVMInstance.mm:48
+#: src/platforms/osx/CocoaRLVMInstance.mm:48
 msgid "This directory is not a RealLive game. Games have a Seen.txt file."
 msgstr "このディレクトリはゲームじゃない。Seen.Txt ファイルを見つけることができませんでした."
