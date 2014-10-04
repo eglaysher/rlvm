@@ -206,7 +206,7 @@ void OpenBgPrelude(RLMachine& machine, const std::string& filename) {
 // allocated thus, although DC 1 is never given a size smaller than the screen
 // resolution. Any previous contents of dc are erased.
 struct allocDC
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int width, int height) {
     machine.system().graphics().AllocateDC(dc, Size(width, height));
   }
@@ -215,16 +215,16 @@ struct allocDC
 // Implements op<1:Grp:00031, 0>, fun wipe('DC', 'r', 'g', 'b')
 //
 // Fills dc with the colour indicated by the given RGB triplet.
-struct wipe : public RLOp_Void_4<IntConstant_T,
-                                 IntConstant_T,
-                                 IntConstant_T,
-                                 IntConstant_T> {
+struct wipe : public RLOpcode<IntConstant_T,
+                             IntConstant_T,
+                             IntConstant_T,
+                             IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int r, int g, int b) {
     machine.system().graphics().GetDC(dc)->Fill(RGBAColour(r, g, b));
   }
 };
 
-struct shake : public RLOp_Void_1<IntConstant_T> {
+struct shake : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int spec) {
     machine.system().graphics().QueueShakeSpec(spec);
 
@@ -250,7 +250,7 @@ struct shake : public RLOp_Void_1<IntConstant_T> {
 // to worry about the difference between grp/rec coordinate space), we write
 // one function for both versions.
 struct load_1
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit load_1(bool in) : use_alpha_(in) {}
 
@@ -278,11 +278,11 @@ struct load_1
 // Loads filename into dc; note that filename may not be '???'. Using this
 // form, the given area of the bitmap is loaded at the given location.
 template <typename SPACE>
-struct load_3 : public RLOp_Void_5<StrConstant_T,
-                                   IntConstant_T,
-                                   Rect_T<SPACE>,
-                                   Point_T,
-                                   DefaultIntValue_T<255>> {
+struct load_3 : public RLOpcode<StrConstant_T,
+                               IntConstant_T,
+                               Rect_T<SPACE>,
+                               Point_T,
+                               DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit load_3(bool in) : use_alpha_(in) {}
 
@@ -312,7 +312,7 @@ struct load_3 : public RLOp_Void_5<StrConstant_T,
 // -----------------------------------------------------------------------
 
 struct display_1
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int effectNum, int opacity) {
     Rect src;
     Point dest;
@@ -330,7 +330,7 @@ struct display_1
   }
 };
 
-struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct display_0 : public RLOpcode<IntConstant_T, IntConstant_T> {
   display_1 delegate_;
 
   void operator()(RLMachine& machine, int dc, int effectNum) {
@@ -340,11 +340,11 @@ struct display_0 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 };
 
 template <typename SPACE>
-struct display_3 : public RLOp_Void_5<IntConstant_T,
-                                      IntConstant_T,
-                                      Rect_T<SPACE>,
-                                      Point_T,
-                                      IntConstant_T> {
+struct display_3 : public RLOpcode<IntConstant_T,
+                                  IntConstant_T,
+                                  Rect_T<SPACE>,
+                                  Point_T,
+                                  IntConstant_T> {
   void operator()(RLMachine& machine,
                   int dc,
                   int effectNum,
@@ -365,7 +365,7 @@ struct display_3 : public RLOp_Void_5<IntConstant_T,
 
 template <typename SPACE>
 struct display_2
-    : public RLOp_Void_4<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   void operator()(RLMachine& machine,
                   int dc,
                   int effectNum,
@@ -377,19 +377,19 @@ struct display_2
 };
 
 template <typename SPACE>
-struct display_4 : public RLOp_Void_13<IntConstant_T,
-                                       Rect_T<SPACE>,
-                                       Point_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T> {
+struct display_4 : public RLOpcode<IntConstant_T,
+                                  Rect_T<SPACE>,
+                                  Point_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T,
+                                  IntConstant_T> {
   void operator()(RLMachine& machine,
                   int dc,
                   Rect srcRect,
@@ -440,7 +440,7 @@ struct display_4 : public RLOp_Void_13<IntConstant_T,
 //
 // TODO(erg): factor out the common code between grpOpens!
 struct open_1
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   bool use_alpha_;
   explicit open_1(bool in) : use_alpha_(in) {}
 
@@ -469,7 +469,7 @@ struct open_1
 // Load and display a bitmap. |filename| is loaded into DC1, and then is passed
 // off to whatever transition effect, which will perform some intermediary
 // steps and then render DC1 to DC0.
-struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct open_0 : public RLOpcode<StrConstant_T, IntConstant_T> {
   open_1 delegate_;
   explicit open_0(bool in) : delegate_(in) {}
 
@@ -480,11 +480,11 @@ struct open_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 };
 
 template <typename SPACE>
-struct open_3 : public RLOp_Void_5<StrConstant_T,
-                                   IntConstant_T,
-                                   Rect_T<SPACE>,
-                                   Point_T,
-                                   IntConstant_T> {
+struct open_3 : public RLOpcode<StrConstant_T,
+                               IntConstant_T,
+                               Rect_T<SPACE>,
+                               Point_T,
+                               IntConstant_T> {
   bool use_alpha_;
   explicit open_3(bool in) : use_alpha_(in) {}
 
@@ -517,7 +517,7 @@ struct open_3 : public RLOp_Void_5<StrConstant_T,
 // perform some intermediary steps and then render DC1 to DC0.
 template <typename SPACE>
 struct open_2
-    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   open_3<SPACE> delegate_;
   explicit open_2(bool in) : delegate_(in) {}
 
@@ -532,7 +532,7 @@ struct open_2
 };
 
 template <typename SPACE>
-struct open_4 : public RLOp_Void_13<StrConstant_T,
+struct open_4 : public RLOpcode<StrConstant_T,
                                     Rect_T<SPACE>,
                                     Point_T,
                                     IntConstant_T,
@@ -589,7 +589,7 @@ struct open_4 : public RLOp_Void_13<StrConstant_T,
 };
 
 struct openBg_1
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   string fileName,
                   int effectNum,
@@ -612,7 +612,7 @@ struct openBg_1
   }
 };
 
-struct openBg_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct openBg_0 : public RLOpcode<StrConstant_T, IntConstant_T> {
   openBg_1 delegate_;
 
   void operator()(RLMachine& machine, string filename, int effectNum) {
@@ -622,11 +622,11 @@ struct openBg_0 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
 };
 
 template <typename SPACE>
-struct openBg_3 : public RLOp_Void_5<StrConstant_T,
-                                     IntConstant_T,
-                                     Rect_T<SPACE>,
-                                     Point_T,
-                                     IntConstant_T> {
+struct openBg_3 : public RLOpcode<StrConstant_T,
+                                 IntConstant_T,
+                                 Rect_T<SPACE>,
+                                 Point_T,
+                                 IntConstant_T> {
   bool use_alpha_;
   explicit openBg_3(bool in) : use_alpha_(in) {}
 
@@ -653,7 +653,7 @@ struct openBg_3 : public RLOp_Void_5<StrConstant_T,
 
 template <typename SPACE>
 struct openBg_2
-    : public RLOp_Void_4<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, Rect_T<SPACE>, Point_T> {
   openBg_3<SPACE> delegate_;
   explicit openBg_2(bool in) : delegate_(in) {}
 
@@ -668,7 +668,7 @@ struct openBg_2
 };
 
 template <typename SPACE>
-struct openBg_4 : public RLOp_Void_13<StrConstant_T,
+struct openBg_4 : public RLOpcode<StrConstant_T,
                                       Rect_T<SPACE>,
                                       Point_T,
                                       IntConstant_T,
@@ -729,11 +729,11 @@ struct openBg_4 : public RLOp_Void_13<StrConstant_T,
 // {grp,rec}Copy
 // -----------------------------------------------------------------------
 template <typename SPACE>
-struct copy_3 : public RLOp_Void_5<Rect_T<SPACE>,
-                                   IntConstant_T,
-                                   Point_T,
-                                   IntConstant_T,
-                                   DefaultIntValue_T<255>> {
+struct copy_3 : public RLOpcode<Rect_T<SPACE>,
+                               IntConstant_T,
+                               Point_T,
+                               IntConstant_T,
+                               DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit copy_3(bool in) : use_alpha_(in) {}
 
@@ -764,7 +764,7 @@ struct copy_3 : public RLOp_Void_5<Rect_T<SPACE>,
 };
 
 struct copy_1
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit copy_1(bool in) : use_alpha_(in) {}
 
@@ -793,7 +793,7 @@ struct copy_1
 // {grp,rec}Fill
 // -----------------------------------------------------------------------
 
-struct fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
+struct fill_0 : public RLOpcode<IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     // Justification: Maiden Halo uses fill(x, 0, 0, 0) as a synanom for clear
     // and since it uses haikei, the DC0 needs to be transparent.
@@ -804,7 +804,7 @@ struct fill_0 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
   }
 };
 
-struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
+struct fill_1 : public RLOpcode<IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     machine.system().graphics().GetDC(dc)->Fill(colour);
   }
@@ -812,7 +812,7 @@ struct fill_1 : public RLOp_Void_2<IntConstant_T, RGBMaybeAColour_T> {
 
 template <typename SPACE>
 struct fill_3
-    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBMaybeAColour_T> {
+    : public RLOpcode<Rect_T<SPACE>, IntConstant_T, RGBMaybeAColour_T> {
   void operator()(RLMachine& machine,
                   Rect destRect,
                   int dc,
@@ -821,7 +821,7 @@ struct fill_3
   }
 };
 
-struct invert_1 : public RLOp_Void_1<IntConstant_T> {
+struct invert_1 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->Invert(surface->GetRect());
@@ -829,13 +829,13 @@ struct invert_1 : public RLOp_Void_1<IntConstant_T> {
 };
 
 template <typename SPACE>
-struct invert_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
+struct invert_3 : public RLOpcode<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
     machine.system().graphics().GetDC(dc)->Invert(rect);
   }
 };
 
-struct mono_1 : public RLOp_Void_1<IntConstant_T> {
+struct mono_1 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int dc) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->Mono(surface->GetRect());
@@ -843,13 +843,13 @@ struct mono_1 : public RLOp_Void_1<IntConstant_T> {
 };
 
 template <typename SPACE>
-struct mono_3 : public RLOp_Void_2<Rect_T<SPACE>, IntConstant_T> {
+struct mono_3 : public RLOpcode<Rect_T<SPACE>, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc) {
     machine.system().graphics().GetDC(dc)->Mono(rect);
   }
 };
 
-struct colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
+struct colour_1 : public RLOpcode<IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, int dc, RGBAColour colour) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->ApplyColour(colour.rgb(), surface->GetRect());
@@ -858,14 +858,14 @@ struct colour_1 : public RLOp_Void_2<IntConstant_T, RGBColour_T> {
 
 template <typename SPACE>
 struct colour_2
-    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, RGBColour_T> {
+    : public RLOpcode<Rect_T<SPACE>, IntConstant_T, RGBColour_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, RGBAColour colour) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->ApplyColour(colour.rgb(), rect);
   }
 };
 
-struct light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct light_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int dc, int level) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->ApplyColour(RGBColour(level, level, level), surface->GetRect());
@@ -874,7 +874,7 @@ struct light_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 template <typename SPACE>
 struct light_2
-    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<Rect_T<SPACE>, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, Rect rect, int dc, int level) {
     std::shared_ptr<Surface> surface = machine.system().graphics().GetDC(dc);
     surface->ApplyColour(RGBColour(level, level, level), rect);
@@ -887,7 +887,7 @@ struct light_2
 
 template <typename SPACE>
 struct fade_7
-    : public RLOp_Void_3<Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0>> {
+    : public RLOpcode<Rect_T<SPACE>, RGBColour_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, Rect rect, RGBAColour colour, int time) {
     GraphicsSystem& graphics = machine.system().graphics();
     std::shared_ptr<Surface> before = graphics.RenderToSurface();
@@ -902,7 +902,7 @@ struct fade_7
 
 template <typename SPACE>
 struct fade_5
-    : public RLOp_Void_3<Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0>> {
+    : public RLOpcode<Rect_T<SPACE>, IntConstant_T, DefaultIntValue_T<0>> {
   fade_7<SPACE> delegate_;
 
   void operator()(RLMachine& machine, Rect rect, int colour_num, int time) {
@@ -912,7 +912,7 @@ struct fade_5
   }
 };
 
-struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0>> {
+struct fade_3 : public RLOpcode<RGBColour_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, RGBAColour colour, int time) {
@@ -921,7 +921,7 @@ struct fade_3 : public RLOp_Void_2<RGBColour_T, DefaultIntValue_T<0>> {
   }
 };
 
-struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
+struct fade_1 : public RLOpcode<IntConstant_T, DefaultIntValue_T<0>> {
   fade_7<rect_impl::REC> delegate_;
 
   void operator()(RLMachine& machine, int colour_num, int time) {
@@ -936,11 +936,11 @@ struct fade_1 : public RLOp_Void_2<IntConstant_T, DefaultIntValue_T<0>> {
 // {grp,rec}StretchBlit
 // -----------------------------------------------------------------------
 template <typename SPACE>
-struct stretchBlit_1 : public RLOp_Void_5<Rect_T<SPACE>,
-                                          IntConstant_T,
-                                          Rect_T<SPACE>,
-                                          IntConstant_T,
-                                          DefaultIntValue_T<255>> {
+struct stretchBlit_1 : public RLOpcode<Rect_T<SPACE>,
+                                      IntConstant_T,
+                                      Rect_T<SPACE>,
+                                      IntConstant_T,
+                                      DefaultIntValue_T<255>> {
   bool use_alpha_;
   explicit stretchBlit_1(bool in) : use_alpha_(in) {}
 
@@ -967,11 +967,11 @@ struct stretchBlit_1 : public RLOp_Void_5<Rect_T<SPACE>,
 };
 
 template <typename SPACE>
-struct zoom : public RLOp_Void_5<Rect_T<SPACE>,
-                                 Rect_T<SPACE>,
-                                 IntConstant_T,
-                                 Rect_T<SPACE>,
-                                 IntConstant_T> {
+struct zoom : public RLOpcode<Rect_T<SPACE>,
+                             Rect_T<SPACE>,
+                             IntConstant_T,
+                             Rect_T<SPACE>,
+                             IntConstant_T> {
   void operator()(RLMachine& machine,
                   Rect frect,
                   Rect trect,
@@ -1108,10 +1108,10 @@ void multi_command<SPACE>::handleMultiCommands(
 
 // fun grpMulti <1:Grp:00075, 4> (<strC 'filename', <'effect', MultiCommand)
 template <typename SPACE>
-struct multi_str_1 : public RLOp_Void_4<StrConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        MultiCommand>,
+struct multi_str_1 : public RLOpcode<StrConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    MultiCommand>,
                      public multi_command<SPACE> {
   void operator()(RLMachine& machine,
                   string filename,
@@ -1126,7 +1126,7 @@ struct multi_str_1 : public RLOp_Void_4<StrConstant_T,
 
 template <typename SPACE>
 struct multi_str_0
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, MultiCommand> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, MultiCommand> {
   multi_str_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine,
@@ -1138,10 +1138,10 @@ struct multi_str_0
 };
 
 template <typename SPACE>
-struct multi_dc_1 : public RLOp_Void_4<IntConstant_T,
-                                       IntConstant_T,
-                                       IntConstant_T,
-                                       MultiCommand>,
+struct multi_dc_1 : public RLOpcode<IntConstant_T,
+                                   IntConstant_T,
+                                   IntConstant_T,
+                                   MultiCommand>,
                     public multi_command<SPACE> {
   void operator()(RLMachine& machine,
                   int dc,
@@ -1156,7 +1156,7 @@ struct multi_dc_1 : public RLOp_Void_4<IntConstant_T,
 
 template <typename SPACE>
 struct multi_dc_0
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, MultiCommand> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, MultiCommand> {
   multi_dc_1<SPACE> delegate_;
 
   void operator()(RLMachine& machine,

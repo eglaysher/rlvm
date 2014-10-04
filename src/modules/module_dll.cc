@@ -35,7 +35,7 @@
 
 namespace {
 
-struct LoadDLL : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct LoadDLL : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     machine.LoadDLL(slot, name);
   }

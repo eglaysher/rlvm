@@ -119,7 +119,7 @@ struct WaitForGanToFinish : public LongOperation {
   int buf_;
 };
 
-struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct ganPlay : public RLOpcode<IntConstant_T, IntConstant_T> {
   bool block_;
   GraphicsObjectData::AfterAnimation after_effect_;
 
@@ -152,7 +152,7 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct ganWait : public RLOp_Void_1<IntConstant_T> {
+struct ganWait : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     int fgbg;
     if (!GetProperty(P_FGBG, fgbg))
@@ -220,7 +220,7 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
+struct objStop_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
     if (obj.has_object_data())

@@ -70,20 +70,20 @@ struct Msg_pause : public RLOp_Void_Void {
   }
 };
 
-struct Msg_TextWindow : public RLOp_Void_1<DefaultIntValue_T<0>> {
+struct Msg_TextWindow : public RLOpcode<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int window) {
     machine.system().text().set_active_window(window);
   }
 };
 
 struct FontColour
-    : public RLOp_Void_2<DefaultIntValue_T<0>, DefaultIntValue_T<0>> {
+    : public RLOpcode<DefaultIntValue_T<0>, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum, int shadowColorNum) {
     machine.system().text().GetCurrentPage().FontColour(textColorNum);
   }
 };
 
-struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
+struct SetFontColour : public RLOpcode<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int textColorNum) {
     Gameexe& gexe = machine.system().gameexe();
     if (gexe("COLOR_TABLE", textColorNum).Exists()) {
@@ -93,14 +93,14 @@ struct SetFontColour : public RLOp_Void_1<DefaultIntValue_T<0>> {
   }
 };
 
-struct doruby_display : public RLOp_Void_1<StrConstant_T> {
+struct doruby_display : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, std::string cpStr) {
     std::string utf8str = cp932toUTF8(cpStr, machine.GetTextEncoding());
     machine.system().text().GetCurrentPage().DisplayRubyText(utf8str);
   }
 };
 
-struct msgHide : public RLOp_Void_1<DefaultIntValue_T<0>> {
+struct msgHide : public RLOpcode<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int unknown) {
     TextSystem& text = machine.system().text();
     int winNum = text.active_window();
@@ -159,7 +159,7 @@ struct page : public RLOp_Void_Void {
   }
 };
 
-struct TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct TextPos : public RLOpcode<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().GetCurrentPage();
     page.SetInsertionPointX(x);
@@ -167,7 +167,7 @@ struct TextPos : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
+struct GetTextPos : public RLOpcode<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
@@ -181,7 +181,7 @@ struct GetTextPos : public RLOp_Void_2<IntReference_T, IntReference_T> {
   }
 };
 
-struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct TextOffset : public RLOpcode<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int x, int y) {
     TextPage& page = machine.system().text().GetCurrentPage();
     page.Offset_insertion_point_x(x);
@@ -189,14 +189,14 @@ struct TextOffset : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct FaceOpen : public RLOp_Void_2<StrConstant_T, DefaultIntValue_T<0>> {
+struct FaceOpen : public RLOpcode<StrConstant_T, DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, std::string file, int index) {
     TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceOpen(file, index);
   }
 };
 
-struct FaceClose : public RLOp_Void_1<DefaultIntValue_T<0>> {
+struct FaceClose : public RLOpcode<DefaultIntValue_T<0>> {
   void operator()(RLMachine& machine, int index) {
     TextPage& page = machine.system().text().GetCurrentPage();
     page.FaceClose(index);

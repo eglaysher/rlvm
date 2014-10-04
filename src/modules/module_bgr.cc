@@ -60,7 +60,7 @@ using boost::iends_with;
 
 namespace {
 
-struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
+struct bgrLoadHaikei_blank : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int sel) {
     GraphicsSystem& graphics = machine.system().graphics();
     graphics.set_default_bgr_name("");
@@ -81,7 +81,7 @@ struct bgrLoadHaikei_blank : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct bgrLoadHaikei_main : RLOpcode<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string filename, int sel) {
     System& system = machine.system();
     GraphicsSystem& graphics = system.graphics();
@@ -124,7 +124,7 @@ struct bgrLoadHaikei_main : RLOp_Void_2<StrConstant_T, IntConstant_T> {
 };
 
 struct bgrLoadHaikei_wtf
-    : RLOp_Void_4<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+    : RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   std::string filename,
                   int sel,
@@ -134,12 +134,12 @@ struct bgrLoadHaikei_wtf
   }
 };
 
-struct bgrLoadHaikei_wtf2 : RLOp_Void_6<StrConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T> {
+struct bgrLoadHaikei_wtf2 : RLOpcode<StrConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T,
+                                    IntConstant_T> {
   void operator()(RLMachine& machine,
                   string filename,
                   int sel,
@@ -171,7 +171,7 @@ typedef Argc_T<Special_T<
     Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>>> BgrMultiCommand;
 
 struct bgrMulti_1
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, BgrMultiCommand> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, BgrMultiCommand> {
  public:
   void operator()(RLMachine& machine,
                   string filename,
@@ -252,7 +252,7 @@ struct bgrNext : public RLOp_Void_Void {
   }
 };
 
-struct bgrSetXOffset : public RLOp_Void_1<IntConstant_T> {
+struct bgrSetXOffset : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
     HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {
@@ -261,7 +261,7 @@ struct bgrSetXOffset : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
+struct bgrSetYOffset : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int offset) {
     HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {
@@ -270,7 +270,7 @@ struct bgrSetYOffset : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct bgrPreloadScript : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct bgrPreloadScript : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     System& system = machine.system();
     fs::path path = system.FindFile(name, HIK_FILETYPES);

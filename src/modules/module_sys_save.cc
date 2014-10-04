@@ -290,7 +290,7 @@ struct LatestSave : public RLOp_Store_Void {
   }
 };
 
-struct save : public RLOp_Void_1<IntConstant_T> {
+struct save : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int slot) {
     Serialization::saveGlobalMemory(machine);
     Serialization::saveGameForSlot(machine, slot);

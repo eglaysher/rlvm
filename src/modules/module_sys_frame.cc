@@ -45,7 +45,7 @@ using std::get;
 namespace {
 
 template <typename FRAMECLASS>
-struct InitFrame : public RLOp_Void_4<IntConstant_T,
+struct InitFrame : public RLOpcode<IntConstant_T,
                                       IntConstant_T,
                                       IntConstant_T,
                                       IntConstant_T> {
@@ -107,7 +107,7 @@ struct AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
+struct ClearFrame_0 : public RLOpcode<IntConstant_T> {
   const int layer_;
   explicit ClearFrame_0(int layer) : layer_(layer) {}
 
@@ -117,7 +117,7 @@ struct ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct ClearFrame_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   const int layer_;
   explicit ClearFrame_1(int layer) : layer_(layer) {}
 
@@ -129,7 +129,7 @@ struct ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
+struct ClearAllFrames_0 : public RLOpcode<IntConstant_T> {
   const int layer_;
   explicit ClearAllFrames_0(int layer) : layer_(layer) {}
 

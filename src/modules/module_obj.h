@@ -126,7 +126,7 @@ RLOperation* ChildRangeMappingFun(RLOperation* op);
 //
 // NOTE: This does *not* call mark_object_state_as_dirty(), like the rest of
 // these adapters.
-class Obj_CallFunction : public RLOp_Void_1<IntConstant_T> {
+class Obj_CallFunction : public RLOpcode<IntConstant_T> {
  public:
   typedef void (GraphicsObject::*Function)();
 
@@ -147,7 +147,7 @@ class Obj_CallFunction : public RLOp_Void_1<IntConstant_T> {
 //
 // This template magic saves having to write out 25 - 30 operation
 // structs.
-class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+class Obj_SetOneIntOnObj : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (GraphicsObject::*Setter)(const int);
@@ -169,7 +169,7 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // the Obj* helper templates; since a lot of Object related functions simply
 // call a setter.
 class Obj_SetTwoIntOnObj
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
   typedef void (GraphicsObject::*Setter)(const int);
 
@@ -189,7 +189,7 @@ class Obj_SetTwoIntOnObj
 // -----------------------------------------------------------------------
 
 class Obj_SetRepnoIntOnObj
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
   typedef void (GraphicsObject::*Setter)(const int, const int);
 

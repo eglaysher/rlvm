@@ -78,7 +78,7 @@ namespace binderImpl {
 // Binds setting an internal variable to a passed in value in from a
 // running Reallive script.
 template <typename OBJTYPE>
-class Op_CallWithInt : public RLOp_Void_1<IntConstant_T> {
+class Op_CallWithInt : public RLOpcode<IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (OBJTYPE::*Setter)(const int);
@@ -98,7 +98,7 @@ class Op_CallWithInt : public RLOp_Void_1<IntConstant_T> {
 // Binds setting an internal variable to a passed in value in from a
 // running Reallive script.
 template <typename OBJTYPE>
-class Op_CallWithMachineInt : public RLOp_Void_1<IntConstant_T> {
+class Op_CallWithMachineInt : public RLOpcode<IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (OBJTYPE::*Setter)(RLMachine&, const int);
@@ -119,7 +119,7 @@ class Op_CallWithMachineInt : public RLOp_Void_1<IntConstant_T> {
 // running Reallive script.
 template <typename OBJTYPE>
 class Op_CallWithMachineIntInt
-    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (OBJTYPE::*Setter)(RLMachine&, const int, const int);
@@ -140,7 +140,7 @@ class Op_CallWithMachineIntInt
 // Binds setting an internal variable to a passed in value in from a
 // running Reallive script.
 template <typename OBJTYPE>
-class Op_CallWithIntInt : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+class Op_CallWithIntInt : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (OBJTYPE::*Setter)(const int, const int);
@@ -160,7 +160,7 @@ class Op_CallWithIntInt : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // Binds setting an internal variable to a passed in value in from a
 // running Reallive script.
 template <typename OBJTYPE>
-class Op_CallWithString : public RLOp_Void_1<StrConstant_T> {
+class Op_CallWithString : public RLOpcode<StrConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (OBJTYPE::*Setter)(const std::string&);
@@ -294,7 +294,7 @@ class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
 // Reads the value of an internal variable in a generic way using an
 // arbitrary getter function and places it in a passed in reference.
 template <typename OBJTYPE>
-class Op_ReturnStringValue : public RLOp_Void_1<StrReference_T> {
+class Op_ReturnStringValue : public RLOpcode<StrReference_T> {
  public:
   // The signature of a string getter function
   typedef const std::string& (OBJTYPE::*Getter)() const;  // NOLINT

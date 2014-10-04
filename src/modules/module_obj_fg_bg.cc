@@ -64,7 +64,7 @@
 
 namespace {
 
-struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
+struct dispArea_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.ClearClipRect();
@@ -72,7 +72,7 @@ struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct dispArea_1 : RLOp_Void_5<IntConstant_T,
+struct dispArea_1 : RLOpcode<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
@@ -84,7 +84,7 @@ struct dispArea_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispRect_1 : RLOp_Void_5<IntConstant_T,
+struct dispRect_1 : RLOpcode<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
@@ -96,7 +96,7 @@ struct dispRect_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+struct dispCorner_1 : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x, int y) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetClipRect(Rect::GRP(0, 0, x, y));
@@ -104,7 +104,7 @@ struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   }
 };
 
-struct dispOwnArea_0 : public RLOp_Void_1<IntConstant_T> {
+struct dispOwnArea_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.ClearOwnClipRect();
@@ -112,7 +112,7 @@ struct dispOwnArea_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct dispOwnArea_1 : RLOp_Void_5<IntConstant_T,
+struct dispOwnArea_1 : RLOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
@@ -124,7 +124,7 @@ struct dispOwnArea_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
+struct dispOwnRect_1 : RLOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
@@ -137,7 +137,7 @@ struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
 };
 
 struct adjust
-    : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+    : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetXAdjustment(idx, x);
@@ -147,7 +147,7 @@ struct adjust
 };
 
 struct tint
-    : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+    : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetTint(RGBColour(r, g, b));
@@ -155,7 +155,7 @@ struct tint
   }
 };
 
-struct colour : RLOp_Void_5<IntConstant_T,
+struct colour : RLOpcode<IntConstant_T,
                             IntConstant_T,
                             IntConstant_T,
                             IntConstant_T,
@@ -168,7 +168,7 @@ struct colour : RLOp_Void_5<IntConstant_T,
 };
 
 struct objSetRect_1
-    : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP>> {
+    : public RLOpcode<IntConstant_T, Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine, int buf, Rect rect) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     if (obj.has_object_data()) {
@@ -182,14 +182,14 @@ struct objSetRect_1
   }
 };
 
-struct objSetRect_0 : public RLOp_Void_1<IntConstant_T> {
+struct objSetRect_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     Rect rect(0, 0, GetScreenSize(machine.system().gameexe()));
     objSetRect_1()(machine, buf, rect);
   }
 };
 
-struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
+struct objSetText : public RLOpcode<IntConstant_T, DefaultStrValue_T> {
   void operator()(RLMachine& machine, int buf, string val) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     std::string utf8str = cp932toUTF8(val, machine.GetTextEncoding());
@@ -198,7 +198,7 @@ struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
   }
 };
 
-struct objTextOpts : public RLOp_Void_7<IntConstant_T,
+struct objTextOpts : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
@@ -219,19 +219,19 @@ struct objTextOpts : public RLOp_Void_7<IntConstant_T,
   }
 };
 
-struct objDriftOpts : public RLOp_Void_13<IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          Rect_T<rect_impl::GRP>> {
+struct objDriftOpts : public RLOpcode<IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine,
                   int buf,
                   int count,
@@ -263,7 +263,7 @@ struct objDriftOpts : public RLOp_Void_13<IntConstant_T,
   }
 };
 
-struct objNumOpts : public RLOp_Void_6<IntConstant_T,
+struct objNumOpts : public RLOpcode<IntConstant_T,
                                        IntConstant_T,
                                        IntConstant_T,
                                        IntConstant_T,
@@ -283,7 +283,7 @@ struct objNumOpts : public RLOp_Void_6<IntConstant_T,
 };
 
 struct objAdjustAlpha
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int alpha) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetAlphaAdjustment(idx, alpha);
@@ -291,7 +291,7 @@ struct objAdjustAlpha
   }
 };
 
-struct objButtonOpts : public RLOp_Void_5<IntConstant_T,
+struct objButtonOpts : public RLOpcode<IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
@@ -310,7 +310,7 @@ struct objButtonOpts : public RLOp_Void_5<IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-class objEveAdjust : public RLOp_Void_7<IntConstant_T,
+class objEveAdjust : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
@@ -550,7 +550,7 @@ class DisplayMutator : public ObjectMutator {
   bool scale_y_mod_;
 };
 
-struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
+struct objEveDisplay_1 : public RLOpcode<IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
@@ -590,7 +590,7 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
+struct objEveDisplay_2 : public RLOpcode<IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
@@ -635,24 +635,24 @@ struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
   }
 };
 
-struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T> {
+struct objEveDisplay_3 : public RLOpcode<IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T> {
   void operator()(RLMachine& machine,
                   int obj,
                   int display,

@@ -58,20 +58,20 @@ struct LongOp_bgmWait : public LongOperation {
   }
 };
 
-struct bgmLoop_0 : public RLOp_Void_1<StrConstant_T> {
+struct bgmLoop_0 : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
     machine.system().sound().BgmPlay(filename, true);
   }
 };
 
-struct bgmLoop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct bgmLoop_1 : public RLOpcode<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
     machine.system().sound().BgmPlay(filename, true, fadein);
   }
 };
 
 struct bgmLoop_2
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   string filename,
                   int fadein,
@@ -80,20 +80,20 @@ struct bgmLoop_2
   }
 };
 
-struct bgmPlay_0 : public RLOp_Void_1<StrConstant_T> {
+struct bgmPlay_0 : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
     machine.system().sound().BgmPlay(filename, false);
   }
 };
 
-struct bgmPlay_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct bgmPlay_1 : public RLOpcode<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
     machine.system().sound().BgmPlay(filename, false, fadein);
   }
 };
 
 struct bgmPlay_2
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   string filename,
                   int fadein,
@@ -114,26 +114,26 @@ struct bgmPlaying : public RLOp_Store_Void {
   }
 };
 
-struct bgmSetVolume_0 : public RLOp_Void_1<IntConstant_T> {
+struct bgmSetVolume_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int vol) {
     machine.system().sound().SetBgmVolumeScript(vol, 0);
   }
 };
 
-struct bgmFadeOutEx : public RLOp_Void_1<DefaultIntValue_T<1000>> {
+struct bgmFadeOutEx : public RLOpcode<DefaultIntValue_T<1000>> {
   void operator()(RLMachine& machine, int fadeout) {
     machine.system().sound().BgmFadeOut(fadeout);
     machine.PushLongOperation(MakeBgmWait(machine));
   }
 };
 
-struct bgmUnMute_1 : public RLOp_Void_1<IntConstant_T> {
+struct bgmUnMute_1 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int fadein) {
     machine.system().sound().SetBgmVolumeScript(255, fadein);
   }
 };
 
-struct bgmMute_1 : public RLOp_Void_1<IntConstant_T> {
+struct bgmMute_1 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int fadein) {
     machine.system().sound().SetBgmVolumeScript(0, fadein);
   }

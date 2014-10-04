@@ -47,7 +47,7 @@ namespace {
 // Sets a block of integers, starting with origin, to the given values. values
 // is an arbitrary number of integer expressions, each of which is assigned in
 // turn to the next variable.
-struct setarray : public RLOp_Void_2<IntReference_T, Argc_T<IntConstant_T>> {
+struct setarray : public RLOpcode<IntReference_T, Argc_T<IntConstant_T>> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
                   std::vector<int> values) {
@@ -58,7 +58,7 @@ struct setarray : public RLOp_Void_2<IntReference_T, Argc_T<IntConstant_T>> {
 // Implement op<1:Mem:00001, 0>, fun setrng(int, int).
 //
 // Set block of integers to zero.
-struct setrng_0 : public RLOp_Void_2<IntReference_T, IntReference_T> {
+struct setrng_0 : public RLOpcode<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator first,
                   IntReferenceIterator last) {
@@ -71,7 +71,7 @@ struct setrng_0 : public RLOp_Void_2<IntReference_T, IntReference_T> {
 //
 // Set block of integers to the constant passed in.
 struct setrng_1
-    : public RLOp_Void_3<IntReference_T, IntReference_T, IntConstant_T> {
+    : public RLOpcode<IntReference_T, IntReference_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator first,
                   IntReferenceIterator last,
@@ -86,7 +86,7 @@ struct setrng_1
 // Copies a block of values of length count from source to dest. The
 // function appears to succeed even if the ranges overlap.
 struct cpyrng
-    : public RLOp_Void_3<IntReference_T, IntReference_T, IntConstant_T> {
+    : public RLOpcode<IntReference_T, IntReference_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator source,
                   IntReferenceIterator dest,
@@ -102,7 +102,7 @@ struct cpyrng
 // Sets every stepth memory block starting at origin with the sequence of
 // passed in values.
 struct setarray_stepped
-    : public RLOp_Void_3<IntReference_T, IntConstant_T, Argc_T<IntConstant_T>> {
+    : public RLOpcode<IntReference_T, IntConstant_T, Argc_T<IntConstant_T>> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
                   int step,
@@ -122,7 +122,7 @@ struct setarray_stepped
 // Sets count number of memory locations to zero, starting at origin and going
 // forward step.
 struct setrng_stepped_0
-    : public RLOp_Void_3<IntReference_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntReference_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator origin,
                   int step,
@@ -138,7 +138,7 @@ struct setrng_stepped_0
 //
 // Sets count number of memory locations to the passed in constant, starting at
 // origin and going forward step.
-struct setrng_stepped_1 : public RLOp_Void_4<IntReference_T,
+struct setrng_stepped_1 : public RLOpcode<IntReference_T,
                                              IntConstant_T,
                                              IntConstant_T,
                                              IntConstant_T> {
@@ -157,7 +157,7 @@ struct setrng_stepped_1 : public RLOp_Void_4<IntReference_T,
 // Implement op<1:Mem:00006, 0>, fun cpyvars(int, intC, int+).
 //
 // I'm not even going to try for this one. See RLDev.
-struct cpyvars : public RLOp_Void_3<IntReference_T,
+struct cpyvars : public RLOpcode<IntReference_T,
                                     IntConstant_T,
                                     Argc_T<IntReference_T>> {
   void operator()(RLMachine& machine,

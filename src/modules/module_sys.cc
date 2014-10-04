@@ -67,20 +67,20 @@ const float PI = 3.14159265;
 
 namespace {
 
-struct title : public RLOp_Void_1<StrConstant_T> {
+struct title : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, std::string subtitle) {
     machine.system().graphics().SetWindowSubtitle(subtitle,
                                                   machine.GetTextEncoding());
   }
 };
 
-struct GetTitle : public RLOp_Void_1<StrReference_T> {
+struct GetTitle : public RLOpcode<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = machine.system().graphics().window_subtitle();
   }
 };
 
-struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
+struct GetCursorPos_gc1 : public RLOpcode<IntReference_T,
                                              IntReference_T,
                                              IntReference_T,
                                              IntReference_T> {
@@ -99,7 +99,7 @@ struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
   }
 };
 
-struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
+struct GetCursorPos_gc2 : public RLOpcode<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator xit,
                   IntReferenceIterator yit) {
@@ -109,14 +109,14 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
   }
 };
 
-struct CallStackPop : RLOp_Void_1<DefaultIntValue_T<1>> {
+struct CallStackPop : RLOpcode<DefaultIntValue_T<1>> {
   void operator()(RLMachine& machine, int frames_to_pop) {
     for (int i = 0; i < frames_to_pop; ++i)
       machine.PopStackFrame();
   }
 };
 
-struct PauseCursor : public RLOp_Void_1<IntConstant_T> {
+struct PauseCursor : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int newCursor) {
     machine.system().text().SetKeyCursor(newCursor);
   }
@@ -260,7 +260,7 @@ struct ReturnPrevSelect : public RLOp_Void_Void {
   }
 };
 
-struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
+struct SetWindowAttr : public RLOpcode<IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
@@ -277,7 +277,7 @@ struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
+struct GetWindowAttr : public RLOpcode<IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
@@ -298,7 +298,7 @@ struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
   }
 };
 
-struct DefWindowAttr : public RLOp_Void_5<IntReference_T,
+struct DefWindowAttr : public RLOpcode<IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
                                           IntReference_T,

@@ -38,7 +38,7 @@
 
 namespace {
 
-struct setOverride : public RLOp_Void_1<IntConstant_T> {
+struct setOverride : public RLOpcode<IntConstant_T> {
   bool value_;
   explicit setOverride(int value) : value_(value) {}
 
@@ -76,20 +76,20 @@ struct rlm_page : public RLOp_Void_Void {
   }
 };
 
-struct rlm_bgm_loop_0 : public RLOp_Void_1<StrConstant_T> {
+struct rlm_bgm_loop_0 : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, string filename) {
     machine.system().sound().BgmPlay(filename, true);
   }
 };
 
-struct rlm_bgm_loop_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct rlm_bgm_loop_1 : public RLOpcode<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, string filename, int fadein) {
     machine.system().sound().BgmPlay(filename, true, fadein);
   }
 };
 
 struct rlm_bgm_loop_2
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   string filename,
                   int fadein,
@@ -98,20 +98,20 @@ struct rlm_bgm_loop_2
   }
 };
 
-struct rlm_wav_play_0 : public RLOp_Void_1<StrConstant_T> {
+struct rlm_wav_play_0 : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, std::string fileName) {
     machine.system().sound().WavPlay(fileName, false);
   }
 };
 
-struct rlm_wav_play_1 : public RLOp_Void_2<StrConstant_T, IntConstant_T> {
+struct rlm_wav_play_1 : public RLOpcode<StrConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, std::string fileName, int channel) {
     machine.system().sound().WavPlay(fileName, false, channel);
   }
 };
 
 struct rlm_wav_play_2
-    : public RLOp_Void_3<StrConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<StrConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine,
                   std::string fileName,
                   int channel,
