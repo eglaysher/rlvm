@@ -1,4 +1,4 @@
-rlvm (0.14) unstable; urgency=low
+rlvm (0.14) trusty; urgency=low
 
   * Support for the US edition of planetarian.
   * Support for Kud Wafter.
