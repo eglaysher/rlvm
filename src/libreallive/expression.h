@@ -96,7 +96,7 @@ class ExpressionPiece {
 
   // Capability method; returns false by default. Override only in
   // classes that represent a complex parameter to the type system.
-  // @see Complex2_T
+  // @see Complex_T
   virtual bool IsComplexParameter() const;
 
   // Capability method; returns false by default. Override only in

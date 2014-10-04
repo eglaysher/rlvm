@@ -162,13 +162,13 @@ typedef Argc_T<Special_T<
     // 0:copy(strC 'filename')
     StrConstant_T,
     // 1:DUMMY. Unknown.
-    Complex2_T<StrConstant_T, IntConstant_T>,
+    Complex_T<StrConstant_T, IntConstant_T>,
     // 2:copy(strC 'filename', '?')
-    Complex2_T<StrConstant_T, IntConstant_T>,
+    Complex_T<StrConstant_T, IntConstant_T>,
     // 3:DUMMY. Unknown.
-    Complex2_T<StrConstant_T, IntConstant_T>,
+    Complex_T<StrConstant_T, IntConstant_T>,
     // 4:copy(strC, '?', '?')
-    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>>> BgrMultiCommand;
+    Complex_T<StrConstant_T, IntConstant_T, IntConstant_T>>> BgrMultiCommand;
 
 struct bgrMulti_1
     : public RLOpcode<StrConstant_T, IntConstant_T, BgrMultiCommand> {

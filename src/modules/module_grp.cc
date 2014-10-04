@@ -1000,26 +1000,26 @@ typedef Argc_T<Special_T<
     // 0:copy(strC 'filename')
     StrConstant_T,
     // 1:copy(strC 'filename', 'effect')
-    Complex2_T<StrConstant_T, IntConstant_T>,
+    Complex_T<StrConstant_T, IntConstant_T>,
     // 2:copy(strC 'filename', 'effect', 'alpha')
-    Complex3_T<StrConstant_T, IntConstant_T, IntConstant_T>,
+    Complex_T<StrConstant_T, IntConstant_T, IntConstant_T>,
     // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
-    Complex7_T<StrConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T>,
+    Complex_T<StrConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T>,
     // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
-    Complex8_T<StrConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T,
-               IntConstant_T>>> MultiCommand;
+    Complex_T<StrConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T,
+              IntConstant_T>>> MultiCommand;
 
 // -----------------------------------------------------------------------
 

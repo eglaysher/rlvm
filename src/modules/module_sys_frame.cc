@@ -161,7 +161,7 @@ struct ClearAllFrames_1 : public RLOpcode<> {
   }
 };
 
-typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
+typedef Complex_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
 struct ReadFrames : public RLStoreOpcode<Argc_T<FrameDataInReadFrames>> {
   const int layer_;

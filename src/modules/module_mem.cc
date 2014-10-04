@@ -190,7 +190,7 @@ struct sum : public RLStoreOpcode<IntReference_T, IntReference_T> {
 //
 // Returns the sum of all the numbers in all the given memory ranges.
 struct sums
-    : public RLStoreOpcode<Argc_T<Complex2_T<IntReference_T, IntReference_T>>> {
+    : public RLStoreOpcode<Argc_T<Complex_T<IntReference_T, IntReference_T>>> {
   int operator()(
       RLMachine& machine,
       std::vector<std::tuple<IntReferenceIterator,

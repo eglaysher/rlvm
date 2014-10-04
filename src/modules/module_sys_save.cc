@@ -207,8 +207,8 @@ struct SaveInfo : public RLStoreOpcode<IntConstant_T,
 
 typedef Argc_T<Special_T<
     DefaultSpecialMapper,
-    Complex3_T<IntReference_T, IntReference_T, IntConstant_T>,
-    Complex3_T<StrReference_T, StrReference_T, IntConstant_T>>> GetSaveFlagList;
+    Complex_T<IntReference_T, IntReference_T, IntConstant_T>,
+    Complex_T<StrReference_T, StrReference_T, IntConstant_T>>> GetSaveFlagList;
 
 // Retrieves the values of variables from saved games. If slot is
 // empty, returns 0 and does nothing further; if slot contains a saved

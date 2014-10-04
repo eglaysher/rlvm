@@ -38,8 +38,8 @@ class RLModule;
 
 // Defines index_series's input pattern.
 typedef IntConstant_T ValOnly;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> StartEndval;
-typedef Complex4_T<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> StartEndval;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
     StartEndvalMode;
 typedef Special_T<DefaultSpecialMapper, ValOnly, StartEndval, StartEndvalMode>
     IndexSeriesEntry;

@@ -277,8 +277,8 @@ TEST_F(RLOperationTest, TestDefaultIntValue_T) {
 // -----------------------------------------------------------------------
 
 struct ComplexCapturer
-    : public RLOpcode<Complex2_T<IntConstant_T, IntConstant_T>,
-                         Complex2_T<IntConstant_T, IntConstant_T>> {
+    : public RLOpcode<Complex_T<IntConstant_T, IntConstant_T>,
+                      Complex_T<IntConstant_T, IntConstant_T>> {
   int& one_;
   int& two_;
   int& three_;
@@ -288,8 +288,8 @@ struct ComplexCapturer
       : one_(one), two_(two), three_(three), four_(four) {}
 
   virtual void operator()(RLMachine& machine,
-                          Complex2_T<IntConstant_T, IntConstant_T>::type one,
-                          Complex2_T<IntConstant_T, IntConstant_T>::type two) {
+                          Complex_T<IntConstant_T, IntConstant_T>::type one,
+                          Complex_T<IntConstant_T, IntConstant_T>::type two) {
     one_ = get<0>(one);
     two_ = get<1>(one);
     three_ = get<0>(two);
@@ -297,7 +297,7 @@ struct ComplexCapturer
   }
 };
 
-TEST_F(RLOperationTest, TestComplex2_T) {
+TEST_F(RLOperationTest, TestComplex_T) {
   int one = -1;
   int two = -1;
   int three = -1;
