@@ -5,7 +5,7 @@ rlvm (0.14) unstable; urgency=low
   * Further attempts to smooth animations and text output.
   * Internal code cleanups; ported to C++11.
 
- -- Elliot Glaysher <glaysher@umich.edu>  Sat, 27 Sep 2014 17:29:08 -0700
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 04 Oct 2014 09:27:01 -0700
 
 rlvm (0.13.1) saucy; urgency=low
 
