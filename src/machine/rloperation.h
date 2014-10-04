@@ -387,6 +387,16 @@ class RLOpcode : public RLOperation {
   }
 };
 
+// Specialization for empty template list
+template <>
+void RLOpcode<>::ParseParameters(
+    const std::vector<std::string>& input,
+    libreallive::ExpressionPiecesVector& output);
+
+template <>
+void RLOpcode<>::Dispatch(
+    RLMachine& machine,
+    const libreallive::ExpressionPiecesVector& parameters);
 
 // Partial specialization for RLOp_Normal::check_types for when
 // everything is empty (aka an operation that takes no parameters)
@@ -502,12 +512,5 @@ void RLOp_NormalOperation<
   Y::ParseParameters(position, input, output);
   Z::ParseParameters(position, input, output);
 }
-struct RLOp_Void_Void : public RLOp_NormalOperation<> {
-  virtual void Dispatch(
-      RLMachine& machine,
-      const libreallive::ExpressionPiecesVector& parameters) override;
-
-  virtual void operator()(RLMachine&) = 0;
-};
 
 #endif  // SRC_MACHINE_RLOPERATION_H_

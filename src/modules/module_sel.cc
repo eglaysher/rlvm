@@ -167,7 +167,7 @@ struct objbtn_init_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int ignored) {}
 };
 
-struct objbtn_init_1 : public RLOp_Void_Void {
+struct objbtn_init_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) {}
 };
 

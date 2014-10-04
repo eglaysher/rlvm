@@ -164,7 +164,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
 };
 
 // Invokes a syscom command.
-class InvokeSyscomAsOp : public RLOp_Void_Void {
+class InvokeSyscomAsOp : public RLOpcode<> {
  public:
   explicit InvokeSyscomAsOp(const int syscom);
 

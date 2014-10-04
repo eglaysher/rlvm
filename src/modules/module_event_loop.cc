@@ -51,7 +51,7 @@ struct setOverride : public RLOpcode<IntConstant_T> {
 // I'm just copying this for now.
 //
 // This might be more like page, par or spause? Test on Planetarian.
-struct rlm_pause : public RLOp_Void_Void {
+struct rlm_pause : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int windowNum = text.active_window();
@@ -69,7 +69,7 @@ struct rlm_pause : public RLOp_Void_Void {
 
 // The page() replacement in RealLiveMax. If it has different semantics, they
 // don't show up in planetarian.
-struct rlm_page : public RLOp_Void_Void {
+struct rlm_page : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     machine.PushLongOperation(
         new NewPageAfterLongop(new PauseLongOperation(machine)));

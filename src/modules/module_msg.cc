@@ -46,7 +46,7 @@
 
 namespace {
 
-struct par : public RLOp_Void_Void {
+struct par : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextPage& page = machine.system().text().GetCurrentPage();
     page.ResetIndentation();
@@ -54,7 +54,7 @@ struct par : public RLOp_Void_Void {
   }
 };
 
-struct Msg_pause : public RLOp_Void_Void {
+struct Msg_pause : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int windowNum = text.active_window();
@@ -109,7 +109,7 @@ struct msgHide : public RLOpcode<DefaultIntValue_T<0>> {
   }
 };
 
-struct msgHideAll : public RLOp_Void_Void {
+struct msgHideAll : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
 
@@ -120,7 +120,7 @@ struct msgHideAll : public RLOp_Void_Void {
   }
 };
 
-struct msgClear : public RLOp_Void_Void {
+struct msgClear : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     int active_window = text.active_window();
@@ -130,7 +130,7 @@ struct msgClear : public RLOp_Void_Void {
   }
 };
 
-struct msgClearAll : public RLOp_Void_Void {
+struct msgClearAll : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     TextSystem& text = machine.system().text();
     std::vector<int> active_windows = text.GetActiveWindows();
@@ -146,13 +146,13 @@ struct msgClearAll : public RLOp_Void_Void {
   }
 };
 
-struct spause : public RLOp_Void_Void {
+struct spause : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     machine.PushLongOperation(new PauseLongOperation(machine));
   }
 };
 
-struct page : public RLOp_Void_Void {
+struct page : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     machine.PushLongOperation(
         new NewPageAfterLongop(new PauseLongOperation(machine)));

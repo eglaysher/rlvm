@@ -279,7 +279,14 @@ void RLOp_SpecialCase::DispatchFunction(RLMachine& machine,
   operator()(machine, ff);
 }
 
-void RLOp_Void_Void::Dispatch(
+template <>
+void RLOpcode<>::ParseParameters(
+    const std::vector<std::string>& input,
+    libreallive::ExpressionPiecesVector& output) {
+}
+
+template <>
+void RLOpcode<>::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
   operator()(machine);

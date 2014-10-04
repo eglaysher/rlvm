@@ -146,7 +146,7 @@ struct ClearAllFrames_0 : public RLOpcode<IntConstant_T> {
   }
 };
 
-struct ClearAllFrames_1 : public RLOp_Void_Void {
+struct ClearAllFrames_1 : public RLOpcode<> {
   const int layer_;
   explicit ClearAllFrames_1(int layer) : layer_(layer) {}
 

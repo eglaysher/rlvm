@@ -243,7 +243,7 @@ struct bgrMulti_1
   }
 };
 
-struct bgrNext : public RLOp_Void_Void {
+struct bgrNext : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     HIKRenderer* renderer = machine.system().graphics().hik_renderer();
     if (renderer) {

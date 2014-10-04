@@ -45,7 +45,7 @@
 
 namespace {
 
-struct objWaitAll : public RLOp_Void_Void {
+struct objWaitAll : public RLOpcode<> {
   static bool WaitUntilDone(RLMachine& machine) {
     // Clannad puts us in DrawManual() right before calling us so we force
     // refreshes.

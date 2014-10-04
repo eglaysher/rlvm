@@ -127,11 +127,11 @@ struct koeDoPlayExC_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct koeWait : public RLOp_Void_Void {
+struct koeWait : public RLOpcode<> {
   void operator()(RLMachine& machine) { addKoeWait(machine); }
 };
 
-struct koeWaitC : public RLOp_Void_Void {
+struct koeWaitC : public RLOpcode<> {
   void operator()(RLMachine& machine) { addKoeWaitC(machine); }
 };
 

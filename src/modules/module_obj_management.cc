@@ -93,7 +93,7 @@ struct SetWipeCopyTo_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct objFreeAll : public RLOp_Void_Void {
+struct objFreeAll : public RLOpcode<> {
   virtual void operator()(RLMachine& machine) override {
     LazyArray<GraphicsObject>& objects = GetGraphicsObjects(machine, this);
     for (GraphicsObject& object : objects)
@@ -101,7 +101,7 @@ struct objFreeAll : public RLOp_Void_Void {
   }
 };
 
-struct objInitAll : public RLOp_Void_Void {
+struct objInitAll : public RLOpcode<> {
   virtual void operator()(RLMachine& machine) override {
     LazyArray<GraphicsObject>& objects = GetGraphicsObjects(machine, this);
     for (GraphicsObject& object : objects)
@@ -109,7 +109,7 @@ struct objInitAll : public RLOp_Void_Void {
   }
 };
 
-struct objFreeInitAll : public RLOp_Void_Void {
+struct objFreeInitAll : public RLOpcode<> {
   virtual void operator()(RLMachine& machine) override {
     LazyArray<GraphicsObject>& objects = GetGraphicsObjects(machine, this);
     for (GraphicsObject& object : objects) {
@@ -177,7 +177,7 @@ struct objFreeInit : public RLOpcode<IntConstant_T> {
   }
 };
 
-struct objFgBgFreeInitAll : public RLOp_Void_Void {
+struct objFgBgFreeInitAll : public RLOpcode<> {
   virtual void operator()(RLMachine& machine) override {
     GraphicsSystem& sys = machine.system().graphics();
     sys.FreeAllObjectData();

@@ -242,7 +242,7 @@ struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
 //
 // This method also resets a LOT of the game state, though this isn't mentioned
 // in the rldev manual.
-struct ReturnMenu : public RLOp_Void_Void {
+struct ReturnMenu : public RLOpcode<> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
@@ -252,7 +252,7 @@ struct ReturnMenu : public RLOp_Void_Void {
   }
 };
 
-struct ReturnPrevSelect : public RLOp_Void_Void {
+struct ReturnPrevSelect : public RLOpcode<> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {

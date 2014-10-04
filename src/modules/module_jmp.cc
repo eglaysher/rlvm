@@ -309,7 +309,7 @@ struct gosub_case : public ParseGotoParametersAsExpressions {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct ret : public RLOp_Void_Void {
+struct ret : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromGosub(); }
 };
 
@@ -364,7 +364,7 @@ struct farcall_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl : public RLOp_Void_Void {
+struct rtl : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromFarcall(); }
 };
 
@@ -414,7 +414,7 @@ struct ret_with_0 : public RLOpcode<IntConstant_T> {
 //
 // Returns from a goto_with call. But it doesn't return a value. What gets
 // dumped in the store register?
-struct ret_with_1 : public RLOp_Void_Void {
+struct ret_with_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromGosub(); }
 };
 
@@ -465,7 +465,7 @@ struct rtl_with_0 : public RLOpcode<IntConstant_T> {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl_with_1 : public RLOp_Void_Void {
+struct rtl_with_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromFarcall(); }
 };
 

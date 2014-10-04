@@ -102,7 +102,7 @@ struct bgmPlay_2
   }
 };
 
-struct bgmWait : public RLOp_Void_Void {
+struct bgmWait : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     machine.PushLongOperation(MakeBgmWait(machine));
   }

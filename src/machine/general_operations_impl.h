@@ -178,7 +178,7 @@ class Op_CallWithString : public RLOpcode<StrConstant_T> {
 };
 
 template <typename OBJTYPE>
-class Op_CallMethod : public RLOp_Void_Void {
+class Op_CallMethod : public RLOpcode<> {
  public:
   // The string getter function to call
   typedef void (OBJTYPE::*FUNCTYPE)();
@@ -196,7 +196,7 @@ class Op_CallMethod : public RLOp_Void_Void {
 // Sets an internal variable to a specific value set at compile time,
 // and exposes this as an operation to Reallive scripts.
 template <typename OBJTYPE, typename VALTYPE>
-class Op_CallWithConstant : public RLOp_Void_Void {
+class Op_CallWithConstant : public RLOpcode<> {
  public:
   typedef void (OBJTYPE::*Setter)(VALTYPE);
 
@@ -212,7 +212,7 @@ class Op_CallWithConstant : public RLOp_Void_Void {
 };
 
 template <typename OBJTYPE, typename VALONE, typename VALTWO>
-class Op_CallWithConstantConstant : public RLOp_Void_Void {
+class Op_CallWithConstantConstant : public RLOpcode<> {
  public:
   typedef void (OBJTYPE::*Setter)(VALONE, VALTWO);
 
