@@ -249,55 +249,6 @@ class RLOp_SpecialCase : public RLOperation {
   virtual void operator()(RLMachine&, const libreallive::CommandElement&) = 0;
 };
 
-// Base class for all the normal operations; This is the third
-// revision of this part of the type system. It was revised into two
-// monolithic classes, RLOp_Void<> and RLOp_Store<>, but that got a
-// bit wacky with what was a big set of if/else if statements
-// Dispatching to every possilbe operator(). It also suffered the
-// weakeness that each derived struct had a vtable with 26*4 entries
-// for all the possible number of operations, most of which have a
-// default implementation that just throws an exception; it's possible
-// to have a mismatch between the stated function signature and the
-// overloaded method.
-//
-// This implementation doesn't suffer that. Parameter mismatch between
-// the type definition and the operator()() implementation is a
-// compile time error now. (While porting from the old system to the
-// new, I discovered and fixed several of these errors.) The vtable
-// isn't hueg liek xbox anymore.
-template <typename A = Empty_T,
-          typename B = Empty_T,
-          typename C = Empty_T,
-          typename D = Empty_T,
-          typename E = Empty_T,
-          typename F = Empty_T,
-          typename G = Empty_T,
-          typename H = Empty_T,
-          typename I = Empty_T,
-          typename J = Empty_T,
-          typename K = Empty_T,
-          typename L = Empty_T,
-          typename M = Empty_T,
-          typename N = Empty_T,
-          typename O = Empty_T,
-          typename P = Empty_T,
-          typename Q = Empty_T,
-          typename R = Empty_T,
-          typename S = Empty_T,
-          typename T = Empty_T,
-          typename U = Empty_T,
-          typename V = Empty_T,
-          typename W = Empty_T,
-          typename X = Empty_T,
-          typename Y = Empty_T,
-          typename Z = Empty_T>
-struct RLOp_NormalOperation : public RLOperation {
- public:
-  virtual void ParseParameters(
-      const std::vector<std::string>& input,
-      libreallive::ExpressionPiecesVector& output) override;
-};
-
 namespace internal {
 
 // Machinery for doing recursion in ParseParameters.
@@ -348,8 +299,10 @@ struct make_indexes : make_indexes_impl<0, index_tuple<>, Types...>
 
 }  // namespace internal
 
+// This is the fourth time we have overhauled the implementation of RLOperation
+// and we've become exceedingly efficient at it.
 template <typename... Args>
-class RLOpcode : public RLOperation {
+class RLNormalOpcode : public RLOperation {
  public:
   virtual void ParseParameters(
       const std::vector<std::string>& input,
@@ -358,7 +311,17 @@ class RLOpcode : public RLOperation {
     internal::ParseEachParameter<Args..., internal::_sentinel_type>(
         position, input, output);
   }
+};
 
+// Specialization for empty template list
+template <>
+void RLNormalOpcode<>::ParseParameters(
+    const std::vector<std::string>& input,
+    libreallive::ExpressionPiecesVector& output);
+
+template <typename... Args>
+class RLOpcode : public RLNormalOpcode<Args...> {
+ public:
   virtual void Dispatch(
       RLMachine& machine,
       const libreallive::ExpressionPiecesVector& parameters) {
@@ -387,130 +350,9 @@ class RLOpcode : public RLOperation {
   }
 };
 
-// Specialization for empty template list
-template <>
-void RLOpcode<>::ParseParameters(
-    const std::vector<std::string>& input,
-    libreallive::ExpressionPiecesVector& output);
-
 template <>
 void RLOpcode<>::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters);
-
-// Partial specialization for RLOp_Normal::check_types for when
-// everything is empty (aka an operation that takes no parameters)
-template <>
-inline void RLOp_NormalOperation<
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T,
-    Empty_T>::ParseParameters(const std::vector<std::string>& input,
-                              libreallive::ExpressionPiecesVector& output) {}
-
-template <typename A,
-          typename B,
-          typename C,
-          typename D,
-          typename E,
-          typename F,
-          typename G,
-          typename H,
-          typename I,
-          typename J,
-          typename K,
-          typename L,
-          typename M,
-          typename N,
-          typename O,
-          typename P,
-          typename Q,
-          typename R,
-          typename S,
-          typename T,
-          typename U,
-          typename V,
-          typename W,
-          typename X,
-          typename Y,
-          typename Z>
-void RLOp_NormalOperation<
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z>::ParseParameters(const std::vector<std::string>& input,
-                        libreallive::ExpressionPiecesVector& output) {
-  unsigned int position = 0;
-  A::ParseParameters(position, input, output);
-  B::ParseParameters(position, input, output);
-  C::ParseParameters(position, input, output);
-  D::ParseParameters(position, input, output);
-  E::ParseParameters(position, input, output);
-  F::ParseParameters(position, input, output);
-  G::ParseParameters(position, input, output);
-  H::ParseParameters(position, input, output);
-  I::ParseParameters(position, input, output);
-  J::ParseParameters(position, input, output);
-  K::ParseParameters(position, input, output);
-  L::ParseParameters(position, input, output);
-  M::ParseParameters(position, input, output);
-  N::ParseParameters(position, input, output);
-  O::ParseParameters(position, input, output);
-  P::ParseParameters(position, input, output);
-  Q::ParseParameters(position, input, output);
-  R::ParseParameters(position, input, output);
-  S::ParseParameters(position, input, output);
-  T::ParseParameters(position, input, output);
-  U::ParseParameters(position, input, output);
-  V::ParseParameters(position, input, output);
-  W::ParseParameters(position, input, output);
-  X::ParseParameters(position, input, output);
-  Y::ParseParameters(position, input, output);
-  Z::ParseParameters(position, input, output);
-}
 
 #endif  // SRC_MACHINE_RLOPERATION_H_

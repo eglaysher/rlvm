@@ -201,7 +201,7 @@ struct ganWait : public RLOpcode<IntConstant_T> {
 //
 // After implementing this, we no longer get stuck in an infinite loop during
 // Ushio's birth so I'm assuming this is correct.
-struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
+struct isGanDonePlaying : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, gan_num);
 

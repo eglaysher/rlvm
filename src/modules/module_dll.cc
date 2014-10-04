@@ -41,12 +41,12 @@ struct LoadDLL : public RLOpcode<IntConstant_T, StrConstant_T> {
   }
 };
 
-struct CallDLL : public RLOp_Store_6<IntConstant_T,
-                                     DefaultIntValue_T<0>,
-                                     DefaultIntValue_T<0>,
-                                     DefaultIntValue_T<0>,
-                                     DefaultIntValue_T<0>,
-                                     DefaultIntValue_T<0>> {
+struct CallDLL : public RLStoreOpcode<IntConstant_T,
+                                      DefaultIntValue_T<0>,
+                                      DefaultIntValue_T<0>,
+                                      DefaultIntValue_T<0>,
+                                      DefaultIntValue_T<0>,
+                                      DefaultIntValue_T<0>> {
   int operator()(RLMachine& machine,
                  int index,
                  int one,

@@ -108,7 +108,7 @@ struct bgmWait : public RLOpcode<> {
   }
 };
 
-struct bgmPlaying : public RLOp_Store_Void {
+struct bgmPlaying : public RLStoreOpcode<> {
   int operator()(RLMachine& machine) {
     return machine.system().sound().BgmStatus() == 1;
   }

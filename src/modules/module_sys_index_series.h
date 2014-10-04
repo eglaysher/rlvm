@@ -47,10 +47,10 @@ typedef Argc_T<IndexSeriesEntry> IndexList;
 
 // Implementation of the math performing index_series command. Exposed through
 // the header for testing.
-struct Sys_index_series : public RLOp_Store_4<IntConstant_T,
-                                              IntConstant_T,
-                                              IntConstant_T,
-                                              IndexList> {
+struct Sys_index_series : public RLStoreOpcode<IntConstant_T,
+                                               IntConstant_T,
+                                               IntConstant_T,
+                                               IndexList> {
   // Main entrypoint
   int operator()(RLMachine& machine,
                  int index,

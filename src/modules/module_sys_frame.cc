@@ -63,7 +63,7 @@ struct InitFrame : public RLOpcode<IntConstant_T,
   }
 };
 
-struct ReadFrame : public RLOp_Store_1<IntConstant_T> {
+struct ReadFrame : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit ReadFrame(int layer) : layer_(layer) {}
 
@@ -76,7 +76,7 @@ struct ReadFrame : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct FrameActive : public RLOp_Store_1<IntConstant_T> {
+struct FrameActive : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit FrameActive(int layer) : layer_(layer) {}
 
@@ -90,7 +90,7 @@ struct FrameActive : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
+struct AnyFrameActive : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit AnyFrameActive(int layer) : layer_(layer) {}
 
@@ -163,7 +163,7 @@ struct ClearAllFrames_1 : public RLOpcode<> {
 
 typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
-struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
+struct ReadFrames : public RLStoreOpcode<Argc_T<FrameDataInReadFrames>> {
   const int layer_;
   explicit ReadFrames(int layer) : layer_(layer) {}
 

@@ -152,7 +152,7 @@ class MultiDispatch : public RLOp_SpecialCase {
 };
 
 // Returns a Gameexe value to the store register.
-class ReturnGameexeInt : public RLOp_Store_Void {
+class ReturnGameexeInt : public RLStoreOpcode<> {
  public:
   ReturnGameexeInt(const std::string& full_key, int en);
 

@@ -150,7 +150,7 @@ class Op_EndObjectMutation_RepNo
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorCheck : public RLOp_Store_1<IntConstant_T> {
+class Op_MutatorCheck : public RLStoreOpcode<IntConstant_T> {
  public:
   explicit Op_MutatorCheck(const std::string& name);
   virtual ~Op_MutatorCheck();

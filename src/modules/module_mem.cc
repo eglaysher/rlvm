@@ -177,7 +177,7 @@ struct cpyvars : public RLOpcode<IntReference_T,
 // Implement op<1:Mem:00100, 0>, fun sum(int, int).
 //
 // Returns the sum of all the numbers in the given memory range.
-struct sum : public RLOp_Store_2<IntReference_T, IntReference_T> {
+struct sum : public RLStoreOpcode<IntReference_T, IntReference_T> {
   int operator()(RLMachine& machine,
                  IntReferenceIterator first,
                  IntReferenceIterator last) {
@@ -190,7 +190,7 @@ struct sum : public RLOp_Store_2<IntReference_T, IntReference_T> {
 //
 // Returns the sum of all the numbers in all the given memory ranges.
 struct sums
-    : public RLOp_Store_1<Argc_T<Complex2_T<IntReference_T, IntReference_T>>> {
+    : public RLStoreOpcode<Argc_T<Complex2_T<IntReference_T, IntReference_T>>> {
   int operator()(
       RLMachine& machine,
       std::vector<std::tuple<IntReferenceIterator,

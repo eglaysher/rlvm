@@ -84,7 +84,7 @@ struct Sys_time : public RLOpcode<IntConstant_T, DefaultIntValue_T<0>> {
   }
 };
 
-struct Timer : public RLOp_Store_1<DefaultIntValue_T<0>> {
+struct Timer : public RLStoreOpcode<DefaultIntValue_T<0>> {
   const int layer_;
   explicit Timer(const int in) : layer_(in) {}
 
@@ -94,7 +94,7 @@ struct Timer : public RLOp_Store_1<DefaultIntValue_T<0>> {
   }
 };
 
-struct CmpTimer : public RLOp_Store_2<IntConstant_T, DefaultIntValue_T<0>> {
+struct CmpTimer : public RLStoreOpcode<IntConstant_T, DefaultIntValue_T<0>> {
   const int layer_;
   explicit CmpTimer(const int in) : layer_(in) {}
 

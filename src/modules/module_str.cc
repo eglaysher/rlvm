@@ -138,7 +138,7 @@ struct Str_strcat : public RLOpcode<StrReference_T, StrConstant_T> {
 
 // Implement op<1:Str:00003, 0>, fun strlen(strC). Returns the length
 // of value; Double-byte characters are counted as two bytes.
-struct Str_strlen : public RLOp_Store_1<StrConstant_T> {
+struct Str_strlen : public RLStoreOpcode<StrConstant_T> {
   int operator()(RLMachine& machine, std::string value) {
     return value.size();
   }
@@ -150,7 +150,7 @@ struct Str_strlen : public RLOp_Store_1<StrConstant_T> {
 // strings in JIS X 0208.
 //
 // TODO(erg): THIS NEEDS TO HANDLE JSX ORDERING, NOT JUST ASCII!
-struct Str_strcmp : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
+struct Str_strcmp : public RLStoreOpcode<StrConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, std::string lhs, std::string rhs) {
     return strcmp(lhs.c_str(), rhs.c_str());
   }
@@ -257,7 +257,7 @@ struct strrsub_1 : public strsub_1 {
 // Implements op<1:Str:00007, 0>, fun strcharlen(strC). Returns the
 // number of characters (as opposed to bytes) in a string. This
 // function deals with Shift_JIS characters properly.
-struct Str_strcharlen : public RLOp_Store_1<StrConstant_T> {
+struct Str_strcharlen : public RLStoreOpcode<StrConstant_T> {
   int operator()(RLMachine& machine, std::string val) {
     return strcharlen(val.c_str());
   }
@@ -480,7 +480,7 @@ struct itoa_1
 // Returns the value of the integer represented by string, or 0 if string does
 // not represent an integer. Leading whitespace is ignored, as is anything
 // following the last decimal digit.
-struct Str_atoi : public RLOp_Store_1<StrConstant_T> {
+struct Str_atoi : public RLStoreOpcode<StrConstant_T> {
   int operator()(RLMachine& machine, std::string word) {
     std::stringstream ss(word);
     int out;
@@ -500,7 +500,7 @@ struct Str_atoi : public RLOp_Store_1<StrConstant_T> {
 //
 // ERG: What the heck is this used for!? This is a standard library function!?
 // Haeleth: I've never seen it used...
-struct Str_digits : public RLOp_Store_1<IntConstant_T> {
+struct Str_digits : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int word) {
     std::string number = rl_itoa_implementation(abs(word), 1, '0');
     return number.size();
@@ -517,7 +517,7 @@ struct Str_digits : public RLOp_Store_1<IntConstant_T> {
 // Haeleth: It's used in `Princess Brave' to simplify displaying a number from
 // a bitmap of digits.
 struct Str_digit
-    : public RLOp_Store_3<IntConstant_T, IntReference_T, IntConstant_T> {
+    : public RLStoreOpcode<IntConstant_T, IntReference_T, IntConstant_T> {
   int operator()(RLMachine& machine,
                  int value,
                  IntReferenceIterator dest,
@@ -532,7 +532,7 @@ struct Str_digit
 //
 // Returns the offset of the first instance of substring in str, or -1 if
 // substring is not found.
-struct Str_strpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
+struct Str_strpos : public RLStoreOpcode<StrConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, std::string str, std::string substring) {
     size_t pos = str.find(substring);
     if (pos == std::string::npos)
@@ -547,7 +547,7 @@ struct Str_strpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
 // As strpos, but returns the offset of the last instance of substring. If
 // substring appears only once, or not at all, in string, the behaviour is
 // identical with that of strpos.
-struct Str_strlpos : public RLOp_Store_2<StrConstant_T, StrConstant_T> {
+struct Str_strlpos : public RLStoreOpcode<StrConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, std::string str, std::string substring) {
     size_t pos = str.rfind(substring);
     if (pos == std::string::npos)
@@ -606,7 +606,7 @@ struct Str_intout : public RLOpcode<IntConstant_T> {
 // Implement op<1:Str:00200, 1>, fun strused(str).
 //
 // Returns 0 if the string variable var is empty, otherwise 1.
-struct Str_strused : public RLOp_Store_1<StrReference_T> {
+struct Str_strused : public RLStoreOpcode<StrReference_T> {
   int operator()(RLMachine& machine, StringReferenceIterator it) {
     return std::string(*it) != "";
   }

@@ -39,7 +39,7 @@
 
 namespace {
 
-class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
+class Obj_GetInt : public RLStoreOpcode<IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
 
@@ -84,14 +84,14 @@ struct objGetAdjust : public RLOpcode<IntConstant_T, IntConstant_T,
   }
 };
 
-struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct objGetAdjustX : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.x_adjustment(repno);
   }
 };
 
-struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct objGetAdjustY : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.y_adjustment(repno);

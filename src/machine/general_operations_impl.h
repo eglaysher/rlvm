@@ -230,7 +230,7 @@ class Op_CallWithConstantConstant : public RLOpcode<> {
 };
 
 template <typename RETTYPE>
-class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
+class Op_ReturnFunctionIntValue : public RLStoreOpcode<> {
  public:
   typedef RETTYPE (*Getter)();
 
@@ -247,7 +247,7 @@ class Op_ReturnFunctionIntValue : public RLOp_Store_Void {
 // Reads the value of an internal variable in a generic way using an
 // arbitrary getter function and places it in the store register.
 template <typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValue : public RLOp_Store_Void {
+class Op_ReturnIntValue : public RLStoreOpcode<> {
  public:
   typedef RETTYPE (OBJTYPE::*Getter)() const;
 
@@ -262,7 +262,7 @@ class Op_ReturnIntValue : public RLOp_Store_Void {
 };
 
 template <typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValueWithInt : public RLOp_Store_1<IntConstant_T> {
+class Op_ReturnIntValueWithInt : public RLStoreOpcode<IntConstant_T> {
  public:
   typedef RETTYPE (OBJTYPE::*Getter)(const int) const;
 
@@ -277,7 +277,7 @@ class Op_ReturnIntValueWithInt : public RLOp_Store_1<IntConstant_T> {
 };
 
 template <typename OBJTYPE, typename RETTYPE>
-class Op_ReturnIntValueWithString : public RLOp_Store_1<StrConstant_T> {
+class Op_ReturnIntValueWithString : public RLStoreOpcode<StrConstant_T> {
  public:
   typedef RETTYPE (OBJTYPE::*Getter)(const std::string&) const;
 

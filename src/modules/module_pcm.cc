@@ -111,13 +111,13 @@ struct wavWait : public RLOpcode<IntConstant_T> {
   }
 };
 
-struct wavPlaying : public RLOp_Store_1<IntConstant_T> {
+struct wavPlaying : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().WavPlaying(channel);
   }
 };
 
-struct wavVolume : public RLOp_Store_1<IntConstant_T> {
+struct wavVolume : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int channel) {
     return machine.system().sound().GetChannelVolume(channel);
   }

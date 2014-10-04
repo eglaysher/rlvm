@@ -122,7 +122,7 @@ struct PauseCursor : public RLOpcode<IntConstant_T> {
   }
 };
 
-struct GetWakuAll : public RLOp_Store_Void {
+struct GetWakuAll : public RLStoreOpcode<> {
   int operator()(RLMachine& machine) {
     std::shared_ptr<TextWindow> window =
         machine.system().text().GetCurrentWindow();
@@ -130,7 +130,7 @@ struct GetWakuAll : public RLOp_Store_Void {
   }
 };
 
-struct rnd_0 : public RLOp_Store_1<IntConstant_T> {
+struct rnd_0 : public RLStoreOpcode<IntConstant_T> {
   unsigned int seedp_;
   rnd_0() : seedp_(time(NULL)) {}
 
@@ -139,7 +139,7 @@ struct rnd_0 : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct rnd_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct rnd_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   unsigned int seedp_;
   rnd_1() : seedp_(time(NULL)) {}
 
@@ -149,39 +149,39 @@ struct rnd_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct pcnt : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct pcnt : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int numenator, int denominator) {
     return int(((float)numenator / (float)denominator) * 100);
   }
 };
 
-struct Sys_abs : public RLOp_Store_1<IntConstant_T> {
+struct Sys_abs : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var) { return abs(var); }
 };
 
-struct power_0 : public RLOp_Store_1<IntConstant_T> {
+struct power_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var) { return var * var; }
 };
 
-struct power_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct power_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return (int)std::pow((float)var1, var2);
   }
 };
 
-struct sin_0 : public RLOp_Store_1<IntConstant_T> {
+struct sin_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var1) {
     return int(std::sin(var1 * (PI / 180)) * 32640);
   }
 };
 
-struct sin_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct sin_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int(std::sin(var1 * (PI / 180)) * 32640 / var2);
   }
 };
 
-struct Sys_modulus : public RLOp_Store_4<IntConstant_T,
+struct Sys_modulus : public RLStoreOpcode<IntConstant_T,
                                          IntConstant_T,
                                          IntConstant_T,
                                          IntConstant_T> {
@@ -190,7 +190,7 @@ struct Sys_modulus : public RLOp_Store_4<IntConstant_T,
   }
 };
 
-struct angle : public RLOp_Store_4<IntConstant_T,
+struct angle : public RLStoreOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T> {
@@ -199,20 +199,20 @@ struct angle : public RLOp_Store_4<IntConstant_T,
   }
 };
 
-struct Sys_min : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct Sys_min : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::min(var1, var2);
   }
 };
 
-struct Sys_max : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct Sys_max : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::max(var1, var2);
   }
 };
 
 struct constrain
-    : public RLOp_Store_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLStoreOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if (var2 < var1)
       return var1;
@@ -223,13 +223,13 @@ struct constrain
   }
 };
 
-struct cos_0 : public RLOp_Store_1<IntConstant_T> {
+struct cos_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var1) {
     return int(std::cos(var1 * (PI / 180)) * 32640);
   }
 };
 
-struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct cos_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int(std::cos(var1 * (PI / 180)) * 32640 / var2);
   }

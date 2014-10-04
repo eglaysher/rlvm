@@ -50,7 +50,7 @@ struct ContextMenu : public RLOpcode<> {
   }
 };
 
-struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
+struct SyscomEnabled : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int num) {
     return machine.system().IsSyscomEnabled(num);
   }
