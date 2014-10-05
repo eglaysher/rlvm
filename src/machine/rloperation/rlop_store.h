@@ -31,7 +31,7 @@ class RLStoreOpcode : public RLNormalOpcode<Args...> {
  public:
   virtual void Dispatch(
       RLMachine& machine,
-      const libreallive::ExpressionPiecesVector& parameters) {
+      const libreallive::ExpressionPiecesVector& parameters) final {
     // The following does not work in gcc 4.8.2, but it's supposed to!
     // Parameter unpacking inside an initializer-clause is supposed to always
     // be evaluated in the order it appears.

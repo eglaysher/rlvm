@@ -306,7 +306,7 @@ class RLNormalOpcode : public RLOperation {
  public:
   virtual void ParseParameters(
       const std::vector<std::string>& input,
-      libreallive::ExpressionPiecesVector& output) override {
+      libreallive::ExpressionPiecesVector& output) final {
     unsigned int position = 0;
     internal::ParseEachParameter<Args..., internal::_sentinel_type>(
         position, input, output);
@@ -324,7 +324,7 @@ class RLOpcode : public RLNormalOpcode<Args...> {
  public:
   virtual void Dispatch(
       RLMachine& machine,
-      const libreallive::ExpressionPiecesVector& parameters) {
+      const libreallive::ExpressionPiecesVector& parameters) final {
     // The following does not work in gcc 4.8.2, but it's supposed to!
     // Parameter unpacking inside an initializer-clause is supposed to always
     // be evaluated in the order it appears.
