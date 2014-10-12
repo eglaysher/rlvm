@@ -45,7 +45,7 @@ class RLModule;
 // implementations derive from. This heirarchy of classes works by
 // having one of your operation classes, which handles a specific
 // prototype of a specific opcode, derive from one of the subclases
-// of RLOperation, specifically RLOp_Void_* and RLOp_Store_*. The
+// of RLOperation, specifically RLOpcode<> and RLOpcodeStore<>. The
 // template parameters of these subclasses refer to the types of the
 // parameters, some of which can be composed to represent more complex
 // parameters.
@@ -58,7 +58,7 @@ class RLModule;
 // Let's say we want to implement an operation with the following
 // prototype: <tt>fun (store)doSomething(str, intC+)</tt>. The
 // function returns an integer value to the store register, so we want
-// to derive the implementation struct from RLOp_Store<>, which will
+// to derive the implementation struct from RLOpcodeStore<>, which will
 // automatically place the return value in the store register. Our
 // first parameter is a reference to a piece of string memory, so our
 // first template argument is StrReference_T. We then take a variable
@@ -68,10 +68,10 @@ class RLModule;
 // Thus, our sample operation would be implemented with this:
 //
 // @code
-// struct Operation : public RLOp_Store_2<StrReference_T, Argc_T< IntConstant_T
-// > > {
-//   int operator()(RLMachine& machine, StringReferenceIterator x, vector<int>
-// y) {
+// struct Operation
+//     : public RLOpcodeStore<StrReference_T, Argc_T< IntConstant_T> > {
+//   int operator()(RLMachine& machine, StringReferenceIterator x,
+//                  vector<int> y) {
 //     // Do whatever with the input parameters...
 //     return 5;
 //   }
