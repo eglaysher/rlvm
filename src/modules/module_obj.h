@@ -69,7 +69,7 @@ class ObjRangeAdapter : public RLOp_SpecialCase {
   virtual ~ObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -92,7 +92,7 @@ class ChildObjAdapter : public RLOp_SpecialCase {
   virtual ~ChildObjAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -109,7 +109,7 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
   virtual ~ChildObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -133,7 +133,7 @@ class Obj_CallFunction : public RLOp_Void_1<IntConstant_T> {
   explicit Obj_CallFunction(Function f);
   virtual ~Obj_CallFunction();
 
-  virtual void operator()(RLMachine& machine, int buf) override;
+  virtual void operator()(RLMachine& machine, int buf) final;
 
  private:
   Function function_;
@@ -155,7 +155,7 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   explicit Obj_SetOneIntOnObj(Setter s);
   virtual ~Obj_SetOneIntOnObj();
 
-  virtual void operator()(RLMachine& machine, int buf, int incoming) override;
+  virtual void operator()(RLMachine& machine, int buf, int incoming) final;
 
  private:
   // The setter function to call on Op_SetToIncoming::reference when
@@ -179,7 +179,7 @@ class Obj_SetTwoIntOnObj
   virtual void operator()(RLMachine& machine,
                           int buf,
                           int incoming_one,
-                          int incoming_two) override;
+                          int incoming_two) final;
 
  private:
   Setter setter_one_;
@@ -199,7 +199,7 @@ class Obj_SetRepnoIntOnObj
   virtual void operator()(RLMachine& machine,
                           int buf,
                           int idx,
-                          int val) override;
+                          int val) final;
 
  private:
   Setter setter;
