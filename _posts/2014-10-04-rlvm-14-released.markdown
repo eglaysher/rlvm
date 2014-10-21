@@ -20,13 +20,13 @@ Adds support for the [US edition of planetarian](http://store.steampowered.com/a
   <li class="ubuntuicon">
     <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.14/rlvm_0.14_i386.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.14.1_i386.deb']);">
-      Ubuntu (Saucy) package for x86 machines
+      Ubuntu (Trusty) package for x86 machines
     </a>
   </li>
   <li class="ubuntuicon">
     <a href="https://github.com/eglaysher/rlvm/releases/download/release-0.14/rlvm_0.14_amd64.deb"
      onClick="_gaq.push(['_trackEvent', 'Download', 'rlvm_0.14.1_amd64.deb']);">
-      Ubuntu (Saucy) package for amd64 machines
+      Ubuntu (Trusty) package for amd64 machines
     </a>
   </li>
   <li class="sourceicon">
