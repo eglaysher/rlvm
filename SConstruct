@@ -283,8 +283,6 @@ env.ParseConfig("freetype-config --cflags --libs")
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
 config.CheckLibWithHeader('jpeg', 'jconfig.h', "cpp")
-config.CheckLibWithHeader('mad', 'mad.h', "cpp")
-config.CheckLibWithHeader('smpeg', 'smpeg/smpeg.h', "cpp")
 
 env = config.Finish()
 
