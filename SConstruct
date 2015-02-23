@@ -275,11 +275,16 @@ if not config.CheckGuichan():
   print "(Using included copy of guichan)"
   subcomponents.append("guichan")
 
+# Get the configuration from sdl and freetype
+env.ParseConfig("sdl-config --cflags")
+env.ParseConfig("freetype-config --cflags --libs")
+
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
 config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
 config.CheckLibWithHeader('mad', 'mad.h', "cpp")
+config.CheckLibWithHeader('smpeg', 'smpeg/smpeg.h', "cpp")
 
 env = config.Finish()
 
@@ -288,10 +293,6 @@ env = config.Finish()
 ### called or else we get a really confusing error.
 if env['PLATFORM'] == 'darwin':
   env.Append(LIBS=["SDL", "intl", "iconv"])
-
-# Get the configuration from sdl and freetype
-env.ParseConfig("sdl-config --cflags")
-env.ParseConfig("freetype-config --cflags --libs")
 
 #########################################################################
 ## Building subcomponent functions
