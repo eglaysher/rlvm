@@ -207,7 +207,6 @@ std::shared_ptr<SDLMusic> SDLMusic::CreateMusic(
     std::pair<std::string, std::function<WAVFILE*(FILE*, int)>>> FileTypes;
   static FileTypes types = {{"wav", &BuildMusicImplementation<WAVFILE_Stream>},
                             {"nwa", &BuildMusicImplementation<NWAFILE>},
-                            {"mp3", &BuildMusicImplementation<MP3FILE>},
                             {"ogg", &BuildMusicImplementation<OggFILE>}};
 
   fs::path file_path = system.FindFile(track.file, SOUND_FILETYPES);

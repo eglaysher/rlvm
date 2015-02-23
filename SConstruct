@@ -279,11 +279,6 @@ if not config.CheckGuichan():
 env.ParseConfig("sdl-config --cflags")
 env.ParseConfig("freetype-config --cflags --libs")
 
-# Really optional libraries that jagarl's file loaders take advantage of if on
-# the system.
-config.CheckLibWithHeader('png', 'png.h', "cpp")
-config.CheckLibWithHeader('jpeg', 'jconfig.h', "cpp")
-
 env = config.Finish()
 
 ### HACK! Until I make my own version of CheckLibWithHeader, just assume that
