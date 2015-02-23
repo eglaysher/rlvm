@@ -90,9 +90,7 @@ if GetOption("fullstatic"):
 # Auto select the number of processors
 if os.path.exists('/proc/cpuinfo'):
   cpus = len([l for l in open('/proc/cpuinfo') if l.startswith('processor\t')])
-else:
-  cpus = 1
-env.SetOption('num_jobs', cpus + 1)
+  env.SetOption('num_jobs', cpus + 1)
 
 # Use timestamps change, followed by MD5 for speed
 env.Decider('MD5-timestamp')
