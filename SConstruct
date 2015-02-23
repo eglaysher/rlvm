@@ -282,7 +282,7 @@ env.ParseConfig("freetype-config --cflags --libs")
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
-config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
+config.CheckLibWithHeader('jpeg', 'jconfig.h', "cpp")
 config.CheckLibWithHeader('mad', 'mad.h', "cpp")
 config.CheckLibWithHeader('smpeg', 'smpeg/smpeg.h', "cpp")
 
