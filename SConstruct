@@ -88,7 +88,7 @@ if GetOption("fullstatic"):
   env["FULL_STATIC_BUILD"] = True
 
 # Auto select the number of processors
-if os.path.exists('/proc'):
+if os.path.exists('/proc/cpuinfo'):
   cpus = len([l for l in open('/proc/cpuinfo') if l.startswith('processor\t')])
 else:
   cpus = 1
