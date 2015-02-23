@@ -88,11 +88,9 @@ if GetOption("fullstatic"):
   env["FULL_STATIC_BUILD"] = True
 
 # Auto select the number of processors
-if os.path.exists('/proc'):
+if os.path.exists('/proc/cpuinfo'):
   cpus = len([l for l in open('/proc/cpuinfo') if l.startswith('processor\t')])
-else:
-  cpus = 1
-env.SetOption('num_jobs', cpus + 1)
+  env.SetOption('num_jobs', cpus + 1)
 
 # Use timestamps change, followed by MD5 for speed
 env.Decider('MD5-timestamp')
@@ -277,11 +275,14 @@ if not config.CheckGuichan():
   print "(Using included copy of guichan)"
   subcomponents.append("guichan")
 
+# Get the configuration from sdl and freetype
+env.ParseConfig("sdl-config --cflags")
+env.ParseConfig("freetype-config --cflags --libs")
+
 # Really optional libraries that jagarl's file loaders take advantage of if on
 # the system.
 config.CheckLibWithHeader('png', 'png.h', "cpp")
-config.CheckLibWithHeader('jpeg', 'jpeglib.h', "cpp")
-config.CheckLibWithHeader('mad', 'mad.h', "cpp")
+config.CheckLibWithHeader('jpeg', 'jconfig.h', "cpp")
 
 env = config.Finish()
 
@@ -290,10 +291,6 @@ env = config.Finish()
 ### called or else we get a really confusing error.
 if env['PLATFORM'] == 'darwin':
   env.Append(LIBS=["SDL", "intl", "iconv"])
-
-# Get the configuration from sdl and freetype
-env.ParseConfig("sdl-config --cflags")
-env.ParseConfig("freetype-config --cflags --libs")
 
 #########################################################################
 ## Building subcomponent functions
