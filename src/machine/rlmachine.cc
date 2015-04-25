@@ -168,7 +168,7 @@ void RLMachine::AttachModule(RLModule* module) {
     throw rlvm::Exception(ss.str());
   }
 
-  modules_.insert(make_pair(packed_module, std::unique_ptr<RLModule>(module)));
+  modules_.emplace(packed_module, std::unique_ptr<RLModule>(module));
 }
 
 int RLMachine::GetIntValue(const libreallive::IntMemRef& ref) {
@@ -613,8 +613,7 @@ bool RLMachine::DllLoaded(const std::string& name) {
 void RLMachine::LoadDLL(int slot, const std::string& name) {
   RealLiveDLL* dll = RealLiveDLL::BuildDLLNamed(*this, name);
   if (dll) {
-    loaded_dlls_.insert(
-        std::make_pair(slot, std::unique_ptr<RealLiveDLL>(dll)));
+    loaded_dlls_.emplace(slot, std::unique_ptr<RealLiveDLL>(dll));
   } else {
     std::ostringstream oss;
     oss << "Can't load emulated dll named '" << name << "'";

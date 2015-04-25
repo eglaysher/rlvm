@@ -159,7 +159,7 @@ Script::Script(const Header& hdr,
     // Keep track of the entrypoints
     int entrypoint = (*it)->GetEntrypoint();
     if (entrypoint != BytecodeElement::kInvalidEntrypoint)
-      entrypoint_associations_.insert(make_pair(entrypoint, it));
+      entrypoint_associations_.emplace(entrypoint, it);
 
     // Advance
     size_t l = (*it)->GetBytecodeLength();

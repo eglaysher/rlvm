@@ -50,7 +50,7 @@ void TestMachine::AttachModule(RLModule* module) {
     RLModule::UnpackOpcodeNumber(it->first, opcode, overload);
 
     RLOperation* op = it->second.get();
-    registry_.insert(make_pair(make_pair(it->second->name(), overload), op));
+    registry_.emplace(make_pair(it->second->name(), overload), op);
   }
 
   RLMachine::AttachModule(module);

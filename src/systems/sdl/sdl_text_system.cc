@@ -64,11 +64,9 @@ SDLTextSystem::~SDLTextSystem() {
 std::shared_ptr<TextWindow> SDLTextSystem::GetTextWindow(int text_window) {
   WindowMap::iterator it = text_window_.find(text_window);
   if (it == text_window_.end()) {
-    it =
-        text_window_.insert(std::make_pair(
-                                text_window,
-                                std::shared_ptr<TextWindow>(new SDLTextWindow(
-                                    sdl_system_, text_window)))).first;
+    it = text_window_.emplace(text_window,
+                              std::shared_ptr<TextWindow>(new SDLTextWindow(
+                                  sdl_system_, text_window))).first;
   }
 
   return it->second;

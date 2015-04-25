@@ -164,7 +164,7 @@ void Gameexe::parseLine(const std::string& line) {
         }
       }
     }
-    data_.insert(make_pair(key, vec));
+    data_.emplace(key, vec);
   }
 }
 
@@ -209,7 +209,7 @@ void Gameexe::SetStringAt(const std::string& key, const std::string& value) {
   cdata_.push_back(value);
   toStore.push_back(cdata_.size() - 1);
   data_.erase(key);
-  data_.insert(make_pair(key, toStore));
+  data_.emplace(key, toStore);
 }
 
 // -----------------------------------------------------------------------
@@ -218,7 +218,7 @@ void Gameexe::SetIntAt(const std::string& key, const int value) {
   Gameexe_vec_type toStore;
   toStore.push_back(value);
   data_.erase(key);
-  data_.insert(make_pair(key, toStore));
+  data_.emplace(key, toStore);
 }
 
 // -----------------------------------------------------------------------

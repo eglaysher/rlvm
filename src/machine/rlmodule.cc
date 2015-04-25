@@ -81,8 +81,7 @@ void RLModule::AddOpcode(int opcode,
     throw rlvm::Exception(oss.str());
   }
 #endif
-  stored_operations_.insert(
-      std::make_pair(packed_opcode, std::unique_ptr<RLOperation>(op)));
+  stored_operations_.emplace(packed_opcode, std::unique_ptr<RLOperation>(op));
 }
 
 void RLModule::AddUnsupportedOpcode(int opcode,

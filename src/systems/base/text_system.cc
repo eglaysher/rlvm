@@ -308,7 +308,7 @@ void TextSystem::NewPageOnWindow(int window) {
   }
 
   previous_page_it_ = previous_page_sets_.end();
-  current_pageset_.insert(std::make_pair(window, TextPage(system(), window)));
+  current_pageset_.emplace(window, TextPage(system(), window));
   ExpireOldPages();
 }
 
@@ -316,9 +316,8 @@ TextPage& TextSystem::GetCurrentPage() {
   // Check to see if the active window has a current page.
   PageSet::iterator it = current_pageset_.find(active_window_);
   if (it == current_pageset_.end())
-    it = current_pageset_.insert(
-        std::make_pair(active_window_,
-                       TextPage(system(), active_window_))).first;
+    it = current_pageset_.emplace(active_window_,
+                                  TextPage(system(), active_window_)).first;
 
   return it->second;
 }
