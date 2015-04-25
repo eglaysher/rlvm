@@ -654,7 +654,7 @@ void TextWindow::KoeMarker(int id) {
 
   Point p = Point(text_insertion_point_x_, text_insertion_point_y_) +
             koe_replay_info_->repos;
-  koe_replay_button_.push_back(std::make_pair(p, id));
+  koe_replay_button_.emplace_back(p, id);
 }
 
 void TextWindow::HardBrake() {

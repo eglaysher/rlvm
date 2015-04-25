@@ -307,7 +307,7 @@ void KOEPACVoiceArchive::ReadTable(boost::filesystem::path file) {
     int koe_num = read_little_endian_short(buf + i * 8);
     int length = read_little_endian_short(buf + i * 8 + 2);
     int offset = read_little_endian_int(buf + i * 8 + 4);
-    entries_.push_back(Entry(koe_num, length, offset));
+    entries_.emplace_back(koe_num, length, offset);
   }
   sort(entries_.begin(), entries_.end());
 

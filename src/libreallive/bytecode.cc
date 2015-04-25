@@ -118,7 +118,7 @@ CommandElement* BuildFunctionElement(const char* stream) {
     const char* end = ptr + 1;
     while (*end != ')') {
       const size_t len = NextData(end);
-      params.push_back(string(end, len));
+      params.emplace_back(end, len);
       end += len;
     }
   }
@@ -327,8 +327,8 @@ TextoutElement::~TextoutElement() {}
 const string TextoutElement::GetText() const {
   string rv;
   bool quoted = false;
-  string::const_iterator it = repr.begin();
-  while (it != repr.end()) {
+  string::const_iterator it = repr.cbegin();
+  while (it != repr.cend()) {
     if (*it == '"') {
       ++it;
       quoted = !quoted;
@@ -531,7 +531,7 @@ SelectElement::SelectElement(const char* src)
       throw Error("SelectElement(): expected `\\n'");
     int lnum = read_i16(src + 1);
     src += 3;
-    params.push_back(Param(cond_parsed, cond, clen, text, tlen, lnum));
+    params.emplace_back(cond_parsed, cond, clen, text, tlen, lnum);
   }
 
   // HACK?: In Kotomi's path in CLANNAD, there's a select with empty options
@@ -814,7 +814,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
       src += 2;
     } else {
       int cexpr = NextExpression(src + 1);
-      cases.push_back(string(src, cexpr + 2));
+      cases.emplace_back(src, cexpr + 2);
       src += cexpr + 1;
       if (*src++ != ')')
         throw Error("GotoCaseElement(): expected `)'");
@@ -899,7 +899,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     while (*src != ')') {
       int expr = NextData(src);
       repr_size += expr;
-      params.push_back(string(src, expr));
+      params.emplace_back(src, expr);
       src += expr;
     }
     src++;

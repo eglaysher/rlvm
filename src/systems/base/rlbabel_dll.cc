@@ -541,12 +541,12 @@ int RlBabelDLL::NewGloss() {
 
 int RlBabelDLL::AddGloss(const std::string& cp932_gloss_text) {
   std::shared_ptr<TextWindow> window = GetWindow(-1);
-  glosses_.push_back(Gloss(window,
-                           cp932_gloss_text,
-                           gloss_start_x_,
-                           gloss_start_y_,
-                           window->insertion_point_x(),
-                           window->insertion_point_y()));
+  glosses_.emplace_back(window,
+                        cp932_gloss_text,
+                        gloss_start_x_,
+                        gloss_start_y_,
+                        window->insertion_point_x(),
+                        window->insertion_point_y());
   return 1;
 }
 

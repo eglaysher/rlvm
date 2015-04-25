@@ -542,15 +542,14 @@ void SDLSurface::uploadTextureIfNeeded() const {
         for (std::vector<int>::const_iterator jt = y_pieces.begin();
              jt != y_pieces.end();
              ++jt) {
-          TextureRecord record(surface_,
-                               x_offset,
-                               y_offset,
-                               *it,
-                               *jt,
-                               bytes_per_pixel,
-                               byte_order,
-                               byte_type);
-          textures_.push_back(record);
+          textures_.emplace_back(surface_,
+                                 x_offset,
+                                 y_offset,
+                                 *it,
+                                 *jt,
+                                 bytes_per_pixel,
+                                 byte_order,
+                                 byte_type);
 
           y_offset += *jt;
         }

@@ -107,7 +107,7 @@ void RLModule::SetProperty(int property, int value) {
     return;
   }
 
-  property_list_->push_back(std::make_pair(property, value));
+  property_list_->emplace_back(property, value);
 }
 
 bool RLModule::GetProperty(int property, int& value) const {

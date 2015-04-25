@@ -57,7 +57,7 @@ RLOperation* RLOperation::SetProperty(int property, int value) {
   if (it != property_list_->end()) {
     it->second = value;
   } else {
-    property_list_->push_back(std::make_pair(property, value));
+    property_list_->emplace_back(property, value);
   }
 
   return this;

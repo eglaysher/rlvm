@@ -46,8 +46,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
   GraphicsSystem& graphics = machine.system().graphics();
   for (GraphicsObject& obj : graphics.GetForegroundObjects()) {
     if (obj.IsButton() && obj.GetButtonGroup() == group_) {
-      buttons_.push_back(
-          std::make_pair(&obj, static_cast<GraphicsObject*>(NULL)));
+      buttons_.emplace_back(&obj, static_cast<GraphicsObject*>(NULL));
     } else if (obj.has_object_data()) {
       ParentGraphicsObjectData* parent =
           dynamic_cast<ParentGraphicsObjectData*>(&obj.GetObjectData());
@@ -55,7 +54,7 @@ ButtonObjectSelectLongOperation::ButtonObjectSelectLongOperation(
       if (parent) {
         for (GraphicsObject& child : parent->objects()) {
           if (child.IsButton() && child.GetButtonGroup() == group_) {
-            buttons_.push_back(std::make_pair(&child, &obj));
+            buttons_.emplace_back(&child, &obj);
           }
         }
       }

@@ -115,9 +115,9 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   fill(position.get(), position.get() + objects_in_a_layer, 0);
 
   if (gameexe.Exists("OBJECT.999"))
-    data.push_back(ObjectSettings(gameexe("OBJECT.999")));
+    data.emplace_back(gameexe("OBJECT.999"));
   else
-    data.push_back(ObjectSettings());
+    data.emplace_back();
 
   // Read the #OBJECT.xxx entries from the Gameexe
   GameexeFilteringIterator it = gameexe.filtering_begin("OBJECT.");
@@ -139,7 +139,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     for (int obj_num : object_nums) {
       if (obj_num != 999 && obj_num < objects_in_a_layer) {
         position[obj_num] = data.size();
-        data.push_back(ObjectSettings(*it));
+        data.emplace_back(*it);
       }
     }
   }
@@ -830,8 +830,8 @@ void GraphicsSystem::RenderObjects(std::ostream* tree) {
     else if (settings.space_key && is_interface_hidden())
       continue;
 
-    to_render.push_back(std::make_tuple(
-        it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it));
+    to_render.emplace_back(
+        it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it);
   }
 
   // Sort by all the ordering values.
