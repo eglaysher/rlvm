@@ -196,11 +196,7 @@ struct sums
       std::vector<std::tuple<IntReferenceIterator,
       IntReferenceIterator>> ranges) {
     int total = 0;
-    for (std::vector<std::tuple<IntReferenceIterator,
-                                IntReferenceIterator>>::iterator it =
-             ranges.begin();
-         it != ranges.end();
-         ++it) {
+    for (auto it = ranges.cbegin(); it != ranges.cend(); ++it) {
       IntReferenceIterator last = std::get<1>(*it);
       ++last;
       total += accumulate(std::get<0>(*it), last, 0);

@@ -111,7 +111,7 @@ Scenario* Archive::GetScenario(int index) {
 int Archive::GetProbableEncodingType() const {
   // Directly create Header objects instead of Scenarios. We don't want to
   // parse the entire SEEN file here.
-  for (const_iterator it = scenarios_.begin(); it != scenarios_.end(); ++it) {
+  for (auto it = scenarios_.cbegin(); it != scenarios_.cend(); ++it) {
     Header header(it->second.data, it->second.length);
     if (header.rldev_metadata_.text_encoding() != 0)
       return header.rldev_metadata_.text_encoding();

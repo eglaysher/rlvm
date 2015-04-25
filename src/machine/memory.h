@@ -132,9 +132,7 @@ struct LocalMemory {
                                  const std::map<int, T>& original) const {
     T merged[SIZE_OF_MEM_BANK];
     std::copy(a, a + SIZE_OF_MEM_BANK, merged);
-    for (typename std::map<int, T>::const_iterator it = original.begin();
-         it != original.end();
-         ++it) {
+    for (auto it = original.cbegin(); it != original.cend(); ++it) {
       merged[it->first] = it->second;
     }
     ar& merged;
