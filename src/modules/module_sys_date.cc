@@ -36,7 +36,7 @@
 
 namespace {
 
-struct GetDate : public RLOp_Void_4<IntReference_T,
+struct GetDate : public RLOpcode<IntReference_T,
                                     IntReference_T,
                                     IntReference_T,
                                     IntReference_T> {
@@ -52,7 +52,7 @@ struct GetDate : public RLOp_Void_4<IntReference_T,
   }
 };
 
-struct GetTime : public RLOp_Void_4<IntReference_T,
+struct GetTime : public RLOpcode<IntReference_T,
                                     IntReference_T,
                                     IntReference_T,
                                     IntReference_T> {
@@ -68,7 +68,7 @@ struct GetTime : public RLOp_Void_4<IntReference_T,
   }
 };
 
-struct GetDateTime : public RLOp_Void_8<IntReference_T,
+struct GetDateTime : public RLOpcode<IntReference_T,
                                         IntReference_T,
                                         IntReference_T,
                                         IntReference_T,

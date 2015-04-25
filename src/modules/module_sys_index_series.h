@@ -38,8 +38,8 @@ class RLModule;
 
 // Defines index_series's input pattern.
 typedef IntConstant_T ValOnly;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> StartEndval;
-typedef Complex4_T<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> StartEndval;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T>
     StartEndvalMode;
 typedef Special_T<DefaultSpecialMapper, ValOnly, StartEndval, StartEndvalMode>
     IndexSeriesEntry;
@@ -47,10 +47,10 @@ typedef Argc_T<IndexSeriesEntry> IndexList;
 
 // Implementation of the math performing index_series command. Exposed through
 // the header for testing.
-struct Sys_index_series : public RLOp_Store_4<IntConstant_T,
-                                              IntConstant_T,
-                                              IntConstant_T,
-                                              IndexList> {
+struct Sys_index_series : public RLStoreOpcode<IntConstant_T,
+                                               IntConstant_T,
+                                               IntConstant_T,
+                                               IndexList> {
   // Main entrypoint
   int operator()(RLMachine& machine,
                  int index,

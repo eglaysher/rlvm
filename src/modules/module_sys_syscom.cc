@@ -40,7 +40,7 @@
 
 namespace {
 
-struct ContextMenu : public RLOp_Void_Void {
+struct ContextMenu : public RLOpcode<> {
   void operator()(RLMachine& machine) {
     // Based off of ALMA, it appears that we also are responsible for flushing
     // clicks.
@@ -50,7 +50,7 @@ struct ContextMenu : public RLOp_Void_Void {
   }
 };
 
-struct SyscomEnabled : public RLOp_Store_1<IntConstant_T> {
+struct SyscomEnabled : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int num) {
     return machine.system().IsSyscomEnabled(num);
   }

@@ -34,7 +34,7 @@
 
 // -----------------------------------------------------------------------
 
-struct Sys_wait : public RLOp_Void_1<IntConstant_T> {
+struct Sys_wait : public RLOpcode<IntConstant_T> {
   const bool cancelable_;
 
   explicit Sys_wait(bool cancelable) : cancelable_(cancelable) {}
@@ -52,7 +52,7 @@ struct Sys_wait : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-struct Sys_GetClick : public RLOp_Void_2<IntReference_T, IntReference_T> {
+struct Sys_GetClick : public RLOpcode<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator x,
                   IntReferenceIterator y) {
@@ -66,7 +66,7 @@ struct Sys_GetClick : public RLOp_Void_2<IntReference_T, IntReference_T> {
 
 // fun WaitClick (store) <1:Sys:00132, 0> ('time', int 'X', int 'Y')
 struct Sys_WaitClick
-    : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T> {
+    : public RLOpcode<IntConstant_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   int time,
                   IntReferenceIterator x,

@@ -41,15 +41,15 @@ struct TimeTableMapper {
 };
 
 // Defines timetable2's input pattern.
-typedef Complex2_T<IntConstant_T, IntConstant_T> TT_Move2;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Move3;
+typedef Complex_T<IntConstant_T, IntConstant_T> TT_Move2;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Move3;
 typedef IntConstant_T TT_Set;
 typedef IntConstant_T TT_Wait;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Turn;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Turnup;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Loop;
-typedef Complex3_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Jump;
-typedef Complex2_T<IntConstant_T, IntConstant_T> TT_WaitSet;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Turn;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Turnup;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Loop;
+typedef Complex_T<IntConstant_T, IntConstant_T, IntConstant_T> TT_Jump;
+typedef Complex_T<IntConstant_T, IntConstant_T> TT_WaitSet;
 
 typedef Special_T<TimeTableMapper,
                   TT_Move2,
@@ -64,11 +64,11 @@ typedef Special_T<TimeTableMapper,
 typedef Argc_T<TimeTable2Entry> TimeTable2List;
 
 // Implementation of the math performing timetable2 command.
-struct Sys_timetable2 : public RLOp_Store_5<IntConstant_T,
-                                            IntConstant_T,
-                                            IntConstant_T,
-                                            IntConstant_T,
-                                            TimeTable2List> {
+struct Sys_timetable2 : public RLStoreOpcode<IntConstant_T,
+                                             IntConstant_T,
+                                             IntConstant_T,
+                                             IntConstant_T,
+                                             TimeTable2List> {
   // Main entrypoint
   virtual int operator()(RLMachine& machine,
                          int now_time,

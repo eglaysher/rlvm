@@ -99,7 +99,7 @@ void objOfDigitsLoader(RLMachine& machine,
   obj.SetObjectData(new DigitsGraphicsObject(machine.system(), value));
 }
 
-struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct objGeneric_0 : public RLOpcode<IntConstant_T, StrConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_0(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -110,7 +110,7 @@ struct objGeneric_0 : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
 };
 
 struct objGeneric_1
-    : public RLOp_Void_3<IntConstant_T, StrConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, StrConstant_T, IntConstant_T> {
   DataFunction data_fun_;
   explicit objGeneric_1(const DataFunction& fun) : data_fun_(fun) {}
 
@@ -124,7 +124,7 @@ struct objGeneric_1
   }
 };
 
-struct objGeneric_2 : public RLOp_Void_5<IntConstant_T,
+struct objGeneric_2 : public RLOpcode<IntConstant_T,
                                          StrConstant_T,
                                          IntConstant_T,
                                          IntConstant_T,
@@ -146,7 +146,7 @@ struct objGeneric_2 : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct objGeneric_3 : public RLOp_Void_6<IntConstant_T,
+struct objGeneric_3 : public RLOpcode<IntConstant_T,
                                          StrConstant_T,
                                          IntConstant_T,
                                          IntConstant_T,
@@ -171,7 +171,7 @@ struct objGeneric_3 : public RLOp_Void_6<IntConstant_T,
   }
 };
 
-struct objGeneric_4 : public RLOp_Void_8<IntConstant_T,
+struct objGeneric_4 : public RLOpcode<IntConstant_T,
                                          StrConstant_T,
                                          IntConstant_T,
                                          IntConstant_T,
@@ -204,7 +204,7 @@ struct objGeneric_4 : public RLOp_Void_8<IntConstant_T,
 };
 
 struct objOfFileGan_0
-    : public RLOp_Void_3<IntConstant_T, StrConstant_T, StrConstant_T> {
+    : public RLOpcode<IntConstant_T, StrConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine,
                   int buf,
                   string imgFilename,
@@ -215,7 +215,7 @@ struct objOfFileGan_0
   }
 };
 
-struct objOfFileGan_1 : public RLOp_Void_4<IntConstant_T,
+struct objOfFileGan_1 : public RLOpcode<IntConstant_T,
                                            StrConstant_T,
                                            StrConstant_T,
                                            IntConstant_T> {
@@ -230,7 +230,7 @@ struct objOfFileGan_1 : public RLOp_Void_4<IntConstant_T,
   }
 };
 
-struct objOfFileGan_2 : public RLOp_Void_6<IntConstant_T,
+struct objOfFileGan_2 : public RLOpcode<IntConstant_T,
                                            StrConstant_T,
                                            StrConstant_T,
                                            IntConstant_T,
@@ -251,7 +251,7 @@ struct objOfFileGan_2 : public RLOp_Void_6<IntConstant_T,
   }
 };
 
-struct objOfFileGan_3 : public RLOp_Void_7<IntConstant_T,
+struct objOfFileGan_3 : public RLOpcode<IntConstant_T,
                                            StrConstant_T,
                                            StrConstant_T,
                                            IntConstant_T,
@@ -283,21 +283,21 @@ void SetObjectDataToRect(RLMachine& machine,
   obj.SetObjectData(new ColourFilterObjectData(machine.system().graphics(), r));
 }
 
-struct objOfArea_0 : public RLOp_Void_1<IntConstant_T> {
+struct objOfArea_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     Rect rect(0, 0, GetScreenSize(machine.system().gameexe()));
     SetObjectDataToRect(machine, this, buf, rect);
   }
 };
 
-struct objOfArea_1 : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP>> {
+struct objOfArea_1 : public RLOpcode<IntConstant_T, Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine, int buf, Rect rect) {
     SetObjectDataToRect(machine, this, buf, rect);
   }
 };
 
 struct objOfArea_2
-    : public RLOp_Void_3<IntConstant_T, Rect_T<rect_impl::GRP>, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, Rect_T<rect_impl::GRP>, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, Rect rect, int visible) {
     SetObjectDataToRect(machine, this, buf, rect);
 
@@ -306,7 +306,7 @@ struct objOfArea_2
   }
 };
 
-struct objOfRect_1 : public RLOp_Void_5<IntConstant_T,
+struct objOfRect_1 : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         DefaultIntValue_T<INT_MIN>,
@@ -328,7 +328,7 @@ struct objOfRect_1 : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
+struct objOfRect_2 : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
@@ -360,7 +360,7 @@ struct objOfRect_2 : public RLOp_Void_6<IntConstant_T,
 // reallive.kfn and the rldev docs disagree about whether there's an
 // objOfRect_4. Blank until I see it in the wild.
 
-struct objOfChild_0 : public RLOp_Void_4<IntConstant_T,
+struct objOfChild_0 : public RLOpcode<IntConstant_T,
                                          IntConstant_T,
                                          StrConstant_T,
                                          StrConstant_T> {
@@ -375,7 +375,7 @@ struct objOfChild_0 : public RLOp_Void_4<IntConstant_T,
   }
 };
 
-struct objOfChild_1 : public RLOp_Void_5<IntConstant_T,
+struct objOfChild_1 : public RLOpcode<IntConstant_T,
                                          IntConstant_T,
                                          StrConstant_T,
                                          StrConstant_T,
@@ -392,7 +392,7 @@ struct objOfChild_1 : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct objOfChild_2 : public RLOp_Void_7<IntConstant_T,
+struct objOfChild_2 : public RLOpcode<IntConstant_T,
                                          IntConstant_T,
                                          StrConstant_T,
                                          StrConstant_T,

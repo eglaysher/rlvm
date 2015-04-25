@@ -67,20 +67,20 @@ const float PI = 3.14159265;
 
 namespace {
 
-struct title : public RLOp_Void_1<StrConstant_T> {
+struct title : public RLOpcode<StrConstant_T> {
   void operator()(RLMachine& machine, std::string subtitle) {
     machine.system().graphics().SetWindowSubtitle(subtitle,
                                                   machine.GetTextEncoding());
   }
 };
 
-struct GetTitle : public RLOp_Void_1<StrReference_T> {
+struct GetTitle : public RLOpcode<StrReference_T> {
   void operator()(RLMachine& machine, StringReferenceIterator dest) {
     *dest = machine.system().graphics().window_subtitle();
   }
 };
 
-struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
+struct GetCursorPos_gc1 : public RLOpcode<IntReference_T,
                                              IntReference_T,
                                              IntReference_T,
                                              IntReference_T> {
@@ -99,7 +99,7 @@ struct GetCursorPos_gc1 : public RLOp_Void_4<IntReference_T,
   }
 };
 
-struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
+struct GetCursorPos_gc2 : public RLOpcode<IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   IntReferenceIterator xit,
                   IntReferenceIterator yit) {
@@ -109,20 +109,20 @@ struct GetCursorPos_gc2 : public RLOp_Void_2<IntReference_T, IntReference_T> {
   }
 };
 
-struct CallStackPop : RLOp_Void_1<DefaultIntValue_T<1>> {
+struct CallStackPop : RLOpcode<DefaultIntValue_T<1>> {
   void operator()(RLMachine& machine, int frames_to_pop) {
     for (int i = 0; i < frames_to_pop; ++i)
       machine.PopStackFrame();
   }
 };
 
-struct PauseCursor : public RLOp_Void_1<IntConstant_T> {
+struct PauseCursor : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int newCursor) {
     machine.system().text().SetKeyCursor(newCursor);
   }
 };
 
-struct GetWakuAll : public RLOp_Store_Void {
+struct GetWakuAll : public RLStoreOpcode<> {
   int operator()(RLMachine& machine) {
     std::shared_ptr<TextWindow> window =
         machine.system().text().GetCurrentWindow();
@@ -130,7 +130,7 @@ struct GetWakuAll : public RLOp_Store_Void {
   }
 };
 
-struct rnd_0 : public RLOp_Store_1<IntConstant_T> {
+struct rnd_0 : public RLStoreOpcode<IntConstant_T> {
   unsigned int seedp_;
   rnd_0() : seedp_(time(NULL)) {}
 
@@ -139,7 +139,7 @@ struct rnd_0 : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct rnd_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct rnd_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   unsigned int seedp_;
   rnd_1() : seedp_(time(NULL)) {}
 
@@ -149,39 +149,39 @@ struct rnd_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct pcnt : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct pcnt : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int numenator, int denominator) {
     return int(((float)numenator / (float)denominator) * 100);
   }
 };
 
-struct Sys_abs : public RLOp_Store_1<IntConstant_T> {
+struct Sys_abs : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var) { return abs(var); }
 };
 
-struct power_0 : public RLOp_Store_1<IntConstant_T> {
+struct power_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var) { return var * var; }
 };
 
-struct power_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct power_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return (int)std::pow((float)var1, var2);
   }
 };
 
-struct sin_0 : public RLOp_Store_1<IntConstant_T> {
+struct sin_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var1) {
     return int(std::sin(var1 * (PI / 180)) * 32640);
   }
 };
 
-struct sin_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct sin_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int(std::sin(var1 * (PI / 180)) * 32640 / var2);
   }
 };
 
-struct Sys_modulus : public RLOp_Store_4<IntConstant_T,
+struct Sys_modulus : public RLStoreOpcode<IntConstant_T,
                                          IntConstant_T,
                                          IntConstant_T,
                                          IntConstant_T> {
@@ -190,7 +190,7 @@ struct Sys_modulus : public RLOp_Store_4<IntConstant_T,
   }
 };
 
-struct angle : public RLOp_Store_4<IntConstant_T,
+struct angle : public RLStoreOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T> {
@@ -199,20 +199,20 @@ struct angle : public RLOp_Store_4<IntConstant_T,
   }
 };
 
-struct Sys_min : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct Sys_min : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::min(var1, var2);
   }
 };
 
-struct Sys_max : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct Sys_max : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return std::max(var1, var2);
   }
 };
 
 struct constrain
-    : public RLOp_Store_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLStoreOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2, int var3) {
     if (var2 < var1)
       return var1;
@@ -223,13 +223,13 @@ struct constrain
   }
 };
 
-struct cos_0 : public RLOp_Store_1<IntConstant_T> {
+struct cos_0 : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int var1) {
     return int(std::cos(var1 * (PI / 180)) * 32640);
   }
 };
 
-struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct cos_1 : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int var1, int var2) {
     return int(std::cos(var1 * (PI / 180)) * 32640 / var2);
   }
@@ -242,7 +242,7 @@ struct cos_1 : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
 //
 // This method also resets a LOT of the game state, though this isn't mentioned
 // in the rldev manual.
-struct ReturnMenu : public RLOp_Void_Void {
+struct ReturnMenu : public RLOpcode<> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
@@ -252,7 +252,7 @@ struct ReturnMenu : public RLOp_Void_Void {
   }
 };
 
-struct ReturnPrevSelect : public RLOp_Void_Void {
+struct ReturnPrevSelect : public RLOpcode<> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine) {
@@ -260,7 +260,7 @@ struct ReturnPrevSelect : public RLOp_Void_Void {
   }
 };
 
-struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
+struct SetWindowAttr : public RLOpcode<IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
@@ -277,7 +277,7 @@ struct SetWindowAttr : public RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
+struct GetWindowAttr : public RLOpcode<IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
@@ -298,7 +298,7 @@ struct GetWindowAttr : public RLOp_Void_5<IntReference_T,
   }
 };
 
-struct DefWindowAttr : public RLOp_Void_5<IntReference_T,
+struct DefWindowAttr : public RLOpcode<IntReference_T,
                                           IntReference_T,
                                           IntReference_T,
                                           IntReference_T,

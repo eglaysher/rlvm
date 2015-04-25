@@ -51,7 +51,7 @@ class RLOperation;
 // of RLOperation represented with it's opcode number. There are a set
 // of GeneralOperations that take parameters and are used as function
 // binders to call various functions, but most opcodes are defined by
-// having a concrete subclass of RLOp_Store<> or RLOp_Void<>.
+// having a concrete subclass of RLOpcode<> or RLOpcodeStore<>.
 //
 // Subclasses of RLModule are used to contain subclasses of
 // RLOperation; Each module should have a class derived from RLModule,

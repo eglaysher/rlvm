@@ -45,7 +45,7 @@
 
 namespace {
 
-struct objWaitAll : public RLOp_Void_Void {
+struct objWaitAll : public RLOpcode<> {
   static bool WaitUntilDone(RLMachine& machine) {
     // Clannad puts us in DrawManual() right before calling us so we force
     // refreshes.
@@ -119,7 +119,7 @@ struct WaitForGanToFinish : public LongOperation {
   int buf_;
 };
 
-struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct ganPlay : public RLOpcode<IntConstant_T, IntConstant_T> {
   bool block_;
   GraphicsObjectData::AfterAnimation after_effect_;
 
@@ -152,7 +152,7 @@ struct ganPlay : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct ganWait : public RLOp_Void_1<IntConstant_T> {
+struct ganWait : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     int fgbg;
     if (!GetProperty(P_FGBG, fgbg))
@@ -201,7 +201,7 @@ struct ganWait : public RLOp_Void_1<IntConstant_T> {
 //
 // After implementing this, we no longer get stuck in an infinite loop during
 // Ushio's birth so I'm assuming this is correct.
-struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
+struct isGanDonePlaying : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int gan_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, gan_num);
 
@@ -220,7 +220,7 @@ struct isGanDonePlaying : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct objStop_0 : public RLOp_Void_1<IntConstant_T> {
+struct objStop_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int obj_num) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, obj_num);
     if (obj.has_object_data())

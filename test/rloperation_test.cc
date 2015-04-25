@@ -69,7 +69,7 @@ class RLOperationTest : public FullSystemTest {};
 // -----------------------------------------------------------------------
 
 // Tests that we can parse an IntConstant_T.
-struct IntcIntcCapturer : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct IntcIntcCapturer : public RLOpcode<IntConstant_T, IntConstant_T> {
   int& one_;
   int& two_;
 
@@ -97,7 +97,7 @@ TEST_F(RLOperationTest, TestIntConstant_T) {
 
 // Tests that we can parse an IntReference_T.
 struct IntRefIntRefCapturer
-    : public RLOp_Void_2<IntReference_T, IntReference_T> {
+    : public RLOpcode<IntReference_T, IntReference_T> {
   int& one_;
   int& two_;
 
@@ -130,7 +130,7 @@ TEST_F(RLOperationTest, TestIntReference_T) {
 // -----------------------------------------------------------------------
 
 struct StringcStringcCapturer
-    : public RLOp_Void_2<StrConstant_T, StrConstant_T> {
+    : public RLOpcode<StrConstant_T, StrConstant_T> {
   std::string& one_;
   std::string& two_;
 
@@ -161,9 +161,42 @@ TEST_F(RLOperationTest, TestStringConstant_T) {
 
 // -----------------------------------------------------------------------
 
+struct IntcStringcCapturer
+    : public RLOpcode<IntConstant_T, StrConstant_T> {
+  int& one_;
+  std::string& two_;
+
+  IntcStringcCapturer(int& one, std::string& two)
+      : one_(one), two_(two) {}
+
+  virtual void operator()(RLMachine& machine,
+                          int in_one,
+                          std::string in_two) {
+    one_ = in_one;
+    two_ = in_two;
+  }
+};
+
+TEST_F(RLOperationTest, TestIntStringConstant_T) {
+  int one = -1;
+  std::string two = "empty";
+  IntcStringcCapturer capturer(one, two);
+
+  vector<string> unparsed = {PrintableToParsableString("$ FF 01 00 00 00"),
+                             "\"string two\""};
+  ExpressionPiecesVector expression_pieces;
+  capturer.ParseParameters(unparsed, expression_pieces);
+  capturer.Dispatch(rlmachine, expression_pieces);
+
+  EXPECT_EQ(1, one);
+  EXPECT_EQ("string two", two);
+}
+
+// -----------------------------------------------------------------------
+
 // Tests that we can parse an StrReference_T.
 struct StrRefStrRefCapturer
-    : public RLOp_Void_2<StrReference_T, StrReference_T> {
+    : public RLOpcode<StrReference_T, StrReference_T> {
   std::string& one_;
   std::string& two_;
 
@@ -196,7 +229,7 @@ TEST_F(RLOperationTest, TestStringReference_T) {
 
 // -----------------------------------------------------------------------
 
-struct ArgcCapturer : public RLOp_Void_1<Argc_T<IntConstant_T>> {
+struct ArgcCapturer : public RLOpcode<Argc_T<IntConstant_T>> {
   std::vector<int>& out_;
   explicit ArgcCapturer(std::vector<int>& out) : out_(out) {}
 
@@ -222,7 +255,7 @@ TEST_F(RLOperationTest, TestArgc_T) {
 
 // -----------------------------------------------------------------------
 
-struct DefaultValueCapturer : public RLOp_Void_1<DefaultIntValue_T<18>> {
+struct DefaultValueCapturer : public RLOpcode<DefaultIntValue_T<18>> {
   int& out_;
   explicit DefaultValueCapturer(int& out) : out_(out) {}
 
@@ -244,8 +277,8 @@ TEST_F(RLOperationTest, TestDefaultIntValue_T) {
 // -----------------------------------------------------------------------
 
 struct ComplexCapturer
-    : public RLOp_Void_2<Complex2_T<IntConstant_T, IntConstant_T>,
-                         Complex2_T<IntConstant_T, IntConstant_T>> {
+    : public RLOpcode<Complex_T<IntConstant_T, IntConstant_T>,
+                      Complex_T<IntConstant_T, IntConstant_T>> {
   int& one_;
   int& two_;
   int& three_;
@@ -255,8 +288,8 @@ struct ComplexCapturer
       : one_(one), two_(two), three_(three), four_(four) {}
 
   virtual void operator()(RLMachine& machine,
-                          Complex2_T<IntConstant_T, IntConstant_T>::type one,
-                          Complex2_T<IntConstant_T, IntConstant_T>::type two) {
+                          Complex_T<IntConstant_T, IntConstant_T>::type one,
+                          Complex_T<IntConstant_T, IntConstant_T>::type two) {
     one_ = get<0>(one);
     two_ = get<1>(one);
     three_ = get<0>(two);
@@ -264,7 +297,7 @@ struct ComplexCapturer
   }
 };
 
-TEST_F(RLOperationTest, TestComplex2_T) {
+TEST_F(RLOperationTest, TestComplex_T) {
   int one = -1;
   int two = -1;
   int three = -1;

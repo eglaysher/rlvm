@@ -39,7 +39,7 @@
 
 namespace {
 
-struct GetName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
+struct GetName : public RLOpcode<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   int index,
                   StringReferenceIterator strIt) {
@@ -47,13 +47,13 @@ struct GetName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   }
 };
 
-struct SetName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct SetName : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().SetName(index, name);
   }
 };
 
-struct GetLocalName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
+struct GetLocalName : public RLOpcode<IntConstant_T, StrReference_T> {
   void operator()(RLMachine& machine,
                   int index,
                   StringReferenceIterator strIt) {
@@ -61,7 +61,7 @@ struct GetLocalName : public RLOp_Void_2<IntConstant_T, StrReference_T> {
   }
 };
 
-struct SetLocalName : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct SetLocalName : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, string name) {
     machine.memory().SetLocalName(index, name);
   }

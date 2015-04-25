@@ -47,6 +47,7 @@ const char* western_platform_fonts[] = {
 
 const char* ja_platform_fonts[] = {
 #if defined(__APPLE__)
+    "/Library/Fonts/OsakaMono.ttf",
     // Leopard
     "/Library/Fonts/ヒラギノ角ゴ Pro W3.otf",
     // Tiger

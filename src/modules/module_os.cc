@@ -44,7 +44,7 @@ namespace {
 // This probably does some sort of file existance checking, but for now, just
 // always return true to get over this speed bump.
 struct CheckFile
-    : public RLOp_Store_3<StrConstant_T, IntConstant_T, StrConstant_T> {
+    : public RLStoreOpcode<StrConstant_T, IntConstant_T, StrConstant_T> {
   int operator()(RLMachine& machine, string one, int two, string three) {
     return 1;
   }

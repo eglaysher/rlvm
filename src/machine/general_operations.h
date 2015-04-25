@@ -152,7 +152,7 @@ class MultiDispatch : public RLOp_SpecialCase {
 };
 
 // Returns a Gameexe value to the store register.
-class ReturnGameexeInt : public RLOp_Store_Void {
+class ReturnGameexeInt : public RLStoreOpcode<> {
  public:
   ReturnGameexeInt(const std::string& full_key, int en);
 
@@ -164,7 +164,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
 };
 
 // Invokes a syscom command.
-class InvokeSyscomAsOp : public RLOp_Void_Void {
+class InvokeSyscomAsOp : public RLOpcode<> {
  public:
   explicit InvokeSyscomAsOp(const int syscom);
 

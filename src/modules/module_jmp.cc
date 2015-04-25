@@ -309,14 +309,14 @@ struct gosub_case : public ParseGotoParametersAsExpressions {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct ret : public RLOp_Void_Void {
+struct ret : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromGosub(); }
 };
 
 // Implements op<0:Jmp:00011, 0>, fun jump(intC).
 //
 // Jumps the instruction pointer to the begining of the |scenario|.
-struct jump_0 : public RLOp_Void_1<IntConstant_T> {
+struct jump_0 : public RLOpcode<IntConstant_T> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -327,7 +327,7 @@ struct jump_0 : public RLOp_Void_1<IntConstant_T> {
 // Implements op<0:Jmp:00011, 1>, fun jump(intC, intC).
 //
 // Jumps the instruction pointer to |entrypoint| of |scenario|.
-struct jump_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct jump_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -338,7 +338,7 @@ struct jump_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // Implements op<0:Jmp:00012, 0>, fun farcall(intC).
 //
 // Farcalls the instruction pointer to the begining of the |scenario|.
-struct farcall_0 : public RLOp_Void_1<IntConstant_T> {
+struct farcall_0 : public RLOpcode<IntConstant_T> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario) {
@@ -349,7 +349,7 @@ struct farcall_0 : public RLOp_Void_1<IntConstant_T> {
 // Implements op<0:Jmp:00012, 1>, fun farcall(intC, intC).
 //
 // Farcalls the instruction pointer to |entrypoint| of |scenario|.
-struct farcall_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct farcall_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   virtual bool AdvanceInstructionPointer() override { return false; }
 
   void operator()(RLMachine& machine, int scenario, int entrypoint) {
@@ -364,7 +364,7 @@ struct farcall_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl : public RLOp_Void_Void {
+struct rtl : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromFarcall(); }
 };
 
@@ -403,7 +403,7 @@ struct gosub_with : public RLOp_SpecialCase {
 // Implements op<0:Jmp:00017, 0>, fun ret_with('value').
 //
 // Returns from a goto_with call, storing the value in the store register.
-struct ret_with_0 : public RLOp_Void_1<IntConstant_T> {
+struct ret_with_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int retVal) {
     machine.set_store_register(retVal);
     machine.ReturnFromGosub();
@@ -414,7 +414,7 @@ struct ret_with_0 : public RLOp_Void_1<IntConstant_T> {
 //
 // Returns from a goto_with call. But it doesn't return a value. What gets
 // dumped in the store register?
-struct ret_with_1 : public RLOp_Void_Void {
+struct ret_with_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromGosub(); }
 };
 
@@ -423,7 +423,7 @@ struct ret_with_1 : public RLOp_Void_Void {
 // Performs a call into a target scenario/entrypoint pair, passing along all
 // values passed in to the first avaiable intL[] and strK[] memory blocks.
 struct farcall_with
-    : public RLOp_Void_3<
+    : public RLOpcode<
           IntConstant_T,
           IntConstant_T,
           Argc_T<
@@ -451,7 +451,7 @@ struct farcall_with
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl_with_0 : public RLOp_Void_1<IntConstant_T> {
+struct rtl_with_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int retVal) {
     machine.set_store_register(retVal);
     machine.ReturnFromFarcall();
@@ -465,14 +465,14 @@ struct rtl_with_0 : public RLOp_Void_1<IntConstant_T> {
 // This functor MUST increment the instruction pointer, since the instruction
 // pointer at this stack frame is still pointing to the gosub that created the
 // new frame.
-struct rtl_with_1 : public RLOp_Void_Void {
+struct rtl_with_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) { machine.ReturnFromFarcall(); }
 };
 
 // Pushes a string value into strK[index] one stack frame above the current
 // one. Used in the Little Busters battle system to return string values that
 // refer to people's faces. (See SEEN8700).
-struct push_string_value_up : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct push_string_value_up : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int index, std::string val) {
     machine.PushStringValueUp(index, val);
   }

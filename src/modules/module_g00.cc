@@ -32,7 +32,7 @@
 #include "systems/base/graphics_system.h"
 #include "systems/base/system.h"
 
-struct g00Preload : public RLOp_Void_2<IntConstant_T, StrConstant_T> {
+struct g00Preload : public RLOpcode<IntConstant_T, StrConstant_T> {
   void operator()(RLMachine& machine, int slot, string name) {
     machine.system().graphics().PreloadG00(slot, name);
   }

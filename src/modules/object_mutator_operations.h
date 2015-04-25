@@ -32,11 +32,11 @@
 
 class GraphicsObject;
 
-class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T> {
+class Op_ObjectMutatorInt : public RLOpcode<IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
   typedef void (GraphicsObject::*Setter)(const int);
@@ -57,12 +57,12 @@ class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
   const std::string name_;
 };
 
-class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T> {
+class Op_ObjectMutatorRepnoInt : public RLOpcode<IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)(const int) const;
   typedef void (GraphicsObject::*Setter)(const int, const int);
@@ -84,12 +84,12 @@ class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
   const std::string name_;
 };
 
-class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T> {
+class Op_ObjectMutatorIntInt : public RLOpcode<IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
   typedef void (GraphicsObject::*Setter)(const int);
@@ -120,7 +120,7 @@ class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_Normal
-    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   explicit Op_EndObjectMutation_Normal(const std::string& name);
   virtual ~Op_EndObjectMutation_Normal();
@@ -134,7 +134,7 @@ class Op_EndObjectMutation_Normal
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_RepNo
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
   explicit Op_EndObjectMutation_RepNo(const std::string& name);
   virtual ~Op_EndObjectMutation_RepNo();
@@ -150,7 +150,7 @@ class Op_EndObjectMutation_RepNo
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorCheck : public RLOp_Store_1<IntConstant_T> {
+class Op_MutatorCheck : public RLStoreOpcode<IntConstant_T> {
  public:
   explicit Op_MutatorCheck(const std::string& name);
   virtual ~Op_MutatorCheck();
@@ -163,7 +163,7 @@ class Op_MutatorCheck : public RLOp_Store_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
+class Op_MutatorWaitNormal : public RLOpcode<IntConstant_T> {
  public:
   explicit Op_MutatorWaitNormal(const std::string& name);
   virtual ~Op_MutatorWaitNormal();
@@ -176,7 +176,7 @@ class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+class Op_MutatorWaitRepNo : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   explicit Op_MutatorWaitRepNo(const std::string& name);
   virtual ~Op_MutatorWaitRepNo();
@@ -189,7 +189,7 @@ class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
+class Op_MutatorWaitCNormal : public RLOpcode<IntConstant_T> {
  public:
   explicit Op_MutatorWaitCNormal(const std::string& name);
   virtual ~Op_MutatorWaitCNormal();
@@ -202,7 +202,7 @@ class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
 
 // -----------------------------------------------------------------------
 
-class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+class Op_MutatorWaitCRepNo : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   explicit Op_MutatorWaitCRepNo(const std::string& name);
   virtual ~Op_MutatorWaitCRepNo();
