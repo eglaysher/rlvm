@@ -34,9 +34,8 @@
 #include "utilities/math_util.h"
 
 // static
-int TimeTableMapper::GetTypeForTag(
-    const libreallive::SpecialExpressionPiece& sp) {
-  switch (sp.overload_tag()) {
+int TimeTableMapper::GetTypeForTag(const libreallive::ExpressionPiece& sp) {
+  switch (sp.GetOverloadTag()) {
     case 48:
       return 0;
     case 65584:
@@ -57,7 +56,7 @@ int TimeTableMapper::GetTypeForTag(
       return 8;
     default: {
       std::ostringstream oss;
-      oss << "Invalid timetable2 tag: " << sp.overload_tag();
+      oss << "Invalid timetable2 tag: " << sp.GetOverloadTag();
       throw rlvm::Exception(oss.str());
     }
   }

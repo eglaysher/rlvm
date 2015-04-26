@@ -37,7 +37,7 @@ class RLModule;
 
 // Maps the time table commands high tags down to normal.
 struct TimeTableMapper {
-  static int GetTypeForTag(const libreallive::SpecialExpressionPiece& sp);
+  static int GetTypeForTag(const libreallive::ExpressionPiece& sp);
 };
 
 // Defines timetable2's input pattern.

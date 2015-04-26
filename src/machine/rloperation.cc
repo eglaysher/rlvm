@@ -93,13 +93,13 @@ void RLOperation::DispatchFunction(RLMachine& machine,
                                    const libreallive::CommandElement& ff) {
   if (!ff.AreParametersParsed()) {
     std::vector<std::string> unparsed = ff.GetUnparsedParameters();
-    std::vector<std::unique_ptr<libreallive::ExpressionPiece>> output;
+    libreallive::ExpressionPiecesVector output;
     ParseParameters(unparsed, output);
-    ff.SetParsedParameters(output);
+    ff.SetParsedParameters(std::move(output));
   }
 
-  const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>&
-      parameter_pieces = ff.GetParsedParameters();
+  const libreallive::ExpressionPiecesVector& parameter_pieces =
+      ff.GetParsedParameters();
 
   // Now Dispatch based on these parameters.
   Dispatch(machine, parameter_pieces);
@@ -114,23 +114,23 @@ void RLOperation::DispatchFunction(RLMachine& machine,
 // Implementation for IntConstant_T
 IntConstant_T::type IntConstant_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
+    const libreallive::ExpressionPiecesVector& p,
     unsigned int& position) {
-  return p[position++]->GetIntegerValue(machine);
+  return p[position++].GetIntegerValue(machine);
 }
 
 // Was working to change the verify_type to parse_parameters.
 void IntConstant_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
+    libreallive::ExpressionPiecesVector& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
+  libreallive::ExpressionPiece ep(libreallive::GetData(data));
 
-  if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
+  if (ep.GetExpressionValueType() != libreallive::ValueTypeInteger) {
     std::ostringstream oss;
     oss << "IntConstant_T parse error. Expected type string, but actually "
-        << "contained \"" << ep->GetDebugString() << "\"";
+        << "contained \"" << ep.GetDebugString() << "\"";
     throw rlvm::Exception(oss.str());
   }
 
@@ -140,23 +140,22 @@ void IntConstant_T::ParseParameters(
 
 IntReference_T::type IntReference_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
+    const libreallive::ExpressionPiecesVector& p,
     unsigned int& position) {
-  return static_cast<const libreallive::MemoryReference&>(*p[position++])
-      .GetIntegerReferenceIterator(machine);
+  return p[position++].GetIntegerReferenceIterator(machine);
 }
 
 void IntReference_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
+    libreallive::ExpressionPiecesVector& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
+  libreallive::ExpressionPiece ep(libreallive::GetData(data));
 
-  if (ep->GetExpressionValueType() != libreallive::ValueTypeInteger) {
+  if (ep.GetExpressionValueType() != libreallive::ValueTypeInteger) {
     std::ostringstream oss;
     oss << "IntReference_T parse error. Expected type string, but actually "
-        << "contained \"" << ep->GetDebugString() << "\"";
+        << "contained \"" << ep.GetDebugString() << "\"";
     throw rlvm::Exception(oss.str());
   }
 
@@ -166,7 +165,7 @@ void IntReference_T::ParseParameters(
 
 StrConstant_T::type StrConstant_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
+    const libreallive::ExpressionPiecesVector& p,
     unsigned int& position) {
   // When I was trying to get P_BRIDE running in rlvm, I noticed that when
   // loading a game, I would often crash with invalid iterators in the LRUCache
@@ -203,21 +202,21 @@ StrConstant_T::type StrConstant_T::getData(
   // So to fix this, we break the COW semantics here by forcing a copy. I'd
   // prefer to do this in RLMachine or Memory, but I can't because they return
   // references.
-  string tmp = p[position++]->GetStringValue(machine);
+  string tmp = p[position++].GetStringValue(machine);
   return string(tmp.data(), tmp.size());
 }
 
 void StrConstant_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
+    libreallive::ExpressionPiecesVector& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
+  libreallive::ExpressionPiece ep(libreallive::GetData(data));
 
-  if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
+  if (ep.GetExpressionValueType() != libreallive::ValueTypeString) {
     std::ostringstream oss;
     oss << "StrConstant_T parse error. Expected type string, but actually "
-        << "contained \"" << ep->GetDebugString() << "\"";
+        << "contained \"" << ep.GetDebugString() << "\"";
     throw rlvm::Exception(oss.str());
   }
 
@@ -227,23 +226,22 @@ void StrConstant_T::ParseParameters(
 
 StrReference_T::type StrReference_T::getData(
     RLMachine& machine,
-    const std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& p,
+    const libreallive::ExpressionPiecesVector& p,
     unsigned int& position) {
-  return static_cast<const libreallive::MemoryReference&>(*p[position++])
-      .GetStringReferenceIterator(machine);
+  return p[position++].GetStringReferenceIterator(machine);
 }
 
 void StrReference_T::ParseParameters(
     unsigned int& position,
     const std::vector<std::string>& input,
-    std::vector<std::unique_ptr<libreallive::ExpressionPiece>>& output) {
+    libreallive::ExpressionPiecesVector& output) {
   const char* data = input.at(position).c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> ep(libreallive::GetData(data));
+  libreallive::ExpressionPiece ep(libreallive::GetData(data));
 
-  if (ep->GetExpressionValueType() != libreallive::ValueTypeString) {
+  if (ep.GetExpressionValueType() != libreallive::ValueTypeString) {
     std::ostringstream oss;
     oss << "StrReference_T parse error. Expected type string, but actually "
-        << "contained \"" << ep->GetDebugString() << "\"";
+        << "contained \"" << ep.GetDebugString() << "\"";
     throw rlvm::Exception(oss.str());
   }
 
@@ -273,7 +271,7 @@ void RLOp_SpecialCase::DispatchFunction(RLMachine& machine,
     std::vector<std::string> unparsed = ff.GetUnparsedParameters();
     libreallive::ExpressionPiecesVector output;
     ParseParameters(unparsed, output);
-    ff.SetParsedParameters(output);
+    ff.SetParsedParameters(std::move(output));
   }
 
   // Pass this on to the implementation of this functor.

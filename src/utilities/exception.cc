@@ -123,9 +123,8 @@ void UnimplementedOpcode::SetFullDescription(RLMachine& machine) {
       // Take the binary stuff and try to get usefull, printable values.
       const char* start = it->c_str();
       try {
-        std::unique_ptr<libreallive::ExpressionPiece> piece(
-            libreallive::GetData(start));
-        oss << piece->GetDebugString();
+        libreallive::ExpressionPiece piece(libreallive::GetData(start));
+        oss << piece.GetDebugString();
       }
       catch (libreallive::Error& e) {
         // Any error throw here is a parse error.

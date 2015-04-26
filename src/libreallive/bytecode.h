@@ -212,7 +212,7 @@ class ExpressionElement : public BytecodeElement {
 
   // Storage for the parsed expression so we only have to calculate
   // it once (and so we can return it by const reference)
-  mutable std::unique_ptr<ExpressionPiece> parsed_expression_;
+  mutable ExpressionPiece parsed_expression_;
 };
 
 // Command elements.
@@ -236,7 +236,7 @@ class CommandElement : public BytecodeElement {
   bool AreParametersParsed() const;
 
   // Gets/Sets the cached parameters.
-  void SetParsedParameters(ExpressionPiecesVector& p) const;
+  void SetParsedParameters(ExpressionPiecesVector p) const;
   const ExpressionPiecesVector& GetParsedParameters() const;
 
   // Returns the number of parameters.
@@ -259,7 +259,7 @@ class CommandElement : public BytecodeElement {
   static const int COMMAND_SIZE = 8;
   unsigned char command[COMMAND_SIZE];
 
-  mutable std::vector<std::unique_ptr<ExpressionPiece> > parsed_parameters_;
+  mutable std::vector<ExpressionPiece> parsed_parameters_;
 };
 
 class SelectElement : public CommandElement {

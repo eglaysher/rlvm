@@ -29,7 +29,6 @@
 
 #include "libreallive/bytecode_fwd.h"
 #include "libreallive/expression.h"
-#include "libreallive/expression_pieces.h"
 
 // Type definition that implements the complex parameter concept.
 //
@@ -45,18 +44,16 @@ struct Complex_T {
                       const libreallive::ExpressionPiecesVector& p,
                       unsigned int& position) {
     unsigned int pos_in_expression = 0;
-    const libreallive::ComplexExpressionPiece& sp =
-        static_cast<const libreallive::ComplexExpressionPiece&>(*p[position++]);
-    return type {
-      Args::getData(machine, sp.contained_pieces(), pos_in_expression)... };
+    const libreallive::ExpressionPiecesVector& pieces =
+        p[position++].GetContainedPieces();
+    return type { Args::getData(machine, pieces, pos_in_expression)... };
   }
 
   static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
                               libreallive::ExpressionPiecesVector& output) {
     const char* data = input.at(position).c_str();
-    std::unique_ptr<libreallive::ExpressionPiece> ep(
-        libreallive::GetComplexParam(data));
+    libreallive::ExpressionPiece ep(libreallive::GetComplexParam(data));
     output.push_back(std::move(ep));
     position++;
   }

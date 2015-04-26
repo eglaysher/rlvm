@@ -144,8 +144,8 @@ void PrintParameterString(std::ostream& oss,
     // Take the binary stuff and try to get usefull, printable values.
     const char* start = param.c_str();
     try {
-      std::unique_ptr<ExpressionPiece> piece(GetData(start));
-      oss << piece->GetDebugString();
+      ExpressionPiece piece(GetData(start));
+      oss << piece.GetDebugString();
     }
     catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
@@ -364,7 +364,8 @@ void TextoutElement::RunOnMachine(RLMachine& machine) const {
 // ExpressionElement
 // -----------------------------------------------------------------------
 
-ExpressionElement::ExpressionElement(const char* src) {
+ExpressionElement::ExpressionElement(const char* src)
+    : parsed_expression_(invalid_expression_piece_t()) {
   // Don't parse the expression, just isolate it.
   const char* end = src;
   end += NextToken(end);
@@ -375,31 +376,32 @@ ExpressionElement::ExpressionElement(const char* src) {
   repr.assign(src, end);
 }
 
-ExpressionElement::ExpressionElement(const long val) {
+ExpressionElement::ExpressionElement(const long val)
+    : parsed_expression_(invalid_expression_piece_t()) {
   repr.resize(6, '$');
   repr[1] = 0xff;
   insert_i32(repr, 2, val);
 }
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(nullptr) {
+    : parsed_expression_(rhs.parsed_expression_) {
 }
 
 ExpressionElement::~ExpressionElement() {}
 
 int ExpressionElement::GetValueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
-  std::unique_ptr<ExpressionPiece> e(GetExpression(location));
-  return e->GetIntegerValue(machine);
+  ExpressionPiece e(GetExpression(location));
+  return e.GetIntegerValue(machine);
 }
 
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
-  if (parsed_expression_.get() == 0) {
+  if (!parsed_expression_.is_valid()) {
     const char* location = repr.c_str();
     parsed_expression_ = GetAssignment(location);
   }
 
-  return *parsed_expression_;
+  return parsed_expression_;
 }
 
 void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
@@ -435,8 +437,7 @@ bool CommandElement::AreParametersParsed() const {
 }
 
 void CommandElement::SetParsedParameters(
-    ExpressionPiecesVector& parsedParameters) const {
-  parsed_parameters_.clear();
+    ExpressionPiecesVector parsedParameters) const {
   parsed_parameters_ = std::move(parsedParameters);
 }
 
@@ -619,8 +620,8 @@ std::string FunctionElement::GetSerializedCommand(RLMachine& machine) const {
     rv.push_back('(');
     for (string const& param : params) {
       const char* data = param.c_str();
-      std::unique_ptr<ExpressionPiece> expression(GetData(data));
-      rv.append(expression->GetSerializedExpression(machine));
+      ExpressionPiece expression(GetData(data));
+      rv.append(expression.GetSerializedExpression(machine));
     }
     rv.push_back(')');
   }
@@ -679,8 +680,8 @@ std::string SingleArgFunctionElement::GetSerializedCommand(RLMachine& machine)
     rv.push_back(command[i]);
   rv.push_back('(');
   const char* data = arg_.c_str();
-  std::unique_ptr<ExpressionPiece> expression(GetData(data));
-  rv.append(expression->GetSerializedExpression(machine));
+  ExpressionPiece expression(GetData(data));
+  rv.append(expression.GetSerializedExpression(machine));
   rv.push_back(')');
   return rv;
 }

@@ -138,8 +138,7 @@ TEST(ExpressionTest, ParseWithNewlineInIt) {
 
   // This shouldn't throw.
   const char* start = parsable.c_str();
-  std::unique_ptr<libreallive::ExpressionPiece> piece(
-      libreallive::GetData(start));
+  libreallive::ExpressionPiece piece(libreallive::GetData(start));
 
-  ASSERT_TRUE(piece->IsSpecialParameter());
+  ASSERT_TRUE(piece.IsSpecialParameter());
 }
