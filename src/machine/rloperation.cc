@@ -34,7 +34,6 @@
 
 #include "libreallive/bytecode.h"
 #include "machine/rloperation/references.h"
-#include "machine/rloperation/rlop_store.h"
 #include "machine/rlmachine.h"
 #include "machine/rlmodule.h"
 #include "utilities/exception.h"
@@ -291,10 +290,31 @@ void RLOpcode<>::Dispatch(
   operator()(machine);
 }
 
-template <>
-void RLStoreOpcode<>::Dispatch(
-    RLMachine& machine,
-    const libreallive::ExpressionPiecesVector& parameters) {
-  int store = operator()(machine);
-  machine.set_store_register(store);
-}
+// Default instantiations.
+template class RLNormalOpcode<>;
+template class RLNormalOpcode<IntConstant_T>;
+template class RLNormalOpcode<IntConstant_T, IntConstant_T>;
+template class RLNormalOpcode<IntConstant_T, StrConstant_T>;
+template class RLNormalOpcode<IntConstant_T, IntConstant_T, IntConstant_T>;
+template class RLNormalOpcode<IntConstant_T, IntConstant_T, IntConstant_T,
+                              IntConstant_T>;
+template class RLNormalOpcode<IntReference_T>;
+template class RLNormalOpcode<IntReference_T, IntReference_T>;
+template class RLNormalOpcode<StrConstant_T>;
+template class RLNormalOpcode<StrConstant_T, IntConstant_T>;
+template class RLNormalOpcode<StrConstant_T, StrConstant_T>;
+template class RLNormalOpcode<StrReference_T>;
+
+template class RLOpcode<>;
+template class RLOpcode<IntConstant_T>;
+template class RLOpcode<IntConstant_T, IntConstant_T>;
+template class RLOpcode<IntConstant_T, StrConstant_T>;
+template class RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T>;
+template class RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T,
+                        IntConstant_T>;
+template class RLOpcode<IntReference_T>;
+template class RLOpcode<IntReference_T, IntReference_T>;
+template class RLOpcode<StrConstant_T>;
+template class RLOpcode<StrConstant_T, IntConstant_T>;
+template class RLOpcode<StrConstant_T, StrConstant_T>;
+template class RLOpcode<StrReference_T>;

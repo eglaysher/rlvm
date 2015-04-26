@@ -29,6 +29,8 @@
 
 #include "libreallive/bytecode_fwd.h"
 #include "libreallive/expression.h"
+#include "machine/rloperation.h"
+#include "machine/rloperation/references.h"
 
 // Type definition that implements the complex parameter concept.
 //
@@ -42,23 +44,43 @@ struct Complex_T {
   // Convert the incoming parameter objects into the resulting type.
   static type getData(RLMachine& machine,
                       const libreallive::ExpressionPiecesVector& p,
-                      unsigned int& position) {
-    unsigned int pos_in_expression = 0;
-    const libreallive::ExpressionPiecesVector& pieces =
-        p[position++].GetContainedPieces();
-    return type { Args::getData(machine, pieces, pos_in_expression)... };
-  }
+                      unsigned int& position);
 
   static void ParseParameters(unsigned int& position,
                               const std::vector<std::string>& input,
-                              libreallive::ExpressionPiecesVector& output) {
-    const char* data = input.at(position).c_str();
-    libreallive::ExpressionPiece ep(libreallive::GetComplexParam(data));
-    output.push_back(std::move(ep));
-    position++;
-  }
+                              libreallive::ExpressionPiecesVector& output);
 
   enum { is_complex = true };
 };
+
+// static
+template <typename... Args>
+typename Complex_T<Args...>::type
+Complex_T<Args...>::getData(RLMachine& machine,
+                            const libreallive::ExpressionPiecesVector& p,
+                            unsigned int& position) {
+  unsigned int pos_in_expression = 0;
+  const libreallive::ExpressionPiecesVector& pieces =
+      p[position++].GetContainedPieces();
+  return type { Args::getData(machine, pieces, pos_in_expression)... };
+}
+
+// static
+template <typename... Args>
+void Complex_T<Args...>::ParseParameters(
+    unsigned int& position,
+    const std::vector<std::string>& input,
+    libreallive::ExpressionPiecesVector& output) {
+  const char* data = input.at(position).c_str();
+  libreallive::ExpressionPiece ep(libreallive::GetComplexParam(data));
+  output.push_back(std::move(ep));
+  position++;
+}
+
+extern template struct Complex_T<IntConstant_T, IntConstant_T>;
+extern template struct Complex_T<IntConstant_T, IntReference_T>;
+extern template struct Complex_T<IntReference_T, IntReference_T>;
+extern template struct Complex_T<StrConstant_T, IntConstant_T, IntConstant_T>;
+extern template struct Complex_T<StrConstant_T, IntConstant_T>;
 
 #endif  // SRC_MACHINE_RLOPERATION_COMPLEX_T_H_

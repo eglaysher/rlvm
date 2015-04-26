@@ -169,3 +169,15 @@ void UndefinedFunction::operator()(RLMachine& machine,
                                    const libreallive::CommandElement& f) {
   throw rlvm::UnimplementedOpcode(machine, name(), f);
 }
+
+// Template instantiations.
+template RLOperation* CallFunction<EventSystem>(void (EventSystem::*)(int));
+template RLOperation* CallFunction<GraphicsSystem>(void (GraphicsSystem::*)(int));
+template RLOperation* CallFunction<SoundSystem>(void (SoundSystem::*)(int));
+template RLOperation* CallFunction<System>(void (System::*)(int));
+template RLOperation* CallFunction<TextSystem>(void (TextSystem::*)(int));
+template RLOperation* ReturnIntValue<EventSystem, int>(int (EventSystem::*)() const);
+template RLOperation* ReturnIntValue<GraphicsSystem, int>(int (GraphicsSystem::*)() const);
+template RLOperation* ReturnIntValue<RLMachine, int>(int (RLMachine::*)() const);
+template RLOperation* ReturnIntValue<SoundSystem, int>(int (SoundSystem::*)() const);
+template RLOperation* ReturnIntValue<TextSystem, int>(int (TextSystem::*)() const);

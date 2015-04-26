@@ -207,4 +207,16 @@ class UndefinedFunction : public RLOp_SpecialCase {
   int overload_;
 };
 
+// extern template declarations; manually instantiated in the cc file.
+extern template RLOperation* CallFunction<EventSystem>(void (EventSystem::*)(int));
+extern template RLOperation* CallFunction<GraphicsSystem>(void (GraphicsSystem::*)(int));
+extern template RLOperation* CallFunction<SoundSystem>(void (SoundSystem::*)(int));
+extern template RLOperation* CallFunction<System>(void (System::*)(int));
+extern template RLOperation* CallFunction<TextSystem>(void (TextSystem::*)(int));
+extern template RLOperation* ReturnIntValue<EventSystem, int>(int (EventSystem::*)() const);
+extern template RLOperation* ReturnIntValue<GraphicsSystem, int>(int (GraphicsSystem::*)() const);
+extern template RLOperation* ReturnIntValue<RLMachine, int>(int (RLMachine::*)() const);
+extern template RLOperation* ReturnIntValue<SoundSystem, int>(int (SoundSystem::*)() const);
+extern template RLOperation* ReturnIntValue<TextSystem, int>(int (TextSystem::*)() const);
+
 #endif  // SRC_MACHINE_GENERAL_OPERATIONS_H_

@@ -35,6 +35,7 @@
 
 #include "libreallive/bytecode_fwd.h"
 #include "libreallive/expression.h"
+#include "machine/rloperation/references.h"
 
 class MappedRLModule;
 class RLModule;
@@ -304,14 +305,28 @@ struct make_indexes : make_indexes_impl<0, index_tuple<>, Types...>
 template <typename... Args>
 class RLNormalOpcode : public RLOperation {
  public:
+  RLNormalOpcode();
+  virtual ~RLNormalOpcode();
+
   virtual void ParseParameters(
       const std::vector<std::string>& input,
-      libreallive::ExpressionPiecesVector& output) final {
-    unsigned int position = 0;
-    internal::ParseEachParameter<Args..., internal::_sentinel_type>(
-        position, input, output);
-  }
+      libreallive::ExpressionPiecesVector& output) final;
 };
+
+template <typename... Args>
+RLNormalOpcode<Args...>::RLNormalOpcode() {}
+
+template <typename... Args>
+RLNormalOpcode<Args...>::~RLNormalOpcode() {}
+
+template <typename... Args>
+void RLNormalOpcode<Args...>::ParseParameters(
+    const std::vector<std::string>& input,
+    libreallive::ExpressionPiecesVector& output) {
+  unsigned int position = 0;
+  internal::ParseEachParameter<Args..., internal::_sentinel_type>(
+      position, input, output);
+}
 
 // Specialization for empty template list
 template <>
@@ -322,22 +337,12 @@ void RLNormalOpcode<>::ParseParameters(
 template <typename... Args>
 class RLOpcode : public RLNormalOpcode<Args...> {
  public:
+  RLOpcode();
+  virtual ~RLOpcode() override;
+
   virtual void Dispatch(
       RLMachine& machine,
-      const libreallive::ExpressionPiecesVector& parameters) final {
-    // The following does not work in gcc 4.8.2, but it's supposed to!
-    // Parameter unpacking inside an initializer-clause is supposed to always
-    // be evaluated in the order it appears.
-    //
-    // http://stackoverflow.com/questions/12048221/c11-variadic-template-function-parameter-pack-expansion-execution-order
-    unsigned int position = 0;
-    std::tuple<typename Args::type...> tuple =
-        std::tuple<typename Args::type...>{
-      Args::getData(machine, parameters, position)...
-    };
-    DispatchImpl(machine, tuple,
-                 typename internal::make_indexes<Args...>::type());
-  }
+      const libreallive::ExpressionPiecesVector& parameters) final;
 
   virtual void operator()(RLMachine&, typename Args::type...) = 0;
 
@@ -350,9 +355,67 @@ class RLOpcode : public RLNormalOpcode<Args...> {
   }
 };
 
+template <typename... Args>
+RLOpcode<Args...>::RLOpcode() {}
+
+template <typename... Args>
+RLOpcode<Args...>::~RLOpcode() {}
+
+template <typename... Args>
+void RLOpcode<Args...>::Dispatch(
+    RLMachine& machine,
+    const libreallive::ExpressionPiecesVector& parameters) {
+  // The following does not work in gcc 4.8.2, but it's supposed to!
+  // Parameter unpacking inside an initializer-clause is supposed to always
+  // be evaluated in the order it appears.
+  //
+  // http://stackoverflow.com/questions/12048221/c11-variadic-template-function-parameter-pack-expansion-execution-order
+  unsigned int position = 0;
+  std::tuple<typename Args::type...> tuple =
+      std::tuple<typename Args::type...>{
+    Args::getData(machine, parameters, position)...
+  };
+  DispatchImpl(machine, tuple,
+               typename internal::make_indexes<Args...>::type());
+}
+
 template <>
 void RLOpcode<>::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters);
+
+// Extern template declarations.
+//
+// These tell the compiler to not expand these templates; they are explicitly
+// instantiated in the cc file as these are the most common variants. Note that
+// we must explicitly instantiate both RLNormalOpcode and RLOpcode separately.
+extern template class RLNormalOpcode<>;
+extern template class RLNormalOpcode<IntConstant_T>;
+extern template class RLNormalOpcode<IntConstant_T, IntConstant_T>;
+extern template class RLNormalOpcode<IntConstant_T, StrConstant_T>;
+extern template class RLNormalOpcode<IntConstant_T, IntConstant_T,
+                                     IntConstant_T>;
+extern template class RLNormalOpcode<IntConstant_T, IntConstant_T,
+                                     IntConstant_T, IntConstant_T>;
+extern template class RLNormalOpcode<IntReference_T>;
+extern template class RLNormalOpcode<IntReference_T, IntReference_T>;
+extern template class RLNormalOpcode<StrConstant_T>;
+extern template class RLNormalOpcode<StrConstant_T, IntConstant_T>;
+extern template class RLNormalOpcode<StrConstant_T, StrConstant_T>;
+extern template class RLNormalOpcode<StrReference_T>;
+
+extern template class RLOpcode<>;
+extern template class RLOpcode<IntConstant_T>;
+extern template class RLOpcode<IntConstant_T, IntConstant_T>;
+extern template class RLOpcode<IntConstant_T, StrConstant_T>;
+extern template class RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T>;
+extern template class RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T,
+                               IntConstant_T>;
+extern template class RLOpcode<IntReference_T>;
+extern template class RLOpcode<IntReference_T, IntReference_T>;
+extern template class RLOpcode<StrConstant_T>;
+extern template class RLOpcode<StrConstant_T, IntConstant_T>;
+extern template class RLOpcode<StrConstant_T, StrConstant_T>;
+extern template class RLOpcode<StrReference_T>;
 
 #endif  // SRC_MACHINE_RLOPERATION_H_

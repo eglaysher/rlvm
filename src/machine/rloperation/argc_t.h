@@ -26,6 +26,9 @@
 #include <string>
 #include <vector>
 
+#include "machine/rloperation.h"
+#include "machine/rloperation/references.h"
+
 // Type struct that implements the argc concept.
 //
 // This type struct can only be used as the last element in a type
@@ -72,5 +75,8 @@ void Argc_T<CON>::ParseParameters(unsigned int& position,
     CON::ParseParameters(position, input, output);
   }
 }
+
+extern template struct Argc_T<IntConstant_T>;
+extern template struct Argc_T<IntReference_T>;
 
 #endif  // SRC_MACHINE_RLOPERATION_ARGC_T_H_
