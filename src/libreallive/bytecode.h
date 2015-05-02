@@ -192,14 +192,7 @@ class ExpressionElement : public BytecodeElement {
   ExpressionElement(const ExpressionElement& rhs);
   virtual ~ExpressionElement();
 
-  // Assumes the expression isn't an assignment and returns the integer value.
-  //
-  // TODO(erg): We should be delete this if we make GetWindowExpression()
-  // return an ExpressionPiece instead.
-  int GetValueOnly(RLMachine& machine) const;
-
-  // Returns an ExpressionPiece representing this expression. This function
-  // lazily parses the expression and stores the tree for reuse.
+  // Returns an ExpressionPiece representing this expression.
   const ExpressionPiece& ParsedExpression() const;
 
   // Overridden from BytecodeElement:
@@ -208,11 +201,11 @@ class ExpressionElement : public BytecodeElement {
   virtual void RunOnMachine(RLMachine& machine) const final;
 
  private:
-  string repr;
+  int length_;
 
   // Storage for the parsed expression so we only have to calculate
   // it once (and so we can return it by const reference)
-  mutable ExpressionPiece parsed_expression_;
+  ExpressionPiece parsed_expression_;
 };
 
 // Command elements.
@@ -297,10 +290,7 @@ class SelectElement : public CommandElement {
 
   // Returns the expression in the source code which refers to which window to
   // display.
-  //
-  // TODO(erg): I believe I can simplify the only caller of this if I return an
-  // ExpressionPiece instead.
-  ExpressionElement GetWindowExpression() const;
+  ExpressionPiece GetWindowExpression() const;
 
   const params_t& raw_params() const { return params; }
 

@@ -366,41 +366,24 @@ void TextoutElement::RunOnMachine(RLMachine& machine) const {
 
 ExpressionElement::ExpressionElement(const char* src)
     : parsed_expression_(invalid_expression_piece_t()) {
-  // Don't parse the expression, just isolate it.
   const char* end = src;
-  end += NextToken(end);
-  if (*end == '\\') {
-    end += 2;
-    end += NextExpression(end);
-  }
-  repr.assign(src, end);
+  parsed_expression_ = GetAssignment(end);
+  length_ = std::distance(src, end);
 }
 
 ExpressionElement::ExpressionElement(const long val)
-    : parsed_expression_(invalid_expression_piece_t()) {
-  repr.resize(6, '$');
-  repr[1] = 0xff;
-  insert_i32(repr, 2, val);
+    : length_(0),
+      parsed_expression_(ExpressionPiece::IntConstant(val)) {
 }
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(rhs.parsed_expression_) {
+    : length_(0),
+      parsed_expression_(rhs.parsed_expression_) {
 }
 
 ExpressionElement::~ExpressionElement() {}
 
-int ExpressionElement::GetValueOnly(RLMachine& machine) const {
-  const char* location = repr.c_str();
-  ExpressionPiece e(GetExpression(location));
-  return e.GetIntegerValue(machine);
-}
-
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
-  if (!parsed_expression_.is_valid()) {
-    const char* location = repr.c_str();
-    parsed_expression_ = GetAssignment(location);
-  }
-
   return parsed_expression_;
 }
 
@@ -409,7 +392,7 @@ void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
 }
 
 const size_t ExpressionElement::GetBytecodeLength() const {
-  return repr.size();
+  return length_;
 }
 
 void ExpressionElement::RunOnMachine(RLMachine& machine) const {
@@ -554,9 +537,12 @@ SelectElement::SelectElement(const char* src)
 
 SelectElement::~SelectElement() {}
 
-ExpressionElement SelectElement::GetWindowExpression() const {
-  return repr[8] == '(' ? ExpressionElement(repr.data() + 9)
-                        : ExpressionElement(-1);
+ExpressionPiece SelectElement::GetWindowExpression() const {
+  if (repr[8] == '(') {
+    const char* location = repr.c_str() + 9;
+    return GetExpression(location);
+  }
+  return ExpressionPiece::IntConstant(-1);
 }
 
 const size_t SelectElement::GetParamCount() const { return params.size(); }
