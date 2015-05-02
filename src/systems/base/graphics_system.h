@@ -581,6 +581,15 @@ class GraphicsSystem : public EventListener {
   // Possible background script which drives graphics to the screen.
   std::unique_ptr<HIKRenderer> hik_renderer_;
 
+  // Tuple used in RenderObjects(). Causes about a half megabyte of allocator
+  // churn per minute if we try to allocate it every time.
+  //
+  // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
+  // to sort.
+  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*>>
+      ToRenderVec;
+  ToRenderVec to_render_;
+
   // boost::serialization support
   friend class boost::serialization::access;
 

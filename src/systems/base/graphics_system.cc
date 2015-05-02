@@ -808,11 +808,7 @@ void GraphicsSystem::ClearAllDCs() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::RenderObjects(std::ostream* tree) {
-  // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
-  // to sort.
-  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*>>
-      ToRenderVec;
-  ToRenderVec to_render;
+  to_render_.clear();
 
   // Collate all objects that we might want to render.
   AllocatedLazyArrayIterator<GraphicsObject> it =
@@ -830,14 +826,14 @@ void GraphicsSystem::RenderObjects(std::ostream* tree) {
     else if (settings.space_key && is_interface_hidden())
       continue;
 
-    to_render.emplace_back(
+    to_render_.emplace_back(
         it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it);
   }
 
   // Sort by all the ordering values.
-  std::sort(to_render.begin(), to_render.end());
+  std::sort(to_render_.begin(), to_render_.end());
 
-  for (ToRenderVec::iterator it = to_render.begin(); it != to_render.end();
+  for (ToRenderVec::iterator it = to_render_.begin(); it != to_render_.end();
        ++it) {
     get<4>(*it)->Render(get<3>(*it), NULL, tree);
   }
