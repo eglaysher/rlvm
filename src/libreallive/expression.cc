@@ -567,9 +567,15 @@ ExpressionPiece ExpressionPiece::StrConstant(const std::string constant) {
 ExpressionPiece ExpressionPiece::MemoryReference(const int type,
                                                  ExpressionPiece location) {
   ExpressionPiece piece;
-  piece.piece_type = TYPE_MEMORY_REFERENCE;
-  piece.mem_reference.type = type;
-  piece.mem_reference.location = new ExpressionPiece(std::move(location));
+  if (location.piece_type == TYPE_INT_CONSTANT) {
+    piece.piece_type = TYPE_SIMPLE_MEMORY_REFERENCE;
+    piece.simple_mem_reference.type = type;
+    piece.simple_mem_reference.location = location.int_constant;
+  } else {
+    piece.piece_type = TYPE_MEMORY_REFERENCE;
+    piece.mem_reference.type = type;
+    piece.mem_reference.location = new ExpressionPiece(std::move(location));
+  }
   return piece;
 }
 
@@ -632,6 +638,10 @@ ExpressionPiece::ExpressionPiece(const ExpressionPiece& rhs)
       mem_reference.location =
           new ExpressionPiece(*rhs.mem_reference.location);
       break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      simple_mem_reference.type = rhs.simple_mem_reference.type;
+      simple_mem_reference.location = rhs.simple_mem_reference.location;
+      break;
     case TYPE_UNIARY_EXPRESSION:
       uniary_expression.operation = rhs.uniary_expression.operation;
       uniary_expression.operand =
@@ -673,6 +683,10 @@ ExpressionPiece::ExpressionPiece(ExpressionPiece&& rhs)
       mem_reference.type = rhs.mem_reference.type;
       mem_reference.location = rhs.mem_reference.location;
       rhs.mem_reference.location = nullptr;
+      break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      simple_mem_reference.type = rhs.simple_mem_reference.type;
+      simple_mem_reference.location = rhs.simple_mem_reference.location;
       break;
     case TYPE_UNIARY_EXPRESSION:
       uniary_expression.operation = rhs.uniary_expression.operation;
@@ -724,6 +738,10 @@ ExpressionPiece& ExpressionPiece::operator=(const ExpressionPiece& rhs) {
       mem_reference.location =
           new ExpressionPiece(*rhs.mem_reference.location);
       break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      simple_mem_reference.type = rhs.simple_mem_reference.type;
+      simple_mem_reference.location = rhs.simple_mem_reference.location;
+      break;
     case TYPE_UNIARY_EXPRESSION:
       uniary_expression.operation = rhs.uniary_expression.operation;
       uniary_expression.operand =
@@ -770,6 +788,10 @@ ExpressionPiece& ExpressionPiece::operator=(ExpressionPiece&& rhs) {
       mem_reference.location = rhs.mem_reference.location;
       rhs.mem_reference.location = nullptr;
       break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      simple_mem_reference.type = rhs.simple_mem_reference.type;
+      simple_mem_reference.location = rhs.simple_mem_reference.location;
+      break;
     case TYPE_UNIARY_EXPRESSION:
       uniary_expression.operation = rhs.uniary_expression.operation;
       uniary_expression.operand = rhs.uniary_expression.operand;
@@ -802,7 +824,8 @@ ExpressionPiece& ExpressionPiece::operator=(ExpressionPiece&& rhs) {
 
 bool ExpressionPiece::IsMemoryReference() const {
   return piece_type == TYPE_STORE_REGISTER ||
-      piece_type == TYPE_MEMORY_REFERENCE;
+      piece_type == TYPE_MEMORY_REFERENCE ||
+      piece_type == TYPE_SIMPLE_MEMORY_REFERENCE;
 }
 
 bool ExpressionPiece::IsComplexParameter() const {
@@ -820,6 +843,9 @@ ExpressionValueType ExpressionPiece::GetExpressionValueType() const {
     case TYPE_MEMORY_REFERENCE:
       return is_string_location(mem_reference.type) ?
           ValueTypeString : ValueTypeInteger;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      return is_string_location(simple_mem_reference.type) ?
+          ValueTypeString : ValueTypeInteger;
     default:
       return ValueTypeInteger;
   }
@@ -835,6 +861,13 @@ void ExpressionPiece::SetIntegerValue(RLMachine& machine, int rvalue) {
           IntMemRef(
               mem_reference.type,
               mem_reference.location->GetIntegerValue(machine)),
+          rvalue);
+      break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      machine.SetIntValue(
+          IntMemRef(
+              simple_mem_reference.type,
+              simple_mem_reference.location),
           rvalue);
       break;
     default: {
@@ -856,6 +889,10 @@ int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
       return machine.GetIntValue(IntMemRef(
           mem_reference.type,
           mem_reference.location->GetIntegerValue(machine)));
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      return machine.GetIntValue(IntMemRef(
+          simple_mem_reference.type,
+          simple_mem_reference.location));
     case TYPE_UNIARY_EXPRESSION:
       return PerformUniaryOperationOn(
           uniary_expression.operand->GetIntegerValue(machine));
@@ -893,6 +930,11 @@ void ExpressionPiece::SetStringValue(RLMachine& machine,
                              mem_reference.location->GetIntegerValue(machine),
                              rvalue);
       return;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      machine.SetStringValue(simple_mem_reference.type,
+                             simple_mem_reference.location,
+                             rvalue);
+      return;
     default:
       throw libreallive::Error(
           "ExpressionPiece::SetStringValue() invalid on this object");
@@ -907,6 +949,9 @@ const std::string& ExpressionPiece::GetStringValue(RLMachine& machine) const {
       return machine.GetStringValue(mem_reference.type,
                                     mem_reference.location->GetIntegerValue(
                                         machine));
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      return machine.GetStringValue(simple_mem_reference.type,
+                                    simple_mem_reference.location);
     default:
       throw libreallive::Error(
           "ExpressionPiece::GetStringValue() invalid on this object");
@@ -929,6 +974,17 @@ IntReferenceIterator ExpressionPiece::GetIntegerReferenceIterator(
           &machine.memory(),
           mem_reference.type,
           mem_reference.location->GetIntegerValue(machine));
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      // Make sure that we are actually referencing an integer
+      if (is_string_location(simple_mem_reference.type)) {
+        throw Error(
+            "Request to GetIntegerReferenceIterator() on a string reference!");
+      }
+
+      return IntReferenceIterator(
+          &machine.memory(),
+          simple_mem_reference.type,
+          simple_mem_reference.location);
     default:
       throw libreallive::Error(
           "ExpressionPiece::GetIntegerReferenceIterator() invalid on this object");
@@ -949,6 +1005,17 @@ StringReferenceIterator ExpressionPiece::GetStringReferenceIterator(
           &machine.memory(),
           mem_reference.type,
           mem_reference.location->GetIntegerValue(machine));
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      // Make sure that we are actually referencing an integer
+      if (!is_string_location(simple_mem_reference.type)) {
+        throw Error(
+            "Request to GetStringReferenceIterator() on an integer reference!");
+      }
+
+      return StringReferenceIterator(
+          &machine.memory(),
+          simple_mem_reference.type,
+          simple_mem_reference.location);
     default:
       throw libreallive::Error("ExpressionPiece::GetStringReferenceIterator()"
                                " invalid on this object");
@@ -965,6 +1032,12 @@ std::string ExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
       return string("\"") + str_constant + string("\"");
     case TYPE_MEMORY_REFERENCE:
       if (is_string_location(mem_reference.type)) {
+        return string("\"") + GetStringValue(machine) + string("\"");
+      } else {
+        return IntToBytecode(GetIntegerValue(machine));
+      }
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
+      if (is_string_location(simple_mem_reference.type)) {
         return string("\"") + GetStringValue(machine) + string("\"");
       } else {
         return IntToBytecode(GetIntegerValue(machine));
@@ -990,6 +1063,7 @@ std::string ExpressionPiece::GetDebugString() const {
     case TYPE_STRING_CONSTANT:
       return string("\"") + str_constant + string("\"");
     case TYPE_MEMORY_REFERENCE:
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
       return GetMemoryDebugString();
     case TYPE_UNIARY_EXPRESSION:
       return GetUniaryDebugString();
@@ -1022,6 +1096,8 @@ void ExpressionPiece::Invalidate() {
       break;
     case TYPE_MEMORY_REFERENCE:
       delete mem_reference.location;
+      break;
+    case TYPE_SIMPLE_MEMORY_REFERENCE:
       break;
     case TYPE_UNIARY_EXPRESSION:
       delete uniary_expression.operand;
@@ -1074,22 +1150,29 @@ std::string ExpressionPiece::GetSpecialSerializedExpression(
 std::string ExpressionPiece::GetMemoryDebugString() const {
   std::ostringstream ret;
 
-  if (mem_reference.type == STRS_LOCATION) {
+  int type = piece_type == TYPE_MEMORY_REFERENCE ?
+             mem_reference.type :
+             simple_mem_reference.type;
+
+  if (type == STRS_LOCATION) {
     ret << "strS[";
-  } else if (mem_reference.type == STRK_LOCATION) {
+  } else if (type == STRK_LOCATION) {
     ret << "strK[";
-  } else if (mem_reference.type == STRM_LOCATION) {
+  } else if (type == STRM_LOCATION) {
     ret << "strM[";
-  } else if (mem_reference.type == INTZ_LOCATION_IN_BYTECODE) {
+  } else if (type == INTZ_LOCATION_IN_BYTECODE) {
     ret << "intZ[";
-  } else if (mem_reference.type == INTL_LOCATION_IN_BYTECODE) {
+  } else if (type == INTL_LOCATION_IN_BYTECODE) {
     ret << "intL[";
   } else {
-    char bank = 'A' + (mem_reference.type % 26);
+    char bank = 'A' + (type % 26);
     ret << "int" << bank << "[";
   }
 
-  ret << mem_reference.location->GetDebugString();
+  if (piece_type == TYPE_MEMORY_REFERENCE)
+    ret << mem_reference.location->GetDebugString();
+  else
+    ret << simple_mem_reference.location;
 
   ret << "]";
   return ret.str();

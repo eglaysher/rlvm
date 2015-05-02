@@ -83,6 +83,7 @@ enum ExpressionPieceType {
   TYPE_INT_CONSTANT,
   TYPE_STRING_CONSTANT,
   TYPE_MEMORY_REFERENCE,
+  TYPE_SIMPLE_MEMORY_REFERENCE,
   TYPE_UNIARY_EXPRESSION,
   TYPE_BINARY_EXPRESSION,
   TYPE_COMPLEX_EXPRESSION,
@@ -199,14 +200,17 @@ class ExpressionPiece {
     // TYPE_STRING_CONSTANT
     std::string str_constant;
 
-    // TODO: Make a TYPE_SIMPLE_MEMORY_REFERENCE which inlines integer
-    // constants.
-
     // TYPE_MEMORY_REFERENCE
     struct {
       int type;
       ExpressionPiece* location;
     } mem_reference;
+
+    // TYPE_SIMPLE_MEMORY_REFERENCE
+    struct {
+      int type;
+      int location;
+    } simple_mem_reference;
 
     // TYPE_UNIARY_EXPRESSION
     struct {
