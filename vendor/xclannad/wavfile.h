@@ -111,15 +111,6 @@ struct OggFILE : WAVFILE {
 	int Read(char* buf, int blksize, int blklen);
 };
 
-struct MP3FILE : WAVFILE {
-	struct MP3FILE_impl* pimpl;
-
-	MP3FILE(FILE* stream, int size);
-	~MP3FILE();
-	void Seek(int count);
-	int Read(char* buf, int blksize, int blklen);
-};
-
 // erg addition: Modified jagarl's method to take what's wrapped in AvgKoeInfo
 // as parameters instead.
 char* decode_koe_nwa(FILE* stream, int offset, int length, int* data_len);

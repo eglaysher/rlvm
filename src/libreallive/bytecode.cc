@@ -61,6 +61,8 @@ inline BytecodeElement* ReadFunction(const char* stream,
     case 0x00010005:
     case 0x00050001:
     case 0x00050005:
+    case 0x00060001:
+    case 0x00060005:
       return new GotoElement(stream, cdata);
     case 0x00010001:
     case 0x00010002:
@@ -69,18 +71,27 @@ inline BytecodeElement* ReadFunction(const char* stream,
     case 0x00050002:
     case 0x00050006:
     case 0x00050007:
+    case 0x00060000:
+    case 0x00060002:
+    case 0x00060006:
+    case 0x00060007:
       return new GotoIfElement(stream, cdata);
     case 0x00010003:
     case 0x00010008:
     case 0x00050003:
     case 0x00050008:
+    case 0x00060003:
+    case 0x00060008:
       return new GotoOnElement(stream, cdata);
     case 0x00010004:
     case 0x00010009:
     case 0x00050004:
     case 0x00050009:
+    case 0x00060004:
+    case 0x00060009:
       return new GotoCaseElement(stream, cdata);
     case 0x00010010:
+    case 0x00060010:
       return new GosubWithElement(stream, cdata);
 
     // Select elements.
@@ -107,7 +118,7 @@ CommandElement* BuildFunctionElement(const char* stream) {
     const char* end = ptr + 1;
     while (*end != ')') {
       const size_t len = NextData(end);
-      params.push_back(string(end, len));
+      params.emplace_back(end, len);
       end += len;
     }
   }
@@ -133,8 +144,8 @@ void PrintParameterString(std::ostream& oss,
     // Take the binary stuff and try to get usefull, printable values.
     const char* start = param.c_str();
     try {
-      std::unique_ptr<ExpressionPiece> piece(GetData(start));
-      oss << piece->GetDebugString();
+      ExpressionPiece piece(GetData(start));
+      oss << piece.GetDebugString();
     }
     catch (libreallive::Error& e) {
       // Any error throw here is a parse error.
@@ -316,8 +327,8 @@ TextoutElement::~TextoutElement() {}
 const string TextoutElement::GetText() const {
   string rv;
   bool quoted = false;
-  string::const_iterator it = repr.begin();
-  while (it != repr.end()) {
+  string::const_iterator it = repr.cbegin();
+  while (it != repr.cend()) {
     if (*it == '"') {
       ++it;
       quoted = !quoted;
@@ -353,7 +364,8 @@ void TextoutElement::RunOnMachine(RLMachine& machine) const {
 // ExpressionElement
 // -----------------------------------------------------------------------
 
-ExpressionElement::ExpressionElement(const char* src) {
+ExpressionElement::ExpressionElement(const char* src)
+    : parsed_expression_(invalid_expression_piece_t()) {
   // Don't parse the expression, just isolate it.
   const char* end = src;
   end += NextToken(end);
@@ -364,31 +376,32 @@ ExpressionElement::ExpressionElement(const char* src) {
   repr.assign(src, end);
 }
 
-ExpressionElement::ExpressionElement(const long val) {
+ExpressionElement::ExpressionElement(const long val)
+    : parsed_expression_(invalid_expression_piece_t()) {
   repr.resize(6, '$');
   repr[1] = 0xff;
   insert_i32(repr, 2, val);
 }
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(nullptr) {
+    : parsed_expression_(rhs.parsed_expression_) {
 }
 
 ExpressionElement::~ExpressionElement() {}
 
 int ExpressionElement::GetValueOnly(RLMachine& machine) const {
   const char* location = repr.c_str();
-  std::unique_ptr<ExpressionPiece> e(GetExpression(location));
-  return e->GetIntegerValue(machine);
+  ExpressionPiece e(GetExpression(location));
+  return e.GetIntegerValue(machine);
 }
 
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
-  if (parsed_expression_.get() == 0) {
+  if (!parsed_expression_.is_valid()) {
     const char* location = repr.c_str();
     parsed_expression_ = GetAssignment(location);
   }
 
-  return *parsed_expression_;
+  return parsed_expression_;
 }
 
 void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
@@ -424,8 +437,7 @@ bool CommandElement::AreParametersParsed() const {
 }
 
 void CommandElement::SetParsedParameters(
-    ExpressionPiecesVector& parsedParameters) const {
-  parsed_parameters_.clear();
+    ExpressionPiecesVector parsedParameters) const {
   parsed_parameters_ = std::move(parsedParameters);
 }
 
@@ -520,7 +532,7 @@ SelectElement::SelectElement(const char* src)
       throw Error("SelectElement(): expected `\\n'");
     int lnum = read_i16(src + 1);
     src += 3;
-    params.push_back(Param(cond_parsed, cond, clen, text, tlen, lnum));
+    params.emplace_back(cond_parsed, cond, clen, text, tlen, lnum);
   }
 
   // HACK?: In Kotomi's path in CLANNAD, there's a select with empty options
@@ -608,8 +620,8 @@ std::string FunctionElement::GetSerializedCommand(RLMachine& machine) const {
     rv.push_back('(');
     for (string const& param : params) {
       const char* data = param.c_str();
-      std::unique_ptr<ExpressionPiece> expression(GetData(data));
-      rv.append(expression->GetSerializedExpression(machine));
+      ExpressionPiece expression(GetData(data));
+      rv.append(expression.GetSerializedExpression(machine));
     }
     rv.push_back(')');
   }
@@ -668,8 +680,8 @@ std::string SingleArgFunctionElement::GetSerializedCommand(RLMachine& machine)
     rv.push_back(command[i]);
   rv.push_back('(');
   const char* data = arg_.c_str();
-  std::unique_ptr<ExpressionPiece> expression(GetData(data));
-  rv.append(expression->GetSerializedExpression(machine));
+  ExpressionPiece expression(GetData(data));
+  rv.append(expression.GetSerializedExpression(machine));
   rv.push_back(')');
   return rv;
 }
@@ -803,7 +815,7 @@ GotoCaseElement::GotoCaseElement(const char* src, ConstructionData& cdata)
       src += 2;
     } else {
       int cexpr = NextExpression(src + 1);
-      cases.push_back(string(src, cexpr + 2));
+      cases.emplace_back(src, cexpr + 2);
       src += cexpr + 1;
       if (*src++ != ')')
         throw Error("GotoCaseElement(): expected `)'");
@@ -888,7 +900,7 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
     while (*src != ')') {
       int expr = NextData(src);
       repr_size += expr;
-      params.push_back(string(src, expr));
+      params.emplace_back(src, expr);
       src += expr;
     }
     src++;

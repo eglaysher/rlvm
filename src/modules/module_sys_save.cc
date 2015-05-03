@@ -65,14 +65,14 @@ using std::get;
 
 namespace {
 
-struct SaveExists : public RLOp_Store_1<IntConstant_T> {
+struct SaveExists : public RLStoreOpcode<IntConstant_T> {
   int operator()(RLMachine& machine, int slot) {
     fs::path saveFile = Serialization::buildSaveGameFilename(machine, slot);
     return fs::exists(saveFile) ? 1 : 0;
   }
 };
 
-struct SaveDate : public RLOp_Store_5<IntConstant_T,
+struct SaveDate : public RLStoreOpcode<IntConstant_T,
                                       IntReference_T,
                                       IntReference_T,
                                       IntReference_T,
@@ -98,7 +98,7 @@ struct SaveDate : public RLOp_Store_5<IntConstant_T,
   }
 };
 
-struct SaveTime : public RLOp_Store_5<IntConstant_T,
+struct SaveTime : public RLStoreOpcode<IntConstant_T,
                                       IntReference_T,
                                       IntReference_T,
                                       IntReference_T,
@@ -124,15 +124,15 @@ struct SaveTime : public RLOp_Store_5<IntConstant_T,
   }
 };
 
-struct SaveDateTime : public RLOp_Store_9<IntConstant_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T,
-                                          IntReference_T> {
+struct SaveDateTime : public RLStoreOpcode<IntConstant_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T,
+                                           IntReference_T> {
   int operator()(RLMachine& machine,
                  int slot,
                  IntReferenceIterator yIt,
@@ -162,7 +162,7 @@ struct SaveDateTime : public RLOp_Store_9<IntConstant_T,
   }
 };
 
-struct SaveInfo : public RLOp_Store_10<IntConstant_T,
+struct SaveInfo : public RLStoreOpcode<IntConstant_T,
                                        IntReference_T,
                                        IntReference_T,
                                        IntReference_T,
@@ -207,8 +207,8 @@ struct SaveInfo : public RLOp_Store_10<IntConstant_T,
 
 typedef Argc_T<Special_T<
     DefaultSpecialMapper,
-    Complex3_T<IntReference_T, IntReference_T, IntConstant_T>,
-    Complex3_T<StrReference_T, StrReference_T, IntConstant_T>>> GetSaveFlagList;
+    Complex_T<IntReference_T, IntReference_T, IntConstant_T>,
+    Complex_T<StrReference_T, StrReference_T, IntConstant_T>>> GetSaveFlagList;
 
 // Retrieves the values of variables from saved games. If slot is
 // empty, returns 0 and does nothing further; if slot contains a saved
@@ -228,7 +228,7 @@ typedef Argc_T<Special_T<
 //     str class
 //     GetSaveFlag(i, {intF[100], level, 2}, {strS[10], class, 1})
 //     menu_line[i] = 'Level \i{level} \s{class}, \i{hp} HP';
-struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
+struct GetSaveFlag : public RLStoreOpcode<IntConstant_T, GetSaveFlagList> {
   int operator()(RLMachine& machine, int slot, GetSaveFlagList::type flagList) {
     int fileExists = SaveExists()(machine, slot);
     if (!fileExists)
@@ -265,7 +265,7 @@ struct GetSaveFlag : public RLOp_Store_2<IntConstant_T, GetSaveFlagList> {
 
 // Returns the slot most recently saved to, or −1 if no games have
 // been saved.
-struct LatestSave : public RLOp_Store_Void {
+struct LatestSave : public RLStoreOpcode<> {
   int operator()(RLMachine& machine) {
     fs::path saveDir = machine.system().GameSaveDirectory();
     int latestSlot = -1;
@@ -290,7 +290,7 @@ struct LatestSave : public RLOp_Store_Void {
   }
 };
 
-struct save : public RLOp_Void_1<IntConstant_T> {
+struct save : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int slot) {
     Serialization::saveGlobalMemory(machine);
     Serialization::saveGameForSlot(machine, slot);

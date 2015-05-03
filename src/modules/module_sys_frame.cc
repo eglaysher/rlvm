@@ -45,7 +45,7 @@ using std::get;
 namespace {
 
 template <typename FRAMECLASS>
-struct InitFrame : public RLOp_Void_4<IntConstant_T,
+struct InitFrame : public RLOpcode<IntConstant_T,
                                       IntConstant_T,
                                       IntConstant_T,
                                       IntConstant_T> {
@@ -63,7 +63,7 @@ struct InitFrame : public RLOp_Void_4<IntConstant_T,
   }
 };
 
-struct ReadFrame : public RLOp_Store_1<IntConstant_T> {
+struct ReadFrame : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit ReadFrame(int layer) : layer_(layer) {}
 
@@ -76,7 +76,7 @@ struct ReadFrame : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct FrameActive : public RLOp_Store_1<IntConstant_T> {
+struct FrameActive : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit FrameActive(int layer) : layer_(layer) {}
 
@@ -90,7 +90,7 @@ struct FrameActive : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
+struct AnyFrameActive : public RLStoreOpcode<IntConstant_T> {
   const int layer_;
   explicit AnyFrameActive(int layer) : layer_(layer) {}
 
@@ -107,7 +107,7 @@ struct AnyFrameActive : public RLOp_Store_1<IntConstant_T> {
   }
 };
 
-struct ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
+struct ClearFrame_0 : public RLOpcode<IntConstant_T> {
   const int layer_;
   explicit ClearFrame_0(int layer) : layer_(layer) {}
 
@@ -117,7 +117,7 @@ struct ClearFrame_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+struct ClearFrame_1 : public RLOpcode<IntConstant_T, IntConstant_T> {
   const int layer_;
   explicit ClearFrame_1(int layer) : layer_(layer) {}
 
@@ -129,7 +129,7 @@ struct ClearFrame_1 : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   }
 };
 
-struct ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
+struct ClearAllFrames_0 : public RLOpcode<IntConstant_T> {
   const int layer_;
   explicit ClearAllFrames_0(int layer) : layer_(layer) {}
 
@@ -146,7 +146,7 @@ struct ClearAllFrames_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct ClearAllFrames_1 : public RLOp_Void_Void {
+struct ClearAllFrames_1 : public RLOpcode<> {
   const int layer_;
   explicit ClearAllFrames_1(int layer) : layer_(layer) {}
 
@@ -161,9 +161,9 @@ struct ClearAllFrames_1 : public RLOp_Void_Void {
   }
 };
 
-typedef Complex2_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
+typedef Complex_T<IntConstant_T, IntReference_T> FrameDataInReadFrames;
 
-struct ReadFrames : public RLOp_Store_1<Argc_T<FrameDataInReadFrames>> {
+struct ReadFrames : public RLStoreOpcode<Argc_T<FrameDataInReadFrames>> {
   const int layer_;
   explicit ReadFrames(int layer) : layer_(layer) {}
 

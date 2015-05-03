@@ -98,7 +98,7 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
   Point position = GetTextSurfaceRect().origin() +
                    Size(text_insertion_point_x_, text_insertion_point_y_);
 
-  SelectionElement* element =
+  std::unique_ptr<SelectionElement> element(
       new SelectionElement(system(),
                            std::shared_ptr<Surface>(new SDLSurface(
                                getSDLGraphics(system()), normal)),
@@ -106,10 +106,10 @@ void SDLTextWindow::AddSelectionItem(const std::string& utf8str,
                                getSDLGraphics(system()), inverted)),
                            selectionCallback(),
                            selection_id,
-                           position);
+                           position));
 
   text_insertion_point_y_ += (font_size_in_pixels_ + y_spacing_ + ruby_size_);
-  selections_.push_back(element);
+  selections_.push_back(std::move(element));
 }
 
 void SDLTextWindow::DisplayRubyText(const std::string& utf8str) {

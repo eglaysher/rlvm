@@ -105,7 +105,7 @@ void VoiceArchive::ReadVisualArtsTable(boost::filesystem::path file,
     int length = read_little_endian_int(head);
     int offset = read_little_endian_int(head + 4);
     int koe_num = read_little_endian_int(head + 8);
-    entries.push_back(Entry(koe_num, length, offset));
+    entries.emplace_back(koe_num, length, offset);
   }
 
   std::sort(entries.begin(), entries.end());

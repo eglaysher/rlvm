@@ -127,7 +127,7 @@ struct Sel_select_w : public RLOp_SpecialCase {
   }
 };
 
-struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
+struct Sel_select_objbtn : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
     if (machine.ShouldSetSelcomSavepoint())
       machine.MarkSavepoint();
@@ -137,7 +137,7 @@ struct Sel_select_objbtn : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
+struct Sel_select_objbtn_cancel_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int group) {
     if (machine.ShouldSetSelcomSavepoint())
       machine.MarkSavepoint();
@@ -150,7 +150,7 @@ struct Sel_select_objbtn_cancel_0 : public RLOp_Void_1<IntConstant_T> {
 };
 
 struct Sel_select_objbtn_cancel_1
-    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int group, int se) {
     if (machine.ShouldSetSelcomSavepoint())
       machine.MarkSavepoint();
@@ -163,11 +163,11 @@ struct Sel_select_objbtn_cancel_1
 };
 
 // Our system doesn't need an explicit initialize.
-struct objbtn_init_0 : public RLOp_Void_1<IntConstant_T> {
+struct objbtn_init_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int ignored) {}
 };
 
-struct objbtn_init_1 : public RLOp_Void_Void {
+struct objbtn_init_1 : public RLOpcode<> {
   void operator()(RLMachine& machine) {}
 };
 

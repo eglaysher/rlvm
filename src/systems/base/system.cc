@@ -489,11 +489,10 @@ void System::AddDirectoryToCache(const fs::path& directory) {
         std::string stem = dir->path().stem().string();
         to_lower(stem);
 
-        filesystem_cache_.insert(
-            make_pair(stem, make_pair(extension, dir->path())));
+        filesystem_cache_.emplace(stem, make_pair(extension, dir->path()));
       }
     }
   }
 }
 
-std::string GetRlvmVersionString() { return "Version 0.13.1"; }
+std::string GetRlvmVersionString() { return "Version 0.14"; }

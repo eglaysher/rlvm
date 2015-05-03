@@ -102,15 +102,8 @@ bool IsNotLongOp(StackFrame& frame) {
 
 RLMachine::RLMachine(System& in_system, libreallive::Archive& in_archive)
     : memory_(new Memory(*this, in_system.gameexe())),
-      halted_(false),
-      print_undefined_opcodes_(false),
-      halt_on_exception_(true),
       archive_(in_archive),
-      line_(0),
-      system_(in_system),
-      mark_savepoints_(true),
-      delay_stack_modifications_(false),
-      replaying_graphics_stack_(false) {
+      system_(in_system) {
   // Search in the Gameexe for #SEEN_START and place us there
   Gameexe& gameexe = in_system.gameexe();
   libreallive::Scenario* scenario = NULL;
@@ -175,7 +168,7 @@ void RLMachine::AttachModule(RLModule* module) {
     throw rlvm::Exception(ss.str());
   }
 
-  modules_.insert(make_pair(packed_module, std::unique_ptr<RLModule>(module)));
+  modules_.emplace(packed_module, std::unique_ptr<RLModule>(module));
 }
 
 int RLMachine::GetIntValue(const libreallive::IntMemRef& ref) {
@@ -296,7 +289,7 @@ void RLMachine::ExecuteNextInstruction() {
 
       // We specialcase rlvm::Exception because we might have the name of the
       // opcode.
-      if (e.operation() && e.operation()->name()) {
+      if (e.operation()) {
         cout << "[" << e.operation()->name() << "]";
       }
 
@@ -435,6 +428,8 @@ void RLMachine::PushStringValueUp(int index, const std::string& val) {
     it = find_if(it, call_stack_.rend(), IsNotLongOp);
 
     if (it != call_stack_.rend()) {
+      if ((index + 1) > it->strK.size())
+        it->strK.resize(index + 1);
       it->strK[index] = val;
     }
   }
@@ -479,7 +474,7 @@ int* RLMachine::CurrentIntLBank() {
   throw rlvm::Exception("No valid intL bank");
 }
 
-std::string* RLMachine::CurrentStrKBank() {
+std::vector<std::string>& RLMachine::CurrentStrKBank() {
   std::vector<StackFrame>::reverse_iterator it =
       find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);
   if (it != call_stack_.rend()) {
@@ -618,8 +613,7 @@ bool RLMachine::DllLoaded(const std::string& name) {
 void RLMachine::LoadDLL(int slot, const std::string& name) {
   RealLiveDLL* dll = RealLiveDLL::BuildDLLNamed(*this, name);
   if (dll) {
-    loaded_dlls_.insert(
-        std::make_pair(slot, std::unique_ptr<RealLiveDLL>(dll)));
+    loaded_dlls_.emplace(slot, std::unique_ptr<RealLiveDLL>(dll));
   } else {
     std::ostringstream oss;
     oss << "Can't load emulated dll named '" << name << "'";

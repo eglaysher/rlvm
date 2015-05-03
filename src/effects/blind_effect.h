@@ -50,7 +50,7 @@ class BlindEffect : public Effect {
   virtual void RenderPolygon(int polyStart, int polyEnd) = 0;
 
  private:
-  virtual bool BlitOriginalImage() const override;
+  virtual bool BlitOriginalImage() const final;
 
   int blind_size_;
 };
@@ -83,8 +83,8 @@ class BlindBottomToTopEffect : public BlindEffect {
 
  protected:
   virtual void PerformEffectForTime(RLMachine& machine,
-                                    int currentTime) override;
-  virtual void RenderPolygon(int polyStart, int polyEnd) override;
+                                    int currentTime) final;
+  virtual void RenderPolygon(int polyStart, int polyEnd) final;
 };
 
 class BlindLeftToRightEffect : public BlindEffect {
@@ -99,8 +99,8 @@ class BlindLeftToRightEffect : public BlindEffect {
 
  protected:
   virtual void PerformEffectForTime(RLMachine& machine,
-                                    int currentTime) override;
-  virtual void RenderPolygon(int polyStart, int polyEnd) override;
+                                    int currentTime) final;
+  virtual void RenderPolygon(int polyStart, int polyEnd) final;
 };
 
 class BlindRightToLeftEffect : public BlindEffect {
@@ -115,8 +115,8 @@ class BlindRightToLeftEffect : public BlindEffect {
 
  protected:
   virtual void PerformEffectForTime(RLMachine& machine,
-                                    int currentTime) override;
-  virtual void RenderPolygon(int polyStart, int polyEnd) override;
+                                    int currentTime) final;
+  virtual void RenderPolygon(int polyStart, int polyEnd) final;
 };
 
 #endif  // SRC_EFFECTS_BLIND_EFFECT_H_

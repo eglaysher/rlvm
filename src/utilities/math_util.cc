@@ -45,3 +45,9 @@ int Interpolate(int start, int current, int end, int amount, int mod) {
     throw rlvm::Exception("Invalid mod in Interpolate");
   }
 }
+
+int InterpolateBetween(int start, int current, int end,
+                       int start_val, int end_val, int mod) {
+  int to_add = end_val - start_val;
+  return start_val + Interpolate(start, current, end, to_add, mod);
+}

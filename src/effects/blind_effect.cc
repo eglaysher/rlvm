@@ -27,6 +27,8 @@
 
 #include "effects/blind_effect.h"
 
+#include <cstdlib>
+
 #include "systems/base/surface.h"
 
 // -----------------------------------------------------------------------
@@ -52,7 +54,7 @@ void BlindEffect::ComputeGrowing(RLMachine& machine,
 
   for (int currentBlind = 0; currentBlind < num_blinds; ++currentBlind) {
     if (currentBlind <= rows_to_display) {
-      int currentlyDisplayed = abs(currentBlind - rows_to_display);
+      int currentlyDisplayed = std::abs(currentBlind - rows_to_display);
       if (currentlyDisplayed > blind_size())
         currentlyDisplayed = blind_size();
 
@@ -71,7 +73,8 @@ void BlindEffect::ComputeDecreasing(RLMachine& machine,
 
   for (int currentBlind = num_blinds; currentBlind >= 0; --currentBlind) {
     if ((num_blinds - currentBlind) < rows_to_display) {
-      int currentlyDisplayed = abs(num_blinds - currentBlind - rows_to_display);
+      int currentlyDisplayed =
+          std::abs(num_blinds - currentBlind - rows_to_display);
       if (currentlyDisplayed > blind_size())
         currentlyDisplayed = blind_size();
 

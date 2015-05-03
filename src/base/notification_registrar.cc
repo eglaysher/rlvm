@@ -46,8 +46,7 @@ void NotificationRegistrar::Remove(NotificationObserver* observer,
   }
 
   Record record = { observer, type, source };
-  RecordVector::iterator found = std::find(
-      registered_.begin(), registered_.end(), record);
+  auto found = std::find(registered_.cbegin(), registered_.cend(), record);
   registered_.erase(found);
 
   // This can be NULL if our owner outlives the NotificationService, e.g. if our
@@ -88,6 +87,6 @@ bool NotificationRegistrar::IsRegistered(NotificationObserver* observer,
                                          NotificationType type,
                                          const NotificationSource& source) {
   Record record = { observer, type, source };
-  return std::find(registered_.begin(), registered_.end(), record) !=
-      registered_.end();
+  return std::find(registered_.cbegin(), registered_.cend(), record) !=
+      registered_.cend();
 }

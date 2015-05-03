@@ -44,6 +44,7 @@
 #include "modules/modules.h"
 #include "script_machine/script_machine.h"
 #include "script_machine/script_world.h"
+#include "systems/base/event_system.h"
 #include "systems/base/graphics_system.h"
 #include "systems/base/sound_system.h"
 #include "systems/base/system_error.h"
@@ -252,8 +253,19 @@ int main(int argc, char* argv[]) {
       // etc.
       sdlSystem.Run(rlmachine);
 
-      // Run the rlmachine through another instruction
-      rlmachine.ExecuteNextInstruction();
+      // Run the rlmachine through as many instructions as we can in a 10ms time
+      // slice. Bail out if we switch to long operation mode, or if the screen
+      // is marked as dirty.
+      unsigned int start_ticks = sdlSystem.event().GetTicks();
+      unsigned int end_ticks = start_ticks;
+      do {
+        rlmachine.ExecuteNextInstruction();
+        end_ticks = sdlSystem.event().GetTicks();
+      } while (!rlmachine.CurrentLongOperation() &&
+               !sdlSystem.force_wait() &&
+               (end_ticks - start_ticks < 10));
+
+      sdlSystem.set_force_wait(false);
     }
 
     Serialization::saveGlobalMemory(rlmachine);

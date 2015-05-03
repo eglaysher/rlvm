@@ -28,7 +28,6 @@
 
 #include "machine/reference.h"
 #include "libreallive/expression.h"
-#include "libreallive/expression_pieces.h"
 
 // Type definition for a reference into the RLMachine's memory,
 // referencing an integer value.

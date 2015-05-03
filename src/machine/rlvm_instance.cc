@@ -66,6 +66,7 @@ RLVMInstance::RLVMInstance()
       memory_(false),
       undefined_opcodes_(false),
       count_undefined_copcodes_(false),
+      tracing_(false),
       load_save_(-1),
       dump_seen_(-1) {
   srand(time(NULL));
@@ -127,7 +128,7 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     // Initialize our platform dialogs (we have to do this after
     // looking for a font because we use that font internally).
-    // boost::shared_ptr<Platform> platform(
+    // std::shared_ptr<GCNPlatform> platform(
     //     new GCNPlatform(sdlSystem, sdlSystem.graphics().screen_rect()));
     // sdlSystem.SetPlatform(platform);
 
@@ -136,6 +137,9 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
 
     if (count_undefined_copcodes_)
       rlmachine.RecordUndefinedOpcodeCounts();
+
+    if (tracing_)
+      rlmachine.set_tracing_on();
 
     Serialization::loadGlobalMemory(rlmachine);
 

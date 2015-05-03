@@ -42,10 +42,10 @@ class FadeEffect : public Effect {
 
  protected:
   virtual void PerformEffectForTime(RLMachine& machine,
-                                    int currentTime) override;
+                                    int currentTime) final;
 
  private:
-  virtual bool BlitOriginalImage() const override;
+  virtual bool BlitOriginalImage() const final;
 };
 
 #endif  // SRC_EFFECTS_FADE_EFFECT_H_

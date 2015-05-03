@@ -109,7 +109,7 @@ void HIKScript::LoadHikFile(System& system, const fs::path& file) {
       }
       case 20001: {
         consume_i32(curpointer);
-        layers_.push_back(Layer());
+        layers_.emplace_back();
         break;
       }
       case 20100: {
@@ -198,7 +198,7 @@ void HIKScript::LoadHikFile(System& system, const fs::path& file) {
       }
       case 30001: {
         consume_i32(curpointer);
-        CurrentLayer().animations.push_back(Animation());
+        CurrentLayer().animations.emplace_back();
         break;
       }
       case 30100: {
@@ -222,7 +222,7 @@ void HIKScript::LoadHikFile(System& system, const fs::path& file) {
           consume_i32(curpointer);
         }
 
-        CurrentAnimation().frames.push_back(Frame());
+        CurrentAnimation().frames.emplace_back();
         break;
       }
       case 40102: {

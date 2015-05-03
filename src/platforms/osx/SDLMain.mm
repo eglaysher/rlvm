@@ -13,7 +13,7 @@
 #import <AppKit/NSPanel.h>
 
 #include "Utilities/gettext.h"
-#include "Platforms/osx/CocoaRLVMInstance.h"
+#include "platforms/osx/CocoaRLVMInstance.h"
 
 #include <boost/filesystem/operations.hpp>
 namespace fs = boost::filesystem;
@@ -65,52 +65,55 @@ NSEvent* GetLastRightClickEvent() {
   return lastEvent;
 }
 
-@implementation SDLApplication
-/* Invoked from the Quit menu item */
-- (void)terminate:(id)sender
-{
-    /* Post a SDL_QUIT event */
-    SDL_Event event;
-    event.type = SDL_QUIT;
-    SDL_PushEvent(&event);
-}
+// TODO(erg): Part of porting to SDL2 will require us to figure out how we
+// embed the application on OSX.
 
--(void)sendEvent:(NSEvent*)event
-{
-  // In the specific case of right click mouse events, we grab the event before
-  // we pass it on so that when we get through the cross platform menu dispatch
-  // code, we can pass the event that caused the menu to popup back to Cocoa.
-  if ([event type] == NSRightMouseDown ||
-      [event type] == NSRightMouseUp) {
-    [lastEvent release];
-    lastEvent = [event retain];
-  }
+// @implementation OurSDLApplication
+// /* Invoked from the Quit menu item */
+// - (void)terminate:(id)sender
+// {
+//     /* Post a SDL_QUIT event */
+//     SDL_Event event;
+//     event.type = SDL_QUIT;
+//     SDL_PushEvent(&event);
+// }
 
-  [super sendEvent:event];
-}
+// -(void)sendEvent:(NSEvent*)event
+// {
+//   // In the specific case of right click mouse events, we grab the event before
+//   // we pass it on so that when we get through the cross platform menu dispatch
+//   // code, we can pass the event that caused the menu to popup back to Cocoa.
+//   if ([event type] == NSRightMouseDown ||
+//       [event type] == NSRightMouseUp) {
+//     [lastEvent release];
+//     lastEvent = [event retain];
+//   }
 
--(void)showREADME:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
-		pathForResource:@"README"
-				 ofType:@"TXT"]];
-}
+//   [super sendEvent:event];
+// }
 
--(void)showCopying:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
-		pathForResource:@"COPYING"
-				 ofType:@"TXT"]];
-}
+// -(void)showREADME:(id)sender
+// {
+// 	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+// 		pathForResource:@"README"
+// 				 ofType:@"TXT"]];
+// }
 
--(void)showGPL:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
-		pathForResource:@"GPL"
-				 ofType:@"TXT"]];
-}
+// -(void)showCopying:(id)sender
+// {
+// 	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+// 		pathForResource:@"COPYING"
+// 				 ofType:@"TXT"]];
+// }
 
-@end
+// -(void)showGPL:(id)sender
+// {
+// 	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] 
+// 		pathForResource:@"GPL"
+// 				 ofType:@"TXT"]];
+// }
+
+// @end
 
 /* The main class of the application, the application's delegate */
 @implementation SDLMain

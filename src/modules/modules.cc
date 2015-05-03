@@ -61,16 +61,18 @@ void AddAllModules(RLMachine& rlmachine) {
   // Attatch the modules for some commands
   rlmachine.AttachModule(new BgmModule);
   rlmachine.AttachModule(new BgrModule);
+  rlmachine.AttachModule(new BraModule);
   rlmachine.AttachModule(new ChildGanBgModule);
   rlmachine.AttachModule(new ChildGanFgModule);
   rlmachine.AttachModule(new ChildObjBgCreationModule);
+  rlmachine.AttachModule(new ChildObjBgGettersModule);
   rlmachine.AttachModule(new ChildObjBgManagement);
   rlmachine.AttachModule(new ChildObjBgModule);
-  rlmachine.AttachModule(new ChildObjBgGettersModule);
   rlmachine.AttachModule(new ChildObjFgCreationModule);
+  rlmachine.AttachModule(new ChildObjFgGettersModule);
   rlmachine.AttachModule(new ChildObjFgManagement);
   rlmachine.AttachModule(new ChildObjFgModule);
-  rlmachine.AttachModule(new ChildObjFgGettersModule);
+  rlmachine.AttachModule(new ChildObjRangeBgModule);
   rlmachine.AttachModule(new ChildObjRangeFgModule);
   rlmachine.AttachModule(new DLLModule);
   rlmachine.AttachModule(new DebugModule);
@@ -86,14 +88,14 @@ void AddAllModules(RLMachine& rlmachine) {
   rlmachine.AttachModule(new MovModule);
   rlmachine.AttachModule(new MsgModule);
   rlmachine.AttachModule(new ObjBgCreationModule);
+  rlmachine.AttachModule(new ObjBgGettersModule);
   rlmachine.AttachModule(new ObjBgManagement);
   rlmachine.AttachModule(new ObjBgModule);
-  rlmachine.AttachModule(new ObjBgGettersModule);
-  rlmachine.AttachModule(new ObjCopyFgToBg);
   rlmachine.AttachModule(new ObjFgCreationModule);
+  rlmachine.AttachModule(new ObjFgGettersModule);
   rlmachine.AttachModule(new ObjFgManagement);
   rlmachine.AttachModule(new ObjFgModule);
-  rlmachine.AttachModule(new ObjFgGettersModule);
+  rlmachine.AttachModule(new ObjManagement);
   rlmachine.AttachModule(new ObjRangeBgModule);
   rlmachine.AttachModule(new ObjRangeFgModule);
   rlmachine.AttachModule(new OsModule);

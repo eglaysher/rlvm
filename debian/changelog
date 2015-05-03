@@ -1,3 +1,12 @@
+rlvm (0.14) trusty; urgency=low
+
+  * Support for the US edition of planetarian.
+  * Support for Kud Wafter.
+  * Further attempts to smooth animations and text output.
+  * Internal code cleanups; ported to C++11.
+
+ -- Elliot Glaysher <glaysher@umich.edu>  Sat, 04 Oct 2014 09:27:01 -0700
+
 rlvm (0.13.1) saucy; urgency=low
 
   * Fix crash on the Clannad loading screen on certain OpenGL drivers.

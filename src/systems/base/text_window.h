@@ -28,8 +28,6 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 #define SRC_SYSTEMS_BASE_TEXT_WINDOW_H_
 
-#include <boost/ptr_container/ptr_vector.hpp>
-
 #include <functional>
 #include <memory>
 #include <vector>
@@ -251,7 +249,7 @@ class TextWindow {
   }
 
   // The actual selection items in this TextWindow.
-  typedef boost::ptr_vector<SelectionElement> Selections;
+  typedef std::vector<std::unique_ptr<SelectionElement>> Selections;
   Selections selections_;
 
   System& system() { return system_; }

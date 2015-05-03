@@ -31,9 +31,9 @@
 #include "machine/rlmodule.h"
 #include "machine/mapped_rlmodule.h"
 
-class ObjCopyFgToBg : public RLModule {
+class ObjManagement : public RLModule {
  public:
-  ObjCopyFgToBg();
+  ObjManagement();
 };
 
 class ObjFgManagement : public RLModule {

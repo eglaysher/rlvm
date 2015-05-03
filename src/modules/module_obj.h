@@ -31,6 +31,7 @@
 // Reusable function objects for the GraphicsObject system.
 
 #include "machine/rloperation.h"
+#include "utilities/lazy_array.h"
 
 class GraphicsObject;
 
@@ -39,6 +40,9 @@ class GraphicsObject;
 void EnsureIsParentObject(GraphicsObject& parent, int size);
 
 GraphicsObject& GetGraphicsObject(RLMachine& machine, RLOperation* op, int obj);
+
+LazyArray<GraphicsObject>& GetGraphicsObjects(RLMachine& machine,
+                                              RLOperation* op);
 
 void SetGraphicsObject(RLMachine& machine,
                        RLOperation* op,
@@ -65,7 +69,7 @@ class ObjRangeAdapter : public RLOp_SpecialCase {
   virtual ~ObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -88,7 +92,7 @@ class ChildObjAdapter : public RLOp_SpecialCase {
   virtual ~ChildObjAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -105,7 +109,7 @@ class ChildObjRangeAdapter : public RLOp_SpecialCase {
   virtual ~ChildObjRangeAdapter();
 
   virtual void operator()(RLMachine& machine,
-                          const libreallive::CommandElement& ff) override;
+                          const libreallive::CommandElement& ff) final;
 
  private:
   std::unique_ptr<RLOperation> handler;
@@ -118,13 +122,32 @@ RLOperation* ChildRangeMappingFun(RLOperation* op);
 
 // -----------------------------------------------------------------------
 
+// Calls a function on an object.
+//
+// NOTE: This does *not* call mark_object_state_as_dirty(), like the rest of
+// these adapters.
+class Obj_CallFunction : public RLOpcode<IntConstant_T> {
+ public:
+  typedef void (GraphicsObject::*Function)();
+
+  explicit Obj_CallFunction(Function f);
+  virtual ~Obj_CallFunction();
+
+  virtual void operator()(RLMachine& machine, int buf) final;
+
+ private:
+  Function function_;
+};
+
+// -----------------------------------------------------------------------
+
 // Specialized form of Op_SetToIncomingInt to deal with looking up
 // object from the Obj* helper templates; since a lot of Object
 // related functions simply call a setter.
 //
 // This template magic saves having to write out 25 - 30 operation
 // structs.
-class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+class Obj_SetOneIntOnObj : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
   // The function signature for the setter function
   typedef void (GraphicsObject::*Setter)(const int);
@@ -132,7 +155,7 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
   explicit Obj_SetOneIntOnObj(Setter s);
   virtual ~Obj_SetOneIntOnObj();
 
-  virtual void operator()(RLMachine& machine, int buf, int incoming) override;
+  virtual void operator()(RLMachine& machine, int buf, int incoming) final;
 
  private:
   // The setter function to call on Op_SetToIncoming::reference when
@@ -146,23 +169,40 @@ class Obj_SetOneIntOnObj : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
 // the Obj* helper templates; since a lot of Object related functions simply
 // call a setter.
 class Obj_SetTwoIntOnObj
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  // The function signature for the setter function
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
+ public:
   typedef void (GraphicsObject::*Setter)(const int);
 
-  // The setter functions to call on Op_SetToIncoming::reference when
-  // called.
-  Setter setterOne;
-  Setter setterTwo;
-
- public:
   Obj_SetTwoIntOnObj(Setter one, Setter two);
   virtual ~Obj_SetTwoIntOnObj();
 
   virtual void operator()(RLMachine& machine,
                           int buf,
-                          int incomingOne,
-                          int incomingTwo) override;
+                          int incoming_one,
+                          int incoming_two) final;
+
+ private:
+  Setter setter_one_;
+  Setter setter_two_;
+};
+
+// -----------------------------------------------------------------------
+
+class Obj_SetRepnoIntOnObj
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
+ public:
+  typedef void (GraphicsObject::*Setter)(const int, const int);
+
+  Obj_SetRepnoIntOnObj(Setter setter);
+  virtual ~Obj_SetRepnoIntOnObj();
+
+  virtual void operator()(RLMachine& machine,
+                          int buf,
+                          int idx,
+                          int val) final;
+
+ private:
+  Setter setter;
 };
 
 #endif  // SRC_MODULES_MODULE_OBJ_H_

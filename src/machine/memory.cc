@@ -126,14 +126,9 @@ const std::string& Memory::GetStringValue(int type, int location) {
 
   switch (type) {
     case libreallive::STRK_LOCATION:
-      if (location > 2) {
-        throw rlvm::Exception(
-            "Invalid range access on strK in RLMachine::set_string_value");
-      } else if (!machine_.CurrentStrKBank()) {
-        throw rlvm::Exception("No string bank connected yet!");
-      } else {
-        return machine_.CurrentStrKBank()[location];
-      }
+      if ((location + 1) > machine_.CurrentStrKBank().size())
+        machine_.CurrentStrKBank().resize(location + 1);
+      return machine_.CurrentStrKBank()[location];
     case libreallive::STRM_LOCATION:
       return global_->strM[location];
     case libreallive::STRS_LOCATION:
@@ -150,14 +145,9 @@ void Memory::SetStringValue(int type, int number, const std::string& value) {
 
   switch (type) {
     case libreallive::STRK_LOCATION:
-      if (number > 2) {
-        throw rlvm::Exception(
-            "Invalid range access on strK in RLMachine::set_string_value");
-      } else if (!machine_.CurrentStrKBank()) {
-        throw rlvm::Exception("No string bank connected yet!");
-      } else {
-        machine_.CurrentStrKBank()[number] = value;
-      }
+      if ((number + 1) > machine_.CurrentStrKBank().size())
+        machine_.CurrentStrKBank().resize(number + 1);
+      machine_.CurrentStrKBank()[number] = value;
       break;
     case libreallive::STRM_LOCATION:
       global_->strM[number] = value;

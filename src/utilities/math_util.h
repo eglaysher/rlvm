@@ -27,7 +27,11 @@
 #ifndef SRC_UTILITIES_MATH_UTIL_H_
 #define SRC_UTILITIES_MATH_UTIL_H_
 
-// Interpolates between start and end. Returns a percentage of amount.
+// Interpolates between |start| and |end|. Returns a percentage of |amount|.
 int Interpolate(int start, int current, int end, int amount, int mod);
+
+// Interpolates a value between |start_val| and |end_val|.
+int InterpolateBetween(int start, int current, int end,
+                       int start_val, int end_val, int mod);
 
 #endif  // SRC_UTILITIES_MATH_UTIL_H_

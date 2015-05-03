@@ -77,11 +77,11 @@ class ScrollSquashSlideBaseEffect : public Effect {
   int CalculateAmountVisible(int current_time, int screen_size);
 
   // Don't blit the original image.
-  virtual bool BlitOriginalImage() const override;
+  virtual bool BlitOriginalImage() const final;
 
   // Implement the Effect interface
   virtual void PerformEffectForTime(RLMachine& machine,
-                                    int current_time) override;
+                                    int current_time) final;
 
   // Drawer behavior class
   std::unique_ptr<ScrollSquashSlideDrawer> drawer_;
@@ -130,102 +130,102 @@ class ScrollSquashSlideDrawer {
 
 class TopToBottomDrawer : public ScrollSquashSlideDrawer {
  public:
-  virtual int GetMaxSize(GraphicsSystem& gs) override;
+  virtual int GetMaxSize(GraphicsSystem& gs) final;
   virtual void ScrollOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void ScrollOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
   virtual void SquashOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void SquashOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
 };
 
 class BottomToTopDrawer : public ScrollSquashSlideDrawer {
  public:
-  virtual int GetMaxSize(GraphicsSystem& gs) override;
+  virtual int GetMaxSize(GraphicsSystem& gs) final;
   virtual void ScrollOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void ScrollOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
   virtual void SquashOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void SquashOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
 };
 
 class LeftToRightDrawer : public ScrollSquashSlideDrawer {
  public:
-  virtual int GetMaxSize(GraphicsSystem& gs) override;
+  virtual int GetMaxSize(GraphicsSystem& gs) final;
   virtual void ScrollOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void ScrollOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
   virtual void SquashOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void SquashOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
 };
 
 class RightToLeftDrawer : public ScrollSquashSlideDrawer {
  public:
-  virtual int GetMaxSize(GraphicsSystem& gs) override;
+  virtual int GetMaxSize(GraphicsSystem& gs) final;
   virtual void ScrollOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void ScrollOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
   virtual void SquashOn(GraphicsSystem&,
                         ScrollSquashSlideBaseEffect&,
                         int amount_visible,
                         int width,
-                        int height) override;
+                        int height) final;
   virtual void SquashOff(GraphicsSystem&,
                          ScrollSquashSlideBaseEffect&,
                          int amount_visible,
                          int width,
-                         int height) override;
+                         int height) final;
 };
 
 // Effect Types
@@ -247,7 +247,7 @@ class ScrollOnScrollOff : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase {
@@ -255,7 +255,7 @@ class ScrollOnSquashOff : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase {
@@ -263,7 +263,7 @@ class SquashOnScrollOff : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase {
@@ -271,7 +271,7 @@ class SquashOnSquashOff : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 class SlideOn : public ScrollSquashSlideEffectTypeBase {
@@ -279,7 +279,7 @@ class SlideOn : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 class SlideOff : public ScrollSquashSlideEffectTypeBase {
@@ -287,7 +287,7 @@ class SlideOff : public ScrollSquashSlideEffectTypeBase {
   virtual void ComposeEffectsFor(GraphicsSystem& system,
                                  ScrollSquashSlideBaseEffect& event,
                                  ScrollSquashSlideDrawer& drawer,
-                                 int amount_visible) override;
+                                 int amount_visible) final;
 };
 
 #endif  // SRC_EFFECTS_SCROLL_ON_SCROLL_OFF_H_

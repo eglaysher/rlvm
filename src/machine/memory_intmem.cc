@@ -66,7 +66,7 @@ void saveOriginalValue(int* bank,
   if (bank && original_bank) {
     std::map<int, int>::iterator it = original_bank->find(location);
     if (it == original_bank->end()) {
-      original_bank->insert(std::make_pair(location, bank[location]));
+      original_bank->emplace(location, bank[location]);
     }
   }
 }

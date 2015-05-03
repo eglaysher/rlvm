@@ -35,9 +35,7 @@
 #include "systems/base/system.h"
 #include "utilities/exception.h"
 #include "libreallive/bytecode.h"
-#include "libreallive/expression_pieces.h"
 
-using libreallive::IntegerConstant;
 using libreallive::ExpressionPiece;
 
 void EnsureIsParentObject(GraphicsObject& parent, int size) {
@@ -67,6 +65,27 @@ GraphicsObject& GetGraphicsObject(RLMachine& machine,
         .GetObject(obj);
   } else {
     return graphics.GetObject(fgbg, obj);
+  }
+}
+
+LazyArray<GraphicsObject>& GetGraphicsObjects(RLMachine& machine,
+                                              RLOperation* op) {
+  GraphicsSystem& graphics = machine.system().graphics();
+
+  int fgbg;
+  if (!op->GetProperty(P_FGBG, fgbg))
+    fgbg = OBJ_FG;
+
+  int parentobj;
+  if (op->GetProperty(P_PARENTOBJ, parentobj)) {
+    GraphicsObject& parent = graphics.GetObject(fgbg, parentobj);
+    EnsureIsParentObject(parent, graphics.GetObjectLayerSize());
+    return static_cast<ParentGraphicsObjectData&>(parent.GetObjectData())
+        .objects();
+  } else if (fgbg == OBJ_FG) {
+    return graphics.GetForegroundObjects();
+  } else {
+    return graphics.GetBackgroundObjects();
   }
 }
 
@@ -110,24 +129,26 @@ void ObjRangeAdapter::operator()(RLMachine& machine,
   // what RLOperation.DispatchFunction() does; we manually call the
   // subclass's Dispatch() so that we can get around the automated
   // incrementing of the instruction pointer.
-  int lowerRange = allParameters[0]->GetIntegerValue(machine);
-  int upperRange = allParameters[1]->GetIntegerValue(machine);
+  int lowerRange = allParameters[0].GetIntegerValue(machine);
+  int upperRange = allParameters[1].GetIntegerValue(machine);
+
+  // Create a new list of expression pieces that contain a single integer at
+  // the front. We will update this integer each time through the loop below.
+  libreallive::ExpressionPiecesVector parameters;
+  parameters.reserve(allParameters.size() - 1);
+  parameters.emplace_back(
+      libreallive::ExpressionPiece::IntConstant(lowerRange));
+
+  // Copy everything after the first two items
+  libreallive::ExpressionPiecesVector::const_iterator it =
+      allParameters.begin();
+  std::advance(it, 2);
+  for (; it != allParameters.end(); ++it)
+    parameters.emplace_back(*it);
+
   for (int i = lowerRange; i <= upperRange; ++i) {
-    // Create a new list of expression pieces that contain the
-    // current object we're dealing with and
-    libreallive::ExpressionPiecesVector currentInstantiation;
-    currentInstantiation.emplace_back(new IntegerConstant(i));
-
-    // Copy everything after the first two items
-    libreallive::ExpressionPiecesVector::const_iterator it =
-        allParameters.begin();
-    std::advance(it, 2);
-    for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->Clone());
-    }
-
-    // Now Dispatch based on these parameters.
-    handler->Dispatch(machine, currentInstantiation);
+    parameters[0] = libreallive::ExpressionPiece::IntConstant(i);
+    handler->Dispatch(machine, parameters);
   }
 
   machine.AdvanceInstructionPointer();
@@ -154,16 +175,14 @@ void ChildObjAdapter::operator()(RLMachine& machine,
   if (allParameters.size() < 1)
     throw rlvm::Exception("Less than one argument to an objLayered function!");
 
-  int objset = allParameters[0]->GetIntegerValue(machine);
+  int objset = allParameters[0].GetIntegerValue(machine);
 
   // Copy everything after the first item
-  libreallive::ExpressionPiecesVector currentInstantiation;
   libreallive::ExpressionPiecesVector::const_iterator it =
       allParameters.begin();
   ++it;
-  for (; it != allParameters.end(); ++it) {
-    currentInstantiation.emplace_back((*it)->Clone());
-  }
+  libreallive::ExpressionPiecesVector currentInstantiation(
+      it, allParameters.end());
 
   handler->SetProperty(P_PARENTOBJ, objset);
   handler->Dispatch(machine, currentInstantiation);
@@ -196,29 +215,33 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
   // This part is like ChildObjAdapter; the first parameter is an integer
   // that represents the parent object.
-  int objset = allParameters[0]->GetIntegerValue(machine);
+  int objset = allParameters[0].GetIntegerValue(machine);
 
   // This part is like ObjRangeAdapter; the second and third parameters are
   // integers that represent a range of child objects.
-  int lowerRange = allParameters[1]->GetIntegerValue(machine);
-  int upperRange = allParameters[2]->GetIntegerValue(machine);
-  for (int i = lowerRange; i <= upperRange; ++i) {
-    // Create a new list of expression pieces that contain the
-    // current object we're dealing with and
-    libreallive::ExpressionPiecesVector currentInstantiation;
-    currentInstantiation.emplace_back(new IntegerConstant(i));
+  int lowerRange = allParameters[1].GetIntegerValue(machine);
+  int upperRange = allParameters[2].GetIntegerValue(machine);
 
-    // Copy everything after the first three items
-    libreallive::ExpressionPiecesVector::const_iterator it =
-        allParameters.begin();
-    std::advance(it, 3);
-    for (; it != allParameters.end(); ++it) {
-      currentInstantiation.emplace_back((*it)->Clone());
-    }
+  // Create a new list of expression pieces that contain a single integer at
+  // the front. We will update this integer each time through the loop below.
+  libreallive::ExpressionPiecesVector parameters;
+  parameters.reserve(allParameters.size() - 2);
+  parameters.emplace_back(
+      libreallive::ExpressionPiece::IntConstant(lowerRange));
+
+  // Copy everything after the first three items
+  libreallive::ExpressionPiecesVector::const_iterator it =
+      allParameters.begin();
+  std::advance(it, 3);
+  for (; it != allParameters.end(); ++it)
+    parameters.emplace_back(*it);
+
+  for (int i = lowerRange; i <= upperRange; ++i) {
+    parameters[0] = libreallive::ExpressionPiece::IntConstant(i);
 
     // Now Dispatch based on these parameters.
     handler->SetProperty(P_PARENTOBJ, objset);
-    handler->Dispatch(machine, currentInstantiation);
+    handler->Dispatch(machine, parameters);
   }
 
   machine.AdvanceInstructionPointer();
@@ -226,6 +249,19 @@ void ChildObjRangeAdapter::operator()(RLMachine& machine,
 
 RLOperation* ChildRangeMappingFun(RLOperation* op) {
   return new ChildObjRangeAdapter(op);
+}
+
+// -----------------------------------------------------------------------
+// Obj_CallFunction
+// -----------------------------------------------------------------------
+
+Obj_CallFunction::Obj_CallFunction(Function f) : function_(f) {}
+
+Obj_CallFunction::~Obj_CallFunction() {}
+
+void Obj_CallFunction::operator()(RLMachine& machine, int buf) {
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+  ((obj).*(function_))();
 }
 
 // -----------------------------------------------------------------------
@@ -248,17 +284,35 @@ void Obj_SetOneIntOnObj::operator()(RLMachine& machine, int buf, int incoming) {
 // -----------------------------------------------------------------------
 
 Obj_SetTwoIntOnObj::Obj_SetTwoIntOnObj(Setter one, Setter two)
-    : setterOne(one), setterTwo(two) {}
+    : setter_one_(one), setter_two_(two) {}
 
 Obj_SetTwoIntOnObj::~Obj_SetTwoIntOnObj() {}
 
 void Obj_SetTwoIntOnObj::operator()(RLMachine& machine,
                                     int buf,
-                                    int incomingOne,
-                                    int incomingTwo) {
+                                    int incoming_one,
+                                    int incoming_two) {
   GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-  ((obj).*(setterOne))(incomingOne);
-  ((obj).*(setterTwo))(incomingTwo);
+  ((obj).*(setter_one_))(incoming_one);
+  ((obj).*(setter_two_))(incoming_two);
 
+  machine.system().graphics().mark_object_state_as_dirty();
+}
+
+// -----------------------------------------------------------------------
+// Obj_SetRepnoIntOnObj
+// -----------------------------------------------------------------------
+
+Obj_SetRepnoIntOnObj::Obj_SetRepnoIntOnObj(Setter setter)
+    : setter(setter) {}
+
+Obj_SetRepnoIntOnObj::~Obj_SetRepnoIntOnObj() {}
+
+void Obj_SetRepnoIntOnObj::operator()(RLMachine& machine,
+                                      int buf,
+                                      int idx,
+                                      int val) {
+  GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
+  ((obj).*(setter))(idx, val);
   machine.system().graphics().mark_object_state_as_dirty();
 }

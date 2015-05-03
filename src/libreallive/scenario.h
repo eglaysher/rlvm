@@ -73,10 +73,8 @@ class Scenario {
   typedef BytecodeList::const_iterator const_iterator;
   typedef BytecodeList::iterator iterator;
 
-  iterator begin()              { return script.elts_.begin(); }
-  iterator end()                { return script.elts_.end();   }
-  const_iterator begin() const  { return script.elts_.begin(); }
-  const_iterator end() const    { return script.elts_.end();   }
+  const_iterator begin() const  { return script.elts_.cbegin(); }
+  const_iterator end() const    { return script.elts_.cend();   }
 
   // Locate the entrypoint
   const_iterator FindEntrypoint(int entrypoint) const;

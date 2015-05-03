@@ -169,10 +169,13 @@ TextPage::Command::Command(CommandType type, int one)
       break;
     case TYPE_OFFSET_INSERTION_X:
       offset_insertion_x = one;
+      break;
     case TYPE_OFFSET_INSERTION_Y:
       offset_insertion_y = one;
+      break;
     case TYPE_FACE_CLOSE:
       face_close = one;
+      break;
     default:
       throw rlvm::Exception("Incorrect arrity");
   }
@@ -306,6 +309,8 @@ TextPage::TextPage(System& system, int window_num)
 
 TextPage::TextPage(const TextPage& rhs) = default;
 
+TextPage::TextPage(TextPage&& rhs) = default;
+
 TextPage::~TextPage() {}
 
 void TextPage::Replay(bool is_active_page) {
@@ -331,7 +336,7 @@ bool TextPage::Character(const string& current, const string& rest) {
   if (rendered) {
     if (elements_to_replay_.size() == 0 ||
         elements_to_replay_.back().command != TYPE_CHARACTERS) {
-      elements_to_replay_.push_back(Command(TYPE_CHARACTERS));
+      elements_to_replay_.emplace_back(TYPE_CHARACTERS);
     }
 
     elements_to_replay_.back().characters.append(current);

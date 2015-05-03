@@ -75,7 +75,7 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
       ObjectInfo(*tree);
       *tree << "  Rendering " << src << " to " << dst << std::endl;
       if (parent) {
-        *tree << "  Parent: ";
+        *tree << "  Parent Properties: ";
         PrintGraphicsObjectToTree(*parent, tree);
         *tree << std::endl;
       }
@@ -84,6 +84,16 @@ void GraphicsObjectData::Render(const GraphicsObject& go,
       if (alpha != 255)
         *tree << "(alpha=" << alpha << ") ";
       PrintGraphicsObjectToTree(go, tree);
+      *tree << std::endl;
+
+      if (parent) {
+        *tree << "  Parent Mutators: ";
+        PrintStringVector(parent->GetMutatorNames(), tree);
+        *tree << std::endl;
+      }
+
+      *tree << "  Mutators: ";
+      PrintStringVector(go.GetMutatorNames(), tree);
       *tree << std::endl;
     }
 
@@ -159,7 +169,7 @@ void GraphicsObjectData::EndAnimation() {
       break;
     case AFTER_CLEAR:
       if (owned_by_)
-        owned_by_->DeleteObject();
+        owned_by_->FreeObjectData();
       break;
     case AFTER_LOOP: {
       // Reset from the beginning
@@ -188,6 +198,21 @@ void GraphicsObjectData::PrintGraphicsObjectToTree(const GraphicsObject& go,
     *tree << "(origin_x=" << go.origin_x() << ") ";
   if (go.origin_y())
     *tree << "(origin_y=" << go.origin_y() << ") ";
+}
+
+void GraphicsObjectData::PrintStringVector(
+    const std::vector<std::string>& names,
+    std::ostream* tree) {
+  bool first = true;
+
+  for (auto const& name : names) {
+    if (!first)
+      *tree << ", ";
+    else
+      first = false;
+
+    *tree << name;
+  }
 }
 
 Rect GraphicsObjectData::SrcRect(const GraphicsObject& go) {

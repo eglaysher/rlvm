@@ -27,6 +27,8 @@
 #ifndef SRC_SYSTEMS_BASE_OBJECT_MUTATOR_H_
 #define SRC_SYSTEMS_BASE_OBJECT_MUTATOR_H_
 
+#include <string>
+
 class GraphicsObject;
 class RLMachine;
 
@@ -34,23 +36,32 @@ class RLMachine;
 class ObjectMutator {
  public:
   ObjectMutator(int repr,
-                const char* name,
+                const std::string& name,
                 int creation_time,
                 int duration_time,
                 int delay,
                 int type);
   virtual ~ObjectMutator();
 
-  // Called every tick. Returns true if the command has completed.
-  bool operator()(RLMachine& machine, GraphicsObject& object);
+  int repr() const { return repr_; }
+  const std::string& name() const { return name_; }
+
+  // Called every tick. Returns true if the command has completed. Virtual for
+  // testing.
+  virtual bool operator()(RLMachine& machine, GraphicsObject& object);
 
   // Returns true if this ObjectMutator is operating on |name|/|repr|.
-  bool OperationMatches(int repr, const char* name) const;
+  bool OperationMatches(int repr, const std::string& name) const;
 
   // Called to end the mutation prematurely.
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) = 0;
 
+  // Builds a copy of the ObjectMutator. Used during object promotion.
+  virtual ObjectMutator* Clone() const = 0;
+
  protected:
+  ObjectMutator(const ObjectMutator& mutator);
+
   // Returns what value should be set on the object at the current time.
   int GetValueForTime(RLMachine& machine, int start, int end);
 
@@ -63,7 +74,7 @@ class ObjectMutator {
   int repr_;
 
   // The name of our operation.
-  const char* name_;
+  const std::string name_;
 
   // Clock value at time of creation
   int creation_time_;
@@ -73,6 +84,9 @@ class ObjectMutator {
 
   // An optional duration after |creation_time_| where we don't do anything.
   int delay_;
+
+  // What sort of interpolation we should do here.
+  int type_;
 };
 
 // -----------------------------------------------------------------------
@@ -82,7 +96,7 @@ class OneIntObjectMutator : public ObjectMutator {
  public:
   typedef void (GraphicsObject::*Setter)(const int);
 
-  OneIntObjectMutator(const char* name,
+  OneIntObjectMutator(const std::string& name,
                       int creation_time,
                       int duration_time,
                       int delay,
@@ -93,7 +107,10 @@ class OneIntObjectMutator : public ObjectMutator {
   virtual ~OneIntObjectMutator();
 
  private:
+  OneIntObjectMutator(const OneIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 
@@ -109,7 +126,7 @@ class RepnoIntObjectMutator : public ObjectMutator {
  public:
   typedef void (GraphicsObject::*Setter)(const int, const int);
 
-  RepnoIntObjectMutator(const char* name,
+  RepnoIntObjectMutator(const std::string& name,
                         int creation_time,
                         int duration_time,
                         int delay,
@@ -121,7 +138,10 @@ class RepnoIntObjectMutator : public ObjectMutator {
   virtual ~RepnoIntObjectMutator();
 
  private:
+  RepnoIntObjectMutator(const RepnoIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 
@@ -138,7 +158,7 @@ class TwoIntObjectMutator : public ObjectMutator {
  public:
   typedef void (GraphicsObject::*Setter)(const int);
 
-  TwoIntObjectMutator(const char* name,
+  TwoIntObjectMutator(const std::string& name,
                       int creation_time,
                       int duration_time,
                       int delay,
@@ -152,7 +172,10 @@ class TwoIntObjectMutator : public ObjectMutator {
   virtual ~TwoIntObjectMutator();
 
  private:
+  TwoIntObjectMutator(const TwoIntObjectMutator& rhs);
+
   virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override;
+  virtual ObjectMutator* Clone() const override;
   virtual void PerformSetting(RLMachine& machine,
                               GraphicsObject& object) override;
 

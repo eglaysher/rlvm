@@ -37,7 +37,7 @@
 
 namespace {
 
-struct stackNop : public RLOp_Void_1<IntConstant_T> {
+struct stackNop : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int numberOfNops) {
     GraphicsSystem& sys = machine.system().graphics();
 
@@ -47,14 +47,14 @@ struct stackNop : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct stackTrunc : public RLOp_Void_1<IntConstant_T> {
+struct stackTrunc : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int count) {
     GraphicsSystem& sys = machine.system().graphics();
     sys.StackPop(sys.StackSize() - count);
   }
 };
 
-struct GetDCPixel : public RLOp_Void_6<IntConstant_T,
+struct GetDCPixel : public RLOpcode<IntConstant_T,
                                        IntConstant_T,
                                        IntConstant_T,
                                        IntReference_T,

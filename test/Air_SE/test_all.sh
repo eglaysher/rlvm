@@ -17,7 +17,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/Air_SE/$SCRIPT $GAMEDIR > AIR.log/$LOG 2>&1
+  time build/lua_rlvm --count-undefined test/Air_SE/$SCRIPT $GAMEDIR > AIR.log/$LOG 2>&1
 }
 
 runPath "Dream_Kano.lua"

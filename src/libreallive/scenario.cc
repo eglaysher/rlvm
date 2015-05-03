@@ -93,7 +93,7 @@ Header::Header(const char* data, const size_t length) {
   int offs = read_i32(data + 0x14);
   while (dplen--) {
     int elen = read_i32(data + offs);
-    dramatis_personae_.push_back(string(data + offs + 4, elen - 1));
+    dramatis_personae_.emplace_back(data + offs + 4, elen - 1);
     offs += elen + 4;
   }
 
@@ -159,7 +159,7 @@ Script::Script(const Header& hdr,
     // Keep track of the entrypoints
     int entrypoint = (*it)->GetEntrypoint();
     if (entrypoint != BytecodeElement::kInvalidEntrypoint)
-      entrypoint_associations_.insert(make_pair(entrypoint, it));
+      entrypoint_associations_.emplace(entrypoint, it);
 
     // Advance
     size_t l = (*it)->GetBytecodeLength();

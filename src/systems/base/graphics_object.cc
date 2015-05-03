@@ -37,6 +37,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -145,7 +146,8 @@ GraphicsObject::GraphicsObject(const GraphicsObject& rhs) : impl_(rhs.impl_) {
     object_data_.reset();
   }
 
-  // Note: we don't copy the currently running object mutators.
+  for (auto const& mutator : rhs.object_mutators_)
+    object_mutators_.emplace_back(mutator->Clone());
 }
 
 GraphicsObject::~GraphicsObject() { DeleteObjectMutators(); }
@@ -160,6 +162,9 @@ GraphicsObject& GraphicsObject::operator=(const GraphicsObject& obj) {
   } else {
     object_data_.reset();
   }
+
+  for (auto const& mutator : obj.object_mutators_)
+    object_mutators_.emplace_back(mutator->Clone());
 
   return *this;
 }
@@ -784,13 +789,22 @@ int GraphicsObject::GetButtonYOffsetOverride() const {
     return DEFAULT_BUTTON_Y_OFFSET;
 }
 
-void GraphicsObject::AddObjectMutator(ObjectMutator* mutator) {
+void GraphicsObject::AddObjectMutator(std::unique_ptr<ObjectMutator> mutator) {
   MakeImplUnique();
-  // TODO(erg): If we have an equivalent mutator, remove it first.
-  object_mutators_.emplace_back(mutator);
+
+  // If there's a currently running mutator that matches the incoming mutator,
+  // we ignore the incoming mutator. Kud Wafter's ED relies on this behaviour.
+  for (std::unique_ptr<ObjectMutator>& mutator_ptr : object_mutators_) {
+    if (mutator_ptr->OperationMatches(mutator->repr(), mutator->name())) {
+      return;
+    }
+  }
+
+  object_mutators_.push_back(std::move(mutator));
 }
 
-bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
+bool GraphicsObject::IsMutatorRunningMatching(int repno,
+                                              const std::string& name) {
   for (auto const& mutator : object_mutators_) {
     if (mutator->OperationMatches(repno, name))
       return true;
@@ -801,7 +815,7 @@ bool GraphicsObject::IsMutatorRunningMatching(int repno, const char* name) {
 
 void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
                                               int repno,
-                                              const char* name,
+                                              const std::string& name,
                                               int speedup) {
   if (speedup == 0) {
     std::vector<std::unique_ptr<ObjectMutator>>::iterator it =
@@ -821,6 +835,20 @@ void GraphicsObject::EndObjectMutatorMatching(RLMachine& machine,
               << "EndObjectMutatorMatching(). Unsupported speedup " << speedup
               << std::endl;
   }
+}
+
+std::vector<std::string> GraphicsObject::GetMutatorNames() const {
+  std::vector<std::string> names;
+
+  for (auto& mutator : object_mutators_) {
+    std::ostringstream oss;
+    oss << mutator->name();
+    if (mutator->repr() != -1)
+      oss << "/" << mutator->repr();
+    names.push_back(oss.str());
+  }
+
+  return names;
 }
 
 void GraphicsObject::MakeImplUnique() {
@@ -845,20 +873,20 @@ void GraphicsObject::Render(int objNum,
   }
 }
 
-void GraphicsObject::DeleteObject() {
+void GraphicsObject::FreeObjectData() {
   object_data_.reset();
   DeleteObjectMutators();
 }
 
-void GraphicsObject::ResetProperties() {
+void GraphicsObject::InitializeParams() {
   impl_ = s_empty_impl;
   DeleteObjectMutators();
 }
 
-void GraphicsObject::ClearObject() {
+void GraphicsObject::FreeDataAndInitializeParams() {
+  object_data_.reset();
   impl_ = s_empty_impl;
   DeleteObjectMutators();
-  object_data_.reset();
 }
 
 void GraphicsObject::Execute(RLMachine& machine) {

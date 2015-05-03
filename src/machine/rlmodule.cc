@@ -27,6 +27,8 @@
 
 #include "machine/rlmodule.h"
 
+#include <iomanip>
+#include <iostream>
 #include <utility>
 #include <sstream>
 #include <string>
@@ -64,7 +66,7 @@ void RLModule::UnpackOpcodeNumber(int packed_opcode,
 
 void RLModule::AddOpcode(int opcode,
                          unsigned char overload,
-                         const char* name,
+                         const std::string& name,
                          RLOperation* op) {
   int packed_opcode = PackOpcodeNumber(opcode, overload);
   op->set_name(name);
@@ -79,8 +81,7 @@ void RLModule::AddOpcode(int opcode,
     throw rlvm::Exception(oss.str());
   }
 #endif
-  stored_operations_.insert(
-      std::make_pair(packed_opcode, std::unique_ptr<RLOperation>(op)));
+  stored_operations_.emplace(packed_opcode, std::unique_ptr<RLOperation>(op));
 }
 
 void RLModule::AddUnsupportedOpcode(int opcode,
@@ -88,9 +89,9 @@ void RLModule::AddUnsupportedOpcode(int opcode,
                                     const std::string& name) {
   AddOpcode(opcode,
             overload,
-            "",
+            name,
             new UndefinedFunction(
-                name, module_type_, module_number_, opcode, (int)overload));
+                module_type_, module_number_, opcode, (int)overload));
 }
 
 void RLModule::SetProperty(int property, int value) {
@@ -105,7 +106,7 @@ void RLModule::SetProperty(int property, int value) {
     return;
   }
 
-  property_list_->push_back(std::make_pair(property, value));
+  property_list_->emplace_back(property, value);
 }
 
 bool RLModule::GetProperty(int property, int& value) const {
@@ -132,6 +133,15 @@ void RLModule::DispatchFunction(RLMachine& machine,
       stored_operations_.find(PackOpcodeNumber(f.opcode(), f.overload()));
   if (it != stored_operations_.end()) {
     try {
+      if (machine.is_tracing_on()) {
+        std::cerr << "(SEEN" << std::setw(4) << std::setfill('0')
+                  << machine.SceneNumber()
+                  << ")(Line " << std::setw(4) << std::setfill('0')
+                  << machine.line_number() << "): " << it->second->name();
+        libreallive::PrintParameterString(std::cerr,
+                                          f.GetUnparsedParameters());
+        std::cerr << std::endl;
+      }
       it->second->DispatchFunction(machine, f);
     }
     catch (rlvm::Exception& e) {

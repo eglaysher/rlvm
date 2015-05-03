@@ -41,7 +41,6 @@
 
 #include "libreallive/bytecode.h"
 #include "libreallive/gameexe.h"
-#include "long_operations/wait_long_operation.h"
 #include "machine/long_operation.h"
 #include "machine/properties.h"
 #include "machine/rlmachine.h"
@@ -65,7 +64,7 @@
 
 namespace {
 
-struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
+struct dispArea_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.ClearClipRect();
@@ -73,7 +72,7 @@ struct dispArea_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct dispArea_1 : RLOp_Void_5<IntConstant_T,
+struct dispArea_1 : RLOpcode<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
@@ -85,7 +84,7 @@ struct dispArea_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispRect_1 : RLOp_Void_5<IntConstant_T,
+struct dispRect_1 : RLOpcode<IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
                                 IntConstant_T,
@@ -97,7 +96,7 @@ struct dispRect_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+struct dispCorner_1 : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int x, int y) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetClipRect(Rect::GRP(0, 0, x, y));
@@ -105,7 +104,7 @@ struct dispCorner_1 : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
   }
 };
 
-struct dispOwnArea_0 : public RLOp_Void_1<IntConstant_T> {
+struct dispOwnArea_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.ClearOwnClipRect();
@@ -113,7 +112,7 @@ struct dispOwnArea_0 : public RLOp_Void_1<IntConstant_T> {
   }
 };
 
-struct dispOwnArea_1 : RLOp_Void_5<IntConstant_T,
+struct dispOwnArea_1 : RLOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
@@ -125,7 +124,7 @@ struct dispOwnArea_1 : RLOp_Void_5<IntConstant_T,
   }
 };
 
-struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
+struct dispOwnRect_1 : RLOpcode<IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
                                    IntConstant_T,
@@ -138,7 +137,7 @@ struct dispOwnRect_1 : RLOp_Void_5<IntConstant_T,
 };
 
 struct adjust
-    : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+    : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int x, int y) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetXAdjustment(idx, x);
@@ -147,24 +146,8 @@ struct adjust
   }
 };
 
-struct adjustX : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int idx, int x) {
-    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.SetXAdjustment(idx, x);
-    machine.system().graphics().mark_object_state_as_dirty();
-  }
-};
-
-struct adjustY : RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
-  void operator()(RLMachine& machine, int buf, int idx, int y) {
-    GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
-    obj.SetYAdjustment(idx, y);
-    machine.system().graphics().mark_object_state_as_dirty();
-  }
-};
-
 struct tint
-    : RLOp_Void_4<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
+    : RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int r, int g, int b) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetTint(RGBColour(r, g, b));
@@ -172,7 +155,7 @@ struct tint
   }
 };
 
-struct colour : RLOp_Void_5<IntConstant_T,
+struct colour : RLOpcode<IntConstant_T,
                             IntConstant_T,
                             IntConstant_T,
                             IntConstant_T,
@@ -185,7 +168,7 @@ struct colour : RLOp_Void_5<IntConstant_T,
 };
 
 struct objSetRect_1
-    : public RLOp_Void_2<IntConstant_T, Rect_T<rect_impl::GRP>> {
+    : public RLOpcode<IntConstant_T, Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine, int buf, Rect rect) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     if (obj.has_object_data()) {
@@ -199,14 +182,14 @@ struct objSetRect_1
   }
 };
 
-struct objSetRect_0 : public RLOp_Void_1<IntConstant_T> {
+struct objSetRect_0 : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int buf) {
     Rect rect(0, 0, GetScreenSize(machine.system().gameexe()));
     objSetRect_1()(machine, buf, rect);
   }
 };
 
-struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
+struct objSetText : public RLOpcode<IntConstant_T, DefaultStrValue_T> {
   void operator()(RLMachine& machine, int buf, string val) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     std::string utf8str = cp932toUTF8(val, machine.GetTextEncoding());
@@ -215,7 +198,7 @@ struct objSetText : public RLOp_Void_2<IntConstant_T, DefaultStrValue_T> {
   }
 };
 
-struct objTextOpts : public RLOp_Void_7<IntConstant_T,
+struct objTextOpts : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
@@ -236,19 +219,19 @@ struct objTextOpts : public RLOp_Void_7<IntConstant_T,
   }
 };
 
-struct objDriftOpts : public RLOp_Void_13<IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          IntConstant_T,
-                                          Rect_T<rect_impl::GRP>> {
+struct objDriftOpts : public RLOpcode<IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     Rect_T<rect_impl::GRP>> {
   void operator()(RLMachine& machine,
                   int buf,
                   int count,
@@ -280,7 +263,7 @@ struct objDriftOpts : public RLOp_Void_13<IntConstant_T,
   }
 };
 
-struct objNumOpts : public RLOp_Void_6<IntConstant_T,
+struct objNumOpts : public RLOpcode<IntConstant_T,
                                        IntConstant_T,
                                        IntConstant_T,
                                        IntConstant_T,
@@ -300,7 +283,7 @@ struct objNumOpts : public RLOp_Void_6<IntConstant_T,
 };
 
 struct objAdjustAlpha
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
   void operator()(RLMachine& machine, int buf, int idx, int alpha) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, buf);
     obj.SetAlphaAdjustment(idx, alpha);
@@ -308,7 +291,7 @@ struct objAdjustAlpha
   }
 };
 
-struct objButtonOpts : public RLOp_Void_5<IntConstant_T,
+struct objButtonOpts : public RLOpcode<IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
                                           IntConstant_T,
@@ -327,7 +310,7 @@ struct objButtonOpts : public RLOp_Void_5<IntConstant_T,
 
 // -----------------------------------------------------------------------
 
-class objEveAdjust : public RLOp_Void_7<IntConstant_T,
+class objEveAdjust : public RLOpcode<IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
                                         IntConstant_T,
@@ -349,16 +332,17 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
     int start_x = object.x_adjustment(repno);
     int start_y = object.y_adjustment(repno);
 
-    object.AddObjectMutator(new AdjustMutator(machine,
-                                              repno,
-                                              creation_time,
-                                              duration_time,
-                                              delay,
-                                              type,
-                                              start_x,
-                                              x,
-                                              start_y,
-                                              y));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new AdjustMutator(machine,
+                          repno,
+                          creation_time,
+                          duration_time,
+                          delay,
+                          type,
+                          start_x,
+                          x,
+                          start_y,
+                          y)));
   }
 
  private:
@@ -388,12 +372,18 @@ class objEveAdjust : public RLOp_Void_7<IntConstant_T,
           end_y_(target_y) {}
 
    private:
-    virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+    virtual void SetToEnd(RLMachine& machine,
+                          GraphicsObject& object) override {
       object.SetXAdjustment(repno_, end_x_);
       object.SetYAdjustment(repno_, end_y_);
     }
 
-    virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+    virtual ObjectMutator* Clone() const override {
+      return new AdjustMutator(*this);
+    }
+
+    virtual void PerformSetting(RLMachine& machine,
+                                GraphicsObject& object) override {
       int x = GetValueForTime(machine, start_x_, end_x_);
       object.SetXAdjustment(repno_, x);
 
@@ -507,7 +497,7 @@ class DisplayMutator : public ObjectMutator {
   }
 
  private:
-  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) {
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override {
     object.SetVisible(display_);
 
     if (tr_mod_)
@@ -519,7 +509,12 @@ class DisplayMutator : public ObjectMutator {
     }
   }
 
-  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object) {
+  virtual ObjectMutator* Clone() const override {
+    return new DisplayMutator(*this);
+  }
+
+  virtual void PerformSetting(RLMachine& machine,
+                              GraphicsObject& object) override {
     // While performing whatever visual transition, the object should be
     // displayed.
     object.SetVisible(true);
@@ -555,7 +550,7 @@ class DisplayMutator : public ObjectMutator {
   bool scale_y_mod_;
 };
 
-struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
+struct objEveDisplay_1 : public RLOpcode<IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
@@ -571,30 +566,31 @@ struct objEveDisplay_1 : public RLOp_Void_5<IntConstant_T,
 
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp.at(0),
-                                               disp.at(1),
-                                               disp.at(2),
-                                               disp.at(3),
-                                               disp.at(4),
-                                               disp.at(5),
-                                               disp.at(6),
-                                               disp.at(7),
-                                               disp.at(8),
-                                               disp.at(9),
-                                               disp.at(10),
-                                               disp.at(11),
-                                               disp.at(12),
-                                               disp.at(13)));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp.at(0),
+                           disp.at(1),
+                           disp.at(2),
+                           disp.at(3),
+                           disp.at(4),
+                           disp.at(5),
+                           disp.at(6),
+                           disp.at(7),
+                           disp.at(8),
+                           disp.at(9),
+                           disp.at(10),
+                           disp.at(11),
+                           disp.at(12),
+                           disp.at(13))));
   }
 };
 
-struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
+struct objEveDisplay_2 : public RLOpcode<IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
                                             IntConstant_T,
@@ -615,47 +611,48 @@ struct objEveDisplay_2 : public RLOp_Void_9<IntConstant_T,
                   int move_len_y) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp_event_mod,
-                                               tr_mod,
-                                               move_mod,
-                                               move_len_x,
-                                               move_len_y,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0,
-                                               0));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp_event_mod,
+                           tr_mod,
+                           move_mod,
+                           move_len_x,
+                           move_len_y,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0,
+                           0)));
   }
 };
 
-struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T,
-                                             IntConstant_T> {
+struct objEveDisplay_3 : public RLOpcode<IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T,
+                                        IntConstant_T> {
   void operator()(RLMachine& machine,
                   int obj,
                   int display,
@@ -677,160 +674,169 @@ struct objEveDisplay_3 : public RLOp_Void_18<IntConstant_T,
                   int sin_count) {
     GraphicsObject& object = GetGraphicsObject(machine, this, obj);
     unsigned int creation_time = machine.system().event().GetTicks();
-    object.AddObjectMutator(new DisplayMutator(machine,
-                                               object,
-                                               creation_time,
-                                               duration_time,
-                                               delay,
-                                               display,
-                                               disp_event_mod,
-                                               tr_mod,
-                                               move_mod,
-                                               move_len_x,
-                                               move_len_y,
-                                               rotate_mod,
-                                               rotate_count,
-                                               scale_x_mod,
-                                               scale_x_percent,
-                                               scale_y_mod,
-                                               scale_y_percent,
-                                               sin_mod,
-                                               sin_len,
-                                               sin_count));
+    object.AddObjectMutator(std::unique_ptr<ObjectMutator>(
+        new DisplayMutator(machine,
+                           object,
+                           creation_time,
+                           duration_time,
+                           delay,
+                           display,
+                           disp_event_mod,
+                           tr_mod,
+                           move_mod,
+                           move_len_x,
+                           move_len_y,
+                           rotate_mod,
+                           rotate_count,
+                           scale_x_mod,
+                           scale_x_percent,
+                           scale_y_mod,
+                           scale_y_percent,
+                           sin_mod,
+                           sin_len,
+                           sin_count)));
   }
 };
 
-bool MutatorIsDone(RLMachine& machine,
-                   RLOperation* op,
-                   int obj,
-                   int repno,
-                   const char* name) {
-  return GetGraphicsObject(machine, op, obj)
-             .IsMutatorRunningMatching(repno, name) == false;
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
+
+void addUnifiedFunctions(ObjectModule& h) {
+  h.AddDoubleObjectCommands(0, "Move",
+                            &GraphicsObject::x,
+                            &GraphicsObject::SetX,
+                            &GraphicsObject::y,
+                            &GraphicsObject::SetY);
+  h.AddSingleObjectCommands(1, "Left",
+                            &GraphicsObject::x,
+                            &GraphicsObject::SetX);
+  h.AddSingleObjectCommands(2, "Top",
+                            &GraphicsObject::y,
+                            &GraphicsObject::SetY);
+  h.AddSingleObjectCommands(3, "Alpha",
+                            &GraphicsObject::raw_alpha,
+                            &GraphicsObject::SetAlpha);
+
+  // ----
+
+  h.AddCustomRepno<adjust, objEveAdjust>(6, "Adjust");
+  h.AddRepnoObjectCommands(7, "AdjustX",
+                           &GraphicsObject::x_adjustment,
+                           &GraphicsObject::SetXAdjustment);
+  h.AddRepnoObjectCommands(8, "AdjustY",
+                           &GraphicsObject::y_adjustment,
+                           &GraphicsObject::SetYAdjustment);
+  h.AddSingleObjectCommands(9, "Mono",
+                            &GraphicsObject::mono,
+                            &GraphicsObject::SetMono);
+  h.AddSingleObjectCommands(10, "Invert",
+                            &GraphicsObject::invert,
+                            &GraphicsObject::SetInvert);
+  h.AddSingleObjectCommands(11, "Light",
+                            &GraphicsObject::light,
+                            &GraphicsObject::SetLight);
+
+  // ---
+
+  h.AddSingleObjectCommands(13, "TintR",
+                            &GraphicsObject::tint_red,
+                            &GraphicsObject::SetTintRed);
+  h.AddSingleObjectCommands(14, "TintG",
+                            &GraphicsObject::tint_green,
+                            &GraphicsObject::SetTintGreen);
+  h.AddSingleObjectCommands(15, "TintB",
+                            &GraphicsObject::tint_blue,
+                            &GraphicsObject::SetTintBlue);
+
+  // ---
+
+  h.AddSingleObjectCommands(17, "ColR",
+                            &GraphicsObject::colour_red,
+                            &GraphicsObject::SetColourRed);
+  h.AddSingleObjectCommands(18, "ColG",
+                            &GraphicsObject::colour_green,
+                            &GraphicsObject::SetColourGreen);
+  h.AddSingleObjectCommands(19, "ColB",
+                            &GraphicsObject::colour_blue,
+                            &GraphicsObject::SetColourBlue);
+  h.AddSingleObjectCommands(20, "ColLevel",
+                            &GraphicsObject::colour_level,
+                            &GraphicsObject::SetColourLevel);
+
+  // ---
+
+  h.AddSingleObjectCommands(36, "AdjustVert",
+                            &GraphicsObject::vert,
+                            &GraphicsObject::SetVert);
+
+  h.AddRepnoObjectCommands(40, "AdjustAlpha",
+                           &GraphicsObject::alpha_adjustment,
+                           &GraphicsObject::SetAlphaAdjustment);
+
+  // --
+  h.AddDoubleObjectCommands(46, "Scale",
+                            &GraphicsObject::width,
+                            &GraphicsObject::SetWidth,
+                            &GraphicsObject::height,
+                            &GraphicsObject::SetHeight);
+  h.AddSingleObjectCommands(47, "Width",
+                            &GraphicsObject::width,
+                            &GraphicsObject::SetWidth);
+  h.AddSingleObjectCommands(48, "Height",
+                            &GraphicsObject::height,
+                            &GraphicsObject::SetHeight);
+  h.AddSingleObjectCommands(49, "Rotate",
+                            &GraphicsObject::rotation,
+                            &GraphicsObject::SetRotation);
+  h.AddDoubleObjectCommands(50, "RepOrigin",
+                            &GraphicsObject::rep_origin_x,
+                            &GraphicsObject::SetRepOriginX,
+                            &GraphicsObject::rep_origin_y,
+                            &GraphicsObject::SetRepOriginY);
+  h.AddSingleObjectCommands(51, "RepOriginX",
+                            &GraphicsObject::rep_origin_x,
+                            &GraphicsObject::SetRepOriginX);
+  h.AddSingleObjectCommands(52, "RepOriginY",
+                            &GraphicsObject::rep_origin_y,
+                            &GraphicsObject::SetRepOriginY);
+  h.AddDoubleObjectCommands(53, "Origin",
+                            &GraphicsObject::origin_x,
+                            &GraphicsObject::SetOriginX,
+                            &GraphicsObject::origin_y,
+                            &GraphicsObject::SetOriginY);
+  h.AddSingleObjectCommands(54, "OriginX",
+                            &GraphicsObject::origin_x,
+                            &GraphicsObject::SetOriginX);
+  h.AddSingleObjectCommands(55, "OriginY",
+                            &GraphicsObject::origin_y,
+                            &GraphicsObject::SetOriginY);
+
+  // ---
+
+  h.AddDoubleObjectCommands(61, "HqScale",
+                            &GraphicsObject::hq_width,
+                            &GraphicsObject::SetHqWidth,
+                            &GraphicsObject::hq_height,
+                            &GraphicsObject::SetHqHeight);
+  h.AddSingleObjectCommands(62, "HqWidth",
+                            &GraphicsObject::hq_width,
+                            &GraphicsObject::SetHqWidth);
+  h.AddSingleObjectCommands(63, "HqHeight",
+                            &GraphicsObject::hq_height,
+                            &GraphicsObject::SetHqHeight);
 }
-
-class Op_MutatorWaitNormal : public RLOp_Void_1<IntConstant_T> {
- public:
-  explicit Op_MutatorWaitNormal(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnEvent(
-        std::bind(MutatorIsDone, std::ref(machine), this, obj, -1, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-class Op_MutatorWaitRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
- public:
-  explicit Op_MutatorWaitRepNo(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj, int repno) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnEvent(
-        std::bind(MutatorIsDone, std::ref(machine), this, obj, repno, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-bool objectMutatorIsWorking(RLMachine& machine,
-                            RLOperation* op,
-                            int obj,
-                            int repno,
-                            const char* name) {
-  return GetGraphicsObject(machine, op, obj)
-             .IsMutatorRunningMatching(repno, name) == false;
-}
-
-class Op_MutatorWaitCNormal : public RLOp_Void_1<IntConstant_T> {
- public:
-  explicit Op_MutatorWaitCNormal(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnClicks();
-    wait_op->BreakOnEvent(std::bind(
-        objectMutatorIsWorking, std::ref(machine), this, obj, -1, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-class Op_MutatorWaitCRepNo : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
- public:
-  explicit Op_MutatorWaitCRepNo(const char* name) : name_(name) {}
-
-  virtual void operator()(RLMachine& machine, int obj, int repno) {
-    WaitLongOperation* wait_op = new WaitLongOperation(machine);
-    wait_op->BreakOnClicks();
-    wait_op->BreakOnEvent(std::bind(
-        objectMutatorIsWorking, std::ref(machine), this, obj, repno, name_));
-    machine.PushLongOperation(wait_op);
-  }
-
- private:
-  const char* name_;
-};
-
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
-// -----------------------------------------------------------------------
 
 void addObjectFunctions(RLModule& m) {
-  m.AddOpcode(
-      1000,
-      0,
-      "objMove",
-      new Obj_SetTwoIntOnObj(&GraphicsObject::SetX, &GraphicsObject::SetY));
-  m.AddOpcode(
-      1001, 0, "objLeft", new Obj_SetOneIntOnObj(&GraphicsObject::SetX));
-  m.AddOpcode(1002, 0, "objTop", new Obj_SetOneIntOnObj(&GraphicsObject::SetY));
-  m.AddOpcode(
-      1003, 0, "objAlpha", new Obj_SetOneIntOnObj(&GraphicsObject::SetAlpha));
   m.AddOpcode(
       1004, 0, "objShow", new Obj_SetOneIntOnObj(&GraphicsObject::SetVisible));
   m.AddOpcode(1005, 0, "objDispArea", new dispArea_0);
   m.AddOpcode(1005, 1, "objDispArea", new dispArea_1);
-  m.AddOpcode(1006, 0, "objAdjust", new adjust);
-  m.AddOpcode(1007, 0, "objAdjustX", new adjustX);
-  m.AddOpcode(1008, 0, "objAdjustY", new adjustY);
-  m.AddOpcode(
-      1009, 0, "objMono", new Obj_SetOneIntOnObj(&GraphicsObject::SetMono));
-  m.AddOpcode(
-      1010, 0, "objInvert", new Obj_SetOneIntOnObj(&GraphicsObject::SetInvert));
-  m.AddOpcode(
-      1011, 0, "objLight", new Obj_SetOneIntOnObj(&GraphicsObject::SetLight));
+
   m.AddOpcode(1012, 0, "objTint", new tint);
-  m.AddOpcode(
-      1013, 0, "objTintR", new Obj_SetOneIntOnObj(&GraphicsObject::SetTintRed));
-  m.AddOpcode(
-      1014, 0, "objTintG",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetTintGreen));
-  m.AddOpcode(
-      1015, 0, "objTintB",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetTintBlue));
+
   m.AddOpcode(1016, 0, "objColour", new colour);
-  m.AddOpcode(
-      1017, 0, "objColR",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourRed));
-  m.AddOpcode(
-      1018, 0, "objColG",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourGreen));
-  m.AddOpcode(
-      1019, 0, "objColB",
-      new Obj_SetOneIntOnObj(&GraphicsObject::SetColourBlue));
-  m.AddOpcode(1020,
-              0,
-              "objColLevel",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetColourLevel));
+
   m.AddOpcode(1021,
               0,
               "objComposite",
@@ -866,10 +872,7 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(1035, 0, "objDispCorner", new dispArea_0);
   m.AddOpcode(1035, 1, "objDispCorner", new dispArea_1);
   m.AddOpcode(1035, 2, "objDispCorner", new dispCorner_1);
-  m.AddOpcode(1036,
-              0,
-              "objAdjustVert",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetVert));
+
   m.AddOpcode(1037,
               0,
               "objSetDigits",
@@ -878,66 +881,11 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(
       1039, 0, "objPattNo", new Obj_SetOneIntOnObj(&GraphicsObject::SetPattNo));
 
-  m.AddOpcode(1040, 0, "objAdjustAlpha", new objAdjustAlpha);
   m.AddUnsupportedOpcode(1041, 0, "objAdjustAll");
   m.AddUnsupportedOpcode(1042, 0, "objAdjustAllX");
   m.AddUnsupportedOpcode(1043, 0, "objAdjustAllY");
 
-  m.AddOpcode(1046,
-              0,
-              "objScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetWidth,
-                                     &GraphicsObject::SetHeight));
-  m.AddOpcode(
-      1047, 0, "objWidth", new Obj_SetOneIntOnObj(&GraphicsObject::SetWidth));
-  m.AddOpcode(
-      1048, 0, "objHeight", new Obj_SetOneIntOnObj(&GraphicsObject::SetHeight));
-  m.AddOpcode(1049,
-              0,
-              "objRotate",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRotation));
-
-  m.AddOpcode(1050,
-              0,
-              "objRepOrigin",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetRepOriginX,
-                                     &GraphicsObject::SetRepOriginY));
-  m.AddOpcode(1051,
-              0,
-              "objRepOriginX",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRepOriginX));
-  m.AddOpcode(1052,
-              0,
-              "objRepOriginY",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetRepOriginY));
-  m.AddOpcode(1053,
-              0,
-              "objOrigin",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetOriginX,
-                                     &GraphicsObject::SetOriginY));
-  m.AddOpcode(1054,
-              0,
-              "objOriginX",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetOriginX));
-  m.AddOpcode(1055,
-              0,
-              "objOriginY",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetOriginY));
   m.AddUnsupportedOpcode(1056, 0, "objFadeOpts");
-
-  m.AddOpcode(1061,
-              0,
-              "objHqScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetHqWidth,
-                                     &GraphicsObject::SetHqHeight));
-  m.AddOpcode(1062,
-              0,
-              "objHqWidth",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetHqWidth));
-  m.AddOpcode(1063,
-              0,
-              "objHqHeight",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetHqHeight));
 
   m.AddOpcode(1064, 2, "objButtonOpts", new objButtonOpts);
   m.AddOpcode(1066,
@@ -952,47 +900,6 @@ void addObjectFunctions(RLModule& m) {
 }
 
 void addEveObjectFunctions(RLModule& m) {
-  m.AddOpcode(
-      2000,
-      0,
-      "objEveMove",
-      new Obj_SetTwoIntOnObj(&GraphicsObject::SetX, &GraphicsObject::SetY));
-  m.AddOpcode(2000,
-              1,
-              "objEveMove",
-              new Op_ObjectMutatorIntInt(&GraphicsObject::x,
-                                         &GraphicsObject::SetX,
-                                         &GraphicsObject::y,
-                                         &GraphicsObject::SetY,
-                                         "objEveMove"));
-
-  m.AddOpcode(
-      2001, 0, "objEveLeft", new Obj_SetOneIntOnObj(&GraphicsObject::SetX));
-  m.AddOpcode(2001,
-              1,
-              "objEveLeft",
-              new Op_ObjectMutatorInt(
-                  &GraphicsObject::x, &GraphicsObject::SetX, "objEveLeft"));
-
-  m.AddOpcode(
-      2002, 0, "objEveTop", new Obj_SetOneIntOnObj(&GraphicsObject::SetY));
-  m.AddOpcode(2002,
-              1,
-              "objEveTop",
-              new Op_ObjectMutatorInt(
-                  &GraphicsObject::y, &GraphicsObject::SetY, "objEveTop"));
-
-  m.AddOpcode(2003,
-              0,
-              "objEveAlpha",
-              new Obj_SetOneIntOnObj(&GraphicsObject::SetAlpha));
-  m.AddOpcode(
-      2003,
-      1,
-      "objEveAlpha",
-      new Op_ObjectMutatorInt(
-          &GraphicsObject::raw_alpha, &GraphicsObject::SetAlpha, "objEveAlpha"));
-
   m.AddOpcode(2004,
               0,
               "objEveDisplay",
@@ -1001,104 +908,21 @@ void addEveObjectFunctions(RLModule& m) {
   m.AddOpcode(2004, 2, "objEveDisplay", new objEveDisplay_2);
   m.AddOpcode(2004, 3, "objEveDisplay", new objEveDisplay_3);
 
-  m.AddOpcode(2006, 0, "objEveAdjust", new adjust);
-  m.AddOpcode(2006, 1, "objEveAdjust", new objEveAdjust);
-
-  m.AddOpcode(2007, 0, "objEveAdjustX", new adjustX);
-  m.AddOpcode(2007,
-              1,
-              "objEveAdjustX",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::x_adjustment,
-                                           &GraphicsObject::SetXAdjustment,
-                                           "objEveAdjustX"));
-
-  m.AddOpcode(2008, 0, "objEveAdjustY", new adjustY);
-  m.AddOpcode(2008,
-              1,
-              "objEveAdjustY",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::y_adjustment,
-                                           &GraphicsObject::SetYAdjustment,
-                                           "objEveAdjustY"));
-
-  m.AddOpcode(2040, 0, "objEveAdjustAlpha", new objAdjustAlpha);
-  m.AddOpcode(2040,
-              1,
-              "objEveAdjustAlpha",
-              new Op_ObjectMutatorRepnoInt(&GraphicsObject::alpha_adjustment,
-                                           &GraphicsObject::SetAlphaAdjustment,
-                                           "objEveAdjustAlpha"));
-
-  m.AddOpcode(2046,
-              0,
-              "objEveScale",
-              new Obj_SetTwoIntOnObj(&GraphicsObject::SetWidth,
-                                     &GraphicsObject::SetHeight));
-  m.AddOpcode(2046,
-              1,
-              "objEveScale",
-              new Op_ObjectMutatorIntInt(&GraphicsObject::width,
-                                         &GraphicsObject::SetWidth,
-                                         &GraphicsObject::height,
-                                         &GraphicsObject::SetHeight,
-                                         "objEveScale"));
-
   m.AddOpcode(
-      4000, 0, "objEveMoveWait", new Op_MutatorWaitNormal("objEveMove"));
-  m.AddOpcode(
-      4001, 0, "objEveLeftWait", new Op_MutatorWaitNormal("objEveLeft"));
-  m.AddOpcode(4002, 0, "objEveTopWait", new Op_MutatorWaitNormal("objEveTop"));
-  m.AddOpcode(
-      4003, 0, "objEveAlphaWait", new Op_MutatorWaitNormal("objEveAlpha"));
+      3004, 0, "objEveDisplayCheck", new Op_MutatorCheck("objEveDisplay"));
+
   m.AddOpcode(
       4004, 0, "objEveDisplayWait", new Op_MutatorWaitNormal("objEveDisplay"));
-  m.AddOpcode(
-      4006, 0, "objEveAdjustEnd", new Op_MutatorWaitRepNo("objEveAdjust"));
-  m.AddOpcode(4040,
-              0,
-              "objEveAdjustAlpha",
-              new Op_MutatorWaitRepNo("objEveAdjustAlpha"));
 
-  m.AddOpcode(
-      5000, 0, "objEveMoveWaitC", new Op_MutatorWaitCNormal("objEveMove"));
-  m.AddOpcode(
-      5001, 0, "objEveLeftWaitC", new Op_MutatorWaitCNormal("objEveLeft"));
-  m.AddOpcode(
-      5002, 0, "objEveTopWaitC", new Op_MutatorWaitCNormal("objEveTop"));
-  m.AddOpcode(
-      5003, 0, "objEveAlphaWaitC", new Op_MutatorWaitCNormal("objEveAlpha"));
   m.AddOpcode(5004,
               0,
               "objEveDisplayWaitC",
               new Op_MutatorWaitCNormal("objEveDisplay"));
-  m.AddOpcode(
-      5006, 0, "objEveAdjustWaitC", new Op_MutatorWaitCRepNo("objEveAdjust"));
-  m.AddOpcode(5040,
-              0,
-              "objEveAdjustAlphaWaitC",
-              new Op_MutatorWaitCRepNo("objEveAdjustAlpha"));
 
-  m.AddOpcode(
-      6000, 0, "objEveMoveEnd", new Op_EndObjectMutation_Normal("objEveMove"));
-  m.AddOpcode(
-      6001, 0, "objEveLeftEnd", new Op_EndObjectMutation_Normal("objEveLeft"));
-  m.AddOpcode(
-      6002, 0, "objEveTopEnd", new Op_EndObjectMutation_Normal("objEveTop"));
-  m.AddOpcode(6003,
-              0,
-              "objEveAlphaEnd",
-              new Op_EndObjectMutation_Normal("objEveAlpha"));
   m.AddOpcode(6004,
               0,
               "objEveDisplayEnd",
               new Op_EndObjectMutation_Normal("objEveDisplay"));
-  m.AddOpcode(6006,
-              0,
-              "objEveAdjustEnd",
-              new Op_EndObjectMutation_RepNo("objEveAdjust"));
-  m.AddOpcode(6040,
-              0,
-              "objEveAdjustAlphaEnd",
-              new Op_EndObjectMutation_RepNo("objEveAdjustAlpha"));
 }
 
 }  // namespace
@@ -1107,7 +931,11 @@ void addEveObjectFunctions(RLModule& m) {
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 
-ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
+ObjFgModule::ObjFgModule()
+    : RLModule("ObjFg", 1, 81),
+      helper_("obj", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -1115,7 +943,11 @@ ObjFgModule::ObjFgModule() : RLModule("ObjFg", 1, 81) {
 
 // -----------------------------------------------------------------------
 
-ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
+ObjBgModule::ObjBgModule()
+    : RLModule("ObjBg", 1, 82),
+      helper_("objBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -1124,7 +956,10 @@ ObjBgModule::ObjBgModule() : RLModule("ObjBg", 1, 82) {
 // -----------------------------------------------------------------------
 
 ChildObjFgModule::ChildObjFgModule()
-    : MappedRLModule(ChildObjMappingFun, "ChildObjFg", 2, 81) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjFg", 2, 81),
+      helper_("objChild", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
@@ -1133,7 +968,10 @@ ChildObjFgModule::ChildObjFgModule()
 // -----------------------------------------------------------------------
 
 ChildObjBgModule::ChildObjBgModule()
-    : MappedRLModule(ChildObjMappingFun, "ChildObjBg", 2, 82) {
+    : MappedRLModule(ChildObjMappingFun, "ChildObjBg", 2, 82),
+      helper_("objChildBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   addEveObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
@@ -1142,7 +980,10 @@ ChildObjBgModule::ChildObjBgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeFgModule::ObjRangeFgModule()
-    : MappedRLModule(RangeMappingFun, "ObjRangeFg", 1, 90) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeFg", 1, 90),
+      helper_("objRange", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
 }
@@ -1150,7 +991,10 @@ ObjRangeFgModule::ObjRangeFgModule()
 // -----------------------------------------------------------------------
 
 ObjRangeBgModule::ObjRangeBgModule()
-    : MappedRLModule(RangeMappingFun, "ObjRangeBg", 1, 91) {
+    : MappedRLModule(RangeMappingFun, "ObjRangeBg", 1, 91),
+      helper_("objRangeBg", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_BG);
 }
@@ -1158,7 +1002,21 @@ ObjRangeBgModule::ObjRangeBgModule()
 // -----------------------------------------------------------------------
 
 ChildObjRangeFgModule::ChildObjRangeFgModule()
-    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90) {
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeFg", 2, 90),
+      helper_("objChildRange", this) {
+  addUnifiedFunctions(helper_);
+
   addObjectFunctions(*this);
   SetProperty(P_FGBG, OBJ_FG);
+}
+
+// -----------------------------------------------------------------------
+
+ChildObjRangeBgModule::ChildObjRangeBgModule()
+    : MappedRLModule(ChildRangeMappingFun, "ObjChildRangeBg", 2, 91),
+      helper_("objChildRangeBg", this) {
+  addUnifiedFunctions(helper_);
+
+  addObjectFunctions(*this);
+  SetProperty(P_FGBG, OBJ_BG);
 }

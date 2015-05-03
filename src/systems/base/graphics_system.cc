@@ -115,9 +115,9 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
   fill(position.get(), position.get() + objects_in_a_layer, 0);
 
   if (gameexe.Exists("OBJECT.999"))
-    data.push_back(ObjectSettings(gameexe("OBJECT.999")));
+    data.emplace_back(gameexe("OBJECT.999"));
   else
-    data.push_back(ObjectSettings());
+    data.emplace_back();
 
   // Read the #OBJECT.xxx entries from the Gameexe
   GameexeFilteringIterator it = gameexe.filtering_begin("OBJECT.");
@@ -139,7 +139,7 @@ GraphicsSystem::GraphicsObjectSettings::GraphicsObjectSettings(
     for (int obj_num : object_nums) {
       if (obj_num != 999 && obj_num < objects_in_a_layer) {
         position[obj_num] = data.size();
-        data.push_back(ObjectSettings(*it));
+        data.emplace_back(*it);
       }
     }
   }
@@ -544,7 +544,9 @@ void GraphicsSystem::ExecuteGraphicsSystem(RLMachine& machine) {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::Reset() {
-  ClearAllObjects();
+  graphics_object_impl_->foreground_objects.Clear();
+  graphics_object_impl_->background_objects.Clear();
+
   ClearAllDCs();
 
   preloaded_hik_scripts_.Clear();
@@ -683,12 +685,14 @@ void GraphicsSystem::ClearAndPromoteObjects() {
   FullIterator fg_end = graphics_object_impl_->foreground_objects.full_end();
   for (; bg != bg_end && fg != fg_end; bg++, fg++) {
     if (fg.valid() && !fg->wipe_copy()) {
-      fg->ClearObject();
+      fg->InitializeParams();
+      fg->FreeObjectData();
     }
 
     if (bg.valid()) {
       *fg = *bg;
-      bg->ClearObject();
+      bg->InitializeParams();
+      bg->FreeObjectData();
     }
   }
 }
@@ -719,26 +723,36 @@ void GraphicsSystem::SetObject(int layer, int obj_number, GraphicsObject& obj) {
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::ClearObject(int obj_number) {
-  graphics_object_impl_->foreground_objects.DeleteAt(obj_number);
-  graphics_object_impl_->background_objects.DeleteAt(obj_number);
+void GraphicsSystem::FreeObjectData(int obj_number) {
+  graphics_object_impl_->foreground_objects[obj_number].FreeObjectData();
+  graphics_object_impl_->background_objects[obj_number].FreeObjectData();
 }
 
 // -----------------------------------------------------------------------
 
-void GraphicsSystem::ClearAllObjects() {
-  graphics_object_impl_->foreground_objects.Clear();
-  graphics_object_impl_->background_objects.Clear();
-}
-
-// -----------------------------------------------------------------------
-
-void GraphicsSystem::ResetAllObjectsProperties() {
+void GraphicsSystem::FreeAllObjectData() {
   for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
-    object.ResetProperties();
+    object.FreeObjectData();
 
   for (GraphicsObject& object : graphics_object_impl_->background_objects)
-    object.ResetProperties();
+    object.FreeObjectData();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::InitializeObjectParams(int obj_number) {
+  graphics_object_impl_->foreground_objects[obj_number].InitializeParams();
+  graphics_object_impl_->background_objects[obj_number].InitializeParams();
+}
+
+// -----------------------------------------------------------------------
+
+void GraphicsSystem::InitializeAllObjectParams() {
+  for (GraphicsObject& object : graphics_object_impl_->foreground_objects)
+    object.InitializeParams();
+
+  for (GraphicsObject& object : graphics_object_impl_->background_objects)
+    object.InitializeParams();
 }
 
 // -----------------------------------------------------------------------
@@ -794,11 +808,7 @@ void GraphicsSystem::ClearAllDCs() {
 // -----------------------------------------------------------------------
 
 void GraphicsSystem::RenderObjects(std::ostream* tree) {
-  // The tuple is order, layer, depth, objid, GraphicsObject. Tuples are easy
-  // to sort.
-  typedef std::vector<std::tuple<int, int, int, int, GraphicsObject*>>
-      ToRenderVec;
-  ToRenderVec to_render;
+  to_render_.clear();
 
   // Collate all objects that we might want to render.
   AllocatedLazyArrayIterator<GraphicsObject> it =
@@ -816,14 +826,14 @@ void GraphicsSystem::RenderObjects(std::ostream* tree) {
     else if (settings.space_key && is_interface_hidden())
       continue;
 
-    to_render.push_back(std::make_tuple(
-        it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it));
+    to_render_.emplace_back(
+        it->z_order(), it->z_layer(), it->z_depth(), it.pos(), &*it);
   }
 
   // Sort by all the ordering values.
-  std::sort(to_render.begin(), to_render.end());
+  std::sort(to_render_.begin(), to_render_.end());
 
-  for (ToRenderVec::iterator it = to_render.begin(); it != to_render.end();
+  for (ToRenderVec::iterator it = to_render_.begin(); it != to_render_.end();
        ++it) {
     get<4>(*it)->Render(get<3>(*it), NULL, tree);
   }

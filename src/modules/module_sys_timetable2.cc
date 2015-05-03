@@ -34,9 +34,8 @@
 #include "utilities/math_util.h"
 
 // static
-int TimeTableMapper::GetTypeForTag(
-    const libreallive::SpecialExpressionPiece& sp) {
-  switch (sp.overload_tag()) {
+int TimeTableMapper::GetTypeForTag(const libreallive::ExpressionPiece& sp) {
+  switch (sp.GetOverloadTag()) {
     case 48:
       return 0;
     case 65584:
@@ -57,7 +56,7 @@ int TimeTableMapper::GetTypeForTag(
       return 8;
     default: {
       std::ostringstream oss;
-      oss << "Invalid timetable2 tag: " << sp.overload_tag();
+      oss << "Invalid timetable2 tag: " << sp.GetOverloadTag();
       throw rlvm::Exception(oss.str());
     }
   }
@@ -86,8 +85,8 @@ int Sys_timetable2::operator()(RLMachine& machine,
         int end_time = std::get<0>(it->first);
         int end_num = std::get<1>(it->first);
         if (now_time > start_time && now_time <= end_time) {
-          int to_add = end_num - value;
-          return value + Interpolate(start_time, now_time, end_time, to_add, 0);
+          return InterpolateBetween(start_time, now_time, end_time,
+                                    value, end_num, 0);
         } else {
           value = end_num;
         }
@@ -101,9 +100,8 @@ int Sys_timetable2::operator()(RLMachine& machine,
         int mod = std::get<2>(it->second);
 
         if (now_time > start_time && now_time <= end_time) {
-          int to_add = end_num - value;
-          return value +
-                 Interpolate(start_time, now_time, end_time, to_add, mod);
+          return InterpolateBetween(start_time, now_time, end_time,
+                                    value, end_num, mod);
         } else {
           value = end_num;
         }

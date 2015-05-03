@@ -101,9 +101,7 @@ void MultiDispatch::operator()(RLMachine& machine,
 
   for (unsigned int i = 0; i < parameter_pieces.size(); ++i) {
     const libreallive::ExpressionPiecesVector& element =
-        dynamic_cast<const libreallive::ComplexExpressionPiece&>(
-            *parameter_pieces[i]).contained_pieces();
-
+        parameter_pieces[i].GetContainedPieces();
     handler_->Dispatch(machine, element);
   }
 
@@ -141,13 +139,11 @@ void InvokeSyscomAsOp::operator()(RLMachine& machine) {
 // -----------------------------------------------------------------------
 // UndefinedFunction
 // -----------------------------------------------------------------------
-UndefinedFunction::UndefinedFunction(const std::string& name,
-                                     int modtype,
+UndefinedFunction::UndefinedFunction(int modtype,
                                      int module,
                                      int opcode,
                                      int overload)
-    : name_(name),
-      modtype_(modtype),
+    : modtype_(modtype),
       module_(module),
       opcode_(opcode),
       overload_(overload) {}
@@ -155,21 +151,33 @@ UndefinedFunction::UndefinedFunction(const std::string& name,
 void UndefinedFunction::Dispatch(
     RLMachine& machine,
     const libreallive::ExpressionPiecesVector& parameters) {
-  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
+  throw rlvm::UnimplementedOpcode(name(), modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::DispatchFunction(RLMachine& machine,
                                          const libreallive::CommandElement& f) {
-  throw rlvm::UnimplementedOpcode(machine, name_, f);
+  throw rlvm::UnimplementedOpcode(machine, name(), f);
 }
 
 void UndefinedFunction::ParseParameters(
     const std::vector<std::string>& input,
     libreallive::ExpressionPiecesVector& output) {
-  throw rlvm::UnimplementedOpcode(name_, modtype_, module_, opcode_, overload_);
+  throw rlvm::UnimplementedOpcode(name(), modtype_, module_, opcode_, overload_);
 }
 
 void UndefinedFunction::operator()(RLMachine& machine,
                                    const libreallive::CommandElement& f) {
-  throw rlvm::UnimplementedOpcode(machine, name_, f);
+  throw rlvm::UnimplementedOpcode(machine, name(), f);
 }
+
+// Template instantiations.
+template RLOperation* CallFunction<EventSystem>(void (EventSystem::*)(int));
+template RLOperation* CallFunction<GraphicsSystem>(void (GraphicsSystem::*)(int));
+template RLOperation* CallFunction<SoundSystem>(void (SoundSystem::*)(int));
+template RLOperation* CallFunction<System>(void (System::*)(int));
+template RLOperation* CallFunction<TextSystem>(void (TextSystem::*)(int));
+template RLOperation* ReturnIntValue<EventSystem, int>(int (EventSystem::*)() const);
+template RLOperation* ReturnIntValue<GraphicsSystem, int>(int (GraphicsSystem::*)() const);
+template RLOperation* ReturnIntValue<RLMachine, int>(int (RLMachine::*)() const);
+template RLOperation* ReturnIntValue<SoundSystem, int>(int (SoundSystem::*)() const);
+template RLOperation* ReturnIntValue<TextSystem, int>(int (TextSystem::*)() const);

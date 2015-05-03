@@ -47,7 +47,7 @@ void AddSysSaveOpcodes(RLModule& module);
 // LongOperations because we can't rely on normal flow control because
 // we're going to nuke the call stack and system memory in
 // LoadingGame.
-struct Sys_load : public RLOp_Void_1<IntConstant_T> {
+struct Sys_load : public RLOpcode<IntConstant_T> {
   virtual bool AdvanceInstructionPointer() override;
 
   // Main entrypoint into the load command. Simply sets the callstack

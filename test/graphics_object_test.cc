@@ -44,10 +44,14 @@
 #include "machine/memory.h"
 #include "machine/rlmachine.h"
 #include "machine/serialization.h"
+#include "modules/module_obj_fg_bg.h"
+#include "modules/module_obj_management.h"
 #include "modules/module_str.h"
 #include "systems/base/colour_filter_object_data.h"
 #include "systems/base/graphics_object.h"
 #include "systems/base/graphics_object_of_file.h"
+#include "systems/base/object_mutator.h"
+#include "systems/base/parent_graphics_object_data.h"
 #include "test_system/mock_colour_filter.h"
 #include "test_system/test_graphics_system.h"
 #include "test_system/test_system.h"
@@ -288,4 +292,80 @@ TEST_F(GraphicsObjectTest, TestColourFilter) {
 
   // Render with the modified rect (for the second call).
   data->Render(obj, NULL, NULL);
+}
+
+TEST_F(GraphicsObjectTest, objFgFreeAll) {
+  GraphicsObject obj;
+  obj.SetX(50);
+  obj.SetY(120);
+  obj.SetObjectData(new ColourFilterObjectData(
+      system.graphics(), Rect(10, 10, Size(80, 70))));
+
+  system.graphics().SetObject(0, 10, obj);
+  system.graphics().SetObject(0, 46, obj);
+  system.graphics().SetObject(1, 18, obj);
+
+  rlmachine.AttachModule(new ObjFgManagement);
+  rlmachine.Exe("objFgFreeAll", 0);
+
+  EXPECT_FALSE(system.graphics().GetObject(0, 10).has_object_data());
+  EXPECT_FALSE(system.graphics().GetObject(0, 46).has_object_data());
+  EXPECT_TRUE(system.graphics().GetObject(1, 18).has_object_data());
+}
+
+TEST_F(GraphicsObjectTest, ObjectMutatorCopy) {
+  GraphicsObject obj;
+  obj.SetX(50);
+  obj.SetY(120);
+  obj.SetObjectData(new ColourFilterObjectData(
+      system.graphics(), Rect(10, 10, Size(80, 70))));
+  system.graphics().SetObject(1, 18, obj);
+
+  // Set a mutator on the object.
+  rlmachine.AttachModule(new ObjBgModule);
+  rlmachine.Exe("objBgEveColLevel", 1, TestMachine::Arg(18, 128, 0, 0, 0));
+
+  EXPECT_TRUE(system.graphics().GetObject(1, 18).IsMutatorRunningMatching(
+      -1, "objEveColLevel"));
+
+  system.graphics().ClearAndPromoteObjects();
+
+  EXPECT_TRUE(system.graphics().GetObject(0, 18).IsMutatorRunningMatching(
+      -1, "objEveColLevel"));
+}
+
+class MutatorTest : public ObjectMutator {
+ public:
+  MutatorTest()
+      : ObjectMutator(-1, "MutatorTest", 0, 1000, 0, 0),
+        called_(false) {}
+
+  bool called() const { return called_; }
+
+  virtual bool operator()(RLMachine& machine, GraphicsObject& object) override {
+    called_ = true;
+    return false;
+  }
+
+  virtual void SetToEnd(RLMachine& machine, GraphicsObject& object) override {}
+  virtual ObjectMutator* Clone() const override { return NULL; }
+  virtual void PerformSetting(RLMachine& machine, GraphicsObject& object)
+      override {}
+
+ private:
+  bool called_;
+};
+
+TEST_F(GraphicsObjectTest, RunMutatorsOnChildObjects) {
+  GraphicsObject parent;
+  ParentGraphicsObjectData* parent_data = new ParentGraphicsObjectData(10);
+  parent.SetObjectData(parent_data);
+
+  MutatorTest* mutator_test = new MutatorTest;
+  parent_data->GetObject(5).AddObjectMutator(
+      std::unique_ptr<ObjectMutator>(mutator_test));
+
+  EXPECT_FALSE(mutator_test->called());
+  parent.Execute(rlmachine);
+  EXPECT_TRUE(mutator_test->called());
 }

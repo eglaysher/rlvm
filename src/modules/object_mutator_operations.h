@@ -28,19 +28,20 @@
 #define SRC_MODULES_OBJECT_MUTATOR_OPERATIONS_H_
 
 #include "machine/rloperation.h"
+#include "machine/rloperation/rlop_store.h"
 
 class GraphicsObject;
 
-class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T,
-                                               IntConstant_T> {
+class Op_ObjectMutatorInt : public RLOpcode<IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T,
+                                           IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
   typedef void (GraphicsObject::*Setter)(const int);
 
-  Op_ObjectMutatorInt(Getter getter, Setter setter, const char* name);
+  Op_ObjectMutatorInt(Getter getter, Setter setter, const std::string& name);
   virtual ~Op_ObjectMutatorInt();
 
   virtual void operator()(RLMachine& machine,
@@ -53,20 +54,20 @@ class Op_ObjectMutatorInt : public RLOp_Void_5<IntConstant_T,
  private:
   Getter getter_;
   Setter setter_;
-  const char* name_;
+  const std::string name_;
 };
 
-class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T,
-                                                    IntConstant_T> {
+class Op_ObjectMutatorRepnoInt : public RLOpcode<IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T,
+                                                IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)(const int) const;
   typedef void (GraphicsObject::*Setter)(const int, const int);
 
-  Op_ObjectMutatorRepnoInt(Getter getter, Setter setter, const char* name);
+  Op_ObjectMutatorRepnoInt(Getter getter, Setter setter, const std::string& name);
   virtual ~Op_ObjectMutatorRepnoInt();
 
   virtual void operator()(RLMachine& machine,
@@ -80,15 +81,15 @@ class Op_ObjectMutatorRepnoInt : public RLOp_Void_6<IntConstant_T,
  private:
   Getter getter_;
   Setter setter_;
-  const char* name_;
+  const std::string name_;
 };
 
-class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T,
-                                                  IntConstant_T> {
+class Op_ObjectMutatorIntInt : public RLOpcode<IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T,
+                                              IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
   typedef void (GraphicsObject::*Setter)(const int);
@@ -97,7 +98,7 @@ class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
                          Setter setter_one,
                          Getter getter_two,
                          Setter setter_two,
-                         const char* name);
+                         const std::string& name);
   virtual ~Op_ObjectMutatorIntInt();
 
   virtual void operator()(RLMachine& machine,
@@ -113,29 +114,29 @@ class Op_ObjectMutatorIntInt : public RLOp_Void_6<IntConstant_T,
   Setter setter_one_;
   Getter getter_two_;
   Setter setter_two_;
-  const char* name_;
+  const std::string name_;
 };
 
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_Normal
-    : public RLOp_Void_2<IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T> {
  public:
-  explicit Op_EndObjectMutation_Normal(const char* name);
+  explicit Op_EndObjectMutation_Normal(const std::string& name);
   virtual ~Op_EndObjectMutation_Normal();
 
   virtual void operator()(RLMachine& machine, int object, int speedup);
 
  private:
-  const char* name_;
+  const std::string name_;
 };
 
 // -----------------------------------------------------------------------
 
 class Op_EndObjectMutation_RepNo
-    : public RLOp_Void_3<IntConstant_T, IntConstant_T, IntConstant_T> {
+    : public RLOpcode<IntConstant_T, IntConstant_T, IntConstant_T> {
  public:
-  explicit Op_EndObjectMutation_RepNo(const char* name);
+  explicit Op_EndObjectMutation_RepNo(const std::string& name);
   virtual ~Op_EndObjectMutation_RepNo();
 
   virtual void operator()(RLMachine& machine,
@@ -144,7 +145,72 @@ class Op_EndObjectMutation_RepNo
                           int speedup);
 
  private:
-  const char* name_;
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorCheck : public RLStoreOpcode<IntConstant_T> {
+ public:
+  explicit Op_MutatorCheck(const std::string& name);
+  virtual ~Op_MutatorCheck();
+
+  virtual int operator()(RLMachine& machine, int object) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitNormal : public RLOpcode<IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitNormal(const std::string& name);
+  virtual ~Op_MutatorWaitNormal();
+
+  virtual void operator()(RLMachine& machine, int obj) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitRepNo : public RLOpcode<IntConstant_T, IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitRepNo(const std::string& name);
+  virtual ~Op_MutatorWaitRepNo();
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitCNormal : public RLOpcode<IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitCNormal(const std::string& name);
+  virtual ~Op_MutatorWaitCNormal();
+
+  virtual void operator()(RLMachine& machine, int obj) override;
+
+ private:
+  const std::string name_;
+};
+
+// -----------------------------------------------------------------------
+
+class Op_MutatorWaitCRepNo : public RLOpcode<IntConstant_T, IntConstant_T> {
+ public:
+  explicit Op_MutatorWaitCRepNo(const std::string& name);
+  virtual ~Op_MutatorWaitCRepNo();
+
+  virtual void operator()(RLMachine& machine, int obj, int repno) override;
+
+ private:
+  const std::string name_;
 };
 
 #endif  // SRC_MODULES_OBJECT_MUTATOR_OPERATIONS_H_

@@ -32,12 +32,21 @@ Planetarian CD
 --------------
 - Playable to the end, voice is now supported.
 
+Planetarian (US Edition)
+------------------------
+- Playable to the end, voice is now supported.
+
 Little Busters (Ex)
 -------------------
 - The original edition is clearable, including the Refrain. There are many
   graphical glitches and blank screens during CG events, but all text displays.
 - No testing has been done with Little Busters Ecstasy past making sure the
   game starts.
+
+Kud Wafter
+----------
+- The All Ages edition has been tested through the end.
+- Minor graphical glitches in the ending animations.
 
 Princess Bride
 --------------

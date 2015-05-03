@@ -13,4 +13,4 @@ rm -Rf ~/.rlvm/KEY_智代アフター_ME_ALL/
 mkdir -p Tomoyo_ME.log
 
 echo "Running Tomoyo_After_ME.lua..."
-time build/luaRlvm --count-undefined test/Tomoyo_After_ME/Tomoyo_After_ME.lua $GAMEDIR > Tomoyo_ME.log/Tomoyo_After_ME.log 2>&1
+time build/lua_rlvm --count-undefined test/Tomoyo_After_ME/Tomoyo_After_ME.lua $GAMEDIR > Tomoyo_ME.log/Tomoyo_After_ME.log 2>&1

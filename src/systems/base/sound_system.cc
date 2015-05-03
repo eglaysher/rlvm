@@ -193,7 +193,7 @@ SoundSystem::SoundSystem(System& system)
 
     int onoff = (keyparts.at(3) == "ON") ? 1 : 0;
     for (int id : koeplay_ids) {
-      usekoe_to_koeplay_mapping_.insert(std::make_pair(usekoe_id, id));
+      usekoe_to_koeplay_mapping_.emplace(usekoe_id, id);
       globals_.character_koe_enabled[id] = onoff;
     }
   }
@@ -286,10 +286,10 @@ void SoundSystem::SetChannelVolume(const int channel,
 
   unsigned int cur_time = system().event().GetTicks();
 
-  pcm_adjustment_tasks_.insert(std::make_pair(
+  pcm_adjustment_tasks_.emplace(
       channel,
       VolumeAdjustTask(
-          cur_time, channel_volume_[channel], level, fade_time_in_ms)));
+          cur_time, channel_volume_[channel], level, fade_time_in_ms));
 }
 
 int SoundSystem::GetChannelVolume(const int channel) const {

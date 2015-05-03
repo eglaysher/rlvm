@@ -39,7 +39,7 @@
 
 namespace {
 
-class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
+class Obj_GetInt : public RLStoreOpcode<IntConstant_T> {
  public:
   typedef int (GraphicsObject::*Getter)() const;
 
@@ -62,7 +62,7 @@ class Obj_GetInt : public RLOp_Store_1<IntConstant_T> {
 // This is probably wrong or overlooks all sorts of weird corner cases
 // that aren't immediatly obvious.
 struct objGetPos
-    : public RLOp_Void_3<IntConstant_T, IntReference_T, IntReference_T> {
+    : public RLOpcode<IntConstant_T, IntReference_T, IntReference_T> {
   void operator()(RLMachine& machine,
                   int objNum,
                   IntReferenceIterator xIt,
@@ -73,14 +73,25 @@ struct objGetPos
   }
 };
 
-struct objGetAdjustX : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct objGetAdjust : public RLOpcode<IntConstant_T, IntConstant_T,
+                                         IntReference_T, IntReference_T> {
+  void operator()(RLMachine& machine, int objNum, int repno,
+                  IntReferenceIterator xIt,
+                  IntReferenceIterator yIt) {
+    GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
+    *xIt = obj.x_adjustment(repno);
+    *yIt = obj.y_adjustment(repno);
+  }
+};
+
+struct objGetAdjustX : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.x_adjustment(repno);
   }
 };
 
-struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
+struct objGetAdjustY : public RLStoreOpcode<IntConstant_T, IntConstant_T> {
   int operator()(RLMachine& machine, int objNum, int repno) {
     GraphicsObject& obj = GetGraphicsObject(machine, this, objNum);
     return obj.y_adjustment(repno);
@@ -90,7 +101,7 @@ struct objGetAdjustY : public RLOp_Store_2<IntConstant_T, IntConstant_T> {
 // @note objGetDims takes an integer as its fourth argument, but we
 // have no idea what this is or how it affects things. Usually appears
 // to be 4. ????
-struct objGetDims : public RLOp_Void_4<IntConstant_T,
+struct objGetDims : public RLOpcode<IntConstant_T,
                                        IntReference_T,
                                        IntReference_T,
                                        DefaultIntValue_T<4>> {
@@ -113,6 +124,7 @@ void addFunctions(RLModule& m) {
       1003, 0, "objGetAlpha", new Obj_GetInt(&GraphicsObject::raw_alpha));
   m.AddOpcode(1004, 0, "objGetShow", new Obj_GetInt(&GraphicsObject::visible));
 
+  m.AddOpcode(1006, 0, "objGetAdjust", new objGetAdjust);
   m.AddOpcode(1007, 0, "objGetAdjustX", new objGetAdjustX);
   m.AddOpcode(1008, 0, "objGetAdjustY", new objGetAdjustY);
   m.AddOpcode(1009, 0, "objGetMono", new Obj_GetInt(&GraphicsObject::mono));

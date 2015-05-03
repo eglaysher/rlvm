@@ -17,7 +17,7 @@ function runPath() {
   LOG=`echo $SCRIPT | sed s/\.lua/\.log/g;`
 
   echo "Running $SCRIPT..."
-  time build/luaRlvm --count-undefined test/P_BRIDE/$SCRIPT $GAMEDIR > P_BRIDE.log/$LOG 2>&1
+  time build/lua_rlvm --count-undefined test/P_BRIDE/$SCRIPT $GAMEDIR > P_BRIDE.log/$LOG 2>&1
 }
 
 runPath "Kiyomi.lua"

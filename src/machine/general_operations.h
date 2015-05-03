@@ -152,7 +152,7 @@ class MultiDispatch : public RLOp_SpecialCase {
 };
 
 // Returns a Gameexe value to the store register.
-class ReturnGameexeInt : public RLOp_Store_Void {
+class ReturnGameexeInt : public RLStoreOpcode<> {
  public:
   ReturnGameexeInt(const std::string& full_key, int en);
 
@@ -164,7 +164,7 @@ class ReturnGameexeInt : public RLOp_Store_Void {
 };
 
 // Invokes a syscom command.
-class InvokeSyscomAsOp : public RLOp_Void_Void {
+class InvokeSyscomAsOp : public RLOpcode<> {
  public:
   explicit InvokeSyscomAsOp(const int syscom);
 
@@ -178,8 +178,7 @@ class InvokeSyscomAsOp : public RLOp_Void_Void {
 // unimplemented functions.
 class UndefinedFunction : public RLOp_SpecialCase {
  public:
-  UndefinedFunction(const std::string& name,
-                    int modtype,
+  UndefinedFunction(int modtype,
                     int module,
                     int opcode,
                     int overload);
@@ -202,11 +201,22 @@ class UndefinedFunction : public RLOp_SpecialCase {
                           const libreallive::CommandElement&) override;
 
  private:
-  std::string name_;
   int modtype_;
   int module_;
   int opcode_;
   int overload_;
 };
+
+// extern template declarations; manually instantiated in the cc file.
+extern template RLOperation* CallFunction<EventSystem>(void (EventSystem::*)(int));
+extern template RLOperation* CallFunction<GraphicsSystem>(void (GraphicsSystem::*)(int));
+extern template RLOperation* CallFunction<SoundSystem>(void (SoundSystem::*)(int));
+extern template RLOperation* CallFunction<System>(void (System::*)(int));
+extern template RLOperation* CallFunction<TextSystem>(void (TextSystem::*)(int));
+extern template RLOperation* ReturnIntValue<EventSystem, int>(int (EventSystem::*)() const);
+extern template RLOperation* ReturnIntValue<GraphicsSystem, int>(int (GraphicsSystem::*)() const);
+extern template RLOperation* ReturnIntValue<RLMachine, int>(int (RLMachine::*)() const);
+extern template RLOperation* ReturnIntValue<SoundSystem, int>(int (SoundSystem::*)() const);
+extern template RLOperation* ReturnIntValue<TextSystem, int>(int (TextSystem::*)() const);
 
 #endif  // SRC_MACHINE_GENERAL_OPERATIONS_H_

@@ -117,7 +117,7 @@ uint16_t koe_8bit_trans_tbl[256] = {
 ** テーブルでも問題ないでしょ
 */
 
-int8_t koe_ad_trans_tbl[256] = {
+uint8_t koe_ad_trans_tbl[256] = {
     0x00, 0xff, 0x01, 0xfe, 0x02, 0xfd, 0x03, 0xfc, 0x04, 0xfb, 0x05, 0xfa,
     0x06, 0xf9, 0x07, 0xf8, 0x08, 0xf7, 0x09, 0xf6, 0x0a, 0xf5, 0x0b, 0xf4,
     0x0c, 0xf3, 0x0d, 0xf2, 0x0e, 0xf1, 0x0f, 0xf0, 0x10, 0xef, 0x11, 0xee,
@@ -210,8 +210,8 @@ char* KOEPACVoiceSample::Decode(int* dest_len) {
         src++;
       }
     } else {  // DPCM
-      int8_t d = 0;
-      int16_t o2;
+      uint8_t d = 0;
+      uint16_t o2;
       for (int j = 0, k = 0; j < slen && k < 0x800; j++) {
         uint8_t s = src[j];
         if ((s + 1) & 0x0f) {
@@ -225,7 +225,7 @@ char* KOEPACVoiceSample::Decode(int* dest_len) {
           s2 |= (s << 4) & 0xf0;
           d -= koe_ad_trans_tbl[s2];
         }
-        o2 = koe_8bit_trans_tbl[(uint8_t)d];
+        o2 = koe_8bit_trans_tbl[d];
         write_little_endian_short((char*)(dest + k), o2);
         write_little_endian_short((char*)(dest + k + 1), o2);
         k += 2;
@@ -235,7 +235,7 @@ char* KOEPACVoiceSample::Decode(int* dest_len) {
         } else {
           d -= koe_ad_trans_tbl[src[++j]];
         }
-        o2 = koe_8bit_trans_tbl[(unsigned char)d];
+        o2 = koe_8bit_trans_tbl[d];
         write_little_endian_short((char*)(dest + k), o2);
         write_little_endian_short((char*)(dest + k + 1), o2);
         k += 2;
@@ -307,7 +307,7 @@ void KOEPACVoiceArchive::ReadTable(boost::filesystem::path file) {
     int koe_num = read_little_endian_short(buf + i * 8);
     int length = read_little_endian_short(buf + i * 8 + 2);
     int offset = read_little_endian_int(buf + i * 8 + 4);
-    entries_.push_back(Entry(koe_num, length, offset));
+    entries_.emplace_back(koe_num, length, offset);
   }
   sort(entries_.begin(), entries_.end());
 

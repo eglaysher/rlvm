@@ -127,5 +127,8 @@ void TextKeyCursor::SetCursorFrameCount(const int frame_count) {
 // -----------------------------------------------------------------------
 
 void TextKeyCursor::SetCursorFrameSpeed(const int speed) {
-  frame_speed_ = speed / frame_count_;
+  if (frame_count_)
+    frame_speed_ = speed / frame_count_;
+  else
+    frame_speed_ = speed;
 }

@@ -102,7 +102,7 @@ SaveGameListModel::SaveGameListModel(const std::string& no_data,
       oss << no_data;
     }
 
-    titles_.push_back(std::make_pair(oss.str(), file_exists));
+    titles_.emplace_back(oss.str(), file_exists);
   }
 
   if (latestSlot != -1) {

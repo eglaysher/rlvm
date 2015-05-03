@@ -130,12 +130,19 @@ class GraphicsObject {
   void SetLight(const int in);
 
   const RGBColour& tint() const { return impl_->tint_; }
+  int tint_red() const { return impl_->tint_.r(); }
+  int tint_green() const { return impl_->tint_.g(); }
+  int tint_blue() const { return impl_->tint_.b(); }
   void SetTint(const RGBColour& colour);
   void SetTintRed(const int in);
   void SetTintGreen(const int in);
   void SetTintBlue(const int in);
 
   const RGBAColour& colour() const { return impl_->colour_; }
+  int colour_red() const { return impl_->colour_.r(); }
+  int colour_green() const { return impl_->colour_.g(); }
+  int colour_blue() const { return impl_->colour_.b(); }
+  int colour_level() const { return impl_->colour_.a(); }
   void SetColour(const RGBAColour& colour);
   void SetColourRed(const int in);
   void SetColourGreen(const int in);
@@ -188,15 +195,16 @@ class GraphicsObject {
   // Render!
   void Render(int objNum, const GraphicsObject* parent, std::ostream* tree);
 
-  // Deletes the object data. Corresponds to the RLAPI command obj_delete.
-  void DeleteObject();
+  // Frees the object data. Corresponds to objFree, but is also invoked by
+  // other commands.
+  void FreeObjectData();
 
-  // Clears the impl data without deleting the loaded graphics object.
-  void ResetProperties();
+  // Resets/reinitializes all the object parameters without deleting the loaded
+  // graphics object data.
+  void InitializeParams();
 
-  // Deletes the object data and resets all values in this
-  // GraphicsObject. Corresponds to the RLAPI command obj_clear.
-  void ClearObject();
+  // Both frees the object data and initializes parameters.
+  void FreeDataAndInitializeParams();
 
   int wipe_copy() const { return impl_->wipe_copy_; }
   void SetWipeCopy(const int wipe_copy);
@@ -285,17 +293,20 @@ class GraphicsObject {
 
   // Adds a mutator to the list of active mutators. GraphicsSystem takes
   // ownership of the passed in object.
-  void AddObjectMutator(ObjectMutator* mutator);
+  void AddObjectMutator(std::unique_ptr<ObjectMutator> mutator);
 
   // Returns true if a mutator matching the following parameters is currently
   // running.
-  bool IsMutatorRunningMatching(int repno, const char* name);
+  bool IsMutatorRunningMatching(int repno, const std::string& name);
 
   // Ends all mutators that match the given parameters.
   void EndObjectMutatorMatching(RLMachine& machine,
                                 int repno,
-                                const char* name,
+                                const std::string& name,
                                 int speedup);
+
+  // Returns a string for each mutator.
+  std::vector<std::string> GetMutatorNames() const;
 
   // Returns the number of GraphicsObject instances sharing the
   // internal copy-on-write object. Only used in unit testing.

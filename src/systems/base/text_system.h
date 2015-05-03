@@ -28,12 +28,11 @@
 #ifndef SRC_SYSTEMS_BASE_TEXT_SYSTEM_H_
 #define SRC_SYSTEMS_BASE_TEXT_SYSTEM_H_
 
-#include <boost/ptr_container/ptr_list.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/version.hpp>
 
 #include <cstdint>
+#include <list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -91,7 +90,7 @@ BOOST_CLASS_VERSION(TextSystemGlobals, 1)
 class TextSystem : public EventListener {
  public:
   // Internal structure used to keep track of the state of
-  typedef boost::ptr_map<int, TextPage> PageSet;
+  typedef std::map<int, TextPage> PageSet;
 
  public:
   TextSystem(System& system, Gameexe& gexe);
@@ -256,7 +255,8 @@ class TextSystem : public EventListener {
   void set_in_selection_mode(const bool in) { in_selection_mode_ = in; }
 
   // Overriden from EventListener
-  virtual bool MouseButtonStateChanged(MouseButton mouse_button, bool pressed) override;
+  virtual bool MouseButtonStateChanged(MouseButton mouse_button,
+                                       bool pressed) override;
   virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
 
   System& system() { return system_; }
@@ -265,6 +265,12 @@ class TextSystem : public EventListener {
   void UpdateWindowsForChangeToWindowAttr();
 
   bool ShowWindow(int win_num) const;
+
+  void CheckAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
+
+  // Reduces the number of page snapshots in previous_page_sets_ down to a
+  // manageable constant number.
+  void ExpireOldPages();
 
   // TextPage will call our internals since it actually does most of
   // the work while we hold state.
@@ -298,17 +304,17 @@ class TextSystem : public EventListener {
   bool is_reading_backlog_;
 
   // The current page set. Represents what is on the screen right now.
-  std::unique_ptr<PageSet> current_pageset_;
+  PageSet current_pageset_;
 
   // Previous Text Pages. The TextSystem owns the list of previous
   // pages because multiple windows can be displayed in one text page.
-  boost::ptr_list<PageSet> previous_page_sets_;
+  std::list<PageSet> previous_page_sets_;
 
   // When previous_page_it_ == previous_pages_.end(), active_page_ is
   // currently being rendered to the screen. When it is any valid
   // iterator pointing into previous_pages_, that is the current page
   // being rendered.
-  boost::ptr_list<PageSet>::iterator previous_page_it_;
+  std::list<PageSet>::iterator previous_page_it_;
 
   // Whether we are in a state where the interpreter is pause()d.
   bool in_pause_state_;
@@ -317,8 +323,6 @@ class TextSystem : public EventListener {
 
   bool move_use_, clear_use_, read_jump_use_, automode_use_, msgbk_use_,
       msgbkleft_use_, msgbkright_use_, exbtn_use_;
-
-  void CheckAndSetBool(Gameexe& gexe, const std::string& key, bool& out);
 
   TextSystemGlobals globals_;
 
@@ -335,10 +339,6 @@ class TextSystem : public EventListener {
 
   // Contains overrides for showing or hiding the text windows.
   std::map<int, bool> window_visual_override_;
-
-  // Reduces the number of page snapshots in previous_page_sets_ down to a
-  // manageable constant number.
-  void expireOldPages();
 
   // Our parent system object.
   System& system_;

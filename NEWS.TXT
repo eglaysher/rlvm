@@ -1,5 +1,13 @@
 (For full history, please see the internal git changelog)
 -------------------------------------------------------------------------
+Version 0.14:                                                [2014-10-04]
+
+- Support for the US edition of planetarian.
+- Support for Kud Wafter.
+- Further attempts to smooth animations and text output.
+- Internal code cleanups and beautification; ported to C++11.
+
+-------------------------------------------------------------------------
 
 Version 0.13.1:                                              [2013-12-15]
 
