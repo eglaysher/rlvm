@@ -21,7 +21,7 @@ AddOption('--fullstatic', action='store_true',
 env = Environment(
   tools = ["default", "rlvm"],
 
-  LIBS = ["png", "bz2", "z"],
+  LIBS = ["z"],
 
   LOCAL_LIBS = [],
 
@@ -66,6 +66,8 @@ env = Environment(
 if env['PLATFORM'] == "darwin":
   env.Append(
     LIBS = [
+      "png",
+      "bz2",
       "boost_program_options-mt",
       "boost_serialization-mt",
       "boost_iostreams-mt",
