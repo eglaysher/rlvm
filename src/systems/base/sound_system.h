@@ -56,18 +56,21 @@ struct SoundSystemGlobals {
   SoundSystemGlobals();
   explicit SoundSystemGlobals(Gameexe& gexe);
 
-  // Number passed in from RealLive that represents what we want the
-  // sound system to do. Right now is fairly securely set to 5 since I
-  // have no idea how to change this property at runtime.
+  // Historically, this was a RealLive integer which corresponded to something
+  // like a the tuple (48 khz, 16 bit stereo). However, during the SDL2
+  // porting, I noticed that any value of 48 khz samples was causing static in
+  // some wav files in the SDL2 version. I then did a comparison between
+  // CLANNAD on Windows, on sdl1 based rlvm and sdl2 based rlvm. I found that
+  // the sdl2 version was much closer to the original RealLive.exe. However, it
+  // would occasionally mangle sounds into static.
   //
-  // 0              11 k_hz               8 bit
-  // 1              11 k_hz               16 bit
-  // 2              22 k_hz               8 bit
-  // 3              22 k_hz               16 bit
-  // 4              44 k_hz               8 bit
-  // 5              44 k_hz               16 bit
-  // 6              48 k_hz               8 bit
-  // 7              48 h_kz               16 bit
+  // When I hard coded 41k audio into the SDL2 branch, the static went
+  // away. And when I hard coded 41k audio into the sdl1 branch, the higher
+  // pitched sounds went away.
+  //
+  // |sound_quality| was never under user control, but a game could request a
+  // certain quality. Now, it exists just to be backwards compatible with save
+  // data.
   int sound_quality;
 
   // Whether music playback is enabled
@@ -199,8 +202,6 @@ class SoundSystem {
 
   // Sets how much sound hertz.
   virtual void SetSoundQuality(const int quality);
-
-  int sound_quality() const { return globals_.sound_quality; }
 
   SoundSystemGlobals& globals() { return globals_; }
 

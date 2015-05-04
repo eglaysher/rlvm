@@ -51,19 +51,6 @@ struct RealLiveSoundQualities {
   Uint16 format;
 };
 
-// A mapping between SoundQualities() and the values need to be passed
-// to Mix_OpenAudio()
-static RealLiveSoundQualities s_real_live_sound_qualities[] = {
-    {11025, AUDIO_S8},   // 11 k_hz, 8 bit stereo
-    {11025, AUDIO_S16},  // 11 k_hz, 16 bit stereo
-    {22050, AUDIO_S8},   // 22 k_hz, 8 bit stereo
-    {22050, AUDIO_S16},  // 22 k_hz, 16 bit stereo
-    {44100, AUDIO_S8},   // 44 k_hz, 8 bit stereo
-    {44100, AUDIO_S16},  // 44 k_hz, 16 bit stereo
-    {48000, AUDIO_S8},   // 48 k_hz, 8 bit stereo
-    {48000, AUDIO_S16}   // 48 h_kz, 16 bit stereo
-};
-
 // -----------------------------------------------------------------------
 // SDLSoundSystem (private)
 // -----------------------------------------------------------------------
@@ -134,17 +121,9 @@ SDLSoundSystem::SDLSoundSystem(System& system)
     : SoundSystem(system), se_cache_(5), wav_cache_(5) {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
-  /* We're going to be requesting certain things from our audio
-     device, so we set them up beforehand */
-
-  int audio_rate = s_real_live_sound_qualities[sound_quality()].rate;
-  Uint16 audio_format = s_real_live_sound_qualities[sound_quality()].format;
-  int audio_channels = 2;
-  int audio_buffers = 4096;
-
   /* This is where we open up our audio device.  Mix_OpenAudio takes
      as its parameters the audio format we'd /like/ to have. */
-  if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
+  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096)) {
     std::ostringstream oss;
     oss << "Couldn't initialize audio: " << Mix_GetError();
     throw SystemError(oss.str());
