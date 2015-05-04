@@ -37,7 +37,7 @@ class OVKVoiceSample : public VoiceSample {
   // Creates a sample from a full .ogg |file|.
   explicit OVKVoiceSample(boost::filesystem::path file);
 
-  // Creates a sample from an ogg file embeded in the archive at |file|.
+  // Creates a sample from an ogg file embedded in the archive at |file|.
   OVKVoiceSample(boost::filesystem::path file, int offset, int length);
   virtual ~OVKVoiceSample();
 

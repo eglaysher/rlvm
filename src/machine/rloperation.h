@@ -43,9 +43,9 @@ class RLModule;
 // @defgroup RLOperationGroup RLOperation and its type system
 //
 // Defines the base classes from which all of the opcode
-// implementations derive from. This heirarchy of classes works by
+// implementations derive from. This hierarchy of classes works by
 // having one of your operation classes, which handles a specific
-// prototype of a specific opcode, derive from one of the subclases
+// prototype of a specific opcode, derive from one of the subclasses
 // of RLOperation, specifically RLOpcode<> and RLOpcodeStore<>. The
 // template parameters of these subclasses refer to the types of the
 // parameters, some of which can be composed to represent more complex
@@ -96,8 +96,6 @@ class RLOperation {
  public:
   // Default constructor
   RLOperation();
-
-  // Destructor
   virtual ~RLOperation();
 
   void set_name(const std::string& name) { name_ = name; }
@@ -219,7 +217,7 @@ struct Empty_T {
 
 // Implements a special case operation. This should be used with
 // things that don't follow the usually function syntax in the
-// bytecode, such as weird gotos, et cetera.
+// bytecode, such as weird gotos, etc.
 //
 // RLOp_SpecialCase gives you complete control of the Dispatch,
 // performing no type checking, no parameter conversion, and no

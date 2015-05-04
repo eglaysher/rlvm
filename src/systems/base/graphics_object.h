@@ -316,7 +316,7 @@ class GraphicsObject {
   bool is_cleared() const { return impl_ == s_empty_impl; }
 
  private:
-  // Makes the ineternal copy for our copy-on-write semantics. This function
+  // Makes the internal copy for our copy-on-write semantics. This function
   // checks to see if our Impl object has only one reference to it. If it
   // doesn't, a local copy is made.
   void MakeImplUnique();
@@ -333,7 +333,7 @@ class GraphicsObject {
 
     Impl& operator=(const Impl& rhs);
 
-    // Visiblitiy. Different from whether an object is in the bg or fg layer
+    // Visibility. Different from whether an object is in the bg or fg layer
     bool visible_;
 
     // The positional coordinates of the object

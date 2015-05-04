@@ -139,7 +139,7 @@ class Texture {
 
   GLuint back_texture_id_;
 
-  // Is this texture upside down? (Because it's a screenshot, et cetera.)
+  // Is this texture upside down? (Because it's a screenshot, etc.)
   bool is_upside_down_;
 
   // Size of the screen. Used during color mask calculations.

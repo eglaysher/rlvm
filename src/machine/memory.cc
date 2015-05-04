@@ -153,7 +153,7 @@ void Memory::SetStringValue(int type, int number, const std::string& value) {
       global_->strM[number] = value;
       break;
     case libreallive::STRS_LOCATION: {
-      // Possibly record the orriginal value for a piece of local memory.
+      // Possibly record the original value for a piece of local memory.
       std::map<int, std::string>::iterator it =
           local_.original_strS.find(number);
       if (it == local_.original_strS.end()) {

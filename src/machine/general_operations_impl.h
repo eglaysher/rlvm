@@ -32,7 +32,7 @@
 // exposed in general_operations.h.
 
 // Contains details on how to get a certain object from an input
-// RLMachine. Templates are specialized in the cpp file.
+// RLMachine. Templates are specialized in the cc file.
 namespace getSystemObjImpl {
 
 template <typename RETTYPE>

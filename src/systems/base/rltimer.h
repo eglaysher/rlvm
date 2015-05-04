@@ -30,9 +30,9 @@
 
 class EventSystem;
 
-// "Timers are simple counters: when initialised, they start counting from 0,
+// "Timers are simple counters: when initialized, they start counting from 0,
 // and can be queried at any point to return the number of milliseconds that
-// have elapsed since their initialisation.
+// have elapsed since their initialization.
 //
 // "RealLive provides two sets of 255 timers, the basic counters (カウント) and
 // the extended counters (ＥＸカウント); the difference between them is unclear,
@@ -45,10 +45,10 @@ class EventSystem;
 //
 // "All timers run continuously; they cannot be stopped. The implementation
 // appears to be based on the time since the interpreter was started, as this is
-// what you get if you query a timer that has not been initialised to any other
+// what you get if you query a timer that has not been initialized to any other
 // value. “Setting” a timer merely stores the time at which the timer was set,
 // and future queries subtract this from the time since the interpreter was
-// started and then add the value to which the timer was initialised."
+// started and then add the value to which the timer was initialized."
 class RLTimer {
  public:
   RLTimer();

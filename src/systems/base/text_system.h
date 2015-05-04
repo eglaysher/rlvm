@@ -149,7 +149,7 @@ class TextSystem : public EventListener {
   // It is possible to set the interpreter up to advance text
   // automatically instead of waiting for player input after each
   // screen is displayed; the `auto mode' controls permit this
-  // behaviour to be customized.
+  // behavior to be customized.
   int auto_mode() const { return (int)auto_mode_; }
   void SetAutoMode(int i);
 
@@ -254,7 +254,7 @@ class TextSystem : public EventListener {
 
   void set_in_selection_mode(const bool in) { in_selection_mode_ = in; }
 
-  // Overriden from EventListener
+  // Overridden from EventListener
   virtual bool MouseButtonStateChanged(MouseButton mouse_button,
                                        bool pressed) override;
   virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;

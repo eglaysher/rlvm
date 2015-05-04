@@ -371,7 +371,7 @@ std::string System::Regname() {
   replace_all(regname, "\\", "_");
 
   // Note that we assume the Gameexe file is written in Shift-JIS. I don't
-  // think you can write it in anyhting else.
+  // think you can write it in anything else.
   return cp932toUTF8(regname, 0);
 }
 

@@ -51,7 +51,7 @@ struct RealLiveSoundQualities {
   Uint16 format;
 };
 
-// A maping between SoundQualities() and the values need to be passed
+// A mapping between SoundQualities() and the values need to be passed
 // to Mix_OpenAudio()
 static RealLiveSoundQualities s_real_live_sound_qualities[] = {
     {11025, AUDIO_S8},   // 11 k_hz, 8 bit stereo

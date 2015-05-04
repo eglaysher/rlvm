@@ -42,7 +42,7 @@ class Surface;
 class System;
 
 // Represents the textual data made with commands such as obj_of_text,
-// obj_set_text, obj_text_opts, et cetera.
+// obj_set_text, obj_text_opts, etc.
 class GraphicsTextObject : public GraphicsObjectData {
  public:
   explicit GraphicsTextObject(System& system);

@@ -41,7 +41,7 @@ class RLMachine;
 // The cgm file is a mapping between file names and an index into the intZ[]
 // global memory array, where intZ[index] is 1 when a cg has been viewed. The
 // CGMTable class is responsible for loading the cgm data and providing an
-// interface to querrying whether a CG was viewed.
+// interface to querying whether a CG was viewed.
 class CGMTable {
  public:
   // Initializes an empty CG table (for games that don't use this feature).

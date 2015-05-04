@@ -210,7 +210,7 @@ class RLMachine {
   // Returns the actual Scenario on the top top of the call stack.
   const libreallive::Scenario& Scenario() const;
 
-  // ------------------------------------------------ [ Execuion interface ]
+  // ------------------------------------------------ [ Execution interface ]
   // Normally, execute_next_instruction will call RunOnMachine() on
   // whatever BytecodeElement is currently pointed to by the
   // instruction pointer.
@@ -229,7 +229,7 @@ class RLMachine {
 
   // Guess the encoding for all text of the game.
   //
-  // Because of how rlbabel works, each scenario in the SEEN archive can have
+  // Because of how rlBabel works, each scenario in the SEEN archive can have
   // its own encoding. This guesses what the text output encoding is,
   // regardless of the current scenario. (As we're probably running a scenario
   // that hasn't been patched at the time this method is called.)
@@ -274,7 +274,7 @@ class RLMachine {
   // Call executeNextInstruction() repeatedly until the RLMachine is
   // halted. This function is used in unit testing, and would never be
   // called during real usage of an RLMachine instance since other
-  // subsytems (graphics, sound, etc) would need to have a chance to
+  // subsystems (graphics, sound, etc) would need to have a chance to
   // fire between RLMachine instructions.
   void ExecuteUntilHalted();
 
@@ -338,7 +338,7 @@ class RLMachine {
   // stack, though it does clear the shadow save stack.
   void LocalReset();
 
-  // Adds a programatic action triggered by a line marker in a specific SEEN
+  // Adds a programmatic action triggered by a line marker in a specific SEEN
   // file. This is used both by lua_rlvm to trigger actions specified in lua to
   // drive rlvm's playing certain games, but is also used for game specific
   // hacks.
@@ -412,7 +412,7 @@ class RLMachine {
   std::unique_ptr<ActionMap> on_line_actions_;
 
   typedef std::unordered_map<int, std::unique_ptr<RealLiveDLL>> DLLMap;
-  // Currenlty loaded "DLLs".
+  // Currently loaded "DLLs".
   DLLMap loaded_dlls_;
 
   // boost::serialization support

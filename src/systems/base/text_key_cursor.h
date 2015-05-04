@@ -43,7 +43,7 @@ class TextWindow;
 class TextKeyCursor {
  public:
   // Creates a Key Cursor object based off of the properties in
-  // \#CURSOR.curosr_number. This will load all image files, and data
+  // \#CURSOR.cursor_number. This will load all image files, and data
   // from the Gameexe.
   TextKeyCursor(System& system, int curosr_number);
   ~TextKeyCursor();

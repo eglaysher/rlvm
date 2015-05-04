@@ -130,7 +130,7 @@ BOOST_CLASS_VERSION(SystemGlobals, 1)
 // The system class provides a generalized interface to all the
 // components that make up a local system that may need to be
 // implemented differently on different systems, i.e., sound,
-// graphics, filesystem et cetera.
+// graphics, filesystem etc.
 //
 // The base System class is an abstract base class that is meant to be
 // specialized.
@@ -245,7 +245,7 @@ class System {
   std::string Regname();
 
   // Returns a boost::filesystem object which points to the directory
-  // where saved game data, preferences, et cetera should be stored
+  // where saved game data, preferences, etc should be stored
   // for this game.
   //
   // The default implementation returns "~/.rlvm/#{REGNAME}/". A Mac
@@ -298,7 +298,7 @@ class System {
   // #FOLDNAME part of the Gameexe.ini file.
   void BuildFileSystemCache();
 
-  // Recursese on |directory| and adds all filetypes that we can read to our
+  // Recurses on |directory| and adds all filetypes that we can read to our
   // FileSystemCache.
   void AddDirectoryToCache(const boost::filesystem::path& directory);
 

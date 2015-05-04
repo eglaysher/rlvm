@@ -108,7 +108,7 @@ class RLVMInstance {
   // Loads the specified save file as soon as emulation starts if not -1.
   int load_save_;
 
-  // Dumps psuedokepago of the current seen to stdout and exit if not -1.
+  // Dumps pseudo-kepago of the current seen to stdout and exit if not -1.
   int dump_seen_;
 };
 

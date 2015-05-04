@@ -51,7 +51,7 @@ class TextWindowButton;
 
 const int kNumFaceSlots = 8;
 
-// Abstract representation of a TextWindow. Aggrigated by TextSystem, and
+// Abstract representation of a TextWindow. Aggregated by TextSystem, and
 // rendered in conjunction with GraphicsSystem.
 //
 // Sets of TextWindows should be reconstructable by the state in TextPage,
@@ -74,21 +74,21 @@ class TextWindow {
   // TextWindow? O RLY?
   int waku_set() const { return waku_set_; }
 
-  // Sets the size of the text window in characters. Reprsented by
+  // Sets the size of the text window in characters. Represented by
   // #WINDOW.xxx.MOJI_CNT.
   void SetWindowSizeInCharacters(const std::vector<int>& pos_data);
 
-  // Sets the size of the spacing between characters. Reprsented by
+  // Sets the size of the spacing between characters. Represented by
   // #WINDOW.xxx.MOJI_REP.
   void SetSpacingBetweenCharacters(const std::vector<int>& pos_data);
 
-  // Sets the size of the ruby (furigana; pronounciation guide) text in
+  // Sets the size of the ruby (furigana; pronunciation guide) text in
   // pixels. If zero, ruby text is disabled in this window. Represented by
   // #WINDOW.xxx.LUBY_SIZE.
   void set_ruby_text_size(const int i) { ruby_size_ = i; }
   int ruby_text_size() const { return ruby_size_; }
 
-  // Sets the size of the font. Reprsented by #WINDOW.xxx.MOJI.SIZE.
+  // Sets the size of the font. Represented by #WINDOW.xxx.MOJI.SIZE.
   void set_font_size_to_default() {
     font_size_in_pixels_ = default_font_size_in_pixels_;
   }
@@ -137,7 +137,7 @@ class TextWindow {
   void set_name_mod(const int in) { name_mod_ = in; }
   int name_mod() const { return name_mod_; }
 
-  // Sets the size of the spacing between characters. Reprsented by
+  // Sets the size of the spacing between characters. Represented by
   // #WINDOW.xxx.NAME_MOJI_REP.
   void SetNameSpacingBetweenCharacters(const std::vector<int>& pos_data);
 
@@ -354,7 +354,7 @@ class TextWindow {
 
   // Describes how to render character names.
   // - 0: Display names inline (default)
-  // - 1: Display names in a seperate window
+  // - 1: Display names in a separate window
   // - 2: Do not display names
   int name_mod_;
 

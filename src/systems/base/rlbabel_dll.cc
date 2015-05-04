@@ -184,7 +184,7 @@ const std::string& RlBabelDLL::GetDLLName() const {
 }
 
 int RlBabelDLL::Initialize(int dllno, int windname) {
-  // rlBabel hangs onto the dll index and uses it for something in his
+  // rlBabel hangs onto the DLL index and uses it for something in his
   // SetCurrentWindowName implementation.
   return 1;
 }
@@ -346,7 +346,7 @@ int RlBabelDLL::TextoutGetChar(StringReferenceIterator buffer,
         // Haeleth's rlBabel for RealLive does a big ugly hack right about here
         // because the name window code has something preventing him from
         // hooking the text out function so he made a whole bunch of name moji
-        // tiles and rendered into those. This is silly and unneccessary since
+        // tiles and rendered into those. This is silly and unnecessary since
         // I control the rlvm code...
         *buffer =
             cp932_text_buffer.substr(text_index, end_token_index - text_index);
@@ -442,7 +442,7 @@ int RlBabelDLL::TextoutGetChar(StringReferenceIterator buffer,
         ++end_token_index;
       // Fall through!
       default: {
-        // We tokenise text and break lines appropriately.
+        // We tokenize text and break lines appropriately.
         // TODO(erg): Haeleth appears to be caching horizontal width. Should do
         // this once I have something working.
         //

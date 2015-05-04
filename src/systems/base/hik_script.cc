@@ -292,7 +292,7 @@ HIKScript::Layer& HIKScript::CurrentLayer() {
 HIKScript::Animation& HIKScript::CurrentAnimation() {
   Layer& layer = CurrentLayer();
   if (layer.animations.size() == 0) {
-    throw rlvm::Exception("Invalid unkowns reference");
+    throw rlvm::Exception("Invalid unknowns reference");
   }
 
   return layer.animations.back();

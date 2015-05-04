@@ -245,7 +245,7 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   SetWindowTitle();
 
 #if !defined(__APPLE__) && !defined(_WIN32)
-  // We only set the icon on linux because OSX will use the icns file
+  // We only set the icon on Linux because OSX will use the icns file
   // automatically and this doesn't look too awesome.
   SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
   if (icon) {

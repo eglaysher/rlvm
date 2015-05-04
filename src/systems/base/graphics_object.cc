@@ -793,7 +793,7 @@ void GraphicsObject::AddObjectMutator(std::unique_ptr<ObjectMutator> mutator) {
   MakeImplUnique();
 
   // If there's a currently running mutator that matches the incoming mutator,
-  // we ignore the incoming mutator. Kud Wafter's ED relies on this behaviour.
+  // we ignore the incoming mutator. Kud Wafter's ED relies on this behavior.
   for (std::unique_ptr<ObjectMutator>& mutator_ptr : object_mutators_) {
     if (mutator_ptr->OperationMatches(mutator->repr(), mutator->name())) {
       return;

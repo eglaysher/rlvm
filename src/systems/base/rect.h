@@ -193,7 +193,7 @@ class Rect {
 
   bool is_empty() const { return origin_.is_empty() && size_.is_empty(); }
 
-  // Whether loc is inside this Rect.
+  // Whether |loc| is inside this Rect.
   bool Contains(const Point& loc);
 
   // Whether we intersect with |rhs|.

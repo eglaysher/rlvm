@@ -48,7 +48,7 @@ class SDLEventSystem : public EventSystem {
  public:
   SDLEventSystem(SDLSystem& sys, Gameexe& gexe);
 
-  // We provide this accessor to let the Graphics system querry what
+  // We provide this accessor to let the Graphics system query what
   // to do when redrawing the mouse.
   bool mouse_inside_window() const { return mouse_inside_window_; }
 
@@ -104,7 +104,7 @@ class SDLEventSystem : public EventSystem {
   SDLSystem& system_;
 
   // Handles raw SDL events when appropriate. (Used for things like Guichan,
-  // et cetera who want to suck raw SDL events).
+  // etc who want to suck raw SDL events).
   RawSDLInputHandler* raw_handler_;
 };
 

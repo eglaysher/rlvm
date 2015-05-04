@@ -148,7 +148,7 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   // Texture used to store the contents of the screen while in DrawManual()
   // mode. The stored image is then used if we need to redraw in the
-  // intervening time (expose events, mouse cursor moves, et cetera).
+  // intervening time (expose events, mouse cursor moves, etc).
   GLuint screen_contents_texture_;
 
   // Whether |screen_contents_texture_| is valid to use.

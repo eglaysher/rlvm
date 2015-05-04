@@ -362,7 +362,7 @@ void TextSystem::ReplayPageSet(PageSet& set, bool is_current_page) {
       // Currently, the text system can throw on a few unimplemented situations,
       // such as ruby across lines.
 
-      // Ignore what would normally be an ignored command when encoutered from
+      // Ignore what would normally be an ignored command when encountered from
       // the main loop.
     }
   }
@@ -704,7 +704,7 @@ std::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
           num_two -= FULLWIDTH_ZERO;
           emoji_id = num_one * 10 + num_two;
 
-          // Lookup what g00 surface we should use for emoji.
+          // Look up what g00 surface we should use for emoji.
           emoji_surface = system().graphics().GetEmojiSurface();
           is_emoji = true;
           add_char = false;

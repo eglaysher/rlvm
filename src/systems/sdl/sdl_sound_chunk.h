@@ -75,7 +75,7 @@ class SDLSoundChunk : public std::enable_shared_from_this<SDLSoundChunk> {
   // requires a hack for NWA support.
   Mix_Chunk* LoadSample(const boost::filesystem::path& path);
 
-  // Static table which deliberatly creates cycles. When a chunk
+  // Static table which deliberately creates cycles. When a chunk
   // starts playing, it's associated with its channel ID in this table
   // to make sure that SDLSoundChunk object isn't deallocated. The
   // SDL_mixer callback, SoundChunkFinishedPlayback(), will reset the

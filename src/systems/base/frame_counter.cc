@@ -116,7 +116,7 @@ void FrameCounter::Finished() {
 }
 
 // -----------------------------------------------------------------------
-// Simpe Frame Counter
+// Simple Frame Counter
 // -----------------------------------------------------------------------
 
 SimpleFrameCounter::SimpleFrameCounter(EventSystem& es,

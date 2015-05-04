@@ -159,7 +159,7 @@ void RLMachine::AttachModule(RLModule* module) {
   if (it != modules_.end()) {
     RLModule& cur_mod = *it->second;
     std::ostringstream ss;
-    ss << "Module identification clash: tyring to overwrite " << cur_mod
+    ss << "Module identification clash: trying to overwrite " << cur_mod
        << " with " << *module << std::endl;
 
     // Free |module| since we took ownership of it
@@ -616,7 +616,7 @@ void RLMachine::LoadDLL(int slot, const std::string& name) {
     loaded_dlls_.emplace(slot, std::unique_ptr<RealLiveDLL>(dll));
   } else {
     std::ostringstream oss;
-    oss << "Can't load emulated dll named '" << name << "'";
+    oss << "Can't load emulated DLL named '" << name << "'";
     throw rlvm::Exception(oss.str());
   }
 }

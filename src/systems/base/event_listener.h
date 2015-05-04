@@ -291,7 +291,7 @@ enum KeyCode {
   RLKEY_BREAK = 318,
   RLKEY_MENU = 319,
   RLKEY_POWER = 320,  // Power Macintosh power key
-  RLKEY_EURO = 321,   // Some european keyboards
+  RLKEY_EURO = 321,   // Some European keyboards
   RLKEY_UNDO = 322,   // Atari keyboard has Undo
 };
 
