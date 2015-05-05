@@ -1052,6 +1052,8 @@ std::string ExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
     case TYPE_INVALID:
       throw Error("Called GetSerializedExpression on an invalid piece.");
   }
+
+  return "<invalid>";
 }
 
 std::string ExpressionPiece::GetDebugString() const {
@@ -1076,6 +1078,8 @@ std::string ExpressionPiece::GetDebugString() const {
     case TYPE_INVALID:
       return "<invalid>";
   }
+
+  return "<invalid>";
 }
 
 // -----------------------------------------------------------------------------

@@ -6,6 +6,10 @@ component_env.Append(
     "#/vendor/luabind/include/",
     "/usr/include/lua5.1"
   ],
+  CXXFLAGS = [
+    # luabind still uses std::auto_ptr.
+    "-Wno-deprecated-declarations",
+  ]
 )
 
 libluabind_files = [
