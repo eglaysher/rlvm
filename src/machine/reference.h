@@ -37,7 +37,7 @@ class Memory;
 
 // Accessor class passed back to user when the iterator is
 // dereferenced. Each IntAcessor will (probably) be a short-lived
-// temporary object which is immediately casted to an int, or it may
+// temporary object which is immediately cast to an int, or it may
 // have a value assigned to it.
 class IntAccessor {
  public:
