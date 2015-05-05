@@ -308,11 +308,7 @@ void SoundSystem::SetKoeEnabled(const int in) { globals_.koe_enabled = in; }
 
 void SoundSystem::SetUseKoeForCharacter(const int character,
                                         const int enabled) {
-  // Dear C++: I want the auto keyword NOW.
-  std::pair<std::multimap<int, int>::iterator,
-            std::multimap<int, int>::iterator> range =
-      usekoe_to_koeplay_mapping_.equal_range(character);
-
+  auto range = usekoe_to_koeplay_mapping_.equal_range(character);
   std::multimap<int, int>::iterator it;
   for (it = range.first; it != range.second; ++it) {
     globals_.character_koe_enabled[it->second] = enabled;
