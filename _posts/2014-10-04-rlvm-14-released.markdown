@@ -7,7 +7,8 @@ Adds support for the [US edition of planetarian](http://store.steampowered.com/a
 
 <div class="downloadinfo">
 
-<p>I've also added a bitcoin donation widget to the main page. If you've found rlvm useful over the last eight years, consider making a donation in Bitcoin to <a href="https://blockchain.info/address/18LntbVY1GMZeioDYnst8yFmYQP86P4iKi">18LntbVY1GMZeioDYnst8yFmYQP86P4iKi</a>.</p>
+<p>I've also added a bitcoin donation widget to the main page. If you've found rlvm useful over the last eight years, consider making a donation in Bitcoin to <a href="https://blockchain.info/address/1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc">1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc</a>.
+</p>
 
 <h2>Downloads</h2>
 <ul>
