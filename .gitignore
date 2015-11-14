@@ -1,0 +1,6 @@
+.sconf_temp/
+.sconsign.dblite
+_site/
+build/
+config.log
+site_scons/
