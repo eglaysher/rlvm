@@ -198,13 +198,17 @@ struct objSetText : public RLOpcode<IntConstant_T, DefaultStrValue_T> {
   }
 };
 
+// Note: It appears that the RealLive API changed sometime between when Haeleth
+// was working on Kanon and RealLive Max. Previously, the zeroth overload took
+// the shadow color. Now, the zeroth doesn't and a new first overload does. Use
+// DefaultIntValue to try to handle both cases at once.
 struct objTextOpts : public RLOpcode<IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T,
-                                        IntConstant_T> {
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     IntConstant_T,
+                                     DefaultIntValue_T<-1>> {
   void operator()(RLMachine& machine,
                   int buf,
                   int size,
@@ -848,6 +852,7 @@ void addObjectFunctions(RLModule& m) {
   m.AddOpcode(1024, 0, "objSetText", new objSetText);
   m.AddOpcode(1024, 1, "objSetText", new objSetText);
   m.AddOpcode(1025, 0, "objTextOpts", new objTextOpts);
+  m.AddOpcode(1025, 1, "objTextOpts", new objTextOpts);
 
   m.AddOpcode(
       1026, 0, "objLayer", new Obj_SetOneIntOnObj(&GraphicsObject::SetZLayer));
