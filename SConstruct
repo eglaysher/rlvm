@@ -21,7 +21,7 @@ AddOption('--fullstatic', action='store_true',
 env = Environment(
   tools = ["default", "rlvm"],
 
-  LIBS = ["z"],
+  LIBS = ["z", "png"],
 
   LOCAL_LIBS = [],
 

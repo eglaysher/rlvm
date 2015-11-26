@@ -33,25 +33,25 @@
 
 /*=============================================================================
         File: SDL_png.c
-     Purpose: A PNG loader and saver for the SDL library      
-    Revision: 
+     Purpose: A PNG loader and saver for the SDL library
+    Revision:
   Created by: Philippe Lavoie          (2 November 1998)
               lavoie@zeus.genie.uottawa.ca
- Modified by: 
+ Modified by:
 
  Copyright notice:
           Copyright (C) 1998 Philippe Lavoie
- 
+
           This library is free software; you can redistribute it and/or
           modify it under the terms of the GNU Library General Public
           License as published by the Free Software Foundation; either
           version 2 of the License, or (at your option) any later version.
- 
+
           This library is distributed in the hope that it will be useful,
           but WITHOUT ANY WARRANTY; without even the implied warranty of
           MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
           Library General Public License for more details.
- 
+
           You should have received a copy of the GNU Library General Public
           License along with this library; if not, write to the Free
           Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -71,6 +71,26 @@
 #endif
 #include <png.h>
 
+/* Check version of libpng */
+#if (PNG_LIBPNG_VER_MAJOR < 1) || ((PNG_LIBPNG_VER_MAJOR == 1) && (PNG_LIBPNG_VER_MINOR < 5))
+
+#ifndef PNG_INFO_PLTE
+#define PNG_INFO_PLTE 0x0008
+#endif
+
+/* Emulate functions of libpng if version is under 1.5*/
+
+#define png_jmpbuf(png_ptr) (png_ptr->jmpbuf)
+#define png_get_channels(png_ptr, info_ptr) (info_ptr->channels)
+static png_uint_32 png_get_PLTE(png_structp png_ptr, png_infop info_ptr,
+		png_colorp *palette, int *num_palette) {
+	*palette = info_ptr->palette;
+	*num_palette = info_ptr->num_palette;
+	return PNG_INFO_PLTE;
+	// Return 0 on fail
+}
+
+#endif
 
 static struct {
 	int loaded;
@@ -347,7 +367,7 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 	 * the normal method of doing things with libpng).  REQUIRED unless you
 	 * set up your own error handlers in png_create_read_struct() earlier.
 	 */
-	if ( setjmp(png_ptr->jmpbuf) ) {
+	if ( setjmp(png_jmpbuf(png_ptr)) ) {
 		error = "Error reading the PNG file.";
 		goto done;
 	}
@@ -410,15 +430,15 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 			&color_type, &interlace_type, NULL, NULL);
 
 	/* Allocate the SDL surface to hold the image */
-	Rmask = Gmask = Bmask = Amask = 0 ; 
+	Rmask = Gmask = Bmask = Amask = 0 ;
 	if ( color_type != PNG_COLOR_TYPE_PALETTE ) {
 		if ( SDL_BYTEORDER == SDL_LIL_ENDIAN ) {
 			Rmask = 0x000000FF;
 			Gmask = 0x0000FF00;
 			Bmask = 0x00FF0000;
-			Amask = (info_ptr->channels == 4) ? 0xFF000000 : 0;
+			Amask = (png_get_channels(png_ptr, info_ptr) == 4) ? 0xFF000000 : 0;
 		} else {
-		        int s = (info_ptr->channels == 4) ? 0 : 8;
+		        int s = (png_get_channels(png_ptr, info_ptr) == 4) ? 0 : 8;
 			Rmask = 0xFF000000 >> s;
 			Gmask = 0x00FF0000 >> s;
 			Bmask = 0x0000FF00 >> s;
@@ -426,7 +446,7 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 		}
 	}
 	surface = SDL_AllocSurface(SDL_SWSURFACE, width, height,
-			bit_depth*info_ptr->channels, Rmask,Gmask,Bmask,Amask);
+			bit_depth*png_get_channels(png_ptr, info_ptr), Rmask,Gmask,Bmask,Amask);
 	if ( surface == NULL ) {
 		error = "Out of memory";
 		goto done;
@@ -466,22 +486,30 @@ SDL_Surface *IMG_LoadPNG_RW(SDL_RWops *src)
 
 	/* Load the palette, if any */
 	palette = surface->format->palette;
+
 	if ( palette ) {
-	    if(color_type == PNG_COLOR_TYPE_GRAY) {
-		palette->ncolors = 256;
-		for(i = 0; i < 256; i++) {
-		    palette->colors[i].r = i;
-		    palette->colors[i].g = i;
-		    palette->colors[i].b = i;
+		int __num_palette;
+		png_colorp __palette;
+		if(png_get_PLTE(png_ptr, info_ptr, &__palette, &__num_palette)
+				!= PNG_INFO_PLTE) {
+			__num_palette = 0;
 		}
-	    } else if (info_ptr->num_palette > 0 ) {
-		palette->ncolors = info_ptr->num_palette; 
-		for( i=0; i<info_ptr->num_palette; ++i ) {
-		    palette->colors[i].b = info_ptr->palette[i].blue;
-		    palette->colors[i].g = info_ptr->palette[i].green;
-		    palette->colors[i].r = info_ptr->palette[i].red;
+
+		if(color_type == PNG_COLOR_TYPE_GRAY) {
+			palette->ncolors = 256;
+			for(i = 0; i < 256; i++) {
+				palette->colors[i].r = i;
+				palette->colors[i].g = i;
+				palette->colors[i].b = i;
+			}
+		} else if (__num_palette > 0 ) {
+			palette->ncolors = __num_palette;
+			for( i=0; i<__num_palette; ++i ) {
+				palette->colors[i].b = __palette[i].blue;
+				palette->colors[i].g = __palette[i].green;
+				palette->colors[i].r = __palette[i].red;
+			}
 		}
-	    }
 	}
 
 done:	/* Clean up and return */
@@ -501,7 +529,7 @@ done:	/* Clean up and return */
 		}
 		IMG_SetError(error);
 	}
-	return(surface); 
+	return(surface);
 }
 
 #else
