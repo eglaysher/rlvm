@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#include "src/systems/base/hik_renderer.h"
+#include "systems/base/hik_renderer.h"
 
 #include <iostream>
 

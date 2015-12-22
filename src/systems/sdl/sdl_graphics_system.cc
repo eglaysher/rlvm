@@ -34,6 +34,7 @@
 
 #if !defined(__APPLE__) && !defined(_WIN32)
 #include <SDL/SDL_image.h>
+#include "../resources/48/rlvm_icon_48.xpm"
 #endif
 
 #include <boost/algorithm/string.hpp>
@@ -247,9 +248,11 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
 #if !defined(__APPLE__) && !defined(_WIN32)
   // We only set the icon on Linux because OSX will use the icns file
   // automatically and this doesn't look too awesome.
-  SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
+  SDL_Surface* icon = IMG_ReadXPMFromArray(rlvm_icon_48);
   if (icon) {
-    SDL_SetColorKey(icon, SDL_SRCCOLORKEY, SDL_MapRGB(icon->format, 0, 0, 0));
+    SDL_SetColorKey(icon,
+                    SDL_SRCCOLORKEY,
+                    SDL_MapRGB(icon->format, 255, 255, 255));
     SDL_WM_SetIcon(icon, NULL);
     SDL_FreeSurface(icon);
   }
