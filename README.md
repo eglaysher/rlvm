@@ -39,7 +39,7 @@ rlvm currently plays the following games to their completion:
 | Planetarian            | Works; [buy here][planetarian] |
 
 [kanon]: http://radicalr.pestermom.com/vn.html
-[clannad]: https://sekaiproject.com/blog-en/sekai-project-and-visualarts-announce-the-licensing-of-clannad-full-voice-edition/
+[clannad]: http://store.steampowered.com/app/324160/
 [planetarian]: http://store.steampowered.com/app/316720/
 
 For more details, please read STATUS.TXT.
@@ -50,8 +50,7 @@ first hand or what I've been told.
 
 rlvm has an implementation of rlBabel; English patches compiled with
 Haeleth's rlBabel should line break correctly. I've successfully tested
-it with the Kanon patch from NDT and the beta CLANNAD patches from
-Baka-Tsuki's Assembla page.
+it with the Kanon patch from NDT.
 
 rlvm supports KOE, NWK and OVK archives for voices, along with ogg
 vorbis voice patches which follow the convention
@@ -164,6 +163,6 @@ getting it working.
 
 ## DONATE
 
-Have you found rlvm useful? I accept donations in bitcoin at the following address: [18LntbVY1GMZeioDYnst8yFmYQP86P4iKi][bitcoin]
+Have you found rlvm useful? I accept donations in bitcoin at the following address: [1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc][bitcoin]
 
-[bitcoin]: https://blockchain.info/address/18LntbVY1GMZeioDYnst8yFmYQP86P4iKi
+[bitcoin]: https://blockchain.info/address/1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc
