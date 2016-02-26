@@ -329,6 +329,10 @@ void AddSysSaveOpcodes(RLModule& m) {
   m.AddOpcode(1414, 0, "GetSaveFlag", new GetSaveFlag);
   m.AddOpcode(1421, 0, "LatestSave", new LatestSave);
 
+  m.AddUnsupportedOpcode(1450, 0, "GetSaveComment");
+  m.AddUnsupportedOpcode(1451, 0, "SetSaveComment");
+  m.AddUnsupportedOpcode(1452, 0, "ClearSaveComment");
+
   m.AddOpcode(
       2053, 0, "SetConfirmSaveLoad", CallFunction(&System::set_confirm_save_load));
   m.AddOpcode(
