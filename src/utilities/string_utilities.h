@@ -65,6 +65,10 @@ std::string cp932toUTF8(const std::string& line, int transformation);
 // Returns true if codepoint is either of the Japanese quote marks or '('.
 bool IsOpeningQuoteMark(int codepoint);
 
+// Returns whether |codepoint| is part of a word that should be wrapped if we
+// go over the right margin.
+bool IsWrappingRomanCharacter(int codepoint);
+
 // Returns whether the unicode |codepoint| is a piece of breaking punctuation.
 bool IsKinsoku(int codepoint);
 

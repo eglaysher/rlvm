@@ -259,6 +259,8 @@ class TextWindow {
 
   void RenderKoeReplayButtons(std::ostream* tree);
 
+  int GetCharWidthFor(int cur_codepoint);
+
  protected:
   // We cache the size of the screen so we don't need the machine in
   // some accessors.

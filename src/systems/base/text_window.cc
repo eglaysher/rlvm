@@ -561,20 +561,7 @@ bool TextWindow::DisplayCharacter(const std::string& current,
                                  text_insertion_point_y_,
                                  GetTextSurface());
     next_char_italic_ = false;
-
-    if (cur_codepoint < 128) {
-      // This is a basic ASCII character. In normal RealLive, western text
-      // appears to be treated as half width monospace. If we're here, we are
-      // either in a manually laid out western game (therefore we should try to
-      // fit onto the monospace grid) or we're in rlbabel (in which case, our
-      // insertion point will be manually set by the bytecode immediately after
-      // this character).
-      text_insertion_point_x_ +=
-          std::ceil((font_size_in_pixels_ + x_spacing_) / 2.0f);
-    } else {
-      // Move the insertion point forward one character
-      text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
-    }
+    text_insertion_point_x_ += GetCharWidthFor(cur_codepoint);
 
     if (indent_after_spacing)
       SetIndentation();
@@ -591,8 +578,16 @@ bool TextWindow::DisplayCharacter(const std::string& current,
   return true;
 }
 
+// Lines we still get wrong in CLANNAD Prologue:
+//
+// <rlmax> = Official RealLive's breaking
+// <rlvm> = Where rlvm places the line break
+//
+// - "Whose ides was it to put a school at the top of a giant <rlmax> slope,<rlvm> anyway?"
+//
+
 bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
-  int char_width = font_size_in_pixels_ + x_spacing_;
+  int char_width = GetCharWidthFor(cur_codepoint);
   bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint) ||
                                   cur_codepoint == 0x20;
   int normal_width =
@@ -612,7 +607,8 @@ bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
   }
 
   // If this character will fit on the line, but the next n characters are
-  // kinsoku characters and one of them won't, then break.
+  // kinsoku characters OR wrapping roman characters and one of them won't,
+  // then break.
   if (!cur_codepoint_is_kinsoku && rest != "") {
     int final_insertion_x = text_insertion_point_x_ + char_width;
 
@@ -621,9 +617,16 @@ bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
     while (cur != end) {
       int point = utf8::next(cur, end);
       if (IsKinsoku(point)) {
-        final_insertion_x += char_width;
+        final_insertion_x += GetCharWidthFor(point);
 
         if (final_insertion_x > extended_width) {
+          return true;
+        }
+      // OK, is this correct? I'm now having places where we prematurely break.
+      } else if (IsWrappingRomanCharacter(point)) {
+        final_insertion_x += GetCharWidthFor(point);
+
+        if (final_insertion_x > normal_width) {
           return true;
         }
       } else {
@@ -736,4 +739,12 @@ void TextWindow::EndSelectionMode() {
   selection_callback_ = nullptr;
   selections_.clear();
   ClearWin();
+}
+
+int TextWindow::GetCharWidthFor(int cur_codepoint) {
+  if (cur_codepoint < 127) {
+    return std::floor((font_size_in_pixels_ + x_spacing_) / 2.0f);
+  } else {
+    return font_size_in_pixels_ + x_spacing_;
+  }
 }
