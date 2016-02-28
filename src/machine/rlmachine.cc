@@ -464,6 +464,10 @@ void RLMachine::PopStackFrame() {
   call_stack_.pop_back();
 }
 
+int RLMachine::GetStackSize() {
+  return call_stack_.size();
+}
+
 int* RLMachine::CurrentIntLBank() {
   std::vector<StackFrame>::reverse_iterator it =
       find_if(call_stack_.rbegin(), call_stack_.rend(), IsNotLongOp);

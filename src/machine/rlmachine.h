@@ -321,6 +321,9 @@ class RLMachine {
   // LongOperations of this change if needed.
   void PopStackFrame();
 
+  // Returns the current stack size.
+  int GetStackSize();
+
   // Returns the intL bank of the current stack frame.
   int* CurrentIntLBank();
 
