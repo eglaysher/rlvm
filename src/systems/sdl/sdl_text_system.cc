@@ -157,8 +157,22 @@ std::shared_ptr<TTF_Font> SDLTextSystem::GetFontOfSize(int size) {
     std::shared_ptr<TTF_Font> font(f, TTF_CloseFont);
 
     map_[size] = font;
+
+    // Now that we've put this font into the cache, we can safely use
+    // GetCharWidth to ensure whether we're monospaced.
+    if (!is_monospace_.get()) {
+      is_monospace_.reset(new bool);
+      // Why not use TTF_FontFaceIsFixedWidth()? Because that checks if the
+      // font is fixed width, which msgothic.ttc among others is not. However,
+      // it does use monospaced characters.
+      *is_monospace_ = GetCharWidth(size, 'i') == GetCharWidth(size, 'm');
+    }
     return font;
   } else {
     return it->second;
   }
+}
+
+bool SDLTextSystem::FontIsMonospaced() {
+  return is_monospace_ ? *is_monospace_ : false;
 }

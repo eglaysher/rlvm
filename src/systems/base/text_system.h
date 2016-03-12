@@ -239,6 +239,9 @@ class TextSystem : public EventListener {
 
   virtual int GetCharWidth(int size, uint16_t codepoint) = 0;
 
+  // Whether the current font has monospaced Roman letters.
+  virtual bool FontIsMonospaced() = 0;
+
   TextSystemGlobals& globals() { return globals_; }
 
   // Resets non-configuration values (so we can load games).

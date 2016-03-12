@@ -56,6 +56,7 @@ class TestTextSystem : public TextSystem {
                                int insertion_point_y,
                                const std::shared_ptr<Surface>& destination) override;
   virtual int GetCharWidth(int size, uint16_t codepoint) override;
+  bool FontIsMonospaced() override;
 
   const std::vector<std::tuple<std::string, int, int>>& glyphs() {
     return rendered_glyps_;
