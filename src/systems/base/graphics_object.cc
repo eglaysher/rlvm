@@ -36,6 +36,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 #include <sstream>
 #include <string>
