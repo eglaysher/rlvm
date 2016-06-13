@@ -88,9 +88,18 @@ int g_isBigEndian = IsBigEndian();
 #include "file.h"
 #include "endian.hpp"
 
+#include <set>
+#include <tuple>
+
 using namespace std;
 
 // -----------------------------------------------------------------------
+
+bool GRPCONV::REGION::operator<(const REGION& rhs) const {
+  return
+      std::tie(x1, y1, x2, y2, origin_x, origin_y) <
+    std::tie(rhs.x1, rhs.y1, rhs.x2, rhs.y2, rhs.origin_x, rhs.origin_y);
+}
 
 /**********************************************
 **
@@ -248,6 +257,8 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
 
     region_table = vector<REGION>(head_size);
 
+    int real_region_count = 0;
+    std::set<REGION> unique_regions;
     const char* head = _inbuf + 9;
     bool overlaid_image = head_size > 1;
     for (int i = 0; i < head_size; i++) {
@@ -258,16 +269,16 @@ G00CONV::G00CONV(const char* _inbuf, int _inlen, const char* filename) {
       region_table[i].origin_x = read_little_endian_int(head+16);
       region_table[i].origin_y = read_little_endian_int(head+20);
       region_table[i].Fix(w, h);
-
-      if (region_table[i].x1 != 0 || region_table[i].y1 != 0 ||
-          region_table[i].x2 != (w - 1) || region_table[i].y2 != (h - 1)) {
-        overlaid_image = false;
+      if (region_table[i].Width() &&
+          region_table[i].Height()) {
+        unique_regions.insert(region_table[i]);
+        real_region_count++;
       }
 
       head += 24;
     }
 
-    if (overlaid_image) {
+    if (real_region_count > 1 && unique_regions.size() == 1) {
       // This is one of those newer images where each region is the size of
       // width/height and is stacked on top of each other. We therefore have to
       // munge the height and the region table so each region gets its own
