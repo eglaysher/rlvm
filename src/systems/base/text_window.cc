@@ -199,10 +199,12 @@ void TextWindow::SetTextboxPadding(const vector<int>& pos_data) {
 void TextWindow::SetName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
+    std::string interpreted_name = text_system_.InterpretName(utf8name);
+
     // Display the name in one pass
     PrintTextToFunction(
         bind(&TextWindow::DisplayCharacter, ref(*this), _1, _2),
-        utf8name, next_char);
+        interpreted_name, next_char);
     SetIndentation();
   }
 
@@ -211,18 +213,21 @@ void TextWindow::SetName(const std::string& utf8name,
 
 void TextWindow::SetNameWithoutDisplay(const std::string& utf8name) {
   if (name_mod_ == 1) {
+    std::string interpreted_name = text_system_.InterpretName(utf8name);
+
     namebox_characters_ = 0;
     try {
-      namebox_characters_ = utf8::distance(utf8name.begin(), utf8name.end());
+      namebox_characters_ = utf8::distance(interpreted_name.begin(),
+                                           interpreted_name.end());
     }
     catch (...) {
       // If utf8name isn't a real UTF-8 string, possibly overestimate:
-      namebox_characters_ = utf8name.size();
+      namebox_characters_ = interpreted_name.size();
     }
 
     namebox_characters_ = std::max(namebox_characters_, minimum_namebox_size_);
 
-    RenderNameInBox(utf8name);
+    RenderNameInBox(interpreted_name);
   }
 
   last_token_was_name_ = true;

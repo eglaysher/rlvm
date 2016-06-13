@@ -142,6 +142,9 @@ class TextSystem : public EventListener {
   bool IsReadingBacklog() const;
   void StopReadingBacklog();
 
+  // Performs #NAMAE replacement; used in the English Edition of Clannad.
+  std::string InterpretName(const std::string& utf8name);
+
   // A temporary version of |message_no_wait_| controllable by the script.
   void set_script_message_nowait(const int in) { script_message_no_wait_ = in; }
   int script_message_nowait() const { return script_message_no_wait_; }
@@ -308,6 +311,10 @@ class TextSystem : public EventListener {
 
   // The current page set. Represents what is on the screen right now.
   PageSet current_pageset_;
+
+  // Name mappings. Clannad English Edition maps name boxes from the key to the
+  // value.
+  std::map<std::string, std::string> namae_mapping_;
 
   // Previous Text Pages. The TextSystem owns the list of previous
   // pages because multiple windows can be displayed in one text page.

@@ -131,6 +131,22 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
   CheckAndSetBool(gexe, "WINDOW_MSGBKRIGHT_USE", msgbkright_use_);
   CheckAndSetBool(gexe, "WINDOW_EXBTN_USE", exbtn_use_);
 
+  // Iterate over all the NAMAE keys, which is a feature that Clannad English
+  // Edition uses to translate the Japanese names into English.
+  for (GameexeFilteringIterator it = gexe.filtering_begin("NAMAE");
+       it != gexe.filtering_end();
+       ++it) {
+    try {
+      // Data in the Gameexe.ini file is implicitly in Shift-JIS and needs to
+      // be converted to UTF-8.
+      std::string key = cp932toUTF8(it->GetStringAt(0), 0);
+      std::string value = cp932toUTF8(it->GetStringAt(1), 0);
+      namae_mapping_[key] = value;
+    }
+    catch (...) {
+      // Gameexe.ini file is malformed.
+    }
+  }
   previous_page_it_ = previous_page_sets_.end();
 }
 
@@ -377,6 +393,13 @@ void TextSystem::StopReadingBacklog() {
   ClearAllTextWindows();
   HideAllTextWindows();
   ReplayPageSet(current_pageset_, true);
+}
+
+std::string TextSystem::InterpretName(const std::string& utf8name) {
+  auto it = namae_mapping_.find(utf8name);
+  if (it == namae_mapping_.end())
+    return utf8name;
+  return it->second;
 }
 
 void TextSystem::SetAutoMode(int i) {
