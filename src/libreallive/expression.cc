@@ -34,6 +34,7 @@
 
 #include "libreallive/expression.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -52,6 +53,13 @@ std::string IntToBytecode(int val) {
   std::string prefix("$\xFF");
   libreallive::append_i32(prefix, val);
   return prefix;
+}
+
+bool IsUnescapedQuotationMark(const char* src, const char* current) {
+  if (src == current)
+    return *current == '"';
+  else
+    return *current == '"' && *(current - 1) != '\\';
 }
 
 }  // namespace
@@ -114,22 +122,25 @@ size_t NextString(const char* src) {
 
   while (true) {
     if (quoted) {
-      quoted = *end != '"';
+      quoted = !IsUnescapedQuotationMark(src, end);
       if (!quoted && *(end - 1) != '\\') {
         end++;  // consume the final quote
         break;
       }
     } else {
-      quoted = *end == '"';
+      quoted = IsUnescapedQuotationMark(src, end);
       if (strncmp(end, "###PRINT(", 9) == 0) {
         end += 9;
         end += 1 + NextExpression(end);
         continue;
       }
       if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef) ||
+            (*end >= 'a' && *end <= 'z') ||
             (*end >= 'A' && *end <= 'Z') || (*end >= '0' && *end <= '9') ||
-            *end == ' ' || *end == '?' || *end == '_' || *end == '"'))
+            *end == ' ' || *end == '?' || *end == '_' || *end == '"' ||
+            *end == '\\')) {
         break;
+      }
     }
     if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
       end += 2;
@@ -384,6 +395,9 @@ static ExpressionPiece GetString(const char*& src) {
 
   // Increment the source by that many characters
   src += length;
+
+  // Unquote the internal quotations.
+  boost::replace_all(s, "\\\"", "\"");
 
   return ExpressionPiece::StrConstant(s);
 }
