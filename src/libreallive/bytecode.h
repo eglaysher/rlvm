@@ -99,7 +99,8 @@ class BytecodeElement {
 
   // Prints a human readable version of this bytecode element to |oss|. This
   // tries to match Haeleth's kepago language as much as is feasible.
-  virtual void PrintSourceRepresentation(std::ostream& oss) const;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const;
 
   // Returns the length of this element in bytes in the source file.
   virtual const size_t GetBytecodeLength() const = 0;
@@ -138,7 +139,8 @@ class CommaElement : public BytecodeElement {
   virtual ~CommaElement();
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
 };
 
@@ -152,7 +154,8 @@ class MetaElement : public BytecodeElement {
   void set_value(const int value) { value_ = value; }
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual const int GetEntrypoint() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
@@ -173,7 +176,8 @@ class TextoutElement : public BytecodeElement {
   const string GetText() const;
 
   // Overridden from BytecodeElement::
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
@@ -196,7 +200,8 @@ class ExpressionElement : public BytecodeElement {
   const ExpressionPiece& ParsedExpression() const;
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
@@ -245,7 +250,8 @@ class CommandElement : public BytecodeElement {
   virtual const string GetCase(int i) const;
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
  protected:

@@ -31,7 +31,9 @@ namespace libreallive {
 class Scenario;
 }
 
+class RLMachine;
+
 // A really cheap disassembler now that kprl can't be compiled anymore.
-void DumpScenario(libreallive::Scenario* scenario);
+void DumpScenario(RLMachine* machine, libreallive::Scenario* scenario);
 
 #endif  // SRC_MACHINE_DUMP_SCENARIO_H_

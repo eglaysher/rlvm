@@ -194,7 +194,8 @@ BytecodeElement::BytecodeElement() {}
 
 BytecodeElement::~BytecodeElement() {}
 
-void BytecodeElement::PrintSourceRepresentation(std::ostream& oss) const {
+void BytecodeElement::PrintSourceRepresentation(RLMachine* machine,
+                                                std::ostream& oss) const {
   oss << "<unspecified bytecode>" << std::endl;
 }
 
@@ -246,7 +247,8 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 CommaElement::CommaElement() {}
 CommaElement::~CommaElement() {}
 
-void CommaElement::PrintSourceRepresentation(std::ostream& oss) const {
+void CommaElement::PrintSourceRepresentation(RLMachine* machine,
+                                             std::ostream& oss) const {
   oss << "<CommaElement>" << std::endl;
 }
 
@@ -270,7 +272,8 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
 
 MetaElement::~MetaElement() {}
 
-void MetaElement::PrintSourceRepresentation(std::ostream& oss) const {
+void MetaElement::PrintSourceRepresentation(RLMachine* machine,
+                                            std::ostream& oss) const {
   if (type_ == Line_)
     oss << "#line " << value_ << std::endl;
   else if (type_ == Entrypoint_)
@@ -349,7 +352,8 @@ const string TextoutElement::GetText() const {
   return rv;
 }
 
-void TextoutElement::PrintSourceRepresentation(std::ostream& oss) const {
+void TextoutElement::PrintSourceRepresentation(RLMachine* machine,
+                                               std::ostream& oss) const {
   oss << "\"" << GetText() << "\"" << std::endl;
 }
 
@@ -387,7 +391,8 @@ const ExpressionPiece& ExpressionElement::ParsedExpression() const {
   return parsed_expression_;
 }
 
-void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
+void ExpressionElement::PrintSourceRepresentation(RLMachine* machine,
+                                                  std::ostream& oss) const {
   oss << ParsedExpression().GetDebugString() << std::endl;
 }
 
@@ -436,11 +441,18 @@ const size_t CommandElement::GetCaseCount() const { return 0; }
 
 const string CommandElement::GetCase(int i) const { return ""; }
 
-void CommandElement::PrintSourceRepresentation(std::ostream& oss) const {
-  oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
-      << module() << ":"
-      << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
-      << ">";
+void CommandElement::PrintSourceRepresentation(RLMachine* machine,
+                                               std::ostream& oss) const {
+  std::string name = machine->GetCommandName(*this);
+
+  if (name != "") {
+    oss << name;
+  } else {
+    oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
+        << module() << ":"
+        << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
+        << ">";
+  }
 
   PrintParameterString(oss, GetUnparsedParameters());
 

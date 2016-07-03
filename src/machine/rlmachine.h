@@ -282,6 +282,9 @@ class RLMachine {
   // off the end of the current scenario, set the halted bit.
   void AdvanceInstructionPointer();
 
+  // Returns the command name of |f|.
+  std::string GetCommandName(const libreallive::CommandElement& f);
+
   // Pauses execution and notifies the System. Every call to
   // executeNextInstruction() will return immediately and the System's internal
   // timer will stop ticking.

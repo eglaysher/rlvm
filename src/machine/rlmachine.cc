@@ -329,6 +329,15 @@ void RLMachine::AdvanceInstructionPointer() {
   }
 }
 
+std::string RLMachine::GetCommandName(const libreallive::CommandElement& f) {
+  ModuleMap::iterator it =
+      modules_.find(PackModuleNumber(f.modtype(), f.module()));
+  std::string name;
+  if (it != modules_.end())
+    name = it->second->GetCommandName(*this, f);
+  return name;
+}
+
 void RLMachine::ExecuteCommand(const libreallive::CommandElement& f) {
   ModuleMap::iterator it =
       modules_.find(PackModuleNumber(f.modtype(), f.module()));
