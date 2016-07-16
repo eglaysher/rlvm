@@ -142,7 +142,7 @@ class RLOperation {
   std::unique_ptr<PropertyList> property_list_;
 
   // The module that owns us (we ask it for properties).
-  RLModule* module_;
+  RLModule* module_ = nullptr;
 
   // The human readable name for this operation
   std::string name_;
