@@ -193,7 +193,7 @@ class ExpressionPiece {
   std::string GetSpecialDebugString() const;
 
   int PerformUniaryOperationOn(int int_operand) const;
-  int PerformBinaryOperationOn(int lhs, int rhs) const;
+  static int PerformBinaryOperationOn(char operand, int lhs, int rhs);
 
   ExpressionPieceType piece_type;
 

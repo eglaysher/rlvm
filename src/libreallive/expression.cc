@@ -617,6 +617,14 @@ ExpressionPiece ExpressionPiece::BinaryExpression(const char operation,
     piece.simple_assignment.type = lhs.simple_mem_reference.type;
     piece.simple_assignment.location = lhs.simple_mem_reference.location;
     piece.simple_assignment.value = rhs.int_constant;
+  } else if (lhs.piece_type == TYPE_INT_CONSTANT &&
+             rhs.piece_type == TYPE_INT_CONSTANT) {
+    // We can fast path so that we just compute the integer expression here.
+    piece.piece_type = TYPE_INT_CONSTANT;
+    piece.int_constant = PerformBinaryOperationOn(
+        operation,
+        lhs.int_constant,
+        rhs.int_constant);
   } else {
     piece.piece_type = TYPE_BINARY_EXPRESSION;
     piece.binary_expression.operation = operation;
@@ -945,6 +953,7 @@ int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
       if (binary_expression.operation >= 20 &&
           binary_expression.operation < 30) {
         int value = PerformBinaryOperationOn(
+            binary_expression.operation,
             binary_expression.left_operand->GetIntegerValue(machine),
             binary_expression.right_operand->GetIntegerValue(machine));
         binary_expression.left_operand->SetIntegerValue(machine, value);
@@ -955,6 +964,7 @@ int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
         return value;
       } else {
         return PerformBinaryOperationOn(
+            binary_expression.operation,
             binary_expression.left_operand->GetIntegerValue(machine),
             binary_expression.right_operand->GetIntegerValue(machine));
       }
@@ -1393,8 +1403,10 @@ int ExpressionPiece::PerformUniaryOperationOn(int int_operand) const {
 }
 
 // Stolen from xclannad
-int ExpressionPiece::PerformBinaryOperationOn(int lhs, int rhs) const {
-  switch (binary_expression.operation) {
+// static
+int ExpressionPiece::PerformBinaryOperationOn(char operation,
+                                              int lhs, int rhs) {
+  switch (operation) {
     case 0:
     case 20:
       return lhs + rhs;
@@ -1444,7 +1456,7 @@ int ExpressionPiece::PerformBinaryOperationOn(int lhs, int rhs) const {
     default: {
       std::ostringstream ss;
       ss << "Invalid operator "
-         << static_cast<int>(binary_expression.operation)
+         << static_cast<int>(operation)
          << " in expression!";
       throw Error(ss.str());
     }
