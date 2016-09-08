@@ -1,0 +1,24 @@
+
+Import('component_env', 'env')
+
+component_env.Append(
+  CPPPATH = [
+    "#/vendor/zita-resampler/include/",
+  ],
+
+  CFLAGS = [
+    # Ignore all warnings in this upstream code.
+    "-w"
+  ]
+)
+
+zita_resampler_files = [
+  "src/resampler.cc",
+  "src/resampler-table.cc",
+  "src/vresampler.cc",
+]
+
+component_env.StaticLibrary('libzita-resampler', zita_resampler_files)
+component_env.Install('$LIBRARY_DIR', 'libzita-resampler.a')
+
+env.AddStaticLibraryTo("zita-resampler", "SDL")

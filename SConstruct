@@ -211,7 +211,7 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
     lib_name = library_dict['library']
     print "(Using included version of %s)" % lib_name
     componentlist.append(lib_name)
-    config.Define("HAVE_LIB" + lib_name, 1,
+    config.Define("HAVE_LIB" + lib_name.replace("-", "_"), 1,
                   "Define to 1 if you have the `%s' library." % lib_name)
 
 
@@ -233,6 +233,8 @@ VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/codec.h')
 VerifyLibrary(config, 'vorbisfile', 'vorbis/vorbisfile.h')
 
+VerifyLibrary(config, 'sndfile', 'sndfile.h')
+
 # In short, we do this because the SCons configuration system doesn't give me
 # enough control over the test program. Even if the libraries are installed,
 # they won't compile because SCons outputs "int main()" instead of "int
@@ -246,6 +248,11 @@ else:
 
 # Libraries we need, but will use a local copy if not installed.
 local_sdl_libraries = [
+  {
+    'include'  : 'zita-resampler/resampler.h',
+    'library'  : 'zita-resampler',
+    'function' : '',
+  },
   {
     "include"  : 'GL/glew.h',
     "library"  : 'GLEW',

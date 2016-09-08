@@ -37,6 +37,7 @@
 #include "systems/base/system.h"
 #include "systems/base/system_error.h"
 #include "systems/base/voice_archive.h"
+#include "systems/sdl/resample.h"
 #include "systems/sdl/sdl_music.h"
 #include "systems/sdl/sdl_sound_chunk.h"
 #include "utilities/exception.h"
@@ -396,6 +397,17 @@ void SDLSoundSystem::KoePlayImpl(int id) {
 
   int length;
   char* data = sample->Decode(&length);
+
+  // TODO(erg): SDL is supposed to have a real resampler, but doesn't, so for
+  // example, 48k -> 41k is at best tone shifted, and at worst, is a pure
+  // static. So we have to do our own manual resampling.
+  //
+  // The correct way to deal with this is to move off SDL's audio subsystem
+  // entirely or to contribute upstream to SDL so that its default behaviour is
+  // sane. There's no time left to do either of those, as there's a fairly
+  // hard deadline of 9/11 for the birthday release, and this is the last
+  // blocker.
+  data = EnsureDataIsCorrectBitrate(data, &length);
 
   SDLSoundChunkPtr koe = BuildKoeChunk(data, length);
   SetChannelVolumeImpl(KOE_CHANNEL);
