@@ -163,6 +163,4 @@ getting it working.
 
 ## DONATE
 
-Have you found rlvm useful? I accept donations in bitcoin at the following address: [1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc][bitcoin]
-
-[bitcoin]: https://blockchain.info/address/1AXqsVMXgpdjoDZF7995NXbVgGxVUKEDSc
+Have you found rlvm useful? I accept donations in bitcoin at the following address: 3Ee9s6BzmSZQK2yf4DU3p8vk1ttrsnFoQ2
