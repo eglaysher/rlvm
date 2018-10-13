@@ -27,8 +27,8 @@
 
 #include "systems/sdl/sdl_sound_system.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <sstream>
@@ -135,17 +135,9 @@ SDLSoundSystem::SDLSoundSystem(System& system)
     : SoundSystem(system), se_cache_(5), wav_cache_(5) {
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
-  /* We're going to be requesting certain things from our audio
-     device, so we set them up beforehand */
-
-  int audio_rate = s_real_live_sound_qualities[sound_quality()].rate;
-  Uint16 audio_format = s_real_live_sound_qualities[sound_quality()].format;
-  int audio_channels = 2;
-  int audio_buffers = 4096;
-
   /* This is where we open up our audio device.  Mix_OpenAudio takes
      as its parameters the audio format we'd /like/ to have. */
-  if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
+  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096)) {
     std::ostringstream oss;
     oss << "Couldn't initialize audio: " << Mix_GetError();
     throw SystemError(oss.str());

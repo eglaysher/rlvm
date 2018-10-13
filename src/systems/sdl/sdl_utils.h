@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_UTILS_H_
 #define SRC_SYSTEMS_SDL_SDL_UTILS_H_
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 

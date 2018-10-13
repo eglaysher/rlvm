@@ -1,0 +1,17 @@
+
+Import('component_env', 'env')
+
+component_env.Append(
+  CPPPATH = [
+    "#/vendor/SDL2_ttf/include/SDL2"
+  ],
+)
+
+libsdl_ttf_files = [
+  "src/SDL_ttf.c"
+]
+
+component_env.StaticLibrary('libSDL2_ttf', libsdl_ttf_files)
+component_env.Install('$LIBRARY_DIR', 'libSDL2_ttf.a')
+
+env.AddStaticLibraryTo("SDL2_ttf", "SDL2")

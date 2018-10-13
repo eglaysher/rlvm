@@ -29,8 +29,8 @@
 
 #include "systems/sdl/sdl_utils.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <cassert>
 #include <string>
@@ -113,7 +113,7 @@ SDL_Surface* AlphaInvert(SDL_Surface* in_surface) {
     throw SystemError("AlphaInvert requires an alpha channel!");
 
   // Build a copy of the surface
-  SDL_Surface* dst = SDL_AllocSurface(in_surface->flags,
+  SDL_Surface* dst = SDL_CreateRGBSurface(in_surface->flags,
                                       in_surface->w,
                                       in_surface->h,
                                       format->BitsPerPixel,

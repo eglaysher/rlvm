@@ -33,7 +33,7 @@
 
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "libreallive/gameexe.h"
 #include "libreallive/reallive.h"

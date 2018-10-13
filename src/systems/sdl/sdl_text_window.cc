@@ -27,8 +27,8 @@
 
 #include "systems/sdl/sdl_text_window.h"
 
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <string>
 #include <vector>
@@ -64,8 +64,10 @@ void SDLTextWindow::ClearWin() {
   TextWindow::ClearWin();
 
   // Allocate the text window surface
-  if (!surface_)
-    surface_.reset(new SDLSurface(getSDLGraphics(system()), GetTextSurfaceSize()));
+  if (!surface_) {
+    surface_.reset(
+        new SDLSurface(getSDLGraphics(system()), GetTextSurfaceSize()));
+  }
   surface_->Fill(RGBAColour::Clear());
 
   name_surface_.reset();

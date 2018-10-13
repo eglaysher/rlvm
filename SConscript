@@ -27,7 +27,7 @@ root_env.Append(
 #   root_env.Append(FRAMEWORKS=["OpenGL"])
 # else:
 
-root_env.ParseConfig("sdl-config --libs")
+root_env.ParseConfig("sdl2-config --libs")
 
 #########################################################################
 
@@ -225,17 +225,17 @@ libsystemsdl_files = [
 
 root_env.StaticLibrary('system_sdl', libsystemsdl_files)
 
-guichan_platform = [
-  "src/platforms/gcn/gcn_button.cc",
-  "src/platforms/gcn/gcn_graphics.cc",
-  "src/platforms/gcn/gcn_info_window.cc",
-  "src/platforms/gcn/gcn_menu.cc",
-  "src/platforms/gcn/gcn_platform.cc",
-  "src/platforms/gcn/gcn_save_load_window.cc",
-  "src/platforms/gcn/gcn_scroll_area.cc",
-  "src/platforms/gcn/gcn_true_type_font.cc",
-  "src/platforms/gcn/gcn_utils.cc",
-  "src/platforms/gcn/gcn_window.cc",
-]
+# guichan_platform = [
+#   "src/platforms/gcn/gcn_button.cc",
+#   "src/platforms/gcn/gcn_graphics.cc",
+#   "src/platforms/gcn/gcn_info_window.cc",
+#   "src/platforms/gcn/gcn_menu.cc",
+#   "src/platforms/gcn/gcn_platform.cc",
+#   "src/platforms/gcn/gcn_save_load_window.cc",
+#   "src/platforms/gcn/gcn_scroll_area.cc",
+#   "src/platforms/gcn/gcn_true_type_font.cc",
+#   "src/platforms/gcn/gcn_utils.cc",
+#   "src/platforms/gcn/gcn_window.cc",
+# ]
 
-root_env.StaticLibrary('guichan_platform', guichan_platform)
+# root_env.StaticLibrary('guichan_platform', guichan_platform)

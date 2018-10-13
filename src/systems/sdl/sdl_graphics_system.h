@@ -28,7 +28,8 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 
-#include <SDL/SDL_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <memory>
 #include <set>
@@ -37,8 +38,6 @@
 #include "base/notification_observer.h"
 #include "base/notification_registrar.h"
 #include "systems/base/graphics_system.h"
-
-struct SDL_Surface;
 
 class Gameexe;
 class GraphicsObject;
@@ -117,7 +116,8 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   // ---------------------------------------------------------------------
 
-  SDL_Surface* screen_;
+  SDL_Window* window_;
+  SDL_GLContext gl_context_;
 
   std::shared_ptr<SDLSurface> haikei_;
   std::shared_ptr<SDLSurface> display_contexts_[16];

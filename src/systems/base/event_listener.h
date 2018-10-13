@@ -35,9 +35,13 @@ enum MouseButton {
   MOUSE_NONE = 0,
   MOUSE_LEFT,
   MOUSE_RIGHT,
-  MOUSE_MIDDLE,
-  MOUSE_WHEELUP,
-  MOUSE_WHEELDOWN
+  MOUSE_MIDDLE
+};
+
+enum MouseWheelType {
+  MOUSE_WHEEL_NONE = 0,
+  MOUSE_WHEEL_UP,
+  MOUSE_WHEEL_DOWN
 };
 
 // Note that this looks suspiciously like the SDLKey definition with
@@ -308,6 +312,11 @@ class EventListener {
   // handled the message (and this message shouldn't be Dispatched to other
   // EventListeners).
   virtual bool MouseButtonStateChanged(MouseButton mouse_button, bool pressed);
+
+  // A notification of a mouse wheel movement. Returns true if this
+  // EventListener handled the message (and this message shouldn't be
+  // Dispatched to other EventListeners).
+  virtual bool MouseWheelEvent(MouseWheelType mouse_wheel);
 
   // A notification that a key was pressed or unpressed. Returns true if this
   // EventListener handled the message (and this message shouldn't be

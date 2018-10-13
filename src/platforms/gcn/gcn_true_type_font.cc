@@ -96,6 +96,7 @@ void GCNTrueTypeFont::drawString(gcn::Graphics* graphics,
     sdlCol.b = col.b;
     sdlCol.r = col.r;
     sdlCol.g = col.g;
+    sdlCol.a = 255;
 
     SDL_Surface* textSurface;
     if (anti_alias_) {

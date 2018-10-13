@@ -26,8 +26,8 @@
 
 #include "platforms/gcn/gcn_utils.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <guichan/opengl/openglimage.hpp>
 #include <guichan/exception.hpp>

@@ -40,6 +40,10 @@ bool EventListener::MouseButtonStateChanged(MouseButton mouse_button,
   return false;
 }
 
+bool EventListener::MouseWheelEvent(MouseWheelType mouse_wheel) {
+  return false;
+}
+
 bool EventListener::KeyStateChanged(KeyCode key_code, bool pressed) {
   return false;
 }

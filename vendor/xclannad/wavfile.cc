@@ -38,7 +38,7 @@
 #include "endian.hpp"
 #include <stdexcept>
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 #define		BUFFERSIZE   		1024
 #define		PCM_WAVE_FORMAT   	1

@@ -41,6 +41,7 @@ class PauseLongOperation : public LongOperation {
   virtual void MouseMotion(const Point& new_location) override;
   virtual bool MouseButtonStateChanged(MouseButton mouse_button,
                                        bool pressed) override;
+  virtual bool MouseWheelEvent(MouseWheelType mouse_wheel) override;
   virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
 
   // Overridden from LongOperation:

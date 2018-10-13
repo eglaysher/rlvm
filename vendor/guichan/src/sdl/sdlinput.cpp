@@ -118,7 +118,7 @@ namespace gcn
                 keyInput.setShiftPressed(event.key.keysym.mod & KMOD_SHIFT);
                 keyInput.setControlPressed(event.key.keysym.mod & KMOD_CTRL);
                 keyInput.setAltPressed(event.key.keysym.mod & KMOD_ALT);
-                keyInput.setMetaPressed(event.key.keysym.mod & KMOD_META);
+                keyInput.setMetaPressed(event.key.keysym.mod & KMOD_GUI);
                 keyInput.setNumericPad(event.key.keysym.sym >= SDLK_KP0
                                      && event.key.keysym.sym <= SDLK_KP_EQUALS);
 
@@ -140,7 +140,7 @@ namespace gcn
                 keyInput.setShiftPressed(event.key.keysym.mod & KMOD_SHIFT);
                 keyInput.setControlPressed(event.key.keysym.mod & KMOD_CTRL);
                 keyInput.setAltPressed(event.key.keysym.mod & KMOD_ALT);
-                keyInput.setMetaPressed(event.key.keysym.mod & KMOD_META);
+                keyInput.setMetaPressed(event.key.keysym.mod & KMOD_GUI);
                 keyInput.setNumericPad(event.key.keysym.sym >= SDLK_KP0
                                      && event.key.keysym.sym <= SDLK_KP_EQUALS);
 

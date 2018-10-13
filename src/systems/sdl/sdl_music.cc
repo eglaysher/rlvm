@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_music.h"
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <functional>

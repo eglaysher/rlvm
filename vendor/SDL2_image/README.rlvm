@@ -1,0 +1,6 @@
+This is SDL2_image 2.0, set up to compile only GIF, BMP, and PNG files. Most of
+this id done with compile options using #defines, but references to webp were
+deleted.
+
+In addition, we take advantage of the ImageIO loading support for Mac OSX on
+that platform.

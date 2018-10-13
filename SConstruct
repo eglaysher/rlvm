@@ -66,6 +66,8 @@ env = Environment(
 if env['PLATFORM'] == "darwin":
   env.Append(
     LIBS = [
+      "png",
+      "bz2",
       "boost_program_options-mt",
       "boost_serialization-mt",
       "boost_iostreams-mt",
@@ -164,25 +166,25 @@ def CheckBoost(context, version):
   context.Result(ret)
   return ret
 
-def CheckGuichan(context):
-  # We specifically check for 0.8 because the authors have said they'll do
-  # sweeping, API breaking changed between major releases. gcnGuichanVersion()
-  # doesn't change during minor releases.
-  context.Message('Checking for guichan 0.8 with OpenGL and SDL support...')
-  lastLIBS = context.env['LIBS']
-  context.env.Append(LIBS = ['guichan', 'guichan_opengl', 'guichan_sdl'])
-  ret = context.TryRun("""
-#include <guichan.hpp>
-#include <cstring>
+# def CheckGuichan(context):
+#   # We specifically check for 0.8 because the authors have said they'll do
+#   # sweeping, API breaking changed between major releases. gcnGuichanVersion()
+#   # doesn't change during minor releases.
+#   context.Message('Checking for guichan 0.8 with OpenGL and SDL support...')
+#   lastLIBS = context.env['LIBS']
+#   context.env.Append(LIBS = ['guichan', 'guichan_opengl', 'guichan_sdl'])
+#   ret = context.TryRun("""
+# #include <guichan.hpp>
+# #include <cstring>
 
-int main(int argc, char **argv) {
-  return std::strcmp(gcnGuichanVersion(), "0.8") != 0;
-}
-""", ".cc")[0]
-  if not ret:
-    context.env.Replace(LIBS = lastLIBS)
-  context.Result( ret )
-  return ret
+# int main(int argc, char **argv) {
+#   return std::strcmp(gcnGuichanVersion(), "0.8") != 0;
+# }
+# """, ".cc")[0]
+#   if not ret:
+#     context.env.Replace(LIBS = lastLIBS)
+#   context.Result( ret )
+#   return ret
 
 def VerifyLibrary(config, library, header):
   if not config.CheckLibWithHeader(library, header, "c"):
@@ -222,7 +224,8 @@ subcomponents = [ ]
 static_sdl_libs = [ ]
 
 config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost,
-                                       'CheckGuichan' : CheckGuichan},
+#                                       'CheckGuichan' : CheckGuichan
+                                      },
                        config_h="build/config.h")
 if not config.CheckBoost('1.40'):
   print "Boost version >= 1.40 needed to compile rlvm!"
@@ -242,7 +245,7 @@ VerifyLibrary(config, 'sndfile', 'sndfile.h')
 # entrypoint, and the CheckXXX tests don't allow me a way to inject "#undef
 # main" before I declare the main() function.
 if env['PLATFORM'] != 'darwin':
-  VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
+  VerifyLibrary(config, 'SDL2', 'SDL2/SDL.h')
 else:
   print "Can't properly detect SDL under OSX. Assuming you have the libraries."
 
@@ -259,28 +262,28 @@ local_sdl_libraries = [
     "function" : 'glewInit();'
   },
   {
-    'include'  : 'SDL/SDL_ttf.h',
-    'library'  : 'SDL_ttf',
+    'include'  : 'SDL2/SDL_ttf.h',
+    'library'  : 'SDL2_ttf',
     'function' : 'TTF_Init();'
   },
   {
-    'include'  : 'SDL/SDL_mixer.h',
-    'library'  : 'SDL_mixer',
+    'include'  : 'SDL2/SDL_mixer.h',
+    'library'  : 'SDL2_mixer',
     'function' : ''
   },
   {
-      'include'  : 'SDL/SDL_image.h',
-      'library'  : 'SDL_image',
-      'function' : ''
+    'include'  : 'SDL2/SDL_image.h',
+    'library'  : 'SDL2_image',
+    'function' : ''
   }
 ]
 
 for library_dict in local_sdl_libraries:
   CheckForSystemLibrary(config, library_dict, subcomponents)
 
-if not config.CheckGuichan():
-  print "(Using included copy of guichan)"
-  subcomponents.append("guichan")
+# if not config.CheckGuichan():
+#   print "(Using included copy of guichan)"
+#   subcomponents.append("guichan")
 
 # Get the configuration from sdl and freetype
 env.ParseConfig("sdl-config --cflags")
@@ -292,7 +295,11 @@ env = config.Finish()
 ### we have the right libraries. This needs to be done after config.Finish() is
 ### called or else we get a really confusing error.
 if env['PLATFORM'] == 'darwin':
-  env.Append(LIBS=["SDL", "intl", "iconv"])
+  env.Append(LIBS=["SDL2", "intl", "iconv"])
+
+# Get the configuration from sdl and freetype
+env.ParseConfig("sdl2-config --cflags")
+env.ParseConfig("freetype-config --cflags --libs")
 
 #########################################################################
 ## Building subcomponent functions

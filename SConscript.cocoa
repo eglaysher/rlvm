@@ -32,7 +32,7 @@ def MergeEverythingButSDLMain(env, cmd):
   filtered_string = " ".join(filtered_args)
   return env.MergeFlags(filtered_args, 0)
 
-static_env.ParseConfig("sdl-config --static-libs", MergeEverythingButSDLMain)
+static_env.ParseConfig("sdl2-config --static-libs", MergeEverythingButSDLMain)
 
 cocoarlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
@@ -44,9 +44,11 @@ cocoarlvm_files = [
 
 # Builds a fullstatic version of rlvm and then builds a bundle
 static_env.RlvmProgram('rlvm-static', cocoarlvm_files,
-                       use_lib_set = ["SDL"],
+                       use_lib_set = ["SDL2"],
                        full_static_build = True,
-                       rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
+                       rlvm_libs = [
+#                         "guichan_platform",
+                         "system_sdl", "rlvm"])
 
 static_env.InstallAs(target='$OUTPUT_DIR/rlvm.app/Contents/Info.plist',
                      source='src/platforms/osx/Info.plist.in')

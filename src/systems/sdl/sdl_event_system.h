@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_EVENT_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_EVENT_SYSTEM_H_
 
-#include <SDL/SDL_events.h>
+#include <SDL2/SDL_events.h>
 
 #include "systems/base/event_system.h"
 #include "systems/base/rect.h"
@@ -83,7 +83,8 @@ class SDLEventSystem : public EventSystem {
   void HandleKeyUp(RLMachine& machine, SDL_Event& event);
   void HandleMouseMotion(RLMachine& machine, SDL_Event& event);
   void HandleMouseButtonEvent(RLMachine& machine, SDL_Event& event);
-  void HandleActiveEvent(RLMachine& machine, SDL_Event& event);
+  void HandleWheelEvent(RLMachine& machine, SDL_Event& event);
+  void HandleWindowEvent(RLMachine& machine, SDL_Event& event);
 
   bool shift_pressed_, ctrl_pressed_;
 

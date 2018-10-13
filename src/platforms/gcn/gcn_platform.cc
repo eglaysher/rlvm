@@ -190,6 +190,8 @@ class GCNPlatformBlocker : public LongOperation,
 
   // Overridden from RawSDLInputHandler:
   virtual void pushInput(SDL_Event event) override {
+    // TODO(sdl2): Will need to write new event handling when we get to
+    // reenabling guichan.
     platform_->sdl_input_->pushInput(event);
   }
 

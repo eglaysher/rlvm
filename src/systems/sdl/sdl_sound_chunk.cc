@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_sound_chunk.h"
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
 

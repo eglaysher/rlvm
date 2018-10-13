@@ -60,6 +60,11 @@ bool PerformAfterLongOperationDecorator::MouseButtonStateChanged(
   return operation_->MouseButtonStateChanged(mouse_button, pressed);
 }
 
+bool PerformAfterLongOperationDecorator::MouseWheelEvent(
+    MouseWheelType mouse_wheel) {
+  return operation_->MouseWheelEvent(mouse_wheel);
+}
+
 bool PerformAfterLongOperationDecorator::KeyStateChanged(KeyCode key_code,
                                                          bool pressed) {
   return operation_->KeyStateChanged(key_code, pressed);

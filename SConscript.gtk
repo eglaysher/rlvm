@@ -2,7 +2,7 @@ Import('env')
 
 root_env = env.Clone()
 root_env.Append(LIBS=["GL", "GLU"])
-root_env.ParseConfig('sdl-config --cflags --libs')
+root_env.ParseConfig('sdl2-config --cflags --libs')
 root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
 
 root_env.Append(
@@ -21,6 +21,8 @@ gtkrlvm_files = [
 ]
 
 root_env.RlvmProgram('rlvm', gtkrlvm_files,
-                     use_lib_set = ["SDL"],
-                     rlvm_libs = ["guichan_platform", "system_sdl", "rlvm"])
+                     use_lib_set = ["SDL2"],
+                     rlvm_libs = [
+#                       "guichan_platform",
+                       "system_sdl", "rlvm"])
 root_env.Install('$OUTPUT_DIR', 'rlvm')
