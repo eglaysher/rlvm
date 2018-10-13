@@ -1,7 +1,7 @@
 Import('env')
 
 root_env = env.Clone()
-root_env.Append(LIBS=["GL", "GLU"])
+root_env.Append(LIBS=["GL"])
 root_env.ParseConfig('sdl2-config --cflags --libs')
 root_env.ParseConfig('pkg-config --cflags --libs libpng')
 # root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')

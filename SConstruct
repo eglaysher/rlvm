@@ -41,9 +41,8 @@ env = Environment(
     # We use gettext for translations.
     "ENABLE_NLS",
 
-    # This prevents conflicts between SDL and GLEW. I shouldn't have to do
-    # this, but the SDL_opengl.h and glew.h differ in const correctness...
-    "NO_SDL_GLEXT"
+    # Use glext.h
+    "GL_GLEXT_PROTOTYPES"
   ],
 
   # Where the final binaries should be put.
@@ -254,11 +253,6 @@ local_sdl_libraries = [
     'include'  : 'zita-resampler/resampler.h',
     'library'  : 'zita-resampler',
     'function' : '',
-  },
-  {
-    "include"  : 'GL/glew.h',
-    "library"  : 'GLEW',
-    "function" : 'glewInit();'
   },
   {
     'include'  : 'SDL2/SDL_ttf.h',
