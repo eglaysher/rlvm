@@ -221,7 +221,6 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
 ## Configuration
 #########################################################################
 subcomponents = [ ]
-static_sdl_libs = [ ]
 
 config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost,
 #                                       'CheckGuichan' : CheckGuichan
@@ -286,7 +285,7 @@ for library_dict in local_sdl_libraries:
 #   subcomponents.append("guichan")
 
 # Get the configuration from sdl and freetype
-env.ParseConfig("sdl-config --cflags")
+env.ParseConfig("sdl2-config --cflags")
 env.ParseConfig("freetype-config --cflags --libs")
 
 env = config.Finish()
@@ -333,7 +332,7 @@ if GetOption('release'):
         "-ffunction-sections",
         "-fdata-sections",
         ],
-
+  
       LINKFLAGS = [
         "-Wl,--gc-sections"
         ],

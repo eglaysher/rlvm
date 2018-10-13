@@ -14,4 +14,4 @@ libglew_files = [
 component_env.StaticLibrary('libGLEW', libglew_files)
 component_env.Install('$LIBRARY_DIR', 'libGLEW.a')
 
-env.AddStaticLibraryTo("GLEW", "SDL")
+env.AddStaticLibraryTo("GLEW", "SDL2")
