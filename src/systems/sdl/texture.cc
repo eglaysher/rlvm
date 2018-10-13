@@ -25,8 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
-
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
@@ -350,7 +348,8 @@ void Texture::RenderToScreenAsColorMask(const Rect& src,
                                         const RGBAColour& rgba,
                                         int filter) {
   if (filter == 0) {
-    if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
+    if (SDL_GL_ExtensionSupported("GL_ARB_fragment_shader") &&
+        SDL_GL_ExtensionSupported("GL_ARB_multitexture")) {
       render_to_screen_as_colour_mask_subtractive_glsl(src, dst, rgba);
     } else {
       render_to_screen_as_colour_mask_subtractive_fallback(src, dst, rgba);
@@ -649,7 +648,8 @@ void Texture::RenderToScreenAsObject(const GraphicsObject& go,
     bool using_shader = false;
     if ((go.light() || go.tint() != RGBColour::Black() ||
          go.colour() != RGBAColour::Clear() || go.mono() || go.invert()) &&
-        GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
+        SDL_GL_ExtensionSupported("GL_ARB_fragment_shader") &&
+        SDL_GL_ExtensionSupported("GL_ARB_multitexture")) {
       // Image
       glActiveTexture(GL_TEXTURE0_ARB);
       glEnable(GL_TEXTURE_2D);

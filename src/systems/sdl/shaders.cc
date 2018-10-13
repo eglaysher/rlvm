@@ -24,7 +24,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 
 #ifndef NDEBUG
 #include <iostream>

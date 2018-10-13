@@ -24,7 +24,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 
 #include "systems/sdl/sdl_colour_filter.h"
 
@@ -45,7 +47,7 @@ SDLColourFilter::~SDLColourFilter() {
 void SDLColourFilter::Fill(const GraphicsObject& go,
                            const Rect& screen_rect,
                            const RGBAColour& colour) {
-  if (GLEW_ARB_fragment_shader && GLEW_ARB_multitexture) {
+  if (SDL_GL_ExtensionSupported("GL_ARB_fragment_shader") && SDL_GL_ExtensionSupported("GL_ARB_multitexture")) {
     if (back_texture_id_ == 0) {
       glGenTextures(1, &back_texture_id_);
       glBindTexture(GL_TEXTURE_2D, back_texture_id_);

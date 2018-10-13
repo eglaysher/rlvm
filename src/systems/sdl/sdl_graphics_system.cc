@@ -25,8 +25,6 @@
 //
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
-
 #include "systems/sdl/sdl_graphics_system.h"
 
 #include <SDL2/SDL.h>
@@ -293,14 +291,6 @@ void SDLGraphicsSystem::SetupVideo() {
                              screen_size().height(),
                              SDL_WINDOW_OPENGL);
   gl_context_ = SDL_GL_CreateContext(window_);
-
-  // Initialize glew
-  GLenum err = glewInit();
-  if (GLEW_OK != err) {
-    std::ostringstream oss;
-    oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
-    throw SystemError(oss.str());
-  }
 
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
