@@ -33,7 +33,7 @@
 #include <iostream>
 #include <string>
 
-#include "platforms/gtk/gtk_rlvm_instance.h"
+#include "platforms/sdl/sdl_rlvm_instance.h"
 #include "systems/base/system.h"
 #include "utilities/file.h"
 
@@ -77,7 +77,7 @@ void printUsage(const string& name, po::options_description& opts) {
 }
 
 int main(int argc, char* argv[]) {
-  GtkRLVMInstance instance(&argc, &argv);
+  SDLRLVMInstance instance(&argc, &argv);
 
   // -----------------------------------------------------------------------
   // Parse command line options

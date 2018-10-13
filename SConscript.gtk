@@ -3,7 +3,8 @@ Import('env')
 root_env = env.Clone()
 root_env.Append(LIBS=["GL", "GLU"])
 root_env.ParseConfig('sdl2-config --cflags --libs')
-root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
+root_env.ParseConfig('pkg-config --cflags --libs libpng')
+# root_env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
 
 root_env.Append(
   CXXFLAGS = [
@@ -16,8 +17,8 @@ gtkrlvm_files = [
   # Technically cross platform, but put here for SDL dependency.
   "src/machine/rlvm_instance.cc",
 
-  "src/platforms/gtk/rlvm.cc",
-  "src/platforms/gtk/gtk_rlvm_instance.cc",
+  "src/platforms/sdl/rlvm.cc",
+  "src/platforms/sdl/sdl_rlvm_instance.cc",
 ]
 
 root_env.RlvmProgram('rlvm', gtkrlvm_files,

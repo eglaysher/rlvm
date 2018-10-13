@@ -24,24 +24,22 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 // -----------------------------------------------------------------------
 
-#ifndef SRC_PLATFORMS_GTK_GTK_RLVM_INSTANCE_H_
-#define SRC_PLATFORMS_GTK_GTK_RLVM_INSTANCE_H_
+#ifndef SRC_PLATFORMS_SDL_SDL_RLVM_INSTANCE_H_
+#define SRC_PLATFORMS_SDL_SDL_RLVM_INSTANCE_H_
 
 #include <string>
 
 #include "machine/rlvm_instance.h"
 
-// A GTK subclass of RLVMInstance that displays GTK dialogs.
-class GtkRLVMInstance : public RLVMInstance {
+// A SDL subclass of RLVMInstance that displays SDL dialogs.
+class SDLRLVMInstance : public RLVMInstance {
  public:
-  GtkRLVMInstance(int* argc, char** argv[]);
-  virtual ~GtkRLVMInstance();
+  SDLRLVMInstance(int* argc, char** argv[]);
+  virtual ~SDLRLVMInstance();
 
   virtual boost::filesystem::path SelectGameDirectory();
 
  protected:
-  void DoNativeWork();
-
   virtual void ReportFatalError(const std::string& message_text,
                                 const std::string& informative_text);
 
@@ -51,4 +49,4 @@ class GtkRLVMInstance : public RLVMInstance {
                              const std::string& false_button);
 };
 
-#endif  // SRC_PLATFORMS_GTK_GTK_RLVM_INSTANCE_H_
+#endif  // SRC_PLATFORMS_SDL_SDL_RLVM_INSTANCE_H_
