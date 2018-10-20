@@ -28,8 +28,8 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include <memory>
 #include <set>
