@@ -21,7 +21,7 @@
     pete@shinners.org
 */
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 
 #define PYGAME_BLEND_ADD  0x1
