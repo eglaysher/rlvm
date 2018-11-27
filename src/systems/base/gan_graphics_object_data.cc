@@ -36,6 +36,7 @@
 
 #include <boost/serialization/export.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <iostream>
 #include <string>
 #include <vector>
 
