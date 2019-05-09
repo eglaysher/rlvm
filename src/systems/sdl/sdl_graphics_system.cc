@@ -27,11 +27,11 @@
 
 #include "systems/sdl/sdl_graphics_system.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #if !defined(__APPLE__) && !defined(_WIN32)
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 #include "../resources/48/rlvm_icon_48.xpm"
 #endif
 

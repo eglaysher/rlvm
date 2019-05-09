@@ -30,7 +30,7 @@
 
 #include <boost/filesystem/operations.hpp>
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 #include <map>
 #include <memory>

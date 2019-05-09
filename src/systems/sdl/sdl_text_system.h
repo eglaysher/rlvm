@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 #include <map>
 #include <string>

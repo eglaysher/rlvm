@@ -27,7 +27,7 @@
 
 // We include this here because SDL is retarded and works by #define
 // main(inat argc, char* agrv[]). Loosers.
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <boost/program_options.hpp>
 #include <iostream>
