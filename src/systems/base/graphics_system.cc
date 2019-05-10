@@ -91,7 +91,8 @@ struct GraphicsSystem::GraphicsObjectSettings {
   // Number of graphical objects in a layer.
   int objects_in_a_layer;
 
-  // Each is a valid index into data, refering to
+  // Each is a valid index into data, associating each object slot with an
+  // ObjectSettings instance.
   std::unique_ptr<unsigned char[]> position;
 
   std::vector<ObjectSettings> data;

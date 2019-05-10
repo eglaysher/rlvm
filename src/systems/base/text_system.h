@@ -142,6 +142,9 @@ class TextSystem : public EventListener {
   bool IsReadingBacklog() const;
   void StopReadingBacklog();
 
+  // Performs #NAMAE replacement; used in the English Edition of Clannad.
+  std::string InterpretName(const std::string& utf8name);
+
   // A temporary version of |message_no_wait_| controllable by the script.
   void set_script_message_nowait(const int in) { script_message_no_wait_ = in; }
   int script_message_nowait() const { return script_message_no_wait_; }
@@ -149,7 +152,7 @@ class TextSystem : public EventListener {
   // It is possible to set the interpreter up to advance text
   // automatically instead of waiting for player input after each
   // screen is displayed; the `auto mode' controls permit this
-  // behaviour to be customized.
+  // behavior to be customized.
   int auto_mode() const { return (int)auto_mode_; }
   void SetAutoMode(int i);
 
@@ -239,6 +242,9 @@ class TextSystem : public EventListener {
 
   virtual int GetCharWidth(int size, uint16_t codepoint) = 0;
 
+  // Whether the current font has monospaced Roman letters.
+  virtual bool FontIsMonospaced() = 0;
+
   TextSystemGlobals& globals() { return globals_; }
 
   // Resets non-configuration values (so we can load games).
@@ -254,7 +260,7 @@ class TextSystem : public EventListener {
 
   void set_in_selection_mode(const bool in) { in_selection_mode_ = in; }
 
-  // Overriden from EventListener
+  // Overridden from EventListener
   virtual bool MouseButtonStateChanged(MouseButton mouse_button,
                                        bool pressed) override;
   virtual bool KeyStateChanged(KeyCode key_code, bool pressed) override;
@@ -305,6 +311,10 @@ class TextSystem : public EventListener {
 
   // The current page set. Represents what is on the screen right now.
   PageSet current_pageset_;
+
+  // Name mappings. Clannad English Edition maps name boxes from the key to the
+  // value.
+  std::map<std::string, std::string> namae_mapping_;
 
   // Previous Text Pages. The TextSystem owns the list of previous
   // pages because multiple windows can be displayed in one text page.

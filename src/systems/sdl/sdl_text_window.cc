@@ -27,8 +27,8 @@
 
 #include "systems/sdl/sdl_text_window.h"
 
-#include <SDL2/SDL_opengl.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_opengl.h>
+#include <SDL_ttf.h>
 
 #include <string>
 #include <vector>

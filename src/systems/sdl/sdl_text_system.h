@@ -28,7 +28,7 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_
 
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 #include <map>
 #include <string>
@@ -57,6 +57,7 @@ class SDLTextSystem : public TextSystem {
                                int insertion_point_y,
                                const std::shared_ptr<Surface>& destination) override;
   virtual int GetCharWidth(int size, uint16_t codepoint) override;
+  bool FontIsMonospaced() override;
 
   // Returns (and caches) a SDL_ttf font object for a font of |size|.
   std::shared_ptr<TTF_Font> GetFontOfSize(int size);
@@ -67,6 +68,8 @@ class SDLTextSystem : public TextSystem {
   FontSizeMap map_;
 
   SDLSystem& sdl_system_;
+
+  std::unique_ptr<bool> is_monospace_;
 };
 
 #endif  // SRC_SYSTEMS_SDL_SDL_TEXT_SYSTEM_H_

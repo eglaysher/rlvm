@@ -116,6 +116,12 @@ struct CallStackPop : RLOpcode<DefaultIntValue_T<1>> {
   }
 };
 
+struct CallStackSize : RLStoreOpcode<> {
+  int operator()(RLMachine& machine) {
+    return machine.GetStackSize();
+  }
+};
+
 struct PauseCursor : public RLOpcode<IntConstant_T> {
   void operator()(RLMachine& machine, int newCursor) {
     machine.system().text().SetKeyCursor(newCursor);
@@ -362,7 +368,7 @@ SysModule::SysModule() : RLModule("Sys", 1, 004) {
   AddUnsupportedOpcode(321, 1, "CallStackNop");
   AddOpcode(322, 0, "CallStackPop", new CallStackPop);
   AddOpcode(322, 1, "CallStackPop", new CallStackPop);
-  AddUnsupportedOpcode(323, 0, "CallStackSize");
+  AddOpcode(323, 0, "CallStackSize", new CallStackSize);
   AddUnsupportedOpcode(324, 0, "CallStackTrunc");
 
   AddOpcode(204,

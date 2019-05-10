@@ -27,7 +27,7 @@
 
 #include "systems/sdl/sdl_event_system.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <functional>
 

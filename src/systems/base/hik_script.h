@@ -60,7 +60,7 @@ class HIKScript {
     int frame_length_ms;
   };
 
-  // The contents of the 30000 keys. I used to call this structure Unkowns;
+  // The contents of the 30000 keys. I used to call this structure Unknowns;
   // "Animation" is a tentative name as it contains individual Frames that are
   // played in sequence.
   struct Animation {

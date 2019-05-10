@@ -74,3 +74,7 @@ Size TestTextSystem::RenderGlyphOnto(
 int TestTextSystem::GetCharWidth(int size, uint16_t codepoint) {
   return 20;
 }
+
+bool TestTextSystem::FontIsMonospaced() {
+  return false;
+}

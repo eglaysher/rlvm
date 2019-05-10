@@ -51,7 +51,7 @@ class TextWindowButton;
 
 const int kNumFaceSlots = 8;
 
-// Abstract representation of a TextWindow. Aggrigated by TextSystem, and
+// Abstract representation of a TextWindow. Aggregated by TextSystem, and
 // rendered in conjunction with GraphicsSystem.
 //
 // Sets of TextWindows should be reconstructable by the state in TextPage,
@@ -74,21 +74,21 @@ class TextWindow {
   // TextWindow? O RLY?
   int waku_set() const { return waku_set_; }
 
-  // Sets the size of the text window in characters. Reprsented by
+  // Sets the size of the text window in characters. Represented by
   // #WINDOW.xxx.MOJI_CNT.
   void SetWindowSizeInCharacters(const std::vector<int>& pos_data);
 
-  // Sets the size of the spacing between characters. Reprsented by
+  // Sets the size of the spacing between characters. Represented by
   // #WINDOW.xxx.MOJI_REP.
   void SetSpacingBetweenCharacters(const std::vector<int>& pos_data);
 
-  // Sets the size of the ruby (furigana; pronounciation guide) text in
+  // Sets the size of the ruby (furigana; pronunciation guide) text in
   // pixels. If zero, ruby text is disabled in this window. Represented by
   // #WINDOW.xxx.LUBY_SIZE.
   void set_ruby_text_size(const int i) { ruby_size_ = i; }
   int ruby_text_size() const { return ruby_size_; }
 
-  // Sets the size of the font. Reprsented by #WINDOW.xxx.MOJI.SIZE.
+  // Sets the size of the font. Represented by #WINDOW.xxx.MOJI.SIZE.
   void set_font_size_to_default() {
     font_size_in_pixels_ = default_font_size_in_pixels_;
   }
@@ -137,7 +137,7 @@ class TextWindow {
   void set_name_mod(const int in) { name_mod_ = in; }
   int name_mod() const { return name_mod_; }
 
-  // Sets the size of the spacing between characters. Reprsented by
+  // Sets the size of the spacing between characters. Represented by
   // #WINDOW.xxx.NAME_MOJI_REP.
   void SetNameSpacingBetweenCharacters(const std::vector<int>& pos_data);
 
@@ -259,6 +259,8 @@ class TextWindow {
 
   void RenderKoeReplayButtons(std::ostream* tree);
 
+  int GetWrappingWidthFor(int cur_codepoint);
+
  protected:
   // We cache the size of the screen so we don't need the machine in
   // some accessors.
@@ -279,6 +281,11 @@ class TextWindow {
   int text_insertion_point_x_;
   int text_insertion_point_y_;
 
+  // In Japanese games, this will be exactly the same as
+  // |text_insertion_point_x_|. In official English edition games, this will be
+  // an internal count as if all characters were monospaced.
+  int text_wrapping_point_x_;
+
   // Current ruby insertion point (or -1 if MarkRubyBegin() hasn't
   // been called)
   int ruby_begin_point_;
@@ -289,6 +296,9 @@ class TextWindow {
 
   // The initial value of text_insertion_point_y_ on new lines.
   int current_indentation_in_pixels_;
+
+  // The initial value of |text_wrapping_point_x_| on new lines.
+  int current_indentation_in_chars_;
 
   // Whether the last token was a SetName. This is used to control indentation
   // for quotes.
@@ -354,7 +364,7 @@ class TextWindow {
 
   // Describes how to render character names.
   // - 0: Display names inline (default)
-  // - 1: Display names in a seperate window
+  // - 1: Display names in a separate window
   // - 2: Do not display names
   int name_mod_;
 

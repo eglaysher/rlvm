@@ -127,6 +127,16 @@ RLModule::PropertyList::iterator RLModule::FindProperty(int property) const {
                  [&](Property& p) { return p.first == property; });
 }
 
+std::string RLModule::GetCommandName(RLMachine& machine,
+                                     const libreallive::CommandElement& f) {
+  OpcodeMap::iterator it =
+      stored_operations_.find(PackOpcodeNumber(f.opcode(), f.overload()));
+  std::string name;
+  if (it != stored_operations_.end())
+    name = it->second->name();
+  return name;
+}
+
 void RLModule::DispatchFunction(RLMachine& machine,
                                 const libreallive::CommandElement& f) {
   OpcodeMap::iterator it =

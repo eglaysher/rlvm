@@ -86,6 +86,7 @@ enum ExpressionPieceType {
   TYPE_SIMPLE_MEMORY_REFERENCE,
   TYPE_UNIARY_EXPRESSION,
   TYPE_BINARY_EXPRESSION,
+  TYPE_SIMPLE_ASSIGNMENT,
   TYPE_COMPLEX_EXPRESSION,
   TYPE_SPECIAL_EXPRESSION,
   TYPE_INVALID
@@ -182,14 +183,17 @@ class ExpressionPiece {
   std::string GetComplexSerializedExpression(RLMachine& machine) const;
   std::string GetSpecialSerializedExpression(RLMachine& machine) const;
 
-  std::string GetMemoryDebugString() const;
+  std::string GetMemoryDebugString(int type,
+                                   const std::string& location) const;
   std::string GetUniaryDebugString() const;
-  std::string GetBinaryDebugString() const;
+  std::string GetBinaryDebugString(char operation,
+                                   const std::string& lhs,
+                                   const std::string& rhs) const;
   std::string GetComplexDebugString() const;
   std::string GetSpecialDebugString() const;
 
   int PerformUniaryOperationOn(int int_operand) const;
-  int PerformBinaryOperationOn(int lhs, int rhs) const;
+  static int PerformBinaryOperationOn(char operand, int lhs, int rhs);
 
   ExpressionPieceType piece_type;
 
@@ -224,6 +228,13 @@ class ExpressionPiece {
       ExpressionPiece* left_operand;
       ExpressionPiece* right_operand;
     } binary_expression;
+
+    // TYPE_SIMPLE_ASSIGNMENT
+    struct {
+      int type;
+      int location;
+      int value;
+    } simple_assignment;
 
     // TYPE_COMPLEX_EXPRESSION
     std::vector<ExpressionPiece> complex_expression;

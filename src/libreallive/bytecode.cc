@@ -194,7 +194,8 @@ BytecodeElement::BytecodeElement() {}
 
 BytecodeElement::~BytecodeElement() {}
 
-void BytecodeElement::PrintSourceRepresentation(std::ostream& oss) const {
+void BytecodeElement::PrintSourceRepresentation(RLMachine* machine,
+                                                std::ostream& oss) const {
   oss << "<unspecified bytecode>" << std::endl;
 }
 
@@ -246,7 +247,8 @@ BytecodeElement::BytecodeElement(const BytecodeElement& c) {}
 CommaElement::CommaElement() {}
 CommaElement::~CommaElement() {}
 
-void CommaElement::PrintSourceRepresentation(std::ostream& oss) const {
+void CommaElement::PrintSourceRepresentation(RLMachine* machine,
+                                             std::ostream& oss) const {
   oss << "<CommaElement>" << std::endl;
 }
 
@@ -270,7 +272,8 @@ MetaElement::MetaElement(const ConstructionData* cv, const char* src) {
 
 MetaElement::~MetaElement() {}
 
-void MetaElement::PrintSourceRepresentation(std::ostream& oss) const {
+void MetaElement::PrintSourceRepresentation(RLMachine* machine,
+                                            std::ostream& oss) const {
   if (type_ == Line_)
     oss << "#line " << value_ << std::endl;
   else if (type_ == Entrypoint_)
@@ -349,7 +352,8 @@ const string TextoutElement::GetText() const {
   return rv;
 }
 
-void TextoutElement::PrintSourceRepresentation(std::ostream& oss) const {
+void TextoutElement::PrintSourceRepresentation(RLMachine* machine,
+                                               std::ostream& oss) const {
   oss << "\"" << GetText() << "\"" << std::endl;
 }
 
@@ -366,50 +370,34 @@ void TextoutElement::RunOnMachine(RLMachine& machine) const {
 
 ExpressionElement::ExpressionElement(const char* src)
     : parsed_expression_(invalid_expression_piece_t()) {
-  // Don't parse the expression, just isolate it.
   const char* end = src;
-  end += NextToken(end);
-  if (*end == '\\') {
-    end += 2;
-    end += NextExpression(end);
-  }
-  repr.assign(src, end);
+  parsed_expression_ = GetAssignment(end);
+  length_ = std::distance(src, end);
 }
 
 ExpressionElement::ExpressionElement(const long val)
-    : parsed_expression_(invalid_expression_piece_t()) {
-  repr.resize(6, '$');
-  repr[1] = 0xff;
-  insert_i32(repr, 2, val);
+    : length_(0),
+      parsed_expression_(ExpressionPiece::IntConstant(val)) {
 }
 
 ExpressionElement::ExpressionElement(const ExpressionElement& rhs)
-    : parsed_expression_(rhs.parsed_expression_) {
+    : length_(0),
+      parsed_expression_(rhs.parsed_expression_) {
 }
 
 ExpressionElement::~ExpressionElement() {}
 
-int ExpressionElement::GetValueOnly(RLMachine& machine) const {
-  const char* location = repr.c_str();
-  ExpressionPiece e(GetExpression(location));
-  return e.GetIntegerValue(machine);
-}
-
 const ExpressionPiece& ExpressionElement::ParsedExpression() const {
-  if (!parsed_expression_.is_valid()) {
-    const char* location = repr.c_str();
-    parsed_expression_ = GetAssignment(location);
-  }
-
   return parsed_expression_;
 }
 
-void ExpressionElement::PrintSourceRepresentation(std::ostream& oss) const {
+void ExpressionElement::PrintSourceRepresentation(RLMachine* machine,
+                                                  std::ostream& oss) const {
   oss << ParsedExpression().GetDebugString() << std::endl;
 }
 
 const size_t ExpressionElement::GetBytecodeLength() const {
-  return repr.size();
+  return length_;
 }
 
 void ExpressionElement::RunOnMachine(RLMachine& machine) const {
@@ -453,11 +441,18 @@ const size_t CommandElement::GetCaseCount() const { return 0; }
 
 const string CommandElement::GetCase(int i) const { return ""; }
 
-void CommandElement::PrintSourceRepresentation(std::ostream& oss) const {
-  oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
-      << module() << ":"
-      << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
-      << ">";
+void CommandElement::PrintSourceRepresentation(RLMachine* machine,
+                                               std::ostream& oss) const {
+  std::string name = machine->GetCommandName(*this);
+
+  if (name != "") {
+    oss << name;
+  } else {
+    oss << "op<" << modtype() << ":" << std::setw(3) << std::setfill('0')
+        << module() << ":"
+        << std::setw(5) << std::setfill('0') << opcode() << ", " << overload()
+        << ">";
+  }
 
   PrintParameterString(oss, GetUnparsedParameters());
 
@@ -554,9 +549,12 @@ SelectElement::SelectElement(const char* src)
 
 SelectElement::~SelectElement() {}
 
-ExpressionElement SelectElement::GetWindowExpression() const {
-  return repr[8] == '(' ? ExpressionElement(repr.data() + 9)
-                        : ExpressionElement(-1);
+ExpressionPiece SelectElement::GetWindowExpression() const {
+  if (repr[8] == '(') {
+    const char* location = repr.c_str() + 9;
+    return GetExpression(location);
+  }
+  return ExpressionPiece::IntConstant(-1);
 }
 
 const size_t SelectElement::GetParamCount() const { return params.size(); }

@@ -49,6 +49,8 @@
 
 #include "SDL/SDL_image.h"
 
+#include <cassert>
+
 #include "guichan/exception.hpp"
 #include "guichan/sdl/sdlimageloader.hpp"
 
@@ -86,7 +88,8 @@ namespace gcn
 
     SDL_Surface* SDLImageLoader::loadSDLSurface(const std::string& filename)
     {
-        return IMG_Load(filename.c_str());
+        assert(0);
+        return 0;
     }
 
     SDL_Surface* SDLImageLoader::convertToStandardFormat(SDL_Surface* surface)

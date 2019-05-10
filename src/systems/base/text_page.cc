@@ -145,7 +145,7 @@ TextPage::Command::Command(CommandType type)
       new (&characters) std::string;
       break;
     default:
-      throw rlvm::Exception("Incorrect arrity");
+      throw rlvm::Exception("Incorrect arity");
   }
 }
 
@@ -177,7 +177,7 @@ TextPage::Command::Command(CommandType type, int one)
       face_close = one;
       break;
     default:
-      throw rlvm::Exception("Incorrect arrity");
+      throw rlvm::Exception("Incorrect arity");
   }
 }
 
@@ -188,7 +188,7 @@ TextPage::Command::Command(CommandType type, const std::string& one)
       new (&ruby_text) std::string(one);
       break;
     default:
-      throw rlvm::Exception("Incorrect arrity");
+      throw rlvm::Exception("Incorrect arity");
   }
 }
 
@@ -202,7 +202,7 @@ TextPage::Command::Command(CommandType type,
       new (&name.next_char) std::string(two);
       break;
     default:
-      throw rlvm::Exception("Incorrect arrity");
+      throw rlvm::Exception("Incorrect arity");
   }
 }
 
@@ -216,7 +216,7 @@ TextPage::Command::Command(CommandType type,
       face_open.index = two;
       break;
     default:
-      throw rlvm::Exception("Incorrect arrity");
+      throw rlvm::Exception("Incorrect arity");
   }
 }
 

@@ -131,6 +131,22 @@ TextSystem::TextSystem(System& system, Gameexe& gexe)
   CheckAndSetBool(gexe, "WINDOW_MSGBKRIGHT_USE", msgbkright_use_);
   CheckAndSetBool(gexe, "WINDOW_EXBTN_USE", exbtn_use_);
 
+  // Iterate over all the NAMAE keys, which is a feature that Clannad English
+  // Edition uses to translate the Japanese names into English.
+  for (GameexeFilteringIterator it = gexe.filtering_begin("NAMAE");
+       it != gexe.filtering_end();
+       ++it) {
+    try {
+      // Data in the Gameexe.ini file is implicitly in Shift-JIS and needs to
+      // be converted to UTF-8.
+      std::string key = cp932toUTF8(it->GetStringAt(0), 0);
+      std::string value = cp932toUTF8(it->GetStringAt(1), 0);
+      namae_mapping_[key] = value;
+    }
+    catch (...) {
+      // Gameexe.ini file is malformed.
+    }
+  }
   previous_page_it_ = previous_page_sets_.end();
 }
 
@@ -362,7 +378,7 @@ void TextSystem::ReplayPageSet(PageSet& set, bool is_current_page) {
       // Currently, the text system can throw on a few unimplemented situations,
       // such as ruby across lines.
 
-      // Ignore what would normally be an ignored command when encoutered from
+      // Ignore what would normally be an ignored command when encountered from
       // the main loop.
     }
   }
@@ -377,6 +393,13 @@ void TextSystem::StopReadingBacklog() {
   ClearAllTextWindows();
   HideAllTextWindows();
   ReplayPageSet(current_pageset_, true);
+}
+
+std::string TextSystem::InterpretName(const std::string& utf8name) {
+  auto it = namae_mapping_.find(utf8name);
+  if (it == namae_mapping_.end())
+    return utf8name;
+  return it->second;
 }
 
 void TextSystem::SetAutoMode(int i) {
@@ -704,7 +727,7 @@ std::shared_ptr<Surface> TextSystem::RenderText(const std::string& utf8str,
           num_two -= FULLWIDTH_ZERO;
           emoji_id = num_one * 10 + num_two;
 
-          // Lookup what g00 surface we should use for emoji.
+          // Look up what g00 surface we should use for emoji.
           emoji_surface = system().graphics().GetEmojiSurface();
           is_emoji = true;
           add_char = false;

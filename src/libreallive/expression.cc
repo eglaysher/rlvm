@@ -34,6 +34,7 @@
 
 #include "libreallive/expression.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -52,6 +53,13 @@ std::string IntToBytecode(int val) {
   std::string prefix("$\xFF");
   libreallive::append_i32(prefix, val);
   return prefix;
+}
+
+bool IsUnescapedQuotationMark(const char* src, const char* current) {
+  if (src == current)
+    return *current == '"';
+  else
+    return *current == '"' && *(current - 1) != '\\';
 }
 
 }  // namespace
@@ -114,22 +122,25 @@ size_t NextString(const char* src) {
 
   while (true) {
     if (quoted) {
-      quoted = *end != '"';
+      quoted = !IsUnescapedQuotationMark(src, end);
       if (!quoted && *(end - 1) != '\\') {
         end++;  // consume the final quote
         break;
       }
     } else {
-      quoted = *end == '"';
+      quoted = IsUnescapedQuotationMark(src, end);
       if (strncmp(end, "###PRINT(", 9) == 0) {
         end += 9;
         end += 1 + NextExpression(end);
         continue;
       }
       if (!((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef) ||
+            (*end >= 'a' && *end <= 'z') ||
             (*end >= 'A' && *end <= 'Z') || (*end >= '0' && *end <= '9') ||
-            *end == ' ' || *end == '?' || *end == '_' || *end == '"'))
+            *end == ' ' || *end == '?' || *end == '_' || *end == '"' ||
+            *end == '\\')) {
         break;
+      }
     }
     if ((*end >= 0x81 && *end <= 0x9f) || (*end >= 0xe0 && *end <= 0xef))
       end += 2;
@@ -385,6 +396,9 @@ static ExpressionPiece GetString(const char*& src) {
   // Increment the source by that many characters
   src += length;
 
+  // Unquote the internal quotations.
+  boost::replace_all(s, "\\\"", "\"");
+
   return ExpressionPiece::StrConstant(s);
 }
 
@@ -594,10 +608,29 @@ ExpressionPiece ExpressionPiece::BinaryExpression(const char operation,
                                                   ExpressionPiece lhs,
                                                   ExpressionPiece rhs) {
   ExpressionPiece piece;
-  piece.piece_type = TYPE_BINARY_EXPRESSION;
-  piece.binary_expression.operation = operation;
-  piece.binary_expression.left_operand = new ExpressionPiece(std::move(lhs));
-  piece.binary_expression.right_operand = new ExpressionPiece(std::move(rhs));
+  if (operation == 30 &&
+      lhs.piece_type == TYPE_SIMPLE_MEMORY_REFERENCE &&
+      rhs.piece_type == TYPE_INT_CONSTANT) {
+    // We can fast path so we don't allocate memory by stashing the memory
+    // reference and the value in this piece.
+    piece.piece_type = TYPE_SIMPLE_ASSIGNMENT;
+    piece.simple_assignment.type = lhs.simple_mem_reference.type;
+    piece.simple_assignment.location = lhs.simple_mem_reference.location;
+    piece.simple_assignment.value = rhs.int_constant;
+  } else if (lhs.piece_type == TYPE_INT_CONSTANT &&
+             rhs.piece_type == TYPE_INT_CONSTANT) {
+    // We can fast path so that we just compute the integer expression here.
+    piece.piece_type = TYPE_INT_CONSTANT;
+    piece.int_constant = PerformBinaryOperationOn(
+        operation,
+        lhs.int_constant,
+        rhs.int_constant);
+  } else {
+    piece.piece_type = TYPE_BINARY_EXPRESSION;
+    piece.binary_expression.operation = operation;
+    piece.binary_expression.left_operand = new ExpressionPiece(std::move(lhs));
+    piece.binary_expression.right_operand = new ExpressionPiece(std::move(rhs));
+  }
   return piece;
 }
 
@@ -654,6 +687,11 @@ ExpressionPiece::ExpressionPiece(const ExpressionPiece& rhs)
       binary_expression.right_operand =
           new ExpressionPiece(*rhs.binary_expression.right_operand);
       break;
+    case TYPE_SIMPLE_ASSIGNMENT:
+      simple_assignment.type = rhs.simple_assignment.type;
+      simple_assignment.location = rhs.simple_assignment.location;
+      simple_assignment.value = rhs.simple_assignment.value;
+      break;
     case TYPE_COMPLEX_EXPRESSION:
       new (&complex_expression) std::vector<ExpressionPiece>(
           rhs.complex_expression);
@@ -699,6 +737,11 @@ ExpressionPiece::ExpressionPiece(ExpressionPiece&& rhs)
       binary_expression.right_operand = rhs.binary_expression.right_operand;
       rhs.binary_expression.left_operand = nullptr;
       rhs.binary_expression.right_operand = nullptr;
+      break;
+    case TYPE_SIMPLE_ASSIGNMENT:
+      simple_assignment.type = rhs.simple_assignment.type;
+      simple_assignment.location = rhs.simple_assignment.location;
+      simple_assignment.value = rhs.simple_assignment.value;
       break;
     case TYPE_COMPLEX_EXPRESSION:
       new (&complex_expression) std::vector<ExpressionPiece>(std::move(
@@ -754,6 +797,11 @@ ExpressionPiece& ExpressionPiece::operator=(const ExpressionPiece& rhs) {
       binary_expression.right_operand =
           new ExpressionPiece(*rhs.binary_expression.right_operand);
       break;
+    case TYPE_SIMPLE_ASSIGNMENT:
+      simple_assignment.type = rhs.simple_assignment.type;
+      simple_assignment.location = rhs.simple_assignment.location;
+      simple_assignment.value = rhs.simple_assignment.value;
+      break;
     case TYPE_COMPLEX_EXPRESSION:
       new (&complex_expression) std::vector<ExpressionPiece>(
           rhs.complex_expression);
@@ -803,6 +851,11 @@ ExpressionPiece& ExpressionPiece::operator=(ExpressionPiece&& rhs) {
       binary_expression.right_operand = rhs.binary_expression.right_operand;
       rhs.binary_expression.left_operand = nullptr;
       rhs.binary_expression.right_operand = nullptr;
+      break;
+    case TYPE_SIMPLE_ASSIGNMENT:
+      simple_assignment.type = rhs.simple_assignment.type;
+      simple_assignment.location = rhs.simple_assignment.location;
+      simple_assignment.value = rhs.simple_assignment.value;
       break;
     case TYPE_COMPLEX_EXPRESSION:
       new (&complex_expression) std::vector<ExpressionPiece>(std::move(
@@ -900,6 +953,7 @@ int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
       if (binary_expression.operation >= 20 &&
           binary_expression.operation < 30) {
         int value = PerformBinaryOperationOn(
+            binary_expression.operation,
             binary_expression.left_operand->GetIntegerValue(machine),
             binary_expression.right_operand->GetIntegerValue(machine));
         binary_expression.left_operand->SetIntegerValue(machine, value);
@@ -910,9 +964,16 @@ int ExpressionPiece::GetIntegerValue(RLMachine& machine) const {
         return value;
       } else {
         return PerformBinaryOperationOn(
+            binary_expression.operation,
             binary_expression.left_operand->GetIntegerValue(machine),
             binary_expression.right_operand->GetIntegerValue(machine));
       }
+    case TYPE_SIMPLE_ASSIGNMENT:
+      machine.SetIntValue(
+          IntMemRef(simple_assignment.type,
+                    simple_assignment.location),
+          simple_assignment.value);
+      return simple_assignment.value;
     default: {
       std::ostringstream ss;
       ss << "ExpressionPiece::GetIntegerValue() invalid on object of type "
@@ -1044,6 +1105,7 @@ std::string ExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
       }
     case TYPE_UNIARY_EXPRESSION:
     case TYPE_BINARY_EXPRESSION:
+    case TYPE_SIMPLE_ASSIGNMENT:
       return IntToBytecode(GetIntegerValue(machine));
     case TYPE_COMPLEX_EXPRESSION:
       return GetComplexSerializedExpression(machine);
@@ -1052,6 +1114,8 @@ std::string ExpressionPiece::GetSerializedExpression(RLMachine& machine) const {
     case TYPE_INVALID:
       throw Error("Called GetSerializedExpression on an invalid piece.");
   }
+
+  return "<invalid>";
 }
 
 std::string ExpressionPiece::GetDebugString() const {
@@ -1063,12 +1127,25 @@ std::string ExpressionPiece::GetDebugString() const {
     case TYPE_STRING_CONSTANT:
       return string("\"") + str_constant + string("\"");
     case TYPE_MEMORY_REFERENCE:
+      return GetMemoryDebugString(mem_reference.type,
+                                  mem_reference.location->GetDebugString());
     case TYPE_SIMPLE_MEMORY_REFERENCE:
-      return GetMemoryDebugString();
+      return GetMemoryDebugString(
+          simple_mem_reference.type,
+          std::to_string(simple_mem_reference.location));
     case TYPE_UNIARY_EXPRESSION:
       return GetUniaryDebugString();
     case TYPE_BINARY_EXPRESSION:
-      return GetBinaryDebugString();
+      return GetBinaryDebugString(
+          binary_expression.operation,
+          binary_expression.left_operand->GetDebugString(),
+          binary_expression.right_operand->GetDebugString());
+    case TYPE_SIMPLE_ASSIGNMENT:
+      return GetBinaryDebugString(
+          30,
+          GetMemoryDebugString(simple_assignment.type,
+                               std::to_string(simple_assignment.location)),
+          std::to_string(simple_assignment.value));
     case TYPE_COMPLEX_EXPRESSION:
       return GetComplexDebugString();
     case TYPE_SPECIAL_EXPRESSION:
@@ -1076,6 +1153,8 @@ std::string ExpressionPiece::GetDebugString() const {
     case TYPE_INVALID:
       return "<invalid>";
   }
+
+  return "<invalid>";
 }
 
 // -----------------------------------------------------------------------------
@@ -1105,6 +1184,8 @@ void ExpressionPiece::Invalidate() {
     case TYPE_BINARY_EXPRESSION:
       delete binary_expression.left_operand;
       delete binary_expression.right_operand;
+      break;
+    case TYPE_SIMPLE_ASSIGNMENT:
       break;
     case TYPE_COMPLEX_EXPRESSION:
       complex_expression.~vec_type();
@@ -1147,12 +1228,10 @@ std::string ExpressionPiece::GetSpecialSerializedExpression(
   return s;
 }
 
-std::string ExpressionPiece::GetMemoryDebugString() const {
+std::string ExpressionPiece::GetMemoryDebugString(
+    int type,
+    const std::string& location) const {
   std::ostringstream ret;
-
-  int type = piece_type == TYPE_MEMORY_REFERENCE ?
-             mem_reference.type :
-             simple_mem_reference.type;
 
   if (type == STRS_LOCATION) {
     ret << "strS[";
@@ -1169,10 +1248,7 @@ std::string ExpressionPiece::GetMemoryDebugString() const {
     ret << "int" << bank << "[";
   }
 
-  if (piece_type == TYPE_MEMORY_REFERENCE)
-    ret << mem_reference.location->GetDebugString();
-  else
-    ret << simple_mem_reference.location;
+  ret << location;
 
   ret << "]";
   return ret.str();
@@ -1188,12 +1264,15 @@ std::string ExpressionPiece::GetUniaryDebugString() const {
   return str.str();
 }
 
-std::string ExpressionPiece::GetBinaryDebugString() const {
+std::string ExpressionPiece::GetBinaryDebugString(
+    char operation,
+    const std::string& lhs,
+    const std::string& rhs) const {
   std::ostringstream str;
-  str << binary_expression.left_operand->GetDebugString();
+  str << lhs;
   str << " ";
 
-  switch (binary_expression.operation) {
+  switch (operation) {
     case 0:
     case 20:
       str << "+";
@@ -1270,13 +1349,11 @@ std::string ExpressionPiece::GetBinaryDebugString() const {
     }
   }
 
-  if (binary_expression.operation >= 0x14 &&
-      binary_expression.operation != 30) {
+  if (operation >= 0x14 && operation != 30)
     str << "=";
-  }
 
   str << " ";
-  str << binary_expression.right_operand->GetDebugString();
+  str << rhs;
 
   return str.str();
 }
@@ -1326,8 +1403,10 @@ int ExpressionPiece::PerformUniaryOperationOn(int int_operand) const {
 }
 
 // Stolen from xclannad
-int ExpressionPiece::PerformBinaryOperationOn(int lhs, int rhs) const {
-  switch (binary_expression.operation) {
+// static
+int ExpressionPiece::PerformBinaryOperationOn(char operation,
+                                              int lhs, int rhs) {
+  switch (operation) {
     case 0:
     case 20:
       return lhs + rhs;
@@ -1377,7 +1456,7 @@ int ExpressionPiece::PerformBinaryOperationOn(int lhs, int rhs) const {
     default: {
       std::ostringstream ss;
       ss << "Invalid operator "
-         << static_cast<int>(binary_expression.operation)
+         << static_cast<int>(operation)
          << " in expression!";
       throw Error(ss.str());
     }

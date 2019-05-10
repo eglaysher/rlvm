@@ -28,8 +28,8 @@
 #ifndef SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 #define SRC_SYSTEMS_SDL_SDL_GRAPHICS_SYSTEM_H_
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include <memory>
 #include <set>
@@ -148,7 +148,7 @@ class SDLGraphicsSystem : public GraphicsSystem, public NotificationObserver {
 
   // Texture used to store the contents of the screen while in DrawManual()
   // mode. The stored image is then used if we need to redraw in the
-  // intervening time (expose events, mouse cursor moves, et cetera).
+  // intervening time (expose events, mouse cursor moves, etc).
   GLuint screen_contents_texture_;
 
   // Whether |screen_contents_texture_| is valid to use.

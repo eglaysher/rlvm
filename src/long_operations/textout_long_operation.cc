@@ -77,7 +77,7 @@ TextoutLongOperation::~TextoutLongOperation() {}
 
 bool TextoutLongOperation::MouseButtonStateChanged(MouseButton mouseButton,
                                                    bool pressed) {
-  if (pressed && mouseButton == MOUSE_LEFT) {
+  if (!pressed && mouseButton == MOUSE_LEFT) {
     no_wait_ = true;
     return true;
   }

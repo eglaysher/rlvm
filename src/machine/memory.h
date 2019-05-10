@@ -184,7 +184,7 @@ BOOST_CLASS_VERSION(LocalMemory, 2)
 //
 // @note Because I use BSD code from xclannad in some of the methods
 //       in this class, for licensing purposes, that code is separated
-//       into RLMachine_intmem.cpp.
+//       into memory_intmem.cc.
 class Memory {
  public:
   // Default constructor; creates a Memory object which owns its own
@@ -195,7 +195,7 @@ class Memory {
   //       declaration of the form \#intvar[index] or \#strvar[index].
   Memory(RLMachine& machine, Gameexe& gamexe);
 
-  // Creates an overlayed memory object. An overlay takes another Memory's
+  // Creates an overlaid memory object. An overlay takes another Memory's
   // global memory. Local integer memory isn't initialized; it isn't even
   // memset zeroed out.
   //
@@ -250,7 +250,7 @@ class Memory {
   void TakeSavepointSnapshot();
 
   // Converts a RealLive letter index (A-Z, AA-ZZ) to its numeric
-  // equivalent. These letter indexies are used in \#NAME definitions.
+  // equivalent. These letter indexes are used in \#NAME definitions.
   static int ConvertLetterIndexToInt(const std::string& value);
 
  private:

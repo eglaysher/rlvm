@@ -25,16 +25,16 @@
 //
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
-
 #include "systems/sdl/sdl_utils.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 
 #include <cassert>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #include "systems/base/system_error.h"
 #include "systems/base/rect.h"
@@ -44,11 +44,9 @@
 
 void ShowGLErrors(void) {
   GLenum error;
-  const GLubyte* err_str;
   if ((error = glGetError()) != GL_NO_ERROR) {
-    err_str = gluErrorString(error);
     std::ostringstream oss;
-    oss << "OpenGL Error: " << (char*)err_str;
+    oss << "OpenGL Error: " << std::hex << error;
     throw SystemError(oss.str());
   }
 }
@@ -56,7 +54,7 @@ void ShowGLErrors(void) {
 // -----------------------------------------------------------------------
 
 bool IsNPOTSafe() {
-  static bool is_safe = GLEW_VERSION_2_0 && GLEW_ARB_texture_non_power_of_two;
+  static bool is_safe = SDL_GL_ExtensionSupported("GL_ARB_texture_non_power_of_two");
   return is_safe;
 }
 

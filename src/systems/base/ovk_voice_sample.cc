@@ -80,7 +80,7 @@ std::string oggErrorCodeToString(int code) {
     case OV_FALSE:
       return "Not true, or no data available";
     case OV_HOLE:
-      return "Vorbisfile encoutered missing or corrupt data in the bitstream. "
+      return "Vorbisfile encountered missing or corrupt data in the bitstream. "
              "Recovery is normally automatic and this return code is for "
              "informational purposes only.";
     case OV_EREAD:
@@ -103,7 +103,7 @@ std::string oggErrorCodeToString(int code) {
              "supported.";
     case OV_EBADLINK:
       return "The given link exists in the Vorbis data stream, but is not "
-             "decipherable due to garbacge or corruption.";
+             "decipherable due to garbage or corruption.";
     case OV_ENOSEEK:
       return "The given stream is not seekable";
     default:
@@ -153,7 +153,7 @@ char* OVKVoiceSample::Decode(int* size) {
   int rate = vinfo->rate;
   int channels = vinfo->channels;
 
-  // We start offseted from the beginning of the buffer since this is where the
+  // We start offsetted from the beginning of the buffer since this is where the
   // WAV header will be placed.
   int buffer_pos = WAV_HEADER_SIZE;
   int buffer_size = INITSIZE;

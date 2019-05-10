@@ -40,8 +40,8 @@ public:
   struct REGION {
     int x1, y1, x2, y2;
     int origin_x, origin_y;
-    int Width() { return x2-x1+1;}
-    int Height() { return y2-y1+1;}
+    int Width() { return x2-x1;}
+    int Height() { return y2-y1;}
     void FixVar(int& v, int& w) {
       if (v < 0) v = 0;
       if (v >= w) v = w-1;
@@ -56,6 +56,8 @@ public:
       if (x1 > x2) x2 = x1;
       if (y1 > y2) y2 = y1;
     }
+
+    bool operator<(const REGION& rhs) const;
   };
 
   std::vector<REGION> region_table;

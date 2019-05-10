@@ -32,6 +32,7 @@ luabind - http://www.rasterbar.com/products/luabind.html
 guichan - http://guichan.sourceforge.net/
 googletest - http://code.google.com/p/googletest/
 googlemock - http://code.google.com/p/googlemock/
+zita-resampler - http://kokkinizita.linuxaudio.org/linuxaudio/zita-resampler/resampler.
 
 Libraries depended on (and are not included)
 -------------------------------------------------------------------------

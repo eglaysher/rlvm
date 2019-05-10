@@ -74,6 +74,17 @@ bool IsOpeningQuoteMark(int codepoint) {
   return codepoint == 0x300C || codepoint == 0x300E || codepoint == 0xFF08;
 }
 
+bool IsWrappingRomanCharacter(int codepoint) {
+  if ((codepoint >= 'A' && codepoint <= 'Z') ||
+      (codepoint >= 'a' && codepoint <= 'z') ||
+      codepoint == '\'' ||
+      codepoint == '-') {
+    return true;
+  }
+
+  return false;
+}
+
 bool IsKinsoku(int codepoint) {
   static const int matchingCodepoints[] = {
       0x0021, 0x0022, 0x0027, 0x0029, 0x002c, 0x002e, 0x003a, 0x003b, 0x003e,

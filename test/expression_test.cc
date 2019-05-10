@@ -142,3 +142,9 @@ TEST(ExpressionTest, ParseWithNewlineInIt) {
 
   ASSERT_TRUE(piece.IsSpecialParameter());
 }
+
+TEST(ExpressionTest, ParseQuotedEnglishString) {
+  string s = "\"Say \\\"Hello.\\\"\"";
+
+  ASSERT_EQ(16, libreallive::NextString(s.c_str()));
+}

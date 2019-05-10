@@ -32,10 +32,10 @@
 #include <map>
 #include <string>
 
-// An optional component to an RLMachine that counts the number of instnaces of
+// An optional component to an RLMachine that counts the number of instances of
 // an opcode. An OpcodeLog can be used to count the number of times an opcode
 // was run during the lifetime of a program, or the number of times an
-// undefined opcode was encountered, et cetera.
+// undefined opcode was encountered, etc.
 class OpcodeLog {
  public:
   typedef std::map<std::string, int> Storage;

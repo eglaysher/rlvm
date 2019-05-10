@@ -105,16 +105,16 @@ void RLVMInstance::Run(const boost::filesystem::path& gamerootPath) {
     }
 
     libreallive::Archive arc(seenPath.string(), gameexe("REGNAME"));
-    if (dump_seen_ != -1) {
-      libreallive::Scenario* scenario = arc.GetScenario(dump_seen_);
-      DumpScenario(scenario);
-      return;
-    }
-
     SDLSystem sdlSystem(gameexe);
     RLMachine rlmachine(sdlSystem, arc);
     AddAllModules(rlmachine);
     AddGameHacks(rlmachine);
+
+    if (dump_seen_ != -1) {
+      libreallive::Scenario* scenario = arc.GetScenario(dump_seen_);
+      DumpScenario(&rlmachine, scenario);
+      return;
+    }
 
     // Validate our font file
     // TODO(erg): Remove this when we switch to native font selection dialogs.

@@ -1,5 +1,9 @@
-;; Project specific local variables for emacs23. `compile-command' is the only
-;; one not set by the individual files. Hopefully this list will grow.
-((nil . ((compile-command . "scons")
-         (tab-width . 2)
-         (indent-tabs-mode . nil))))
+;;; Directory Local Variables
+;;; For more information see (info "(emacs) Directory Variables")
+
+((nil
+  (my-org-project-name . "rlvm")
+  (compile-command . "scons")
+  (tab-width . 2)
+  (indent-tabs-mode)))
+

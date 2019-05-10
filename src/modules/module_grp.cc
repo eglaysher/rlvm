@@ -1050,56 +1050,65 @@ void multi_command<SPACE>::handleMultiCommands(
     switch (it->type) {
       case 0:
         // 0:copy(strC 'filename')
-        load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
+        if (it->first != "")
+          load_1(true)(machine, it->first, MULTI_TARGET_DC, 255);
         break;
       case 1: {
         // 1:copy(strC 'filename', 'effect')
-        Rect src;
-        Point dest;
-        GetSELPointAndRect(machine, get<1>(it->second), src, dest);
+        if (get<0>(it->second) != "") {
+          Rect src;
+          Point dest;
+          GetSELPointAndRect(machine, get<1>(it->second), src, dest);
 
-        load_3<SPACE>(true)(
-            machine, get<0>(it->second), MULTI_TARGET_DC, src, dest, 255);
+          load_3<SPACE>(true)(
+              machine, get<0>(it->second), MULTI_TARGET_DC, src, dest, 255);
+        }
         break;
       }
       case 2: {
         // 2:copy(strC 'filename', 'effect', 'alpha')
-        Rect src;
-        Point dest;
-        GetSELPointAndRect(machine, get<1>(it->third), src, dest);
+        if (get<0>(it->third) != "") {
+          Rect src;
+          Point dest;
+          GetSELPointAndRect(machine, get<1>(it->third), src, dest);
 
-        load_3<SPACE>(true)(machine,
-                            get<0>(it->third),
-                            MULTI_TARGET_DC,
-                            src,
-                            dest,
-                            get<2>(it->third));
+          load_3<SPACE>(true)(machine,
+                              get<0>(it->third),
+                              MULTI_TARGET_DC,
+                              src,
+                              dest,
+                              get<2>(it->third));
+        }
         break;
       }
       case 3: {
         // 3:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy')
-        load_3<SPACE>(true)(machine,
-                            get<0>(it->fourth),
-                            MULTI_TARGET_DC,
-                            SPACE::makeRect(get<1>(it->fourth),
-                                            get<2>(it->fourth),
-                                            get<3>(it->fourth),
-                                            get<4>(it->fourth)),
-                            Point(get<5>(it->fourth), get<6>(it->fourth)),
-                            255);
+        if (get<0>(it->fourth) != "") {
+          load_3<SPACE>(true)(machine,
+                              get<0>(it->fourth),
+                              MULTI_TARGET_DC,
+                              SPACE::makeRect(get<1>(it->fourth),
+                                              get<2>(it->fourth),
+                                              get<3>(it->fourth),
+                                              get<4>(it->fourth)),
+                              Point(get<5>(it->fourth), get<6>(it->fourth)),
+                              255);
+        }
         break;
       }
       case 4: {
         // 4:area(strC 'filename', 'x1', 'y1', 'x2', 'y2', 'dx', 'dy', 'alpha')
-        load_3<SPACE>(true)(machine,
-                            get<0>(it->fifth),
-                            MULTI_TARGET_DC,
-                            SPACE::makeRect(get<1>(it->fifth),
-                                            get<2>(it->fifth),
-                                            get<3>(it->fifth),
-                                            get<4>(it->fifth)),
-                            Point(get<5>(it->fifth), get<6>(it->fifth)),
-                            get<7>(it->fifth));
+        if (get<0>(it->fifth) != "") {
+          load_3<SPACE>(true)(machine,
+                              get<0>(it->fifth),
+                              MULTI_TARGET_DC,
+                              SPACE::makeRect(get<1>(it->fifth),
+                                              get<2>(it->fifth),
+                                              get<3>(it->fifth),
+                                              get<4>(it->fifth)),
+                              Point(get<5>(it->fifth), get<6>(it->fifth)),
+                              get<7>(it->fifth));
+        }
         break;
       }
     }

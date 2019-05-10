@@ -82,7 +82,7 @@ class EventSystem {
   //
   // "Frame counters are designed to make it simple to ensure events happen at a
   // constant speed regardless of the host system's specifications. Once a frame
-  // counter has been initialised, it will count from one arbitrary number to
+  // counter has been initialized, it will count from one arbitrary number to
   // another, over a given length of time. The counter can be queried at any
   // point to get its current value."
   //
@@ -132,7 +132,7 @@ class EventSystem {
   // Keyboard and Mouse Input (Reallive style)
   //
   // RealLive applications poll for input, with all the problems that sort of
-  // event handeling has. We therefore provide an interface for polling.
+  // event handling has. We therefore provide an interface for polling.
   //
   // Don't use it. This interface is provided for RealLive
   // bytecode. EventListeners should be used within rlvm code, instead.
@@ -140,7 +140,7 @@ class EventSystem {
   // Returns whether shift is currently pressed.
   virtual bool ShiftPressed() const = 0;
 
-  // Returns whether ctrl has been presed since the last invocation of
+  // Returns whether ctrl has been pressed since the last invocation of
   // ctrlPresesd().
   virtual bool CtrlPressed() const = 0;
 

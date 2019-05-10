@@ -33,7 +33,7 @@
 
 // Header structure written to and read from the start of each save
 // game file. This structure is at the top of the file since it is
-// what gets queried by SaveDate, SaveTime, et cetera.
+// what gets queried by SaveDate, SaveTime, etc.
 struct SaveGameHeader {
   SaveGameHeader();
   explicit SaveGameHeader(const std::string& in_title);

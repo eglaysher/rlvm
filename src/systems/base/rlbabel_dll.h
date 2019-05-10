@@ -108,7 +108,7 @@ class Gloss {
 //
 // How rlBabel works internally:
 //
-// Games are dissassembled with kprl, their resources are translated,
+// Games are disassembled with kprl, their resources are translated,
 // and are recompiled with rlBabel.kh with a special compiler flag and
 // the line "#load 'rlBabel'" at the top of the file. rlBabel.kh
 // redefines several normal functions to be rerouted through a
@@ -151,7 +151,7 @@ class RlBabelDLL : public RealLiveDLL {
   // Adds characters to the internal buffer, italicizing text as it comes in.
   void AppendChar(const char*& ch);
 
-  // Clears our intenrnal text buffer.
+  // Clears our internal text buffer.
   void TextoutClear();
 
   // Checks if there's room on this page, and either line breaks (returns

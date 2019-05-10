@@ -89,7 +89,7 @@ class GraphicsObjectOfFile : public GraphicsObjectData {
   // The encapsulated surface to render
   std::shared_ptr<const Surface> surface_;
 
-  // Number of miliseconds to spend on a single frame in the
+  // Number of milliseconds to spend on a single frame in the
   // animation
   unsigned int frame_time_;
 

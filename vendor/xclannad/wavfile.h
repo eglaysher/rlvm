@@ -24,6 +24,8 @@
 #ifndef __WAVEFILE__
 #define __WAVEFILE__
 
+#include <stdio.h>
+
 #define WW_BADOUTPUTFILE	1
 #define WW_BADWRITEHEADER	2
 

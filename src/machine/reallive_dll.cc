@@ -26,6 +26,7 @@
 
 #include "machine/reallive_dll.h"
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <string>
 #include <sstream>
 
@@ -36,6 +37,33 @@
 #include "utilities/exception.h"
 
 using std::ostringstream;
+
+namespace {
+
+class IgnoredDLL : public RealLiveDLL {
+ public:
+  IgnoredDLL(const std::string& name)
+      : name_(name) {}
+  ~IgnoredDLL() override {}
+
+  int CallDLL(RLMachine& machine,
+              int one,
+              int two,
+              int three,
+              int four,
+              int five) override {
+    return 0;
+  }
+
+  const std::string& GetDLLName() const override {
+    return name_;
+  }
+
+ private:
+  const std::string& name_;
+};
+
+}  // namespace
 
 // -----------------------------------------------------------------------
 // RealLiveDLL
@@ -51,6 +79,8 @@ RealLiveDLL* RealLiveDLL::BuildDLLNamed(RLMachine& machine,
     return new LittleBustersPT00DLL;
   } else if (name == "DT00") {
     return new TomoyoAfterDT00DLL;
+  } else if (boost::starts_with(name, "RealLiveSteam")) {
+    return new IgnoredDLL(name);
   } else {
     ostringstream oss;
     oss << "Unsupported DLL interface " << name;

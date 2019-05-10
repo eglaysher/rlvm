@@ -25,15 +25,14 @@
 //
 // -----------------------------------------------------------------------
 
-#include "GL/glew.h"
-
 #include "systems/sdl/sdl_graphics_system.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #if !defined(__APPLE__) && !defined(_WIN32)
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
+#include "../resources/48/rlvm_icon_48.xpm"
 #endif
 
 #include <boost/algorithm/string.hpp>
@@ -245,11 +244,11 @@ SDLGraphicsSystem::SDLGraphicsSystem(System& system, Gameexe& gameexe)
   SetWindowTitle();
 
 #if !defined(__APPLE__) && !defined(_WIN32)
-  // We only set the icon on linux because OSX will use the icns file
+  // We only set the icon on Linux because OSX will use the icns file
   // automatically and this doesn't look too awesome.
-  SDL_Surface* icon = IMG_Load("/usr/share/icons/hicolor/48x48/apps/rlvm.png");
+  SDL_Surface* icon = IMG_ReadXPMFromArray(rlvm_icon_48);
   if (icon) {
-    SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 0, 0, 0));
+    SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 255, 255, 255));
     SDL_SetWindowIcon(window_, icon);
     SDL_FreeSurface(icon);
   }
@@ -292,14 +291,6 @@ void SDLGraphicsSystem::SetupVideo() {
                              screen_size().height(),
                              SDL_WINDOW_OPENGL);
   gl_context_ = SDL_GL_CreateContext(window_);
-
-  // Initialize glew
-  GLenum err = glewInit();
-  if (GLEW_OK != err) {
-    std::ostringstream oss;
-    oss << "Failed to initialize GLEW: " << glewGetErrorString(err);
-    throw SystemError(oss.str());
-  }
 
   glEnable(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

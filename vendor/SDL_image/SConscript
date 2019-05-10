@@ -6,14 +6,6 @@ component_env.Append(
     "#/vendor/SDL_image/include/SDL/",
   ],
 
-  # We just add loaders for common file formats that don't need libraries (and
-  # PNG since we store our file data in it).
-  CPPDEFINES = [
-    "LOAD_GIF",
-    "LOAD_BMP",
-    "LOAD_PNG",
-  ],
-
   CFLAGS = [
     # Ignore all warnings in this upstream code.
     "-w"
@@ -21,21 +13,7 @@ component_env.Append(
 )
 
 libsdl_image_files = [
-  "src/IMG.c",
-  "src/IMG_ImageIO.c",
-  "src/IMG_bmp.c",
-  "src/IMG_gif.c",
-  "src/IMG_jpg.c",
-  "src/IMG_lbm.c",
-  "src/IMG_pcx.c",
-  "src/IMG_png.c",
-  "src/IMG_pnm.c",
-  "src/IMG_tga.c",
-  "src/IMG_tif.c",
-  "src/IMG_xcf.c",
   "src/IMG_xpm.c",
-  "src/IMG_xv.c",
-  "src/IMG_xxx.c",
 ]
 
 component_env.StaticLibrary('libSDL_image', libsdl_image_files)

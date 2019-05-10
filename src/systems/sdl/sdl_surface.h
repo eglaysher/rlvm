@@ -160,7 +160,7 @@ class SDLSurface : public Surface, public NotificationObserver {
   // Keeps track of a texture and the information about which region
   // of the current surface this Texture is. We keep track of this
   // information so we can reupload a certain part of the Texture
-  // without allocating a new opengl texture. glGenTexture()/
+  // without allocating a new OpenGL texture. glGenTexture()/
   // glTexImage2D() is SLOW and should never be done in a loop.)
   struct TextureRecord {
     TextureRecord(SDL_Surface* surface,
@@ -205,7 +205,7 @@ class SDLSurface : public Surface, public NotificationObserver {
   mutable std::vector<TextureRecord> textures_;
 
   // Whether texture_ represents the contents of surface_. Blits
-  // from surfaces to surfaces invalidate the target surfaces's
+  // from surfaces to surfaces invalidate the target surface's
   // texture.
   mutable bool texture_is_valid_;
 

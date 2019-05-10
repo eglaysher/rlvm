@@ -93,9 +93,11 @@ TextWindow::TextWindow(System& system, int window_num)
     : window_num_(window_num),
       text_insertion_point_x_(0),
       text_insertion_point_y_(0),
+      text_wrapping_point_x_(0),
       ruby_begin_point_(-1),
       current_line_number_(0),
       current_indentation_in_pixels_(0),
+      current_indentation_in_chars_(0),
       last_token_was_name_(false),
       use_indentation_(0),
       colour_(),
@@ -197,10 +199,12 @@ void TextWindow::SetTextboxPadding(const vector<int>& pos_data) {
 void TextWindow::SetName(const std::string& utf8name,
                          const std::string& next_char) {
   if (name_mod_ == 0) {
+    std::string interpreted_name = text_system_.InterpretName(utf8name);
+
     // Display the name in one pass
     PrintTextToFunction(
         bind(&TextWindow::DisplayCharacter, ref(*this), _1, _2),
-        utf8name, next_char);
+        interpreted_name, next_char);
     SetIndentation();
   }
 
@@ -209,18 +213,21 @@ void TextWindow::SetName(const std::string& utf8name,
 
 void TextWindow::SetNameWithoutDisplay(const std::string& utf8name) {
   if (name_mod_ == 1) {
+    std::string interpreted_name = text_system_.InterpretName(utf8name);
+
     namebox_characters_ = 0;
     try {
-      namebox_characters_ = utf8::distance(utf8name.begin(), utf8name.end());
+      namebox_characters_ = utf8::distance(interpreted_name.begin(),
+                                           interpreted_name.end());
     }
     catch (...) {
       // If utf8name isn't a real UTF-8 string, possibly overestimate:
-      namebox_characters_ = utf8name.size();
+      namebox_characters_ = interpreted_name.size();
     }
 
     namebox_characters_ = std::max(namebox_characters_, minimum_namebox_size_);
 
-    RenderNameInBox(utf8name);
+    RenderNameInBox(interpreted_name);
   }
 
   last_token_was_name_ = true;
@@ -509,7 +516,9 @@ void TextWindow::RenderKoeReplayButtons(std::ostream* tree) {
 void TextWindow::ClearWin() {
   text_insertion_point_x_ = 0;
   text_insertion_point_y_ = ruby_text_size();
+  text_wrapping_point_x_ = 0;
   current_indentation_in_pixels_ = 0;
+  current_indentation_in_chars_ = 0;
   current_line_number_ = 0;
   ruby_begin_point_ = -1;
   font_colour_ = default_colour_;
@@ -561,16 +570,26 @@ bool TextWindow::DisplayCharacter(const std::string& current,
                                  text_insertion_point_y_,
                                  GetTextSurface());
     next_char_italic_ = false;
+    text_wrapping_point_x_ += GetWrappingWidthFor(cur_codepoint);
 
-    if (cur_codepoint < 128) {
+    if (cur_codepoint < 127) {
       // This is a basic ASCII character. In normal RealLive, western text
       // appears to be treated as half width monospace. If we're here, we are
       // either in a manually laid out western game (therefore we should try to
       // fit onto the monospace grid) or we're in rlbabel (in which case, our
       // insertion point will be manually set by the bytecode immediately after
       // this character).
-      text_insertion_point_x_ +=
-          std::ceil((font_size_in_pixels_ + x_spacing_) / 2.0f);
+      if (text_system_.FontIsMonospaced()) {
+        // If our font is monospaced (ie msgothic.ttc), we want to follow the
+        // game's layout instructions perfectly.
+        text_insertion_point_x_ += GetWrappingWidthFor(cur_codepoint);
+      } else {
+        // If out font has different widths for 'i' and 'm', we aren't using
+        // the recommended font so we'll try laying out the text so that
+        // kerning looks better. This is the common case.
+        text_insertion_point_x_ +=
+            text_system_.GetCharWidth(font_size_in_pixels(), cur_codepoint);
+      }
     } else {
       // Move the insertion point forward one character
       text_insertion_point_x_ += font_size_in_pixels_ + x_spacing_;
@@ -591,8 +610,16 @@ bool TextWindow::DisplayCharacter(const std::string& current,
   return true;
 }
 
+// Lines we still get wrong in CLANNAD Prologue:
+//
+// <rlmax> = Official RealLive's breaking
+// <rlvm> = Where rlvm places the line break
+//
+// - "Whose ides was it to put a school at the top of a giant <rlmax> slope,<rlvm> anyway?"
+//
+
 bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
-  int char_width = font_size_in_pixels_ + x_spacing_;
+  int char_width = GetWrappingWidthFor(cur_codepoint);
   bool cur_codepoint_is_kinsoku = IsKinsoku(cur_codepoint) ||
                                   cur_codepoint == 0x20;
   int normal_width =
@@ -602,28 +629,36 @@ bool TextWindow::MustLineBreak(int cur_codepoint, const std::string& rest) {
   // If this character is a kinsoku, and will squeeze onto this line, don't
   // break and don't follow any of the further rules.
   if (cur_codepoint_is_kinsoku &&
-      (text_insertion_point_x_ + char_width <= extended_width)) {
+      (text_wrapping_point_x_ + char_width <= extended_width)) {
     return false;
   }
 
   // If this character won't fit on the line normally, break.
-  if (text_insertion_point_x_ + char_width > normal_width) {
+  if (text_wrapping_point_x_ + char_width > normal_width) {
     return true;
   }
 
   // If this character will fit on the line, but the next n characters are
-  // kinsoku characters and one of them won't, then break.
+  // kinsoku characters OR wrapping roman characters and one of them won't,
+  // then break.
   if (!cur_codepoint_is_kinsoku && rest != "") {
-    int final_insertion_x = text_insertion_point_x_ + char_width;
+    int final_insertion_x = text_wrapping_point_x_ + char_width;
 
     string::const_iterator cur = rest.begin();
     string::const_iterator end = rest.end();
     while (cur != end) {
       int point = utf8::next(cur, end);
       if (IsKinsoku(point)) {
-        final_insertion_x += char_width;
+        final_insertion_x += GetWrappingWidthFor(point);
 
         if (final_insertion_x > extended_width) {
+          return true;
+        }
+      // OK, is this correct? I'm now having places where we prematurely break.
+      } else if (IsWrappingRomanCharacter(point)) {
+        final_insertion_x += GetWrappingWidthFor(point);
+
+        if (final_insertion_x > normal_width) {
           return true;
         }
       } else {
@@ -660,14 +695,19 @@ void TextWindow::KoeMarker(int id) {
 void TextWindow::HardBrake() {
   text_insertion_point_x_ = current_indentation_in_pixels_;
   text_insertion_point_y_ += line_height();
+  text_wrapping_point_x_ = current_indentation_in_chars_;
   current_line_number_++;
 }
 
 void TextWindow::SetIndentation() {
   current_indentation_in_pixels_ = text_insertion_point_x_;
+  current_indentation_in_chars_ = text_wrapping_point_x_;
 }
 
-void TextWindow::ResetIndentation() { current_indentation_in_pixels_ = 0; }
+void TextWindow::ResetIndentation() {
+  current_indentation_in_pixels_ = 0;
+  current_indentation_in_chars_ = 0;
+}
 
 void TextWindow::MarkRubyBegin() {
   ruby_begin_point_ = text_insertion_point_x_;
@@ -736,4 +776,12 @@ void TextWindow::EndSelectionMode() {
   selection_callback_ = nullptr;
   selections_.clear();
   ClearWin();
+}
+
+int TextWindow::GetWrappingWidthFor(int cur_codepoint) {
+  if (cur_codepoint < 127) {
+    return std::floor((font_size_in_pixels_ + x_spacing_) / 2.0f);
+  } else {
+    return font_size_in_pixels_ + x_spacing_;
+  }
 }

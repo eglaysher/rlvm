@@ -20,7 +20,13 @@ CLANNAD FULL VOICE
 ------------------
 - All routes playable to the end.
 - Voices work.
-- Partially playable with the Baka-Tsuki English patch (currently beta)
+
+CLANNAD English Edition
+-----------------------
+- Currently busted.
+  - Problems while drawing the text boxes.
+  - Dangopedia is completely broken due to the database subsystem being
+    unimplemented.
 
 Tomoyo After Memorial Edition
 -----------------------------

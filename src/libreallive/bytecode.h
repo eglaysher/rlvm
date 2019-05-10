@@ -99,7 +99,8 @@ class BytecodeElement {
 
   // Prints a human readable version of this bytecode element to |oss|. This
   // tries to match Haeleth's kepago language as much as is feasible.
-  virtual void PrintSourceRepresentation(std::ostream& oss) const;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const;
 
   // Returns the length of this element in bytes in the source file.
   virtual const size_t GetBytecodeLength() const = 0;
@@ -138,7 +139,8 @@ class CommaElement : public BytecodeElement {
   virtual ~CommaElement();
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
 };
 
@@ -152,7 +154,8 @@ class MetaElement : public BytecodeElement {
   void set_value(const int value) { value_ = value; }
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual const int GetEntrypoint() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
@@ -173,7 +176,8 @@ class TextoutElement : public BytecodeElement {
   const string GetText() const;
 
   // Overridden from BytecodeElement::
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
@@ -192,27 +196,21 @@ class ExpressionElement : public BytecodeElement {
   ExpressionElement(const ExpressionElement& rhs);
   virtual ~ExpressionElement();
 
-  // Assumes the expression isn't an assignment and returns the integer value.
-  //
-  // TODO(erg): We should be delete this if we make GetWindowExpression()
-  // return an ExpressionPiece instead.
-  int GetValueOnly(RLMachine& machine) const;
-
-  // Returns an ExpressionPiece representing this expression. This function
-  // lazily parses the expression and stores the tree for reuse.
+  // Returns an ExpressionPiece representing this expression.
   const ExpressionPiece& ParsedExpression() const;
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual const size_t GetBytecodeLength() const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
  private:
-  string repr;
+  int length_;
 
   // Storage for the parsed expression so we only have to calculate
   // it once (and so we can return it by const reference)
-  mutable ExpressionPiece parsed_expression_;
+  ExpressionPiece parsed_expression_;
 };
 
 // Command elements.
@@ -252,7 +250,8 @@ class CommandElement : public BytecodeElement {
   virtual const string GetCase(int i) const;
 
   // Overridden from BytecodeElement:
-  virtual void PrintSourceRepresentation(std::ostream& oss) const final;
+  virtual void PrintSourceRepresentation(RLMachine* machine,
+                                         std::ostream& oss) const final;
   virtual void RunOnMachine(RLMachine& machine) const final;
 
  protected:
@@ -297,10 +296,7 @@ class SelectElement : public CommandElement {
 
   // Returns the expression in the source code which refers to which window to
   // display.
-  //
-  // TODO(erg): I believe I can simplify the only caller of this if I return an
-  // ExpressionPiece instead.
-  ExpressionElement GetWindowExpression() const;
+  ExpressionPiece GetWindowExpression() const;
 
   const params_t& raw_params() const { return params; }
 

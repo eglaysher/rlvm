@@ -21,8 +21,9 @@ test_env.Append(
 if test_env['PLATFORM'] == 'darwin':
   test_env.Append(FRAMEWORKS=["OpenGL"])
 else:
-  test_env.Append(LIBS=["GL", "GLU"])
+  test_env.Append(LIBS=["GL"])
 test_env.ParseConfig("sdl2-config --libs")
+test_env.ParseConfig('pkg-config --cflags --libs libpng')
 
 test_env.Append(CPPPATH = ["#/test"])
 

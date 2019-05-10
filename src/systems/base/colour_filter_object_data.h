@@ -53,7 +53,7 @@ class ColourFilterObjectData : public GraphicsObjectData {
   // Returns the colour filter, lazily creating it if necessary.
   ColourFilter* GetColourFilter();
 
-  // Overriden from GraphicsObjectData:
+  // Overridden from GraphicsObjectData:
   virtual void Render(const GraphicsObject& go,
                       const GraphicsObject* parent,
                       std::ostream* tree) override;

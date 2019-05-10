@@ -41,9 +41,8 @@ env = Environment(
     # We use gettext for translations.
     "ENABLE_NLS",
 
-    # This prevents conflicts between SDL and GLEW. I shouldn't have to do
-    # this, but the SDL_opengl.h and glew.h differ in const correctness...
-    "NO_SDL_GLEXT"
+    # Use glext.h
+    "GL_GLEXT_PROTOTYPES"
   ],
 
   # Where the final binaries should be put.
@@ -213,7 +212,7 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
     lib_name = library_dict['library']
     print "(Using included version of %s)" % lib_name
     componentlist.append(lib_name)
-    config.Define("HAVE_LIB" + lib_name, 1,
+    config.Define("HAVE_LIB" + lib_name.replace("-", "_"), 1,
                   "Define to 1 if you have the `%s' library." % lib_name)
 
 
@@ -221,7 +220,6 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
 ## Configuration
 #########################################################################
 subcomponents = [ ]
-static_sdl_libs = [ ]
 
 config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost,
 #                                       'CheckGuichan' : CheckGuichan
@@ -235,6 +233,8 @@ VerifyLibrary(config, 'pthread', 'pthread.h')
 VerifyLibrary(config, 'ogg', 'ogg/ogg.h')
 VerifyLibrary(config, 'vorbis', 'vorbis/codec.h')
 VerifyLibrary(config, 'vorbisfile', 'vorbis/vorbisfile.h')
+
+VerifyLibrary(config, 'sndfile', 'sndfile.h')
 
 # In short, we do this because the SCons configuration system doesn't give me
 # enough control over the test program. Even if the libraries are installed,
@@ -250,9 +250,9 @@ else:
 # Libraries we need, but will use a local copy if not installed.
 local_sdl_libraries = [
   {
-    "include"  : 'GL/glew.h',
-    "library"  : 'GLEW',
-    "function" : 'glewInit();'
+    'include'  : 'zita-resampler/resampler.h',
+    'library'  : 'zita-resampler',
+    'function' : '',
   },
   {
     'include'  : 'SDL2/SDL_ttf.h',
@@ -279,7 +279,7 @@ for library_dict in local_sdl_libraries:
 #   subcomponents.append("guichan")
 
 # Get the configuration from sdl and freetype
-env.ParseConfig("sdl-config --cflags")
+env.ParseConfig("sdl2-config --cflags")
 env.ParseConfig("freetype-config --cflags --libs")
 
 env = config.Finish()
@@ -326,7 +326,7 @@ if GetOption('release'):
         "-ffunction-sections",
         "-fdata-sections",
         ],
-
+  
       LINKFLAGS = [
         "-Wl,--gc-sections"
         ],

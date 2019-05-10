@@ -115,10 +115,10 @@ class RLModule {
   // Accessor that returns this module's type number
   int module_type() const { return module_type_; }
 
-  // Accessor that returns this modules's identification number
+  // Accessor that returns this module's identification number
   int module_number() const { return module_number_; }
 
-  // Accessor that returns this module's mnemonic nmae
+  // Accessor that returns this module's mnemonic name
   const std::string& module_name() const { return module_name_; }
 
   void SetProperty(int property, int value);
@@ -129,6 +129,9 @@ class RLModule {
   // execute it.
   void DispatchFunction(RLMachine& machine,
                         const libreallive::CommandElement& f);
+
+  std::string GetCommandName(RLMachine& machine,
+                             const libreallive::CommandElement& f);
 
   OpcodeMap::iterator begin() { return stored_operations_.begin(); }
   OpcodeMap::iterator end() { return stored_operations_.end(); }
