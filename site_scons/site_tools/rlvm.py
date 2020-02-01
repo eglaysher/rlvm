@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 """
 Support for building rlvm objects
@@ -56,19 +56,19 @@ def RlvmProgram(env, prog_name, *args, **kwargs):
   objects.extend(args)
 
   # TODO: Deal with RLVM_LIBS in a shared objecty way
-  if kwargs.has_key('rlvm_libs'):
+  if 'rlvm_libs' in kwargs.keys():
     for lib_name in kwargs['rlvm_libs']:
       objects.append(env['LIBPREFIX'] + lib_name + env['LIBSUFFIX'])
 
   # Add all static libraries from the various categories
-  if kwargs.has_key('use_lib_set'):
+  if 'use_lib_set' in kwargs.keys():
     for lib_set_name in kwargs['use_lib_set']:
       lib_set = cloned_env[_MakeStaticName(lib_set_name)]
       if lib_set:
         objects.extend(lib_set)
 
   # First, we need to see if this is a static build
-  if kwargs.has_key("full_static_build") and kwargs['full_static_build'] == True:
+  if "full_static_build" in kwargs.keys() and kwargs['full_static_build'] == True:
     # We must unpack each entry in LIBS and try to locate a static library to
     old_libs = cloned_env['LIBS']
     libpaths = cloned_env['LIBPATH']

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # A fairly naive script which dumps out the data of a HIK file to a JSON file
 # for editing and reencoding with buildhik.py.
@@ -48,7 +48,7 @@ property_formats = {
 results = [ ]
 
 if len(sys.argv) != 3:
-  print "Usage: " + sys.argv[0] + " <input hik file> <output json>"
+  print ("Usage: " + sys.argv[0] + " <input hik file> <output json>")
   exit(-1)
 
 with open(sys.argv[1], "rb") as f:
@@ -67,7 +67,7 @@ with open(sys.argv[1], "rb") as f:
       if property_id in property_formats:
         record.append([property_id, property_formats[property_id](f)])
       else:
-        print "huh: " + str(property_id)
+        print ("huh: " + str(property_id))
 
       property_id = struct.unpack("i", f.read(0x4))[0]
 
@@ -77,4 +77,4 @@ with open(sys.argv[1], "rb") as f:
     results.append(record)
 
 with open(sys.argv[2], "w") as f:
-  print >>f, json.dumps(results, sort_keys=True, indent=4)
+  print (json.dumps(results, sort_keys=True, indent=4), file=f)

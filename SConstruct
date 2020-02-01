@@ -187,9 +187,9 @@ int main(int argc, char **argv) {
 def VerifyLibrary(config, library, header):
   if not config.CheckLibWithHeader(library, header, "c"):
     if config.CheckLib(library):
-      print "You have " + library + " installed, but the development headers aren't installed."
+      print ("You have " + library + " installed, but the development headers aren't installed.")
     else:
-      print "You need " + library + " to compile this program!"
+      print ("You need " + library + " to compile this program!")
     Exit(1)
 
 def CheckForSystemLibrary(config, library_dict, componentlist):
@@ -209,7 +209,7 @@ def CheckForSystemLibrary(config, library_dict, componentlist):
 
   if not res:
     lib_name = library_dict['library']
-    print "(Using included version of %s)" % lib_name
+    print ("(Using included version of %s)" % lib_name)
     componentlist.append(lib_name)
     config.Define("HAVE_LIB" + lib_name.replace("-", "_"), 1,
                   "Define to 1 if you have the `%s' library." % lib_name)
@@ -225,7 +225,7 @@ config = env.Configure(custom_tests = {'CheckBoost'   : CheckBoost,
                                        'CheckGuichan' : CheckGuichan},
                        config_h="build/config.h")
 if not config.CheckBoost('1.40'):
-  print "Boost version >= 1.40 needed to compile rlvm!"
+  print ("Boost version >= 1.40 needed to compile rlvm!")
   Exit(1)
 
 VerifyLibrary(config, 'pthread', 'pthread.h')
@@ -244,7 +244,7 @@ VerifyLibrary(config, 'sndfile', 'sndfile.h')
 if env['PLATFORM'] != 'darwin':
   VerifyLibrary(config, 'SDL', 'SDL/SDL.h')
 else:
-  print "Can't properly detect SDL under OSX. Assuming you have the libraries."
+  print ("Can't properly detect SDL under OSX. Assuming you have the libraries.")
 
 # Libraries we need, but will use a local copy if not installed.
 local_sdl_libraries = [
@@ -279,7 +279,7 @@ for library_dict in local_sdl_libraries:
   CheckForSystemLibrary(config, library_dict, subcomponents)
 
 if not config.CheckGuichan():
-  print "(Using included copy of guichan)"
+  print ("(Using included copy of guichan)")
   subcomponents.append("guichan")
 
 # Get the configuration from sdl and freetype
