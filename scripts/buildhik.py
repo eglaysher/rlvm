@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # A fairly naive script which takes a JSON file generated from dumphik.py and
 # tries to generate a valid HIK file.
@@ -17,10 +17,10 @@ def write_property(output, property):
       output.write(struct.pack("i", len(x)))
       output.write(x)
     else:
-      print type(x)
+      print (type(x))
 
 if len(sys.argv) != 3:
-  print "Usage: " + sys.argv[0] + " <input json file> <output hik>"
+  print ("Usage: " + sys.argv[0] + " <input json file> <output hik>")
   exit(-1)
 
 with open(sys.argv[1], "rb") as input:
