@@ -284,7 +284,9 @@ if not config.CheckGuichan():
 
 # Get the configuration from sdl and freetype
 env.ParseConfig("sdl-config --cflags")
-env.ParseConfig("freetype-config --cflags --libs")
+env.Append(CFLAGS=["-DFB_USE_FREETYPE"])
+env.ParseConfig("pkg-config --cflags --libs freetype2")
+
 
 env = config.Finish()
 
