@@ -14,6 +14,8 @@ AddOption('--coverage', action='store_true',
           'runs gcov, and then generates an html report with lcov.')
 AddOption('--pprof', action='store_true',
           help='Build with Google\'s performance tools.')
+AddOption('--asan', action='store_true',
+          help='Build with sanitizers (ASan+UBSan).')
 AddOption('--fullstatic', action='store_true',
           help='Builds a static binary, linking in all libraries.')
 
@@ -359,6 +361,20 @@ elif GetOption('pprof'):
 
     LIBS = [ "tcmalloc",
              "profiler"]
+  )
+elif GetOption('asan'):
+  env["BUILD_DIR"] = "#/build/asan"
+
+  env.Append(
+    CPPFLAGS = [
+      "-O0",
+      "-g",
+      "-fsanitize=address,undefined",
+    ],
+
+    LINKFLAGS = [
+      "-fsanitize=address,undefined",
+    ],
   )
 else:
   # Add debugging flags to all binaries here
