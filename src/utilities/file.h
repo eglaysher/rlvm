@@ -31,6 +31,7 @@
 #include <boost/filesystem.hpp>
 
 #include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 
