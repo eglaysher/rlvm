@@ -283,6 +283,6 @@ std::vector<PromotionData> data = {
                     TestMachine::Arg("file", 0, 0, 0, 200, 200, 0, 0, 255),
                     SHOULD_PROMOTE_BG)};
 
-INSTANTIATE_TEST_CASE_P(MediumObjectPoromotion,
+INSTANTIATE_TEST_SUITE_P(MediumObjectPoromotion,
                         PromotionTest,
                         ::testing::ValuesIn(data));
