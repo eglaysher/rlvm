@@ -87,15 +87,7 @@ class RLOperation;
 class RLModule {
  public:
   // Storage type of the opcodes. Exposed so TestMachine can iterate over this.
-#if defined(__APPLE__)
-  // There is something weird about unordered_map on OSX. When using an
-  // unordered_map here with whatever dev tools shipped on Maverick, one single
-  // unit test fails. For now, just falling back to a map, which shouldn't
-  // perform too much worse in practice.
-  typedef std::map<int, std::unique_ptr<RLOperation>> OpcodeMap;
-#else
   typedef std::unordered_map<int, std::unique_ptr<RLOperation>> OpcodeMap;
-#endif
 
  public:
   virtual ~RLModule();
