@@ -132,7 +132,7 @@ void Archive::ReadTOC() {
 void Archive::ReadOverrides() {
   // Iterate over all files in the directory and override the table of contents
   // if there is a free SEENXXXX.TXT file.
-  fs::path seen_dir = fs::path(name_).branch_path();
+  fs::path seen_dir = fs::path(name_).parent_path();
   fs::directory_iterator end;
   for (fs::directory_iterator it(seen_dir); it != end; ++it) {
     std::string filename = it->path().filename().string();

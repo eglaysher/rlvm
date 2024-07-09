@@ -72,7 +72,7 @@ fs::path CorrectPathCase(fs::path Path) {
   std::stack<std::string> pathElts;
   while (!Path.empty() && !fs::exists(Path)) {
     pathElts.push(Path.filename().string());
-    Path = Path.branch_path();
+    Path = Path.parent_path();
   }
   // Now proceed forwards through the possibly-incorrect elements.
   while (!pathElts.empty()) {
