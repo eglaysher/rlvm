@@ -120,7 +120,7 @@ struct strclear_1 : public RLOpcode<StrReference_T, StrReference_T> {
                   StringReferenceIterator first,
                   StringReferenceIterator last) {
     ++last;  // RL ranges are inclusive
-    fill(first, last, "");
+    std::fill(first, last, "");
   }
 };
 
