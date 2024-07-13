@@ -523,7 +523,8 @@ int RlBabelDLL::SetCurrentWindowName(StringReferenceIterator buffer) {
   // Haeleth's implementation of SetCurrentWindowName in rlBabel goes through
   // some monstrous hacks, including temporarily rewriting the bytecode at the
   // instruction pointer. I *think* I can get away with a simple:
-  GetWindow(-1)->SetNameWithoutDisplay(*buffer);
+  GetWindow(-1)->SetNameWithoutDisplay(
+      cp932toUTF8(*buffer, machine_.GetTextEncoding()));
   return 1;
 }
 
