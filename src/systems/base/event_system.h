@@ -187,8 +187,8 @@ class EventSystem {
   // Helper function that verifies input
   void CheckLayerAndCounter(int layer, int counter);
 
-  std::unique_ptr<FrameCounter> frame_counters_[255][2];
-  RLTimer timers_[255][2];
+  std::unique_ptr<FrameCounter> frame_counters_[2][255];
+  RLTimer timers_[2][255];
 
   EventListeners event_listeners_;
 
