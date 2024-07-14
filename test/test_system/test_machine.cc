@@ -1,5 +1,5 @@
 // -*- Mode: C++; tab-width:2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
-// vi:tw=80:et:ts=2:St's=2
+// vi:tw=80:et:ts=2:sts=2
 //
 // -----------------------------------------------------------------------
 //
@@ -26,6 +26,7 @@
 
 #include "test_system/test_machine.h"
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -48,9 +49,24 @@ void TestMachine::AttachModule(RLModule* module) {
     int opcode = -1;
     unsigned char overload = 0;
     RLModule::UnpackOpcodeNumber(it->first, opcode, overload);
+    if (opcode == 77 || opcode == 1057) {
+      // XXX: recMulti and grpMulti each have two variants with different
+      // opcodes and argument types. There's no way to tell them apart using
+      // just op name and overload index so we're gonna just skip registering
+      // the variants that are not used in tests.
+      continue;
+    }
 
     RLOperation* op = it->second.get();
-    registry_.emplace(make_pair(it->second->name(), overload), op);
+
+    auto key = make_pair(op->name(), overload);
+    if (registry_.count(key) > 0) {
+      std::ostringstream ss;
+      ss << "Duplicate registry key (" << op->name()
+         << ", " << static_cast<int>(overload) << ")";
+      throw rlvm::Exception(ss.str());
+    }
+    registry_.emplace(std::move(key), op);
   }
 
   RLMachine::AttachModule(module);

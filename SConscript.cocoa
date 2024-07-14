@@ -17,7 +17,7 @@ static_env.Append(
     "-Wall",
     "-Wno-sign-compare",
     "-Wno-narrowing",
-    "-std=c++11"
+    "-std=c++17"
   ]
 )
 

@@ -14,7 +14,7 @@ test_env.Append(
   ],
   CXXFLAGS = [
     "--ansi",
-    "-std=c++11"
+    "-std=c++17"
   ]
 )
 

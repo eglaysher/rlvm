@@ -88,9 +88,14 @@ class StringAccessor {
 // solves the problem where some functions in RealLive accept two
 // memory addresses, and do something on that range.
 template <typename ACCESS>
-class MemoryReferenceIterator
-    : public std::iterator<std::random_access_iterator_tag, ACCESS> {
+class MemoryReferenceIterator {
  public:
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = ACCESS;
+  using difference_type = std::ptrdiff_t;
+  using pointer = ACCESS*;
+  using reference = ACCESS&;
+
   MemoryReferenceIterator();
 
   // Explicit store register creation

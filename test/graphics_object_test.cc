@@ -192,7 +192,7 @@ SetterVec graphics_object_setters = {
     std::make_tuple(&GraphicsObject::SetAlpha, &GraphicsObject::raw_alpha),
     std::make_tuple(&GraphicsObject::SetWipeCopy, &GraphicsObject::wipe_copy)};
 
-INSTANTIATE_TEST_CASE_P(GraphicsObjectSimple,
+INSTANTIATE_TEST_SUITE_P(GraphicsObjectSimple,
                         AccessorTest,
                         ::testing::ValuesIn(graphics_object_setters));
 
@@ -216,7 +216,7 @@ SetterVec graphics_object_colour_setters = {
     std::make_tuple(&GraphicsObject::SetColourBlue, getColourB),
     std::make_tuple(&GraphicsObject::SetColourLevel, getColourLevel)};
 
-INSTANTIATE_TEST_CASE_P(GraphicsObjectTintAndColour,
+INSTANTIATE_TEST_SUITE_P(GraphicsObjectTintAndColour,
                         AccessorTest,
                         ::testing::ValuesIn(graphics_object_colour_setters));
 

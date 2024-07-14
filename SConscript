@@ -19,7 +19,7 @@ root_env.Append(
     "-Wno-sign-compare",
     "-Wno-narrowing",
     "-Wno-write-strings",    # For XPM support
-    "-std=c++11"
+    "-std=c++17"
   ]
 )
 
