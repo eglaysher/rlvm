@@ -897,6 +897,10 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 
     while (*src != ')') {
       int expr = NextData(src);
+      if(expr == 0){
+        src++;
+        continue;
+      }
       repr_size += expr;
       params.emplace_back(src, expr);
       src += expr;
