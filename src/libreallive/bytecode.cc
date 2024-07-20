@@ -118,6 +118,11 @@ CommandElement* BuildFunctionElement(const char* stream) {
     const char* end = ptr + 1;
     while (*end != ')') {
       const size_t len = NextData(end);
+      if (len <= 0) {
+        std::ostringstream os;
+        os << "at BuildFunctionElement: invalid token " << *end;
+        throw Error(os.str());
+      }
       params.emplace_back(end, len);
       end += len;
     }
@@ -897,9 +902,10 @@ GosubWithElement::GosubWithElement(const char* src, ConstructionData& cdata)
 
     while (*src != ')') {
       int expr = NextData(src);
-      if(expr == 0){
-        src++;
-        continue;
+      if (expr <= 0) {
+        std::ostringstream os;
+        os << "at GosubWithElement constructor: invalid token " << *src;
+        throw Error(os.str());
       }
       repr_size += expr;
       params.emplace_back(src, expr);

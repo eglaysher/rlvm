@@ -148,6 +148,11 @@ size_t NextString(const char* src) {
       ++end;
   }
 
+  auto IsTag = [](const char* src) {
+    return *src == 'a' && (*(src + 1) == 0 || *(src + 1) == 1);
+  };
+  if (end > src && IsTag(end - 1))
+    --end;
   return end - src;
 }
 
