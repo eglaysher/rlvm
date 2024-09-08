@@ -569,7 +569,7 @@ int NWAData::Decode(FILE* in, char* data, int& skip_count) {
 	if (skip_count) {
 		int skip_c = skip_count * channels * (bps/8);
 		retsize -= skip_c;
-		memmove(data, data+skip_c, skip_c);
+		memmove(data, data+skip_c, retsize);
 		skip_count = 0;
 	}
 	curblock++;
